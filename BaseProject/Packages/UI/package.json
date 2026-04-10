@@ -1,0 +1,10 @@
+{
+  "name": "com.baseprojectpackages.ui",
+  "displayName": "Base UI Package",
+  "description": "A collection of UI systems and utilities that can be used for any project.",
+  "version": "1.0.0",
+  "unity": "6000.3",
+  "author": {
+    "name": "Jonathan Alber"
+  }
+}

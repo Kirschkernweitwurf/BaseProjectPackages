@@ -1,0 +1,13 @@
+{
+  "name": "com.baseprojectpackages.attributes",
+  "displayName": "Base Attribute Package",
+  "description": "A collection of attributes for use in any project.",
+  "version": "1.0.0",
+  "unity": "6000.3",
+  "author": {
+    "name": "Jonathan Alber"
+  },
+  "dependencies": {
+    "com.unity.inputsystem": "1.19.0"
+  }
+}
