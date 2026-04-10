@@ -1,0 +1,16 @@
+{
+    "name": "Base.ToolPackage",
+    "rootNamespace": "Base.ToolPackage",
+    "references": [
+        "Base.UtilityPackage"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

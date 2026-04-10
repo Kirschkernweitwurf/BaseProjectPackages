@@ -1,0 +1,13 @@
+{
+  "name": "com.baseprojectpackages.utilities",
+  "displayName": "Base Utility Package",
+  "description": "A collection of utility scripts for any project. This package includes a variety of helper functions and scripts that can be used to enhance the development workflow.",
+  "version": "1.0.0",
+  "unity": "6000.3",
+  "author": {
+    "name": "Jonathan Alber"
+  },
+  "dependencies": {
+    "com.unity.inputsystem": "1.19.0"
+  }
+}

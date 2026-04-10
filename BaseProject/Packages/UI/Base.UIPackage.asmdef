@@ -1,0 +1,19 @@
+{
+    "name": "Base.UIPackage",
+    "rootNamespace": "Base.UIPackage",
+    "references": [
+        "Unity.TextMeshPro",
+        "Base.AttributePackage",
+        "Base.SystemsCorePackage",
+        "Base.UtilityPackage"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
