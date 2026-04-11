@@ -15,7 +15,7 @@ namespace Base.SystemsCorePackage.Input
     [DefaultExecutionOrder(-98)]
     public class InputManager : GameServiceBehaviour
     {
-        public InputSystem_Actions InputActions { get; private set; }
+        public BaseInputActions InputActions { get; private set; }
 
         public bool IsCursorOverGameObject { get; private set; }
 
@@ -29,7 +29,7 @@ namespace Base.SystemsCorePackage.Input
 
             _tracker.OnCurrentActiveItemChanged += OnActiveInputMapChanged;
 
-            InputActions = new InputSystem_Actions();
+            InputActions = new BaseInputActions();
 
             InputActionMap permanentActionMap = InputActions.asset.FindActionMap(permanentActionMapName);
             permanentActionMap?.Enable();
