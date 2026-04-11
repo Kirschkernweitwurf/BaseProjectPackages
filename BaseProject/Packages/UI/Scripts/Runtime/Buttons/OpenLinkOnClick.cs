@@ -1,7 +1,7 @@
 using UnityEngine;
-using Utility.Logging;
+using Base.UtilityPackage.Logging;
 
-namespace UI.Buttons
+namespace Base.UIPackage.Buttons
 {
     /// <summary>
     /// Opens a specified URL in the default web browser when the button is clicked.

@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using Utility.Logging;
+using Base.UtilityPackage.Logging;
 
-namespace Systems.Audio.Pool
+namespace Base.SystemsCorePackage.Audio.Pool
 {
     /// <summary>
     /// Manages multiple audio pools.

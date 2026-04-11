@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using Utility.Logging;
+using Base.UtilityPackage.Logging;
 
-namespace Tracking
+namespace Base.SystemsCorePackage.Tracking
 {
     /// <summary>
     /// Tracks items with associated priorities.

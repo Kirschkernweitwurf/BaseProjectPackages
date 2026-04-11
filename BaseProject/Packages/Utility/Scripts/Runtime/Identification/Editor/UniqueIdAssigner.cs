@@ -2,7 +2,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Utility.Identification.Editor
+namespace Base.UtilityPackage.Identification.Editor
 {
     /// <summary>
     /// Ensures a specific <see cref="ScriptableObject"/> that implements <see cref="IUniquelyIdentifiable"/>

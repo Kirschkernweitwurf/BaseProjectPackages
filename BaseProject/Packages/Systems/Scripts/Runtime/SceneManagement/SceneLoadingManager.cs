@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Attributes;
-using Systems.Services;
+using Base.AttributePackage.Scripts.Runtime;
+using Base.SystemsCorePackage.Services;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using Utility.Logging;
+using Base.UtilityPackage.Logging;
 
-namespace SceneManagement
+namespace Base.SystemsCorePackage.SceneManagement
 {
     /// <summary>
     /// Manages scene loading and unloading operations, including a persistent scene that remains loaded.

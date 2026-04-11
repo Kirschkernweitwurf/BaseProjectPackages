@@ -2,7 +2,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Utility.Identification.Editor
+namespace Base.UtilityPackage.Identification.Editor
 {
     /// <summary>
     /// Runs after assets are imported (including newly created or duplicated). <br/>

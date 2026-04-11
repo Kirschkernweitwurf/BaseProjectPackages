@@ -1,0 +1,17 @@
+{
+    "name": "Base.ScreenShakePackage",
+    "rootNamespace": "Base.ScreenShakePackage",
+    "references": [
+        "Unity.Cinemachine",
+        "Base.UtilityPackage"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

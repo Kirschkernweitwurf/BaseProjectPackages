@@ -1,8 +1,8 @@
 using System.Collections.Generic;
+using Base.UtilityPackage.Logging;
 using UnityEngine;
-using Utility.Logging;
 
-namespace Utility.Collections
+namespace Base.UtilityPackage.Collections
 {
     /// <summary>
     /// Provides helper methods for creating and manipulating enumerables, such as lists or arrays.

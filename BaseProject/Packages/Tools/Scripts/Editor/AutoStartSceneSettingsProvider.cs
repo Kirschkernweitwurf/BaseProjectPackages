@@ -1,7 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Editor
+namespace Base.ToolPackage.Editor
 {
     /// <summary>
     /// Provides a settings provider in Unity's Project Settings to configure the auto start scene.
@@ -17,7 +17,7 @@ namespace Editor
         public override void OnGUI(string searchContext)
         {
             GUILayout.Label("Auto Start Scene", EditorStyles.boldLabel);
-            GUILayout.Label("Select a scene to automatically load when entering Play mode.", 
+            GUILayout.Label("Select a scene to automatically load when entering Play mode.",
                 EditorStyles.wordWrappedLabel);
             GUILayout.Space(10);
 
@@ -30,15 +30,15 @@ namespace Editor
             EditorGUI.BeginDisabledGroup(!enabled);
 
             EditorGUI.BeginChangeCheck();
-            _startScene = (SceneAsset)EditorGUILayout.ObjectField("Start Scene", 
+            _startScene = (SceneAsset)EditorGUILayout.ObjectField("Start Scene",
                 AutoStartSceneSettings.GetStartScene(), typeof(SceneAsset), false);
             if (EditorGUI.EndChangeCheck())
                 AutoStartSceneSettings.SetStartScene(_startScene);
-            
+
             GUILayout.Space(4);
 
             if (_startScene)
-                EditorGUILayout.HelpBox($"Current Start Scene: {AssetDatabase.GetAssetPath(_startScene)}", 
+                EditorGUILayout.HelpBox($"Current Start Scene: {AssetDatabase.GetAssetPath(_startScene)}",
                     MessageType.Info);
             else
                 EditorGUILayout.HelpBox("No start scene set.", MessageType.Warning);

@@ -1,12 +1,12 @@
 using System;
 using System.Threading.Tasks;
-using Attributes;
-using SceneManagement;
-using Systems.Services;
+using Base.AttributePackage.Scripts.Runtime;
+using Base.SystemsCorePackage.SceneManagement;
+using Base.SystemsCorePackage.Services;
 using UnityEngine;
-using Utility.Logging;
+using Base.UtilityPackage.Logging;
 
-namespace UI.Confirmation
+namespace Base.UIPackage.Confirmation
 {
     /// <summary>
     /// Closes the game or stops the editor when clicked.

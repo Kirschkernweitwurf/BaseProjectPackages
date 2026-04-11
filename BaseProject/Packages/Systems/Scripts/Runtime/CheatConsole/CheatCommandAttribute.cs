@@ -1,6 +1,6 @@
 using System;
 
-namespace Systems.CheatConsole
+namespace Base.SystemsCorePackage.CheatConsole
 {
     /// <summary>
     /// Marks a method as a cheat command that can be invoked via the cheat console.

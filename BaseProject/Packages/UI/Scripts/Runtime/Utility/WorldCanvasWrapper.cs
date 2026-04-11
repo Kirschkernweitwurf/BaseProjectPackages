@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace UI.Utility
+namespace Base.UIPackage.Utility
 {
     /// <summary>
     /// Wrapper for a world space Canvas to set its world camera to the main camera.

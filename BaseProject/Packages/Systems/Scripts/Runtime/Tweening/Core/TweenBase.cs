@@ -1,6 +1,6 @@
 using System;
 
-namespace Systems.Tweening.Core
+namespace Base.SystemsCorePackage.Tweening.Core
 {
     /// <summary>
     /// Base type for all tween instances. Provides lifecycle and completion events.

@@ -1,10 +1,10 @@
 #if UNITY_EDITOR
+using Base.UtilityPackage.Logging;
 using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
-using Utility.Logging;
 
-namespace Utility.Identification.Editor
+namespace Base.UtilityPackage.Identification.Editor
 {
     /// <summary>
     /// Build hook that guarantees all UniqueIds are valid before we produce a build.

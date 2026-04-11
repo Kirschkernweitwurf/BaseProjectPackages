@@ -1,8 +1,8 @@
-using Systems.MenuManaging;
-using Systems.Services;
+using Base.SystemsCorePackage.MenuManaging;
+using Base.SystemsCorePackage.Services;
 using UnityEngine;
 
-namespace UI.Buttons
+namespace Base.UIPackage.Buttons
 {
     /// <summary>
     /// Closes the selected menu on button click.

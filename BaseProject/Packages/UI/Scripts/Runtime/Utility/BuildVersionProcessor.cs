@@ -2,7 +2,7 @@
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
 using UnityEngine;
-namespace UI.Utility
+namespace Base.UIPackage.Utility
 {
     /// <summary>
     /// Writes the date-version and build-number into a version.txt in the Streaming Assets folder.

@@ -1,6 +1,6 @@
 using System;
 
-namespace SceneManagement
+namespace Base.SystemsCorePackage.SceneManagement
 {
     /// <summary>
     /// Provides events related to scene loading operations.

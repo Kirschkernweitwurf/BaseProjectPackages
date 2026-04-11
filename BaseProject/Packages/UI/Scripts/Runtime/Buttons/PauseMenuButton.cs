@@ -1,9 +1,9 @@
-using Systems.MenuManaging;
-using Systems.MenuManaging.Menus;
-using Systems.Services;
+using Base.SystemsCorePackage.MenuManaging;
+using Base.SystemsCorePackage.MenuManaging.Menus;
+using Base.SystemsCorePackage.Services;
 using UnityEngine;
 
-namespace UI.Buttons
+namespace Base.UIPackage.Buttons
 {
     /// <summary>
     /// Toggles the pause menu on button click.

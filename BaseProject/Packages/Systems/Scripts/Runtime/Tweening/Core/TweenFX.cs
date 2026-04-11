@@ -1,12 +1,12 @@
 using System;
-using Systems.Tweening.Core.Data;
-using Systems.Tweening.Core.Data.Parameters;
+using Base.SystemsCorePackage.Tweening.Core.Data;
+using Base.SystemsCorePackage.Tweening.Core.Data.Parameters;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 // ReSharper disable MemberCanBePrivate.Global
 
-namespace Systems.Tweening.Core
+namespace Base.SystemsCorePackage.Tweening.Core
 {
     /// <summary>
     /// High-level tween factories for common Unity components.

@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Utility.Editor
+namespace Base.UtilityPackage.Editor
 {
     /// <summary>
     /// Utility class for property drawers.

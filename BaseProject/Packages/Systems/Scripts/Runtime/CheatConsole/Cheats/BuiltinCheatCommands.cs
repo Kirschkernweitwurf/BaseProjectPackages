@@ -1,6 +1,7 @@
 using System.Collections.Generic;
+using Base.SystemsCorePackage.CheatConsole;
 
-namespace Systems.CheatConsole.Cheats
+namespace Base.SystemsCorePackage.CheatConsole.Cheats
 {
     /// <summary>
     /// Contains built-in cheat commands such as help and clear.

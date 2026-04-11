@@ -1,10 +1,10 @@
 using System;
-using Systems.Services;
-using UI.Buttons;
+using Base.SystemsCorePackage.Services;
+using Base.UIPackage.Buttons;
 using UnityEngine;
-using Utility.Logging;
+using Base.UtilityPackage.Logging;
 
-namespace UI.Confirmation
+namespace Base.UIPackage.Confirmation
 {
     /// <summary>
     /// Provides generic usage to request a confirmation of the player on button click.

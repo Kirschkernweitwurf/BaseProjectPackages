@@ -1,8 +1,8 @@
-using Managers;
+using Base.UtilityPackage;
 using UnityEngine;
-using Utility.Logging;
+using Base.UtilityPackage.Logging;
 
-namespace Systems.ObjectPooling
+namespace Base.SystemsCorePackage.ObjectPooling
 {
     /// <summary>
     /// Base class for global object pool managers.

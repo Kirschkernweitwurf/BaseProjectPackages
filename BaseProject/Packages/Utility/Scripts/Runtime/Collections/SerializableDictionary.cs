@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Utility.Collections
+namespace Base.UtilityPackage.Collections
 {
     /// <summary>
     /// A serializable dictionary that can be displayed and edited in the Unity Inspector.

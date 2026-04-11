@@ -1,8 +1,8 @@
 using UnityEditor;
 using UnityEditor.SceneManagement;
-using Utility.Logging;
+using Base.UtilityPackage.Logging;
 
-namespace Editor
+namespace Base.ToolPackage.Editor
 {
     /// <summary>
     /// Automatically sets a specified scene to load when entering Play mode in the Unity Editor.

@@ -1,9 +1,9 @@
 using System.Globalization;
 using TMPro;
 using UnityEngine;
-using Utility;
+using Base.UtilityPackage;
 
-namespace UI.Utility
+namespace Base.UIPackage.Utility
 {
     /// <summary>
     /// A simple FPS counter that displays the current frames per second in a UI TextMeshPro component.

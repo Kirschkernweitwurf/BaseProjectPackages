@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using Utility.Logging;
+using Base.UtilityPackage.Logging;
 using Object = UnityEngine.Object;
 
-namespace Systems.ObjectPooling
+namespace Base.SystemsCorePackage.ObjectPooling
 {
     /// <summary>
     /// A lightweight, high-performance object pool based on <see cref="HashSet{T}"/>.

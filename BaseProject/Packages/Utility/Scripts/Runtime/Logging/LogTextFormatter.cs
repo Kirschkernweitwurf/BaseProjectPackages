@@ -1,4 +1,4 @@
-namespace Utility.Logging
+namespace Base.UtilityPackage.Logging
 {
     /// <summary>
     /// Utility methods for applying Unity rich text styling to strings.

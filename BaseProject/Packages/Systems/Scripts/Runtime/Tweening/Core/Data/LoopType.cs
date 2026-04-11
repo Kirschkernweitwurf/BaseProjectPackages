@@ -1,4 +1,4 @@
-namespace Systems.Tweening.Core.Data
+namespace Base.SystemsCorePackage.Tweening.Core.Data
 {
     /// <summary>
     /// Defines how a tween should loop when finished.

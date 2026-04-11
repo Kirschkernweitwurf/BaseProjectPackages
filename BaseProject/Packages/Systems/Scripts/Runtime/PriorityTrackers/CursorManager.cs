@@ -1,8 +1,8 @@
-using Systems.Services;
-using Tracking;
+using Base.SystemsCorePackage.Services;
+using Base.SystemsCorePackage.Tracking;
 using UnityEngine;
 
-namespace Systems.PriorityTrackers
+namespace Base.SystemsCorePackage.PriorityTrackers
 {
     /// <summary>
     /// Manages the cursor state based on priority requests, using a PriorityTracker instance.

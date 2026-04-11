@@ -1,6 +1,6 @@
 using System;
 
-namespace Utility
+namespace Base.UtilityPackage
 {
     /// <summary>
     /// Provides extension methods for formatting time durations.

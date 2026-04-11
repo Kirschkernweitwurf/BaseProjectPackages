@@ -1,6 +1,6 @@
 using System.Text;
 
-namespace Utility.Types
+namespace Base.UtilityPackage.Types
 {
     /// <summary>
     /// Central access point for global strings.

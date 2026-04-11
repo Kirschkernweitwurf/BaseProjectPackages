@@ -1,9 +1,9 @@
-using Systems.Tweening.Core;
-using Systems.Tweening.Core.Data;
+using Base.SystemsCorePackage.Tweening.Core;
+using Base.SystemsCorePackage.Tweening.Core.Data;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Systems.Tweening.Components.UITweens
+namespace Base.SystemsCorePackage.Tweening.Components.UITweens
 {
     /// <summary>
     /// Tweens the color of a UI Image.

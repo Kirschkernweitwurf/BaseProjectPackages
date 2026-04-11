@@ -1,6 +1,6 @@
 using System;
 
-namespace Utility.Collections
+namespace Base.UtilityPackage.Collections
 {
     /// <summary>
     /// Serializable key-value pair entry for use in <see cref="SerializableDictionary{TKey, TValue}"/>.

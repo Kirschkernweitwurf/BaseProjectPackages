@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace Systems.Tweening.Components.System
+namespace Base.SystemsCorePackage.Tweening.Components.System
 {
     /// <summary>
     /// Triggers a TweenGroup based on UI events (hover and click).

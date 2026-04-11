@@ -1,9 +1,9 @@
 using System.Threading.Tasks;
-using Systems.MenuManaging;
-using Systems.Services;
-using Utility.Logging;
+using Base.SystemsCorePackage.MenuManaging;
+using Base.SystemsCorePackage.Services;
+using Base.UtilityPackage.Logging;
 
-namespace UI.Confirmation
+namespace Base.UIPackage.Confirmation
 {
     /// <summary>
     /// A globally accessible service for showing confirmation prompts.

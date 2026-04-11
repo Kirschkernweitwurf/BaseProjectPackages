@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using Systems.Services;
-using Systems.Tweening.Core;
+using Base.SystemsCorePackage.Services;
+using Base.SystemsCorePackage.Tweening.Core;
 
-namespace Systems.Tweening.Components.System
+namespace Base.SystemsCorePackage.Tweening.Components.System
 {
     /// <summary>
     /// Generic base controller that tracks active tweens per target.

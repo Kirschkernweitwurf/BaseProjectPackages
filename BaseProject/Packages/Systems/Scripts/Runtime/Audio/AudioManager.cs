@@ -1,13 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
-using Systems.Audio.Pool;
-using Systems.Services;
+using Base.SystemsCorePackage.Audio.Pool;
+using Base.SystemsCorePackage.Services;
 using UnityEngine;
-using Utility.Logging;
+using Base.UtilityPackage.Logging;
 using Random = UnityEngine.Random;
 // ReSharper disable MemberCanBePrivate.Global
 
-namespace Systems.Audio
+namespace Base.SystemsCorePackage.Audio
 {
     /// <summary>
     /// Manages the playback of sound effects and music.

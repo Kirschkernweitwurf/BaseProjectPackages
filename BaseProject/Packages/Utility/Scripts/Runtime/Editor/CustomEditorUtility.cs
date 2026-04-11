@@ -1,7 +1,7 @@
 #if UNITY_EDITOR
 using UnityEditor;
 
-namespace Utility.Editor
+namespace Base.UtilityPackage.Editor
 {
     /// <summary>
     /// Utility class for editor-related helper methods.

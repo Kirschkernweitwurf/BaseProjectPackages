@@ -1,7 +1,7 @@
-using Systems.Services;
-using Tracking;
+using Base.SystemsCorePackage.Services;
+using Base.SystemsCorePackage.Tracking;
 
-namespace Systems.Tooltip
+namespace Base.SystemsCorePackage.Systems.Tooltip
 {
     /// <summary>
     /// Manages Tooltips shown on screen, ensuring the highest priority tooltip is displayed.

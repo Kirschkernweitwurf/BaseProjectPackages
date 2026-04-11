@@ -1,9 +1,9 @@
-using Systems.Services;
+using Base.SystemsCorePackage.Services;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using Utility.Logging;
+using Base.UtilityPackage.Logging;
 
-namespace Systems.Audio.OnEvent
+namespace Base.SystemsCorePackage.Audio.OnEvent
 {
     /// <summary>
     /// Plays an AudioContainer sound when the UI element is hovered over.

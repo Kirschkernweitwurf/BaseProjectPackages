@@ -1,11 +1,12 @@
 #if UNITY_EDITOR
 using System;
 using System.Collections.Generic;
+using Base.AttributePackage.Scripts.Runtime;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace Attributes.Editor
+namespace Base.AttributePackage.Scripts.Editor
 {
     /// <summary>
     /// Property drawer for <see cref="InputActionMapNameAttribute"/>.
@@ -17,15 +18,15 @@ namespace Attributes.Editor
         private static string[] _mapNames;
         private static bool _initialized;
 
-        private void Initialize()
+        private static void Initialize()
         {
-            if (_initialized) 
+            if (_initialized)
                 return;
-            
+
             _initialized = true;
 
             List<string> allNames = new();
-            
+
             string[] guids = AssetDatabase.FindAssets("t:InputActionAsset");
             foreach (string guid in guids)
             {
@@ -51,7 +52,7 @@ namespace Attributes.Editor
             EditorGUI.BeginProperty(position, label, property);
 
             int currentIndex = Array.IndexOf(_mapNames, property.stringValue);
-            if (currentIndex < 0) 
+            if (currentIndex < 0)
                 currentIndex = 0;
 
             int newIndex = EditorGUI.Popup(position, label.text, currentIndex, _mapNames);

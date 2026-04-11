@@ -1,4 +1,4 @@
-namespace Utility.Types
+namespace Base.UtilityPackage.Types
 {
     /// <summary>
     /// Utility methods for converting between normalized values and percentages.

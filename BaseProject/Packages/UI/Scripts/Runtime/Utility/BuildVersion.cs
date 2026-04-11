@@ -2,9 +2,9 @@ using System.IO;
 using System.Linq;
 using TMPro;
 using UnityEngine;
-using Utility;
+using Base.UtilityPackage;
 
-namespace UI.Utility
+namespace Base.UIPackage.Utility
 {
     /// <summary>
     /// Fills a given Text with information about the version and when the last build was made

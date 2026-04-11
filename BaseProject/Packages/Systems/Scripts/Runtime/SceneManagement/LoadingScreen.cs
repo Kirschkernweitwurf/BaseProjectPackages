@@ -1,10 +1,10 @@
 using System.Collections;
-using Attributes;
-using Systems.MenuManaging;
+using Base.AttributePackage.Scripts.Runtime;
+using Base.SystemsCorePackage.MenuManaging;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace SceneManagement
+namespace Base.SystemsCorePackage.SceneManagement
 {
     /// <summary>
     /// Handles the display and animation of the loading screen UI during scene transitions.

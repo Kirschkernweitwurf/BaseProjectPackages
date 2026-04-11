@@ -1,4 +1,4 @@
-namespace UI.Confirmation
+namespace Base.UIPackage.Confirmation
 {
     /// <summary>
     /// Data container for confirmation dialog requests.

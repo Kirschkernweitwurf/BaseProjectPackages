@@ -1,8 +1,8 @@
-using Utility;
+using Base.UtilityPackage;
 using UnityEditor;
 using UnityEngine;
 
-namespace UI.Confirmation
+namespace Base.UIPackage.Confirmation
 {
     /// <summary>
     /// Closes the game or stops the editor when clicked.

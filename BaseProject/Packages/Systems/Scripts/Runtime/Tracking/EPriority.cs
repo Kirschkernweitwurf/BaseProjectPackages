@@ -1,4 +1,4 @@
-namespace Tracking
+namespace Base.SystemsCorePackage.Tracking
 {
     /// <summary>
     /// Defines priority levels for any tracking use case.

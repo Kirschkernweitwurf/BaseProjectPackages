@@ -1,11 +1,11 @@
-using Systems.Services;
-using Tracking;
+using Base.SystemsCorePackage.Services;
+using Base.SystemsCorePackage.Tracking;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
-using Utility.Logging;
+using Base.UtilityPackage.Logging;
 
-namespace Systems.Tooltip
+namespace Base.SystemsCorePackage.Systems.Tooltip
 {
     /// <summary>
     /// The purpose of this class is to show a tooltip when hovering a GameObject with this component.

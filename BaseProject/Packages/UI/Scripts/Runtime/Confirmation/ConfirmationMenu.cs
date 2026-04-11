@@ -1,10 +1,10 @@
 using System;
-using Systems.MenuManaging;
+using Base.SystemsCorePackage.MenuManaging;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace UI.Confirmation
+namespace Base.UIPackage.Confirmation
 {
     /// <summary>
     /// Represents a menu that prompts the user for confirmation before proceeding with an action.
