@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using Utility.Logging;
+using Base.UtilityPackage.Logging;
 
-namespace Systems.Services
+namespace Base.SystemsCorePackage.Services
 {
     /// <summary>
     /// A simple service locator for managing and accessing game services.

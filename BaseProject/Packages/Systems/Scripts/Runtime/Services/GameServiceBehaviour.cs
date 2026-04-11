@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Systems.Services
+namespace Base.SystemsCorePackage.Services
 {
     /// <summary>
     /// Convenience base class for <see cref="MonoBehaviour"/>-based game services.

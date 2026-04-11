@@ -1,8 +1,7 @@
 using System.Collections.Generic;
-using Systems.Services;
 using UnityEngine;
 
-namespace Systems.Shutdown
+namespace Base.SystemsCorePackage.Services.Shutdown
 {
     /// <summary>
     /// Manages the orderly shutdown of registered classes when the application is quitting,

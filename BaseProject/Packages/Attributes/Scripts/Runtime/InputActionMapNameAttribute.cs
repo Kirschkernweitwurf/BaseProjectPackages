@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Attributes
+namespace Base.AttributePackage.Scripts.Runtime
 {
     /// <summary>
     /// Attribute to show a dropdown of all available Input Action Maps in the inspector.

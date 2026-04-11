@@ -1,7 +1,7 @@
 using System.Runtime.CompilerServices;
 using UnityEngine;
 
-namespace Utility.Logging
+namespace Base.UtilityPackage.Logging
 {
     /// <summary>
     /// A custom logger for Unity that prefixes logs with the calling class name.

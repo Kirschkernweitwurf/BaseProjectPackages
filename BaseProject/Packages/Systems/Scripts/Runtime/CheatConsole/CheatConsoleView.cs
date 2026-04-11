@@ -1,13 +1,13 @@
 using System.Collections.Generic;
 using System.Linq;
-using Systems.MenuManaging;
-using Systems.ObjectPooling;
+using Base.SystemsCorePackage.MenuManaging;
+using Base.SystemsCorePackage.ObjectPooling;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using Utility.Logging;
+using Base.UtilityPackage.Logging;
 
-namespace Systems.CheatConsole
+namespace Base.SystemsCorePackage.CheatConsole
 {
     /// <summary>
     /// Unity view implementation for the cheat console.

@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
-using Systems.Services;
+using Base.SystemsCorePackage.Services;
 using UnityEngine;
 // ReSharper disable ForCanBeConvertedToForeach
 
-namespace Systems.Tweening.Core
+namespace Base.SystemsCorePackage.Tweening.Core
 {
     /// <summary>
     /// Central update service that manages and advances all active tweens.

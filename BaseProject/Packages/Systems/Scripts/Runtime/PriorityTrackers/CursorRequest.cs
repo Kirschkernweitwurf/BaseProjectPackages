@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Systems.PriorityTrackers
+namespace Base.SystemsCorePackage.PriorityTrackers
 {
     /// <summary>
     /// Represents settings for the cursor, including visibility and lock mode.

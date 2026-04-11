@@ -1,10 +1,10 @@
 using System;
-using Systems.Services;
+using Base.SystemsCorePackage.Services;
 using UnityEngine;
-using Utility.Logging;
+using Base.UtilityPackage.Logging;
 using Object = UnityEngine.Object;
 
-namespace Systems.Tweening.Core
+namespace Base.SystemsCorePackage.Tweening.Core
 {
     /// <summary>
     /// Generic tween that interpolates from a captured start value to a target value over time.

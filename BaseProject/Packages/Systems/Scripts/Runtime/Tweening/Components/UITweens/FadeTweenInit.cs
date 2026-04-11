@@ -1,8 +1,8 @@
-using Systems.Tweening.Core;
-using Systems.Tweening.Core.Data;
+using Base.SystemsCorePackage.Tweening.Core;
+using Base.SystemsCorePackage.Tweening.Core.Data;
 using UnityEngine;
 
-namespace Systems.Tweening.Components.UITweens
+namespace Base.SystemsCorePackage.Tweening.Components.UITweens
 {
     /// <summary>
     /// Tweens the alpha of a CanvasGroup.

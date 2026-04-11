@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Utility
+namespace Base.UtilityPackage
 {
     /// <summary>
     /// Utility methods for working with rotations and angles.

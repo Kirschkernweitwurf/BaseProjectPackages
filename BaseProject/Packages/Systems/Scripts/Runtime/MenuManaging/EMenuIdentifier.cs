@@ -1,4 +1,4 @@
-namespace Systems.MenuManaging
+namespace Base.SystemsCorePackage.MenuManaging
 {
     /// <summary>
     /// Unique identifiers for different types of menus in the game.

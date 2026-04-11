@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Systems.Tweening.Core.Data
+namespace Base.SystemsCorePackage.Tweening.Core.Data
 {
     /// <summary>
     /// Settings for looping tweens.

@@ -1,8 +1,8 @@
-using Systems.Services;
-using Tracking;
+using Base.SystemsCorePackage.Services;
+using Base.SystemsCorePackage.Tracking;
 using UnityEngine;
 
-namespace Systems.PriorityTrackers
+namespace Base.SystemsCorePackage.PriorityTrackers
 {
     /// <summary>
     /// Class to control the game's timescale based on priority requests.

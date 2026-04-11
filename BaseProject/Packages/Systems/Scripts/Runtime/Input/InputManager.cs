@@ -1,12 +1,12 @@
-using Attributes;
-using Systems.Services;
-using Tracking;
+using Base.AttributePackage.Scripts.Runtime;
+using Base.SystemsCorePackage.Services;
+using Base.SystemsCorePackage.Tracking;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
-using Utility.Logging;
+using Base.UtilityPackage.Logging;
 
-namespace Systems.Input
+namespace Base.SystemsCorePackage.Input
 {
     /// <summary>
     /// Takes care of Activation and Deactivation of desired ActionMaps.

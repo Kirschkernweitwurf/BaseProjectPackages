@@ -1,9 +1,9 @@
 using System;
-using Systems.Shutdown;
-using Systems.Tweening.Core.Data;
+using Base.SystemsCorePackage.Services.Shutdown;
+using Base.SystemsCorePackage.Tweening.Core.Data;
 using UnityEngine;
 
-namespace Systems.Tweening.Core
+namespace Base.SystemsCorePackage.Tweening.Core
 {
     /// <summary>
     /// Generic base class providing tween lifecycle control, looping behavior, and default-value caching.

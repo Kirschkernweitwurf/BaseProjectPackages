@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
-using Systems.Shutdown;
-using Systems.Tweening.Core;
-using Systems.Tweening.Core.Data;
+using Base.SystemsCorePackage.Services.Shutdown;
+using Base.SystemsCorePackage.Tweening.Core;
+using Base.SystemsCorePackage.Tweening.Core.Data;
 using UnityEngine;
-using Utility.Logging;
+using Base.UtilityPackage.Logging;
 
-namespace Systems.Tweening.Components.System
+namespace Base.SystemsCorePackage.Tweening.Components.System
 {
     /// <summary>
     /// Groups multiple tweens together to play them as one sequence or in parallel.

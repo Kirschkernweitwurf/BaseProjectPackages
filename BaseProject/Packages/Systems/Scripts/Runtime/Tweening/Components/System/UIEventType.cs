@@ -1,4 +1,4 @@
-namespace Systems.Tweening.Components.System
+namespace Base.SystemsCorePackage.Tweening.Components.System
 {
     /// <summary>
     /// Represents different types of UI events that can trigger actions.

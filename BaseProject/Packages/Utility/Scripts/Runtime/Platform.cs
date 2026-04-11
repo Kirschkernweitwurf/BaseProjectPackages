@@ -1,4 +1,4 @@
-namespace Utility
+namespace Base.UtilityPackage
 {
     /// <summary>
     /// Provides runtime flags for platform and build-specific conditions.

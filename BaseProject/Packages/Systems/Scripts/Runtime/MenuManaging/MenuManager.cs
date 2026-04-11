@@ -1,14 +1,14 @@
 using System;
 using System.Linq;
-using Systems.Input;
-using Systems.Services;
-using Systems.Shutdown;
-using Tracking;
+using Base.SystemsCorePackage.Input;
+using Base.SystemsCorePackage.Services;
+using Base.SystemsCorePackage.Services.Shutdown;
+using Base.SystemsCorePackage.Tracking;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using Utility.Logging;
+using Base.UtilityPackage.Logging;
 
-namespace Systems.MenuManaging
+namespace Base.SystemsCorePackage.MenuManaging
 {
     /// <summary>
     /// Manages the registration, opening, and closing of menus in the game.

@@ -1,8 +1,8 @@
-using Systems.Tweening.Core;
-using Systems.Tweening.Core.Data;
+using Base.SystemsCorePackage.Tweening.Core;
+using Base.SystemsCorePackage.Tweening.Core.Data;
 using UnityEngine;
 
-namespace Systems.Tweening.Components.TransformTweens
+namespace Base.SystemsCorePackage.Tweening.Components.TransformTweens
 {
     /// <summary>
     /// Tweens the rotation of a Transform.

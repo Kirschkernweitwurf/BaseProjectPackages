@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 // ReSharper disable MemberCanBePrivate.Global
 
-namespace Systems.Tweening.Core.Data
+namespace Base.SystemsCorePackage.Tweening.Core.Data
 {
     /// <summary>
     /// Provides easing function delegates for tween interpolation.

@@ -1,11 +1,11 @@
 using System;
-using Attributes;
-using SceneManagement;
-using Systems.Services;
+using Base.AttributePackage.Scripts.Runtime;
+using Base.SystemsCorePackage.SceneManagement;
+using Base.SystemsCorePackage.Services;
 using UnityEngine;
-using Utility.Logging;
+using Base.UtilityPackage.Logging;
 
-namespace UI.Buttons
+namespace Base.UIPackage.Buttons
 {
     /// <summary>
     /// Unloads all scenes and additively and asynchronously loads a desired scene.

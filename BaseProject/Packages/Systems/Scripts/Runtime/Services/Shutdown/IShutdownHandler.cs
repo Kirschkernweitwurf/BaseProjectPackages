@@ -1,4 +1,4 @@
-namespace Systems.Shutdown
+namespace Base.SystemsCorePackage.Services.Shutdown
 {
     /// <summary>
     /// Interface for handling shutdown procedures.

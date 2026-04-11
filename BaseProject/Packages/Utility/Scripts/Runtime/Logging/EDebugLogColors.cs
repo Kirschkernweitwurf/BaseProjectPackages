@@ -1,4 +1,4 @@
-namespace Utility.Logging
+namespace Base.UtilityPackage.Logging
 {
     /// <summary>
     /// Supported colors for Unity rich text logging.

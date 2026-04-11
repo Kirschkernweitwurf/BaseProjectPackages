@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
-using Systems.Tweening.Components.System;
+using Base.SystemsCorePackage.Tweening.Components.System;
 using UnityEngine;
-using Utility.Logging;
+using Base.UtilityPackage.Logging;
 using Object = UnityEngine.Object;
 
-namespace Systems.ObjectPooling
+namespace Base.SystemsCorePackage.ObjectPooling
 {
     /// <summary>
     /// Specialized object pool for animated UI objects.

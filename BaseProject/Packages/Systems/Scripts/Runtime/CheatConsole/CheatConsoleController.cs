@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
-using Systems.CheatConsole.Cheats;
-using Systems.Input;
-using Systems.Services;
+using Base.SystemsCorePackage.CheatConsole.Cheats;
+using Base.SystemsCorePackage.Input;
+using Base.SystemsCorePackage.Services;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
-namespace Systems.CheatConsole
+namespace Base.SystemsCorePackage.CheatConsole
 {
     /// <summary>
     /// Controller for the cheat console. Subscribes to input actions, coordinates the

@@ -1,15 +1,15 @@
 using System.Collections.Generic;
-using Attributes;
-using Systems.Input;
-using Systems.PriorityTrackers;
-using Systems.Services;
-using Systems.Shutdown;
-using Systems.Tweening.Components.System;
-using Tracking;
+using Base.AttributePackage.Scripts.Runtime;
+using Base.SystemsCorePackage.Input;
+using Base.SystemsCorePackage.PriorityTrackers;
+using Base.SystemsCorePackage.Services;
+using Base.SystemsCorePackage.Services.Shutdown;
+using Base.SystemsCorePackage.Tweening.Components.System;
+using Base.SystemsCorePackage.Tracking;
 using UnityEngine;
-using Utility.Logging;
+using Base.UtilityPackage.Logging;
 
-namespace Systems.MenuManaging
+namespace Base.SystemsCorePackage.MenuManaging
 {
     /// <summary>
     /// Base class for all menus in the game. Handles lifecycle, input, cursor, timescale and animations.

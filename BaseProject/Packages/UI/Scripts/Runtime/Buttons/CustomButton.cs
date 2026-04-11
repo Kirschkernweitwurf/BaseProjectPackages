@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace UI.Buttons
+namespace Base.UIPackage.Buttons
 {
     /// <summary>
     /// Provides basic functionality for calling functions on click of a button

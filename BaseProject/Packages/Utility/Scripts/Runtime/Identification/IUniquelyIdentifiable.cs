@@ -1,4 +1,4 @@
-namespace Utility.Identification
+namespace Base.UtilityPackage.Identification
 {
     /// <summary>
     /// Stable design-time identifier for assets or definitions.

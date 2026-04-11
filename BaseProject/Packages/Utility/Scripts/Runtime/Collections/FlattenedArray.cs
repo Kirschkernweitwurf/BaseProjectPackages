@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Utility.Collections
+namespace Base.UtilityPackage.Collections
 {
     /// <summary>
     /// Represents a 2D array flattened into a 1D array for efficient storage and access.

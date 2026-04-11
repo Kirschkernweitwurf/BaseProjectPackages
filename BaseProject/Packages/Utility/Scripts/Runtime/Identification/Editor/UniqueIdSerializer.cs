@@ -2,7 +2,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Utility.Identification.Editor
+namespace Base.UtilityPackage.Identification.Editor
 {
     /// <summary>
     /// Handles reading/writing the serialized UniqueId string on ScriptableObjects.

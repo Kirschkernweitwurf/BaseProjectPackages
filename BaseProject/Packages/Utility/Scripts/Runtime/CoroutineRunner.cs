@@ -1,11 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Managers;
 using UnityEngine;
-using Utility.Logging;
+using Base.UtilityPackage.Logging;
 
-namespace BaseUtilityPackage.Runtime
+namespace Base.UtilityPackage
 {
     /// <summary>
     /// A centralized <see cref="MonoBehaviour"/> for running and managing coroutines.

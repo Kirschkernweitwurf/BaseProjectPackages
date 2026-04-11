@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Systems.Tweening.Core
+namespace Base.SystemsCorePackage.Tweening.Core
 {
     /// <summary>
     /// Unclamped linear interpolation helpers for common Unity types.

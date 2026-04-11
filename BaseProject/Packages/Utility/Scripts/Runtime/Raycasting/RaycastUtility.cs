@@ -1,11 +1,11 @@
 using System.Collections.Generic;
+using Base.UtilityPackage.Logging;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
-using Utility.Logging;
 
-namespace Utility.Raycasting
+namespace Base.UtilityPackage.Raycasting
 {
     /// <summary>
     /// Provides generic, type-safe ray-casting functionality for 2D gameplay.

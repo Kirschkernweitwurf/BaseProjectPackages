@@ -1,4 +1,4 @@
-namespace Systems.Audio
+namespace Base.SystemsCorePackage.Audio
 {
     /// <summary>
     /// Enumeration for different audio types.

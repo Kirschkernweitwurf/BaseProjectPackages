@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Utility.Logging;
+using Base.UtilityPackage.Logging;
 
-namespace Systems.CheatConsole
+namespace Base.SystemsCorePackage.CheatConsole
 {
     /// <summary>
     /// Utility class to discover and create <see cref="CheatCommandInfo"/> instances

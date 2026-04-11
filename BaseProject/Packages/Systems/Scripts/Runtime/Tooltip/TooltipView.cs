@@ -1,10 +1,10 @@
 using System;
 using System.Collections;
-using Systems.Services;
+using Base.SystemsCorePackage.Services;
 using TMPro;
 using UnityEngine;
 
-namespace Systems.Tooltip
+namespace Base.SystemsCorePackage.Systems.Tooltip
 {
     /// <summary>
     /// Manages the visual representation of tooltips on the screen.

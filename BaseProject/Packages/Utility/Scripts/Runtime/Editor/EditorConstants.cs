@@ -1,6 +1,6 @@
 using UnityEditor;
 
-namespace Utility.Editor
+namespace Base.UtilityPackage.Editor
 {
     /// <summary>
     /// Provides commonly used constant values for Unity Editor scripts.

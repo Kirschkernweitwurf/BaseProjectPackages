@@ -1,9 +1,9 @@
 using System.Linq;
-using Attributes;
+using Base.AttributePackage.Scripts.Runtime;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Systems.Services
+namespace Base.SystemsCorePackage.Services
 {
     /// <summary>
     /// Bootstrapper class to initialize persistent and scene-specific managers.
