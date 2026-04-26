@@ -11,7 +11,7 @@ namespace Base.UIPackage.Buttons
     public class PauseMenuButton : CustomButton
     {
         [Header("Identifier")]
-        [SerializeField] private EMenuIdentifier pauseMenuIdentifier = EMenuIdentifier.Pause;
+        [SerializeField] private MenuIdentifier pauseMenuIdentifier;
 
         [Header("Icons")]
         [SerializeField] private Sprite pauseIcon;

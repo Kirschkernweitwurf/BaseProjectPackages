@@ -9,8 +9,8 @@ namespace Base.UIPackage.Buttons
     /// </summary>
     public class OpenMenuButton : CustomButton
     {
-        [SerializeField] private EMenuIdentifier menuToOpen;
-        [SerializeField] private EMenuIdentifier parentMenuIdentifier;
+        [SerializeField] private MenuIdentifier menuToOpen;
+        [SerializeField] private MenuIdentifier parentMenuIdentifier;
 
         protected override void OnClick()
         {

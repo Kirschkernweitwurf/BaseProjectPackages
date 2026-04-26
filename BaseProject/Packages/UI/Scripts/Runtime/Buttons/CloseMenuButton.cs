@@ -9,7 +9,7 @@ namespace Base.UIPackage.Buttons
     /// </summary>
     public class CloseMenuButton : CustomButton
     {
-        [SerializeField] private EMenuIdentifier menuToClose;
+        [SerializeField] private MenuIdentifier menuToClose;
 
         protected override void OnClick()
         {

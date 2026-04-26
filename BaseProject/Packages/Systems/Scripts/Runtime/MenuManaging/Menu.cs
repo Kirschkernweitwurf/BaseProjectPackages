@@ -17,8 +17,8 @@ namespace Base.SystemsCorePackage.MenuManaging
     public class Menu : MonoBehaviour, IShutdownHandler
     {
         [field: Header("Menu Settings")]
-        [Tooltip("The unique identifier for this menu.")]
-        [field: SerializeField] public EMenuIdentifier MenuIdentifier { get; private set; }
+        [Tooltip("The unique identifier asset for this menu.")]
+        [field: SerializeField] public MenuIdentifier MenuIdentifier { get; private set; }
 
         [Tooltip("The priority of this menu in the stack.")]
         [SerializeField] private EPriority menuPriority;
@@ -55,13 +55,13 @@ namespace Base.SystemsCorePackage.MenuManaging
         [InputActionMapName] [SerializeField] private string actionMap;
 
         [Tooltip("Menus that block this menu from opening if they are currently open.")]
-        [SerializeField] private EMenuIdentifier[] blockingMenus;
+        [SerializeField] private MenuIdentifier[] blockingMenus;
 
         public bool IsOpen { get; private set; }
 
         public bool HasShutDown { get; private set; }
 
-        private readonly List<EMenuIdentifier> _childMenuKeys = new();
+        private readonly List<MenuIdentifier> _childMenuIdentifiers = new();
         private Menu _parentMenu;
 
         protected virtual void Awake()
@@ -71,7 +71,7 @@ namespace Base.SystemsCorePackage.MenuManaging
             if (ServiceLocator.TryGet(out MenuManager menuManager))
                 menuManager.RegisterMenu(this);
 
-            if (MenuIdentifier == EMenuIdentifier.None)
+            if (MenuIdentifier == null)
                 CustomLogger.LogWarning("Menu has no MenuIdentifier assigned.", this);
 
             if (contentRoot == null)
@@ -108,7 +108,7 @@ namespace Base.SystemsCorePackage.MenuManaging
         /// <summary>
         /// Opens the menu (always animated).
         /// </summary>
-        public void Open(EMenuIdentifier parentMenuIdentifier = EMenuIdentifier.None)
+        public void Open(MenuIdentifier parentMenuIdentifier = null)
         {
             if (IsOpen)
             {
@@ -116,8 +116,11 @@ namespace Base.SystemsCorePackage.MenuManaging
                 return;
             }
 
-            foreach (EMenuIdentifier blockingMenu in blockingMenus)
+            foreach (MenuIdentifier blockingMenu in blockingMenus)
             {
+                if (blockingMenu == null)
+                    continue;
+
                 if (!ServiceLocator.TryGet(out MenuManager menuManager))
                     continue;
 
@@ -144,7 +147,7 @@ namespace Base.SystemsCorePackage.MenuManaging
         /// <summary>
         /// Closes the menu (always animated).
         /// </summary>
-        public void Close(EMenuIdentifier closingMenuIdentifier = EMenuIdentifier.None)
+        public void Close(MenuIdentifier closingMenuIdentifier = null)
         {
             if (!IsOpen)
             {
@@ -189,9 +192,9 @@ namespace Base.SystemsCorePackage.MenuManaging
 
         protected virtual void OnBack() { }
 
-        private void RegisterParentMenu(EMenuIdentifier parentMenuIdentifier)
+        private void RegisterParentMenu(MenuIdentifier parentMenuIdentifier)
         {
-            if (parentMenuIdentifier == EMenuIdentifier.None)
+            if (parentMenuIdentifier == null)
                 return;
 
             if (!ServiceLocator.TryGet(out MenuManager menuManager))
@@ -207,19 +210,19 @@ namespace Base.SystemsCorePackage.MenuManaging
             _parentMenu.RegisterChildMenu(MenuIdentifier);
         }
 
-        private void CleanupMenuState(EMenuIdentifier closingMenuIdentifier = EMenuIdentifier.None)
+        private void CleanupMenuState(MenuIdentifier closingMenuIdentifier = null)
         {
             MenuManager menuManager = ServiceLocator.Get<MenuManager>();
 
             // Close child menus first
-            foreach (EMenuIdentifier childMenuKey in _childMenuKeys)
-                menuManager?.CloseMenu(childMenuKey, MenuIdentifier);
+            foreach (MenuIdentifier childMenuIdentifier in _childMenuIdentifiers)
+                menuManager?.CloseMenu(childMenuIdentifier, MenuIdentifier);
 
-            _childMenuKeys.Clear();
+            _childMenuIdentifiers.Clear();
 
             // Only detach from parent if not closed by it
             if (_parentMenu != null && _parentMenu.MenuIdentifier != closingMenuIdentifier)
-                _parentMenu._childMenuKeys.Remove(MenuIdentifier);
+                _parentMenu._childMenuIdentifiers.Remove(MenuIdentifier);
 
             _parentMenu = null;
 
@@ -247,9 +250,9 @@ namespace Base.SystemsCorePackage.MenuManaging
                 ServiceLocator.Get<InputManager>()?.RegisterInputMap(actionMap, this, (uint)menuPriority);
         }
 
-        private void RegisterChildMenu(EMenuIdentifier childMenuIdentifierToRegister)
+        private void RegisterChildMenu(MenuIdentifier childMenuIdentifierToRegister)
         {
-            if (childMenuIdentifierToRegister == EMenuIdentifier.None)
+            if (childMenuIdentifierToRegister == null)
                 return;
 
             if (!IsOpen)
@@ -258,13 +261,13 @@ namespace Base.SystemsCorePackage.MenuManaging
                 return;
             }
 
-            if (_childMenuKeys.Contains(childMenuIdentifierToRegister))
+            if (_childMenuIdentifiers.Contains(childMenuIdentifierToRegister))
             {
                 CustomLogger.LogError($"Child menu {childMenuIdentifierToRegister} is already registered.", this);
                 return;
             }
 
-            _childMenuKeys.Add(childMenuIdentifierToRegister);
+            _childMenuIdentifiers.Add(childMenuIdentifierToRegister);
         }
     }
 }
