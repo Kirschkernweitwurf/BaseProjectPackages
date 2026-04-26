@@ -11,10 +11,6 @@ namespace Base.SystemsCorePackage.MenuManaging
         Credits = 3,
         Confirmation = 4,
         LoadingScreen = 5,
-        CheatConsole = 6,
-        WinLose = 7,
-        StarterDeckSelection = 8,
-        StarterDeckOverview = 9,
-        BossSelection = 10,
+        CheatConsole = 6
     }
 }

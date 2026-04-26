@@ -1,3 +1,15 @@
 fileFormatVersion: 2
 guid: fc55b183f46c4f178b98a37042732667
-timeCreated: 1764060186
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - button: {instanceID: 0}
+  - pauseMenuIdentifier: {fileID: 11400000, guid: f70455b144171f14986a8c8a23608780, type: 2}
+  - pauseIcon: {instanceID: 0}
+  - playIcon: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

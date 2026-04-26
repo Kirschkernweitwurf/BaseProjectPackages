@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using Base.SystemsCorePackage.MenuManaging;
 using Base.SystemsCorePackage.Services;
 using Base.UtilityPackage.Logging;
+using UnityEngine;
 
 namespace Base.UIPackage.Confirmation
 {
@@ -11,6 +12,8 @@ namespace Base.UIPackage.Confirmation
     /// </summary>
     public class ConfirmationService : GameServiceBehaviour
     {
+        [SerializeField] private MenuIdentifier confirmationMenuIdentifier;
+
         private ConfirmationMenu _menu;
 
         private void Start()
@@ -18,7 +21,7 @@ namespace Base.UIPackage.Confirmation
             if (!ServiceLocator.TryGet(out MenuManager manager))
                 return;
 
-            if (!manager.TryGetMenu(EMenuIdentifier.Confirmation, out Menu foundMenu))
+            if (!manager.TryGetMenu(confirmationMenuIdentifier, out Menu foundMenu))
                 return;
 
             if (foundMenu is ConfirmationMenu confirmationMenu)

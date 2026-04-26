@@ -1,21 +1,20 @@
-using System;
 using System.Collections.Generic;
 using Base.UtilityPackage.Logging;
 
 namespace Base.SystemsCorePackage.Tracking
 {
     /// <summary>
-    /// Generic tracker that maps unique enum keys to values, which allows registration,
+    /// Generic tracker that maps unique keys to values, which allows registration,
     /// removal, retrieval, and clearing of tracked elements.
     /// </summary>
-    /// <typeparam name="TKey">The enum type used as keys.</typeparam>
+    /// <typeparam name="TKey">The type used as keys.</typeparam>
     /// <typeparam name="TValue">The type of values to be tracked.</typeparam>
-    public class Tracker<TKey, TValue> where TKey : struct, Enum
+    public class Tracker<TKey, TValue>
     {
         private readonly Dictionary<TKey, TValue> _trackedElements = new();
 
         /// <summary>
-        /// Adds an element with a unique enum key.
+        /// Adds an element with a unique key.
         /// </summary>
         public bool Register(TKey key, TValue element)
         {
@@ -27,12 +26,12 @@ namespace Base.SystemsCorePackage.Tracking
         }
 
         /// <summary>
-        /// Removes an element by its enum key.
+        /// Removes an element by its key.
         /// </summary>
         public bool Remove(TKey key) => _trackedElements.Remove(key);
 
         /// <summary>
-        /// Attempts to get an element by enum key.
+        /// Attempts to get an element by key.
         /// </summary>
         public bool TryGet(TKey key, out TValue element) => _trackedElements.TryGetValue(key, out element);
 

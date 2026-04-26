@@ -1,12 +1,11 @@
-using System;
 using System.Linq;
-using Base.SystemsCorePackage.Input;
-using Base.SystemsCorePackage.Services;
-using Base.SystemsCorePackage.Services.Shutdown;
-using Base.SystemsCorePackage.Tracking;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Base.UtilityPackage.Logging;
+using Base.SystemsCorePackage.Input;
+using Base.SystemsCorePackage.Services;
+using Base.SystemsCorePackage.Tracking;
+using Base.SystemsCorePackage.Services.Shutdown;
 
 namespace Base.SystemsCorePackage.MenuManaging
 {
@@ -16,10 +15,15 @@ namespace Base.SystemsCorePackage.MenuManaging
     [DefaultExecutionOrder(-5)]
     public class MenuManager : GameServiceBehaviour, IShutdownHandler
     {
+        [Header("Back Action Settings")]
+        [Tooltip("The menu to open when the back action is performed and no other menu is currently listening" +
+                 " (e.g. the Pause menu). Leave empty to disable this fallback.")]
+        [SerializeField] private MenuIdentifier defaultBackMenu;
+
         public bool HasShutDown { get; private set; }
 
         private readonly PriorityTracker<Menu> _menuPriorityTracker = new();
-        private readonly Tracker<EMenuIdentifier, Menu> _menuTracker = new();
+        private readonly Tracker<MenuIdentifier, Menu> _menuTracker = new();
 
         /// <summary>
         /// The menu with the highest priority that is currently open and should receive back input.
@@ -62,13 +66,43 @@ namespace Base.SystemsCorePackage.MenuManaging
         /// Adds the specified menu to the general menu tracker.
         /// </summary>
         /// <param name="menu">The menu to register.</param>
-        public void RegisterMenu(Menu menu) => _menuTracker.Register(menu.MenuIdentifier, menu);
+        public void RegisterMenu(Menu menu)
+        {
+            if (menu == null)
+            {
+                CustomLogger.LogWarning("Cannot register menu: menu is null.", this);
+                return;
+            }
+
+            if (menu.MenuIdentifier == null)
+            {
+                CustomLogger.LogWarning("Cannot register menu: menu identifier is null.", this);
+                return;
+            }
+
+            _menuTracker.Register(menu.MenuIdentifier, menu);
+        }
 
         /// <summary>
         /// Removes the specified menu from the general menu tracker.
         /// </summary>
         /// <param name="menu">The menu to unregister.</param>
-        public void DeregisterMenu(Menu menu) => _menuTracker.Remove(menu.MenuIdentifier);
+        public void DeregisterMenu(Menu menu)
+        {
+            if (menu == null)
+            {
+                CustomLogger.LogWarning("Cannot deregister menu: menu is null.", this);
+                return;
+            }
+
+            if (menu.MenuIdentifier == null)
+            {
+                CustomLogger.LogWarning("Cannot deregister menu: menu identifier is null.", this);
+                return;
+            }
+
+            _menuTracker.Remove(menu.MenuIdentifier);
+        }
 
         /// <summary>
         /// Registers a menu to be tracked for opening with a specified priority.
@@ -98,11 +132,17 @@ namespace Base.SystemsCorePackage.MenuManaging
         /// is closed when the pause menu is.</param>
         /// <param name="closeOthers">If set to <c>true</c>, closes all
         /// other menus before opening the specified one.</param>
-        public void OpenMenu(EMenuIdentifier identifier, EMenuIdentifier parentMenuIdentifier = EMenuIdentifier.None,
+        public void OpenMenu(MenuIdentifier identifier, MenuIdentifier parentMenuIdentifier = null,
             bool closeOthers = false)
         {
             if (closeOthers)
                 CloseAll();
+
+            if (identifier == null)
+            {
+                CustomLogger.LogWarning("Cannot open menu: identifier is null.", this);
+                return;
+            }
 
             if (_menuTracker.TryGet(identifier, out Menu menu))
                 menu.Open(parentMenuIdentifier);
@@ -115,8 +155,14 @@ namespace Base.SystemsCorePackage.MenuManaging
         /// </summary>
         /// <param name="identifier">The identifier of the menu to close.</param>
         /// <param name = "closingMenuIdentifier">The identifier of the menu that is closing this menu, if any.</param>
-        public void CloseMenu(EMenuIdentifier identifier, EMenuIdentifier closingMenuIdentifier = EMenuIdentifier.None)
+        public void CloseMenu(MenuIdentifier identifier, MenuIdentifier closingMenuIdentifier = null)
         {
+            if (identifier == null)
+            {
+                CustomLogger.LogWarning("Cannot close menu: identifier is null.", this);
+                return;
+            }
+
             if (_menuTracker.TryGet(identifier, out Menu menu))
                 menu.Close(closingMenuIdentifier);
             else
@@ -128,9 +174,21 @@ namespace Base.SystemsCorePackage.MenuManaging
         /// </summary>
         /// <param name="identifier">The identifier of the menu to check.</param>
         /// <returns><c>true</c> if the menu is open; otherwise, <c>false</c>.</returns>
-        public bool IsMenuOpen(EMenuIdentifier identifier)
+        public bool IsMenuOpen(MenuIdentifier identifier)
         {
-            return _menuTracker.TryGet(identifier, out Menu menu) && menu.IsOpen;
+            if (identifier == null)
+            {
+                CustomLogger.LogWarning("Cannot check menu: identifier is null.", this);
+                return false;
+            }
+
+            if (!_menuTracker.TryGet(identifier, out Menu menu))
+            {
+                CustomLogger.LogWarning($"Menu of identifier {identifier} not found.", this);
+                return false;
+            }
+
+            return menu.IsOpen;
         }
 
         /// <summary>
@@ -139,16 +197,40 @@ namespace Base.SystemsCorePackage.MenuManaging
         /// <param name="identifier">The identifier of the menu to retrieve.</param>
         /// <param name="menu">The retrieved menu if found; otherwise, null.</param>
         /// <returns><c>true</c> if the menu was found; otherwise, <c>false</c>.</returns>
-        public bool TryGetMenu(EMenuIdentifier identifier, out Menu menu) => _menuTracker.TryGet(identifier, out menu);
+        public bool TryGetMenu(MenuIdentifier identifier, out Menu menu)
+        {
+            if (identifier == null)
+            {
+                CustomLogger.LogWarning("Cannot check menu: identifier is null.", this);
+                menu = null;
+                return false;
+            }
+
+            return _menuTracker.TryGet(identifier, out menu);
+        }
 
         /// <summary>
         /// Closes all currently open menus.
         /// </summary>
         private void CloseAll()
         {
-            foreach (EMenuIdentifier type in Enum.GetValues(typeof(EMenuIdentifier)))
-                if (_menuTracker.TryGet(type, out Menu menu) && menu.IsOpen)
-                    menu.Close();
+            foreach (TrackedItem<Menu> trackedItem in _menuPriorityTracker.TrackedItems.ToList())
+            {
+                if (trackedItem == null)
+                {
+                    CustomLogger.LogWarning("Cannot close menu: trackedItem is null.", this);
+                    return;
+                }
+
+                if (trackedItem.Item == null)
+                {
+                    CustomLogger.LogWarning("Cannot close menu: trackedItem's item is null.", this);
+                    continue;
+                }
+
+                if (trackedItem.Item.IsOpen)
+                    trackedItem.Item.Close();
+            }
         }
 
         /// <summary>
@@ -167,7 +249,6 @@ namespace Base.SystemsCorePackage.MenuManaging
                 .OrderByDescending(x => x.Priority)
                 .ThenByDescending(x => x.Order)
                 .FirstOrDefault(x => x.Item.ListenToOnBackAction)?.Item;
-
         }
 
         /// <summary>
@@ -177,9 +258,11 @@ namespace Base.SystemsCorePackage.MenuManaging
         {
             if (_highestPriorityBackMenu == null)
             {
-                // If no menu is available to handle the back action, open the Pause Menu
-                if (_menuTracker.TryGet(EMenuIdentifier.Pause, out Menu pauseMenu) && !pauseMenu.IsOpen)
-                    pauseMenu.Open();
+                // If no menu is available to handle the back action, open the configured default back menu
+                if (defaultBackMenu != null
+                    && _menuTracker.TryGet(defaultBackMenu, out Menu fallbackMenu)
+                    && !fallbackMenu.IsOpen)
+                    fallbackMenu.Open();
 
                 return;
             }
