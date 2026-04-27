@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using Base.UtilityPackage.Logging;
@@ -77,3 +78,4 @@ namespace Base.ToolPackage.Editor
         }
     }
 }
+#endif

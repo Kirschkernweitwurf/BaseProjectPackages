@@ -1,4 +1,3 @@
-using Base.UtilityPackage;
 using UnityEditor;
 using UnityEngine;
 
@@ -15,10 +14,15 @@ namespace Base.UIPackage.Confirmation
 
         private static void QuitApplication()
         {
-            if (Platform.IsUnityEditor)
-                EditorApplication.isPlaying = false;
-            else
-                Application.Quit();
+#if UNITY_EDITOR
+            EditorApplication.isPlaying = false;
+            return;
+#endif
+
+            // ReSharper disable once HeuristicUnreachableCode
+#pragma warning disable CS0162 // Unreachable code detected
+            Application.Quit();
+#pragma warning restore CS0162 // Unreachable code detected
         }
     }
 }
