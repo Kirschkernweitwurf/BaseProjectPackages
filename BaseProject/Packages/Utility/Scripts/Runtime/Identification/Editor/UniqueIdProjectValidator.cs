@@ -37,6 +37,10 @@ namespace Base.UtilityPackage.Identification.Editor
             UniqueIdRegistry.Reset();
 
             string[] guids = AssetDatabase.FindAssets("t:ScriptableObject");
+
+            if (guids.Length == 0)
+                return;
+
             int fixedCount = 0;
             int totalChecked = 0;
 
