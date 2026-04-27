@@ -491,7 +491,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49f3ab076ed5f854489221eb1c811185, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Confirmation.ConfirmationMenu
-  <MenuIdentifier>k__BackingField: {fileID: 0}
+  <MenuIdentifier>k__BackingField: {fileID: 11400000, guid: 81b7c51842751014892be8d0fdc17df7, type: 2}
   menuPriority: 3
   contentRoot: {fileID: 1573373169881045054}
   openOnStart: 0
