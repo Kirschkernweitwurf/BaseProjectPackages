@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc579a69e9b14742b5e1db6bb7cd1efd, type: 3}
+  m_Name: AC_Hover
+  m_EditorClassIdentifier: Assembly-CSharp::Systems.Audio.AudioContainer
+  audioType: 3
+  clips:
+  - {fileID: 8300000, guid: 242aa3b125100ea438a316ac69bfcf70, type: 3}
+  - {fileID: 8300000, guid: 98b420bdba3cc8449bcee308f2362314, type: 3}
+  - {fileID: 8300000, guid: e1cb6e6babd7d3d4c9e651df9467e107, type: 3}
+  - {fileID: 8300000, guid: 301a37f8e22585d42bb6af008cbd1910, type: 3}
+  delay: 0
+  ignorePause: 1
+  loop: 0
+  randomizePitch: 0
+  volume: 0.55
+  maxClipsPlaying: 3

@@ -2,7 +2,8 @@
     "name": "Base.ToolPackage",
     "rootNamespace": "Base.ToolPackage",
     "references": [
-        "Base.UtilityPackage"
+        "Base.UtilityPackage",
+        "Base.UIPackage"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

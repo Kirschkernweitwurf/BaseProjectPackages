@@ -1,7 +1,7 @@
 using Base.UtilityPackage.Logging;
 using UnityEngine;
 
-namespace UI.Utility
+namespace Base.UIPackage.Utility
 {
     /// <summary>
     /// A modular component that can be attached to any game object to make it always face the camera,
