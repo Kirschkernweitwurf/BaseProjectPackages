@@ -16,14 +16,16 @@ namespace Base.UtilityPackage.Identification.Editor
     [InitializeOnLoad]
     internal static class UniqueIdProjectValidator
     {
+        private const string UniqueIdValidatorRanOnce = "UniqueIdValidator_RanOnce";
+
         static UniqueIdProjectValidator()
         {
             EditorApplication.delayCall += () =>
             {
-                if (SessionState.GetBool("UniqueIdValidator_RanOnce", false))
+                if (SessionState.GetBool(UniqueIdValidatorRanOnce, false))
                     return;
 
-                SessionState.SetBool("UniqueIdValidator_RanOnce", true);
+                SessionState.SetBool(UniqueIdValidatorRanOnce, true);
                 RebuildAndFixAll();
             };
         }
@@ -69,6 +71,9 @@ namespace Base.UtilityPackage.Identification.Editor
                 EditorUtility.SetDirty(asset);
                 fixedCount++;
             }
+
+            if (totalChecked == 0)
+                return;
 
             if (fixedCount > 0)
                 CustomLogger.Log($"Checked {totalChecked} identifiable assets and fixed" +
