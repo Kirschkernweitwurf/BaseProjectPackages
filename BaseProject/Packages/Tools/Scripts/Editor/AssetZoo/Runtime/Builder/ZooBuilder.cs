@@ -64,7 +64,7 @@ namespace Base.ToolPackage.Editor.AssetZoo.Runtime.Builder
             }
 #endif
 
-            ClearExisting(parent);
+            ClearExisting();
 
             GameObject root = new(ZooRootName);
             if (parent != null)
@@ -78,13 +78,14 @@ namespace Base.ToolPackage.Editor.AssetZoo.Runtime.Builder
             IAlignmentStrategy alignment = AlignmentStrategyFactory.Create(config.Layout.Alignment);
 
             float categoryOffsetZ = 0f;
+            Vector3 direction = GetDirectionVector(config.Layout.CategoryDirection);
 
             foreach (ZooCategory category in config.Categories)
             {
                 if (category?.Entries == null || category.Entries.Count == 0)
                     continue;
 
-                BuildCategory(config, category, root.transform, layoutStrategy, alignment, ref categoryOffsetZ);
+                BuildCategory(config, category, root.transform, layoutStrategy, alignment, direction, ref categoryOffsetZ);
             }
 
 #if UNITY_EDITOR
@@ -99,7 +100,7 @@ namespace Base.ToolPackage.Editor.AssetZoo.Runtime.Builder
         /// <summary>
         /// Clears the previously built zoo under the given parent (or in the whole scene if parent is null).
         /// </summary>
-        public void Clear(Transform parent = null)
+        public void Clear()
         {
 #if UNITY_EDITOR
             bool useUndo = !Application.isPlaying;
@@ -110,7 +111,7 @@ namespace Base.ToolPackage.Editor.AssetZoo.Runtime.Builder
                 undoGroup = Undo.GetCurrentGroup();
             }
 #endif
-            ClearExisting(parent);
+            ClearExisting();
 #if UNITY_EDITOR
             if (useUndo)
             {
@@ -120,17 +121,13 @@ namespace Base.ToolPackage.Editor.AssetZoo.Runtime.Builder
 #endif
         }
 
-        // --- helpers -----------------------------------------------------------------
-
-        private void ClearExisting(Transform parent)
+        private void ClearExisting()
         {
-            GameObject existing = parent != null
-                ? FindMarkedChild(parent)
-                : GetZooRoot();
-
+            GameObject existing = GetZooRoot();
             _cachedRoot = null;
 
-            if (existing == null) return;
+            if (existing == null)
+                return;
 #if UNITY_EDITOR
             if (!Application.isPlaying)
             {
@@ -139,16 +136,6 @@ namespace Base.ToolPackage.Editor.AssetZoo.Runtime.Builder
             }
 #endif
             Object.Destroy(existing);
-        }
-
-        private static GameObject FindMarkedChild(Transform parent)
-        {
-            foreach (Transform child in parent)
-            {
-                if (child.GetComponent<ZooRootMarker>() != null)
-                    return child.gameObject;
-            }
-            return null;
         }
 
         private static void RegisterTracked(GameObject go, string undoLabel)
@@ -186,26 +173,26 @@ namespace Base.ToolPackage.Editor.AssetZoo.Runtime.Builder
         }
 
         private static void BuildCategory(ZooConfig config, ZooCategory category, Transform root,
-            ILayoutStrategy layoutStrategy, IAlignmentStrategy alignment, ref float categoryOffsetZ)
+            ILayoutStrategy layoutStrategy, IAlignmentStrategy alignment, Vector3 direction, ref float categoryOffset)
         {
             string categoryName = string.IsNullOrWhiteSpace(category.Name)
                 ? UnnamedCategoryFallback
                 : category.Name;
 
             GameObject categoryRoot = CreateTracked(categoryName, root, BuildUndoLabel);
-            categoryRoot.transform.localPosition = new Vector3(0f, 0f, categoryOffsetZ);
+            categoryRoot.transform.localPosition = direction * categoryOffset;
 
             // Filter valid entries and pre-compute bounds. The biggest one defines the cell.
-            List<ZooEntry> validEntries = new();
+            List<GameObject> validEntries = new();
             List<Bounds> entryBounds = new();
             Vector3 maxCell = Vector3.zero;
 
-            foreach (ZooEntry entry in category.Entries)
+            foreach (GameObject entry in category.Entries)
             {
-                if (entry == null || entry.Prefab == null)
+                if (entry == null)
                     continue;
 
-                Bounds b = BoundsCalculator.CalculatePrefabBounds(entry.Prefab);
+                Bounds b = BoundsCalculator.CalculatePrefabBounds(entry);
                 validEntries.Add(entry);
                 entryBounds.Add(b);
                 maxCell = Vector3.Max(maxCell, b.size);
@@ -216,27 +203,41 @@ namespace Base.ToolPackage.Editor.AssetZoo.Runtime.Builder
 
             LayoutResult result = layoutStrategy.Layout(validEntries.Count, maxCell, config.Layout);
 
+            // When stacking in a negative direction, mirror positions along the stacking axis
+            Vector3 mirror = new(
+                direction.x < 0f ? -1f : 1f,
+                direction.y < 0f ? -1f : 1f,
+                direction.z < 0f ? -1f : 1f);
+
             for (int i = 0; i < validEntries.Count; i++)
             {
+                Vector3 slot = Vector3.Scale(result.Positions[i], mirror);
                 PlaceEntry(i, config, validEntries[i], entryBounds[i],
-                           result.Positions[i], alignment, categoryRoot.transform);
+                    slot, alignment, categoryRoot.transform);
             }
 
             if (config.Labels.ShowCategoryLabels)
-                CreateCategoryLabel(config, categoryName, category.LabelColor,
-                                    result.Positions, maxCell, categoryRoot.transform);
+            {
+                Vector3[] mirrored = new Vector3[result.Positions.Length];
+                for (int i = 0; i < mirrored.Length; i++)
+                    mirrored[i] = Vector3.Scale(result.Positions[i], mirror);
 
-            categoryOffsetZ += result.TotalSize.z + config.Layout.CategorySpacing;
+                CreateCategoryLabel(config, categoryName, category.LabelColor,
+                    mirrored, maxCell, categoryRoot.transform);
+            }
+
+            float extent = Mathf.Abs(Vector3.Dot(result.TotalSize, direction));
+            categoryOffset += extent + config.Layout.CategorySpacing;
         }
 
-        private static void PlaceEntry(int index, ZooConfig config, ZooEntry entry, Bounds bounds,
+        private static void PlaceEntry(int index, ZooConfig config, GameObject entry, Bounds bounds,
             Vector3 slotPosition, IAlignmentStrategy alignment, Transform parent)
         {
-            string entryName = $"{index:D2}_{entry.Prefab.name}";
+            string entryName = $"{index:D2}_{entry.name}";
             GameObject entryRoot = CreateTracked(entryName, parent, BuildUndoLabel);
             entryRoot.transform.localPosition = slotPosition;
 
-            GameObject instance = InstantiatePrefab(entry.Prefab, entryRoot.transform);
+            GameObject instance = InstantiatePrefab(entry, entryRoot.transform);
             if (instance == null)
                 return;
 
@@ -245,10 +246,7 @@ namespace Base.ToolPackage.Editor.AssetZoo.Runtime.Builder
             if (!config.Labels.ShowItemLabels)
                 return;
 
-            string label = string.IsNullOrEmpty(entry.LabelOverride)
-                ? entry.Prefab.name
-                : entry.LabelOverride;
-
+            string label = entry.name;
             Vector3 labelLocalPos = new(0f, bounds.size.y + config.Labels.ItemLabelHeight, 0f);
             GameObject labelGo = LabelFactory.CreateLabel(label, entryRoot.transform, labelLocalPos,
                 config.Labels.ItemFontSize, config.Labels.ItemColor, LabelSettings.ItemWorldScale);
@@ -258,8 +256,6 @@ namespace Base.ToolPackage.Editor.AssetZoo.Runtime.Builder
         private static void CreateCategoryLabel(ZooConfig config, string categoryName, Color labelColor,
             Vector3[] positions, Vector3 maxCell, Transform parent)
         {
-            // Centroid of the actual slot positions, so the label sits over the visual
-            // center of whatever layout was used (works for grid, line, circle, future ones).
             Vector3 min = positions[0];
             Vector3 max = positions[0];
             for (int i = 1; i < positions.Length; i++)
@@ -269,7 +265,7 @@ namespace Base.ToolPackage.Editor.AssetZoo.Runtime.Builder
             }
 
             Vector3 center = (min + max) * 0.5f;
-            Vector3 pos = new(center.x, maxCell.y + config.Labels.CategoryLabelHeight, min.z - config.Layout.Spacing);
+            Vector3 pos = new(center.x, maxCell.y + config.Labels.CategoryLabelHeight, center.z);
 
             int fontSize = Mathf.RoundToInt(config.Labels.CategoryFontSize);
 
@@ -278,5 +274,14 @@ namespace Base.ToolPackage.Editor.AssetZoo.Runtime.Builder
 
             RegisterTracked(labelGo, BuildUndoLabel);
         }
+
+        private static Vector3 GetDirectionVector(ECategoryDirection direction) => direction switch
+        {
+            ECategoryDirection.Forward => Vector3.forward,
+            ECategoryDirection.Backward => Vector3.back,
+            ECategoryDirection.Left => Vector3.left,
+            ECategoryDirection.Right => Vector3.right,
+            _ => Vector3.up
+        };
     }
 }

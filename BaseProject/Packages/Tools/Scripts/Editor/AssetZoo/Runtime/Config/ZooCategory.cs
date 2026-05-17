@@ -18,13 +18,13 @@ namespace Base.ToolPackage.Editor.AssetZoo.Runtime.Config
         [field: SerializeField] public Color LabelColor { get; private set; } = Color.cyan;
 
         [field: Tooltip("Prefabs in this category. Each prefab gets its own entry in the zoo.")]
-        [field: SerializeField] public List<ZooEntry> Entries { get; private set; } = new();
+        [field: SerializeField] public List<GameObject> Entries { get; private set; } = new();
 
         protected override void ApplyDefaults()
         {
             Name = "Category";
             LabelColor = Color.cyan;
-            Entries ??= new List<ZooEntry>();
+            Entries ??= new List<GameObject>();
         }
     }
 }

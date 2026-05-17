@@ -67,6 +67,7 @@ namespace Base.ToolPackage.Editor.AssetZoo.Editor
         {
             yield return nameof(LayoutSettings.Type);
             yield return nameof(LayoutSettings.Alignment);
+            yield return nameof(LayoutSettings.CategoryDirection);
             yield return nameof(LayoutSettings.Spacing);
             yield return nameof(LayoutSettings.CategorySpacing);
 

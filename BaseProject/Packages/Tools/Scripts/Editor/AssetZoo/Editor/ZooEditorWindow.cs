@@ -22,6 +22,8 @@ namespace Base.ToolPackage.Editor.AssetZoo.Editor
         private Vector2 _scroll;
         private UnityEditor.Editor _cachedConfigEditor;
 
+        private void OnDisable() => ClearCachedEditor();
+
         /// <summary>
         /// Opens the zoo builder window without a config.
         /// </summary>
@@ -52,6 +54,7 @@ namespace Base.ToolPackage.Editor.AssetZoo.Editor
             EditorGUILayout.Space(6);
 
             bool hasZoo = _builder.HasZoo;
+            bool hasParent = _parent != null;
 
             using (new EditorGUI.DisabledScope(_config == null))
             using (new EditorGUILayout.HorizontalScope())
@@ -62,7 +65,7 @@ namespace Base.ToolPackage.Editor.AssetZoo.Editor
                 using (new EditorGUI.DisabledScope(!hasZoo))
                 {
                     if (GUILayout.Button("Clear Zoo", GUILayout.Height(MainButtonHeight)))
-                        _builder.Clear(_parent);
+                        _builder.Clear();
                 }
             }
 
@@ -70,6 +73,12 @@ namespace Base.ToolPackage.Editor.AssetZoo.Editor
             {
                 if (GUILayout.Button("Select Zoo Root", GUILayout.Height(AuxButtonHeight)))
                     SelectZooRoot();
+            }
+
+            using (new EditorGUI.DisabledScope(!hasParent))
+            {
+                if (GUILayout.Button("Select Zoo Parent", GUILayout.Height(AuxButtonHeight)))
+                    SelectZooParent();
             }
 
             EditorGUILayout.Space(6);
@@ -125,7 +134,14 @@ namespace Base.ToolPackage.Editor.AssetZoo.Editor
             EditorGUIUtility.PingObject(root);
         }
 
-        private void OnDisable() => ClearCachedEditor();
+        private void SelectZooParent()
+        {
+            if (_parent == null)
+                return;
+
+            Selection.activeGameObject = _parent.gameObject;
+            EditorGUIUtility.PingObject(_parent);
+        }
     }
 }
 #endif
