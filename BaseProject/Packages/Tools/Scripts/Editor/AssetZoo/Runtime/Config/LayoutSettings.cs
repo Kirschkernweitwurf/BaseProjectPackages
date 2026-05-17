@@ -15,6 +15,9 @@ namespace Base.ToolPackage.Editor.AssetZoo.Runtime.Config
         [field: Tooltip("Whether items are aligned to the ground or centered on their pivot.")]
         [field: SerializeField] public EAlignmentMode Alignment { get; private set; } = EAlignmentMode.Ground;
 
+        [field: Tooltip("Direction in which categories are placed.")]
+        [field: SerializeField] public ECategoryDirection CategoryDirection { get; private set; } = ECategoryDirection.Left;
+
         [field: Tooltip("Gap between items inside a category.")]
         [field: Min(0f)]
         [field: SerializeField] public float Spacing { get; private set; } = 2f;
