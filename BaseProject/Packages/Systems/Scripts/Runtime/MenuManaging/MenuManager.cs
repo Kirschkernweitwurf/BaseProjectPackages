@@ -39,7 +39,7 @@ namespace Base.SystemsCorePackage.MenuManaging
             _menuPriorityTracker.OnCurrentActiveItemChanged += OnCurrentActiveItemChanged;
 
             if (ServiceLocator.TryGet(out InputManager inputManager))
-                inputManager.InputActions.Permanent.Back.performed += OnBackActionPerformed;
+                inputManager.BaseInputActions.Permanent.Back.performed += OnBackActionPerformed;
         }
 
         protected override void OnDestroy()
@@ -59,7 +59,7 @@ namespace Base.SystemsCorePackage.MenuManaging
             _menuPriorityTracker.OnCurrentActiveItemChanged -= OnCurrentActiveItemChanged;
 
             if (ServiceLocator.TryGet(out InputManager inputManager))
-                inputManager.InputActions.Permanent.Back.performed -= OnBackActionPerformed;
+                inputManager.BaseInputActions.Permanent.Back.performed -= OnBackActionPerformed;
         }
 
         /// <summary>

@@ -1,25 +1,23 @@
-using Base.AttributePackage.Scripts.Runtime;
+using Base.AttributePackage;
 using Base.SystemsCorePackage.Services;
 using Base.SystemsCorePackage.Tracking;
+using Base.UtilityPackage.Logging;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
-using Base.UtilityPackage.Logging;
 
 namespace Base.SystemsCorePackage.Input
 {
-    /// <summary>
-    /// Takes care of Activation and Deactivation of desired ActionMaps.
-    /// Manages input action maps based on priority using InputMapPriorityTracker.
-    /// </summary>
     [DefaultExecutionOrder(-98)]
     public class InputManager : GameServiceBehaviour
     {
-        public BaseInputActions InputActions { get; private set; }
-
+        // ReSharper disable once UnusedAutoPropertyAccessor.Global
         public bool IsCursorOverGameObject { get; private set; }
 
-        [SerializeField, InputActionMapName] private string permanentActionMapName;
+        /// <summary>
+        /// The base package's input actions. Always available.
+        /// </summary>
+        public BaseInputActions BaseInputActions { get; private set; }
 
         private readonly PriorityTracker<InputActionMap> _tracker = new();
 
@@ -29,10 +27,8 @@ namespace Base.SystemsCorePackage.Input
 
             _tracker.OnCurrentActiveItemChanged += OnActiveInputMapChanged;
 
-            InputActions = new BaseInputActions();
-
-            InputActionMap permanentActionMap = InputActions.asset.FindActionMap(permanentActionMapName);
-            permanentActionMap?.Enable();
+            BaseInputActions = new BaseInputActions();
+            BaseInputActions.Permanent.Enable();
         }
 
         private void Update()
@@ -43,41 +39,48 @@ namespace Base.SystemsCorePackage.Input
         protected override void OnDestroy()
         {
             base.OnDestroy();
-
             _tracker.OnCurrentActiveItemChanged -= OnActiveInputMapChanged;
 
-            InputActions?.Dispose();
+            foreach (TrackedItem<InputActionMap> item in _tracker.TrackedItems)
+                if (item.Item is { enabled: true })
+                    item.Item.Disable();
+
+            BaseInputActions?.Dispose();
         }
 
         /// <summary>
-        /// Adds the input map with the given name to the tracker with the specified priority.
-        /// The caller object is used to identify the registration.
+        /// Register an action map. Will be active while it is the highest-priority entry.
         /// </summary>
-        /// <param name="actionMapName">The name of the action map to register.</param>
-        /// <param name="caller">The object that is registering the input map.</param>
-        /// <param name="priority">The priority of the input map.</param>
-        public void RegisterInputMap(string actionMapName, object caller, uint priority)
+        // ReSharper disable once MemberCanBePrivate.Global
+        public void RegisterInputMap(InputActionMap map, object caller, uint priority)
         {
+            if (map == null)
+            {
+                CustomLogger.LogError("Tried to register a null action map.", this);
+                return;
+            }
+
             if (_tracker.HasCaller(caller))
             {
-                CustomLogger.LogError("Tried activating action map same object twice.", this);
+                CustomLogger.LogError("Tried activating action map from same object twice.", this);
                 return;
             }
 
-            InputActionMap newActionMap = InputActions.asset.FindActionMap(actionMapName);
-            if (newActionMap == null)
-            {
-                CustomLogger.LogError($"Could not find action map with name {actionMapName}.", this);
-                return;
-            }
-
-            _tracker.Add(newActionMap, priority, caller);
+            _tracker.Add(map, priority, caller);
         }
 
         /// <summary>
-        /// Removes the input map associated with the given caller from the tracker.
+        /// Register an action map by reference. Will be active while it is the highest-priority entry.
         /// </summary>
-        /// <param name="caller">The object that registered the input map.</param>
+        public void RegisterInputMap(InputActionMapReference reference, object caller, uint priority)
+            => RegisterInputMap(reference.Resolve(), caller, priority);
+
+        /// <summary>
+        /// Register a prioritized action map. Will be active while it is the highest-priority entry.
+        /// </summary>
+        public void RegisterInputMap(PrioritizedInputMap prioritizedMap, object caller)
+            => RegisterInputMap(prioritizedMap.Map, caller, (uint)prioritizedMap.Priority);
+
         public void DeregisterInputMap(object caller)
         {
             if (!_tracker.HasCaller(caller))
@@ -89,16 +92,17 @@ namespace Base.SystemsCorePackage.Input
             _tracker.Remove(caller);
         }
 
-        private void OnActiveInputMapChanged(TrackedItem<InputActionMap> newActiveActionMap)
+        private void OnActiveInputMapChanged(TrackedItem<InputActionMap> newActive)
         {
-            foreach (TrackedItem<InputActionMap> trackedItem in _tracker.TrackedItems)
+            foreach (TrackedItem<InputActionMap> item in _tracker.TrackedItems)
             {
-                InputActionMap map = trackedItem.Item;
+                InputActionMap map = item.Item;
                 if (map == null)
                     continue;
 
-                if (map == newActiveActionMap.Item)
+                if (map == newActive.Item)
                     map.Enable();
+
                 else if (map.enabled)
                     map.Disable();
             }

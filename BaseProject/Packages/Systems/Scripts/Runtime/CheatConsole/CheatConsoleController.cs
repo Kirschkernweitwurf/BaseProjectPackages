@@ -34,11 +34,11 @@ namespace Base.SystemsCorePackage.CheatConsole
             if (!ServiceLocator.TryGet(out InputManager inputManager))
                 return;
 
-            inputManager.InputActions.Permanent.ToggleCheatConsole.performed += OnToggleConsole;
-            inputManager.InputActions.Cheats.ExecuteCommand.started += OnExecuteCommand;
-            inputManager.InputActions.Cheats.AutoComplete.started += OnAutoComplete;
-            inputManager.InputActions.Cheats.PreviousCommand.started += OnPreviousCommand;
-            inputManager.InputActions.Cheats.NextCommand.started += OnNextCommand;
+            inputManager.BaseInputActions.Permanent.ToggleCheatConsole.performed += OnToggleConsole;
+            inputManager.BaseInputActions.Cheats.ExecuteCommand.started += OnExecuteCommand;
+            inputManager.BaseInputActions.Cheats.AutoComplete.started += OnAutoComplete;
+            inputManager.BaseInputActions.Cheats.PreviousCommand.started += OnPreviousCommand;
+            inputManager.BaseInputActions.Cheats.NextCommand.started += OnNextCommand;
         }
 
         private void OnDisable()
@@ -46,11 +46,11 @@ namespace Base.SystemsCorePackage.CheatConsole
             if (!ServiceLocator.TryGet(out InputManager inputManager))
                 return;
 
-            inputManager.InputActions.Permanent.ToggleCheatConsole.performed -= OnToggleConsole;
-            inputManager.InputActions.Cheats.ExecuteCommand.started -= OnExecuteCommand;
-            inputManager.InputActions.Cheats.AutoComplete.started -= OnAutoComplete;
-            inputManager.InputActions.Cheats.PreviousCommand.started -= OnPreviousCommand;
-            inputManager.InputActions.Cheats.NextCommand.started -= OnNextCommand;
+            inputManager.BaseInputActions.Permanent.ToggleCheatConsole.performed -= OnToggleConsole;
+            inputManager.BaseInputActions.Cheats.ExecuteCommand.started -= OnExecuteCommand;
+            inputManager.BaseInputActions.Cheats.AutoComplete.started -= OnAutoComplete;
+            inputManager.BaseInputActions.Cheats.PreviousCommand.started -= OnPreviousCommand;
+            inputManager.BaseInputActions.Cheats.NextCommand.started -= OnNextCommand;
         }
 
         private void OnDestroy()
