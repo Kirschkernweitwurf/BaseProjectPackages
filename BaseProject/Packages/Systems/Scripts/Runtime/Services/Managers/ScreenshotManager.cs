@@ -25,8 +25,8 @@ namespace Base.SystemsCorePackage.Services.Managers
             if (!ServiceLocator.TryGet(out InputManager inputManager))
                 return;
 
-            inputManager.InputActions.Permanent.CreateSmallScreenshot.started += CreateSmallScreenshot;
-            inputManager.InputActions.Permanent.CreateLargeScreenshot.started += CreateLargeScreenshot;
+            inputManager.BaseInputActions.Permanent.CreateSmallScreenshot.started += CreateSmallScreenshot;
+            inputManager.BaseInputActions.Permanent.CreateLargeScreenshot.started += CreateLargeScreenshot;
         }
 
         private void OnDestroy()
@@ -44,8 +44,8 @@ namespace Base.SystemsCorePackage.Services.Managers
             if (!ServiceLocator.TryGet(out InputManager inputManager))
                 return;
 
-            inputManager.InputActions.Permanent.CreateSmallScreenshot.started -= CreateSmallScreenshot;
-            inputManager.InputActions.Permanent.CreateLargeScreenshot.started -= CreateLargeScreenshot;
+            inputManager.BaseInputActions.Permanent.CreateSmallScreenshot.started -= CreateSmallScreenshot;
+            inputManager.BaseInputActions.Permanent.CreateLargeScreenshot.started -= CreateLargeScreenshot;
         }
 
         private void CreateSmallScreenshot(InputAction.CallbackContext _) => CreateScreenshot(1);

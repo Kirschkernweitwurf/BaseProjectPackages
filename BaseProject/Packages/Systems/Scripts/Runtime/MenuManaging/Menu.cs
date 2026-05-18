@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Base.AttributePackage.Scripts.Runtime;
+using Base.AttributePackage;
 using Base.SystemsCorePackage.Input;
 using Base.SystemsCorePackage.PriorityTrackers;
 using Base.SystemsCorePackage.Services;
@@ -52,7 +52,7 @@ namespace Base.SystemsCorePackage.MenuManaging
         [SerializeField] private bool overrideActionMap;
 
         [Tooltip("The action map to switch to when this menu is opened.")]
-        [InputActionMapName] [SerializeField] private string actionMap;
+        [SerializeField] private InputActionMapReference actionMap;
 
         [Tooltip("Menus that block this menu from opening if they are currently open.")]
         [SerializeField] private MenuIdentifier[] blockingMenus;
@@ -232,7 +232,7 @@ namespace Base.SystemsCorePackage.MenuManaging
             if (applyCustomTimeScaleSettings)
                 ServiceLocator.Get<TimeScaleManager>()?.TimeScaleTracker.Remove(this);
 
-            if (overrideActionMap && !string.IsNullOrWhiteSpace(actionMap))
+            if (overrideActionMap && actionMap.IsValid)
                 ServiceLocator.Get<InputManager>()?.DeregisterInputMap(this);
 
             menuManager?.DeregisterOpenMenu(this);
@@ -246,7 +246,7 @@ namespace Base.SystemsCorePackage.MenuManaging
             if (applyCustomTimeScaleSettings)
                 ServiceLocator.Get<TimeScaleManager>()?.TimeScaleTracker.Add(timeScale, (uint)menuPriority, this);
 
-            if (overrideActionMap && !string.IsNullOrWhiteSpace(actionMap))
+            if (overrideActionMap && actionMap.IsValid)
                 ServiceLocator.Get<InputManager>()?.RegisterInputMap(actionMap, this, (uint)menuPriority);
         }
 

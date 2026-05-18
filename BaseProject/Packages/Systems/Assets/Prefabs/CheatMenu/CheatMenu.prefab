@@ -199,7 +199,9 @@ MonoBehaviour:
   applyCustomTimeScaleSettings: 0
   timeScale: 0
   overrideActionMap: 1
-  actionMap: Cheats
+  actionMap:
+    asset: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
+    mapId: f601a137-d433-4ef7-866f-f1f14b7c7503
   blockingMenus: []
   <InputField>k__BackingField: {fileID: 912134033575704154}
   logText: {fileID: 8627111541809709085}
@@ -524,8 +526,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'Cheat Console '
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 70c7399f233d67d4e93d5e768b5e5f9f, type: 2}
-  m_sharedMaterial: {fileID: -8637453798269850844, guid: 70c7399f233d67d4e93d5e768b5e5f9f, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -790,8 +792,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Enter text...
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 19b92ae8726d49349984016fa442012b, type: 2}
-  m_sharedMaterial: {fileID: 2100000, guid: 635f0ceee1de09a4a8aaa41721452e1a, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
