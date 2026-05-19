@@ -160,7 +160,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26a396cffaee406a81d520b1a7deaff7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Systems.Audio.OnEvent.PlayAudioOnClick
-  clickSound: {fileID: 0}
+  clickSound: {fileID: 11400000, guid: 6666ef05522dbab40b16ad1e52b04d56, type: 2}
 --- !u!114 &2885746612180408201
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -173,7 +173,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd714377a082bf347a6438f5e2030dfd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Systems.Audio.OnEvent.PlayAudioOnHover
-  hoverSound: {fileID: 0}
+  hoverSound: {fileID: 11400000, guid: b933c0b99c9b8c74bbfb1dbef673d440, type: 2}
 --- !u!114 &3968672221723674643
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -186,7 +186,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7845f356175b42108fa5a9b8477b9889, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Systems.Audio.OnEvent.PlayAudioOnSubmit
-  submitSound: {fileID: 0}
+  submitSound: {fileID: 11400000, guid: 6666ef05522dbab40b16ad1e52b04d56, type: 2}
 --- !u!114 &5985721144604183980
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -199,7 +199,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 207fa7a81cad47ac9b2172e7b27eefec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Systems.Audio.OnEvent.PlayAudioOnSelect
-  selectSound: {fileID: 0}
+  selectSound: {fileID: 11400000, guid: b933c0b99c9b8c74bbfb1dbef673d440, type: 2}
 --- !u!114 &7023497982882704029
 MonoBehaviour:
   m_ObjectHideFlags: 0
