@@ -50,20 +50,6 @@ namespace Base.SystemsCorePackage.SceneManagement
         }
 
         /// <summary>
-        /// Ensures the persistent scene is loaded. If it's already loaded, this method does nothing.
-        /// </summary>
-        private async Task LoadPersistentScene()
-        {
-            if (_persistentLoaded)
-                return;
-
-            if (!SceneManager.GetSceneByName(persistentSceneName).isLoaded)
-                await LoadSceneInternalAsync(persistentSceneName, LoadSceneMode.Additive);
-
-            _persistentLoaded = true;
-        }
-
-        /// <summary>
         /// Loads a scene asynchronously and reports progress through events.
         /// </summary>
         /// <param name="sceneName">The name of the scene to load.</param>
@@ -97,6 +83,20 @@ namespace Base.SystemsCorePackage.SceneManagement
             }
 
             SceneLoadEvents.InvokeSceneLoadCompleted(sceneName, success);
+        }
+
+        /// <summary>
+        /// Ensures the persistent scene is loaded. If it's already loaded, this method does nothing.
+        /// </summary>
+        private async Task LoadPersistentScene()
+        {
+            if (_persistentLoaded)
+                return;
+
+            if (!SceneManager.GetSceneByName(persistentSceneName).isLoaded)
+                await LoadSceneInternalAsync(persistentSceneName, LoadSceneMode.Additive);
+
+            _persistentLoaded = true;
         }
 
         /// <summary>
