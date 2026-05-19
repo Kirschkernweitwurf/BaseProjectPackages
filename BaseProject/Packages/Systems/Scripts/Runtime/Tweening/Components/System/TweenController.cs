@@ -32,13 +32,17 @@ namespace Base.SystemsCorePackage.Tweening.Components.System
         /// <summary>
         /// Kills all active tweens currently registered for the specified key.
         /// </summary>
-        protected void KillTweens(T key)
+        /// <param name="key">The key whose tweens should be killed.</param>
+        /// <param name="complete">If <c>true</c>, each tween snaps to its end value and fires
+        /// <c>OnComplete</c> before <c>OnKill</c>. Useful to resolve gameplay logic that depends
+        /// on these tweens finishing.</param>
+        protected void KillTweens(T key, bool complete = false)
         {
             if (!_activeTweens.TryGetValue(key, out List<TweenBase> list))
                 return;
 
             foreach (TweenBase t in list)
-                t?.Stop();
+                t?.Stop(complete);
 
             list.Clear();
         }

@@ -11,6 +11,7 @@ namespace Base.SystemsCorePackage.Tweening.Core
     public abstract class TweenBehaviour<T> : TweenBehaviourBase, IShutdownHandler
     {
         public override event Action OnFinished;
+        public override event Action OnKilled;
 
         [field: Tooltip("The settings for the tween.")]
         [field: SerializeField] public TweenSettings TweenSettings { get; private set; }
@@ -25,12 +26,13 @@ namespace Base.SystemsCorePackage.Tweening.Core
 
         public override TweenBase ActiveTween => _activeTween;
 
+        private TweenBase _activeTween;
+        private int _currentLoop;
+        private bool _currentReversed;
+
         protected virtual void Awake() => DefaultValue = GetCurrentValue();
 
         protected virtual void Start() => ShutdownManager.Register(this);
-
-        private TweenBase _activeTween;
-        private int _currentLoop;
 
         protected virtual void OnDestroy()
         {
@@ -51,19 +53,28 @@ namespace Base.SystemsCorePackage.Tweening.Core
             Stop();
 
             _currentLoop = 0;
+            _currentReversed = isReversed;
 
             TweenBase first = CreateTween(isReversed);
             StartTween(first);
         }
 
-        public override void Stop()
+        public override void Stop(bool complete = false)
         {
             if (_activeTween == null)
                 return;
 
-            _activeTween.OnComplete -= HandleTweenComplete;
-            _activeTween.Stop();
+            TweenBase tween = _activeTween;
             _activeTween = null;
+
+            // Detach our handler so the tween's own Stop doesn't reroute back into loop logic.
+            tween.OnComplete -= HandleTweenComplete;
+            tween.Stop(complete);
+
+            if (complete)
+                OnFinished?.Invoke();
+
+            OnKilled?.Invoke();
         }
 
         /// <summary>
@@ -101,6 +112,7 @@ namespace Base.SystemsCorePackage.Tweening.Core
             if (tween == null)
             {
                 OnFinished?.Invoke();
+                OnKilled?.Invoke();
                 return;
             }
 
@@ -110,18 +122,20 @@ namespace Base.SystemsCorePackage.Tweening.Core
         }
 
         /// <summary>
-        /// Called when the currently active tween instance completes.
-        /// This method handles loop logic and only fires OnFinished when behaviour is truly done.
+        /// Called when the currently active tween instance completes naturally.
+        /// This method handles loop logic and only fires OnFinished when the behaviour is truly done.
         /// </summary>
         private void HandleTweenComplete(TweenBase completedTween)
         {
-            if (completedTween != null)
-                completedTween.OnComplete -= HandleTweenComplete;
+            completedTween.OnComplete -= HandleTweenComplete;
+            _activeTween = null;
 
-            if (loopSettings.LoopType == ELoopType.None
-                || (loopSettings.LoopCount != -1 && _currentLoop >= loopSettings.LoopCount))
+            bool hasLoopBudget = loopSettings.LoopCount == -1 || _currentLoop < loopSettings.LoopCount;
+
+            if (loopSettings.LoopType == ELoopType.None || !hasLoopBudget)
             {
                 OnFinished?.Invoke();
+                OnKilled?.Invoke();
                 return;
             }
 
@@ -131,15 +145,16 @@ namespace Base.SystemsCorePackage.Tweening.Core
             {
                 case ELoopType.Restart:
                     ApplyValue(DefaultValue);
-                    StartTween(CreateTween(false));
+                    StartTween(CreateTween(_currentReversed));
                     break;
 
                 case ELoopType.PingPong:
-                    StartTween(CreateTween(true));
+                    _currentReversed = !_currentReversed;
+                    StartTween(CreateTween(_currentReversed));
                     break;
 
                 case ELoopType.Continue:
-                    StartTween(CreateTween(false));
+                    StartTween(CreateTween(_currentReversed));
                     break;
             }
         }

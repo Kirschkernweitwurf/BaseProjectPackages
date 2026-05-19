@@ -5,7 +5,8 @@ using UnityEngine;
 namespace Base.SystemsCorePackage.Tweening.Components.TransformTweens
 {
     /// <summary>
-    /// Tweens the local scale of a Transform.
+    /// Tweens the local scale of a Transform from the start scale (captured at <c>Awake</c>)
+    /// to a target scale.
     /// </summary>
     public sealed class ScaleTween : TweenBehaviour<Vector3>
     {

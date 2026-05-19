@@ -13,6 +13,9 @@ namespace Base.SystemsCorePackage.Tweening.Core
     /// All methods create, start, and return a tween configured with appropriate interpolation.
     /// Supports both traditional parameter calls and structured data-based overloads.
     /// </summary>
+    /// <remarks>
+    /// Parameter convention: target component first, target value next, settings last.
+    /// </remarks>
     public static class TweenFX
     {
         #region --- ScaleTo ---
@@ -162,11 +165,11 @@ namespace Base.SystemsCorePackage.Tweening.Core
         }
 
         /// <summary>
-        /// Tweens a transform's rotation using structured tween data.
+        /// Tweens a transform's rotation (as Euler angles) using structured tween data.
         /// </summary>
-        public static TweenBase RotateTo(Transform target, Vector3 targetRotation, TweenData data, bool local = false)
+        public static TweenBase RotateTo(Transform target, Vector3 targetEuler, TweenData data, bool local = false)
         {
-            Quaternion targetQuat = Quaternion.Euler(targetRotation);
+            Quaternion targetQuat = Quaternion.Euler(targetEuler);
             return RotateTo(target, targetQuat, data.Duration, data.Easing, local, data.Delay);
         }
 
@@ -238,7 +241,7 @@ namespace Base.SystemsCorePackage.Tweening.Core
         /// <summary>
         /// Tweens a UI <see cref="Graphic"/> color using structured tween data.
         /// </summary>
-        public static TweenBase ColorTo(Color targetColor, Graphic graphic, TweenData data)
+        public static TweenBase ColorTo(Graphic graphic, Color targetColor, TweenData data)
         {
             return ColorTo(graphic, targetColor, data.Duration, data.Easing, data.Delay);
         }
@@ -246,7 +249,7 @@ namespace Base.SystemsCorePackage.Tweening.Core
         /// <summary>
         /// Tweens a <see cref="SpriteRenderer"/> color to the target value.
         /// </summary>
-        public static TweenBase ColorTo(Color targetColor, SpriteRenderer renderer, float duration,
+        public static TweenBase ColorTo(SpriteRenderer renderer, Color targetColor, float duration,
             EEasingType easing = EEasingType.EaseOutQuad, float delay = 0f)
         {
             if (renderer == null)
@@ -270,9 +273,9 @@ namespace Base.SystemsCorePackage.Tweening.Core
         /// <summary>
         /// Tweens a <see cref="SpriteRenderer"/> color using structured tween data.
         /// </summary>
-        public static TweenBase ColorTo(Color targetColor, SpriteRenderer renderer, TweenData data)
+        public static TweenBase ColorTo(SpriteRenderer renderer, Color targetColor, TweenData data)
         {
-            return ColorTo(targetColor, renderer, data.Duration, data.Easing, data.Delay);
+            return ColorTo(renderer, targetColor, data.Duration, data.Easing, data.Delay);
         }
 
         /// <summary>
@@ -347,20 +350,21 @@ namespace Base.SystemsCorePackage.Tweening.Core
                 fromGetter: () => 0f
             );
 
-            tween.OnComplete += SetPosition;
+            // Restore the original position whenever the shake ends (either naturally or via Stop).
+            tween.OnKill += RestorePosition;
 
             tween.Start();
 
             return tween;
 
-            void SetPosition(TweenBase completedTween)
+            void RestorePosition(TweenBase killedTween)
             {
                 if (isUI)
                     rectTransform!.anchoredPosition = new Vector2(original.x, original.y);
                 else
                     target.localPosition = original;
 
-                completedTween.OnComplete -= SetPosition;
+                killedTween.OnKill -= RestorePosition;
             }
         }
 

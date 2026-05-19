@@ -5,11 +5,12 @@ using UnityEngine;
 namespace Base.SystemsCorePackage.Tweening.Components.TransformTweens
 {
     /// <summary>
-    /// Tweens the position of a Transform or RectTransform.
+    /// Tweens the position of a Transform or RectTransform between two fixed values
+    /// (initialPosition → targetPosition).
     /// </summary>
     public sealed class PositionTween : TweenBehaviour<Vector3>
     {
-        [SerializeField, Tooltip("If true, tween the local position; otherwise, tween the global position.")]
+        [SerializeField, Tooltip("The starting position used as the tween's 'from' value.")]
         private Vector3 initialPosition;
 
         [SerializeField, Tooltip("The target position to tween to.")]
