@@ -34,12 +34,11 @@ namespace Base.SystemsCorePackage.Tweening.Core
         [Tooltip("If true, the first Update after app regains focus/unpauses will not advance tweens.")]
         [SerializeField] private bool skipFirstFrameAfterFocusOrPause = true;
 
-        private bool _skipNextUpdate;
-
         private readonly List<ITween> _tweens = new();
         private readonly List<ITween> _pendingRemovals = new();
         private readonly List<ITween> _pendingAdditions = new();
 
+        private bool _skipNextUpdate;
         private bool _isUpdating;
 
         private void Update()
@@ -94,7 +93,7 @@ namespace Base.SystemsCorePackage.Tweening.Core
 
             _isUpdating = false;
 
-            // Apply removals
+            // Apply removals.
             if (_pendingRemovals.Count > 0)
             {
                 for (int i = 0; i < _pendingRemovals.Count; i++)
@@ -106,8 +105,8 @@ namespace Base.SystemsCorePackage.Tweening.Core
                 _pendingRemovals.Clear();
             }
 
-            // Apply additions
-            if (_pendingAdditions.Count <= 0)
+            // Apply additions.
+            if (_pendingAdditions.Count == 0)
                 return;
 
             for (int i = 0; i < _pendingAdditions.Count; i++)

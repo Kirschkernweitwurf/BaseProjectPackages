@@ -42,7 +42,9 @@ namespace Base.SystemsCorePackage.Tweening.Core
         {
             if (_tweens.Count == 0)
             {
-                Complete();
+                _isCompleted = true;
+                InvokeComplete();
+                InvokeKill();
                 return;
             }
 
@@ -56,7 +58,7 @@ namespace Base.SystemsCorePackage.Tweening.Core
                 {
                     foreach (TweenBase tween in _tweens)
                     {
-                        tween.OnComplete += OnTweenComplete;
+                        tween.OnComplete += HandleChildComplete;
                         tween.Start();
                     }
 
@@ -71,22 +73,36 @@ namespace Base.SystemsCorePackage.Tweening.Core
                 default:
                 {
                     CustomLogger.LogWarning("Unhandled sequence mode. Completing sequence immediately.", null);
-                    Complete();
+                    _isCompleted = true;
+                    InvokeComplete();
+                    InvokeKill();
                     break;
                 }
             }
         }
 
-        public override void Stop()
+        public override void Stop(bool complete = false)
         {
+            if (_isCompleted)
+                return;
+
+            // Detach handlers first so child stops don't ping back through HandleChildComplete.
             foreach (TweenBase tween in _tweens)
-                tween.Stop();
+                tween.OnComplete -= HandleChildComplete;
+
+            foreach (TweenBase tween in _tweens)
+                tween.Stop(complete);
 
             _isRunning = false;
             _isCompleted = true;
+
+            if (complete)
+                InvokeComplete();
+
+            InvokeKill();
         }
 
-        public override void Tick(float deltaTime) { } // Individual tweens are ticked by TweenRunner
+        public override void Tick(float deltaTime) { } // Individual tweens are ticked by TweenRunner.
 
         private void PlayNext()
         {
@@ -94,17 +110,20 @@ namespace Base.SystemsCorePackage.Tweening.Core
             {
                 _isRunning = false;
                 _isCompleted = true;
-                Complete();
+                InvokeComplete();
+                InvokeKill();
                 return;
             }
 
             TweenBase tween = _tweens[_currentIndex];
-            tween.OnComplete += OnTweenComplete;
+            tween.OnComplete += HandleChildComplete;
             tween.Start();
         }
 
-        private void OnTweenComplete(TweenBase completedTween)
+        private void HandleChildComplete(TweenBase completedTween)
         {
+            completedTween.OnComplete -= HandleChildComplete;
+
             switch (_mode)
             {
                 case ESequenceMode.Parallel:
@@ -115,7 +134,8 @@ namespace Base.SystemsCorePackage.Tweening.Core
 
                     _isRunning = false;
                     _isCompleted = true;
-                    Complete();
+                    InvokeComplete();
+                    InvokeKill();
                     break;
                 }
                 case ESequenceMode.Sequential:
@@ -129,12 +149,11 @@ namespace Base.SystemsCorePackage.Tweening.Core
                     CustomLogger.LogWarning("Unhandled sequence mode. Completing sequence immediately.", null);
                     _isRunning = false;
                     _isCompleted = true;
-                    Complete();
+                    InvokeComplete();
+                    InvokeKill();
                     break;
                 }
             }
-
-            completedTween.OnComplete -= OnTweenComplete;
         }
     }
 }

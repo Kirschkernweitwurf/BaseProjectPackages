@@ -5,7 +5,8 @@ using UnityEngine;
 namespace Base.SystemsCorePackage.Tweening.Components.UITweens
 {
     /// <summary>
-    /// Tweens the alpha of a CanvasGroup.
+    /// Tweens the alpha of a CanvasGroup from the CanvasGroup's start alpha (captured at
+    /// <c>Awake</c>) to a target alpha.
     /// </summary>
     [RequireComponent(typeof(CanvasGroup))]
     public sealed class FadeTweenInit : TweenBehaviour<float>

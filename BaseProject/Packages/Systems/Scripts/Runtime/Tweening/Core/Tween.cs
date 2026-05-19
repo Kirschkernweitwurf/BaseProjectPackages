@@ -112,13 +112,24 @@ namespace Base.SystemsCorePackage.Tweening.Core
                 runner.RegisterTween(this);
         }
 
-        public override void Stop()
+        public override void Stop(bool complete = false)
         {
+            if (_isCompleted)
+                return;
+
             _isRunning = false;
             _isCompleted = true;
 
             if (ServiceLocator.TryGet(out TweenRunner runner))
                 runner.UnregisterTween(this);
+
+            if (complete && _setter != null)
+            {
+                _setter(_to);
+                InvokeComplete();
+            }
+
+            InvokeKill();
         }
 
         public override void Tick(float deltaTime)
@@ -159,7 +170,10 @@ namespace Base.SystemsCorePackage.Tweening.Core
             _isCompleted = true;
             _isRunning = false;
             _setter(_to);
-            Complete();
+
+            // The TweenRunner detects IsCompleted after this Tick returns and removes the tween.
+            InvokeComplete();
+            InvokeKill();
         }
     }
 }

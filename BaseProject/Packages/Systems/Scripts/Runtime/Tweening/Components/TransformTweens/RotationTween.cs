@@ -5,14 +5,15 @@ using UnityEngine;
 namespace Base.SystemsCorePackage.Tweening.Components.TransformTweens
 {
     /// <summary>
-    /// Tweens the rotation of a Transform.
+    /// Tweens the rotation of a Transform by a delta in Euler degrees, relative to the
+    /// rotation at the moment the tween is created.
     /// </summary>
     public sealed class RotationTween : TweenBehaviour<Vector3>
     {
         [SerializeField, Tooltip("Rotation delta in Euler degrees.")]
         private Vector3 deltaEulerAngles;
 
-        [SerializeField, Tooltip("If true, tween the local rotation.")]
+        [SerializeField, Tooltip("If true, tween the local rotation; otherwise, tween the global rotation.")]
         private bool useLocalRotation = true;
 
         protected override Vector3 GetCurrentValue()

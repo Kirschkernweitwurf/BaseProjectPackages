@@ -9,27 +9,27 @@ namespace Base.SystemsCorePackage.Tweening.Components.System
     [RequireComponent(typeof(RectTransform))]
     public sealed class UIEventTrigger : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
     {
-        [Tooltip("The type of UI event to listen for.")]
-        [SerializeField] private UIEventType eventType;
+        [SerializeField, Tooltip("The type of UI event to listen for.")]
+        private EUIEventType eventType;
 
-        [Tooltip("The group of tweens to play when the event is triggered.")]
-        [SerializeField] private TweenGroup tweenGroup;
+        [SerializeField, Tooltip("The group of tweens to play when the event is triggered.")]
+        private TweenGroup tweenGroup;
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-            if (eventType == UIEventType.OnHover && tweenGroup != null)
+            if (eventType == EUIEventType.OnHover && tweenGroup != null)
                 tweenGroup.Play();
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
-            if (eventType == UIEventType.OnHover && tweenGroup != null)
+            if (eventType == EUIEventType.OnHover && tweenGroup != null)
                 tweenGroup.Reverse();
         }
 
         public void OnPointerClick(PointerEventData eventData)
         {
-            if (eventType == UIEventType.OnClick && tweenGroup != null)
+            if (eventType == EUIEventType.OnClick && tweenGroup != null)
                 tweenGroup.Play();
         }
     }

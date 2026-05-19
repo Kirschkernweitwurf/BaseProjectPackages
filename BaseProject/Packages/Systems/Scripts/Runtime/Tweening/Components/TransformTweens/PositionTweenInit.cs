@@ -5,7 +5,8 @@ using UnityEngine;
 namespace Base.SystemsCorePackage.Tweening.Components.TransformTweens
 {
     /// <summary>
-    /// Tweens the position of a Transform or RectTransform.
+    /// Tweens the position of a Transform or RectTransform from the GameObject's start position
+    /// (captured at <c>Awake</c>) to a target position.
     /// </summary>
     public sealed class PositionTweenInit : TweenBehaviour<Vector3>
     {

@@ -29,9 +29,16 @@ namespace Base.SystemsCorePackage.Tweening.Components.System
         private TweenSequence _sequence;
 
         /// <summary>
-        /// Fired when the full sequence has finished (all tweens complete).
+        /// Fired when the full sequence has finished (all tweens complete, or stopped with
+        /// <paramref name="complete"/> set to <c>true</c>).
         /// </summary>
         public event Action OnFinished;
+
+        /// <summary>
+        /// Fired whenever the group stops, regardless of whether it completed or was killed.
+        /// Always fires after <see cref="OnFinished"/> when both apply.
+        /// </summary>
+        public event Action OnKilled;
 
         private void Start()
         {
@@ -53,6 +60,7 @@ namespace Base.SystemsCorePackage.Tweening.Components.System
             Stop();
             HasShutDown = true;
             OnFinished = null;
+            OnKilled = null;
         }
 
         /// <summary>
@@ -73,13 +81,30 @@ namespace Base.SystemsCorePackage.Tweening.Components.System
         /// <summary>
         /// Stops all tweens in this group.
         /// </summary>
-        public void Stop()
+        /// <param name="complete">If <c>true</c>, each tween snaps to its end value and the group
+        /// fires <see cref="OnFinished"/> before <see cref="OnKilled"/>. Useful to resolve gameplay
+        /// logic that depends on the group finishing.</param>
+        public void Stop(bool complete = false)
         {
+            bool wasRunning = _sequence is { IsRunning: true } || HasAnyActiveTween();
+
             if (_sequence is { IsRunning: true })
-                _sequence.Stop();
+            {
+                _sequence.OnComplete -= HandleSequenceComplete;
+                _sequence.Stop(complete);
+                _sequence = null;
+            }
 
             foreach (TweenBehaviourBase behaviour in tweenBehaviours)
-                behaviour?.Stop();
+                behaviour?.Stop(complete);
+
+            if (!wasRunning)
+                return;
+
+            if (complete)
+                OnFinished?.Invoke();
+
+            OnKilled?.Invoke();
         }
 
         /// <summary>
@@ -90,7 +115,8 @@ namespace Base.SystemsCorePackage.Tweening.Components.System
         {
             if (tweenBehaviours == null || tweenBehaviours.Count == 0)
             {
-                HandleSequenceComplete(_sequence);
+                OnFinished?.Invoke();
+                OnKilled?.Invoke();
                 return;
             }
 
@@ -123,10 +149,20 @@ namespace Base.SystemsCorePackage.Tweening.Components.System
 
         private void HandleSequenceComplete(TweenBase completedTween)
         {
-            if (completedTween != null)
-                completedTween.OnComplete -= HandleSequenceComplete;
+            completedTween.OnComplete -= HandleSequenceComplete;
+            _sequence = null;
 
             OnFinished?.Invoke();
+            OnKilled?.Invoke();
+        }
+
+        private bool HasAnyActiveTween()
+        {
+            foreach (TweenBehaviourBase behaviour in tweenBehaviours)
+                if (behaviour != null && behaviour.ActiveTween is { IsRunning: true })
+                    return true;
+
+            return false;
         }
     }
 }
