@@ -1,6 +1,6 @@
 # BaseProjectPackages
 
-My personal collection of base Unity packages — the stack I use myself for every project. Built up over years of past projects (especially [Laskards](https://github.com/JonathanAlber/Laskards), source also on my GitHub) and continuously updated.
+My personal collection of base Unity packages, the stack I use myself for every project. Built up over years of past projects (especially [Laskards](https://github.com/JonathanAlber/Laskards), source also on my GitHub) and continuously updated.
 
 ## What's inside
 
