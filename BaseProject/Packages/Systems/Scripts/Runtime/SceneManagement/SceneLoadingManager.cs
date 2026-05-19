@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Base.AttributePackage.Scripts.Runtime;
 using Base.SystemsCorePackage.Services;
 using UnityEngine;
@@ -12,6 +11,7 @@ namespace Base.SystemsCorePackage.SceneManagement
     /// <summary>
     /// Manages scene loading and unloading operations, including a persistent scene that remains loaded.
     /// Provides asynchronous methods to load scenes with progress reporting via events.
+    /// Uses Unity's Awaitable for play-mode-safe, allocation-free async operations.
     /// </summary>
     public class SceneLoadingManager : GameServiceBehaviour
     {
@@ -21,7 +21,7 @@ namespace Base.SystemsCorePackage.SceneManagement
         /// </summary>
         private const float ProgressReportMax = 0.9f;
 
-        [SceneName] [SerializeField] private string persistentSceneName;
+        [SceneName, SerializeField] private string persistentSceneName;
 
         private bool _persistentLoaded;
 
@@ -29,7 +29,11 @@ namespace Base.SystemsCorePackage.SceneManagement
         {
             try
             {
-                await LoadPersistentScene();
+                await LoadPersistentSceneAsync();
+            }
+            catch (OperationCanceledException)
+            {
+                // Expected when exiting play mode. Ignore.
             }
             catch (Exception e)
             {
@@ -42,8 +46,8 @@ namespace Base.SystemsCorePackage.SceneManagement
         /// This method is asynchronous and will yield until the new scene is fully loaded.
         /// </summary>
         /// <param name="sceneName">The name of the scene to load.</param>
-        /// <param name="mode">The load scene mode (Single or Additive). Default is Single.</param>
-        public async Task LoadSceneAsync(string sceneName, LoadSceneMode mode = LoadSceneMode.Additive)
+        /// <param name="mode">The load scene mode (Single or Additive). Default is Additive.</param>
+        public async Awaitable LoadSceneAsync(string sceneName, LoadSceneMode mode = LoadSceneMode.Additive)
         {
             await UnloadAllScenesAsync();
             await LoadSceneInternalAsync(sceneName, mode);
@@ -54,7 +58,7 @@ namespace Base.SystemsCorePackage.SceneManagement
         /// </summary>
         /// <param name="sceneName">The name of the scene to load.</param>
         /// <param name="mode">The load scene mode (Single or Additive).</param>
-        private static async Task LoadSceneInternalAsync(string sceneName, LoadSceneMode mode)
+        private static async Awaitable LoadSceneInternalAsync(string sceneName, LoadSceneMode mode)
         {
             bool success = false;
 
@@ -68,7 +72,7 @@ namespace Base.SystemsCorePackage.SceneManagement
                 while (operation.progress < ProgressReportMax)
                 {
                     SceneLoadEvents.InvokeSceneLoadProgress(sceneName, operation.progress);
-                    await Task.Yield();
+                    await Awaitable.NextFrameAsync();
                 }
 
                 operation.allowSceneActivation = true;
@@ -76,7 +80,7 @@ namespace Base.SystemsCorePackage.SceneManagement
                 while (!operation.isDone)
                 {
                     SceneLoadEvents.InvokeSceneLoadProgress(sceneName, operation.progress);
-                    await Task.Yield();
+                    await Awaitable.NextFrameAsync();
                 }
 
                 success = true;
@@ -88,7 +92,7 @@ namespace Base.SystemsCorePackage.SceneManagement
         /// <summary>
         /// Ensures the persistent scene is loaded. If it's already loaded, this method does nothing.
         /// </summary>
-        private async Task LoadPersistentScene()
+        private async Awaitable LoadPersistentSceneAsync()
         {
             if (_persistentLoaded)
                 return;
@@ -103,7 +107,7 @@ namespace Base.SystemsCorePackage.SceneManagement
         /// Unloads all currently loaded scenes except for the persistent scene.
         /// This method is asynchronous and will yield until all scenes are unloaded.
         /// </summary>
-        private async Task UnloadAllScenesAsync()
+        private async Awaitable UnloadAllScenesAsync()
         {
             // Collect scene names
             List<string> scenesToUnload = new();
@@ -126,7 +130,7 @@ namespace Base.SystemsCorePackage.SceneManagement
                 }
 
                 while (!unloadOp.isDone)
-                    await Task.Yield();
+                    await Awaitable.NextFrameAsync();
             }
         }
     }
