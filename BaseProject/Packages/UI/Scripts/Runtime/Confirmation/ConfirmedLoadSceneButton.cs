@@ -1,6 +1,6 @@
 using System;
 using System.Threading.Tasks;
-using Base.AttributePackage.Scripts.Runtime;
+using Base.AttributePackage;
 using Base.SystemsCorePackage.SceneManagement;
 using Base.SystemsCorePackage.Services;
 using UnityEngine;

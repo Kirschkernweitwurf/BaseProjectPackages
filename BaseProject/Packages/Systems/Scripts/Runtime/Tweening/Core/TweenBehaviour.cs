@@ -11,6 +11,7 @@ namespace Base.SystemsCorePackage.Tweening.Core
     public abstract class TweenBehaviour<T> : TweenBehaviourBase, IShutdownHandler
     {
         public override event Action OnFinished;
+
         public override event Action OnKilled;
 
         [field: Tooltip("The settings for the tween.")]

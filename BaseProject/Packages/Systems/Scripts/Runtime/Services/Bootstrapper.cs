@@ -1,5 +1,5 @@
 using System.Linq;
-using Base.AttributePackage.Scripts.Runtime;
+using Base.AttributePackage;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -19,6 +19,11 @@ namespace Base.SystemsCorePackage.Services
 
         [Header("Scene Filtering")]
         [SceneName, SerializeField] private string[] gameplayScenes;
+
+#if UNITY_EDITOR
+        [UnityEditor.InitializeOnEnterPlayMode]
+        private static void ResetStatics() => _persistentLoaded = false;
+#endif
 
         private void Awake()
         {

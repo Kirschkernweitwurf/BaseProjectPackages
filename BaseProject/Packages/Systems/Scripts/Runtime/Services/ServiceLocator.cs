@@ -13,6 +13,11 @@ namespace Base.SystemsCorePackage.Services
     {
         private static readonly Dictionary<Type, IGameService> Services = new();
 
+#if UNITY_EDITOR
+        [UnityEditor.InitializeOnEnterPlayMode]
+        private static void ResetStatics() => Services.Clear();
+#endif
+
         /// <summary>
         /// Adds or updates a service in the locator.
         /// </summary>

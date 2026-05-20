@@ -5,6 +5,11 @@ using UnityEngine.InputSystem;
 
 namespace Base.AttributePackage.Editor
 {
+    /// <summary>
+    /// Property drawer for <see cref="InputActionMapReference"/>.
+    /// Displays a field for the asset and a dropdown of all action maps in that asset.
+    /// Stores the map's GUID, so it survives renames.
+    /// </summary>
     [CustomPropertyDrawer(typeof(InputActionMapReference))]
     public class InputActionMapReferenceDrawer : PropertyDrawer
     {
@@ -17,8 +22,8 @@ namespace Base.AttributePackage.Editor
             SerializedProperty mapIdProp = property.FindPropertyRelative("mapId");
 
             float half = position.width * 0.5f - 2f;
-            Rect assetRect = new(position.x,           position.y, half, position.height);
-            Rect mapRect   = new(position.x + half + 4, position.y, half, position.height);
+            Rect assetRect = new(position.x, position.y, half, position.height);
+            Rect mapRect = new(position.x + half + 4, position.y, half, position.height);
 
             EditorGUI.PropertyField(assetRect, assetProp, GUIContent.none);
 
@@ -27,6 +32,7 @@ namespace Base.AttributePackage.Editor
             {
                 using (new EditorGUI.DisabledScope(true))
                     EditorGUI.Popup(mapRect, 0, new[] { "<assign asset>" });
+
                 EditorGUI.EndProperty();
                 return;
             }

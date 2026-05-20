@@ -29,6 +29,7 @@ namespace Base.UIPackage.Buttons
         protected override void OnDestroy()
         {
             base.OnDestroy();
+
             PauseMenu.OnPauseStateChanged -= SetButtonIcon;
         }
 

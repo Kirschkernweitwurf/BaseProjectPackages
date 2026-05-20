@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Base.UtilityPackage.Logging;
 
-namespace Base.ScreenShakePackage.Scripts.Runtime
+namespace Base.ScreenShakePackage
 {
     /// <summary>
     /// Manages screen shake events and notifies registered listeners.
@@ -10,6 +10,11 @@ namespace Base.ScreenShakePackage.Scripts.Runtime
     public static class ScreenShakeManager
     {
         private static readonly List<Action<ScreenShakeProfile>> Listeners = new();
+
+#if UNITY_EDITOR
+        [UnityEditor.InitializeOnEnterPlayMode]
+        private static void ResetStatics() => Listeners.Clear();
+#endif
 
         /// <summary>
         /// Registers a listener to be notified of screen shake events.

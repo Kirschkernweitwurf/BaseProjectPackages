@@ -29,8 +29,8 @@ namespace Base.SystemsCorePackage.Tweening.Components.System
         private TweenSequence _sequence;
 
         /// <summary>
-        /// Fired when the full sequence has finished (all tweens complete, or stopped with
-        /// <paramref name="complete"/> set to <c>true</c>).
+        /// Fired when the full sequence has finished (all tweens complete or stopped with
+        /// <c>complete</c> set to <c>true</c>).
         /// </summary>
         public event Action OnFinished;
 
@@ -84,6 +84,7 @@ namespace Base.SystemsCorePackage.Tweening.Components.System
         /// <param name="complete">If <c>true</c>, each tween snaps to its end value and the group
         /// fires <see cref="OnFinished"/> before <see cref="OnKilled"/>. Useful to resolve gameplay
         /// logic that depends on the group finishing.</param>
+        // ReSharper disable once MemberCanBePrivate.Global
         public void Stop(bool complete = false)
         {
             bool wasRunning = _sequence is { IsRunning: true } || HasAnyActiveTween();

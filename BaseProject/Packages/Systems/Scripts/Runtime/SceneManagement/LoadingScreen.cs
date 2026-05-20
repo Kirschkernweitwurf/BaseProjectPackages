@@ -1,5 +1,5 @@
 using System.Collections;
-using Base.AttributePackage.Scripts.Runtime;
+using Base.AttributePackage;
 using Base.SystemsCorePackage.MenuManaging;
 using UnityEngine;
 using UnityEngine.UI;

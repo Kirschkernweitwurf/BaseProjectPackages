@@ -11,6 +11,11 @@ namespace Base.SystemsCorePackage.MenuManaging.Identifier
     {
         private static MenuIdentifierRegistry _registry;
 
+#if UNITY_EDITOR
+        [UnityEditor.InitializeOnEnterPlayMode]
+        private static void ResetStatics() => _registry = null;
+#endif
+
         public static MenuIdentifier Load(string identifierName)
         {
             if (_registry == null)

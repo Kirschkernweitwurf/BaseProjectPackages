@@ -30,7 +30,7 @@ namespace Base.SystemsCorePackage.CheatConsole
                 return;
             }
 
-            this._commands = new Dictionary<string, CheatCommandInfo>(StringComparer.OrdinalIgnoreCase);
+            _commands = new Dictionary<string, CheatCommandInfo>(StringComparer.OrdinalIgnoreCase);
             _history = new List<string>();
             _historyIndex = -1;
 

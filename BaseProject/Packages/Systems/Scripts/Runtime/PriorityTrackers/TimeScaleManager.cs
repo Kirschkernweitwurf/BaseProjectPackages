@@ -1,5 +1,6 @@
 using Base.SystemsCorePackage.Services;
 using Base.SystemsCorePackage.Tracking;
+using Base.UtilityPackage.Logging;
 using UnityEngine;
 
 namespace Base.SystemsCorePackage.PriorityTrackers
@@ -24,7 +25,22 @@ namespace Base.SystemsCorePackage.PriorityTrackers
             TimeScaleTracker.OnCurrentActiveItemChanged += OnCurrentActiveItemChanged;
         }
 
-        private void OnCurrentActiveItemChanged(TrackedItem<float> trackedItem)
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+
+            if (TimeScaleTracker == null)
+            {
+                CustomLogger.LogWarning($"{nameof(TimeScaleTracker)} is null during OnDestroy. This likely means" +
+                                        " it was not initialized properly or has already been destroyed." +
+                                        " Skipping event unsubscription to avoid potential errors.", this);
+                return;
+            }
+
+            TimeScaleTracker.OnCurrentActiveItemChanged -= OnCurrentActiveItemChanged;
+        }
+
+        private static void OnCurrentActiveItemChanged(TrackedItem<float> trackedItem)
         {
             if (trackedItem == null)
             {

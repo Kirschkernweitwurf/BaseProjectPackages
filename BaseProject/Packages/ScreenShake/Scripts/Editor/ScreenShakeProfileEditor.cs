@@ -1,9 +1,8 @@
 #if UNITY_EDITOR
-using Base.ScreenShakePackage.Scripts.Runtime;
 using Unity.Cinemachine;
 using UnityEditor;
 
-namespace Base.ScreenShakePackage.Scripts.Editor
+namespace Base.ScreenShakePackage.Editor
 {
     /// <summary>
     /// Custom editor for <see cref="ScreenShakeProfile"/> that hides or shows certain fields based on the settings.

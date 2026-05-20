@@ -13,6 +13,11 @@ namespace Base.SystemsCorePackage.CheatConsole
     {
         private static List<CheatCommandInfo> _cachedStaticCommands;
 
+#if UNITY_EDITOR
+        [UnityEditor.InitializeOnEnterPlayMode]
+        private static void ResetStatics() => _cachedStaticCommands = null;
+#endif
+
         /// <summary>
         /// Discovers all cheat commands available in the current context.
         /// This includes static methods marked with <see cref="CheatCommandAttribute"/> in the executing assembly,

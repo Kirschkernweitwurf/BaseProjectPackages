@@ -10,26 +10,29 @@ namespace Base.SystemsCorePackage.Audio.Pool
     /// </summary>
     public class AudioPoolManager : MonoBehaviour
     {
-        [Space] [SerializeField] private Transform poolParent;
+        [Space]
+
+        [SerializeField] private Transform poolParent;
 
         [Space]
+
         [Tooltip("If true, clears all pools when a new scene is loaded.")]
         [SerializeField]
         private bool isClearingPoolAfterSceneLoad;
 
         [Header("Prefabs")]
-        [SerializeField] private AudioSource audioSource2DPrefab;
 
+        [SerializeField] private AudioSource audioSource2DPrefab;
         [SerializeField] private AudioSource audioSource3DPrefab;
         [SerializeField] private AudioSource audioSourceMusicPrefab;
         [SerializeField] private AudioSource audioSourceUiPrefab;
 
         [Header("Pool Settings")]
-        [SerializeField] private int avgPoolSize2d;
 
-        [SerializeField] private int maxPoolSize2d;
-        [SerializeField] private int avgPoolSize3d;
-        [SerializeField] private int maxPoolSize3d;
+        [SerializeField] private int avgPoolSize2D;
+        [SerializeField] private int maxPoolSize2D;
+        [SerializeField] private int avgPoolSize3D;
+        [SerializeField] private int maxPoolSize3D;
         [SerializeField] private int avgPoolSizeM;
         [SerializeField] private int maxPoolSizeM;
         [SerializeField] private int avgPoolSizeUi;
@@ -43,10 +46,7 @@ namespace Base.SystemsCorePackage.Audio.Pool
             InitializePools();
         }
 
-        private void OnDestroy()
-        {
-            SceneManager.activeSceneChanged -= OnSceneChanged;
-        }
+        private void OnDestroy() => SceneManager.activeSceneChanged -= OnSceneChanged;
 
         /// <summary>
         /// Gets an audio source from the pool for the specified type.
@@ -66,9 +66,7 @@ namespace Base.SystemsCorePackage.Audio.Pool
         public void ReleaseAudioSource(EAudioType type, AudioSource source)
         {
             if (_audioPools.TryGetValue(type, out AudioPool pool))
-            {
                 pool.ReleaseSource(source);
-            }
         }
 
         /// <summary>
@@ -89,9 +87,7 @@ namespace Base.SystemsCorePackage.Audio.Pool
         private void OnSceneChanged(Scene _, Scene __)
         {
             if (isClearingPoolAfterSceneLoad)
-            {
                 ClearPools();
-            }
         }
 
         /// <summary>
@@ -100,9 +96,7 @@ namespace Base.SystemsCorePackage.Audio.Pool
         private void ClearPools()
         {
             foreach (AudioPool pool in _audioPools.Values)
-            {
                 pool.ClearPool();
-            }
         }
 
         /// <summary>
@@ -111,10 +105,10 @@ namespace Base.SystemsCorePackage.Audio.Pool
         private void InitializePools()
         {
             _audioPools[EAudioType.Sfx2D] =
-                new AudioPool(audioSource2DPrefab, poolParent, avgPoolSize2d, maxPoolSize2d);
+                new AudioPool(audioSource2DPrefab, poolParent, avgPoolSize2D, maxPoolSize2D);
             _audioPools[EAudioType.UI] = new AudioPool(audioSourceUiPrefab, poolParent, avgPoolSizeUi, maxPoolSizeUi);
             _audioPools[EAudioType.Sfx3D] =
-                new AudioPool(audioSource3DPrefab, poolParent, avgPoolSize3d, maxPoolSize3d);
+                new AudioPool(audioSource3DPrefab, poolParent, avgPoolSize3D, maxPoolSize3D);
             _audioPools[EAudioType.Music] =
                 new AudioPool(audioSourceMusicPrefab, poolParent, avgPoolSizeM, maxPoolSizeM);
         }

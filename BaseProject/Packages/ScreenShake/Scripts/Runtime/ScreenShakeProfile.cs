@@ -1,7 +1,7 @@
 using Unity.Cinemachine;
 using UnityEngine;
 
-namespace Base.ScreenShakePackage.Scripts.Runtime
+namespace Base.ScreenShakePackage
 {
     /// <summary>
     /// ScriptableObject that defines a screen shake profile.
@@ -40,5 +40,4 @@ namespace Base.ScreenShakePackage.Scripts.Runtime
         [field: Tooltip("How long the shake lasts for the listener in seconds.")]
         [field: SerializeField] public float ListenerDuration { get; private set; } = 1f;
     }
-
 }

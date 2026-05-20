@@ -270,7 +270,7 @@ namespace Base.SystemsCorePackage.Audio
         /// </summary>
         /// <param name="audioSource">The AudioSource to play.</param>
         /// <param name="delay">The delay in seconds before playback.</param>
-        private IEnumerator PlaySoundAfterDelay(AudioSource audioSource, float delay)
+        private static IEnumerator PlaySoundAfterDelay(AudioSource audioSource, float delay)
         {
             yield return new WaitForSeconds(delay);
             audioSource?.Play();

@@ -1,9 +1,9 @@
+using Base.UtilityPackage.Logging;
 using Unity.Cinemachine;
 using UnityEditor;
 using UnityEngine;
-using Base.UtilityPackage.Logging;
 
-namespace Base.ScreenShakePackage.Scripts.Runtime
+namespace Base.ScreenShakePackage
 {
     /// <summary>
     /// Wrapper for <see cref="CinemachineImpulseSource"/> to apply
