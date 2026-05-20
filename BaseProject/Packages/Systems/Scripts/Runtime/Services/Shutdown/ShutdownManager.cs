@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Base.UtilityPackage.Logging;
 using UnityEngine;
 
 namespace Base.SystemsCorePackage.Services.Shutdown
@@ -38,6 +39,8 @@ namespace Base.SystemsCorePackage.Services.Shutdown
         {
             base.OnDestroy();
 
+            CustomLogger.Log("Destroyed.", this);
+
             Application.quitting -= ExecuteShutdown;
         }
 
@@ -66,6 +69,8 @@ namespace Base.SystemsCorePackage.Services.Shutdown
         {
             if (_isShuttingDown)
                 return;
+
+            CustomLogger.Log("Executing shutdown procedures for all registered handlers.", null);
 
             _isShuttingDown = true;
 
