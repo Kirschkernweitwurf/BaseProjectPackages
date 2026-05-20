@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Base.SystemsCorePackage.ObjectPooling;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Base.UtilityPackage.Logging;
@@ -6,39 +7,24 @@ using Base.UtilityPackage.Logging;
 namespace Base.SystemsCorePackage.Audio.Pool
 {
     /// <summary>
-    /// Manages multiple audio pools.
+    /// Manages one pooled set of AudioSources per <see cref="EAudioType"/>.
     /// </summary>
     public class AudioPoolManager : MonoBehaviour
     {
         [Space]
-
         [SerializeField] private Transform poolParent;
 
         [Space]
-
         [Tooltip("If true, clears all pools when a new scene is loaded.")]
-        [SerializeField]
-        private bool isClearingPoolAfterSceneLoad;
+        [SerializeField] private bool isClearingPoolAfterSceneLoad;
 
         [Header("Prefabs")]
-
         [SerializeField] private AudioSource audioSource2DPrefab;
         [SerializeField] private AudioSource audioSource3DPrefab;
         [SerializeField] private AudioSource audioSourceMusicPrefab;
         [SerializeField] private AudioSource audioSourceUiPrefab;
 
-        [Header("Pool Settings")]
-
-        [SerializeField] private int avgPoolSize2D;
-        [SerializeField] private int maxPoolSize2D;
-        [SerializeField] private int avgPoolSize3D;
-        [SerializeField] private int maxPoolSize3D;
-        [SerializeField] private int avgPoolSizeM;
-        [SerializeField] private int maxPoolSizeM;
-        [SerializeField] private int avgPoolSizeUi;
-        [SerializeField] private int maxPoolSizeUi;
-
-        private readonly Dictionary<EAudioType, AudioPool> _audioPools = new();
+        private readonly Dictionary<EAudioType, HashSetObjectPool<AudioSource>> _pools = new();
 
         private void Awake()
         {
@@ -49,39 +35,33 @@ namespace Base.SystemsCorePackage.Audio.Pool
         private void OnDestroy() => SceneManager.activeSceneChanged -= OnSceneChanged;
 
         /// <summary>
-        /// Gets an audio source from the pool for the specified type.
+        /// Gets an audio source from the pool for the given type, or null if the type is unknown.
         /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        public AudioSource GetAudioSource(EAudioType type)
-        {
-            return _audioPools.TryGetValue(type, out AudioPool pool) ? pool.GetSource() : null;
-        }
+        /// <param name="type">The audio type to retrieve a source for.</param>
+        public AudioSource GetAudioSource(EAudioType type) =>
+            _pools.TryGetValue(type, out HashSetObjectPool<AudioSource> pool) ? pool.Get() : null;
 
         /// <summary>
-        /// Releases an audio source back to the pool for the specified type.s
+        /// Returns an audio source to the pool for the given type.
         /// </summary>
-        /// <param name="type"></param>
-        /// <param name="source"></param>
+        /// <param name="type">The audio type the source belongs to.</param>
+        /// <param name="source">The source to release.</param>
         public void ReleaseAudioSource(EAudioType type, AudioSource source)
         {
-            if (_audioPools.TryGetValue(type, out AudioPool pool))
-                pool.ReleaseSource(source);
+            if (_pools.TryGetValue(type, out HashSetObjectPool<AudioSource> pool))
+                pool.Release(source);
         }
 
         /// <summary>
-        /// Clears the pool for the specified type.
+        /// Releases every active source for the given type back to its pool.
         /// </summary>
-        /// <param name="type"></param>
+        /// <param name="type">The audio type to clear.</param>
         public void ClearPool(EAudioType type)
         {
-            if (!_audioPools.TryGetValue(type, out AudioPool pool))
-            {
+            if (_pools.TryGetValue(type, out HashSetObjectPool<AudioSource> pool))
+                pool.ReleaseAll();
+            else
                 CustomLogger.LogWarning("Pool not found for type: " + type, this);
-                return;
-            }
-
-            pool.ClearPool();
         }
 
         private void OnSceneChanged(Scene _, Scene __)
@@ -91,26 +71,40 @@ namespace Base.SystemsCorePackage.Audio.Pool
         }
 
         /// <summary>
-        /// Clears all audio pools.
+        /// Releases every active source across all pools.
         /// </summary>
         private void ClearPools()
         {
-            foreach (AudioPool pool in _audioPools.Values)
-                pool.ClearPool();
+            foreach (HashSetObjectPool<AudioSource> pool in _pools.Values)
+                pool.ReleaseAll();
         }
 
         /// <summary>
-        /// Sets up the audio pools.
+        /// Creates one pool per audio type.
         /// </summary>
         private void InitializePools()
         {
-            _audioPools[EAudioType.Sfx2D] =
-                new AudioPool(audioSource2DPrefab, poolParent, avgPoolSize2D, maxPoolSize2D);
-            _audioPools[EAudioType.UI] = new AudioPool(audioSourceUiPrefab, poolParent, avgPoolSizeUi, maxPoolSizeUi);
-            _audioPools[EAudioType.Sfx3D] =
-                new AudioPool(audioSource3DPrefab, poolParent, avgPoolSize3D, maxPoolSize3D);
-            _audioPools[EAudioType.Music] =
-                new AudioPool(audioSourceMusicPrefab, poolParent, avgPoolSizeM, maxPoolSizeM);
+            _pools[EAudioType.Sfx2D] = CreatePool(audioSource2DPrefab);
+            _pools[EAudioType.Sfx3D] = CreatePool(audioSource3DPrefab);
+            _pools[EAudioType.Music] = CreatePool(audioSourceMusicPrefab);
+            _pools[EAudioType.UI] = CreatePool(audioSourceUiPrefab);
+        }
+
+        /// <summary>
+        /// Creates a pool that stops each source when it is released.
+        /// </summary>
+        /// <param name="prefab">The AudioSource prefab to pool.</param>
+        private HashSetObjectPool<AudioSource> CreatePool(AudioSource prefab) =>
+            new(prefab, poolParent, StopSource);
+
+        /// <summary>
+        /// Stops a source before it is returned to the pool.
+        /// </summary>
+        /// <param name="source">The source to stop.</param>
+        private static void StopSource(AudioSource source)
+        {
+            if (source != null)
+                source.Stop();
         }
     }
 }
