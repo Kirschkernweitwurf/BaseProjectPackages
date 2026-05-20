@@ -1,11 +1,9 @@
-using Base.SystemsCorePackage.MenuManaging.Identifier.Editor;
 using UnityEngine;
 
 namespace Base.SystemsCorePackage.MenuManaging.Identifier
 {
     /// <summary>
-    /// Holds references to all <see cref="MenuIdentifier"/> assets in the project so they
-    /// can be resolved at runtime. Autopopulated by the <see cref="MenuIdentifierGenerator"/>.
+    /// Holds references to all <see cref="MenuIdentifier"/> assets in the project so theycan be resolved at runtime.
     /// </summary>
     [CreateAssetMenu(fileName = "MenuIdentifierRegistry",
         menuName = "ScriptableObjects/Menus/Menu Identifier Registry")]

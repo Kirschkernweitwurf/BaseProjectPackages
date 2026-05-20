@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using System.Collections.Generic;
 using System.Linq;
 using Base.UtilityPackage.Logging;
@@ -205,3 +206,4 @@ namespace Base.SystemsCorePackage.Audio.Editor
         }
     }
 }
+#endif
