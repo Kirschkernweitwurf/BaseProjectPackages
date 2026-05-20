@@ -1,7 +1,5 @@
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Pool;
-using Base.UtilityPackage.Logging;
+using Base.SystemsCorePackage.ObjectPooling;
 
 namespace Base.SystemsCorePackage.Audio.Pool
 {
@@ -10,8 +8,7 @@ namespace Base.SystemsCorePackage.Audio.Pool
     /// </summary>
     public class AudioPool
     {
-        private readonly Dictionary<AudioSource, bool> _activeSources = new();
-        private readonly ObjectPool<AudioSource> _pool;
+        private readonly HashSetObjectPool<AudioSource> _pool;
 
         /// <summary>
         /// Creates a new AudioPool with the specified prefab, parent, default size and maximum size.
@@ -19,51 +16,22 @@ namespace Base.SystemsCorePackage.Audio.Pool
         /// <param name="prefab"></param>
         /// <param name="parent"></param>
         /// <param name="defaultSize"></param>
-        /// <param name="maxSize"></param>
-        public AudioPool(AudioSource prefab, Transform parent, int defaultSize, int maxSize)
+        public AudioPool(AudioSource prefab, Transform parent, int defaultSize)
         {
-            _pool = new ObjectPool<AudioSource>(
-                createFunc: () => Object.Instantiate(prefab, parent),
-                actionOnGet: ActivateSource,
-                actionOnRelease: DeactivateSource,
-                actionOnDestroy: src => Object.Destroy(src.gameObject),
-                collectionCheck: true,
-                defaultCapacity: defaultSize,
-                maxSize: maxSize
-            );
+            // HashSetObjectPool grows on demand and is not capped, so maxSize is not enforced.
+            _pool = new HashSetObjectPool<AudioSource>(prefab, parent, ResetSource);
+
+            Prewarm(defaultSize);
         }
 
         /// <summary>
-        /// Activates an AudioSource and adds it to the active sources list.
+        /// Resets an AudioSource before it is returned to the pool.
         /// </summary>
         /// <param name="src"></param>
-        private void ActivateSource(AudioSource src)
+        private static void ResetSource(AudioSource src)
         {
-            if (src == null)
-            {
-                CustomLogger.LogWarning("AudioSource is null when activating.", null);
-                return;
-            }
-
-            src.gameObject.SetActive(true);
-            _activeSources[src] = true;
-        }
-
-        /// <summary>
-        /// Deactivates an AudioSource and removes it from the active sources list.
-        /// </summary>
-        /// <param name="src"></param>
-        private void DeactivateSource(AudioSource src)
-        {
-            if (src == null)
-            {
-                CustomLogger.LogWarning("AudioSource is null when deactivating.", null);
-                return;
-            }
-
-            src.Stop();
-            src.gameObject.SetActive(false);
-            _activeSources.Remove(src);
+            if (src != null)
+                src.Stop();
         }
 
         /// <summary>
@@ -78,19 +46,26 @@ namespace Base.SystemsCorePackage.Audio.Pool
         /// <param name="source">The AudioSource to release.</param>
         public void ReleaseSource(AudioSource source)
         {
-            if (_activeSources.ContainsKey(source))
-            {
+            if (source != null)
                 _pool.Release(source);
-            }
         }
 
         /// <summary>
-        /// Clears the pool, destroying all instances.
+        /// Clears the pool by releasing all active instances back to it.
         /// </summary>
-        public void ClearPool()
+        public void ClearPool() => _pool.ReleaseAll();
+
+        /// <summary>
+        /// Prewarms the pool by creating and immediately releasing instances.
+        /// </summary>
+        /// <param name="count">Number of instances to prewarm.</param>
+        private void Prewarm(int count)
         {
-            _pool.Clear();
-            _activeSources.Clear();
+            for (int i = 0; i < count; i++)
+            {
+                AudioSource instance = _pool.Get();
+                _pool.Release(instance);
+            }
         }
     }
 }

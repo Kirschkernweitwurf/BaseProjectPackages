@@ -22,283 +22,220 @@ namespace Base.SystemsCorePackage.Audio
         [Header("Dependencies")]
         [SerializeField] private AudioPoolManager audioPoolManager;
 
-        private readonly Dictionary<AudioContainer, List<AudioSource>> _activeSounds = new();
+        private readonly ActiveSounds _activeSounds = new();
 
         /// <summary>
-        /// Selects a random audio clip from an array.
+        /// Plays a clip from the given container.
         /// </summary>
-        /// <param name="clips">Array of audio clips to choose from.</param>
-        /// <returns>A randomly chosen AudioClip, or null if the array is empty.</returns>
-        private static AudioClip ChooseRandomAudio(AudioClip[] clips)
+        /// <param name="container">The audio container holding the clip.</param>
+        /// <param name="position">The world position to play the sound at.</param>
+        /// <param name="autoStop">If true, the source is released automatically once playback finishes.</param>
+        /// <returns>The playing AudioSource, or null if none was available.</returns>
+        public AudioSource PlaySound(AudioContainer container, Vector3 position = default, bool autoStop = true)
         {
-            return clips is { Length: > 0 } ? clips[Random.Range(0, clips.Length)] : null;
-        }
+            EnforceMaxClips(container);
 
-        /// <summary>
-        /// Plays an audio clip from the given AudioContainer.
-        /// </summary>
-        /// <param name="soundContainer">The audio container holding the clip.</param>
-        /// <param name="position">The position to play the sound at.</param>
-        /// <param name="autoStop">If true, automatically stops and releases the audio source.</param>
-        public AudioSource PlaySound(AudioContainer soundContainer, Vector3 position = default, bool autoStop = true)
-        {
-            if (!_activeSounds.ContainsKey(soundContainer))
-                _activeSounds[soundContainer] = new List<AudioSource>();
-
-            List<AudioSource> sources = _activeSounds[soundContainer];
-
-            AudioSource audioSource;
-
-            if (soundContainer.maxClipsPlaying != -1 && sources.Count >= soundContainer.maxClipsPlaying)
+            AudioSource source = audioPoolManager.GetAudioSource(container.audioType);
+            if (source == null)
             {
-                // Reuse oldest AudioSource
-                audioSource = sources[0];
-                sources.RemoveAt(0);
-
-                if (audioSource != null)
-                {
-                    audioSource.Stop();
-                    audioPoolManager.ReleaseAudioSource(soundContainer.audioType, audioSource);
-                }
-            }
-
-            audioSource = audioPoolManager.GetAudioSource(soundContainer.audioType);
-            if (!audioSource)
-            {
-                CustomLogger.LogWarning($"No available audio source for {soundContainer.audioType}.", this);
+                CustomLogger.LogWarning($"No available audio source for {container.audioType}.", this);
                 return null;
             }
 
-            audioSource.transform.position = position;
-            audioSource.clip = ChooseRandomAudio(soundContainer.clips);
-            audioSource.ignoreListenerPause = soundContainer.ignorePause;
-            audioSource.volume = soundContainer.volume;
-            audioSource.loop = soundContainer.loop;
-            audioSource.pitch = soundContainer.randomizePitch
-                ? Random.Range(minPitchInclusive, maxPitchInclusive)
-                : 1.0f;
+            ConfigureSource(source, container, position);
+            _activeSounds.Add(container, source);
 
-            sources.Add(audioSource);
-
-            if (soundContainer.delay > 0)
-                StartCoroutine(PlaySoundAfterDelay(audioSource, soundContainer.delay));
+            if (container.delay > 0)
+                StartCoroutine(PlayAfterDelay(source, container.delay));
             else
-                audioSource.Play();
+                source.Play();
 
             if (autoStop)
-                StartCoroutine(ReleaseAudioAfterTime(audioSource,
-                    audioSource.clip.length + soundContainer.delay,
-                    soundContainer.audioType, soundContainer));
+                StartCoroutine(ReleaseAfterPlayback(source, container));
 
-            return audioSource;
+            return source;
         }
 
         /// <summary>
-        /// Stops a currently playing sound.
+        /// Stops every source currently playing for the given container.
         /// </summary>
-        /// <param name="soundContainer">The audio container associated with the sound.</param>
-        public void StopSound(AudioContainer soundContainer)
+        /// <param name="container">The audio container to stop.</param>
+        public void StopSound(AudioContainer container)
         {
-            if (!_activeSounds.TryGetValue(soundContainer, out List<AudioSource> sources) || sources.Count == 0)
-            {
-                CustomLogger.LogWarning($"Tried stopping {soundContainer.name} but it's not playing.", this);
+            if (!TryGetActiveSources(container, "stopping", out IReadOnlyList<AudioSource> sources))
                 return;
-            }
 
             foreach (AudioSource source in new List<AudioSource>(sources))
-            {
-                if (source == null)
-                    continue;
-
-                StopSound(source, soundContainer);
-            }
-        }
-
-        public void StopSound(AudioSource audioSource, AudioContainer audioContainer)
-        {
-            if (audioSource == null || !_activeSounds.TryGetValue(audioContainer, out List<AudioSource> sources)
-                                    || !sources.Contains(audioSource))
-            {
-                CustomLogger.LogWarning($"Tried stopping {audioContainer.name} but it's not playing.", this);
-                return;
-            }
-
-            audioSource.Stop();
-            audioPoolManager.ReleaseAudioSource(audioContainer.audioType, audioSource);
-            sources.Remove(audioSource);
-
-            if (sources.Count == 0)
-                _activeSounds.Remove(audioContainer);
+                Release(source);
         }
 
         /// <summary>
-        /// Gradually fades out an audio source over a specified duration.
+        /// Stops a single playing source and returns it to the pool.
         /// </summary>
-        /// <param name="audioContainer">The AudioContainer holding the audio source to fade out.</param>
-        /// <param name="duration">Time in seconds to complete the fade-out.</param>
-        public IEnumerator FadeOut(AudioContainer audioContainer, float duration)
-        {
-            if (!_activeSounds.TryGetValue(audioContainer, out List<AudioSource> sources) || sources.Count == 0)
-            {
-                CustomLogger.LogWarning($"Tried fading out {audioContainer.name} but it's not playing.", this);
-                yield break;
-            }
-
-            foreach (AudioSource audioSource in sources)
-            {
-                float startVolume = audioSource.volume;
-
-                while (audioSource.volume > 0)
-                {
-                    audioSource.volume -= startVolume * Time.deltaTime / duration;
-                    yield return null;
-                }
-
-                audioSource.Stop();
-                audioSource.volume = startVolume;
-                audioPoolManager.ReleaseAudioSource(audioContainer.audioType, audioSource);
-            }
-
-            sources.Clear();
-            _activeSounds.Remove(audioContainer);
-        }
+        /// <param name="source">The AudioSource to stop.</param>
+        public void StopSound(AudioSource source) => Release(source);
 
         /// <summary>
-        /// Gradually fades in an audio source to a target volume over a specified duration.
+        /// Fades in every source playing for the given container to a target volume.
         /// </summary>
-        /// <param name="audioContainer">The AudioContainer holding the audio source to fade in.</param>
+        /// <param name="container">The AudioContainer to fade in.</param>
         /// <param name="targetVolume">The target volume level.</param>
         /// <param name="duration">Time in seconds to reach the target volume.</param>
-        public IEnumerator FadeIn(AudioContainer audioContainer, float targetVolume, float duration)
+        public IEnumerator FadeIn(AudioContainer container, float targetVolume, float duration)
         {
-            if (!_activeSounds.TryGetValue(audioContainer, out List<AudioSource> sources) || sources.Count == 0)
-            {
-                CustomLogger.LogWarning($"Tried fading in {audioContainer.name} but it's not playing.", this);
+            if (!TryGetActiveSources(container, "fading in", out IReadOnlyList<AudioSource> sources))
                 yield break;
-            }
 
-            foreach (AudioSource audioSource in sources)
-            {
-                audioSource.volume = 0;
-                audioSource.Play();
-
-                while (audioSource.volume < targetVolume)
-                {
-                    audioSource.volume += Time.deltaTime / duration;
-                    yield return null;
-                }
-
-                audioSource.volume = targetVolume;
-            }
+            foreach (AudioSource source in new List<AudioSource>(sources))
+                yield return FadeIn(source, targetVolume, duration);
         }
 
         /// <summary>
-        /// Gradually fades out an audio source over a specified duration.
+        /// Fades out every source playing for the given container and releases them.
         /// </summary>
-        /// <param name="audioSource">The AudioSource to fade out.</param>
+        /// <param name="container">The AudioContainer to fade out.</param>
         /// <param name="duration">Time in seconds to complete the fade-out.</param>
-        public IEnumerator FadeOut(AudioSource audioSource, float duration)
+        public IEnumerator FadeOut(AudioContainer container, float duration)
         {
-            if (audioSource == null || !audioSource.isPlaying)
+            if (!TryGetActiveSources(container, "fading out", out IReadOnlyList<AudioSource> sources))
                 yield break;
 
-            float startVolume = audioSource.volume;
-
-            while (audioSource != null && audioSource.volume > 0)
-            {
-                audioSource.volume -= startVolume * Time.deltaTime / duration;
-                yield return null;
-            }
-
-            if (audioSource == null)
-                yield break;
-
-            audioSource.Stop();
-            audioSource.volume = startVolume; // Reset volume for reuse
+            foreach (AudioSource source in new List<AudioSource>(sources))
+                yield return FadeOut(source, duration);
         }
 
         /// <summary>
-        /// Gradually fades in an audio source to a target volume over a specified duration.
+        /// Fades a single source in from silence to a target volume.
         /// </summary>
-        /// <param name="audioSource">The AudioSource to fade in.</param>
+        /// <param name="source">The AudioSource to fade in.</param>
         /// <param name="targetVolume">The target volume level.</param>
         /// <param name="duration">Time in seconds to reach the target volume.</param>
-        public IEnumerator FadeIn(AudioSource audioSource, float targetVolume, float duration)
+        public IEnumerator FadeIn(AudioSource source, float targetVolume, float duration)
         {
-            if (audioSource == null)
+            if (source == null)
             {
                 CustomLogger.LogWarning("Tried fading in but AudioSource is null.", this);
                 yield break;
             }
 
-            audioSource.volume = 0;
-            audioSource.Play();
-
-            while (audioSource != null && audioSource.volume < targetVolume)
-            {
-                audioSource.volume += Time.deltaTime / duration;
-                yield return null;
-            }
-
-            if (audioSource != null)
-                audioSource.volume = targetVolume;
+            source.volume = 0f;
+            source.Play();
+            yield return AudioFader.To(source, targetVolume, duration);
         }
 
-        public IEnumerator ChangeVolume(AudioSource audioSource, float targetVolume, float duration)
+        /// <summary>
+        /// Fades a single source out and returns it to the pool.
+        /// </summary>
+        /// <param name="source">The AudioSource to fade out.</param>
+        /// <param name="duration">Time in seconds to complete the fade-out.</param>
+        public IEnumerator FadeOut(AudioSource source, float duration)
         {
-            if (audioSource == null)
+            yield return AudioFader.To(source, 0f, duration);
+            Release(source);
+        }
+
+        /// <summary>
+        /// Tweens a single source to a target volume without stopping it.
+        /// </summary>
+        /// <param name="source">The AudioSource to change.</param>
+        /// <param name="targetVolume">The target volume level.</param>
+        /// <param name="duration">Time in seconds to reach the target volume.</param>
+        public IEnumerator ChangeVolume(AudioSource source, float targetVolume, float duration)
+        {
+            if (source == null)
             {
                 CustomLogger.LogWarning("Tried changing volume but AudioSource is null.", this);
                 yield break;
             }
 
-            float startVolume = audioSource.volume;
-            float progress = 0f;
-            while (audioSource != null && Mathf.Abs(audioSource.volume - targetVolume) > 0.01f)
-            {
-                progress += Time.deltaTime / duration;
-                audioSource.volume = Mathf.Lerp(startVolume, targetVolume, progress);
-                yield return null;
-            }
-
-            if (audioSource != null)
-                audioSource.volume = targetVolume;
+            yield return AudioFader.To(source, targetVolume, duration);
         }
 
         /// <summary>
-        /// Plays an audio source after a specified delay.
+        /// Releases the oldest sources until the container is below its play limit.
         /// </summary>
-        /// <param name="audioSource">The AudioSource to play.</param>
-        /// <param name="delay">The delay in seconds before playback.</param>
-        private static IEnumerator PlaySoundAfterDelay(AudioSource audioSource, float delay)
+        private void EnforceMaxClips(AudioContainer container)
+        {
+            if (container.maxClipsPlaying == -1)
+                return;
+
+            while (_activeSounds.CountOf(container) >= container.maxClipsPlaying)
+            {
+                AudioSource oldest = _activeSounds.GetOldest(container);
+                if (oldest == null)
+                    break;
+
+                Release(oldest);
+            }
+        }
+
+        /// <summary>
+        /// Applies a container's settings to a source before playback.
+        /// </summary>
+        private void ConfigureSource(AudioSource source, AudioContainer container, Vector3 position)
+        {
+            source.transform.position = position;
+            source.clip = ChooseRandomClip(container.clips);
+            source.ignoreListenerPause = container.ignorePause;
+            source.volume = container.volume;
+            source.loop = container.loop;
+            source.pitch = container.randomizePitch
+                ? Random.Range(minPitchInclusive, maxPitchInclusive)
+                : 1f;
+        }
+
+        /// <summary>
+        /// Stops a source, returns it to the pool and removes it from tracking.
+        /// Safe to call more than once for the same source.
+        /// </summary>
+        private void Release(AudioSource source)
+        {
+            if (source == null || !_activeSounds.TryGetContainer(source, out AudioContainer container))
+                return;
+
+            source.Stop();
+            audioPoolManager.ReleaseAudioSource(container.audioType, source);
+            _activeSounds.Remove(source);
+        }
+
+        /// <summary>
+        /// Looks up the active sources for a container, logging a warning if none are playing.
+        /// </summary>
+        private bool TryGetActiveSources(AudioContainer container, string action,
+            out IReadOnlyList<AudioSource> sources)
+        {
+            sources = _activeSounds.GetSources(container);
+            if (sources is { Count: > 0 })
+                return true;
+
+            CustomLogger.LogWarning($"Tried {action} {container.name} but it's not playing.", this);
+            return false;
+        }
+
+        /// <summary>
+        /// Plays a source after a delay, if it still exists.
+        /// </summary>
+        private static IEnumerator PlayAfterDelay(AudioSource source, float delay)
         {
             yield return new WaitForSeconds(delay);
-            audioSource?.Play();
+            if (source != null)
+                source.Play();
         }
 
         /// <summary>
-        /// Releases an audio source back to the pool after a delay.
+        /// Releases a source back to the pool once its clip has finished playing.
         /// </summary>
-        /// <param name="audioSource">The AudioSource to be released.</param>
-        /// <param name="delay">Time in seconds before the audio source is released.</param>
-        /// <param name="audioType">The type of audio being released.</param>
-        /// <param name="container">The container from which the audio source originated.</param>
-        private IEnumerator ReleaseAudioAfterTime(AudioSource audioSource, float delay, EAudioType audioType,
-            AudioContainer container)
+        private IEnumerator ReleaseAfterPlayback(AudioSource source, AudioContainer container)
         {
-            yield return new WaitForSeconds(delay + minimumDelay);
-
-            if (audioSource == null)
-                yield break;
-
-            if (_activeSounds.TryGetValue(container, out List<AudioSource> list))
-            {
-                list.Remove(audioSource);
-                if (list.Count == 0)
-                    _activeSounds.Remove(container);
-            }
-
-            audioPoolManager.ReleaseAudioSource(audioType, audioSource);
+            float clipLength = source.clip != null ? source.clip.length : 0f;
+            yield return new WaitForSeconds(clipLength + container.delay + minimumDelay);
+            Release(source);
         }
+
+        /// <summary>
+        /// Selects a random clip from an array, or null if it is empty.
+        /// </summary>
+        private static AudioClip ChooseRandomClip(AudioClip[] clips) =>
+            clips is { Length: > 0 } ? clips[Random.Range(0, clips.Length)] : null;
     }
 }
