@@ -23,6 +23,7 @@ namespace Base.SystemsCorePackage.Tracking
 
         public readonly List<TrackedItem<T>> TrackedItems = new();
         private readonly Dictionary<object, TrackedItem<T>> _callerToTracked = new();
+
         private ulong _orderCounter;
 
         public void Initialize() => OnCurrentActiveItemChanged?.Invoke(CurrentTrackedItem);

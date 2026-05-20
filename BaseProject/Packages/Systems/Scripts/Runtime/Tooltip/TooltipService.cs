@@ -1,7 +1,7 @@
 using Base.SystemsCorePackage.Services;
 using Base.SystemsCorePackage.Tracking;
 
-namespace Base.SystemsCorePackage.Systems.Tooltip
+namespace Base.SystemsCorePackage.Tooltip
 {
     /// <summary>
     /// Manages Tooltips shown on screen, ensuring the highest priority tooltip is displayed.
@@ -10,6 +10,7 @@ namespace Base.SystemsCorePackage.Systems.Tooltip
     public class TooltipService : GameServiceBehaviour
     {
         private readonly PriorityTracker<TooltipData> _tracker = new();
+
         private TooltipView _view;
 
         protected override void OnDestroy()

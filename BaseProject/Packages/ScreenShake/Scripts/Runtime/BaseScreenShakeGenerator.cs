@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.ScreenShakePackage.Scripts.Runtime
+namespace Base.ScreenShakePackage
 {
     /// <summary>
     /// Base class for generating screen shake effects in response to gameplay events.

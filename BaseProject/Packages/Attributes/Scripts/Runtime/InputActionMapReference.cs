@@ -8,6 +8,14 @@ namespace Base.AttributePackage
     /// Serializable reference to an <see cref="InputActionMap"/> inside an
     /// <see cref="InputActionAsset"/>. Stores the map's GUID, so it survives renames.
     /// </summary>
+    /// <example>
+    /// <code>
+    /// public class Example : MonoBehaviour
+    /// {
+    ///     public InputActionMapReference actionMapRef;
+    /// }
+    /// </code>
+    /// </example>
     [Serializable]
     public struct InputActionMapReference
     {

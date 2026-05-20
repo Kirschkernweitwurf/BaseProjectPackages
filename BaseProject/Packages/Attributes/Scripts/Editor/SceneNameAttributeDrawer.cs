@@ -1,9 +1,8 @@
 #if UNITY_EDITOR
-using Base.AttributePackage.Scripts.Runtime;
-using UnityEngine;
 using UnityEditor;
+using UnityEngine;
 
-namespace Base.AttributePackage.Scripts.Editor
+namespace Base.AttributePackage.Editor
 {
     /// <summary>
     /// Property drawer for <see cref="SceneNameAttribute"/>.

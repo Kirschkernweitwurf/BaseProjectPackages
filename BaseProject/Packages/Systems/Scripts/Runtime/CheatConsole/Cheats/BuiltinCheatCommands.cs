@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Base.SystemsCorePackage.CheatConsole;
 
 namespace Base.SystemsCorePackage.CheatConsole.Cheats
 {

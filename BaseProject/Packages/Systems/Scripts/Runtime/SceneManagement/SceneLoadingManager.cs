@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Base.AttributePackage.Scripts.Runtime;
+using Base.AttributePackage;
 using Base.SystemsCorePackage.Services;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -60,6 +60,12 @@ namespace Base.SystemsCorePackage.SceneManagement
         /// <param name="mode">The load scene mode (Single or Additive).</param>
         private static async Awaitable LoadSceneInternalAsync(string sceneName, LoadSceneMode mode)
         {
+            if (SceneManager.GetSceneByName(sceneName).isLoaded)
+            {
+                CustomLogger.LogWarning($"Tried to load scene '{sceneName}', but it was already loaded.", null);
+                return;
+            }
+
             bool success = false;
 
             SceneLoadEvents.InvokeSceneLoadStarted(sceneName);

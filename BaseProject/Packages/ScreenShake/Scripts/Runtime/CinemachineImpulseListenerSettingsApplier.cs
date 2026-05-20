@@ -1,8 +1,8 @@
+using Base.UtilityPackage.Logging;
 using Unity.Cinemachine;
 using UnityEngine;
-using Base.UtilityPackage.Logging;
 
-namespace Base.ScreenShakePackage.Scripts.Runtime
+namespace Base.ScreenShakePackage
 {
     /// <summary>
     /// Applies settings from a <see cref="ScreenShakeProfile"/>

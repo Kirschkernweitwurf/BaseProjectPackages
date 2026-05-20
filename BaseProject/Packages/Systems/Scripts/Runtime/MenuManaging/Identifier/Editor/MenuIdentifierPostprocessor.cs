@@ -3,6 +3,10 @@ using UnityEditor;
 
 namespace Base.SystemsCorePackage.MenuManaging.Identifier.Editor
 {
+    /// <summary>
+    /// Watches for changes to <see cref="MenuIdentifier"/> assets
+    /// and triggers regeneration of the accessor class and registry.
+    /// </summary>
     internal class MenuIdentifierPostprocessor : AssetPostprocessor
     {
         private static void OnPostprocessAllAssets(string[] imported, string[] deleted,

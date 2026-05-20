@@ -16,9 +16,10 @@ namespace Base.ToolPackage.Editor.AssetZoo.Editor
         private const float MinWindowWidth = 340f;
         private const float MinWindowHeight = 400f;
 
+        private readonly ZooBuilder _builder = new();
+
         private ZooConfig _config;
         private Transform _parent;
-        private readonly ZooBuilder _builder = new();
         private Vector2 _scroll;
         private UnityEditor.Editor _cachedConfigEditor;
 

@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Base.SystemsCorePackage.Systems.Tooltip
+namespace Base.SystemsCorePackage.Tooltip
 {
     /// <summary>
     /// Data structure representing the information needed to display a tooltip.
