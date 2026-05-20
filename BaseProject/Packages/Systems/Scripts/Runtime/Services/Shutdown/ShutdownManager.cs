@@ -18,6 +18,15 @@ namespace Base.SystemsCorePackage.Services.Shutdown
         private static readonly List<IShutdownHandler> ShutdownHandlers = new();
         private static bool _isShuttingDown;
 
+#if UNITY_EDITOR
+        [UnityEditor.InitializeOnEnterPlayMode]
+        private static void ResetStatics()
+        {
+            ShutdownHandlers.Clear();
+            _isShuttingDown = false;
+        }
+#endif
+
         protected override void Awake()
         {
             base.Awake();
