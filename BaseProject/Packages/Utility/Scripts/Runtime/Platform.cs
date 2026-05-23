@@ -1,12 +1,27 @@
+// ReSharper disable ConvertToConstant.Global
+// ReSharper disable MemberCanBePrivate.Global
 namespace Base.UtilityPackage
 {
     /// <summary>
     /// Provides runtime flags for platform and build-specific conditions.
     /// <para></para>
+    /// The main advantage of this class is that it allows you to write code that depends on platform or build
+    /// conditions without using preprocessor directives that would cause certain compiler warnings or stripping.
+    /// <para></para>
     /// <b>Warning:</b> Do <b>not</b> change these fields to <c>const</c> even if your IDE suggests it.
     /// Using <c>const</c> will make the compiler treat branches as unreachable, causing warnings
     /// or stripping valid runtime code. The fields are <c>static readonly</c> to allow runtime
     /// evaluation while keeping compile-time platform assignments.
+    /// <example>
+    /// Here's how you might use the <see cref="Platform"/> class in your code:
+    /// <code>
+    /// if (Platform.IsUnityEditor)
+    /// {
+    ///     // Code that should only run in the Unity Editor
+    ///     Debug.Log("Running in the Unity Editor");
+    /// }
+    /// </code>
+    /// </example>
     /// </summary>
     public static class Platform
     {
@@ -65,15 +80,6 @@ namespace Base.UtilityPackage
         public static readonly bool IsIOS = true;
 #else
         public static readonly bool IsIOS = false;
-#endif
-
-        /// <summary>
-        /// <c>true</c> if running on Amazon.
-        /// </summary>
-#if AMAZON_BUILD
-        public static readonly bool IsAmazon = true;
-#else
-        public static readonly bool IsAmazon = false;
 #endif
 
         /// <summary>

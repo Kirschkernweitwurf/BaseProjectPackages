@@ -35,6 +35,30 @@ namespace Base.SystemsCorePackage.Services
         }
 
         /// <summary>
+        /// Adds or updates a service in the locator using a generic type parameter.
+        /// </summary>
+        /// <param name="service">The service instance to register.</param>
+        /// <typeparam name="T">The type of the service being registered.</typeparam>
+        public static void Register<T>(T service) where T : class, IGameService
+        {
+            Type type = typeof(T);
+
+            if (Services.ContainsKey(type))
+            {
+                CustomLogger.LogWarning($"Service {type.Name} is already registered. " +
+                                        "Overwriting with new instance.", service as UnityEngine.Object);
+            }
+
+            Services[type] = service;
+        }
+
+        /// <summary>
+        /// Removes a service from the locator using a generic type parameter.
+        /// </summary>
+        /// <typeparam name="T">The type of the service to remove.</typeparam>
+        public static void Deregister<T>() where T : class, IGameService => Deregister(typeof(T));
+
+        /// <summary>
         /// Removes a service from the locator.
         /// </summary>
         /// <param name="type">The type of the service to remove.</param>
