@@ -6,6 +6,7 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
     public class Finding
     {
         public string AssetPath;
+        public string AbsolutePath;
         public int Line;
         public string Name;
         public string Kind;

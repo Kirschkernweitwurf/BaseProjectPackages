@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using Base.UtilityPackage.Logging;
 using UnityEditor;
+using UnityEditorInternal;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -29,6 +30,7 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
     public class StaticResetCheckerWindow : EditorWindow
     {
         private const string PrefPrefix = "StaticResetChecker.";
+        private const int PageSize = 50;
 
         private readonly Dictionary<string, bool> _foldouts = new();
 
@@ -40,13 +42,16 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
         private bool _includeAutoProperties = true;
         private bool _skipEditorFolders = true;
         private bool _expandHelpers = true;
+        private bool _ignoreReadonly = true;
         private bool _logToConsole;
 
         private int _filesScanned;
         private bool _hasScanned;
         private string _status = "";
         private Vector2 _scroll;
+        private int _page;
         private List<Finding> _findings = new();
+        private List<IGrouping<string, Finding>> _groups = new();
 
         private void OnEnable()
         {
@@ -57,6 +62,7 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
             _includeAutoProperties = EditorPrefs.GetBool(PrefPrefix + "props", _includeAutoProperties);
             _skipEditorFolders = EditorPrefs.GetBool(PrefPrefix + "skipEditor", _skipEditorFolders);
             _expandHelpers = EditorPrefs.GetBool(PrefPrefix + "helpers", _expandHelpers);
+            _ignoreReadonly = EditorPrefs.GetBool(PrefPrefix + "ignoreReadonly", _ignoreReadonly);
             _logToConsole = EditorPrefs.GetBool(PrefPrefix + "log", _logToConsole);
         }
 
@@ -83,6 +89,8 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
                     "Editor-only statics usually don't need play-mode resets."), _skipEditorFolders);
                 _expandHelpers = EditorGUILayout.Toggle(new GUIContent("Follow static helper calls",
                     "Also look inside static methods called from a reset method."), _expandHelpers);
+                _ignoreReadonly = EditorGUILayout.Toggle(new GUIContent("Ignore readonly statics",
+                    "Readonly static fields keep their value and don't need a play-mode reset."), _ignoreReadonly);
                 _logToConsole = EditorGUILayout.Toggle("Also log to Console", _logToConsole);
             }
 
@@ -110,7 +118,7 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
             DrawResults();
         }
 
-        [MenuItem("Tools/Static Reset Checker")]
+        [MenuItem("Tools/Editor/Static Reset Checker")]
         private static void Open()
         {
             StaticResetCheckerWindow w = GetWindow<StaticResetCheckerWindow>("Static Reset");
@@ -118,13 +126,22 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
             w.Show();
         }
 
-        private static void OpenAt(string assetPath, int line)
+        private static void OpenAt(Finding f)
         {
-            Object obj = AssetDatabase.LoadAssetAtPath<Object>(assetPath);
+            Object obj = AssetDatabase.LoadAssetAtPath<Object>(f.AssetPath);
             if (obj != null)
-                AssetDatabase.OpenAsset(obj, line);
-            else
-                CustomLogger.LogWarning("Could not open " + assetPath, null);
+            {
+                AssetDatabase.OpenAsset(obj, f.Line);
+                return;
+            }
+
+            if (!string.IsNullOrEmpty(f.AbsolutePath) && File.Exists(f.AbsolutePath))
+            {
+                InternalEditorUtility.OpenFileAtLineExternal(f.AbsolutePath, f.Line, 0);
+                return;
+            }
+
+            CustomLogger.LogWarning("Could not open " + f.AssetPath, null);
         }
 
         private void SavePrefs()
@@ -136,19 +153,44 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
             EditorPrefs.SetBool(PrefPrefix + "props", _includeAutoProperties);
             EditorPrefs.SetBool(PrefPrefix + "skipEditor", _skipEditorFolders);
             EditorPrefs.SetBool(PrefPrefix + "helpers", _expandHelpers);
+            EditorPrefs.SetBool(PrefPrefix + "ignoreReadonly", _ignoreReadonly);
             EditorPrefs.SetBool(PrefPrefix + "log", _logToConsole);
         }
 
         private void DrawResults()
         {
-            if (_findings.Count == 0)
+            if (_groups.Count == 0)
                 return;
+
+            int totalPages = Mathf.Max(1, Mathf.CeilToInt(_groups.Count / (float)PageSize));
+            _page = Mathf.Clamp(_page, 0, totalPages - 1);
+
+            if (totalPages > 1)
+            {
+                using (new EditorGUILayout.HorizontalScope())
+                {
+                    using (new EditorGUI.DisabledScope(_page <= 0))
+                        if (GUILayout.Button("Prev", GUILayout.Width(70)))
+                            _page--;
+
+                    GUILayout.FlexibleSpace();
+                    EditorGUILayout.LabelField($"Page {_page + 1} / {totalPages}   ({_groups.Count} files)",
+                        EditorStyles.miniLabel, GUILayout.Width(180));
+                    GUILayout.FlexibleSpace();
+
+                    using (new EditorGUI.DisabledScope(_page >= totalPages - 1))
+                        if (GUILayout.Button("Next", GUILayout.Width(70)))
+                            _page++;
+                }
+            }
 
             _scroll = EditorGUILayout.BeginScrollView(_scroll);
 
-            foreach (IGrouping<string, Finding> group in _findings
-                         .GroupBy(f => f.AssetPath).OrderBy(g => g.Key))
+            int start = _page * PageSize;
+            int end = Mathf.Min(start + PageSize, _groups.Count);
+            for (int gi = start; gi < end; gi++)
             {
+                IGrouping<string, Finding> group = _groups[gi];
                 string file = group.Key;
                 bool open = _foldouts.GetValueOrDefault(file, true);
 
@@ -163,7 +205,7 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
                     GUIContent content = new($"L{f.Line}   {f.Name}   ({f.Kind})", f.Snippet);
                     Rect rect = EditorGUILayout.GetControlRect(GUILayout.Height(18));
                     if (GUI.Button(rect, content, EditorStyles.linkLabel))
-                        OpenAt(f.AssetPath, f.Line);
+                        OpenAt(f);
                 }
                 EditorGUI.indentLevel--;
                 EditorGUILayout.Space(2);
@@ -186,15 +228,18 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
                     IncludeAutoProperties = _includeAutoProperties,
                     SkipEditorFolders = _skipEditorFolders,
                     ExpandHelpers = _expandHelpers,
+                    IgnoreReadonly = _ignoreReadonly,
                 };
 
                 _findings = StaticResetScanner.Scan(opt, out _filesScanned);
+                _groups = _findings.GroupBy(f => f.AssetPath).OrderBy(g => g.Key).ToList();
+                _page = 0;
                 _hasScanned = true;
 
                 _status = _findings.Count == 0
                     ? $"No unreset static members found. Scanned {_filesScanned} file(s)."
                     : $"Found {_findings.Count} possibly-unreset static member(s) in "
-                      + $"{_findings.Select(f => f.AssetPath).Distinct().Count()} file(s)." +
+                      + $"{_groups.Count} file(s)." +
                       $" Scanned {_filesScanned} file(s).";
 
                 if (_logToConsole)
@@ -204,6 +249,8 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
             {
                 _hasScanned = true;
                 _findings = new List<Finding>();
+                _groups = new List<IGrouping<string, Finding>>();
+                _page = 0;
                 _status = "Scan failed: " + e.Message;
                 CustomLogger.LogError($"Scan failed: {e}", null);
             }
@@ -212,8 +259,7 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
         private string BuildReport()
         {
             StringBuilder sb = new();
-            foreach (IGrouping<string, Finding> group in _findings
-                         .GroupBy(f => f.AssetPath).OrderBy(g => g.Key))
+            foreach (IGrouping<string, Finding> group in _groups)
             {
                 sb.AppendLine(group.Key);
                 foreach (Finding f in group.OrderBy(x => x.Line))

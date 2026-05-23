@@ -12,5 +12,6 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
         public bool IncludeAutoProperties = true;
         public bool SkipEditorFolders = true;
         public bool ExpandHelpers = true;
+        public bool IgnoreReadonly = true;
     }
 }

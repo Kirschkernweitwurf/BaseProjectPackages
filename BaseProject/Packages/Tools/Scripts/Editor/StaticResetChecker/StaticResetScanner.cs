@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using UnityEditor.PackageManager;
 using UnityEngine;
 
 namespace Base.ToolPackage.Editor.StaticResetChecker
@@ -49,6 +50,8 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
             if (!Directory.Exists(absRoot))
                 throw new DirectoryNotFoundException("Folder not found: " + absRoot);
 
+            PackageInfo[] packages = PackageInfo.GetAllRegisteredPackages();
+
             foreach (string path in Directory.GetFiles(absRoot, "*.cs", SearchOption.AllDirectories))
             {
                 string norm = path.Replace('\\', '/');
@@ -69,7 +72,7 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
                     continue;
 
                 filesScanned++;
-                ScanFile(source, ToAssetPath(path), opt, results);
+                ScanFile(source, ToAssetPath(path, packages), norm, opt, results);
             }
 
             return results
@@ -78,7 +81,8 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
                 .ToList();
         }
 
-        private static void ScanFile(string source, string assetPath, ScanOptions opt, List<Finding> results)
+        private static void ScanFile(string source, string assetPath, string absolutePath, ScanOptions opt,
+            List<Finding> results)
         {
             Context ctx = new()
             {
@@ -115,6 +119,7 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
                 results.Add(new Finding
                 {
                     AssetPath = assetPath,
+                    AbsolutePath = absolutePath,
                     Line = line,
                     Name = f.Name,
                     Kind = f.Kind,
@@ -352,8 +357,11 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
         {
             string body = full["static".Length..];
 
-            body = StripLeadingModifiers(body, out bool isEvent);
+            body = StripLeadingModifiers(body, out bool isEvent, out bool isReadonly);
             if (isEvent && !ctx.Opt.IncludeEvents)
+                return;
+
+            if (isReadonly && ctx.Opt.IgnoreReadonly)
                 return;
 
             List<string> declarators = SplitTopLevel(body, ',');
@@ -761,9 +769,10 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
             return -1;
         }
 
-        private static string StripLeadingModifiers(string s, out bool isEvent)
+        private static string StripLeadingModifiers(string s, out bool isEvent, out bool isReadonly)
         {
             isEvent = false;
+            isReadonly = false;
             while (true)
             {
                 int i = 0;
@@ -783,6 +792,9 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
 
                 if (tok == "event")
                     isEvent = true;
+
+                if (tok == "readonly")
+                    isReadonly = true;
 
                 s = s[i..];
             }
@@ -928,12 +940,20 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
             return text.Length > 200 ? text[..200] : text;
         }
 
-        private static string ToAssetPath(string absolute)
+        private static string ToAssetPath(string absolute, PackageInfo[] packages)
         {
             string abs = absolute.Replace('\\', '/');
             string dataPath = Application.dataPath.Replace('\\', '/');
             if (abs.StartsWith(dataPath, StringComparison.OrdinalIgnoreCase))
                 return "Assets" + abs[dataPath.Length..];
+
+            foreach (PackageInfo package in packages)
+            {
+                string resolved = package.resolvedPath.Replace('\\', '/').TrimEnd('/');
+                if (resolved.Length > 0 && abs.StartsWith(resolved + "/", StringComparison.OrdinalIgnoreCase))
+                    return package.assetPath + abs[resolved.Length..];
+            }
+
             return abs;
         }
     }
