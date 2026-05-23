@@ -9,7 +9,7 @@ namespace Base.SystemsCorePackage.Tooltip
 {
     /// <summary>
     /// Manages the visual representation of tooltips on the screen.
-    /// Shows, hides, and positions the tooltip so it never leaves the screen.
+    /// Shows, hides and positions the tooltip so it never leaves the screen.
     /// </summary>
     [DisallowMultipleComponent]
     public class TooltipView : MonoBehaviour
@@ -27,8 +27,6 @@ namespace Base.SystemsCorePackage.Tooltip
         [SerializeField] private float edgeMargin = 8f;
 
         [Header("References")]
-        [Tooltip("Canvas that the tooltip is rendered on.")]
-        [SerializeField] private Canvas canvas;
 
         [Tooltip("Content GameObject that contains the tooltip visuals.")]
         [SerializeField] private GameObject content;
@@ -39,11 +37,13 @@ namespace Base.SystemsCorePackage.Tooltip
         [Tooltip("RectTransform of the tooltip for positioning (the Content rect).")]
         [SerializeField] private RectTransform tooltipRect;
 
-        private Func<Vector2> _getScreenPosition;
+        private Canvas canvas;
         private Coroutine _followRoutine;
+        private Func<Vector2> _getScreenPosition;
 
         private void Start()
         {
+            canvas = GetComponentInParent<Canvas>();
             ServiceLocator.Get<TooltipService>()?.SetView(this);
             Hide();
         }

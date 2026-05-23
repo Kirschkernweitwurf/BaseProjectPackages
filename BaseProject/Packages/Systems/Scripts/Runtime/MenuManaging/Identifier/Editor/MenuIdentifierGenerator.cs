@@ -19,7 +19,7 @@ namespace Base.SystemsCorePackage.MenuManaging.Identifier.Editor
         private const string MenuIdentifierNamespace = "Base.SystemsCorePackage.MenuManaging";
         private const string LoaderNamespace = "Base.SystemsCorePackage.MenuManaging.Identifier";
 
-        [MenuItem("Tools/Menus/Regenerate Menu Identifiers")]
+        [MenuItem("Tools/Editor/Regenerate Menu Identifiers")]
         public static void Regenerate()
         {
             string[] guids = AssetDatabase.FindAssets($"t:{nameof(MenuIdentifier)}");

@@ -1,0 +1,17 @@
+{
+    "name": "Base.SaveSystemPackage",
+    "rootNamespace": "Base.SaveSystemPackage",
+    "references": [
+        "Base.UtilityPackage",
+        "Base.SystemsCorePackage"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

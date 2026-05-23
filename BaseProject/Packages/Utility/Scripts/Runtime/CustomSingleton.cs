@@ -13,6 +13,11 @@ namespace Base.UtilityPackage
 
         [SerializeField] private bool dontDestroyOnLoad;
 
+#if UNITY_EDITOR
+        [UnityEditor.InitializeOnEnterPlayMode]
+        private static void ResetStatics() => Instance = null;
+#endif
+
         protected virtual void Awake()
         {
             if (Instance == null)

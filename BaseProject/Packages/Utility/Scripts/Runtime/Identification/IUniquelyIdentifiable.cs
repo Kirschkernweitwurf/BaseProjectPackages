@@ -9,5 +9,12 @@ namespace Base.UtilityPackage.Identification
         /// Globally unique, editor-assigned identifier.
         /// </summary>
         string UniqueId { get; }
+
+#if UNITY_EDITOR
+        /// <summary>
+        /// Generate a new unique ID.
+        /// </summary>
+        void RegenerateId();
+#endif
     }
 }
