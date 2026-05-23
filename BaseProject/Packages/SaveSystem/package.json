@@ -2,11 +2,9 @@
   "name": "com.baseprojectpackages.save",
   "displayName": "Base Save System",
   "description": "A package that contains the core functionality for saving and loading data in Unity.",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "unity": "6000.3",
   "author": {
     "name": "Jonathan Alber"
-  },
-  "dependencies": {
   }
 }
