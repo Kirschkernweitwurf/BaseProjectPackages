@@ -1,20 +1,19 @@
 using UnityEditor;
-using UnityEngine;
 
 namespace Base.UtilityPackage.Identification.Editor
 {
     /// <summary>
-    /// Generic custom editor that displays the unique ID of any object
-    /// that implements <see cref="IUniquelyIdentifiable"/>  in a read-only manner.
+    /// Custom editor for <see cref="UniqueIdScriptableObject"/> that displays the unique ID in a read-only manner.
     /// </summary>
-    /// <typeparam name="T">The type of object to display, must implement <see cref="IUniquelyIdentifiable"/>.</typeparam>
-    public class UniqueIdEditor<T> : UnityEditor.Editor where T : Object, IUniquelyIdentifiable
+    [CustomEditor(typeof(UniqueIdScriptableObject))]
+    public class UniqueIdEditor : UnityEditor.Editor
     {
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
 
-            T data = (T)target;
+            if (target is not UniqueIdScriptableObject data)
+                return;
 
             EditorGUILayout.Space();
             EditorGUILayout.LabelField("Unique ID", EditorStyles.boldLabel);

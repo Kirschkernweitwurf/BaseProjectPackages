@@ -14,6 +14,11 @@ namespace Base.UtilityPackage
     {
         private readonly List<Coroutine> _coroutines = new();
 
+#if UNITY_EDITOR
+        [UnityEditor.InitializeOnEnterPlayMode]
+        private static void ResetStatics() => Instance = null;
+#endif
+
         /// <summary>
         /// Ensures all coroutines are stopped when this component is destroyed.
         /// </summary>
