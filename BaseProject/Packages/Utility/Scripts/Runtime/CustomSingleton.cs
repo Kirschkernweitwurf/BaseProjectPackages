@@ -9,14 +9,9 @@ namespace Base.UtilityPackage
     /// </summary>
     public abstract class CustomSingleton<T> : MonoBehaviour where T : MonoBehaviour
     {
-        public static T Instance { get; private set; }
+        public static T Instance { get; protected set; }
 
         [SerializeField] private bool dontDestroyOnLoad;
-
-#if UNITY_EDITOR
-        [UnityEditor.InitializeOnEnterPlayMode]
-        private static void ResetStatics() => Instance = null;
-#endif
 
         protected virtual void Awake()
         {
