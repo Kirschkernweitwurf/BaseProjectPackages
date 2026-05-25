@@ -8,15 +8,16 @@ using UnityEngine;
 namespace Base.SaveSystemPackage.Slots
 {
     /// <summary>
-    /// Every save creates a new entry. Ids are time-ordered so listing newest-first
-    /// is trivial. Optionally caps the number of saves and prunes the oldest beyond the cap.
+    /// Every save creates a new entry. Ids are time-ordered so listing newest-first is trivial.
+    /// Optionally caps the number of saves and prunes the oldest beyond the cap.
     /// </summary>
     public sealed class AppendingSlotProvider : ISaveSlotProvider
     {
         private readonly ISaveReader _reader;
         private readonly ISaveWriter _writer;
-        private readonly int _maxSaves; // 0 = unlimited
+        private readonly int _maxSaves;
 
+        public ESlotModel Model => ESlotModel.Appending;
         public bool SupportsNewSlots => true;
 
         public AppendingSlotProvider(ISaveReader reader, ISaveWriter writer, int maxSaves = 0)
@@ -39,7 +40,11 @@ namespace Base.SaveSystemPackage.Slots
             return slots;
         }
 
-        public string CreateNewSlotId() => $"save_{DateTime.UtcNow.Ticks:D19}_{Guid.NewGuid():N}"[..33];
+        public bool TryResolveSaveTarget(string selectedSlotId, out string slotId)
+        {
+            slotId = CreateNewSlotId();
+            return true;
+        }
 
         public async Awaitable EnforcePolicyAsync(string savedSlotId, CancellationToken ct = default)
         {
@@ -50,5 +55,7 @@ namespace Base.SaveSystemPackage.Slots
             for (int i = _maxSaves; i < slots.Count; i++)
                 await _writer.DeleteAsync(slots[i].Id, ct);
         }
+
+        private static string CreateNewSlotId() => $"save_{DateTime.UtcNow.Ticks:D19}_{Guid.NewGuid():N}"[..33];
     }
 }

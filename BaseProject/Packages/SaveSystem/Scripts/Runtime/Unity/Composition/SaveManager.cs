@@ -19,6 +19,7 @@ namespace Base.SaveSystemPackage.Unity.Composition
         public ISaveSystem SaveSystem { get; private set; }
         public ISavableRegistry Savables { get; private set; }
         public ISaveSlotProvider Slots { get; private set; }
+        public SaveSlotSelection Selection { get; private set; }
 
         public bool HasShutDown { get; private set; }
 
@@ -33,6 +34,7 @@ namespace Base.SaveSystemPackage.Unity.Composition
             SaveSystem = bundle.System;
             Savables = bundle.Registry;
             Slots = bundle.Slots;
+            Selection = bundle.Selection;
 
             CustomLogger.Log($"SaveSystem ready. Model: {settings.SlotModel}. " +
                              $"Encrypt-on-write: {settings.ShouldEncryptOnWrite()}.", this);
@@ -60,6 +62,7 @@ namespace Base.SaveSystemPackage.Unity.Composition
             SaveSystem = null;
             Savables = null;
             Slots = null;
+            Selection = null;
 
             if (system != null)
                 await system.FlushAsync();

@@ -9,12 +9,14 @@ using UnityEngine;
 namespace Base.SaveSystemPackage.Slots
 {
     /// <summary>
-    /// Unlimited named slots. "Save as new" mints a fresh id; saving to an existing id overwrites it.
+    /// Unlimited named slots. With no selection a save mints a fresh id; with a selection it
+    /// overwrites that slot.
     /// </summary>
     public sealed class NamedSlotProvider : ISaveSlotProvider
     {
         private readonly ISaveReader _reader;
 
+        public ESlotModel Model => ESlotModel.Named;
         public bool SupportsNewSlots => true;
 
         public NamedSlotProvider(ISaveReader reader) =>
@@ -33,9 +35,15 @@ namespace Base.SaveSystemPackage.Slots
             return slots;
         }
 
-        public string CreateNewSlotId() => Guid.NewGuid().ToString("N");
+        public bool TryResolveSaveTarget(string selectedSlotId, out string slotId)
+        {
+            slotId = string.IsNullOrEmpty(selectedSlotId) ? CreateNewSlotId() : selectedSlotId;
+            return true;
+        }
 
         public async Awaitable EnforcePolicyAsync(string savedSlotId, CancellationToken ct = default) =>
             await Task.CompletedTask;
+
+        private static string CreateNewSlotId() => Guid.NewGuid().ToString("N");
     }
 }

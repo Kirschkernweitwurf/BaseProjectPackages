@@ -9,23 +9,22 @@ using UnityEngine;
 namespace Base.SaveSystemPackage.Unity.Buttons
 {
     /// <summary>
-    /// Writes the current game state. With a slot assigned it overwrites that slot; with none it
-    /// mints a new slot via the provider (the Appending and Named models). Captures a screenshot
-    /// and stamps play time if those services are present.
+    /// Writes the current game state to the slot the active model resolves. With
+    /// <see cref="forceNewSlot"/> the selection is ignored so the model mints a new slot, giving a
+    /// "New Save" button alongside an "Overwrite selected" button. Captures a screenshot and stamps
+    /// play time when those services are present.
     /// </summary>
     public sealed class SaveGameButton : SaveSlotButtonBase
     {
+        [Tooltip("Ignore the current selection and ask the model for a new slot.")]
+        [SerializeField] private bool forceNewSlot;
+
         protected override async Awaitable OnClickAsync(CancellationToken ct)
         {
-            string slotId = slot != null
-                ? slot.UniqueId
-                : Slots.SupportsNewSlots
-                    ? Slots.CreateNewSlotId()
-                    : null;
-
-            if (slotId == null)
+            string selected = forceNewSlot ? null : Selection.SelectedSlotId;
+            if (!Slots.TryResolveSaveTarget(selected, out string slotId))
             {
-                CustomLogger.LogWarning("Save button has no slot and the slot model has no free slots.", this);
+                CustomLogger.LogWarning($"The {Slots.Model} model could not resolve a save target.", this);
                 return;
             }
 
@@ -44,7 +43,8 @@ namespace Base.SaveSystemPackage.Unity.Buttons
 
             await Saves.SaveAsync(new SaveRequest(slotId, displayName: null, playSeconds, shot), ct);
             await Slots.EnforcePolicyAsync(slotId, ct);
-            CustomLogger.Log("Saved game successfully.", this);
+            Selection.Select(slotId);
+            CustomLogger.Log($"Saved game to slot '{slotId}'.", this);
         }
     }
 }
