@@ -7,10 +7,9 @@ using Base.SaveSystemPackage.Serialization;
 using Base.SaveSystemPackage.Slots;
 using Base.SaveSystemPackage.Storage;
 using Base.SaveSystemPackage.System;
-using Base.SaveSystemPackage.Unity.Composition;
 using UnityEngine;
 
-namespace Base.SaveSystemPackage
+namespace Base.SaveSystemPackage.Unity.Composition
 {
     /// <summary>
     /// Builds a ready-to-use save system. The caller does NOT decide which storage to use; the
@@ -19,8 +18,14 @@ namespace Base.SaveSystemPackage
     /// </summary>
     public static class SaveSystemFactory
     {
-        public static Bundle Create(SaveSystemSettings settings,
-            IReadOnlyList<ISaveMigration> migrations = null)
+        /// <summary>
+        /// Builds a save system with reasonable defaults, configurable through <paramref name="settings"/>.
+        /// </summary>
+        /// <param name="settings">The settings to configure the system. If <c>null</c>, defaults will be used.</param>
+        /// <param name="migrations">Optional migrations to run when the system
+        /// detects an older save version. If <c>null</c>, no migrations will run.</param>
+        /// <returns>A bundle of save system components ready to use.</returns>
+        public static Bundle Create(SaveSystemSettings settings, IReadOnlyList<ISaveMigration> migrations = null)
         {
             settings ??= new SaveSystemSettings();
 
@@ -32,8 +37,9 @@ namespace Base.SaveSystemPackage
 
             ISaveSystem system = new SaveSystem(storage, codec, registry, settings.SaveVersion, migrations);
             ISaveSlotProvider slots = BuildSlotProvider(settings, system);
+            SaveSlotSelection selection = new();
 
-            return new Bundle(system, registry, slots);
+            return new Bundle(system, registry, slots, selection);
         }
 
         private static ISaveSlotProvider BuildSlotProvider(SaveSystemSettings settings, ISaveSystem system)

@@ -8,16 +8,17 @@ using UnityEngine;
 namespace Base.SaveSystemPackage.Slots
 {
     /// <summary>
-    /// A fixed number of numbered slots (slot_0 … slot_{count-1}). The player overwrites a chosen
-    /// slot in place; new slots cannot be minted. Empty slots still appear in the list so a menu
-    /// can show "Empty".
+    /// A fixed number of numbered slots (slot_1, slot_2). A save overwrites a selected
+    /// slot in place; new slots cannot be minted. Empty slots still appear so a menu can show them.
     /// </summary>
     public sealed class FixedSlotProvider : ISaveSlotProvider
     {
-        private readonly ISaveReader _reader;
-        private readonly IReadOnlyList<string> _ids;
-
+        public ESlotModel Model => ESlotModel.Fixed;
         public bool SupportsNewSlots => false;
+
+        private readonly ISaveReader _reader;
+        private readonly HashSet<string> _ids;
+        private readonly IReadOnlyList<string> _orderedIds;
 
         public FixedSlotProvider(ISaveReader reader, int count)
         {
@@ -28,23 +29,27 @@ namespace Base.SaveSystemPackage.Slots
             string[] ids = new string[count];
             for (int i = 0; i < count; i++)
                 ids[i] = SlotId(i);
-            _ids = ids;
+
+            _orderedIds = ids;
+            _ids = new HashSet<string>(ids);
         }
 
-        /// <summary>The id for slot index <paramref name="index"/>; use it as the SaveRequest slot id.</summary>
         public static string SlotId(int index) => $"slot_{index}";
 
         public async Awaitable<IReadOnlyList<SlotInfo>> ListSlotsAsync(CancellationToken ct = default)
         {
-            List<SlotInfo> slots = new(_ids.Count);
-            foreach (string id in _ids)
+            List<SlotInfo> slots = new(_orderedIds.Count);
+            foreach (string id in _orderedIds)
                 slots.Add(new SlotInfo(id, await _reader.LoadMetadataAsync(id, ct)));
 
             return slots;
         }
 
-        public string CreateNewSlotId() =>
-            throw new InvalidOperationException("The fixed slot model has a set number of slots; pick one to overwrite.");
+        public bool TryResolveSaveTarget(string selectedSlotId, out string slotId)
+        {
+            slotId = selectedSlotId;
+            return !string.IsNullOrEmpty(selectedSlotId) && _ids.Contains(selectedSlotId);
+        }
 
         public async Awaitable EnforcePolicyAsync(string savedSlotId, CancellationToken ct = default) =>
             await Task.CompletedTask;

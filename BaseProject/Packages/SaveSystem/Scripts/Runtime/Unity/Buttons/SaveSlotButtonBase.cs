@@ -1,9 +1,9 @@
 using System;
 using System.Threading;
 using Base.SaveSystemPackage.Slots;
+using Base.SaveSystemPackage.System;
 using Base.SaveSystemPackage.Unity.Composition;
 using Base.SystemsCorePackage.Services;
-using Base.UtilityPackage.Identification;
 using Base.UtilityPackage.Logging;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,16 +12,14 @@ namespace Base.SaveSystemPackage.Unity.Buttons
 {
     /// <summary>
     /// Base for save-related buttons. Handles busy state, service resolution and cancellation.
-    /// Subclasses implement the specific action. The slot reference is optional: with one assigned
-    /// the button acts on that slot; without one, a save button can mint a new slot via the provider.
+    /// Subclasses implement the specific action. Slot identity is read from the runtime
+    /// <see cref="SaveSlotSelection"/>, not from an authored asset.
     /// </summary>
     public abstract class SaveSlotButtonBase : MonoBehaviour
     {
-        [Tooltip("Which save slot this button acts on. Leave empty on a Save button to create a new slot.")]
-        [SerializeField] protected UniqueIdScriptableObject slot;
-
         protected ISaveSystem Saves { get; private set; }
         protected ISaveSlotProvider Slots { get; private set; }
+        protected SaveSlotSelection Selection { get; private set; }
 
         private bool _busy;
         private Button _button;
@@ -45,13 +43,14 @@ namespace Base.SaveSystemPackage.Unity.Buttons
         /// <summary>What this specific button does.</summary>
         protected abstract Awaitable OnClickAsync(CancellationToken ct);
 
-        /// <summary>Resolve the id of an existing slot this button targets, or null with a warning.</summary>
-        protected string RequireAssignedSlotId()
+        /// <summary>The selected slot id, or <c>null</c> with a warning when none is selected.</summary>
+        protected string RequireSelectedSlotId()
         {
-            if (slot != null)
-                return slot.UniqueId;
+            string slotId = Selection.SelectedSlotId;
+            if (!string.IsNullOrEmpty(slotId))
+                return slotId;
 
-            CustomLogger.LogWarning("This button needs a SaveSlot assigned.", this);
+            CustomLogger.LogWarning("No save slot is selected.", this);
             return null;
         }
 
@@ -73,7 +72,6 @@ namespace Base.SaveSystemPackage.Unity.Buttons
             }
             catch (OperationCanceledException)
             {
-                // Button destroyed mid-action; nothing to do.
             }
             catch (Exception e)
             {
@@ -90,7 +88,7 @@ namespace Base.SaveSystemPackage.Unity.Buttons
 
         private bool EnsureServices()
         {
-            if (Saves != null && Slots != null)
+            if (Saves != null && Slots != null && Selection != null)
                 return true;
 
             if (!ServiceLocator.TryGet(out SaveManager manager))
@@ -101,7 +99,8 @@ namespace Base.SaveSystemPackage.Unity.Buttons
 
             Saves = manager.SaveSystem;
             Slots = manager.Slots;
-            return Saves != null && Slots != null;
+            Selection = manager.Selection;
+            return Saves != null && Slots != null && Selection != null;
         }
 
         private void SetInteractable(bool value)

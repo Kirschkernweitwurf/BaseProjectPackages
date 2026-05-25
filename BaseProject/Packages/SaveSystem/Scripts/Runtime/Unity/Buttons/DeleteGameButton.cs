@@ -4,17 +4,20 @@ using UnityEngine;
 
 namespace Base.SaveSystemPackage.Unity.Buttons
 {
-    /// <summary>Deletes the assigned slot's data, metadata and screenshot.</summary>
+    /// <summary>Deletes the selected slot's data, metadata and screenshot.</summary>
     public sealed class DeleteGameButton : SaveSlotButtonBase
     {
         protected override async Awaitable OnClickAsync(CancellationToken ct)
         {
-            string slotId = RequireAssignedSlotId();
+            string slotId = RequireSelectedSlotId();
             if (slotId == null)
                 return;
 
             await Saves.DeleteAsync(slotId, ct);
-            CustomLogger.Log("Save slot deleted successfully.", this);
+            if (Selection.SelectedSlotId == slotId)
+                Selection.Clear();
+
+            CustomLogger.Log($"Deleted slot '{slotId}'.", this);
         }
     }
 }
