@@ -17,6 +17,13 @@ namespace Base.SaveSystemPackage.Savable
             if (savable == null || _items.Contains(savable))
                 return;
 
+            if (savable.SaveId.IsEmpty)
+            {
+                CustomLogger.LogWarning("A savable was registered with an empty SaveId. " +
+                                        "Each savable must expose a valid SaveId. Skipping registration.", null);
+                return;
+            }
+
             if (_items.Any(s => s.SaveId == savable.SaveId))
             {
                 CustomLogger.LogWarning($"A savable with SaveId '{savable.SaveId}' is already registered. " +

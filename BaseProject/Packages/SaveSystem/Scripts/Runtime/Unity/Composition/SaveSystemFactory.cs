@@ -7,9 +7,10 @@ using Base.SaveSystemPackage.Serialization;
 using Base.SaveSystemPackage.Slots;
 using Base.SaveSystemPackage.Storage;
 using Base.SaveSystemPackage.System;
+using Base.SaveSystemPackage.Unity.Composition;
 using UnityEngine;
 
-namespace Base.SaveSystemPackage.Unity.Composition
+namespace Base.SaveSystemPackage
 {
     /// <summary>
     /// Builds a ready-to-use save system. The caller does NOT decide which storage to use; the
@@ -18,14 +19,8 @@ namespace Base.SaveSystemPackage.Unity.Composition
     /// </summary>
     public static class SaveSystemFactory
     {
-        /// <summary>
-        /// Builds a save system with reasonable defaults, configurable through <paramref name="settings"/>.
-        /// </summary>
-        /// <param name="settings">The settings to configure the system. If <c>null</c>, defaults will be used.</param>
-        /// <param name="migrations">Optional migrations to run when the system
-        /// detects an older save version. If <c>null</c>, no migrations will run.</param>
-        /// <returns>A bundle of save system components ready to use.</returns>
-        public static Bundle Create(SaveSystemSettings settings, IReadOnlyList<ISaveMigration> migrations = null)
+        public static Bundle Create(SaveSystemSettings settings,
+            IReadOnlyList<ISaveMigration> migrations = null)
         {
             settings ??= new SaveSystemSettings();
 

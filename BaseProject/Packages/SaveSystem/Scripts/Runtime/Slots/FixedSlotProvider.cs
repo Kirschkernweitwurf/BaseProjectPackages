@@ -8,17 +8,17 @@ using UnityEngine;
 namespace Base.SaveSystemPackage.Slots
 {
     /// <summary>
-    /// A fixed number of numbered slots (slot_1, slot_2). A save overwrites a selected
+    /// A fixed number of numbered slots (slot_0 … slot_{count-1}). A save overwrites a selected
     /// slot in place; new slots cannot be minted. Empty slots still appear so a menu can show them.
     /// </summary>
     public sealed class FixedSlotProvider : ISaveSlotProvider
     {
-        public ESlotModel Model => ESlotModel.Fixed;
-        public bool SupportsNewSlots => false;
-
         private readonly ISaveReader _reader;
         private readonly HashSet<string> _ids;
         private readonly IReadOnlyList<string> _orderedIds;
+
+        public ESlotModel Model => ESlotModel.Fixed;
+        public bool SupportsNewSlots => false;
 
         public FixedSlotProvider(ISaveReader reader, int count)
         {

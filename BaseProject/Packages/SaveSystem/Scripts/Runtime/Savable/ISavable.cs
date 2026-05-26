@@ -10,7 +10,7 @@ namespace Base.SaveSystemPackage.Savable
         /// <summary>
         /// Stable, unique key inside the save file. Never change it once shipped.
         /// </summary>
-        string SaveId { get; }
+        SaveId SaveId { get; }
 
         /// <summary>
         /// Higher priority runs first on both save and load.
