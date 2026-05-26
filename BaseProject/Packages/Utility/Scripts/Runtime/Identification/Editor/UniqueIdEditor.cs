@@ -1,3 +1,4 @@
+#if  UNITY_EDITOR
 using UnityEditor;
 
 namespace Base.UtilityPackage.Identification.Editor
@@ -21,3 +22,4 @@ namespace Base.UtilityPackage.Identification.Editor
         }
     }
 }
+#endif

@@ -1,21 +1,20 @@
 using System;
 using System.Collections.Generic;
-using Base.SaveSystemPackage.Savable;
+using Base.SaveSystemPackage.Unity.Composition;
+using Base.SystemsCorePackage.Services;
 using Base.SystemsCorePackage.Tracking;
 using UnityEngine;
 
-namespace Base.SaveSystemPackage.Example
+namespace Base.SaveSystemPackage.Savable.Example
 {
     /// <summary>
-    /// The decoupled save handler. It knows how to read/write the PlayerManager's
-    /// state, registers itself, and owns its own JSON format. The manager stays clean.
-    ///
-    /// You would new this up once (e.g. in your bootstrap) and keep it alive.
+    /// Example save handler for <see cref="PlayerManager"/>. Owns the player's save format and maps
+    /// between the manager and that format, keeping gameplay code free of persistence concerns.
+    /// Resolves the savable registry from the <see cref="SaveManager"/> service and registers
+    /// itself for its lifetime.
     /// </summary>
-    public sealed class PlayerSaveHandler : MonoBehaviour, ISavable, IDisposable
+    public sealed class PlayerSaveHandler : MonoBehaviour, ISavable
     {
-        // The shape we actually serialize. Separate from the manager so the save
-        // format can evolve without touching gameplay code.
         [Serializable]
         private struct State
         {
@@ -25,18 +24,25 @@ namespace Base.SaveSystemPackage.Example
             public List<string> inventory;
         }
 
-        private readonly PlayerManager _player;
+        public SaveId SaveId => Id;
+        public EPriority Priority => EPriority.High;
 
-        public string SaveId => "player";          // stable key, never change once shipped
-        public EPriority Priority => EPriority.High; // loads/saves before lower-priority systems
+        private static readonly SaveId Id = new("player");
 
-        public PlayerSaveHandler(PlayerManager player)
+        private PlayerManager _player;
+        private ISavableRegistry _registry;
+
+        private void Start()
         {
-            _player = player;
-            SavableRegistry.Register(this);
+            if (!ServiceLocator.TryGet(out SaveManager saveManager))
+                return;
+
+            _player = new PlayerManager();
+            _registry = saveManager.Savables;
+            _registry.Register(this);
         }
 
-        public void Dispose() => SavableRegistry.Deregister(this);
+        private void OnDestroy() => _registry?.Deregister(this);
 
         public string Serialize()
         {
@@ -53,7 +59,7 @@ namespace Base.SaveSystemPackage.Example
         public void Deserialize(string json)
         {
             if (string.IsNullOrEmpty(json))
-                return; // no saved data for the player yet -> keep defaults
+                return;
 
             State state = JsonUtility.FromJson<State>(json);
             _player.Level = state.level;

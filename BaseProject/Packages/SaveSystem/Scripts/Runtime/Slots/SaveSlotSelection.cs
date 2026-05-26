@@ -9,18 +9,19 @@ namespace Base.SaveSystemPackage.Slots
     /// </summary>
     public sealed class SaveSlotSelection
     {
-        /// <summary>Raised whenever the selection changes, including when cleared.</summary>
-        public event Action<string> OnChanged;
-
         /// <summary>The selected slot id, or <c>null</c> when nothing is selected.</summary>
         public string SelectedSlotId { get; private set; }
+
+        /// <summary>Raised whenever the selection changes, including when cleared.</summary>
+        public event Action<string> Changed;
+
         public void Select(string slotId)
         {
             if (SelectedSlotId == slotId)
                 return;
 
             SelectedSlotId = slotId;
-            OnChanged?.Invoke(slotId);
+            Changed?.Invoke(slotId);
         }
 
         public void Clear() => Select(null);
