@@ -28,7 +28,7 @@ namespace Base.ToolPackage.Editor.AssetZoo.Editor
         /// <summary>
         /// Opens the zoo builder window without a config.
         /// </summary>
-        [MenuItem("Tools/Asset Zoo/Open Zoo Builder")]
+        [MenuItem("Tools/Base Packages/Asset Zoo/Open Zoo Builder", priority = 2)]
         public static void Open() => Open(null);
 
         public static void Open(ZooConfig config)
