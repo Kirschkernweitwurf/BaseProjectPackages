@@ -12,7 +12,7 @@ namespace Base.UtilityPackage.Identification.Editor
     /// </summary>
     public static class IdGenerator
     {
-        [MenuItem("Tools/Editor/Generate Unique IDs")]
+        [MenuItem("Tools/Base Packages/Identifier/Generate Unique IDs", priority = 2)]
         public static void GenerateIdsForPlaceables()
         {
             string[] guids = AssetDatabase.FindAssets("t:ScriptableObject");
