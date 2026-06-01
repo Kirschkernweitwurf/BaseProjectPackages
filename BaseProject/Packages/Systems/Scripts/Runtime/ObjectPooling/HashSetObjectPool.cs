@@ -17,12 +17,22 @@ namespace Base.SystemsCorePackage.ObjectPooling
         /// <summary>
         /// The number of available objects in the pool.
         /// </summary>
-        public int AvailableCount => _available.Count;
+        public int AvailableCount => AvailableObjects.Count;
 
         /// <summary>
         /// The number of active (in-use) objects from the pool.
         /// </summary>
-        public int ActiveCount => _inUse.Count;
+        public int ActiveCount => ActiveObjects.Count;
+
+        /// <summary>
+        /// The set of currently available (not in use) objects in the pool.
+        /// </summary>
+        public HashSet<T> AvailableObjects { get; }
+
+        /// <summary>
+        /// The set of currently active (in use) objects from the pool.
+        /// </summary>
+        public HashSet<T> ActiveObjects { get; }
 
         /// <summary>
         /// The prefab used to instantiate new objects.
@@ -35,8 +45,6 @@ namespace Base.SystemsCorePackage.ObjectPooling
         protected readonly Transform Parent;
 
         private readonly Action<T> _resetAction;
-        private readonly HashSet<T> _available;
-        private readonly HashSet<T> _inUse;
 
         public HashSetObjectPool(T prefab, Transform parent = null, Action<T> resetAction = null)
         {
@@ -51,8 +59,8 @@ namespace Base.SystemsCorePackage.ObjectPooling
 
             _resetAction = resetAction;
 
-            _available = new HashSet<T>();
-            _inUse = new HashSet<T>();
+            AvailableObjects = new HashSet<T>();
+            ActiveObjects = new HashSet<T>();
         }
 
         /// <summary>
@@ -65,12 +73,12 @@ namespace Base.SystemsCorePackage.ObjectPooling
         {
             element = null;
 
-            foreach (T instance in _available)
+            foreach (T instance in AvailableObjects)
             {
-                _available.Remove(instance);
+                AvailableObjects.Remove(instance);
                 ActivateObject(instance);
                 element = instance;
-                _inUse.Add(instance);
+                ActiveObjects.Add(instance);
                 return true;
             }
 
@@ -83,7 +91,7 @@ namespace Base.SystemsCorePackage.ObjectPooling
 
             ActivateObject(newInstance);
             element = newInstance;
-            _inUse.Add(newInstance);
+            ActiveObjects.Add(newInstance);
             return true;
         }
 
@@ -106,14 +114,14 @@ namespace Base.SystemsCorePackage.ObjectPooling
                 return;
             }
 
-            if (!_available.Add(element))
+            if (!AvailableObjects.Add(element))
             {
                 CustomLogger.LogError("Attempted to release an element that is already in the pool.", element);
                 return;
             }
 
             _resetAction?.Invoke(element);
-            _inUse.Remove(element);
+            ActiveObjects.Remove(element);
             DeactivateObject(element);
         }
 
@@ -149,8 +157,8 @@ namespace Base.SystemsCorePackage.ObjectPooling
         /// </summary>
         public void ReleaseAll()
         {
-            T[] inUseArray = new T[_inUse.Count];
-            _inUse.CopyTo(inUseArray);
+            T[] inUseArray = new T[ActiveObjects.Count];
+            ActiveObjects.CopyTo(inUseArray);
 
             foreach (T element in inUseArray)
                 Release(element);
@@ -161,7 +169,7 @@ namespace Base.SystemsCorePackage.ObjectPooling
         /// </summary>
         /// <param name="element">The element to check for.</param>
         /// <returns><c>true</c> if the pool contains the element; otherwise, <c>false</c>.</returns>
-        public bool Contains(T element) => _inUse.Contains(element) || _available.Contains(element);
+        public bool Contains(T element) => ActiveObjects.Contains(element) || AvailableObjects.Contains(element);
 
         protected virtual T CreateInstance()
         {

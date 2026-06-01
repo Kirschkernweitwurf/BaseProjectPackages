@@ -8,7 +8,15 @@ using UnityEngine.InputSystem;
 
 namespace Base.SystemsCorePackage.Input
 {
-    [DefaultExecutionOrder(-98)]
+    /// <summary>
+    /// Scene-level manager of input action maps. Action maps can be registered with a priority and the manager will
+    /// enable the highest-priority map while disabling all others.
+    /// The base package's input actions are always registered at a priority below any consumer maps,
+    /// so they can be used for global actions like pausing or opening a menu.
+    /// The manager also tracks whether the cursor is currently over a UI element,
+    /// which can be used to block input when the player is interacting with the UI.
+    /// </summary>
+    [DefaultExecutionOrder(-97)]
     public class InputManager : GameServiceBehaviour
     {
         // ReSharper disable once UnusedAutoPropertyAccessor.Global
