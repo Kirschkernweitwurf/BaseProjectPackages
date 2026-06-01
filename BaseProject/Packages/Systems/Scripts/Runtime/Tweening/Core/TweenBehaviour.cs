@@ -10,8 +10,10 @@ namespace Base.SystemsCorePackage.Tweening.Core
     /// </summary>
     public abstract class TweenBehaviour<T> : TweenBehaviourBase, IShutdownHandler
     {
+        /// <inheritdoc/>
         public override event Action OnFinished;
 
+        /// <inheritdoc/>
         public override event Action OnKilled;
 
         [field: Tooltip("The settings for the tween.")]
@@ -78,6 +80,12 @@ namespace Base.SystemsCorePackage.Tweening.Core
             OnKilled?.Invoke();
         }
 
+        public override void ResetToDefault()
+        {
+            Stop();
+            ApplyValue(DefaultValue);
+        }
+
         /// <summary>
         /// Sets the delay of the tween to the specified value.
         /// </summary>
@@ -124,7 +132,7 @@ namespace Base.SystemsCorePackage.Tweening.Core
 
         /// <summary>
         /// Called when the currently active tween instance completes naturally.
-        /// This method handles loop logic and only fires OnFinished when the behaviour is truly done.
+        /// This method handles loop logic and only fires OnFinished when the behavior is truly done.
         /// </summary>
         private void HandleTweenComplete(TweenBase completedTween)
         {

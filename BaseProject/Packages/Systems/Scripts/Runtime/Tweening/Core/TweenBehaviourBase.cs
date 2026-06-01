@@ -9,6 +9,18 @@ namespace Base.SystemsCorePackage.Tweening.Core
     public abstract class TweenBehaviourBase : MonoBehaviour
     {
         /// <summary>
+        /// Fired when the behavior has fully finished (after loops / ping-pong / restarts are done,
+        /// or after <c>Stop(complete: true)</c>).
+        /// </summary>
+        public abstract event Action OnFinished;
+
+        /// <summary>
+        /// Fired whenever the behavior stops, regardless of whether it completed or was killed.
+        /// Always fires after <c>OnFinished</c> when both apply.
+        /// </summary>
+        public abstract event Action OnKilled;
+
+        /// <summary>
         /// The currently active Tween instance (may be null).
         /// </summary>
         public abstract TweenBase ActiveTween { get; }
@@ -29,15 +41,9 @@ namespace Base.SystemsCorePackage.Tweening.Core
         public abstract void Stop(bool complete = false);
 
         /// <summary>
-        /// Fired when the behavior has fully finished (after loops / ping-pong / restarts are done,
-        /// or after <c>Stop(complete: true)</c>).
+        /// Stops the behavior and snaps the tweened property back to its cached default
+        /// (the value captured on Awake).
         /// </summary>
-        public abstract event Action OnFinished;
-
-        /// <summary>
-        /// Fired whenever the behavior stops, regardless of whether it completed or was killed.
-        /// Always fires after <c>OnFinished</c> when both apply.
-        /// </summary>
-        public abstract event Action OnKilled;
+        public abstract void ResetToDefault();
     }
 }
