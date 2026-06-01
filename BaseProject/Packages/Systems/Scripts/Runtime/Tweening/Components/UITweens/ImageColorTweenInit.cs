@@ -9,11 +9,8 @@ namespace Base.SystemsCorePackage.Tweening.Components.UITweens
     /// Tweens the color of a UI Image.
     /// </summary>
     [RequireComponent(typeof(Image))]
-    public sealed class ImageColorTween : TweenBehaviour<Color>
+    public sealed class ImageColorTweenInit : TweenBehaviour<Color>
     {
-        [SerializeField, Tooltip("The starting color to tween from.")]
-        private Color startColor = Color.white;
-
         [SerializeField, Tooltip("The target color to tween to.")]
         private Color targetColor = Color.white;
 
@@ -32,8 +29,8 @@ namespace Base.SystemsCorePackage.Tweening.Components.UITweens
 
         protected override TweenBase CreateTween(bool isReversed)
         {
-            Color from = isReversed ? targetColor : startColor;
-            Color to = isReversed ? startColor : targetColor;
+            Color from = isReversed ? targetColor : DefaultValue;
+            Color to = isReversed ? DefaultValue : targetColor;
 
             return new Tween<Color>(
                 to: to,

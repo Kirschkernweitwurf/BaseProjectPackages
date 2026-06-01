@@ -20,6 +20,65 @@ namespace Base.UtilityPackage.Collections
         private bool _isDirty = true;
 
         /// <summary>
+        /// Gets the number of key-value pairs contained in the dictionary.
+        /// </summary>
+        public int Count
+        {
+            get
+            {
+                EnsureDictionary();
+                return _dict.Count;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the value associated with the specified key.
+        /// </summary>
+        /// <param name="key">The key of the value to get or set.</param>
+        /// <returns>The value associated with the key.</returns>
+        public TValue this[TKey key]
+        {
+            get
+            {
+                EnsureDictionary();
+                return _dict[key];
+            }
+            set
+            {
+                if (TryGetEntryIndex(key, out int index))
+                    entries[index] = new SerializableDictionaryEntry<TKey, TValue>(key, value);
+                else
+                    entries.Add(new SerializableDictionaryEntry<TKey, TValue>(key, value));
+
+                SetDirty();
+            }
+        }
+
+        /// <summary>
+        /// Gets an enumerable collection of the keys contained in the dictionary.
+        /// </summary>
+        public IEnumerable<TKey> Keys
+        {
+            get
+            {
+                EnsureDictionary();
+                return _dict.Keys;
+            }
+        }
+
+        /// <summary>
+        /// Gets an enumerable collection of the values contained in the dictionary.
+        /// </summary>
+        public IEnumerable<TValue> Values
+        {
+            get
+            {
+                EnsureDictionary();
+                return _dict.Values;
+            }
+        }
+
+        /// <summary>
         /// Adds a new key-value pair to the dictionary.
         /// </summary>
         /// <param name="key">The key to add.</param>
@@ -74,47 +133,12 @@ namespace Base.UtilityPackage.Collections
         }
 
         /// <summary>
-        /// Gets the number of key-value pairs contained in the dictionary.
-        /// </summary>
-        public int Count
-        {
-            get
-            {
-                EnsureDictionary();
-                return _dict.Count;
-            }
-        }
-
-        /// <summary>
         /// Removes all entries from the dictionary.
         /// </summary>
         public void Clear()
         {
             entries.Clear();
             SetDirty();
-        }
-
-        /// <summary>
-        /// Gets or sets the value associated with the specified key.
-        /// </summary>
-        /// <param name="key">The key of the value to get or set.</param>
-        /// <returns>The value associated with the key.</returns>
-        public TValue this[TKey key]
-        {
-            get
-            {
-                EnsureDictionary();
-                return _dict[key];
-            }
-            set
-            {
-                if (TryGetEntryIndex(key, out int index))
-                    entries[index] = new SerializableDictionaryEntry<TKey, TValue>(key, value);
-                else
-                    entries.Add(new SerializableDictionaryEntry<TKey, TValue>(key, value));
-
-                SetDirty();
-            }
         }
 
         /// <summary>
