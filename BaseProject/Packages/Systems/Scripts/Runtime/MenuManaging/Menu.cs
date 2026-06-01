@@ -62,7 +62,9 @@ namespace Base.SystemsCorePackage.MenuManaging
         public bool HasShutDown { get; private set; }
 
         private readonly List<MenuIdentifier> _childMenuIdentifiers = new();
+
         private Menu _parentMenu;
+        private IMenuResettable[] _resettables;
 
         protected virtual void Awake()
         {
@@ -70,6 +72,8 @@ namespace Base.SystemsCorePackage.MenuManaging
 
             if (ServiceLocator.TryGet(out MenuManager menuManager))
                 menuManager.RegisterMenu(this);
+
+            CacheResettables();
 
             if (MenuIdentifier == null)
                 CustomLogger.LogWarning("Menu has no MenuIdentifier assigned.", this);
@@ -175,6 +179,7 @@ namespace Base.SystemsCorePackage.MenuManaging
             {
                 contentRoot.OnFinished -= HandleCloseComplete;
                 contentRoot.SetVisibility(false);
+                ResetChildren();
                 CleanupMenuState(closingMenuIdentifier);
                 OnClosed();
             }
@@ -268,6 +273,29 @@ namespace Base.SystemsCorePackage.MenuManaging
             }
 
             _childMenuIdentifiers.Add(childMenuIdentifierToRegister);
+        }
+
+        private void CacheResettables()
+        {
+            IMenuResettable[] found = GetComponentsInChildren<IMenuResettable>(includeInactive: true);
+            List<IMenuResettable> filtered = new(found.Length);
+
+            foreach (IMenuResettable resettable in found)
+            {
+                // Skip the content root: its open/close animation is driven by the menu itself.
+                if (ReferenceEquals(resettable, contentRoot))
+                    continue;
+
+                filtered.Add(resettable);
+            }
+
+            _resettables = filtered.ToArray();
+        }
+
+        private void ResetChildren()
+        {
+            foreach (IMenuResettable resettable in _resettables)
+                resettable?.ResetState();
         }
     }
 }

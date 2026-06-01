@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Base.SystemsCorePackage.MenuManaging;
 using Base.SystemsCorePackage.Services.Shutdown;
 using Base.SystemsCorePackage.Tweening.Core;
 using Base.SystemsCorePackage.Tweening.Core.Data;
@@ -12,7 +13,7 @@ namespace Base.SystemsCorePackage.Tweening.Components.System
     /// Groups multiple tweens together to play them as one sequence or in parallel.
     /// Provides instant-hide initialization and forward/reverse playback.
     /// </summary>
-    public sealed class TweenGroup : MonoBehaviour, IShutdownHandler
+    public sealed class TweenGroup : MonoBehaviour, IShutdownHandler, IMenuResettable
     {
         [Tooltip("The list of TweenBehaviours included in this group.")]
         [SerializeField] private List<TweenBehaviourBase> tweenBehaviours = new();
@@ -164,6 +165,14 @@ namespace Base.SystemsCorePackage.Tweening.Components.System
                     return true;
 
             return false;
+        }
+
+        public void ResetState()
+        {
+            Stop();
+
+            foreach (TweenBehaviourBase behaviour in tweenBehaviours)
+                behaviour?.ResetToDefault();
         }
     }
 }

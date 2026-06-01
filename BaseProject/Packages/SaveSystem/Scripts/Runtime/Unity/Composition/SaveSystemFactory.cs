@@ -19,8 +19,7 @@ namespace Base.SaveSystemPackage
     /// </summary>
     public static class SaveSystemFactory
     {
-        public static Bundle Create(SaveSystemSettings settings,
-            IReadOnlyList<ISaveMigration> migrations = null)
+        public static Bundle Create(SaveSystemSettings settings, IReadOnlyList<ISaveMigration> migrations = null)
         {
             settings ??= new SaveSystemSettings();
 
