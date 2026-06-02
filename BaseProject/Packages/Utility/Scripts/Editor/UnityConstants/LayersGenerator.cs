@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using System.Collections.Generic;
 using System.Text;
 using Base.UtilityPackage.Logging;
@@ -44,3 +45,4 @@ namespace Base.UtilityPackage.Editor.UnityConstants
         }
     }
 }
+#endif
