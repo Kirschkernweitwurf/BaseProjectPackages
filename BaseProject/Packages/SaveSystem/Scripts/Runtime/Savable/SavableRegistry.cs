@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Collections.Generic;
+using Base.UtilityPackage.Identification;
 using Base.UtilityPackage.Logging;
 
 namespace Base.SaveSystemPackage.Savable
@@ -17,17 +18,18 @@ namespace Base.SaveSystemPackage.Savable
             if (savable == null || _items.Contains(savable))
                 return;
 
-            if (savable.SaveId.IsEmpty)
+            if (savable.PersistentKey.IsEmpty)
             {
-                CustomLogger.LogWarning("A savable was registered with an empty SaveId. " +
-                                        "Each savable must expose a valid SaveId. Skipping registration.", null);
+                CustomLogger.LogWarning("A savable was registered with an empty PersistentKey. " +
+                                        "Each savable must expose a valid PersistentKey. Skipping registration.", null);
                 return;
             }
 
-            if (_items.Any(s => s.SaveId == savable.SaveId))
+            if (_items.Any(s => s.PersistentKey == savable.PersistentKey))
             {
-                CustomLogger.LogWarning($"A savable with SaveId '{savable.SaveId}' is already registered. " +
-                                        "Each savable must have a unique SaveId. Skipping registration.", null);
+                CustomLogger.LogWarning($"A savable with {nameof(PersistentKey)} '{savable.PersistentKey}'" +
+                                        " is already registered. Each savable must have a unique key." +
+                                        " Skipping registration.", null);
                 return;
             }
 

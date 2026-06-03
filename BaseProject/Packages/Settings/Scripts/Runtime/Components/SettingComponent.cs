@@ -1,5 +1,6 @@
 using Base.SettingsPackage.Core;
 using Base.SystemsCorePackage.Services;
+using Base.UtilityPackage.Identification;
 using UnityEngine;
 
 namespace Base.SettingsPackage.Components
@@ -12,7 +13,7 @@ namespace Base.SettingsPackage.Components
     public abstract class SettingComponent : MonoBehaviour
     {
         /// <summary>The key under which this component registers its setting.</summary>
-        public abstract string Key { get; }
+        public abstract PersistentKey Key { get; }
 
         /// <summary>
         /// The setting backing this component, or null until <see cref="Awake"/> has resolved the context.
@@ -76,7 +77,7 @@ namespace Base.SettingsPackage.Components
         }
 
         /// <summary>Creates the typed setting bound to the given store.</summary>
-        protected abstract TSetting CreateSetting(ISettingsStore store, string key, TValue defaultValue);
+        protected abstract TSetting CreateSetting(ISettingsStore store, PersistentKey key, TValue defaultValue);
 
         /// <summary>Applies a value to whatever the setting controls.</summary>
         protected abstract void Apply(TValue value);

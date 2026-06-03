@@ -1,4 +1,5 @@
 using Base.SettingsPackage.Display;
+using Base.UtilityPackage.Identification;
 using UnityEngine;
 
 namespace Base.SettingsPackage.Components
@@ -14,7 +15,7 @@ namespace Base.SettingsPackage.Components
         [SerializeField] private int defaultQualityLevel = -1;
 
         /// <inheritdoc/>
-        public override string Key => "Quality";
+        public override PersistentKey Key => new("Quality");
 
         /// <inheritdoc/>
         protected override int DefaultValue =>

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Base.UtilityPackage.Identification;
 
 namespace Base.SaveSystemPackage.Savable
 {
@@ -9,7 +10,9 @@ namespace Base.SaveSystemPackage.Savable
     /// </summary>
     public interface ISavableRegistry
     {
-        /// <summary>Register a savable. Ignored if already present or if its SaveId is taken.</summary>
+        /// <summary>
+        /// Register a savable. Ignored if already present or if its <see cref="PersistentKey"/> is taken.
+        /// </summary>
         void Register(ISavable savable);
 
         /// <summary>Remove a savable, e.g. when it is destroyed.</summary>

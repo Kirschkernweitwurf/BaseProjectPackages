@@ -1,4 +1,5 @@
 using Base.SettingsPackage.Display;
+using Base.UtilityPackage.Identification;
 using UnityEngine;
 
 namespace Base.SettingsPackage.Components
@@ -14,7 +15,7 @@ namespace Base.SettingsPackage.Components
         [SerializeField, Range(0, 4)] private int defaultVSyncCount = 1;
 
         /// <inheritdoc/>
-        public override string Key => "VSync";
+        public override PersistentKey Key => new("VSync");
 
         /// <inheritdoc/>
         protected override int DefaultValue => defaultVSyncCount;

@@ -1,4 +1,5 @@
 using Base.SettingsPackage.Display;
+using Base.UtilityPackage.Identification;
 using UnityEngine;
 
 namespace Base.SettingsPackage.Components
@@ -12,7 +13,7 @@ namespace Base.SettingsPackage.Components
     public sealed class ResolutionSetting : StringSettingComponent
     {
         /// <inheritdoc/>
-        public override string Key => "Resolution";
+        public override PersistentKey Key => new("Resolution");
 
         /// <inheritdoc/>
         protected override string DefaultValue => ResolutionProvider.GetCurrentResolutionLabel();

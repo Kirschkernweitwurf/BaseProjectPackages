@@ -1,4 +1,5 @@
 using System;
+using Base.UtilityPackage.Identification;
 
 namespace Base.SettingsPackage.Core
 {
@@ -7,16 +8,17 @@ namespace Base.SettingsPackage.Core
     public sealed class EnumSetting<TEnum> : Setting<TEnum> where TEnum : struct, Enum
     {
         /// <summary>Creates an enum setting.</summary>
-        public EnumSetting(ISettingsStore store, string key, TEnum defaultValue)
+        public EnumSetting(ISettingsStore store, PersistentKey key, TEnum defaultValue)
             : base(store, key, defaultValue) { }
 
         /// <inheritdoc/>
         protected override TEnum Read(ISettingsStore store, TEnum fallback)
         {
-            return (TEnum)Enum.ToObject(typeof(TEnum), store.GetInt(Key, Convert.ToInt32(fallback)));
+            return (TEnum)Enum.ToObject(typeof(TEnum), store.GetInt(Key.Value, Convert.ToInt32(fallback)));
         }
 
         /// <inheritdoc/>
-        protected override void Write(ISettingsStore store, TEnum value) => store.SetInt(Key, Convert.ToInt32(value));
+        protected override void Write(ISettingsStore store, TEnum value)
+            => store.SetInt(Key.Value, Convert.ToInt32(value));
     }
 }

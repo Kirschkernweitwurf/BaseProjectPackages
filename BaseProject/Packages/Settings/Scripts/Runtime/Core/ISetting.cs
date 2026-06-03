@@ -1,3 +1,5 @@
+using Base.UtilityPackage.Identification;
+
 namespace Base.SettingsPackage.Core
 {
     /// <summary>
@@ -7,7 +9,7 @@ namespace Base.SettingsPackage.Core
     public interface ISetting
     {
         /// <summary>Unique key used to identify and persist the setting.</summary>
-        string Key { get; }
+        PersistentKey Key { get; }
 
         /// <summary>Loads the value from the backing store and notifies listeners.</summary>
         void Load();

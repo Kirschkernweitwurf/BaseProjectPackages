@@ -3,7 +3,7 @@ using UnityEngine;
 namespace Base.SystemsCorePackage.MenuManaging.Identifier
 {
     /// <summary>
-    /// Holds references to all <see cref="MenuIdentifier"/> assets in the project so theycan be resolved at runtime.
+    /// Holds references to all <see cref="MenuIdentifier"/> assets in the project so they can be resolved at runtime.
     /// </summary>
     [CreateAssetMenu(fileName = "MenuIdentifierRegistry",
         menuName = "ScriptableObjects/Menus/Menu Identifier Registry")]

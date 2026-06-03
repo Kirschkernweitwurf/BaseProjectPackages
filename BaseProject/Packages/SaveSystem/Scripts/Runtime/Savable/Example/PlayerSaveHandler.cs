@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Base.SaveSystemPackage.Unity.Composition;
 using Base.SystemsCorePackage.Services;
 using Base.SystemsCorePackage.Tracking;
+using Base.UtilityPackage.Identification;
 using UnityEngine;
 
 namespace Base.SaveSystemPackage.Savable.Example
@@ -24,10 +25,11 @@ namespace Base.SaveSystemPackage.Savable.Example
             public List<string> inventory;
         }
 
-        public SaveId SaveId => Id;
+        public PersistentKey PersistentKey => Key;
+
         public EPriority Priority => EPriority.High;
 
-        private static readonly SaveId Id = new("player");
+        private static readonly PersistentKey Key = new("player");
 
         private PlayerManager _player;
         private ISavableRegistry _registry;
