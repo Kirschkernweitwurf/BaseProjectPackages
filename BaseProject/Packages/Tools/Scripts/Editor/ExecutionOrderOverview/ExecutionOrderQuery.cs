@@ -11,16 +11,16 @@ namespace Base.ToolPackage.Editor.ExecutionOrderOverview
     public static class ExecutionOrderQuery
     {
         /// <summary>
-        /// Filters by package visibility and a name/namespace search term, then sorts by
-        /// effective order with the type name as a tie-breaker.
+        /// Optionally hides everything outside the project, applies a name/namespace search
+        /// term, then sorts by effective order with the type name as a tie-breaker.
         /// </summary>
         public static IReadOnlyList<ExecutionOrderEntry> Apply(IReadOnlyList<ExecutionOrderEntry> entries,
-            string search, bool includePackages, bool ascending)
+            string search, bool includeExternal, bool ascending)
         {
             IEnumerable<ExecutionOrderEntry> query = entries;
 
-            if (!includePackages)
-                query = query.Where(entry => !entry.IsPackage);
+            if (!includeExternal)
+                query = query.Where(entry => entry.Origin == ScriptOrigin.Project);
 
             if (!string.IsNullOrWhiteSpace(search))
             {

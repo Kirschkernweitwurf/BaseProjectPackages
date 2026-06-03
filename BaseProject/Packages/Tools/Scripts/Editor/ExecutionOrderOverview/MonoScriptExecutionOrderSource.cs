@@ -7,11 +7,12 @@ namespace Base.ToolPackage.Editor.ExecutionOrderOverview
 {
     /// <summary>
     /// Default source that reads execution orders from all runtime MonoScripts, covering
-    /// both project scripts and package scripts in a single fast call.
+    /// project scripts, package scripts and Unity's built-in scripts in a single call.
     /// </summary>
     public sealed class MonoScriptExecutionOrderSource : IExecutionOrderSource
     {
         private const string PackagePrefix = "Packages/";
+        private const string ProjectPrefix = "Assets/";
 
         /// <inheritdoc />
         public IReadOnlyList<ExecutionOrderEntry> Collect()
@@ -38,13 +39,26 @@ namespace Base.ToolPackage.Editor.ExecutionOrderOverview
 
                 int attributeOrder = hasAttribute ? attribute.order : 0;
                 string assetPath = AssetDatabase.GetAssetPath(script);
-                bool isPackage = assetPath.StartsWith(PackagePrefix, StringComparison.Ordinal);
+                ScriptOrigin origin = ClassifyOrigin(assetPath);
 
-                entries.Add(new ExecutionOrderEntry(script, type, assetPath, isPackage, hasAttribute,
-                    attributeOrder, projectOrder));
+                entries.Add(new ExecutionOrderEntry(script, type, assetPath, origin, attributeOrder, projectOrder));
             }
 
             return entries;
+        }
+
+        private static ScriptOrigin ClassifyOrigin(string assetPath)
+        {
+            if (string.IsNullOrEmpty(assetPath))
+                return ScriptOrigin.BuiltIn;
+
+            if (assetPath.StartsWith(PackagePrefix, StringComparison.Ordinal))
+                return ScriptOrigin.Package;
+
+            if (assetPath.StartsWith(ProjectPrefix, StringComparison.Ordinal))
+                return ScriptOrigin.Project;
+
+            return ScriptOrigin.BuiltIn;
         }
     }
 }

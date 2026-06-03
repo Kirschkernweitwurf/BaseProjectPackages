@@ -5,7 +5,8 @@ namespace Base.ToolPackage.Editor.ExecutionOrderOverview
 {
     /// <summary>
     /// Computes the column rectangles for a single row so the header and the rows stay
-    /// aligned. The layout is derived purely from the supplied row rectangle.
+    /// aligned. Order is pinned left, the source badge is pinned right, and the name and
+    /// namespace share the remaining width.
     /// </summary>
     public readonly struct ExecutionOrderColumnLayout
     {
@@ -18,29 +19,33 @@ namespace Base.ToolPackage.Editor.ExecutionOrderOverview
         /// <summary>Type namespace.</summary>
         public Rect Namespace { get; }
 
-        /// <summary>Optional package marker.</summary>
-        public Rect Package { get; }
+        /// <summary>Source badge (pkg / lib).</summary>
+        public Rect Badge { get; }
 
         /// <summary>Builds the column rectangles inside the given row.</summary>
         public ExecutionOrderColumnLayout(Rect row)
         {
-            const float padding = 4f;
+            const float padding = 6f;
+            const float orderWidth = 50f;
+            const float badgeWidth = 38f;
+
             float height = EditorGUIUtility.singleLineHeight;
             float y = row.y + (row.height - height) * 0.5f;
-            float x = row.x + padding;
+            float left = row.x + padding;
+            float right = row.xMax - padding;
 
-            Order = new Rect(x, y, 55f, height);
-            x += 60f;
+            Order = new Rect(left, y, orderWidth, height);
+            Badge = new Rect(right - badgeWidth, y, badgeWidth, height);
 
-            float nameWidth = Mathf.Max(150f, row.width * 0.30f);
-            Name = new Rect(x, y, nameWidth, height);
-            x += nameWidth + padding;
+            float fieldsLeft = Order.xMax + padding;
+            float fieldsRight = Badge.x - padding;
+            float fieldsWidth = Mathf.Max(0f, fieldsRight - fieldsLeft);
 
-            float namespaceWidth = Mathf.Max(90f, row.width * 0.22f);
-            Namespace = new Rect(x, y, namespaceWidth, height);
-            x += namespaceWidth + padding;
+            float nameWidth = fieldsWidth * 0.45f;
+            Name = new Rect(fieldsLeft, y, nameWidth, height);
 
-            Package = new Rect(x, y, 40f, height);
+            float namespaceLeft = Name.xMax + padding;
+            Namespace = new Rect(namespaceLeft, y, Mathf.Max(0f, fieldsRight - namespaceLeft), height);
         }
     }
 }
