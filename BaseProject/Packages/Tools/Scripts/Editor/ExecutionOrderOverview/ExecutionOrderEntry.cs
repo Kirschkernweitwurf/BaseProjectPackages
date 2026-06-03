@@ -25,11 +25,8 @@ namespace Base.ToolPackage.Editor.ExecutionOrderOverview
         /// <summary>Project-relative asset path of the script.</summary>
         public string AssetPath { get; }
 
-        /// <summary>True when the script lives under the Packages folder.</summary>
-        public bool IsPackage { get; }
-
-        /// <summary>True when the type carries a DefaultExecutionOrder attribute.</summary>
-        public bool HasAttribute { get; }
+        /// <summary>Where the script's source lives.</summary>
+        public ScriptOrigin Origin { get; }
 
         /// <summary>Order requested by the attribute, or zero when absent.</summary>
         public int AttributeOrder { get; }
@@ -44,22 +41,16 @@ namespace Base.ToolPackage.Editor.ExecutionOrderOverview
         public int EffectiveOrder => ProjectOrder != 0 ? ProjectOrder : AttributeOrder;
 
         /// <summary>Creates an entry. <paramref name="type"/> supplies the name and namespace.</summary>
-        public ExecutionOrderEntry(MonoScript script, Type type, string assetPath, bool isPackage,
-            bool hasAttribute, int attributeOrder, int projectOrder)
+        public ExecutionOrderEntry(MonoScript script, Type type, string assetPath, ScriptOrigin origin, int attributeOrder, int projectOrder)
         {
             Script = script;
             Type = type;
             Name = type.Name;
             Namespace = string.IsNullOrEmpty(type.Namespace) ? "-" : type.Namespace;
             AssetPath = assetPath;
-            IsPackage = isPackage;
-            HasAttribute = hasAttribute;
+            Origin = origin;
             AttributeOrder = attributeOrder;
             ProjectOrder = projectOrder;
         }
-
-        /// <summary>Returns a copy with a different project order, leaving this instance unchanged.</summary>
-        public ExecutionOrderEntry WithProjectOrder(int projectOrder) => new(Script, Type, AssetPath, IsPackage,
-            HasAttribute, AttributeOrder, projectOrder);
     }
 }

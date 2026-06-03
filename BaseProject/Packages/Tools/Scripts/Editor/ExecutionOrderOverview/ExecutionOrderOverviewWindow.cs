@@ -18,18 +18,20 @@ namespace Base.ToolPackage.Editor.ExecutionOrderOverview
 
         private IExecutionOrderSource _source;
         private GUIStyle _orderStyle;
+        private GUIStyle _countStyle;
+        private GUIStyle _badgeStyle;
         private string _search = string.Empty;
-        private bool _includePackages = true;
+        private bool _includeExternal = true;
         private bool _ascending = true;
         private bool _needsRebuild = true;
         private Vector2 _scroll;
 
         /// <summary>Opens or focuses the window from the Tools menu.</summary>
-        [MenuItem("Tools/Base Packages/Execution Order Overview", priority = 2)]
+        [MenuItem("Tools/Base Packages/Code Health/Execution Order Overview", priority = 2)]
         private static void Open()
         {
             ExecutionOrderOverviewWindow window = GetWindow<ExecutionOrderOverviewWindow>("Execution Order");
-            window.minSize = new Vector2(620f, 320f);
+            window.minSize = new Vector2(520f, 320f);
             window.Show();
         }
 
@@ -51,23 +53,21 @@ namespace Base.ToolPackage.Editor.ExecutionOrderOverview
             DrawList();
         }
 
-        private static void DrawHeader()
-        {
-            Rect row = GUILayoutUtility.GetRect(0f, RowHeight, GUILayout.ExpandWidth(true));
-            EditorGUI.DrawRect(row, new Color(0f, 0f, 0f, 0.12f));
-
-            ExecutionOrderColumnLayout columns = new(row);
-            GUIStyle style = EditorStyles.miniBoldLabel;
-            GUI.Label(columns.Order, "Order", style);
-            GUI.Label(columns.Name, "Script", style);
-            GUI.Label(columns.Namespace, "Namespace", style);
-        }
-
         private static void OpenEntry(ExecutionOrderEntry entry)
         {
-            int line = ScriptDefinitionLocator.FindLine(entry.Script, entry.Type);
-            AssetDatabase.OpenAsset(entry.Script, line);
+            (int line, int column) = ScriptDefinitionLocator.Find(entry.Script, entry.Type);
+            AssetDatabase.OpenAsset(entry.Script, line, column);
             EditorGUIUtility.PingObject(entry.Script);
+        }
+
+        private static GUIContent OriginBadge(ScriptOrigin origin)
+        {
+            return origin switch
+            {
+                ScriptOrigin.Package => new GUIContent("pkg", "This script lives in a package"),
+                ScriptOrigin.BuiltIn => new GUIContent("lib", "This script is built into Unity"),
+                _ => null
+            };
         }
 
         private void EnsureStyles()
@@ -76,6 +76,8 @@ namespace Base.ToolPackage.Editor.ExecutionOrderOverview
                 return;
 
             _orderStyle = new GUIStyle(EditorStyles.boldLabel) { alignment = TextAnchor.MiddleRight };
+            _countStyle = new GUIStyle(EditorStyles.miniLabel) { alignment = TextAnchor.MiddleRight, fixedHeight = 0f };
+            _badgeStyle = new GUIStyle(EditorStyles.miniLabel) { alignment = TextAnchor.MiddleRight };
         }
 
         private void Rebuild()
@@ -89,7 +91,7 @@ namespace Base.ToolPackage.Editor.ExecutionOrderOverview
         private void RunQuery()
         {
             _filtered.Clear();
-            _filtered.AddRange(ExecutionOrderQuery.Apply(_all, _search, _includePackages, _ascending));
+            _filtered.AddRange(ExecutionOrderQuery.Apply(_all, _search, _includeExternal, _ascending));
         }
 
         private void DrawToolbar()
@@ -99,21 +101,32 @@ namespace Base.ToolPackage.Editor.ExecutionOrderOverview
                 EditorGUI.BeginChangeCheck();
 
                 _search = GUILayout.TextField(_search, EditorStyles.toolbarSearchField, GUILayout.MinWidth(160f));
-                _includePackages = GUILayout.Toggle(_includePackages, "Include packages", EditorStyles.toolbarButton);
+                _includeExternal = GUILayout.Toggle(_includeExternal, "Include external", EditorStyles.toolbarButton);
 
-                if (GUILayout.Button(_ascending ? "Order \u2191" : "Order \u2193", EditorStyles.toolbarButton,
-                        GUILayout.Width(72f)))
+                if (GUILayout.Button(_ascending ? "Order \u2191" : "Order \u2193", EditorStyles.toolbarButton, GUILayout.Width(72f)))
                     _ascending = !_ascending;
 
                 if (EditorGUI.EndChangeCheck())
                     RunQuery();
 
                 GUILayout.FlexibleSpace();
-                GUILayout.Label($"{_filtered.Count} scripts", EditorStyles.miniLabel);
+                GUILayout.Label($"{_filtered.Count} scripts", _countStyle, GUILayout.ExpandHeight(true));
 
                 if (GUILayout.Button("Refresh", EditorStyles.toolbarButton, GUILayout.Width(64f)))
                     _needsRebuild = true;
             }
+        }
+
+        private void DrawHeader()
+        {
+            Rect row = GUILayoutUtility.GetRect(0f, RowHeight, GUILayout.ExpandWidth(true));
+            EditorGUI.DrawRect(row, new Color(0f, 0f, 0f, 0.12f));
+
+            ExecutionOrderColumnLayout columns = new(row);
+            GUIStyle style = EditorStyles.miniBoldLabel;
+            GUI.Label(columns.Order, "Order", style);
+            GUI.Label(columns.Name, "Script", style);
+            GUI.Label(columns.Namespace, "Namespace", style);
         }
 
         private void DrawList()
@@ -159,9 +172,9 @@ namespace Base.ToolPackage.Editor.ExecutionOrderOverview
 
             GUI.Label(columns.Namespace, entry.Namespace, EditorStyles.miniLabel);
 
-            if (entry.IsPackage)
-                GUI.Label(columns.Package, new GUIContent("pkg", "This script lives in a package"),
-                    EditorStyles.miniLabel);
+            GUIContent badge = OriginBadge(entry.Origin);
+            if (badge != null)
+                GUI.Label(columns.Badge, badge, _badgeStyle);
         }
     }
 }
