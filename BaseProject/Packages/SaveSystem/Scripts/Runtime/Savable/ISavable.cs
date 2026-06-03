@@ -1,4 +1,5 @@
 using Base.SystemsCorePackage.Tracking;
+using Base.UtilityPackage.Identification;
 
 namespace Base.SaveSystemPackage.Savable
 {
@@ -10,7 +11,7 @@ namespace Base.SaveSystemPackage.Savable
         /// <summary>
         /// Stable, unique key inside the save file. Never change it once shipped.
         /// </summary>
-        SaveId SaveId { get; }
+        PersistentKey PersistentKey { get; }
 
         /// <summary>
         /// Higher priority runs first on both save and load.
@@ -24,7 +25,7 @@ namespace Base.SaveSystemPackage.Savable
 
         /// <summary>
         /// Receive the state saved earlier. Gets <c>null</c> if this slot had no data
-        /// for this SaveId (e.g. a brand new savable).
+        /// for this <see cref="PersistentKey"/> (e.g. a brand new savable).
         /// </summary>
         void Deserialize(string state);
     }

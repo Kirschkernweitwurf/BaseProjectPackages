@@ -62,7 +62,7 @@ namespace Base.SaveSystemPackage.System
 
                 SaveBlob blob = new();
                 foreach (ISavable s in _registry.GetOrdered())
-                    blob.Add(s.SaveId.Value, s.Serialize() ?? string.Empty);
+                    blob.Add(s.PersistentKey.Value, s.Serialize() ?? string.Empty);
 
                 SaveMetadata meta = BuildMetadata(await LoadMetadataAsync(request.SlotId, ct), request);
 
@@ -122,7 +122,7 @@ namespace Base.SaveSystemPackage.System
                 return ESaveLoadResult.Corrupt;
 
             foreach (ISavable s in _registry.GetOrdered())
-                s.Deserialize(states.GetValueOrDefault(s.SaveId.Value));
+                s.Deserialize(states.GetValueOrDefault(s.PersistentKey.Value));
 
             return ESaveLoadResult.Success;
         }

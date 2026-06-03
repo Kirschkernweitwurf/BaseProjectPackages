@@ -1,4 +1,5 @@
 using Base.SettingsPackage.Display;
+using Base.UtilityPackage.Identification;
 using UnityEngine;
 
 namespace Base.SettingsPackage.Components
@@ -27,7 +28,7 @@ namespace Base.SettingsPackage.Components
             => availableModes[Mathf.Clamp(TypedSetting?.Value ?? defaultIndex, 0, availableModes.Length - 1)];
 
         /// <inheritdoc/>
-        public override string Key => "FullScreen";
+        public override PersistentKey Key => new("FullScreen");
 
         /// <inheritdoc/>
         protected override int DefaultValue => Mathf.Clamp(defaultIndex, 0, availableModes.Length - 1);

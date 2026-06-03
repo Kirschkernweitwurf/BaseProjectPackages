@@ -1,5 +1,6 @@
 using System;
 using Base.SettingsPackage.Core;
+using Base.UtilityPackage.Identification;
 
 namespace Base.SettingsPackage.Components
 {
@@ -9,7 +10,7 @@ namespace Base.SettingsPackage.Components
         where TEnum : struct, Enum
     {
         /// <inheritdoc/>
-        protected sealed override EnumSetting<TEnum> CreateSetting(ISettingsStore store, string key, TEnum defaultValue)
-            => new(store, key, defaultValue);
+        protected sealed override EnumSetting<TEnum> CreateSetting(ISettingsStore store, PersistentKey key,
+            TEnum defaultValue) => new(store, key, defaultValue);
     }
 }

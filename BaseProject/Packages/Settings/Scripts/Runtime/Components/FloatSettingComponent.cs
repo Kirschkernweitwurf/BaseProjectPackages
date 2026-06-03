@@ -1,4 +1,5 @@
 using Base.SettingsPackage.Core;
+using Base.UtilityPackage.Identification;
 
 namespace Base.SettingsPackage.Components
 {
@@ -6,7 +7,7 @@ namespace Base.SettingsPackage.Components
     public abstract class FloatSettingComponent : SettingComponent<float, FloatSetting>
     {
         /// <inheritdoc/>
-        protected sealed override FloatSetting CreateSetting(ISettingsStore store, string key, float defaultValue)
-            => new(store, key, defaultValue);
+        protected sealed override FloatSetting CreateSetting(ISettingsStore store, PersistentKey key,
+            float defaultValue) => new(store, key, defaultValue);
     }
 }

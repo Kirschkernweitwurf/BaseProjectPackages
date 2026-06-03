@@ -1,3 +1,4 @@
+using Base.UtilityPackage.Identification;
 using Base.UtilityPackage.Types;
 using UnityEngine;
 using UnityEngine.Audio;
@@ -23,7 +24,7 @@ namespace Base.SettingsPackage.Components
         [SerializeField, Range(0f, 1f)] private float defaultVolume = 0.7f;
 
         /// <inheritdoc/>
-        public override string Key => mixerParameter;
+        public override PersistentKey Key => new(mixerParameter);
 
         /// <inheritdoc/>
         protected override float DefaultValue => defaultVolume;

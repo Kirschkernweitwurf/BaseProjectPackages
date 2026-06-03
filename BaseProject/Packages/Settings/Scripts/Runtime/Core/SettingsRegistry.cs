@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Base.UtilityPackage.Identification;
 using Base.UtilityPackage.Logging;
 using UnityEngine;
 
@@ -13,7 +14,7 @@ namespace Base.SettingsPackage.Core
         /// <summary>All registered settings, in registration order.</summary>
         public IReadOnlyCollection<ISetting> Settings => _orderedSettings;
 
-        private readonly Dictionary<string, ISetting> _settingsByKey = new();
+        private readonly Dictionary<PersistentKey, ISetting> _settingsByKey = new();
         private readonly List<ISetting> _orderedSettings = new();
         private readonly ISettingsStore _store;
         private readonly Object _context;
@@ -49,13 +50,13 @@ namespace Base.SettingsPackage.Core
         }
 
         /// <summary>Returns whether a setting with the given key is registered.</summary>
-        public bool Contains(string key) => _settingsByKey.ContainsKey(key);
+        public bool Contains(PersistentKey key) => _settingsByKey.ContainsKey(key);
 
         /// <summary>
         /// Tries to resolve a setting by key as the requested type.
         /// Logs an error and returns false on a missing key or a type mismatch.
         /// </summary>
-        public bool TryGet<TSetting>(string key, out TSetting setting) where TSetting : class, ISetting
+        public bool TryGet<TSetting>(PersistentKey key, out TSetting setting) where TSetting : class, ISetting
         {
             setting = null;
 
@@ -74,7 +75,7 @@ namespace Base.SettingsPackage.Core
         }
 
         /// <summary>Resolves a setting by key as the requested type, or null if missing or mismatched.</summary>
-        public TSetting Get<TSetting>(string key) where TSetting : class, ISetting
+        public TSetting Get<TSetting>(PersistentKey key) where TSetting : class, ISetting
         {
             TryGet(key, out TSetting setting);
             return setting;

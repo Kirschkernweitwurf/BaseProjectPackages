@@ -1,4 +1,5 @@
 using System;
+using Base.UtilityPackage.Identification;
 
 namespace Base.SettingsPackage.Core
 {
@@ -13,7 +14,7 @@ namespace Base.SettingsPackage.Core
         public event Action<T> OnValueChanged;
 
         /// <inheritdoc/>
-        public string Key { get; }
+        public PersistentKey Key { get; }
 
         /// <summary>The value applied when nothing has been persisted yet or after a reset.</summary>
         public T DefaultValue { get; }
@@ -35,7 +36,7 @@ namespace Base.SettingsPackage.Core
         private T _savedValue;
 
         /// <summary>Creates a setting bound to a store with the given key and default value.</summary>
-        protected Setting(ISettingsStore store, string key, T defaultValue)
+        protected Setting(ISettingsStore store, PersistentKey key, T defaultValue)
         {
             _store = store;
             Key = key;

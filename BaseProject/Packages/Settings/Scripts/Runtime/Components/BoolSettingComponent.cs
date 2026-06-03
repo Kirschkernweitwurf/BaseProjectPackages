@@ -1,4 +1,5 @@
 using Base.SettingsPackage.Core;
+using Base.UtilityPackage.Identification;
 
 namespace Base.SettingsPackage.Components
 {
@@ -6,7 +7,7 @@ namespace Base.SettingsPackage.Components
     public abstract class BoolSettingComponent : SettingComponent<bool, BoolSetting>
     {
         /// <inheritdoc/>
-        protected sealed override BoolSetting CreateSetting(ISettingsStore store, string key, bool defaultValue)
+        protected sealed override BoolSetting CreateSetting(ISettingsStore store, PersistentKey key, bool defaultValue)
             => new(store, key, defaultValue);
     }
 }

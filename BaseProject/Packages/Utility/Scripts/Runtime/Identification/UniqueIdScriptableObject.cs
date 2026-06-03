@@ -11,17 +11,6 @@ namespace Base.UtilityPackage.Identification
     {
         [field: SerializeField, HideInInspector] public string UniqueId { get; private set; }
 
-        /// <summary>
-        /// Creates a new instance at runtime with a generated unique ID.
-        /// </summary>
-        /// <returns>>A new instance with a unique ID.</returns>
-        public static UniqueIdScriptableObject CreateRuntime()
-        {
-            UniqueIdScriptableObject slot = CreateInstance<UniqueIdScriptableObject>();
-            slot.RegenerateId();
-            return slot;
-        }
-
         /// <inheritdoc/>
         public void RegenerateId()
         {

@@ -1,6 +1,7 @@
 using System;
 using Base.SettingsPackage.Core;
 using Base.SystemsCorePackage.Services;
+using Base.UtilityPackage.Identification;
 using Base.UtilityPackage.Logging;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -23,7 +24,7 @@ namespace Base.SettingsPackage.GUI
         [SerializeField] private LocalizedString description;
 
         /// <summary>Key of the setting this element binds to.</summary>
-        protected string SettingKey => settingKey;
+        protected PersistentKey SettingKey => new(settingKey);
 
         protected virtual void Start()
         {

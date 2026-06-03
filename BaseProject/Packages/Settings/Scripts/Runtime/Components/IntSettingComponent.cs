@@ -1,4 +1,5 @@
 using Base.SettingsPackage.Core;
+using Base.UtilityPackage.Identification;
 
 namespace Base.SettingsPackage.Components
 {
@@ -6,7 +7,7 @@ namespace Base.SettingsPackage.Components
     public abstract class IntSettingComponent : SettingComponent<int, IntSetting>
     {
         /// <inheritdoc/>
-        protected sealed override IntSetting CreateSetting(ISettingsStore store, string key, int defaultValue)
+        protected sealed override IntSetting CreateSetting(ISettingsStore store, PersistentKey key, int defaultValue)
             => new(store, key, defaultValue);
     }
 }
