@@ -1,5 +1,6 @@
 #if UNITY_EDITOR
 using UnityEditor;
+using UnityEngine;
 
 namespace Base.UtilityPackage.Identification.Editor
 {
@@ -10,13 +11,17 @@ namespace Base.UtilityPackage.Identification.Editor
     /// no checks on editor load, no checks when assets are imported,
     /// and no checks before a build. Turn it back on any time from the menu.
     /// <para/>
+    /// The value is saved to <c>ProjectSettings/UniqueIdSettings.asset</c>, so it is
+    /// shared through source control and applies to the whole team.
+    /// <para/>
     /// Toggle it from: <b>Tools/Base Packages/Identifier/Enable Unique IDs</b>.
     /// </summary>
-    public static class UniqueIdSettings
+    [FilePath("ProjectSettings/UniqueIdSettings.asset", FilePathAttribute.Location.ProjectFolder)]
+    public sealed class UniqueIdSettings : ScriptableSingleton<UniqueIdSettings>
     {
         private const string MenuPath = "Tools/Base Packages/Identifier/Enable Unique IDs";
 
-        private static string EnabledKey => $"Base.UniqueId.Enabled.{PlayerSettings.productGUID}";
+        [SerializeField] private bool enabled = true;
 
         /// <summary>
         /// True if the package is allowed to run its automatic validation.
@@ -24,13 +29,21 @@ namespace Base.UtilityPackage.Identification.Editor
         /// </summary>
         public static bool Enabled
         {
-            get => EditorPrefs.GetBool(EnabledKey, true);
-            private set => EditorPrefs.SetBool(EnabledKey, value);
+            get => instance.enabled;
+            private set
+            {
+                if (instance.enabled == value)
+                    return;
+
+                instance.enabled = value;
+                instance.Save(true);
+            }
         }
 
         [MenuItem(MenuPath, priority = 0)]
         private static void Toggle() => Enabled = !Enabled;
 
+        // Puts the checkmark next to the menu item when the package is on.
         [MenuItem(MenuPath, validate = true)]
         private static bool ToggleValidate()
         {
