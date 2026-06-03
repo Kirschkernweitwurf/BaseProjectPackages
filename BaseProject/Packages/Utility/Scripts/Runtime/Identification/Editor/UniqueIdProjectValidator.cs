@@ -22,6 +22,9 @@ namespace Base.UtilityPackage.Identification.Editor
         {
             EditorApplication.delayCall += () =>
             {
+                if (!UniqueIdSettings.Enabled)
+                    return;
+
                 if (SessionState.GetBool(UniqueIdValidatorRanOnce, false))
                     return;
 

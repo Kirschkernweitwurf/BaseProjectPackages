@@ -15,6 +15,9 @@ namespace Base.UtilityPackage.Identification.Editor
 
         public void OnPreprocessBuild(BuildReport report)
         {
+            if (!UniqueIdSettings.Enabled)
+                return;
+
             UniqueIdProjectValidator.RebuildAndFixAll();
             AssetDatabase.SaveAssets();
 
