@@ -14,6 +14,9 @@ namespace Base.UtilityPackage.Identification.Editor
         private static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets,
             string[] movedAssets, string[] movedFromAssetPaths)
         {
+            if (!UniqueIdSettings.Enabled)
+                return;
+
             foreach (string path in importedAssets)
             {
                 ScriptableObject asset = AssetDatabase.LoadAssetAtPath<ScriptableObject>(path);
