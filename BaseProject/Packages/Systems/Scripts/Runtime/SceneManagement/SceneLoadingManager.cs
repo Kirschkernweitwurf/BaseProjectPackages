@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using Base.AttributePackage;
 using Base.SystemsCorePackage.Services;
 using UnityEngine;
@@ -33,7 +34,7 @@ namespace Base.SystemsCorePackage.SceneManagement
             }
             catch (OperationCanceledException)
             {
-                // Expected when exiting play mode. Ignore.
+                // Expected when exiting play mode or when this manager is destroyed. Ignore.
             }
             catch (Exception e)
             {
@@ -50,7 +51,7 @@ namespace Base.SystemsCorePackage.SceneManagement
         public async Awaitable LoadSceneAsync(string sceneName, LoadSceneMode mode = LoadSceneMode.Additive)
         {
             await UnloadAllScenesAsync();
-            await LoadSceneInternalAsync(sceneName, mode);
+            await LoadSceneInternalAsync(sceneName, mode, destroyCancellationToken);
         }
 
         /// <summary>
@@ -58,7 +59,8 @@ namespace Base.SystemsCorePackage.SceneManagement
         /// </summary>
         /// <param name="sceneName">The name of the scene to load.</param>
         /// <param name="mode">The load scene mode (Single or Additive).</param>
-        private static async Awaitable LoadSceneInternalAsync(string sceneName, LoadSceneMode mode)
+        /// <param name="token">Cancellation token tied to the owner's lifetime, so the load aborts on destroy.</param>
+        private static async Awaitable LoadSceneInternalAsync(string sceneName, LoadSceneMode mode, CancellationToken token)
         {
             if (SceneManager.GetSceneByName(sceneName).isLoaded)
             {
@@ -78,7 +80,7 @@ namespace Base.SystemsCorePackage.SceneManagement
                 while (operation.progress < ProgressReportMax)
                 {
                     SceneLoadEvents.InvokeSceneLoadProgress(sceneName, operation.progress);
-                    await Awaitable.NextFrameAsync();
+                    await Awaitable.NextFrameAsync(token);
                 }
 
                 operation.allowSceneActivation = true;
@@ -86,7 +88,7 @@ namespace Base.SystemsCorePackage.SceneManagement
                 while (!operation.isDone)
                 {
                     SceneLoadEvents.InvokeSceneLoadProgress(sceneName, operation.progress);
-                    await Awaitable.NextFrameAsync();
+                    await Awaitable.NextFrameAsync(token);
                 }
 
                 success = true;
@@ -104,7 +106,7 @@ namespace Base.SystemsCorePackage.SceneManagement
                 return;
 
             if (!SceneManager.GetSceneByName(persistentSceneName).isLoaded)
-                await LoadSceneInternalAsync(persistentSceneName, LoadSceneMode.Additive);
+                await LoadSceneInternalAsync(persistentSceneName, LoadSceneMode.Additive, destroyCancellationToken);
 
             _persistentLoaded = true;
         }
@@ -136,7 +138,7 @@ namespace Base.SystemsCorePackage.SceneManagement
                 }
 
                 while (!unloadOp.isDone)
-                    await Awaitable.NextFrameAsync();
+                    await Awaitable.NextFrameAsync(destroyCancellationToken);
             }
         }
     }
