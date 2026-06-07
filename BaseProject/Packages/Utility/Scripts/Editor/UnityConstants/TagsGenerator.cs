@@ -12,7 +12,7 @@ namespace Base.UtilityPackage.Editor.UnityConstants
     /// </summary>
     public static class TagsGenerator
     {
-        [MenuItem("Tools/Base Packages/Code Generation/Generate Tags", priority = 2)]
+        [MenuItem("Tools/Base Packages/Code Generation/Generate Tags", priority = -25)]
         public static void Generate()
         {
             GeneratorUtility.EnsureFolderExists(GeneratorUtility.OutputFolder);

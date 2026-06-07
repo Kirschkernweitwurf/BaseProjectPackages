@@ -27,7 +27,7 @@ namespace Base.ToolPackage.Editor.ExecutionOrderOverview
         private Vector2 _scroll;
 
         /// <summary>Opens or focuses the window from the Tools menu.</summary>
-        [MenuItem("Tools/Base Packages/Code Health/Execution Order Overview", priority = 2)]
+        [MenuItem("Tools/Base Packages/Code Health/Execution Order Overview", priority = -25)]
         private static void Open()
         {
             ExecutionOrderOverviewWindow window = GetWindow<ExecutionOrderOverviewWindow>("Execution Order");

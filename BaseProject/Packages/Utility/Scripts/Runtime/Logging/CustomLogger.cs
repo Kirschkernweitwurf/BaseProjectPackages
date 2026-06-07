@@ -1,3 +1,4 @@
+using System.IO;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 
@@ -19,8 +20,8 @@ namespace Base.UtilityPackage.Logging
         /// <param name="filePath">Automatically filled by compiler to detect the calling class name.</param>
         public static void Log(string message, Object context, [CallerFilePath] string filePath = "")
         {
-            string className = System.IO.Path.GetFileNameWithoutExtension(filePath);
-            Debug.Log($"[{className}] {message}", context);
+            string className = Path.GetFileNameWithoutExtension(filePath);
+            Debug.Log(FormatMessage(message, className), context);
         }
 
         /// <summary>
@@ -31,8 +32,8 @@ namespace Base.UtilityPackage.Logging
         /// <param name="filePath">Automatically filled by compiler to detect the calling class name.</param>
         public static void LogWarning(string message, Object context, [CallerFilePath] string filePath = "")
         {
-            string className = System.IO.Path.GetFileNameWithoutExtension(filePath);
-            Debug.LogWarning($"[{className}] {message}", context);
+            string className = Path.GetFileNameWithoutExtension(filePath);
+            Debug.LogWarning(FormatMessage(message, className), context);
         }
 
         /// <summary>
@@ -43,8 +44,15 @@ namespace Base.UtilityPackage.Logging
         /// <param name="filePath">Automatically filled by compiler to detect the calling class name.</param>
         public static void LogError(string message, Object context, [CallerFilePath] string filePath = "")
         {
-            string className = System.IO.Path.GetFileNameWithoutExtension(filePath);
-            Debug.LogError($"[{className}] {message}", context);
+            string className = Path.GetFileNameWithoutExtension(filePath);
+            Debug.LogError(FormatMessage(message, className), context);
+        }
+
+        private static string FormatMessage(string message, string className)
+        {
+            string editorMarker = Platform.IsEditorMode() ? LogTextFormatter.EditorMarker : string.Empty;
+            string color = CustomLoggingUtils.GetColor(className);
+            return $"{editorMarker}<color={color}><b>[{className}]</b></color> {message}";
         }
     }
 }

@@ -48,7 +48,7 @@ namespace Base.SaveSystemPackage.Unity.Buttons
             await Saves.SaveAsync(new SaveRequest(slotId, displayName: null, playSeconds, shot), ct);
             await Slots.EnforcePolicyAsync(slotId, ct);
             Selection.Select(slotId);
-            CustomLogger.Log($"Saved game to slot '{slotId}'.", this);
+            Debug.Log($"Saved game to slot '{slotId}'.", this);
         }
 
         private bool TryResolveTarget(out string slotId)

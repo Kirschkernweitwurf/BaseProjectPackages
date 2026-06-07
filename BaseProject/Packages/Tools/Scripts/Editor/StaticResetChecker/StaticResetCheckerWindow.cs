@@ -118,7 +118,7 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
             DrawResults();
         }
 
-        [MenuItem("Tools/Base Packages/Code Health/Static Reset Checker", priority = 2)]
+        [MenuItem("Tools/Base Packages/Code Health/Static Reset Checker", priority = -25)]
         private static void Open()
         {
             StaticResetCheckerWindow w = GetWindow<StaticResetCheckerWindow>("Static Reset");
