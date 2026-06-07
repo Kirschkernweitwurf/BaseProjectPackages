@@ -7,7 +7,7 @@ using UnityEditor.Localization.Plugins.Google;
 using UnityEditor.Localization.Reporting;
 using UnityEngine;
 
-namespace Tools.Localization
+namespace Base.Localization
 {
     /// <summary>
     /// Syncs String Table Collections with Google Sheets based on the Google Sheets extension settings.

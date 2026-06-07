@@ -1,7 +1,7 @@
 #if UNITY_EDITOR
 using UnityEditor;
 
-namespace Tools.Localization
+namespace Base.Localization
 {
     /// <summary>
     /// Adds menu items to the Unity Editor for syncing String Table

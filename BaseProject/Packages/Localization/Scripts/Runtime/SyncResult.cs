@@ -1,5 +1,5 @@
 #if UNITY_EDITOR
-namespace Tools.Localization
+namespace Base.Localization
 {
     /// <summary>
     /// Result of a sync operation, indicating success or failure and an optional message.

@@ -1,8 +1,8 @@
 {
     "name": "Base.Localization",
-    "rootNamespace": "",
+    "rootNamespace": "Base.Localization",
     "references": [
-        "GUID:eec0964c48f6f4e40bc3ec2257ccf8c5"
+        "GUID:2e77701fe0ceda44fb763f03ee704c37"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
