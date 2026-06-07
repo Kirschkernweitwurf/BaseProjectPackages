@@ -2,7 +2,6 @@ using Base.SaveSystemPackage.Savable;
 using Base.SaveSystemPackage.Slots;
 using Base.SystemsCorePackage.Services;
 using Base.SystemsCorePackage.Services.Shutdown;
-using Base.UtilityPackage.Logging;
 using UnityEngine;
 
 namespace Base.SaveSystemPackage.Unity.Composition
@@ -36,7 +35,7 @@ namespace Base.SaveSystemPackage.Unity.Composition
             Slots = bundle.Slots;
             Selection = bundle.Selection;
 
-            CustomLogger.Log($"SaveSystem ready. Model: {settings.SlotModel}. " +
+            Debug.Log($"SaveSystem ready. Model: {settings.SlotModel}. " +
                              $"Encrypt-on-write: {settings.ShouldEncryptOnWrite()}.", this);
         }
 

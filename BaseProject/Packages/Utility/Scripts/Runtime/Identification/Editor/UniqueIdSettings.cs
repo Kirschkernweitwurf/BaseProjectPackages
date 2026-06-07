@@ -20,6 +20,7 @@ namespace Base.UtilityPackage.Identification.Editor
     public sealed class UniqueIdSettings : ScriptableSingleton<UniqueIdSettings>
     {
         private const string MenuPath = "Tools/Base Packages/Identifier/Enable Unique IDs";
+        private const int MenuPriority = -36;
 
         [SerializeField] private bool enabled = true;
 
@@ -40,11 +41,11 @@ namespace Base.UtilityPackage.Identification.Editor
             }
         }
 
-        [MenuItem(MenuPath, priority = 0)]
+        [MenuItem(MenuPath, priority = MenuPriority)]
         private static void Toggle() => Enabled = !Enabled;
 
         // Puts the checkmark next to the menu item when the package is on.
-        [MenuItem(MenuPath, validate = true)]
+        [MenuItem(MenuPath, validate = true, priority = MenuPriority)]
         private static bool ToggleValidate()
         {
             Menu.SetChecked(MenuPath, Enabled);

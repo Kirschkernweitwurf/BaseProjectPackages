@@ -6,6 +6,8 @@ namespace Base.UtilityPackage.Logging
     /// </summary>
     public static class LogTextFormatter
     {
+        public const string EditorMarker = "<color=#9E9E9E><i>editor</i></color> ";
+
         /// <summary>
         /// Makes text bold in Unity Console logs.
         /// </summary>

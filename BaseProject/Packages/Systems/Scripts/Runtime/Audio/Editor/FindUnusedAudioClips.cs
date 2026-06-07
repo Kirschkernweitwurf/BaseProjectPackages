@@ -22,7 +22,7 @@ namespace Base.SystemsCorePackage.Audio.Editor
         private Vector2 _scroll;
         private bool _hasScanned;
 
-        [MenuItem("Tools/Base Packages/Audio/Find Unused Audio Clips", priority = 2)]
+        [MenuItem("Tools/Base Packages/Audio/Find Unused Audio Clips", priority = -36)]
         public static void ShowWindow()
         {
             FindUnusedAudioClips window = GetWindow<FindUnusedAudioClips>("Unused Audio Clips Finder");

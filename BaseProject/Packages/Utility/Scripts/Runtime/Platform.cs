@@ -1,5 +1,8 @@
 // ReSharper disable ConvertToConstant.Global
 // ReSharper disable MemberCanBePrivate.Global
+
+using UnityEngine;
+
 namespace Base.UtilityPackage
 {
     /// <summary>
@@ -34,6 +37,12 @@ namespace Base.UtilityPackage
 #else
         public static readonly bool IsUnityEditor = false;
 #endif
+
+        /// <summary>
+        /// This method returns <c>true</c> if running in edit mode (not playing) inside the Unity Editor.
+        /// </summary>
+        /// <returns><c>true</c> if running in edit mode; otherwise, <c>false</c>.</returns>
+        public static bool IsEditorMode() => Application.isEditor && !Application.isPlaying;
 #endregion
 
 #region Runtime Platforms

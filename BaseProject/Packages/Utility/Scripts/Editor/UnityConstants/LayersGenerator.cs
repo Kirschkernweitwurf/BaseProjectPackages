@@ -1,7 +1,6 @@
 #if UNITY_EDITOR
 using System.Collections.Generic;
 using System.Text;
-using Base.UtilityPackage.Logging;
 using UnityEditor;
 using UnityEngine;
 
@@ -12,7 +11,7 @@ namespace Base.UtilityPackage.Editor.UnityConstants
     /// </summary>
     public static class LayersGenerator
     {
-        [MenuItem("Tools/Base Packages/Code Generation/Generate Layers", priority = 2)]
+        [MenuItem("Tools/Base Packages/Code Generation/Generate Layers", priority = -25)]
         public static void Generate()
         {
             GeneratorUtility.EnsureFolderExists(GeneratorUtility.OutputFolder);
@@ -41,7 +40,7 @@ namespace Base.UtilityPackage.Editor.UnityConstants
 
             GeneratorUtility.WriteFile("Layers.cs", sb.ToString());
             AssetDatabase.Refresh();
-            CustomLogger.Log("Layers generated in " + GeneratorUtility.OutputFolder, null);
+            Debug.Log("Layers generated in " + GeneratorUtility.OutputFolder, null);
         }
     }
 }

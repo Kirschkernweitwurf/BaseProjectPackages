@@ -1,6 +1,5 @@
 using System.Threading;
 using Base.SaveSystemPackage.Model;
-using Base.UtilityPackage.Logging;
 using UnityEngine;
 
 namespace Base.SaveSystemPackage.Unity.Buttons
@@ -15,7 +14,7 @@ namespace Base.SaveSystemPackage.Unity.Buttons
                 return;
 
             ESaveLoadResult result = await Saves.LoadAsync(slotId, ct);
-            CustomLogger.Log($"Load result for '{slotId}': {result}.", this);
+            Debug.Log($"Load result for '{slotId}': {result}.", this);
         }
     }
 }
