@@ -63,7 +63,7 @@ namespace Base.SystemsCorePackage.ObjectPooling
             base.ActivateObject(objectToEnable);
 
             if (_tweenCache.TryGetValue(objectToEnable, out TweenGroup tweenGroup))
-                tweenGroup.Play();
+                tweenGroup.Show();
         }
 
         /// <summary>
@@ -73,7 +73,7 @@ namespace Base.SystemsCorePackage.ObjectPooling
         protected override void DeactivateObject(T objectToDisable)
         {
             if (_tweenCache.TryGetValue(objectToDisable, out TweenGroup tweenGroup))
-                tweenGroup.Reverse();
+                tweenGroup.Hide();
 
             base.DeactivateObject(objectToDisable);
         }
