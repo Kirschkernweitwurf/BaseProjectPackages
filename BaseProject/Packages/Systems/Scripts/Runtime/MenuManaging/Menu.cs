@@ -9,6 +9,7 @@ using Base.SystemsCorePackage.Tweening.Components.System;
 using Base.SystemsCorePackage.Tracking;
 using UnityEngine;
 using Base.UtilityPackage.Logging;
+using UnityEngine.InputSystem;
 
 namespace Base.SystemsCorePackage.MenuManaging
 {
@@ -53,7 +54,7 @@ namespace Base.SystemsCorePackage.MenuManaging
         [SerializeField] private bool overrideActionMap;
 
         [Tooltip("The action map to switch to when this menu is opened.")]
-        [SerializeField] private InputActionMapReference actionMap;
+        [SerializeField] protected InputActionMapReference actionMap;
 
         [Tooltip("Menus that block this menu from opening if they are currently open.")]
         [SerializeField] private MenuIdentifier[] blockingMenus;
@@ -246,14 +247,15 @@ namespace Base.SystemsCorePackage.MenuManaging
 
         private void ApplySystemSettings()
         {
-            if (applyCustomCursorSettings)
-                ServiceLocator.Get<CursorManager>()?.CursorTracker.Add(cursorSettings, (uint)menuPriority, this);
+            if (applyCustomCursorSettings && ServiceLocator.TryGet(out CursorManager cursorManager))
+                cursorManager.CursorTracker.Add(cursorSettings, (uint)menuPriority, this);
 
-            if (applyCustomTimeScaleSettings)
-                ServiceLocator.Get<TimeScaleManager>()?.TimeScaleTracker.Add(timeScale, (uint)menuPriority, this);
+            if (applyCustomTimeScaleSettings && ServiceLocator.TryGet(out TimeScaleManager timeScaleManager))
+                timeScaleManager.TimeScaleTracker.Add(timeScale, (uint)menuPriority, this);
 
-            if (overrideActionMap && actionMap.IsValid)
-                ServiceLocator.Get<InputManager>()?.RegisterInputMap(actionMap, this, (uint)menuPriority);
+            if (overrideActionMap && actionMap.IsValid && ServiceLocator.TryGet(out InputManager inputManager)
+                && inputManager.TryResolveBaseMap(actionMap, out InputActionMap resolvedMap))
+                inputManager.RegisterInputMap(resolvedMap, this, (uint)menuPriority);
         }
 
         private void RegisterChildMenu(MenuIdentifier childMenuIdentifierToRegister)
