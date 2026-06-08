@@ -18,19 +18,19 @@ namespace Base.SystemsCorePackage.Tweening.Components.System
         public void OnPointerEnter(PointerEventData eventData)
         {
             if (eventType == EUIEventType.OnHover && tweenGroup != null)
-                tweenGroup.Play();
+                tweenGroup.Show();
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
             if (eventType == EUIEventType.OnHover && tweenGroup != null)
-                tweenGroup.Reverse();
+                tweenGroup.Hide();
         }
 
         public void OnPointerClick(PointerEventData eventData)
         {
             if (eventType == EUIEventType.OnClick && tweenGroup != null)
-                tweenGroup.Play();
+                tweenGroup.Show();
         }
     }
 }

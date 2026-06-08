@@ -6,6 +6,7 @@ using Base.SystemsCorePackage.Tweening.Core;
 using Base.SystemsCorePackage.Tweening.Core.Data;
 using UnityEngine;
 using Base.UtilityPackage.Logging;
+using UnityEngine.Serialization;
 
 namespace Base.SystemsCorePackage.Tweening.Components.System
 {
@@ -15,8 +16,12 @@ namespace Base.SystemsCorePackage.Tweening.Components.System
     /// </summary>
     public sealed class TweenGroup : MonoBehaviour, IShutdownHandler, IMenuResettable
     {
-        [Tooltip("The list of TweenBehaviours included in this group.")]
-        [SerializeField] private List<TweenBehaviourBase> tweenBehaviours = new();
+        [FormerlySerializedAs("tweenBehaviours")]
+        [Tooltip("The list of behaviours that should be played when showing the object.")]
+        [SerializeField] private List<TweenBehaviourBase> showTweenBehaviours = new();
+
+        [Tooltip("The list of behaviours that should be played when hiding the object.")]
+        [SerializeField] private List<TweenBehaviourBase> hideTweenBehaviours = new();
 
         [Header("Settings")]
         [Tooltip("If true, this group will auto-play once the object starts.")]
@@ -46,7 +51,7 @@ namespace Base.SystemsCorePackage.Tweening.Components.System
             ShutdownManager.Register(this);
 
             if (playOnStart)
-                Play();
+                Show();
         }
 
         private void OnDestroy()
@@ -70,14 +75,20 @@ namespace Base.SystemsCorePackage.Tweening.Components.System
         public void SetVisibility(bool isVisible) => gameObject.SetActive(isVisible);
 
         /// <summary>
-        /// Play the group forward.
+        /// Plays the show behaviors forward.
         /// </summary>
-        public void Play() => PlayInternal(isReversed: false);
+        public void Show() => PlayInternal(showTweenBehaviours, isReversed: false);
 
         /// <summary>
-        /// Play the group in reverse.
+        /// Plays the hide behaviors forward. If no hide behaviors are assigned, falls back to
+        /// playing the show behaviors reversed so setups without a dedicated hide list still work.
         /// </summary>
-        public void Reverse() => PlayInternal(isReversed: true);
+        public void Hide()
+        {
+            PlayInternal(hideTweenBehaviours is { Count: > 0 }
+                ? hideTweenBehaviours
+                : showTweenBehaviours, isReversed: true);
+        }
 
         /// <summary>
         /// Stops all tweens in this group.
@@ -97,8 +108,8 @@ namespace Base.SystemsCorePackage.Tweening.Components.System
                 _sequence = null;
             }
 
-            foreach (TweenBehaviourBase behaviour in tweenBehaviours)
-                behaviour?.Stop(complete);
+            StopBehaviours(showTweenBehaviours, complete);
+            StopBehaviours(hideTweenBehaviours, complete);
 
             if (!wasRunning)
                 return;
@@ -110,12 +121,13 @@ namespace Base.SystemsCorePackage.Tweening.Components.System
         }
 
         /// <summary>
-        /// Plays all tweens in this group, either in sequence or in parallel based on the selected mode.
+        /// Plays the given behaviors in this group, either in sequence or in parallel based on the selected mode.
         /// </summary>
+        /// <param name="behaviours">The behaviors to play.</param>
         /// <param name="isReversed">If <c>true</c>, plays the tweens reversed (from 'to' to 'from').</param>
-        private void PlayInternal(bool isReversed = false)
+        private void PlayInternal(List<TweenBehaviourBase> behaviours, bool isReversed)
         {
-            if (tweenBehaviours == null || tweenBehaviours.Count == 0)
+            if (behaviours == null || behaviours.Count == 0)
             {
                 OnFinished?.Invoke();
                 OnKilled?.Invoke();
@@ -129,7 +141,7 @@ namespace Base.SystemsCorePackage.Tweening.Components.System
             if (!gameObject.activeInHierarchy)
                 SetVisibility(true);
 
-            foreach (TweenBehaviourBase behaviour in tweenBehaviours)
+            foreach (TweenBehaviourBase behaviour in behaviours)
             {
                 if (behaviour == null)
                 {
@@ -158,20 +170,35 @@ namespace Base.SystemsCorePackage.Tweening.Components.System
             OnKilled?.Invoke();
         }
 
-        private bool HasAnyActiveTween()
+        private bool HasAnyActiveTween() =>
+            HasActiveTween(showTweenBehaviours) || HasActiveTween(hideTweenBehaviours);
+
+        public void ResetState()
         {
-            foreach (TweenBehaviourBase behaviour in tweenBehaviours)
+            Stop();
+
+            ResetBehaviours(showTweenBehaviours);
+            ResetBehaviours(hideTweenBehaviours);
+        }
+
+        private static void StopBehaviours(List<TweenBehaviourBase> behaviours, bool complete)
+        {
+            foreach (TweenBehaviourBase behaviour in behaviours)
+                behaviour?.Stop(complete);
+        }
+
+        private static bool HasActiveTween(List<TweenBehaviourBase> behaviours)
+        {
+            foreach (TweenBehaviourBase behaviour in behaviours)
                 if (behaviour != null && behaviour.ActiveTween is { IsRunning: true })
                     return true;
 
             return false;
         }
 
-        public void ResetState()
+        private static void ResetBehaviours(List<TweenBehaviourBase> behaviours)
         {
-            Stop();
-
-            foreach (TweenBehaviourBase behaviour in tweenBehaviours)
+            foreach (TweenBehaviourBase behaviour in behaviours)
                 behaviour?.ResetToDefault();
         }
     }

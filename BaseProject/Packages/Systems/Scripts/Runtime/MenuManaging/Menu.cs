@@ -140,7 +140,7 @@ namespace Base.SystemsCorePackage.MenuManaging
             IsOpen = true;
 
             contentRoot.SetVisibility(true);
-            contentRoot?.Play();
+            contentRoot?.Show();
 
             RegisterParentMenu(parentMenuIdentifier);
             ApplySystemSettings();
@@ -165,7 +165,7 @@ namespace Base.SystemsCorePackage.MenuManaging
                 contentRoot.OnFinished -= HandleCloseComplete;
                 contentRoot.OnFinished += HandleCloseComplete;
 
-                contentRoot.Reverse();
+                contentRoot.Hide();
             }
             else
             {
