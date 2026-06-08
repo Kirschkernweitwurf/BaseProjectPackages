@@ -100,6 +100,25 @@ namespace Base.SystemsCorePackage.Input
             _tracker.Remove(caller);
         }
 
+        /// <summary>
+        /// Resolves a map against the package's runtime actions clone, so callers enable the
+        /// exact instance they subscribe to via <see cref="BaseInputActions"/>.
+        /// </summary>
+        // ReSharper disable once MemberCanBePrivate.Global
+        public InputActionMap ResolveBaseMap(InputActionMapReference reference)
+            => BaseInputActions.asset.FindActionMap(reference.MapId);
+
+        /// <summary>
+        /// Tries to resolve a map against the package's runtime actions clone, so callers enable the
+        /// exact instance they subscribe to via <see cref="BaseInputActions"/>.
+        /// </summary>
+        /// <returns><c>>true</c> if the reference was valid and the map was resolved; otherwise, <c>false</c>.</returns>
+        public bool TryResolveBaseMap(InputActionMapReference reference, out InputActionMap map)
+        {
+            map = ResolveBaseMap(reference);
+            return map != null;
+        }
+
         private void OnActiveInputMapChanged(TrackedItem<InputActionMap> newActive)
         {
             foreach (TrackedItem<InputActionMap> item in _tracker.TrackedItems)

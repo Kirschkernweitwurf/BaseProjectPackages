@@ -9,7 +9,7 @@ namespace Base.UtilityPackage
     /// </summary>
     public abstract class CustomSingleton<T> : MonoBehaviour where T : MonoBehaviour
     {
-        public static T Instance { get; protected set; }
+        public static T Instance { get; protected set; } //reset-ignore
 
         [SerializeField] private bool dontDestroyOnLoad;
 

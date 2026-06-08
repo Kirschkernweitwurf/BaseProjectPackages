@@ -42,8 +42,9 @@ namespace Base.SystemsCorePackage.CheatConsole.Cheats
                     ? ""
                     : pair.Value.Attribute.Description;
 
-                string descColored  = $"<color=#888888>{desc}</color>";
-                lines.Add($"• {usage}: {descColored}");
+                string usageColored  = $"<color=#9FFCFD>{usage}</color>";
+                string descColored  = $"<color=#CFCFCF>{desc}</color>";
+                lines.Add($"• {usageColored}: {descColored}");
             }
 
             lines.Add("-----------");
