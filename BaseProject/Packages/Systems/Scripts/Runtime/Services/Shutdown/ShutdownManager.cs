@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Base.UtilityPackage.Logging;
+using UnityEditor;
 using UnityEngine;
 
 namespace Base.SystemsCorePackage.Services.Shutdown
@@ -17,17 +18,10 @@ namespace Base.SystemsCorePackage.Services.Shutdown
     public class ShutdownManager : GameServiceBehaviour
     {
         private static readonly List<IShutdownHandler> ShutdownHandlers = new();
+
         private static bool _isShuttingDown;
 
-#if UNITY_EDITOR
-        [UnityEditor.InitializeOnEnterPlayMode]
-        private static void ResetStatics()
-        {
-            ShutdownHandlers.Clear();
-            _isShuttingDown = false;
-        }
-#endif
-
+#region Unity Callbacks
         protected override void Awake()
         {
             base.Awake();
@@ -43,6 +37,7 @@ namespace Base.SystemsCorePackage.Services.Shutdown
 
             Application.quitting -= ExecuteShutdown;
         }
+#endregion
 
         /// <summary>
         /// Adds a handler to the shutdown list if it implements <see cref="IShutdownHandler"/>.
@@ -50,8 +45,19 @@ namespace Base.SystemsCorePackage.Services.Shutdown
         /// <param name="handler">The handler to register.</param>
         public static void Register(IShutdownHandler handler)
         {
-            if (handler == null || ShutdownHandlers.Contains(handler))
+            if (handler == null)
+            {
+                CustomLogger.LogWarning("Attempted to register a null shutdown handler.", null);
                 return;
+            }
+
+            if (ShutdownHandlers.Contains(handler))
+            {
+                CustomLogger.LogWarning("Attempted to register a shutdown handler that is already registered.",
+                    handler as Object);
+
+                return;
+            }
 
             ShutdownHandlers.Add(handler);
         }
@@ -61,6 +67,15 @@ namespace Base.SystemsCorePackage.Services.Shutdown
         /// </summary>
         /// <param name="handler">The handler to deregister.</param>
         public static void Deregister(IShutdownHandler handler) => ShutdownHandlers.Remove(handler);
+
+#if UNITY_EDITOR
+        [InitializeOnEnterPlayMode]
+        private static void ResetStatics()
+        {
+            ShutdownHandlers.Clear();
+            _isShuttingDown = false;
+        }
+#endif
 
         /// <summary>
         /// Calls <see cref="IShutdownHandler.Shutdown"/> on all registered handlers in reverse order of registration.

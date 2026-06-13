@@ -13,8 +13,10 @@ namespace Base.SystemsCorePackage.Services
     [DefaultExecutionOrder(-1)]
     public abstract class GameServiceBehaviour : MonoBehaviour, IGameService
     {
+#region Unity Callbacks
         protected virtual void Awake() => ((IGameService)this).Register();
 
         protected virtual void OnDestroy() => ((IGameService)this).Deregister();
+#endregion
     }
 }

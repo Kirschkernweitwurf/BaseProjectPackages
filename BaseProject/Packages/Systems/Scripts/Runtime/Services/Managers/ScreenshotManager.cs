@@ -1,9 +1,10 @@
+using System;
 using System.IO;
 using Base.SystemsCorePackage.Input;
 using Base.SystemsCorePackage.Services.Shutdown;
+using Base.UtilityPackage.Logging;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using Base.UtilityPackage.Logging;
 
 namespace Base.SystemsCorePackage.Services.Managers
 {
@@ -18,6 +19,7 @@ namespace Base.SystemsCorePackage.Services.Managers
 
         public bool HasShutDown { get; private set; }
 
+#region Unity Callbacks
         private void Awake()
         {
             ShutdownManager.Register(this);
@@ -34,6 +36,7 @@ namespace Base.SystemsCorePackage.Services.Managers
             if (!HasShutDown)
                 Shutdown();
         }
+#endregion
 
         public void Shutdown()
         {
@@ -66,7 +69,7 @@ namespace Base.SystemsCorePackage.Services.Managers
                 .Replace("{GameTitle}", Application.productName)
                 .Replace("{Width}", (Screen.width * multiplier).ToString())
                 .Replace("{Height}", (Screen.height * multiplier).ToString())
-                .Replace("{Time}", System.DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss-fff"));
+                .Replace("{Time}", DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss-fff"));
 
             string filePath = Path.Combine(ScreenshotDirectory, $"{screenshotName}.png");
 

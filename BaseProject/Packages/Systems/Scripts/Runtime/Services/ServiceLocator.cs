@@ -109,7 +109,9 @@ namespace Base.SystemsCorePackage.Services
         /// <remarks>
         /// Logs an error if the service is missing or null.
         /// </remarks>
-        public static T Get<T>() where T : class, IGameService => TryGet(out T service) ? service : null;
+        public static T Get<T>() where T : class, IGameService => TryGet(out T service)
+            ? service
+            : null;
 
 #if UNITY_EDITOR
         /// <summary>

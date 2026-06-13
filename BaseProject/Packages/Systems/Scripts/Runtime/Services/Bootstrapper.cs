@@ -1,5 +1,6 @@
 using System.Linq;
 using Base.AttributePackage;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -11,20 +12,18 @@ namespace Base.SystemsCorePackage.Services
     [DefaultExecutionOrder(-99)]
     public class Bootstrapper : MonoBehaviour
     {
-        private static bool _persistentLoaded;
-
         [Header("Prefabs to Load")]
+
         [SerializeField] private GameObject persistentPrefab;
         [SerializeField] private GameObject gameplayPrefab;
 
         [Header("Scene Filtering")]
-        [SceneName, SerializeField] private string[] gameplayScenes;
 
-#if UNITY_EDITOR
-        [UnityEditor.InitializeOnEnterPlayMode]
-        private static void ResetStatics() => _persistentLoaded = false;
-#endif
+        [SceneName] [SerializeField] private string[] gameplayScenes;
 
+        private static bool _persistentLoaded;
+
+#region Unity Callbacks
         private void Awake()
         {
             // Load persistent managers only once
@@ -51,6 +50,12 @@ namespace Base.SystemsCorePackage.Services
 
             CleanInstantiate(gameplayPrefab);
         }
+#endregion
+
+#if UNITY_EDITOR
+        [InitializeOnEnterPlayMode]
+        private static void ResetStatics() => _persistentLoaded = false;
+#endif
 
         /// <summary>
         /// Instantiates a prefab and optionally marks it to not be destroyed on load.
@@ -67,7 +72,7 @@ namespace Base.SystemsCorePackage.Services
             else
                 instance.transform.SetParent(transform);
 
-            instance.name = instance.name.Replace("(Clone)", "");
+            instance.name = instance.name.Replace("(Clone)", string.Empty);
         }
     }
 }
