@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using System.Collections.Generic;
 using UnityEditor;
 
@@ -13,3 +14,4 @@ namespace Base.ToolPackage.Editor.MenuItemOverview
         IReadOnlyList<MenuItemEntry> Collect();
     }
 }
+#endif

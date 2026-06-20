@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using System;
 using System.Collections.Generic;
 using UnityEditor;
@@ -13,9 +14,9 @@ namespace Base.ToolPackage.Editor.MenuItemOverview
     /// </summary>
     public sealed class MenuItemOverviewWindow : EditorWindow
     {
-        private const float RowHeight = 22f;
         private const string AllRootsLabel = "All";
         private const string DefaultRoot = "Tools";
+        private const float RowHeight = 22f;
 
         private readonly List<MenuItemEntry> _all = new();
         private readonly List<MenuItemEntry> _filtered = new();
@@ -25,7 +26,10 @@ namespace Base.ToolPackage.Editor.MenuItemOverview
         private GUIStyle _countStyle;
         private GUIStyle _badgeStyle;
         private GUIStyle _validationStyle;
-        private string[] _roots = { AllRootsLabel };
+        private string[] _roots =
+        {
+            AllRootsLabel
+        };
         private string _root = DefaultRoot;
         private string _search = string.Empty;
         private bool _includeExternal = true;
@@ -34,15 +38,7 @@ namespace Base.ToolPackage.Editor.MenuItemOverview
         private bool _needsRebuild = true;
         private Vector2 _scroll;
 
-        /// <summary>Opens or focuses the window from the Tools menu.</summary>
-        [MenuItem("Tools/Base Packages/Code Health/Menu Item Overview", priority = -24)]
-        private static void Open()
-        {
-            MenuItemOverviewWindow window = GetWindow<MenuItemOverviewWindow>("Menu Items");
-            window.minSize = new Vector2(640f, 320f);
-            window.Show();
-        }
-
+#region Unity Callbacks
         private void OnEnable()
         {
             _source = new ReflectionMenuItemSource();
@@ -60,6 +56,16 @@ namespace Base.ToolPackage.Editor.MenuItemOverview
             DrawHeader();
             DrawList();
         }
+#endregion
+
+        /// <summary>Opens or focuses the window from the Tools menu.</summary>
+        [MenuItem("Tools/Base Packages/Code Health/Menu Item Overview", priority = -24)]
+        private static void Open()
+        {
+            MenuItemOverviewWindow window = GetWindow<MenuItemOverviewWindow>("Menu Items");
+            window.minSize = new Vector2(640f, 320f);
+            window.Show();
+        }
 
         private static void OpenEntry(MenuItemEntry entry)
         {
@@ -71,14 +77,24 @@ namespace Base.ToolPackage.Editor.MenuItemOverview
             EditorGUIUtility.PingObject(entry.Script);
         }
 
-        private static GUIContent OriginBadge(EMenuItemOrigin origin)
+        private static GUIContent OriginBadge(EMenuItemOrigin origin) => origin switch
         {
-            return origin switch
+            EMenuItemOrigin.Package => new GUIContent("pkg", "This item lives in a package"),
+            EMenuItemOrigin.BuiltIn => new GUIContent("lib", "This item is built into Unity"),
+            _ => null
+        };
+
+        private static void DrawPath(Rect rect, MenuItemEntry entry)
+        {
+            if (entry.Script == null)
             {
-                EMenuItemOrigin.Package => new GUIContent("pkg", "This item lives in a package"),
-                EMenuItemOrigin.BuiltIn => new GUIContent("lib", "This item is built into Unity"),
-                _ => null
-            };
+                GUI.Label(rect, new GUIContent(entry.MenuPath, entry.MenuPath), EditorStyles.label);
+                return;
+            }
+
+            EditorGUIUtility.AddCursorRect(rect, MouseCursor.Link);
+            if (GUI.Button(rect, new GUIContent(entry.MenuPath, entry.AssetPath), EditorStyles.label))
+                OpenEntry(entry);
         }
 
         private void EnsureStyles()
@@ -86,10 +102,26 @@ namespace Base.ToolPackage.Editor.MenuItemOverview
             if (_priorityStyle != null)
                 return;
 
-            _priorityStyle = new GUIStyle(EditorStyles.boldLabel) { alignment = TextAnchor.MiddleRight };
-            _countStyle = new GUIStyle(EditorStyles.miniLabel) { alignment = TextAnchor.MiddleRight, fixedHeight = 0f };
-            _badgeStyle = new GUIStyle(EditorStyles.miniLabel) { alignment = TextAnchor.MiddleRight };
-            _validationStyle = new GUIStyle(EditorStyles.miniLabel) { alignment = TextAnchor.MiddleCenter };
+            _priorityStyle = new GUIStyle(EditorStyles.boldLabel)
+            {
+                alignment = TextAnchor.MiddleRight
+            };
+
+            _countStyle = new GUIStyle(EditorStyles.miniLabel)
+            {
+                alignment = TextAnchor.MiddleRight,
+                fixedHeight = 0f
+            };
+
+            _badgeStyle = new GUIStyle(EditorStyles.miniLabel)
+            {
+                alignment = TextAnchor.MiddleRight
+            };
+
+            _validationStyle = new GUIStyle(EditorStyles.miniLabel)
+            {
+                alignment = TextAnchor.MiddleCenter
+            };
         }
 
         private void Rebuild()
@@ -107,7 +139,11 @@ namespace Base.ToolPackage.Editor.MenuItemOverview
             foreach (MenuItemEntry entry in _all)
                 distinct.Add(entry.Root);
 
-            List<string> roots = new(distinct.Count + 1) { AllRootsLabel };
+            List<string> roots = new(distinct.Count + 1)
+            {
+                AllRootsLabel
+            };
+
             roots.AddRange(distinct);
             _roots = roots.ToArray();
 
@@ -117,7 +153,10 @@ namespace Base.ToolPackage.Editor.MenuItemOverview
 
         private void RunQuery()
         {
-            string root = _root == AllRootsLabel ? null : _root;
+            string root = _root == AllRootsLabel
+                ? null
+                : _root;
+
             _filtered.Clear();
             _filtered.AddRange(MenuItemQuery.Apply(_all, _search, root, _includeExternal, _hideValidation, _ascending));
         }
@@ -137,7 +176,10 @@ namespace Base.ToolPackage.Editor.MenuItemOverview
                 _includeExternal = GUILayout.Toggle(_includeExternal, "Include external", EditorStyles.toolbarButton);
                 _hideValidation = GUILayout.Toggle(_hideValidation, "Hide validation", EditorStyles.toolbarButton);
 
-                string label = _ascending ? "Priority \u2191" : "Priority \u2193";
+                string label = _ascending
+                    ? "Priority \u2191"
+                    : "Priority \u2193";
+
                 if (GUILayout.Button(label, EditorStyles.toolbarButton, GUILayout.Width(82f)))
                     _ascending = !_ascending;
 
@@ -211,18 +253,6 @@ namespace Base.ToolPackage.Editor.MenuItemOverview
             if (badge != null)
                 GUI.Label(columns.Badge, badge, _badgeStyle);
         }
-
-        private static void DrawPath(Rect rect, MenuItemEntry entry)
-        {
-            if (entry.Script == null)
-            {
-                GUI.Label(rect, new GUIContent(entry.MenuPath, entry.MenuPath), EditorStyles.label);
-                return;
-            }
-
-            EditorGUIUtility.AddCursorRect(rect, MouseCursor.Link);
-            if (GUI.Button(rect, new GUIContent(entry.MenuPath, entry.AssetPath), EditorStyles.label))
-                OpenEntry(entry);
-        }
     }
 }
+#endif

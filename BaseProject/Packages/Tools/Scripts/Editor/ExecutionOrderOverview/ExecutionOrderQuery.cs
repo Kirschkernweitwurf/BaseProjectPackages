@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,9 +37,8 @@ namespace Base.ToolPackage.Editor.ExecutionOrderOverview
         }
 
         private static bool Matches(ExecutionOrderEntry entry, string term)
-        {
-            return entry.Name.IndexOf(term, StringComparison.OrdinalIgnoreCase) >= 0
-                   || entry.Namespace.IndexOf(term, StringComparison.OrdinalIgnoreCase) >= 0;
-        }
+            => entry.Name.IndexOf(term, StringComparison.OrdinalIgnoreCase) >= 0
+                || entry.Namespace.IndexOf(term, StringComparison.OrdinalIgnoreCase) >= 0;
     }
 }
+#endif

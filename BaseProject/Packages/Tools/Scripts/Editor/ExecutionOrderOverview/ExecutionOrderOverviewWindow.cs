@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -26,15 +27,7 @@ namespace Base.ToolPackage.Editor.ExecutionOrderOverview
         private bool _needsRebuild = true;
         private Vector2 _scroll;
 
-        /// <summary>Opens or focuses the window from the Tools menu.</summary>
-        [MenuItem("Tools/Base Packages/Code Health/Execution Order Overview", priority = -25)]
-        private static void Open()
-        {
-            ExecutionOrderOverviewWindow window = GetWindow<ExecutionOrderOverviewWindow>("Execution Order");
-            window.minSize = new Vector2(520f, 320f);
-            window.Show();
-        }
-
+#region Unity Callbacks
         private void OnEnable()
         {
             _source = new MonoScriptExecutionOrderSource();
@@ -52,6 +45,16 @@ namespace Base.ToolPackage.Editor.ExecutionOrderOverview
             DrawHeader();
             DrawList();
         }
+#endregion
+
+        /// <summary>Opens or focuses the window from the Tools menu.</summary>
+        [MenuItem("Tools/Base Packages/Code Health/Execution Order Overview", priority = -25)]
+        private static void Open()
+        {
+            ExecutionOrderOverviewWindow window = GetWindow<ExecutionOrderOverviewWindow>("Execution Order");
+            window.minSize = new Vector2(520f, 320f);
+            window.Show();
+        }
 
         private static void OpenEntry(ExecutionOrderEntry entry)
         {
@@ -60,24 +63,33 @@ namespace Base.ToolPackage.Editor.ExecutionOrderOverview
             EditorGUIUtility.PingObject(entry.Script);
         }
 
-        private static GUIContent OriginBadge(ScriptOrigin origin)
+        private static GUIContent OriginBadge(ScriptOrigin origin) => origin switch
         {
-            return origin switch
-            {
-                ScriptOrigin.Package => new GUIContent("pkg", "This script lives in a package"),
-                ScriptOrigin.BuiltIn => new GUIContent("lib", "This script is built into Unity"),
-                _ => null
-            };
-        }
+            ScriptOrigin.Package => new GUIContent("pkg", "This script lives in a package"),
+            ScriptOrigin.BuiltIn => new GUIContent("lib", "This script is built into Unity"),
+            _ => null
+        };
 
         private void EnsureStyles()
         {
             if (_orderStyle != null)
                 return;
 
-            _orderStyle = new GUIStyle(EditorStyles.boldLabel) { alignment = TextAnchor.MiddleRight };
-            _countStyle = new GUIStyle(EditorStyles.miniLabel) { alignment = TextAnchor.MiddleRight, fixedHeight = 0f };
-            _badgeStyle = new GUIStyle(EditorStyles.miniLabel) { alignment = TextAnchor.MiddleRight };
+            _orderStyle = new GUIStyle(EditorStyles.boldLabel)
+            {
+                alignment = TextAnchor.MiddleRight
+            };
+
+            _countStyle = new GUIStyle(EditorStyles.miniLabel)
+            {
+                alignment = TextAnchor.MiddleRight,
+                fixedHeight = 0f
+            };
+
+            _badgeStyle = new GUIStyle(EditorStyles.miniLabel)
+            {
+                alignment = TextAnchor.MiddleRight
+            };
         }
 
         private void Rebuild()
@@ -103,7 +115,9 @@ namespace Base.ToolPackage.Editor.ExecutionOrderOverview
                 _search = GUILayout.TextField(_search, EditorStyles.toolbarSearchField, GUILayout.MinWidth(160f));
                 _includeExternal = GUILayout.Toggle(_includeExternal, "Include external", EditorStyles.toolbarButton);
 
-                if (GUILayout.Button(_ascending ? "Order \u2191" : "Order \u2193", EditorStyles.toolbarButton, GUILayout.Width(72f)))
+                if (GUILayout.Button(_ascending
+                        ? "Order \u2191"
+                        : "Order \u2193", EditorStyles.toolbarButton, GUILayout.Width(72f)))
                     _ascending = !_ascending;
 
                 if (EditorGUI.EndChangeCheck())
@@ -178,3 +192,4 @@ namespace Base.ToolPackage.Editor.ExecutionOrderOverview
         }
     }
 }
+#endif

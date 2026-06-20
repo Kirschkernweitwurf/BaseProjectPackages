@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using System;
 using UnityEditor;
 
@@ -38,15 +39,21 @@ namespace Base.ToolPackage.Editor.ExecutionOrderOverview
         /// Order that actually wins at runtime. The project value takes priority when it
         /// is non-zero; otherwise the attribute value is used.
         /// </summary>
-        public int EffectiveOrder => ProjectOrder != 0 ? ProjectOrder : AttributeOrder;
+        public int EffectiveOrder => ProjectOrder != 0
+            ? ProjectOrder
+            : AttributeOrder;
 
         /// <summary>Creates an entry. <paramref name="type"/> supplies the name and namespace.</summary>
-        public ExecutionOrderEntry(MonoScript script, Type type, string assetPath, ScriptOrigin origin, int attributeOrder, int projectOrder)
+        public ExecutionOrderEntry(MonoScript script, Type type, string assetPath, ScriptOrigin origin,
+            int attributeOrder, int projectOrder)
         {
             Script = script;
             Type = type;
             Name = type.Name;
-            Namespace = string.IsNullOrEmpty(type.Namespace) ? "-" : type.Namespace;
+            Namespace = string.IsNullOrEmpty(type.Namespace)
+                ? "-"
+                : type.Namespace;
+
             AssetPath = assetPath;
             Origin = origin;
             AttributeOrder = attributeOrder;
@@ -54,3 +61,4 @@ namespace Base.ToolPackage.Editor.ExecutionOrderOverview
         }
     }
 }
+#endif

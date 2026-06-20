@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using System;
 using System.Text.RegularExpressions;
 using UnityEditor;
@@ -46,7 +47,9 @@ namespace Base.ToolPackage.Editor.MenuItemOverview
                     methodLine = i + 1;
             }
 
-            return methodLine > 0 ? (methodLine, 0) : (0, 0);
+            return methodLine > 0
+                ? (methodLine, 0)
+                : (0, 0);
         }
 
         private static int ColumnFor(string line)
@@ -57,7 +60,10 @@ namespace Base.ToolPackage.Editor.MenuItemOverview
 
             int tokenIndex = line.IndexOf(AttributeToken, StringComparison.Ordinal);
             int parenIndex = line.IndexOf('(', tokenIndex + AttributeToken.Length);
-            return parenIndex >= 0 ? parenIndex + 1 : 0;
+            return parenIndex >= 0
+                ? parenIndex + 1
+                : 0;
         }
     }
 }
+#endif

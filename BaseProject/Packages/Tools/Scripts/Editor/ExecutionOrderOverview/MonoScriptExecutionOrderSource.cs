@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using System;
 using System.Collections.Generic;
 using UnityEditor;
@@ -14,7 +15,7 @@ namespace Base.ToolPackage.Editor.ExecutionOrderOverview
         private const string PackagePrefix = "Packages/";
         private const string ProjectPrefix = "Assets/";
 
-        /// <inheritdoc />
+        /// <inheritdoc/>
         public IReadOnlyList<ExecutionOrderEntry> Collect()
         {
             List<ExecutionOrderEntry> entries = new();
@@ -32,12 +33,16 @@ namespace Base.ToolPackage.Editor.ExecutionOrderOverview
                 int projectOrder = MonoImporter.GetExecutionOrder(script);
                 DefaultExecutionOrder attribute = (DefaultExecutionOrder)Attribute
                     .GetCustomAttribute(type, typeof(DefaultExecutionOrder), false);
+
                 bool hasAttribute = attribute != null;
 
                 if (!hasAttribute && projectOrder == 0)
                     continue;
 
-                int attributeOrder = hasAttribute ? attribute.order : 0;
+                int attributeOrder = hasAttribute
+                    ? attribute.order
+                    : 0;
+
                 string assetPath = AssetDatabase.GetAssetPath(script);
                 ScriptOrigin origin = ClassifyOrigin(assetPath);
 
@@ -62,3 +67,4 @@ namespace Base.ToolPackage.Editor.ExecutionOrderOverview
         }
     }
 }
+#endif

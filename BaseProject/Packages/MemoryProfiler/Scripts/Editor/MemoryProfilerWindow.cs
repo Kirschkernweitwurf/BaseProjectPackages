@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using System.IO;
 using UnityEditor;
 using UnityEngine;
@@ -12,7 +13,7 @@ namespace Base.MemoryProfiler.Editor
         private const string MenuPath = "Tools/Base Packages/Profiling/Memory Profiler Automation";
         private const float MinIntervalSeconds = 1f;
         private const string ResourcesFolder = "Assets/Resources/MemoryProfilerConfig";
-        private const string WindowTitle = "Memory Profiler";
+        private const string WindowTitle = "Auto Memory Profiler";
 
         private SerializedObject serializedConfig;
 
@@ -147,3 +148,4 @@ namespace Base.MemoryProfiler.Editor
         }
     }
 }
+#endif
