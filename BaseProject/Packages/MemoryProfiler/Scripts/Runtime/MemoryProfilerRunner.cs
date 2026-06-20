@@ -40,6 +40,22 @@ namespace Base.MemoryProfiler
             Capture(_config);
         }
 
+        /// <summary>
+        /// Resolves a storage path the same way the Memory Profiler does. Relative paths
+        /// resolve against the project root, absolute paths are returned unchanged.
+        /// </summary>
+        public static string ResolveStorageDirectory(string storagePath)
+        {
+            if (string.IsNullOrEmpty(storagePath))
+                storagePath = MemoryProfilerConfigSo.DefaultStoragePath;
+
+            if (Path.IsPathRooted(storagePath))
+                return storagePath;
+
+            string root = Directory.GetParent(Application.dataPath)?.FullName ?? Application.dataPath;
+            return Path.GetFullPath(Path.Combine(root, storagePath));
+        }
+
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void Bootstrap()
@@ -101,7 +117,7 @@ namespace Base.MemoryProfiler
 
         private static void Capture(MemoryProfilerConfigSo activeConfig)
         {
-            string directory = ResolveOutputDirectory(activeConfig.OutputFolder);
+            string directory = ResolveStorageDirectory(activeConfig.SnapshotStoragePath);
             Directory.CreateDirectory(directory);
 
             string timestamp = DateTime.Now.ToString(TimestampFormat);
@@ -121,19 +137,6 @@ namespace Base.MemoryProfiler
 
             LastSnapshotPath = path;
             CustomLogger.Log($"Memory snapshot saved: {path}", null);
-        }
-
-        private static string ResolveOutputDirectory(string folder)
-        {
-            if (Path.IsPathRooted(folder))
-                return folder;
-
-#if UNITY_EDITOR
-            string root = Directory.GetParent(Application.dataPath)?.FullName ?? Application.dataPath;
-#else
-    string root = Application.persistentDataPath;
-#endif
-            return Path.Combine(root, folder);
         }
     }
 }

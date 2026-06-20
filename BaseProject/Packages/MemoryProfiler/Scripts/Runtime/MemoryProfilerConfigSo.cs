@@ -19,12 +19,15 @@ namespace Base.MemoryProfiler
             | CaptureFlags.NativeAllocationSites
             | CaptureFlags.NativeStackTraces;
 
+        /// <summary>Default storage path, matching the Memory Profiler preference default.</summary>
+        public const string DefaultStoragePath = "./MemoryCaptures";
+
         /// <summary>Path used by Resources.Load, relative to a Resources folder.</summary>
         public const string ResourcePath = ResourceSubFolder + "/" + ConfigName;
 
         private const string ResourceSubFolder = "MemoryProfilerConfig";
 
-        [SerializeField] [Tooltip("Main switch for all automated captures.")]
+        [SerializeField] [Tooltip("Master switch for all automated captures.")]
         private bool isEnabled;
 
         [SerializeField] [Tooltip("Capture on a repeating timer while playing.")]
@@ -36,9 +39,11 @@ namespace Base.MemoryProfiler
         [SerializeField] [Tooltip("Seconds between interval captures.")]
         private float intervalSeconds = 30f;
 
-        [SerializeField] [Tooltip("Output folder for snapshots. Relative paths resolve to the project root in"
-            + " the editor and to persistent data in builds. Absolute paths are used as is.")]
-        private string outputFolder = "MemoryCaptures";
+        [SerializeField] [Tooltip("Mirror of the Memory Profiler 'Memory Snapshot Storage Path' "
+            + "(Preferences > Analysis > Memory Profiler). Relative paths starting with ./ or ../ "
+            + "resolve against the project root. Absolute paths are used as is. Copy the same value "
+            + "you set there to keep both in sync.")]
+        private string snapshotStoragePath = DefaultStoragePath;
 
         [SerializeField] [Tooltip("Prefix used for every snapshot file name.")]
         private string fileNamePrefix = "Snapshot";
@@ -59,10 +64,10 @@ namespace Base.MemoryProfiler
         public float IntervalSeconds => intervalSeconds;
 
         /// <summary>
-        /// Output folder for snapshots. Relative paths resolve to the project root in
-        /// the editor and to persistent data in builds. Absolute paths are used as is.
+        /// Snapshot storage path, mirroring the Memory Profiler preference. Relative paths
+        /// resolve against the project root, absolute paths are used as is.
         /// </summary>
-        public string OutputFolder => outputFolder;
+        public string SnapshotStoragePath => snapshotStoragePath;
 
         /// <summary>Prefix used for every snapshot file name.</summary>
         public string FileNamePrefix => fileNamePrefix;
