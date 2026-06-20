@@ -40,9 +40,9 @@ namespace Base.MemoryProfiler
         private float intervalSeconds = 30f;
 
         [SerializeField] [Tooltip("Mirror of the Memory Profiler 'Memory Snapshot Storage Path' "
-            + "(Preferences > Analysis > Memory Profiler). Relative paths starting with ./ or ../ "
-            + "resolve against the project root. Absolute paths are used as is. Copy the same value "
-            + "you set there to keep both in sync.")]
+            + "(Preferences > Analysis > Memory Profiler). Paths starting with ./ or ../ resolve "
+            + "against the project root, in the editor and in builds. Absolute paths are used as is. "
+            + "Copy the same value you set there to keep both in sync.")]
         private string snapshotStoragePath = DefaultStoragePath;
 
         [SerializeField] [Tooltip("Prefix used for every snapshot file name.")]
@@ -50,6 +50,9 @@ namespace Base.MemoryProfiler
 
         [SerializeField] [Tooltip("Which memory categories to include in each snapshot.")]
         private CaptureFlags captureFlags = DefaultCaptureFlags;
+
+        [SerializeField] [HideInInspector]
+        private string bakedStoragePath;
 
         /// <summary>Master switch for all automated captures.</summary>
         public bool IsEnabled => isEnabled;
@@ -74,5 +77,11 @@ namespace Base.MemoryProfiler
 
         /// <summary>Which memory categories to include in each snapshot.</summary>
         public CaptureFlags SnapshotFlags => captureFlags;
+
+        /// <summary>
+        /// Absolute path baked at build time so a build resolves the project-relative path
+        /// to the editor project folder. Empty in the editor and in committed assets.
+        /// </summary>
+        public string BakedStoragePath => bakedStoragePath;
     }
 }

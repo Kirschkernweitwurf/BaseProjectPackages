@@ -41,19 +41,18 @@ namespace Base.MemoryProfiler
         }
 
         /// <summary>
-        /// Resolves a storage path the same way the Memory Profiler does. Relative paths
-        /// resolve against the project root, absolute paths are returned unchanged.
+        /// Resolves the snapshot folder the same way the Memory Profiler does. Relative paths
+        /// resolve against the project root, absolute paths are returned unchanged. Builds use
+        /// the path baked at build time so the project root stays correct off the editor machine.
         /// </summary>
-        public static string ResolveStorageDirectory(string storagePath)
+        public static string ResolveStorageDirectory(MemoryProfilerConfigSo config)
         {
-            if (string.IsNullOrEmpty(storagePath))
-                storagePath = MemoryProfilerConfigSo.DefaultStoragePath;
-
-            if (Path.IsPathRooted(storagePath))
-                return storagePath;
-
+#if !UNITY_EDITOR
+            if (!string.IsNullOrEmpty(config.BakedStoragePath))
+                return config.BakedStoragePath;
+#endif
             string root = Directory.GetParent(Application.dataPath)?.FullName ?? Application.dataPath;
-            return Path.GetFullPath(Path.Combine(root, storagePath));
+            return ResolveAbsolute(config.SnapshotStoragePath, root);
         }
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -117,7 +116,7 @@ namespace Base.MemoryProfiler
 
         private static void Capture(MemoryProfilerConfigSo activeConfig)
         {
-            string directory = ResolveStorageDirectory(activeConfig.SnapshotStoragePath);
+            string directory = ResolveStorageDirectory(activeConfig);
             Directory.CreateDirectory(directory);
 
             string timestamp = DateTime.Now.ToString(TimestampFormat);
@@ -137,6 +136,17 @@ namespace Base.MemoryProfiler
 
             LastSnapshotPath = path;
             CustomLogger.Log($"Memory snapshot saved: {path}", null);
+        }
+
+        private static string ResolveAbsolute(string storagePath, string root)
+        {
+            if (string.IsNullOrEmpty(storagePath))
+                storagePath = MemoryProfilerConfigSo.DefaultStoragePath;
+
+            if (Path.IsPathRooted(storagePath))
+                return storagePath;
+
+            return Path.GetFullPath(Path.Combine(root, storagePath));
         }
     }
 }

@@ -84,7 +84,7 @@ namespace Base.MemoryProfiler.Editor
             if (asset == null)
                 return;
 
-            string directory = MemoryProfilerRunner.ResolveStorageDirectory(asset.SnapshotStoragePath);
+            string directory = MemoryProfilerRunner.ResolveStorageDirectory(asset);
             Directory.CreateDirectory(directory);
             EditorUtility.RevealInFinder(directory);
         }
