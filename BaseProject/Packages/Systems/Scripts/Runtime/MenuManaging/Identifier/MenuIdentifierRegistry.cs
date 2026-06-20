@@ -6,7 +6,7 @@ namespace Base.SystemsCorePackage.MenuManaging.Identifier
     /// Holds references to all <see cref="MenuIdentifier"/> assets in the project so they can be resolved at runtime.
     /// </summary>
     [CreateAssetMenu(fileName = "MenuIdentifierRegistry",
-        menuName = "ScriptableObjects/Menus/Menu Identifier Registry")]
+        menuName = "ScriptableObjects/Base/Menus/Menu Identifier Registry")]
     public class MenuIdentifierRegistry : ScriptableObject
     {
         [SerializeField] private MenuIdentifier[] entries;
@@ -17,7 +17,6 @@ namespace Base.SystemsCorePackage.MenuManaging.Identifier
         public bool TryGet(string identifierName, out MenuIdentifier identifier)
         {
             if (entries != null)
-            {
                 foreach (MenuIdentifier entry in entries)
                 {
                     if (entry == null || entry.name != identifierName)
@@ -26,7 +25,6 @@ namespace Base.SystemsCorePackage.MenuManaging.Identifier
                     identifier = entry;
                     return true;
                 }
-            }
 
             identifier = null;
             return false;

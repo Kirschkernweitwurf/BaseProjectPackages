@@ -2,7 +2,7 @@
   "name": "com.baseprojectpackages.core",
   "displayName": "Base Core Package",
   "description": "A collection of core systems, e.g. scene management or input management that can be used for any project.",
-  "version": "1.2.4",
+  "version": "1.2.5",
   "unity": "6000.3",
   "author": {
     "name": "Jonathan Alber"

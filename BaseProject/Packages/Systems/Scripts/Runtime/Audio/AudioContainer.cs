@@ -5,7 +5,7 @@ namespace Base.SystemsCorePackage.Audio
     /// <summary>
     /// ScriptableObject container for audio clips and their properties.
     /// </summary>
-    [CreateAssetMenu(fileName = "AudioContainer", menuName = "ScriptableObjects/Audio/New AudioContainer")]
+    [CreateAssetMenu(fileName = "AudioContainer", menuName = "ScriptableObjects/Base/Audio/New AudioContainer")]
     public class AudioContainer : ScriptableObject
     {
         /// <summary>

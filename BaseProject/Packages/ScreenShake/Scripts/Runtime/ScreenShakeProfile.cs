@@ -6,7 +6,7 @@ namespace Base.ScreenShakePackage
     /// <summary>
     /// ScriptableObject that defines a screen shake profile.
     /// </summary>
-    [CreateAssetMenu(fileName = "ScreenShakeProfile", menuName = "ScriptableObjects/Screen-Shake/New Profile")]
+    [CreateAssetMenu(fileName = "ScreenShakeProfile", menuName = "ScriptableObjects/Base/Screen-Shake/New Profile")]
     public class ScreenShakeProfile : ScriptableObject
     {
         [field: Header("Shake Settings")]

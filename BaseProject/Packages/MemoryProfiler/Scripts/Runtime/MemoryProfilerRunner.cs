@@ -23,21 +23,21 @@ namespace Base.MemoryProfiler
         /// <summary>True while automated captures are armed.</summary>
         public static bool IsActive { get; private set; }
 
-        private static MemoryProfilerConfigSo config;
-        private static Timer intervalTimer;
+        private static MemoryProfilerConfigSo _config;
+        private static Timer _intervalTimer;
 
         /// <summary>Takes a snapshot immediately. Works in the editor and in development builds.</summary>
         public static void CaptureNow()
         {
-            config ??= Resources.Load<MemoryProfilerConfigSo>(MemoryProfilerConfigSo.ResourcePath);
+            _config ??= Resources.Load<MemoryProfilerConfigSo>(MemoryProfilerConfigSo.ResourcePath);
 
-            if (config == null)
+            if (_config == null)
             {
                 CustomLogger.LogError("Memory profiler config not found in a Resources folder.", null);
                 return;
             }
 
-            Capture(config);
+            Capture(_config);
         }
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -46,8 +46,8 @@ namespace Base.MemoryProfiler
         {
             Stop();
 
-            config = Resources.Load<MemoryProfilerConfigSo>(MemoryProfilerConfigSo.ResourcePath);
-            if (config == null)
+            _config = Resources.Load<MemoryProfilerConfigSo>(MemoryProfilerConfigSo.ResourcePath);
+            if (_config == null)
                 return;
 
             Application.quitting -= Stop;
@@ -58,13 +58,13 @@ namespace Base.MemoryProfiler
 
         private static void Begin()
         {
-            if (!config.IsEnabled)
+            if (!_config.IsEnabled)
                 return;
 
-            if (config.CaptureOnInterval)
-                StartIntervalTimer(config.IntervalSeconds);
+            if (_config.CaptureOnInterval)
+                StartIntervalTimer(_config.IntervalSeconds);
 
-            if (config.CaptureOnSceneLoad)
+            if (_config.CaptureOnSceneLoad)
                 SceneLoadEvents.OnSceneLoadCompleted += HandleSceneLoadCompleted;
 
             IsActive = true;
@@ -72,8 +72,8 @@ namespace Base.MemoryProfiler
 
         private static void Stop()
         {
-            intervalTimer?.Stop();
-            intervalTimer = null;
+            _intervalTimer?.Stop();
+            _intervalTimer = null;
             SceneLoadEvents.OnSceneLoadCompleted -= HandleSceneLoadCompleted;
             IsActive = false;
         }
@@ -86,9 +86,9 @@ namespace Base.MemoryProfiler
                 return;
             }
 
-            intervalTimer = new Timer(intervalSeconds, true);
-            intervalTimer.Completed += CaptureNow;
-            intervalTimer.Start();
+            _intervalTimer = new Timer(intervalSeconds, true);
+            _intervalTimer.Completed += CaptureNow;
+            _intervalTimer.Start();
         }
 
         private static void HandleSceneLoadCompleted(string sceneName, bool success)

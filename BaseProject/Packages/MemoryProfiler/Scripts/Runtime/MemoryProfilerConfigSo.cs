@@ -7,7 +7,7 @@ namespace Base.MemoryProfiler
     /// Runtime configuration for automated memory profiling.
     /// Loaded from a Resources folder so it ships in development builds.
     /// </summary>
-    [CreateAssetMenu(fileName = ConfigName, menuName = "Base/Memory Profiler Config")]
+    [CreateAssetMenu(fileName = ConfigName, menuName = "ScriptableObjects/Base/Memory Profiler/Memory Profiler Config")]
     public class MemoryProfilerConfigSo : ScriptableObject
     {
         /// <summary>Asset file name (without extension).</summary>
