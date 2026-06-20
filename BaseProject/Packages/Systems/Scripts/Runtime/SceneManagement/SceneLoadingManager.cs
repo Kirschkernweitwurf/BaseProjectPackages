@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Threading;
 using Base.AttributePackage;
 using Base.SystemsCorePackage.Services;
+using Base.UtilityPackage.Logging;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using Base.UtilityPackage.Logging;
 
 namespace Base.SystemsCorePackage.SceneManagement
 {
@@ -22,10 +22,11 @@ namespace Base.SystemsCorePackage.SceneManagement
         /// </summary>
         private const float ProgressReportMax = 0.9f;
 
-        [SceneName, SerializeField] private string persistentSceneName;
+        [SceneName] [SerializeField] private string persistentSceneName;
 
         private bool _persistentLoaded;
 
+#region Unity Callbacks
         private async void Start()
         {
             try
@@ -41,6 +42,7 @@ namespace Base.SystemsCorePackage.SceneManagement
                 CustomLogger.LogError($"Error loading persistent scene: {e}", this);
             }
         }
+#endregion
 
         /// <summary>
         /// Unloads all currently loaded scenes (except the persistent scene) and loads the specified scene.
@@ -60,7 +62,8 @@ namespace Base.SystemsCorePackage.SceneManagement
         /// <param name="sceneName">The name of the scene to load.</param>
         /// <param name="mode">The load scene mode (Single or Additive).</param>
         /// <param name="token">Cancellation token tied to the owner's lifetime, so the load aborts on destroy.</param>
-        private static async Awaitable LoadSceneInternalAsync(string sceneName, LoadSceneMode mode, CancellationToken token)
+        private static async Awaitable LoadSceneInternalAsync(string sceneName, LoadSceneMode mode,
+            CancellationToken token)
         {
             if (SceneManager.GetSceneByName(sceneName).isLoaded)
             {

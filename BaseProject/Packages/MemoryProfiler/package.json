@@ -1,0 +1,13 @@
+{
+  "name": "com.baseprojectpackages.memoryprofiler",
+  "displayName": "Base Memory Profiler",
+  "description": "Editor tool for automatically taking memory snapshots and comparing them to manage memory usage in the project.",
+  "version": "1.0.0",
+  "unity": "6000.3",
+  "author": {
+    "name": "Jonathan Alber"
+  },
+  "dependencies": {
+    "com.unity.memoryprofiler": "1.1.12"
+  }
+}

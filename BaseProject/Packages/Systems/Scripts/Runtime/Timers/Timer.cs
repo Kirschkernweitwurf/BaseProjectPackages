@@ -42,7 +42,7 @@ namespace Base.SystemsCorePackage.Timers
             Remaining = duration;
         }
 
-        /// <summary>Creates, starts, and returns a one-shot countdown in a single call.</summary>
+        /// <summary>Creates, starts and returns a one-shot countdown in a single call.</summary>
         public static Timer Countdown(float seconds, Action onComplete)
         {
             Timer timer = new(seconds);
