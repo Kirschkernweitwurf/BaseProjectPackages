@@ -34,7 +34,7 @@ namespace Base.MemoryProfiler.Editor
             SerializedProperty onInterval = serializedConfig.FindProperty("captureOnInterval");
             SerializedProperty interval = serializedConfig.FindProperty("intervalSeconds");
             SerializedProperty onSceneLoad = serializedConfig.FindProperty("captureOnSceneLoad");
-            SerializedProperty folder = serializedConfig.FindProperty("outputFolder");
+            SerializedProperty storagePath = serializedConfig.FindProperty("snapshotStoragePath");
             SerializedProperty prefix = serializedConfig.FindProperty("fileNamePrefix");
             SerializedProperty flags = serializedConfig.FindProperty("captureFlags");
 
@@ -53,7 +53,7 @@ namespace Base.MemoryProfiler.Editor
 
             EditorGUILayout.Space();
             EditorGUILayout.LabelField("Output", EditorStyles.boldLabel);
-            EditorGUILayout.PropertyField(folder, new GUIContent("Folder"));
+            EditorGUILayout.PropertyField(storagePath, new GUIContent("Snapshot Storage Path"));
             EditorGUILayout.PropertyField(prefix, new GUIContent("File Name Prefix"));
             EditorGUILayout.PropertyField(flags, new GUIContent("Capture Flags"));
 
@@ -84,8 +84,7 @@ namespace Base.MemoryProfiler.Editor
             if (asset == null)
                 return;
 
-            string root = Directory.GetParent(Application.dataPath)?.FullName ?? Application.dataPath;
-            string directory = Path.Combine(root, asset.OutputFolder);
+            string directory = MemoryProfilerRunner.ResolveStorageDirectory(asset.SnapshotStoragePath);
             Directory.CreateDirectory(directory);
             EditorUtility.RevealInFinder(directory);
         }
