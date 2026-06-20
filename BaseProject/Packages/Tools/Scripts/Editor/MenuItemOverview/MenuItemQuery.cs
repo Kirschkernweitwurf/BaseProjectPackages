@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,9 +44,8 @@ namespace Base.ToolPackage.Editor.MenuItemOverview
         }
 
         private static bool Matches(MenuItemEntry entry, string term)
-        {
-            return entry.MenuPath.IndexOf(term, StringComparison.OrdinalIgnoreCase) >= 0
-                   || entry.Member.IndexOf(term, StringComparison.OrdinalIgnoreCase) >= 0;
-        }
+            => entry.MenuPath.IndexOf(term, StringComparison.OrdinalIgnoreCase) >= 0
+                || entry.Member.IndexOf(term, StringComparison.OrdinalIgnoreCase) >= 0;
     }
 }
+#endif

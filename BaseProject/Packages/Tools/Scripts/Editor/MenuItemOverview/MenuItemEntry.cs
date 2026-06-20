@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using System;
 using UnityEditor;
 
@@ -45,7 +46,10 @@ namespace Base.ToolPackage.Editor.MenuItemOverview
         {
             MenuPath = menuPath;
             int separator = menuPath.IndexOf('/');
-            Root = separator >= 0 ? menuPath[..separator] : menuPath;
+            Root = separator >= 0
+                ? menuPath[..separator]
+                : menuPath;
+
             DeclaringType = declaringType;
             MethodName = methodName;
             Member = $"{declaringType.Name}.{methodName}";
@@ -53,7 +57,10 @@ namespace Base.ToolPackage.Editor.MenuItemOverview
             IsValidation = isValidation;
             Origin = origin;
             Script = script;
-            AssetPath = string.IsNullOrEmpty(assetPath) ? "-" : assetPath;
+            AssetPath = string.IsNullOrEmpty(assetPath)
+                ? "-"
+                : assetPath;
         }
     }
 }
+#endif

@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using System;
 using System.Text.RegularExpressions;
 using UnityEditor;
@@ -42,7 +43,9 @@ namespace Base.ToolPackage.Editor.ExecutionOrderOverview
                     classLine = i + 1;
             }
 
-            return classLine > 0 ? (classLine, 0) : (0, 0);
+            return classLine > 0
+                ? (classLine, 0)
+                : (0, 0);
         }
 
         private static int FindAttributeColumn(string line)
@@ -61,7 +64,10 @@ namespace Base.ToolPackage.Editor.ExecutionOrderOverview
         private static string StripGenericSuffix(string typeName)
         {
             int tick = typeName.IndexOf('`');
-            return tick >= 0 ? typeName[..tick] : typeName;
+            return tick >= 0
+                ? typeName[..tick]
+                : typeName;
         }
     }
 }
+#endif

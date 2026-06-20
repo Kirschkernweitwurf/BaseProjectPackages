@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -11,15 +12,16 @@ namespace Base.ToolPackage.Editor.MenuItemOverview
     /// </summary>
     public sealed class ReflectionMenuItemSource : IMenuItemSource
     {
+        private const BindingFlags MethodFlags = BindingFlags.Static
+            | BindingFlags.Public
+            | BindingFlags.NonPublic
+            | BindingFlags.DeclaredOnly;
         private const string PackagePrefix = "Packages/";
         private const string ProjectPrefix = "Assets/";
 
-        private const BindingFlags MethodFlags = BindingFlags.Static | BindingFlags.Public
-            | BindingFlags.NonPublic | BindingFlags.DeclaredOnly;
-
         private readonly Dictionary<Type, MonoScript> _scriptCache = new();
 
-        /// <inheritdoc />
+        /// <inheritdoc/>
         public IReadOnlyList<MenuItemEntry> Collect()
         {
             _scriptCache.Clear();
@@ -51,48 +53,6 @@ namespace Base.ToolPackage.Editor.MenuItemOverview
 
                 return loadable;
             }
-        }
-
-        private void CollectFromType(Type type, List<MenuItemEntry> entries)
-        {
-            if (type == null)
-                return;
-
-            MethodInfo[] methods;
-            try
-            {
-                methods = type.GetMethods(MethodFlags);
-            }
-            catch (TypeLoadException)
-            {
-                return; // A missing dependency makes the whole type unusable; skip it.
-            }
-
-            foreach (MethodInfo method in methods)
-            {
-                foreach (object raw in method.GetCustomAttributes(typeof(MenuItem), false))
-                    entries.Add(BuildEntry(type, method, (MenuItem)raw));
-            }
-        }
-
-        private MenuItemEntry BuildEntry(Type type, MethodInfo method, MenuItem attribute)
-        {
-            MonoScript script = ResolveScript(type);
-            string assetPath = script != null ? AssetDatabase.GetAssetPath(script) : null;
-            EMenuItemOrigin origin = ClassifyOrigin(assetPath);
-
-            return new MenuItemEntry(attribute.menuItem, type, method.Name, attribute.priority,
-                attribute.validate, origin, script, assetPath);
-        }
-
-        private MonoScript ResolveScript(Type type)
-        {
-            if (_scriptCache.TryGetValue(type, out MonoScript cached))
-                return cached;
-
-            MonoScript resolved = FindScript(type);
-            _scriptCache[type] = resolved;
-            return resolved;
         }
 
         private static MonoScript FindScript(Type type)
@@ -129,5 +89,51 @@ namespace Base.ToolPackage.Editor.MenuItemOverview
 
             return EMenuItemOrigin.BuiltIn;
         }
+
+        private void CollectFromType(Type type, List<MenuItemEntry> entries)
+        {
+            if (type == null)
+                return;
+
+            MethodInfo[] methods;
+            try
+            {
+                methods = type.GetMethods(MethodFlags);
+            }
+            catch (TypeLoadException)
+            {
+                return; // A missing dependency makes the whole type unusable; skip it.
+            }
+
+            foreach (MethodInfo method in methods)
+            {
+                foreach (object raw in method.GetCustomAttributes(typeof(MenuItem), false))
+                    entries.Add(BuildEntry(type, method, (MenuItem)raw));
+            }
+        }
+
+        private MenuItemEntry BuildEntry(Type type, MethodInfo method, MenuItem attribute)
+        {
+            MonoScript script = ResolveScript(type);
+            string assetPath = script != null
+                ? AssetDatabase.GetAssetPath(script)
+                : null;
+
+            EMenuItemOrigin origin = ClassifyOrigin(assetPath);
+
+            return new MenuItemEntry(attribute.menuItem, type, method.Name, attribute.priority,
+                attribute.validate, origin, script, assetPath);
+        }
+
+        private MonoScript ResolveScript(Type type)
+        {
+            if (_scriptCache.TryGetValue(type, out MonoScript cached))
+                return cached;
+
+            MonoScript resolved = FindScript(type);
+            _scriptCache[type] = resolved;
+            return resolved;
+        }
     }
 }
+#endif
