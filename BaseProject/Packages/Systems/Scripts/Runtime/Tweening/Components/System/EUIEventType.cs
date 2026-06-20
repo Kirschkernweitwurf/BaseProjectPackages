@@ -6,6 +6,8 @@ namespace Base.SystemsCorePackage.Tweening.Components.System
     public enum EUIEventType : byte
     {
         OnHover = 0,
-        OnClick = 1
+        OnClick = 1,
+        OnSelect = 2,
+        OnSubmit = 3
     }
 }
