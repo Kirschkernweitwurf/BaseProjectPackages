@@ -1,29 +1,36 @@
+using System;
 using System.Collections.Generic;
-using Base.AttributePackage;
-using Base.SystemsCorePackage.Input;
 using Base.SystemsCorePackage.MenuManaging.Identifier;
-using Base.SystemsCorePackage.PriorityTrackers;
+using Base.SystemsCorePackage.MenuManaging.Modules;
 using Base.SystemsCorePackage.Services;
 using Base.SystemsCorePackage.Services.Shutdown;
-using Base.SystemsCorePackage.Tweening.Components.System;
 using Base.SystemsCorePackage.Tracking;
-using UnityEngine;
+using Base.SystemsCorePackage.Tweening.Components.System;
 using Base.UtilityPackage.Logging;
-using UnityEngine.InputSystem;
+using UnityEngine;
 
 namespace Base.SystemsCorePackage.MenuManaging
 {
     /// <summary>
-    /// Base class for all menus in the game. Handles lifecycle, input, cursor, timescale and animations.
+    /// Base class for all menus in the game. Handles lifecycle and open/close animations. System
+    /// concerns such as cursor, timescale, input map and child reset live in their own
+    /// <see cref="MenuModule"/> components and react to the events exposed here.
     /// </summary>
     public class Menu : MonoBehaviour, IShutdownHandler
     {
+        /// <summary>Raised after the menu has opened and its open animation has started.</summary>
+        public event Action Opened;
+
+        /// <summary>Raised after the menu has fully closed and its close animation has finished.</summary>
+        public event Action Closed;
+
+        /// <summary>Raised when the menu closes in response to a back request.</summary>
+        public event Action BackRequested;
+
         [field: Header("Menu Settings")]
+
         [Tooltip("The unique identifier asset for this menu.")]
         [field: SerializeField] public MenuIdentifier MenuIdentifier { get; private set; }
-
-        [Tooltip("The priority of this menu in the stack.")]
-        [SerializeField] private EPriority menuPriority;
 
         [Tooltip("The root TweenGroup for this menu's open/close animations.")]
         [SerializeField] private TweenGroup contentRoot;
@@ -35,47 +42,29 @@ namespace Base.SystemsCorePackage.MenuManaging
         [field: Tooltip("If true, this menu will listen to the OnBack action to close itself.")]
         [field: SerializeField] public bool ListenToOnBackAction { get; private set; } = true;
 
-        [Header("Cursor Settings")]
-        [Tooltip("If true, this menu will apply custom cursor settings when opened.")]
-        [SerializeField] private bool applyCustomCursorSettings;
-
-        [Tooltip("The cursor settings to apply when this menu is opened.")]
-        [SerializeField] private CursorRequest cursorSettings = new();
-
-        [Header("Time Scale Settings")]
-        [Tooltip("If true, this menu will apply custom time scale settings when opened.")]
-        [SerializeField] private bool applyCustomTimeScaleSettings;
-
-        [Tooltip("The time scale to apply when this menu is opened.")]
-        [SerializeField] private float timeScale;
-
-        [Header("Input Map")]
-        [Tooltip("If true, this menu will override the current action map when opened.")]
-        [SerializeField] private bool overrideActionMap;
-
-        [Tooltip("The action map to switch to when this menu is opened.")]
-        [SerializeField] protected InputActionMapReference actionMap;
-
         [Tooltip("Menus that block this menu from opening if they are currently open.")]
         [SerializeField] private MenuIdentifier[] blockingMenus;
+
+        [field: Tooltip("The priority of this menu in the stack.")] public EPriority MenuPriority { get; }
 
         public bool IsOpen { get; private set; }
 
         public bool HasShutDown { get; private set; }
 
+        /// <summary>The root tween group driving this menu's open and close animation.</summary>
+        public TweenGroup ContentRoot => contentRoot;
+
         private readonly List<MenuIdentifier> _childMenuIdentifiers = new();
 
         private Menu _parentMenu;
-        private IMenuResettable[] _resettables;
 
+#region Unity Callbacks
         protected virtual void Awake()
         {
             ShutdownManager.Register(this);
 
             if (ServiceLocator.TryGet(out MenuManager menuManager))
                 menuManager.RegisterMenu(this);
-
-            CacheResettables();
 
             if (MenuIdentifier == null)
                 CustomLogger.LogWarning("Menu has no MenuIdentifier assigned.", this);
@@ -92,6 +81,13 @@ namespace Base.SystemsCorePackage.MenuManaging
                 contentRoot.SetVisibility(false);
         }
 
+        protected virtual void OnDestroy()
+        {
+            if (!HasShutDown)
+                Shutdown();
+        }
+#endregion
+
         public virtual void Shutdown()
         {
             ShutdownManager.Deregister(this);
@@ -103,12 +99,10 @@ namespace Base.SystemsCorePackage.MenuManaging
 
             if (IsOpen)
                 CleanupMenuState();
-        }
 
-        protected virtual void OnDestroy()
-        {
-            if (!HasShutDown)
-                Shutdown();
+            Opened = null;
+            Closed = null;
+            BackRequested = null;
         }
 
         /// <summary>
@@ -133,8 +127,10 @@ namespace Base.SystemsCorePackage.MenuManaging
                 if (!menuManager.IsMenuOpen(blockingMenu))
                     continue;
 
-                CustomLogger.LogWarning($"Cannot open menu \"{MenuIdentifier}\" because blocking" +
-                                        $" menu \"{blockingMenu}\" is open.", this);
+                CustomLogger.LogWarning(
+                    $"Cannot open menu \"{MenuIdentifier}\" because blocking" + $" menu \"{blockingMenu}\" is open.",
+                    this);
+
                 return;
             }
 
@@ -144,10 +140,10 @@ namespace Base.SystemsCorePackage.MenuManaging
             contentRoot?.Show();
 
             RegisterParentMenu(parentMenuIdentifier);
-            ApplySystemSettings();
-            ServiceLocator.Get<MenuManager>()?.RegisterOpenMenu(this, (uint)menuPriority, this);
+            ServiceLocator.Get<MenuManager>()?.RegisterOpenMenu(this, (uint)MenuPriority, this);
 
             OnOpened();
+            Opened?.Invoke();
         }
 
         /// <summary>
@@ -181,9 +177,9 @@ namespace Base.SystemsCorePackage.MenuManaging
             {
                 contentRoot.OnFinished -= HandleCloseComplete;
                 contentRoot.SetVisibility(false);
-                ResetChildren();
                 CleanupMenuState(closingMenuIdentifier);
                 OnClosed();
+                Closed?.Invoke();
             }
         }
 
@@ -191,6 +187,7 @@ namespace Base.SystemsCorePackage.MenuManaging
         {
             Close();
             OnBack();
+            BackRequested?.Invoke();
         }
 
         protected virtual void OnOpened() { }
@@ -233,29 +230,7 @@ namespace Base.SystemsCorePackage.MenuManaging
 
             _parentMenu = null;
 
-            if (applyCustomCursorSettings)
-                ServiceLocator.Get<CursorManager>()?.CursorTracker.Remove(this);
-
-            if (applyCustomTimeScaleSettings)
-                ServiceLocator.Get<TimeScaleManager>()?.TimeScaleTracker.Remove(this);
-
-            if (overrideActionMap && actionMap.IsValid)
-                ServiceLocator.Get<InputManager>()?.DeregisterInputMap(this);
-
             menuManager?.DeregisterOpenMenu(this);
-        }
-
-        private void ApplySystemSettings()
-        {
-            if (applyCustomCursorSettings && ServiceLocator.TryGet(out CursorManager cursorManager))
-                cursorManager.CursorTracker.Add(cursorSettings, (uint)menuPriority, this);
-
-            if (applyCustomTimeScaleSettings && ServiceLocator.TryGet(out TimeScaleManager timeScaleManager))
-                timeScaleManager.TimeScaleTracker.Add(timeScale, (uint)menuPriority, this);
-
-            if (overrideActionMap && actionMap.IsValid && ServiceLocator.TryGet(out InputManager inputManager)
-                && inputManager.TryResolveBaseMap(actionMap, out InputActionMap resolvedMap))
-                inputManager.RegisterInputMap(resolvedMap, this, (uint)menuPriority);
         }
 
         private void RegisterChildMenu(MenuIdentifier childMenuIdentifierToRegister)
@@ -276,29 +251,6 @@ namespace Base.SystemsCorePackage.MenuManaging
             }
 
             _childMenuIdentifiers.Add(childMenuIdentifierToRegister);
-        }
-
-        private void CacheResettables()
-        {
-            IMenuResettable[] found = GetComponentsInChildren<IMenuResettable>(includeInactive: true);
-            List<IMenuResettable> filtered = new(found.Length);
-
-            foreach (IMenuResettable resettable in found)
-            {
-                // Skip the content root: its open/close animation is driven by the menu itself.
-                if (ReferenceEquals(resettable, contentRoot))
-                    continue;
-
-                filtered.Add(resettable);
-            }
-
-            _resettables = filtered.ToArray();
-        }
-
-        private void ResetChildren()
-        {
-            foreach (IMenuResettable resettable in _resettables)
-                resettable?.ResetState();
         }
     }
 }

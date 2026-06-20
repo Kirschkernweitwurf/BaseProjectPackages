@@ -148,6 +148,8 @@ GameObject:
   - component: {fileID: 6616562350191608776}
   - component: {fileID: 6426796371714755357}
   - component: {fileID: 1248249170534112211}
+  - component: {fileID: 8925229577475348909}
+  - component: {fileID: 8352656306992507002}
   m_Layer: 0
   m_Name: CheatMenu
   m_TagString: Untagged
@@ -188,20 +190,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Systems.CheatConsole.CheatConsoleView
   <MenuIdentifier>k__BackingField: {fileID: 11400000, guid: e5ce9f8bb7b86df45a5bd5e1c62a4565, type: 2}
-  menuPriority: 2
   contentRoot: {fileID: 7373085267952663516}
   openOnStart: 0
   <ListenToOnBackAction>k__BackingField: 1
-  applyCustomCursorSettings: 0
-  cursorSettings:
-    <IsCursorVisible>k__BackingField: 1
-    <LockMode>k__BackingField: 0
-  applyCustomTimeScaleSettings: 0
-  timeScale: 0
-  overrideActionMap: 1
-  actionMap:
-    asset: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
-    mapId: f601a137-d433-4ef7-866f-f1f14b7c7503
   blockingMenus: []
   <InputField>k__BackingField: {fileID: 912134033575704154}
   logText: {fileID: 8627111541809709085}
@@ -225,6 +216,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4edc8f5ad2824cea89e1fc4878768d22, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Systems.CheatConsole.CheatConsoleController
+--- !u!114 &8925229577475348909
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3212132897598572884}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de80dac21bce03b44b7bfe607d545afc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Base.SystemsCorePackage::Base.SystemsCorePackage.MenuManaging.Modules.MenuTimeScaleModule
+  <OwnerMenu>k__BackingField: {fileID: 6426796371714755357}
+  timeScale: 0
+--- !u!114 &8352656306992507002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3212132897598572884}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36ea4f7a7d15fec429f559715176c660, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Base.SystemsCorePackage::Base.SystemsCorePackage.MenuManaging.Modules.MenuInputMapModule
+  <OwnerMenu>k__BackingField: {fileID: 6426796371714755357}
+  actionMap:
+    asset: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
+    mapId: f601a137-d433-4ef7-866f-f1f14b7c7503
 --- !u!1 &4139655665151898952
 GameObject:
   m_ObjectHideFlags: 0
