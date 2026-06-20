@@ -13,11 +13,11 @@ namespace Base.SystemsCorePackage.MenuManaging.Identifier.Editor
     /// </summary>
     public static class MenuIdentifierGenerator
     {
-        private const string OutputPath = "Assets/Generated/MenuIdentifiers.cs";
-        private const string RegistryPath = "Assets/Generated/Resources/MenuIdentifierRegistry.asset";
-        private const string Namespace = "Base.SystemsCorePackage.MenuManaging.Generated";
-        private const string MenuIdentifierNamespace = "Base.SystemsCorePackage.MenuManaging";
         private const string LoaderNamespace = "Base.SystemsCorePackage.MenuManaging.Identifier";
+        private const string MenuIdentifierNamespace = "Base.SystemsCorePackage.MenuManaging";
+        private const string Namespace = "Base.SystemsCorePackage.MenuManaging.Generated";
+        private const string OutputPath = "Assets/Generated/MenuIdentifiers/MenuIdentifiers.cs";
+        private const string RegistryPath = "Assets/Generated/Resources/MenuIdentifierRegistry.asset";
 
         [MenuItem("Tools/Base Packages/Menu/Regenerate Menu Identifiers", priority = -36)]
         public static void Regenerate()
@@ -43,8 +43,11 @@ namespace Base.SystemsCorePackage.MenuManaging.Identifier.Editor
             if (duplicates.Any())
             {
                 foreach (var dup in duplicates)
-                    Debug.LogError($"Duplicate MenuIdentifier name '{dup.Key}'. " +
-                                   $"Conflicts: {string.Join(", ", dup.Select(d => d.Path))}");
+                {
+                    Debug.LogError($"Duplicate MenuIdentifier name '{dup.Key}'. "
+                        + $"Conflicts: {string.Join(", ", dup.Select(d => d.Path))}");
+                }
+
                 return;
             }
 
@@ -73,8 +76,12 @@ namespace Base.SystemsCorePackage.MenuManaging.Identifier.Editor
             sb.AppendLine($"namespace {Namespace}");
             sb.AppendLine("{");
             sb.AppendLine("    /// <summary>");
-            sb.AppendLine("    /// Provides strongly-typed access to all <see cref=\"MenuIdentifier\"/> assets in the project.");
-            sb.AppendLine("    /// References are resolved lazily on first access via the <see cref=\"MenuIdentifierLoader\"/>.");
+            sb.AppendLine(
+                "    /// Provides strongly-typed access to all <see cref=\"MenuIdentifier\"/> assets in the project.");
+
+            sb.AppendLine(
+                "    /// References are resolved lazily on first access via the <see cref=\"MenuIdentifierLoader\"/>.");
+
             sb.AppendLine("    /// </summary>");
             sb.AppendLine("    public static class MenuIdentifiers");
             sb.AppendLine("    {");
@@ -83,9 +90,13 @@ namespace Base.SystemsCorePackage.MenuManaging.Identifier.Editor
             {
                 string identifier = SanitizeIdentifier(entry.Asset.name);
                 sb.AppendLine($"        private static MenuIdentifier _{ToCamelCase(identifier)};");
-                sb.AppendLine($"        public static MenuIdentifier {identifier} => _{ToCamelCase(identifier)} != null");
+                sb.AppendLine(
+                    $"        public static MenuIdentifier {identifier} => _{ToCamelCase(identifier)} != null");
+
                 sb.AppendLine($"            ? _{ToCamelCase(identifier)}");
-                sb.AppendLine($"            : _{ToCamelCase(identifier)} = MenuIdentifierLoader.Load(\"{entry.Asset.name}\");");
+                sb.AppendLine(
+                    $"            : _{ToCamelCase(identifier)} = MenuIdentifierLoader.Load(\"{entry.Asset.name}\");");
+
                 sb.AppendLine();
             }
 
@@ -112,8 +123,10 @@ namespace Base.SystemsCorePackage.MenuManaging.Identifier.Editor
         {
             StringBuilder sb = new();
             foreach (char c in name)
+            {
                 if (char.IsLetterOrDigit(c) || c == '_')
                     sb.Append(c);
+            }
 
             string result = sb.ToString();
             if (result.Length == 0 || char.IsDigit(result[0]))
@@ -122,7 +135,9 @@ namespace Base.SystemsCorePackage.MenuManaging.Identifier.Editor
             return result;
         }
 
-        private static string ToCamelCase(string s) => s.Length == 0 ? s : char.ToLowerInvariant(s[0]) + s[1..];
+        private static string ToCamelCase(string s) => s.Length == 0
+            ? s
+            : char.ToLowerInvariant(s[0]) + s[1..];
     }
 }
 #endif

@@ -1,0 +1,17 @@
+{
+    "name": "Base.MemoryProfiler",
+    "rootNamespace": "Base.MemoryProfiler",
+    "references": [
+        "GUID:f2d8f8c295391d141aef02e29987cd86",
+        "GUID:922d81cfb9ff6984da4cb2213b66a375"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

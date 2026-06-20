@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Base.UtilityPackage.Logging;
+using UnityEditor;
 
 namespace Base.ScreenShakePackage
 {
@@ -10,11 +11,6 @@ namespace Base.ScreenShakePackage
     public static class ScreenShakeManager
     {
         private static readonly List<Action<ScreenShakeProfile>> Listeners = new();
-
-#if UNITY_EDITOR
-        [UnityEditor.InitializeOnEnterPlayMode]
-        private static void ResetStatics() => Listeners.Clear();
-#endif
 
         /// <summary>
         /// Registers a listener to be notified of screen shake events.
@@ -49,5 +45,10 @@ namespace Base.ScreenShakePackage
                 listener.Invoke(profile);
             }
         }
+
+#if UNITY_EDITOR
+        [InitializeOnEnterPlayMode]
+        private static void ResetStatics() => Listeners.Clear();
+#endif
     }
 }
