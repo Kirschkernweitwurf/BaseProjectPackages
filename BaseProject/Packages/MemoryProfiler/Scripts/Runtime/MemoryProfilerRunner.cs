@@ -123,14 +123,17 @@ namespace Base.MemoryProfiler
             CustomLogger.Log($"Memory snapshot saved: {path}", null);
         }
 
-        private static string ResolveOutputDirectory(string relativeFolder)
+        private static string ResolveOutputDirectory(string folder)
         {
+            if (Path.IsPathRooted(folder))
+                return folder;
+
 #if UNITY_EDITOR
             string root = Directory.GetParent(Application.dataPath)?.FullName ?? Application.dataPath;
 #else
-            string root = Application.persistentDataPath;
+    string root = Application.persistentDataPath;
 #endif
-            return Path.Combine(root, relativeFolder);
+            return Path.Combine(root, folder);
         }
     }
 }

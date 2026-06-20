@@ -24,13 +24,27 @@ namespace Base.MemoryProfiler
 
         private const string ResourceSubFolder = "MemoryProfilerConfig";
 
-        [SerializeField] private bool isEnabled;
-        [SerializeField] private bool captureOnInterval = true;
-        [SerializeField] private bool captureOnSceneLoad = true;
-        [SerializeField] private float intervalSeconds = 30f;
-        [SerializeField] private string outputFolder = "MemoryCaptures";
-        [SerializeField] private string fileNamePrefix = "Snapshot";
-        [SerializeField] private CaptureFlags captureFlags = DefaultCaptureFlags;
+        [SerializeField] [Tooltip("Main switch for all automated captures.")]
+        private bool isEnabled;
+
+        [SerializeField] [Tooltip("Capture on a repeating timer while playing.")]
+        private bool captureOnInterval = true;
+
+        [SerializeField] [Tooltip("Capture every time a scene finishes loading.")]
+        private bool captureOnSceneLoad = true;
+
+        [SerializeField] [Tooltip("Seconds between interval captures.")]
+        private float intervalSeconds = 30f;
+
+        [SerializeField] [Tooltip("Output folder for snapshots. Relative paths resolve to the project root in"
+            + " the editor and to persistent data in builds. Absolute paths are used as is.")]
+        private string outputFolder = "MemoryCaptures";
+
+        [SerializeField] [Tooltip("Prefix used for every snapshot file name.")]
+        private string fileNamePrefix = "Snapshot";
+
+        [SerializeField] [Tooltip("Which memory categories to include in each snapshot.")]
+        private CaptureFlags captureFlags = DefaultCaptureFlags;
 
         /// <summary>Master switch for all automated captures.</summary>
         public bool IsEnabled => isEnabled;
@@ -44,7 +58,10 @@ namespace Base.MemoryProfiler
         /// <summary>Seconds between interval captures.</summary>
         public float IntervalSeconds => intervalSeconds;
 
-        /// <summary>Output folder, relative to the project root in editor or persistent data in builds.</summary>
+        /// <summary>
+        /// Output folder for snapshots. Relative paths resolve to the project root in
+        /// the editor and to persistent data in builds. Absolute paths are used as is.
+        /// </summary>
         public string OutputFolder => outputFolder;
 
         /// <summary>Prefix used for every snapshot file name.</summary>

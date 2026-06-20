@@ -53,7 +53,7 @@ namespace Base.MemoryProfiler.Editor
 
             EditorGUILayout.Space();
             EditorGUILayout.LabelField("Output", EditorStyles.boldLabel);
-            EditorGUILayout.PropertyField(folder, new GUIContent("Folder (relative)"));
+            EditorGUILayout.PropertyField(folder, new GUIContent("Folder"));
             EditorGUILayout.PropertyField(prefix, new GUIContent("File Name Prefix"));
             EditorGUILayout.PropertyField(flags, new GUIContent("Capture Flags"));
 
