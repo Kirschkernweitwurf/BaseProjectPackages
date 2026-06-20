@@ -9,7 +9,7 @@ namespace Base.MemoryProfiler.Editor
     /// </summary>
     public class MemoryProfilerWindow : EditorWindow
     {
-        private const string MenuPath = "Tools/Profiling/Memory Profiler Automation";
+        private const string MenuPath = "Tools/Base Packages/Profiling/Memory Profiler Automation";
         private const float MinIntervalSeconds = 1f;
         private const string ResourcesFolder = "Assets/Resources/MemoryProfilerConfig";
         private const string WindowTitle = "Memory Profiler";

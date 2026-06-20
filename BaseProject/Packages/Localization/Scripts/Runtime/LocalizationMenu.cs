@@ -11,13 +11,13 @@ namespace Base.Localization
     {
         private const string Root = "Tools/Base Packages/Localization/";
 
-        [MenuItem(Root + "Pull All String Tables", false, 2)]
+        [MenuItem(Root + "Pull All String Tables", false, -47)]
         private static void PullAll() => GoogleSheetsSync.SyncAll(ESyncDirection.Pull);
 
-        [MenuItem(Root + "Push All String Tables", false, 2)]
+        [MenuItem(Root + "Push All String Tables", false, -47)]
         private static void PushAll() => GoogleSheetsSync.SyncAll(ESyncDirection.Push);
 
-        [MenuItem(Root + "Open Sync Window", false, 2)]
+        [MenuItem(Root + "Open Sync Window", false, -47)]
         private static void OpenWindow() => LocalizationSyncWindow.Open();
     }
 }
