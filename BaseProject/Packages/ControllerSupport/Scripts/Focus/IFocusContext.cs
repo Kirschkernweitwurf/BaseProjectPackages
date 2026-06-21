@@ -1,4 +1,4 @@
-﻿namespace ControllerSupport.Scripts.Focus
+﻿namespace Base.ControllerSupport.Focus
 {
     /// <summary>
     /// Implement on a component to define a focus context for the <see cref="FocusWatchdog"/>.

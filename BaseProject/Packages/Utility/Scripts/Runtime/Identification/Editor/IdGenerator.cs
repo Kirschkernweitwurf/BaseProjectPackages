@@ -1,5 +1,6 @@
 #if UNITY_EDITOR
 using System;
+using Base.ToolPackage.Editor.Generated;
 using Base.UtilityPackage.Logging;
 using UnityEditor;
 using UnityEngine;
@@ -12,7 +13,7 @@ namespace Base.UtilityPackage.Identification.Editor
     /// </summary>
     public static class IdGenerator
     {
-        [MenuItem("Tools/Base Packages/Identifier/Generate Unique IDs", priority = -36)]
+        [MenuItem("Tools/Base Packages/Identifier/Generate Unique IDs", priority = MenuOrders.Asset)]
         public static void Generate()
         {
             string[] guids = AssetDatabase.FindAssets("t:ScriptableObject");
@@ -40,7 +41,10 @@ namespace Base.UtilityPackage.Identification.Editor
 
             AssetDatabase.SaveAssets();
 
-            string scriptableObjectText = totalCount == 1 ? "scriptable object" : "scriptable objects";
+            string scriptableObjectText = totalCount == 1
+                ? "scriptable object"
+                : "scriptable objects";
+
             CustomLogger.Log(updatedCount > 0
                 ? $"Generated IDs for {updatedCount} of {totalCount} {scriptableObjectText}."
                 : $"All {totalCount} {scriptableObjectText} already have valid IDs. No changes made.", null);

@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
-using Base.SystemsCorePackage.GamepadSupport.Devices;
+using Base.ControllerSupport.Devices;
 using Base.SystemsCorePackage.Services;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace Base.SystemsCorePackage.GamepadSupport.Glyphs
+namespace Base.ControllerSupport.Glyphs
 {
     /// <summary>
     /// Resolves the correct prompt glyph for an action based on the active input device. Returns a
@@ -14,13 +14,13 @@ namespace Base.SystemsCorePackage.GamepadSupport.Glyphs
     /// </summary>
     public sealed class InputGlyphProvider : GameServiceBehaviour
     {
+        /// <summary>Raised when the active device changes and prompts should be refreshed.</summary>
+        public event Action OnActiveDeviceChanged;
+
         [Tooltip("One glyph set per supported device family.")]
         [SerializeField] private List<InputGlyphSet> glyphSets = new();
 
         private InputDeviceTracker _deviceTracker;
-
-        /// <summary>Raised when the active device changes and prompts should be refreshed.</summary>
-        public event Action OnActiveDeviceChanged;
 
 #region Unity Callbacks
         protected override void Awake()
@@ -69,8 +69,10 @@ namespace Base.SystemsCorePackage.GamepadSupport.Glyphs
                 : EInputDeviceType.MouseKeyboard;
 
             foreach (InputGlyphSet set in glyphSets)
+            {
                 if (set != null && set.DeviceType == device)
                     return set;
+            }
 
             return null;
         }

@@ -1,10 +1,10 @@
 using System.Collections.Generic;
-using Base.SystemsCorePackage.GamepadSupport.Devices;
+using Base.ControllerSupport.Devices;
 using Base.SystemsCorePackage.Services;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace ControllerSupport.Scripts.Focus
+namespace Base.ControllerSupport.Focus
 {
     /// <summary>
     /// Global safety net that keeps a valid selection while a gamepad is in use. Re-selects the active

@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Text;
+using Base.ToolPackage.Editor.Generated;
 using UnityEditor;
 using UnityEngine;
 
@@ -19,7 +20,7 @@ namespace Base.SystemsCorePackage.MenuManaging.Identifier.Editor
         private const string OutputPath = "Assets/Generated/MenuIdentifiers/MenuIdentifiers.cs";
         private const string RegistryPath = "Assets/Generated/Resources/MenuIdentifierRegistry.asset";
 
-        [MenuItem("Tools/Base Packages/Menu/Regenerate Menu Identifiers", priority = -36)]
+        [MenuItem("Tools/Base Packages/Menu/Regenerate Menu Identifiers", priority = MenuOrders.Asset)]
         public static void Regenerate()
         {
             string[] guids = AssetDatabase.FindAssets($"t:{nameof(MenuIdentifier)}");
@@ -89,7 +90,7 @@ namespace Base.SystemsCorePackage.MenuManaging.Identifier.Editor
             foreach (var entry in entries)
             {
                 string identifier = SanitizeIdentifier(entry.Asset.name);
-                sb.AppendLine($"        private static MenuIdentifier _{ToCamelCase(identifier)};");
+                sb.AppendLine($"        private static MenuIdentifier _{ToCamelCase(identifier)}; // reset-ignore");
                 sb.AppendLine(
                     $"        public static MenuIdentifier {identifier} => _{ToCamelCase(identifier)} != null");
 

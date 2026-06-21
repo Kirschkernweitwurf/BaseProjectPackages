@@ -1,6 +1,7 @@
 #if UNITY_EDITOR
 using System.Collections.Generic;
 using System.Linq;
+using Base.ToolPackage.Editor.Generated;
 using Base.UtilityPackage.Logging;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -22,16 +23,12 @@ namespace Base.SystemsCorePackage.Audio.Editor
         private Vector2 _scroll;
         private bool _hasScanned;
 
-        [MenuItem("Tools/Base Packages/Audio/Find Unused Audio Clips", priority = -36)]
-        public static void ShowWindow()
-        {
-            FindUnusedAudioClips window = GetWindow<FindUnusedAudioClips>("Unused Audio Clips Finder");
-            window.ScanForUnusedAudioClips();
-        }
-
+#region Unity Callbacks
         private void OnGUI()
         {
-            if (GUILayout.Button(_hasScanned ? "Rescan" : "Scan for Unused Audio Clips"))
+            if (GUILayout.Button(_hasScanned
+                    ? "Rescan"
+                    : "Scan for Unused Audio Clips"))
                 ScanForUnusedAudioClips();
 
             if (!_hasScanned)
@@ -60,41 +57,16 @@ namespace Base.SystemsCorePackage.Audio.Editor
             _scroll = EditorGUILayout.BeginScrollView(_scroll);
             foreach (AudioClip clip in _unusedClips)
                 EditorGUILayout.ObjectField(clip, typeof(AudioClip), false);
+
             EditorGUILayout.EndScrollView();
         }
+#endregion
 
-        private void ScanForUnusedAudioClips()
+        [MenuItem("Tools/Base Packages/Audio/Find Unused Audio Clips", priority = MenuOrders.Asset)]
+        public static void ShowWindow()
         {
-            // Ask to save first, since we open scenes during the scan.
-            if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
-                return;
-
-            SceneSetup[] originalSetup = EditorSceneManager.GetSceneManagerSetup();
-
-            try
-            {
-                HashSet<AudioClip> allClips = LoadAllClips();
-                HashSet<AudioClip> usedClips = new();
-
-                CollectUsedClipsFromScenes(usedClips);
-                CollectUsedClipsFromPrefabs(usedClips);
-                CollectUsedClipsFromContainers(usedClips);
-
-                allClips.ExceptWith(usedClips);
-
-                _unusedClips.Clear();
-                _unusedClips.AddRange(allClips);
-                _hasScanned = true;
-
-                CustomLogger.Log($"Scan complete. {_unusedClips.Count} unused AudioClips found.", null);
-            }
-            finally
-            {
-                EditorUtility.ClearProgressBar();
-
-                if (originalSetup is { Length: > 0 })
-                    EditorSceneManager.RestoreSceneManagerSetup(originalSetup);
-            }
+            FindUnusedAudioClips window = GetWindow<FindUnusedAudioClips>("Unused Audio Clips Finder");
+            window.ScanForUnusedAudioClips();
         }
 
         private static HashSet<AudioClip> LoadAllClips()
@@ -105,11 +77,14 @@ namespace Base.SystemsCorePackage.Audio.Editor
                 return new HashSet<AudioClip>();
             }
 
-            string[] guids = AssetDatabase.FindAssets("t:AudioClip", new[] { ClipsFolder });
-            return new HashSet<AudioClip>(
-                guids.Select(guid => AssetDatabase.LoadAssetAtPath<AudioClip>(AssetDatabase.GUIDToAssetPath(guid)))
-                     .Where(clip => clip != null)
-            );
+            string[] guids = AssetDatabase.FindAssets("t:AudioClip", new[]
+            {
+                ClipsFolder
+            });
+
+            return new HashSet<AudioClip>(guids
+                .Select(guid => AssetDatabase.LoadAssetAtPath<AudioClip>(AssetDatabase.GUIDToAssetPath(guid)))
+                .Where(clip => clip != null));
         }
 
         private static void CollectUsedClipsFromScenes(HashSet<AudioClip> usedClips)
@@ -144,12 +119,18 @@ namespace Base.SystemsCorePackage.Audio.Editor
         {
             if (!AssetDatabase.IsValidFolder(ContainersFolder))
             {
-                CustomLogger.LogWarning($"Containers folder '{ContainersFolder}' does not exist." +
-                                        " No clips will be found in containers.", null);
+                CustomLogger.LogWarning(
+                    $"Containers folder '{ContainersFolder}' does not exist."
+                    + " No clips will be found in containers.", null);
+
                 return;
             }
 
-            string[] guids = AssetDatabase.FindAssets("t:AudioContainer", new[] { ContainersFolder });
+            string[] guids = AssetDatabase.FindAssets("t:AudioContainer", new[]
+            {
+                ContainersFolder
+            });
+
             foreach (string guid in guids)
             {
                 string path = AssetDatabase.GUIDToAssetPath(guid);
@@ -158,8 +139,10 @@ namespace Base.SystemsCorePackage.Audio.Editor
                     continue;
 
                 foreach (AudioClip clip in container.clips)
+                {
                     if (clip != null)
                         usedClips.Add(clip);
+                }
             }
         }
 
@@ -174,19 +157,53 @@ namespace Base.SystemsCorePackage.Audio.Editor
                 SerializedProperty prop = serialized.GetIterator();
                 while (prop.NextVisible(true))
                 {
-                    if (prop.propertyType == SerializedPropertyType.ObjectReference &&
-                        prop.objectReferenceValue is AudioClip clip)
-                    {
+                    if (prop.propertyType == SerializedPropertyType.ObjectReference
+                        && prop.objectReferenceValue is AudioClip clip)
                         usedClips.Add(clip);
-                    }
                 }
+            }
+        }
+
+        private void ScanForUnusedAudioClips()
+        {
+            // Ask to save first, since we open scenes during the scan.
+            if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
+                return;
+
+            SceneSetup[] originalSetup = EditorSceneManager.GetSceneManagerSetup();
+
+            try
+            {
+                HashSet<AudioClip> allClips = LoadAllClips();
+                HashSet<AudioClip> usedClips = new();
+
+                CollectUsedClipsFromScenes(usedClips);
+                CollectUsedClipsFromPrefabs(usedClips);
+                CollectUsedClipsFromContainers(usedClips);
+
+                allClips.ExceptWith(usedClips);
+
+                _unusedClips.Clear();
+                _unusedClips.AddRange(allClips);
+                _hasScanned = true;
+
+                CustomLogger.Log($"Scan complete. {_unusedClips.Count} unused AudioClips found.", null);
+            }
+            finally
+            {
+                EditorUtility.ClearProgressBar();
+
+                if (originalSetup is
+                    {
+                        Length: > 0
+                    })
+                    EditorSceneManager.RestoreSceneManagerSetup(originalSetup);
             }
         }
 
         private void DeleteUnusedClips()
         {
-            bool confirmed = EditorUtility.DisplayDialog(
-                "Delete Unused Audio Clips",
+            bool confirmed = EditorUtility.DisplayDialog("Delete Unused Audio Clips",
                 $"Delete {_unusedClips.Count} clips permanently? This cannot be undone.",
                 "Delete", "Cancel");
 

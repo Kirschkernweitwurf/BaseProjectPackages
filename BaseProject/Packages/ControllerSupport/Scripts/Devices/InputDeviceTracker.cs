@@ -3,7 +3,7 @@ using Base.SystemsCorePackage.Services;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.LowLevel;
 
-namespace Base.SystemsCorePackage.GamepadSupport.Devices
+namespace Base.ControllerSupport.Devices
 {
     /// <summary>
     /// Single source of truth for the currently active input device. Listens to raw input events and
@@ -13,12 +13,12 @@ namespace Base.SystemsCorePackage.GamepadSupport.Devices
     {
         private const float ActivationThreshold = 0.5f;
 
+        /// <summary>Raised whenever the active device family changes.</summary>
+        public event Action<EInputDeviceType> OnDeviceChanged;
+
         public EInputDeviceType CurrentDevice { get; private set; } = EInputDeviceType.Unknown;
 
         public bool IsUsingGamepad => CurrentDevice == EInputDeviceType.Gamepad;
-
-        /// <summary>Raised whenever the active device family changes.</summary>
-        public event Action<EInputDeviceType> OnDeviceChanged;
 
 #region Unity Callbacks
         protected override void Awake()
@@ -33,6 +33,13 @@ namespace Base.SystemsCorePackage.GamepadSupport.Devices
             InputSystem.onEvent -= HandleInputEvent;
         }
 #endregion
+
+        private static EInputDeviceType ResolveDeviceType(InputDevice device) => device switch
+        {
+            Gamepad => EInputDeviceType.Gamepad,
+            Mouse or Keyboard => EInputDeviceType.MouseKeyboard,
+            _ => EInputDeviceType.Unknown
+        };
 
         private void HandleInputEvent(InputEventPtr eventPtr, InputDevice device)
         {
@@ -60,17 +67,6 @@ namespace Base.SystemsCorePackage.GamepadSupport.Devices
 
             CurrentDevice = deviceType;
             OnDeviceChanged?.Invoke(deviceType);
-        }
-
-        private static EInputDeviceType ResolveDeviceType(InputDevice device)
-        {
-            return device switch
-            {
-                Gamepad => EInputDeviceType.Gamepad,
-                Mouse => EInputDeviceType.MouseKeyboard,
-                Keyboard => EInputDeviceType.MouseKeyboard,
-                _ => EInputDeviceType.Unknown
-            };
         }
     }
 }

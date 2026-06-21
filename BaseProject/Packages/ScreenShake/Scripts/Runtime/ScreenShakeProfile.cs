@@ -1,3 +1,4 @@
+using Base.ToolPackage.Editor.Generated;
 using Unity.Cinemachine;
 using UnityEngine;
 
@@ -6,7 +7,8 @@ namespace Base.ScreenShakePackage
     /// <summary>
     /// ScriptableObject that defines a screen shake profile.
     /// </summary>
-    [CreateAssetMenu(fileName = "ScreenShakeProfile", menuName = "ScriptableObjects/Base/Screen-Shake/New Profile")]
+    [CreateAssetMenu(fileName = "ScreenShakeProfile", menuName = "ScriptableObjects/Base/Screen-Shake/New Profile",
+        order = MenuOrders.Asset)]
     public class ScreenShakeProfile : ScriptableObject
     {
         [field: Header("Shake Settings")]
@@ -24,7 +26,8 @@ namespace Base.ScreenShakePackage
         [field: SerializeField] public CinemachineImpulseDefinition.ImpulseShapes ImpulseShape { get; private set; }
 
         [field: Tooltip("Custom impulse shape curve defining the shake intensity over time.")]
-        [field: SerializeField] public AnimationCurve CustomImpulseShape { get; private set; } = AnimationCurve.EaseInOut(0, 0, 1, 1);
+        [field: SerializeField] public AnimationCurve CustomImpulseShape { get; private set; } =
+            AnimationCurve.EaseInOut(0, 0, 1, 1);
 
         [field: Tooltip("Default velocity direction of the impulse (e.g., downward).")]
         [field: SerializeField] public Vector3 DefaultVelocity { get; private set; } = new(0, -1, 0);
