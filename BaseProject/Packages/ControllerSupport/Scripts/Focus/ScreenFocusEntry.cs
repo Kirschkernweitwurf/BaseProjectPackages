@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace ControllerSupport.Scripts.Focus
+namespace Base.ControllerSupport.Focus
 {
     /// <summary>
     /// Defines the default focus target for a <see cref="Menu"/> and optionally restores the element
@@ -82,13 +82,13 @@ namespace ControllerSupport.Scripts.Focus
 
         private Selectable ResolveTarget()
         {
-            if (rememberLastSelected && _lastSelected != null && _lastSelected.activeInHierarchy)
-            {
-                Selectable remembered = _lastSelected.GetComponent<Selectable>();
+            if (!rememberLastSelected || _lastSelected == null || !_lastSelected.activeInHierarchy)
+                return defaultSelectable;
 
-                if (remembered != null && remembered.IsInteractable())
-                    return remembered;
-            }
+            Selectable remembered = _lastSelected.GetComponent<Selectable>();
+
+            if (remembered != null && remembered.IsInteractable())
+                return remembered;
 
             return defaultSelectable;
         }

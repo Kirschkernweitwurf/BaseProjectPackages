@@ -1,6 +1,7 @@
 #if UNITY_EDITOR
 using System.Collections.Generic;
 using System.Text;
+using Base.ToolPackage.Editor.Generated;
 using Base.UtilityPackage.Logging;
 using UnityEditor;
 using UnityEditorInternal;
@@ -12,7 +13,7 @@ namespace Base.UtilityPackage.Editor.UnityConstants
     /// </summary>
     public static class TagsGenerator
     {
-        [MenuItem("Tools/Base Packages/Code Generation/Generate Tags", priority = -25)]
+        [MenuItem("Tools/Base Packages/Code Generation/Generate Tags", priority = MenuOrders.Code)]
         public static void Generate()
         {
             GeneratorUtility.EnsureFolderExists(GeneratorUtility.OutputFolder);

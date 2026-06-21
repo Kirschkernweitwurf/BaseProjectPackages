@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Base.ToolPackage.Editor.Generated;
 using UnityEngine;
 
 namespace Base.ToolPackage.Editor.AssetZoo.Runtime.Config
@@ -7,10 +8,12 @@ namespace Base.ToolPackage.Editor.AssetZoo.Runtime.Config
     /// Author-time configuration for an asset zoo. Create one or more of these as
     /// project assets via Assets &gt; Create &gt; Asset Zoo &gt; Zoo Config.
     /// </summary>
-    [CreateAssetMenu(fileName = "ZooConfig", menuName = "ScriptableObjects/Base/Asset Zoo/Zoo Config", order = 0)]
+    [CreateAssetMenu(fileName = "ZooConfig", menuName = "ScriptableObjects/Base/Asset Zoo/Zoo Config",
+        order = MenuOrders.Team)]
     public class ZooConfig : ScriptableObject
     {
         [Header("Settings")]
+
         [Tooltip("Settings related to how prefabs are arranged in space.")]
         [field: SerializeField] public LayoutSettings Layout { get; private set; } = new();
 
@@ -18,6 +21,7 @@ namespace Base.ToolPackage.Editor.AssetZoo.Runtime.Config
         [field: SerializeField] public LabelSettings Labels { get; private set; } = new();
 
         [Header("Content")]
+
         [field: Tooltip("Categories of prefabs to show in the zoo. Each category gets its own row/section.")]
         [field: SerializeField] public List<ZooCategory> Categories { get; private set; } = new();
     }

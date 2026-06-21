@@ -1,6 +1,7 @@
 #if UNITY_EDITOR
 using Base.ToolPackage.Editor.AssetZoo.Runtime.Builder;
 using Base.ToolPackage.Editor.AssetZoo.Runtime.Config;
+using Base.ToolPackage.Editor.Generated;
 using UnityEditor;
 using UnityEngine;
 
@@ -11,10 +12,10 @@ namespace Base.ToolPackage.Editor.AssetZoo.Editor
     /// </summary>
     public class ZooEditorWindow : EditorWindow
     {
-        private const float MainButtonHeight = 32f;
         private const float AuxButtonHeight = 24f;
-        private const float MinWindowWidth = 340f;
+        private const float MainButtonHeight = 32f;
         private const float MinWindowHeight = 400f;
+        private const float MinWindowWidth = 340f;
 
         private readonly ZooBuilder _builder = new();
 
@@ -23,22 +24,8 @@ namespace Base.ToolPackage.Editor.AssetZoo.Editor
         private Vector2 _scroll;
         private UnityEditor.Editor _cachedConfigEditor;
 
+#region Unity Callbacks
         private void OnDisable() => ClearCachedEditor();
-
-        /// <summary>
-        /// Opens the zoo builder window without a config.
-        /// </summary>
-        [MenuItem("Tools/Base Packages/Asset Zoo/Open Zoo Builder", priority = -47)]
-        public static void Open() => Open(null);
-
-        public static void Open(ZooConfig config)
-        {
-            ZooEditorWindow window = GetWindow<ZooEditorWindow>("Asset Zoo");
-            window.minSize = new Vector2(MinWindowWidth, MinWindowHeight);
-
-            if (config != null)
-                window._config = config;
-        }
 
         private void OnGUI()
         {
@@ -46,11 +33,10 @@ namespace Base.ToolPackage.Editor.AssetZoo.Editor
             EditorGUILayout.Space(4);
 
             EditorGUI.BeginChangeCheck();
-            _config = (ZooConfig)EditorGUILayout.ObjectField(
-                "Config", _config, typeof(ZooConfig), false);
-            _parent = (Transform)EditorGUILayout.ObjectField(
-                "Parent (optional)", _parent, typeof(Transform), true);
-            if (EditorGUI.EndChangeCheck()) ClearCachedEditor();
+            _config = (ZooConfig)EditorGUILayout.ObjectField("Config", _config, typeof(ZooConfig), false);
+            _parent = (Transform)EditorGUILayout.ObjectField("Parent (optional)", _parent, typeof(Transform), true);
+            if (EditorGUI.EndChangeCheck())
+                ClearCachedEditor();
 
             EditorGUILayout.Space(6);
 
@@ -58,15 +44,17 @@ namespace Base.ToolPackage.Editor.AssetZoo.Editor
             bool hasParent = _parent != null;
 
             using (new EditorGUI.DisabledScope(_config == null))
-            using (new EditorGUILayout.HorizontalScope())
             {
-                if (GUILayout.Button("Build Zoo", GUILayout.Height(MainButtonHeight)))
-                    _builder.Build(_config, _parent);
-
-                using (new EditorGUI.DisabledScope(!hasZoo))
+                using (new EditorGUILayout.HorizontalScope())
                 {
-                    if (GUILayout.Button("Clear Zoo", GUILayout.Height(MainButtonHeight)))
-                        _builder.Clear();
+                    if (GUILayout.Button("Build Zoo", GUILayout.Height(MainButtonHeight)))
+                        _builder.Build(_config, _parent);
+
+                    using (new EditorGUI.DisabledScope(!hasZoo))
+                    {
+                        if (GUILayout.Button("Clear Zoo", GUILayout.Height(MainButtonHeight)))
+                            _builder.Clear();
+                    }
                 }
             }
 
@@ -86,11 +74,11 @@ namespace Base.ToolPackage.Editor.AssetZoo.Editor
 
             if (_config == null)
             {
-                EditorGUILayout.HelpBox(
-                    "1. Create a config via Assets > Create > Asset Zoo > Zoo Config.\n" +
-                    "2. Drop it in the Config field above.\n" +
-                    "3. Add prefabs, hit Build.",
+                EditorGUILayout.HelpBox("1. Create a config via Assets > Create > Asset Zoo > Zoo Config.\n"
+                    + "2. Drop it in the Config field above.\n"
+                    + "3. Add prefabs, hit Build.",
                     MessageType.Info);
+
                 return;
             }
 
@@ -101,6 +89,22 @@ namespace Base.ToolPackage.Editor.AssetZoo.Editor
             _cachedConfigEditor.OnInspectorGUI();
 
             EditorGUILayout.EndScrollView();
+        }
+#endregion
+
+        /// <summary>
+        /// Opens the zoo builder window without a config.
+        /// </summary>
+        [MenuItem("Tools/Base Packages/Asset Zoo/Open Zoo Builder", priority = MenuOrders.Team)]
+        public static void Open() => Open(null);
+
+        public static void Open(ZooConfig config)
+        {
+            ZooEditorWindow window = GetWindow<ZooEditorWindow>("Asset Zoo");
+            window.minSize = new Vector2(MinWindowWidth, MinWindowHeight);
+
+            if (config != null)
+                window._config = config;
         }
 
         private void EnsureCachedEditor()

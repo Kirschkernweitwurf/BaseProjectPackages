@@ -1,5 +1,6 @@
 #if UNITY_EDITOR
 using System.Collections.Generic;
+using Base.ToolPackage.Editor.Generated;
 using UnityEditor;
 using UnityEngine;
 
@@ -48,7 +49,7 @@ namespace Base.ToolPackage.Editor.ExecutionOrderOverview
 #endregion
 
         /// <summary>Opens or focuses the window from the Tools menu.</summary>
-        [MenuItem("Tools/Base Packages/Code Health/Execution Order Overview", priority = -25)]
+        [MenuItem("Tools/Base Packages/Code Health/Execution Order Overview", priority = MenuOrders.Code)]
         private static void Open()
         {
             ExecutionOrderOverviewWindow window = GetWindow<ExecutionOrderOverviewWindow>("Execution Order");

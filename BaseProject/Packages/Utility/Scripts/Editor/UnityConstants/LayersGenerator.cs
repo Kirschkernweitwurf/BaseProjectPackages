@@ -1,6 +1,7 @@
 #if UNITY_EDITOR
 using System.Collections.Generic;
 using System.Text;
+using Base.ToolPackage.Editor.Generated;
 using UnityEditor;
 using UnityEngine;
 
@@ -11,7 +12,7 @@ namespace Base.UtilityPackage.Editor.UnityConstants
     /// </summary>
     public static class LayersGenerator
     {
-        [MenuItem("Tools/Base Packages/Code Generation/Generate Layers", priority = -25)]
+        [MenuItem("Tools/Base Packages/Code Generation/Generate Layers", priority = MenuOrders.Code)]
         public static void Generate()
         {
             GeneratorUtility.EnsureFolderExists(GeneratorUtility.OutputFolder);
