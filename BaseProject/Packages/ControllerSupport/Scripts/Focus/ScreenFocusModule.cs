@@ -13,7 +13,7 @@ namespace Base.ControllerSupport.Focus
     /// that was focused last time the menu was open. Registers with the <see cref="FocusWatchdog"/>
     /// while open so focus can always be recovered.
     /// </summary>
-    public sealed class ScreenFocusEntry : MenuModule, IFocusContext
+    public sealed class ScreenFocusModule : MenuModule, IFocusContext
     {
         [Tooltip("Selectable focused when the menu opens and no remembered selection exists.")]
         [SerializeField] private Selectable defaultSelectable;

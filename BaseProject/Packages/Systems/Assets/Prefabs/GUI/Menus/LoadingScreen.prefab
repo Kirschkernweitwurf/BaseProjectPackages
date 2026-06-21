@@ -127,7 +127,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33909ab9224f460fbeca341e7c89a4f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Systems.Tweening.Components.System.TweenGroup
-  tweenBehaviours: []
+  showTweenBehaviours: []
+  hideTweenBehaviours: []
   playOnStart: 0
   sequenceMode: 0
 --- !u!225 &773109603582227041
@@ -192,20 +193,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SceneManagement.LoadingScreen
   <MenuIdentifier>k__BackingField: {fileID: 11400000, guid: 97259c6fd298b3c4594bb8441595f230, type: 2}
-  menuPriority: 2
   contentRoot: {fileID: 4353909002388602563}
   openOnStart: 0
   <ListenToOnBackAction>k__BackingField: 0
-  applyCustomCursorSettings: 0
-  cursorSettings:
-    <IsCursorVisible>k__BackingField: 1
-    <LockMode>k__BackingField: 0
-  applyCustomTimeScaleSettings: 0
-  timeScale: 0
-  overrideActionMap: 0
-  actionMap:
-    asset: {fileID: 0}
-    mapId: 
   blockingMenus: []
   progressImage: {fileID: 0}
   spinner: {fileID: 6815538945259591977}
@@ -215,7 +205,7 @@ MonoBehaviour:
   minimumShowTime: 0.5
   scenesToShowFor:
   - MainMenu
-  - Gameplay
+  - Testing
 --- !u!1 &8559299939031895611
 GameObject:
   m_ObjectHideFlags: 0

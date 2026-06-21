@@ -17,5 +17,8 @@ namespace Base.ToolPackage.Editor.Generated
 
         /// <summary>Profiling utilities like the memory profiler.</summary>
         public const int Profiling = -11;
+
+        /// <summary>Utility in the game object context menu.</summary>
+        public const int GameObject = 100000;
     }
 }

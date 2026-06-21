@@ -2,12 +2,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace ControllerSupport
+namespace Base.ControllerSupport.Navigation
 {
     /// <summary>
     /// Wires explicit grid navigation between the active child selectables at runtime. Built for
     /// dynamic grids (card hands, collection views) where item count changes. Call <see cref="Rebuild"/>
-    /// after adding or removing items, or rely on automatic rebuilds when children change.
+    /// after adding or removing items or rely on automatic rebuilds when children change.
     /// </summary>
     [RequireComponent(typeof(RectTransform))]
     public sealed class GridNavigationBuilder : MonoBehaviour
@@ -73,9 +73,9 @@ namespace ControllerSupport
                 int row = index / columns;
                 int column = index % columns;
 
-                Navigation navigation = new()
+                UnityEngine.UI.Navigation navigation = new()
                 {
-                    mode = Navigation.Mode.Explicit,
+                    mode = UnityEngine.UI.Navigation.Mode.Explicit,
                     selectOnLeft = Neighbor(row, column - 1),
                     selectOnRight = Neighbor(row, column + 1),
                     selectOnUp = Neighbor(row - 1, column),
