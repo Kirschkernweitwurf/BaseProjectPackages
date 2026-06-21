@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace Base.SystemsCorePackage.GamepadSupport.Navigation
+namespace Base.ControllerSupport.Navigation
 {
     /// <summary>
     /// A drop-in focusable UI element. Subclasses <see cref="Selectable"/> so anything (not just
@@ -13,11 +13,13 @@ namespace Base.SystemsCorePackage.GamepadSupport.Navigation
     /// </summary>
     public class NavigableElement : Selectable, ISubmitHandler
     {
+        /// <summary>Raised when the element is confirmed (Submit action).</summary>
+        public event Action OnSubmitted;
+
         [Tooltip("Optional tween group shown on focus and hidden on blur.")]
         [SerializeField] private TweenGroup focusTweenGroup;
 
-        /// <summary>Raised when the element is confirmed (Submit action).</summary>
-        public event Action OnSubmitted;
+        public void OnSubmit(BaseEventData eventData) => OnSubmitted?.Invoke();
 
         public override void OnSelect(BaseEventData eventData)
         {
@@ -34,7 +36,5 @@ namespace Base.SystemsCorePackage.GamepadSupport.Navigation
             if (focusTweenGroup != null)
                 focusTweenGroup.Hide();
         }
-
-        public void OnSubmit(BaseEventData eventData) => OnSubmitted?.Invoke();
     }
 }

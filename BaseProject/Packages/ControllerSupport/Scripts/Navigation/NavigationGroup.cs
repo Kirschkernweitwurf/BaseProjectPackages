@@ -1,9 +1,8 @@
-using ControllerSupport;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace Base.SystemsCorePackage.GamepadSupport.Navigation
+namespace Base.ControllerSupport.Navigation
 {
     /// <summary>
     /// Traps focus inside a panel so the stick cannot wander into elements behind a modal. While

@@ -34,8 +34,8 @@ RectTransform:
   - {fileID: 1706179501622044256}
   - {fileID: 8412896243205810536}
   - {fileID: 4787749823671107795}
-  - {fileID: 2121504460708767568}
   - {fileID: 4027409152745834874}
+  - {fileID: 2121504460708767568}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -782,10 +782,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: LoadingScreen
       objectReference: {fileID: 0}
-    - target: {fileID: 7733464446481094114, guid: 2e1535106a56ff44582b56cd6adeb125, type: 3}
-      propertyPath: 'scenesToShowFor.Array.data[0]'
-      value: Gameplay
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -920,10 +916,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8961265188357105505, guid: c26f4de8ef004c34bb70630d9fdd8757, type: 3}
-      propertyPath: canvas
-      value: 
-      objectReference: {fileID: 7782837303277045629}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

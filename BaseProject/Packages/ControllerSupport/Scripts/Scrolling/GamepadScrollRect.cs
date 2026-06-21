@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
-namespace Base.SystemsCorePackage.GamepadSupport.Scrolling
+namespace Base.ControllerSupport.Scrolling
 {
     /// <summary>
     /// Lets a stick (typically the right stick) scroll a <see cref="ScrollRect"/> directly. Reads a
@@ -31,10 +31,6 @@ namespace Base.SystemsCorePackage.GamepadSupport.Scrolling
 #region Unity Callbacks
         private void Awake() => _scrollRect = GetComponent<ScrollRect>();
 
-        private void OnEnable() => scrollAction?.action?.Enable();
-
-        private void OnDisable() => scrollAction?.action?.Disable();
-
         private void Update()
         {
             if (scrollAction?.action == null)
@@ -47,20 +43,27 @@ namespace Base.SystemsCorePackage.GamepadSupport.Scrolling
 
             Apply(input);
         }
+
+        private void OnEnable() => scrollAction?.action?.Enable();
+
+        private void OnDisable() => scrollAction?.action?.Disable();
 #endregion
 
         private void Apply(Vector2 input)
         {
-            float vertical = invertVertical ? -input.y : input.y;
+            float vertical = invertVertical
+                ? -input.y
+                : input.y;
+
             float step = scrollSpeed * Time.unscaledDeltaTime;
 
             if (_scrollRect.vertical)
                 _scrollRect.verticalNormalizedPosition =
-                    Mathf.Clamp01(_scrollRect.verticalNormalizedPosition + (vertical * step));
+                    Mathf.Clamp01(_scrollRect.verticalNormalizedPosition + vertical * step);
 
             if (_scrollRect.horizontal)
                 _scrollRect.horizontalNormalizedPosition =
-                    Mathf.Clamp01(_scrollRect.horizontalNormalizedPosition + (input.x * step));
+                    Mathf.Clamp01(_scrollRect.horizontalNormalizedPosition + input.x * step);
         }
     }
 }
