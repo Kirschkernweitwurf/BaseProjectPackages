@@ -14,8 +14,9 @@ namespace Base.SystemsCorePackage.Services
     {
         [Header("Prefabs to Load")]
 
-        [SerializeField] private GameObject persistentPrefab;
-        [SerializeField] private GameObject gameplayPrefab;
+        [SerializeField] private GameObject persistentManagerPrefab;
+        [SerializeField] private GameObject sceneManagerPrefab;
+        [SerializeField] private GameObject gameplayManagerPrefab;
 
         [Header("Scene Filtering")]
 
@@ -29,9 +30,12 @@ namespace Base.SystemsCorePackage.Services
             // Load persistent managers only once
             if (!_persistentLoaded)
             {
-                CleanInstantiate(persistentPrefab, true);
+                CleanInstantiate(persistentManagerPrefab, true);
                 _persistentLoaded = true;
             }
+
+            // Load scene managers for every scene
+            CleanInstantiate(sceneManagerPrefab);
 
             // Load gameplay managers for gameplay scenes only
             bool isGameplaySceneLoaded = false;
@@ -45,10 +49,8 @@ namespace Base.SystemsCorePackage.Services
                 break;
             }
 
-            if (!isGameplaySceneLoaded)
-                return;
-
-            CleanInstantiate(gameplayPrefab);
+            if (isGameplaySceneLoaded)
+                CleanInstantiate(gameplayManagerPrefab);
         }
 #endregion
 
