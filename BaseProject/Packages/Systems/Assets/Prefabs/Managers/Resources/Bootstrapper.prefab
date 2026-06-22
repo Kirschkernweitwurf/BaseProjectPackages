@@ -25,7 +25,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2008666280076757091}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -44,7 +44,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18d05a0358da6ab40a2485115a1d056f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Managers.Bootstrapper
-  persistentPrefab: {fileID: 2819346571029981215, guid: d2eab225fcc536749b5697943ea6afcc, type: 3}
-  gameplayPrefab: {fileID: 417049856403027976, guid: b5b8d88c04e0b9e45b50abcb1c6af6d3, type: 3}
+  persistentManagerPrefab: {fileID: 2819346571029981215, guid: d2eab225fcc536749b5697943ea6afcc, type: 3}
+  sceneManagerPrefab: {fileID: 8633709551797087440, guid: 57612d7af71809f4bad42551dddd0dfe, type: 3}
+  gameplayManagerPrefab: {fileID: 417049856403027976, guid: b5b8d88c04e0b9e45b50abcb1c6af6d3, type: 3}
   gameplayScenes:
   - Testing
