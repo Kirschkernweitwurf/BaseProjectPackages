@@ -1,4 +1,5 @@
 #if UNITY_EDITOR
+#if !BASE_PACKAGES_DEV
 using UnityEditor;
 
 namespace Base.SystemsCorePackage.MenuManaging.Identifier.Editor
@@ -9,18 +10,20 @@ namespace Base.SystemsCorePackage.MenuManaging.Identifier.Editor
     /// </summary>
     internal class MenuIdentifierPostprocessor : AssetPostprocessor
     {
+#region Unity Callbacks
         private static void OnPostprocessAllAssets(string[] imported, string[] deleted,
             string[] movedTo, string[] movedFrom)
         {
             bool affected =
-                AnyIsMenuIdentifier(imported) ||
-                AnyIsMenuIdentifier(deleted) ||
-                AnyIsMenuIdentifier(movedTo) ||
-                AnyIsMenuIdentifier(movedFrom);
+                AnyIsMenuIdentifier(imported)
+                || AnyIsMenuIdentifier(deleted)
+                || AnyIsMenuIdentifier(movedTo)
+                || AnyIsMenuIdentifier(movedFrom);
 
             if (affected)
                 MenuIdentifierGenerator.Regenerate();
         }
+#endregion
 
         private static bool AnyIsMenuIdentifier(string[] paths)
         {
@@ -32,8 +35,10 @@ namespace Base.SystemsCorePackage.MenuManaging.Identifier.Editor
                 if (AssetDatabase.GetMainAssetTypeAtPath(path) == typeof(MenuIdentifier))
                     return true;
             }
+
             return false;
         }
     }
 }
+#endif
 #endif

@@ -29,6 +29,7 @@ namespace Base.SystemsCorePackage.Input
 
         private readonly PriorityTracker<InputActionMap> _tracker = new();
 
+#region Unity Callbacks
         protected override void Awake()
         {
             base.Awake();
@@ -39,10 +40,8 @@ namespace Base.SystemsCorePackage.Input
             BaseInputActions.Permanent.Enable();
         }
 
-        private void Update()
-        {
-            IsCursorOverGameObject = EventSystem.current != null && EventSystem.current.IsPointerOverGameObject();
-        }
+        private void Update() => IsCursorOverGameObject =
+            EventSystem.current != null && EventSystem.current.IsPointerOverGameObject();
 
         protected override void OnDestroy()
         {
@@ -50,15 +49,23 @@ namespace Base.SystemsCorePackage.Input
             _tracker.OnCurrentActiveItemChanged -= OnActiveInputMapChanged;
 
             foreach (TrackedItem<InputActionMap> item in _tracker.TrackedItems)
-                if (item.Item is { enabled: true })
+            {
+                if (item.Item is
+                    {
+                        enabled: true
+                    })
                     item.Item.Disable();
+            }
 
+            BaseInputActions.Permanent.Disable();
             BaseInputActions?.Dispose();
         }
+#endregion
 
         /// <summary>
         /// Register an action map. Will be active while it is the highest-priority entry.
         /// </summary>
+
         // ReSharper disable once MemberCanBePrivate.Global
         public void RegisterInputMap(InputActionMap map, object caller, uint priority)
         {
@@ -104,6 +111,7 @@ namespace Base.SystemsCorePackage.Input
         /// Resolves a map against the package's runtime actions clone, so callers enable the
         /// exact instance they subscribe to via <see cref="BaseInputActions"/>.
         /// </summary>
+
         // ReSharper disable once MemberCanBePrivate.Global
         public InputActionMap ResolveBaseMap(InputActionMapReference reference)
             => BaseInputActions.asset.FindActionMap(reference.MapId);
