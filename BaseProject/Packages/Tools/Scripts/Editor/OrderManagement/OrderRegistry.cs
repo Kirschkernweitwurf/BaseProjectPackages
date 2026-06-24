@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -38,3 +39,4 @@ namespace Base.ToolPackage.Editor.OrderManagement
         public void Persist() => Save(true);
     }
 }
+#endif
