@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UINavigation = UnityEngine.UI.Navigation;
 
 namespace Base.ControllerSupport.Navigation
 {
@@ -34,7 +35,7 @@ namespace Base.ControllerSupport.Navigation
 #endregion
 
         /// <summary>Recollects active child selectables and rewires explicit grid navigation.</summary>
-        private void Rebuild()
+        public void Rebuild()
         {
             CollectItems();
             WireNavigation();
@@ -73,9 +74,9 @@ namespace Base.ControllerSupport.Navigation
                 int row = index / columns;
                 int column = index % columns;
 
-                UnityEngine.UI.Navigation navigation = new()
+                UINavigation navigation = new()
                 {
-                    mode = UnityEngine.UI.Navigation.Mode.Explicit,
+                    mode = UINavigation.Mode.Explicit,
                     selectOnLeft = Neighbor(row, column - 1),
                     selectOnRight = Neighbor(row, column + 1),
                     selectOnUp = Neighbor(row - 1, column),

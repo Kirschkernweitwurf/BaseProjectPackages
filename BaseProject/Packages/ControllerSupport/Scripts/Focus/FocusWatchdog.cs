@@ -8,19 +8,19 @@ namespace Base.ControllerSupport.Focus
 {
     /// <summary>
     /// Global safety net that keeps a valid selection while a gamepad is in use. Re-selects the active
-    /// <see cref="IFocusContext"/> whenever the current selection becomes <c>null</c> or inactive. Contexts register
-    /// themselves when they are active (e.g. when their menu is open) and deregister when they are not.
+    /// context's focus target whenever the current selection becomes null or inactive, so the UI never
+    /// goes "dead" for a gamepad user. Mouse and keyboard users may have nothing selected.
     /// </summary>
     public sealed class FocusWatchdog : GameServiceBehaviour
     {
-        private readonly List<IFocusContext> _entries = new();
+        private readonly List<IFocusContext> _contexts = new();
 
         private InputDeviceTracker _deviceTracker;
 
 #region Unity Callbacks
         private void LateUpdate()
         {
-            if (_entries.Count == 0)
+            if (_contexts.Count == 0)
                 return;
 
             if (EventSystem.current == null)
@@ -38,27 +38,27 @@ namespace Base.ControllerSupport.Focus
             if (current != null && current.activeInHierarchy)
                 return;
 
-            _entries[^1].RestoreFocus();
+            _contexts[^1].RestoreFocus();
         }
 #endregion
 
-        /// <summary>Registers an entry as the active focus context. The most recent entry wins.</summary>
-        public void RegisterEntry(IFocusContext entry)
+        /// <summary>Registers a focus context as active. The most recently registered context wins.</summary>
+        public void RegisterContext(IFocusContext context)
         {
-            if (entry == null)
+            if (context == null)
                 return;
 
-            _entries.Remove(entry);
-            _entries.Add(entry);
+            _contexts.Remove(context);
+            _contexts.Add(context);
         }
 
-        /// <summary>Removes an entry from the active focus contexts.</summary>
-        public void DeregisterEntry(IFocusContext entry)
+        /// <summary>Removes a focus context from the active set.</summary>
+        public void DeregisterContext(IFocusContext context)
         {
-            if (entry == null)
+            if (context == null)
                 return;
 
-            _entries.Remove(entry);
+            _contexts.Remove(context);
         }
     }
 }

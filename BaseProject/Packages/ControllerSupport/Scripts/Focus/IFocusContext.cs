@@ -1,15 +1,19 @@
 ﻿namespace Base.ControllerSupport.Focus
 {
     /// <summary>
-    /// Implement on a component to define a focus context for the <see cref="FocusWatchdog"/>.
-    /// The watchdog will call <see cref="RestoreFocus"/> on the
-    /// active context whenever it detects that the current selection
+    /// A source of fallback focus for the <see cref="FocusWatchdog"/>. Implemented by whatever owns a
+    /// screen's default selection, for example a menu component in the game layer.
     /// </summary>
+    /// <remarks>
+    /// This interface exists to keep the dependency one way. The Controller Support package can restore
+    /// focus through <see cref="IFocusContext"/> without referencing the menu layer, so the menu layer
+    /// depends on this package and never the reverse. That avoids a circular assembly reference.
+    /// </remarks>
     public interface IFocusContext
     {
         /// <summary>
-        /// Called by the <see cref="FocusWatchdog"/> when it detects
-        /// that the current selection is <c>null</c> or inactive.
+        /// Selects a sensible element for this context. Called by the watchdog when a gamepad is active
+        /// and the current selection has become null or inactive.
         /// </summary>
         void RestoreFocus();
     }

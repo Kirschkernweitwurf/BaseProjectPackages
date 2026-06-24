@@ -46,7 +46,7 @@ namespace Base.ControllerSupport.Focus
         protected override void OnDestroy()
         {
             base.OnDestroy();
-            _focusWatchdog?.DeregisterEntry(this);
+            _focusWatchdog?.DeregisterContext(this);
         }
 #endregion
 
@@ -70,14 +70,14 @@ namespace Base.ControllerSupport.Focus
         protected override void OnMenuOpened()
         {
             _isOpen = true;
-            _focusWatchdog?.RegisterEntry(this);
+            _focusWatchdog?.RegisterContext(this);
             RestoreFocus();
         }
 
         protected override void OnMenuClosed()
         {
             _isOpen = false;
-            _focusWatchdog?.DeregisterEntry(this);
+            _focusWatchdog?.DeregisterContext(this);
         }
 
         private Selectable ResolveTarget()
