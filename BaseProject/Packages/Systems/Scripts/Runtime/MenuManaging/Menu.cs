@@ -35,6 +35,9 @@ namespace Base.SystemsCorePackage.MenuManaging
         [Tooltip("The root TweenGroup for this menu's open/close animations.")]
         [SerializeField] private TweenGroup contentRoot;
 
+        [field: Tooltip("The priority of this menu in the stack.")]
+        [field: SerializeField] public EPriority MenuPriority { get; private set; }
+
         [Space]
         [Tooltip("If true, this menu will automatically open on Start (with animation).")]
         [SerializeField] private bool openOnStart;
@@ -44,8 +47,6 @@ namespace Base.SystemsCorePackage.MenuManaging
 
         [Tooltip("Menus that block this menu from opening if they are currently open.")]
         [SerializeField] private MenuIdentifier[] blockingMenus;
-
-        [field: Tooltip("The priority of this menu in the stack.")] public EPriority MenuPriority { get; }
 
         public bool IsOpen { get; private set; }
 

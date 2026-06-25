@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace Base.ControllerSupport.Glyphs
+namespace Base.ControllerSupport.InputPrompts.Glyphs
 {
     /// <summary>
     /// Maps a single input action to its prompt glyph for one device. Holds both a sprite (for raw
