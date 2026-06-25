@@ -1,11 +1,13 @@
 {
-    "name": "Base.ToolPackage",
-    "rootNamespace": "Base.ToolPackage",
+    "name": "Base.AttributePackage.Editor",
+    "rootNamespace": "Base.AttributePackage.Editor",
     "references": [
-        "GUID:922d81cfb9ff6984da4cb2213b66a375",
-        "GUID:f12f20722d8f4234b8dfcce9e344fb31"
+        "GUID:c3837597513e91f44a47d8cd91c34f68",
+        "GUID:75469ad4d38634e559750d17036d5f7c"
     ],
-    "includePlatforms": [],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,
