@@ -13,8 +13,8 @@ namespace Base.ToolPackage.Editor.AutoStartScene
     [InitializeOnLoad]
     public static class AutoStartSceneSettings
     {
-        private const string SceneKey = "AutoStartScenePath";
         private const string EnabledKey = "AutoStartSceneEnabled";
+        private const string SceneKey = "AutoStartScenePath";
 
         static AutoStartSceneSettings() => EditorApplication.playModeStateChanged += OnPlayModeChanged;
 
@@ -50,7 +50,13 @@ namespace Base.ToolPackage.Editor.AutoStartScene
         /// Enables or disables the auto start scene feature.
         /// </summary>
         /// <param name="enabled"><c>true</c> to enable, <c>false</c> to disable.</param>
-        public static void SetEnabled(bool enabled) => EditorPrefs.SetBool(EnabledKey, enabled);
+        public static void SetEnabled(bool enabled)
+        {
+            EditorPrefs.SetBool(EnabledKey, enabled);
+
+            if (!enabled)
+                EditorSceneManager.playModeStartScene = null;
+        }
 
         /// <summary>
         /// Checks if the auto start scene feature is enabled.
@@ -58,17 +64,27 @@ namespace Base.ToolPackage.Editor.AutoStartScene
         public static bool IsEnabled() => EditorPrefs.GetBool(EnabledKey, true);
 
         /// <summary>
-        /// Called when Unity’s play mode state changes.
+        /// Called when Unity's play mode state changes.
         /// If enabled, it assigns the chosen start scene to load automatically when Play starts.
+        /// If disabled, it clears any previously assigned start scene.
         /// </summary>
         private static void OnPlayModeChanged(PlayModeStateChange state)
         {
-            if (state != PlayModeStateChange.ExitingEditMode || !IsEnabled())
+            if (state != PlayModeStateChange.ExitingEditMode)
                 return;
+
+            if (!IsEnabled())
+            {
+                EditorSceneManager.playModeStartScene = null;
+                return;
+            }
 
             string scenePath = EditorPrefs.GetString(SceneKey, string.Empty);
             if (string.IsNullOrEmpty(scenePath))
+            {
+                EditorSceneManager.playModeStartScene = null;
                 return;
+            }
 
             SceneAsset sceneAsset = AssetDatabase.LoadAssetAtPath<SceneAsset>(scenePath);
             if (sceneAsset != null)
