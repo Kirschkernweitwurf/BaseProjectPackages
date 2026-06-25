@@ -2,7 +2,7 @@
   "name": "com.baseprojectpackages.localization",
   "displayName": "Base Localization Package",
   "description": "A collection of utilities and tools to help with localization in Unity projects.",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "unity": "6000.3",
   "author": {
     "name": "Jonathan Alber"

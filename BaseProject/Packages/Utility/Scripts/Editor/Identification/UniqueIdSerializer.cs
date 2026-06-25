@@ -2,7 +2,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.UtilityPackage.Identification.Editor
+namespace Base.UtilityPackage.Editor.Identification
 {
     /// <summary>
     /// Handles reading/writing the serialized UniqueId string on ScriptableObjects.
@@ -41,8 +41,7 @@ namespace Base.UtilityPackage.Identification.Editor
                 return;
 
             SerializedObject so = new(asset);
-            SerializedProperty p = so.FindProperty("uniqueId") ??
-                                   so.FindProperty("<UniqueId>k__BackingField");
+            SerializedProperty p = so.FindProperty("uniqueId") ?? so.FindProperty("<UniqueId>k__BackingField");
 
             if (p == null)
                 return; // Asset doesn't actually serialize an ID field, nothing to do.

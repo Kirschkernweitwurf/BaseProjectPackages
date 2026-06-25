@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using Object = UnityEngine.Object;
 
-namespace Base.UtilityPackage.Identification.Editor
+namespace Base.UtilityPackage.Editor.Identification
 {
     /// <summary>
     /// Tracks which UniqueIds are already "claimed" during this editor session.

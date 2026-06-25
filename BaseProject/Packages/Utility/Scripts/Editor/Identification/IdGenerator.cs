@@ -1,11 +1,12 @@
 #if UNITY_EDITOR
 using System;
 using Base.ToolPackage.Editor.Generated;
+using Base.UtilityPackage.Identification;
 using Base.UtilityPackage.Logging;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.UtilityPackage.Identification.Editor
+namespace Base.UtilityPackage.Editor.Identification
 {
     /// <summary>
     /// Editor utility to generate unique IDs for all

@@ -1,9 +1,10 @@
 #if UNITY_EDITOR
+using Base.UtilityPackage.Identification;
 using Base.UtilityPackage.Logging;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.UtilityPackage.Identification.Editor
+namespace Base.UtilityPackage.Editor.Identification
 {
     /// <summary>
     /// Responsible for building a clean UniqueId registry
@@ -18,20 +19,17 @@ namespace Base.UtilityPackage.Identification.Editor
     {
         private const string UniqueIdValidatorRanOnce = "UniqueIdValidator_RanOnce";
 
-        static UniqueIdProjectValidator()
+        static UniqueIdProjectValidator() => EditorApplication.delayCall += () =>
         {
-            EditorApplication.delayCall += () =>
-            {
-                if (!UniqueIdSettings.Enabled)
-                    return;
+            if (!UniqueIdSettings.Enabled)
+                return;
 
-                if (SessionState.GetBool(UniqueIdValidatorRanOnce, false))
-                    return;
+            if (SessionState.GetBool(UniqueIdValidatorRanOnce, false))
+                return;
 
-                SessionState.SetBool(UniqueIdValidatorRanOnce, true);
-                RebuildAndFixAll();
-            };
-        }
+            SessionState.SetBool(UniqueIdValidatorRanOnce, true);
+            RebuildAndFixAll();
+        };
 
         /// <summary>
         /// Rebuilds the UniqueId registry from scratch and ensures all
@@ -65,10 +63,9 @@ namespace Base.UtilityPackage.Identification.Editor
                     continue;
 
                 if (!string.IsNullOrEmpty(currentId))
-                {
-                    CustomLogger.LogWarning($"Duplicate or invalid UniqueId found on {LogTextFormatter.Bold(asset.name)}" +
-                                            $"at {LogTextFormatter.Italic(path)}. Regenerated to {finalId}.", asset);
-                }
+                    CustomLogger.LogWarning(
+                        $"Duplicate or invalid UniqueId found on {LogTextFormatter.Bold(asset.name)}"
+                        + $"at {LogTextFormatter.Italic(path)}. Regenerated to {finalId}.", asset);
 
                 UniqueIdSerializer.SetId(asset, finalId);
                 EditorUtility.SetDirty(asset);
@@ -79,8 +76,8 @@ namespace Base.UtilityPackage.Identification.Editor
                 return;
 
             if (fixedCount > 0)
-                CustomLogger.Log($"Checked {totalChecked} identifiable assets and fixed" +
-                                 $" {fixedCount} duplicate or missing IDs.", null);
+                CustomLogger.Log($"Checked {totalChecked} identifiable assets and fixed"
+                    + $" {fixedCount} duplicate or missing IDs.", null);
             else
                 CustomLogger.Log($"All {totalChecked} identifiable assets have valid unique IDs.", null);
         }

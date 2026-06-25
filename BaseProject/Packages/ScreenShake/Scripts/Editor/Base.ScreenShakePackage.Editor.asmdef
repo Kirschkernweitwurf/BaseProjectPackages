@@ -1,0 +1,19 @@
+{
+    "name": "Base.ScreenShakePackage.Editor",
+    "rootNamespace": "Base.ScreenShakePackage.Editor",
+    "references": [
+        "GUID:2f5028fa473bf7344b5137228e8f9e75",
+        "GUID:4307f53044263cf4b835bd812fc161a4"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

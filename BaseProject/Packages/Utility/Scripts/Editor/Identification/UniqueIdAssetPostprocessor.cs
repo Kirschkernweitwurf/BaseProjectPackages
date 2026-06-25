@@ -1,8 +1,9 @@
 #if UNITY_EDITOR
+using Base.UtilityPackage.Identification;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.UtilityPackage.Identification.Editor
+namespace Base.UtilityPackage.Editor.Identification
 {
     /// <summary>
     /// Runs after assets are imported (including newly created or duplicated). <br/>
@@ -11,6 +12,7 @@ namespace Base.UtilityPackage.Identification.Editor
     /// </summary>
     internal class UniqueIdAssetPostprocessor : AssetPostprocessor
     {
+#region Unity Callbacks
         private static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets,
             string[] movedAssets, string[] movedFromAssetPaths)
         {
@@ -24,6 +26,7 @@ namespace Base.UtilityPackage.Identification.Editor
                     UniqueIdAssigner.EnsureForAsset(asset);
             }
         }
+#endregion
     }
 }
 #endif
