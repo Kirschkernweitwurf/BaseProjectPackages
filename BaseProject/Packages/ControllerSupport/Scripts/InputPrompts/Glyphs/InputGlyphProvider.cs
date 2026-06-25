@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
-using Base.ControllerSupport.Devices;
+using Base.ControllerSupport.InputPrompts.Devices;
 using Base.SystemsCorePackage.Services;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace Base.ControllerSupport.Glyphs
+namespace Base.ControllerSupport.InputPrompts.Glyphs
 {
     /// <summary>
     /// Resolves the correct prompt glyph for an action based on the active input device. Returns a

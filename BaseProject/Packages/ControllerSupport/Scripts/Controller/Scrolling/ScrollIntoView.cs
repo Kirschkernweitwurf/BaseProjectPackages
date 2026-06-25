@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace Base.ControllerSupport.Scrolling
+namespace Base.ControllerSupport.Controller.Scrolling
 {
     /// <summary>
     /// Keeps the selected child of a <see cref="ScrollRect"/> visible inside the viewport. uGUI does
