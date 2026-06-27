@@ -62,8 +62,6 @@ namespace Base.ControllerSupport.Controller.Navigation
 
         private void OnEnable()
         {
-            Rebuild();
-
             if (autoActivate)
                 Activate();
         }
