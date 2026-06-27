@@ -5,14 +5,11 @@ using UnityEngine;
 namespace Base.SystemsCorePackage.Tweening.Components.TransformTweens
 {
     /// <summary>
-    /// Tweens the position of a Transform or RectTransform between two fixed values
-    /// (initialPosition → targetPosition).
+    /// Tweens the position of a Transform or RectTransform from the GameObject's start position
+    /// (captured at <c>Awake</c>) to a target position.
     /// </summary>
-    public sealed class PositionTween : TweenBehaviour<Vector3>
+    public sealed class PositionToTween : TweenBehaviour<Vector3>
     {
-        [SerializeField] [Tooltip("The starting position used as the tween's 'from' value.")]
-        private Vector3 initialPosition;
-
         [SerializeField] [Tooltip("The target position to tween to.")]
         private Vector3 targetPosition;
 
@@ -35,10 +32,10 @@ namespace Base.SystemsCorePackage.Tweening.Components.TransformTweens
         {
             Vector3 from = isReversed
                 ? targetPosition
-                : initialPosition;
+                : DefaultValue;
 
             Vector3 to = isReversed
-                ? initialPosition
+                ? DefaultValue
                 : targetPosition;
 
             return new Tween<Vector3>(to,

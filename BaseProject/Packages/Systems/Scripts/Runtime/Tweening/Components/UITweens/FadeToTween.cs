@@ -9,19 +9,21 @@ namespace Base.SystemsCorePackage.Tweening.Components.UITweens
     /// <c>Awake</c>) to a target alpha.
     /// </summary>
     [RequireComponent(typeof(CanvasGroup))]
-    public sealed class FadeTweenInit : TweenBehaviour<float>
+    public sealed class FadeToTween : TweenBehaviour<float>
     {
-        [SerializeField, Tooltip("The target alpha value to tween to.")]
+        [SerializeField] [Tooltip("The target alpha value to tween to.")]
         private float targetAlpha = 1f;
 
         private CanvasGroup _canvasGroup;
 
+#region Unity Callbacks
         protected override void Awake()
         {
             _canvasGroup = GetComponent<CanvasGroup>();
 
             base.Awake();
         }
+#endregion
 
         protected override float GetCurrentValue() => _canvasGroup.alpha;
 
@@ -29,19 +31,22 @@ namespace Base.SystemsCorePackage.Tweening.Components.UITweens
 
         protected override TweenBase CreateTween(bool isReversed)
         {
-            float from = isReversed ? targetAlpha : DefaultValue;
-            float to = isReversed ? DefaultValue : targetAlpha;
+            float from = isReversed
+                ? targetAlpha
+                : DefaultValue;
 
-            return new Tween<float>(
-                to: to,
-                duration: TweenSettings.Duration,
-                setter: ApplyValue,
-                lerpFunc: TweenLerpUtility.LerpFloatUnclamped,
-                ease: Easings.Get(TweenSettings.Easing),
-                targetObj: _canvasGroup,
-                delay: TweenSettings.Delay,
-                fromGetter: () => from
-            );
+            float to = isReversed
+                ? DefaultValue
+                : targetAlpha;
+
+            return new Tween<float>(to,
+                TweenSettings.Duration,
+                ApplyValue,
+                TweenLerpUtility.LerpFloatUnclamped,
+                Easings.Get(TweenSettings.Easing),
+                _canvasGroup,
+                TweenSettings.Delay,
+                fromGetter: () => from);
         }
     }
 }

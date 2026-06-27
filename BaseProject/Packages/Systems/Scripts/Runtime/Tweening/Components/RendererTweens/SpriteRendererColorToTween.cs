@@ -1,46 +1,42 @@
 ﻿using Base.SystemsCorePackage.Tweening.Core;
 using Base.SystemsCorePackage.Tweening.Core.Data;
 using UnityEngine;
-using UnityEngine.UI;
 
-namespace Base.SystemsCorePackage.Tweening.Components.UITweens
+namespace Base.SystemsCorePackage.Tweening.Components.RendererTweens
 {
     /// <summary>
-    /// Tweens the color of a UI Graphic between two fixed values (startColor → targetColor).
-    /// This can be used with any UI element that inherits from Graphic, such as Text, Image, etc.
+    /// Tweens the color of a SpriteRenderer from the current color (captured at <c>Awake</c>)
+    /// to a target color.
     /// </summary>
-    [RequireComponent(typeof(Graphic))]
-    public sealed class GraphicColorTween : TweenBehaviour<Color>
+    [RequireComponent(typeof(SpriteRenderer))]
+    public sealed class SpriteRendererColorToTween : TweenBehaviour<Color>
     {
-        [SerializeField] [Tooltip("The starting color to tween from.")]
-        private Color startColor = Color.white;
-
         [SerializeField] [Tooltip("The target color to tween to.")]
         private Color targetColor = Color.white;
 
-        private Graphic _graphic;
+        private SpriteRenderer _spriteRenderer;
 
 #region Unity Callbacks
         protected override void Awake()
         {
-            _graphic = GetComponent<Graphic>();
+            _spriteRenderer = GetComponent<SpriteRenderer>();
 
             base.Awake();
         }
 #endregion
 
-        protected override Color GetCurrentValue() => _graphic.color;
+        protected override Color GetCurrentValue() => _spriteRenderer.color;
 
-        protected override void ApplyValue(Color value) => _graphic.color = value;
+        protected override void ApplyValue(Color value) => _spriteRenderer.color = value;
 
         protected override TweenBase CreateTween(bool isReversed)
         {
             Color from = isReversed
                 ? targetColor
-                : startColor;
+                : DefaultValue;
 
             Color to = isReversed
-                ? startColor
+                ? DefaultValue
                 : targetColor;
 
             return new Tween<Color>(to,
@@ -48,7 +44,7 @@ namespace Base.SystemsCorePackage.Tweening.Components.UITweens
                 ApplyValue,
                 TweenLerpUtility.LerpColorUnclamped,
                 Easings.Get(TweenSettings.Easing),
-                _graphic,
+                _spriteRenderer,
                 TweenSettings.Delay,
                 fromGetter: () => from);
         }

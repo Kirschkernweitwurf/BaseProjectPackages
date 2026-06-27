@@ -1,4 +1,4 @@
-﻿using Base.SystemsCorePackage.Tweening.Core;
+using Base.SystemsCorePackage.Tweening.Core;
 using Base.SystemsCorePackage.Tweening.Core.Data;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,15 +6,12 @@ using UnityEngine.UI;
 namespace Base.SystemsCorePackage.Tweening.Components.UITweens
 {
     /// <summary>
-    /// Tweens the color of a UI Graphic between two fixed values (startColor → targetColor).
+    /// Tweens the color of a UI Graphic from the Graphic's start color (captured at <c>Awake</c>) to a target color.
     /// This can be used with any UI element that inherits from Graphic, such as Text, Image, etc.
     /// </summary>
     [RequireComponent(typeof(Graphic))]
-    public sealed class GraphicColorTween : TweenBehaviour<Color>
+    public sealed class GraphicColorToTween : TweenBehaviour<Color>
     {
-        [SerializeField] [Tooltip("The starting color to tween from.")]
-        private Color startColor = Color.white;
-
         [SerializeField] [Tooltip("The target color to tween to.")]
         private Color targetColor = Color.white;
 
@@ -37,10 +34,10 @@ namespace Base.SystemsCorePackage.Tweening.Components.UITweens
         {
             Color from = isReversed
                 ? targetColor
-                : startColor;
+                : DefaultValue;
 
             Color to = isReversed
-                ? startColor
+                ? DefaultValue
                 : targetColor;
 
             return new Tween<Color>(to,

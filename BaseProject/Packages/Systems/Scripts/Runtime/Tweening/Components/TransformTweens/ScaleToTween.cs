@@ -1,17 +1,15 @@
-﻿using Base.SystemsCorePackage.Tweening.Core;
+using Base.SystemsCorePackage.Tweening.Core;
 using Base.SystemsCorePackage.Tweening.Core.Data;
 using UnityEngine;
 
 namespace Base.SystemsCorePackage.Tweening.Components.TransformTweens
 {
     /// <summary>
-    /// Tweens the local scale of a Transform between two fixed values (startScale → targetScale).
+    /// Tweens the local scale of a Transform from the start scale (captured at <c>Awake</c>)
+    /// to a target scale.
     /// </summary>
-    public sealed class ScaleTween : TweenBehaviour<Vector3>
+    public sealed class ScaleToTween : TweenBehaviour<Vector3>
     {
-        [SerializeField] [Tooltip("The starting scale to tween from.")]
-        private Vector3 startScale = Vector3.one;
-
         [SerializeField] [Tooltip("The target scale to tween to.")]
         private Vector3 targetScale = Vector3.one;
 
@@ -23,10 +21,10 @@ namespace Base.SystemsCorePackage.Tweening.Components.TransformTweens
         {
             Vector3 from = isReversed
                 ? targetScale
-                : startScale;
+                : DefaultValue;
 
             Vector3 to = isReversed
-                ? startScale
+                ? DefaultValue
                 : targetScale;
 
             return new Tween<Vector3>(to,

@@ -1,14 +1,15 @@
-using Base.SystemsCorePackage.Tweening.Core;
+﻿using Base.SystemsCorePackage.Tweening.Core;
 using Base.SystemsCorePackage.Tweening.Core.Data;
+using TMPro;
 using UnityEngine;
 
 namespace Base.SystemsCorePackage.Tweening.Components.UITweens
 {
     /// <summary>
-    /// Tweens the alpha of a CanvasGroup between two fixed values (startAlpha → targetAlpha).
+    /// Tweens the alpha of a TextMeshPro text between two fixed values (startAlpha → targetAlpha).
     /// </summary>
-    [RequireComponent(typeof(CanvasGroup))]
-    public sealed class FadeTween : TweenBehaviour<float>
+    [RequireComponent(typeof(TMP_Text))]
+    public sealed class TmpAlphaTween : TweenBehaviour<float>
     {
         [SerializeField] [Tooltip("The starting alpha value.")]
         private float startAlpha;
@@ -16,20 +17,20 @@ namespace Base.SystemsCorePackage.Tweening.Components.UITweens
         [SerializeField] [Tooltip("The target alpha value to tween to.")]
         private float targetAlpha = 1f;
 
-        private CanvasGroup _canvasGroup;
+        private TMP_Text _text;
 
 #region Unity Callbacks
         protected override void Awake()
         {
-            _canvasGroup = GetComponent<CanvasGroup>();
+            _text = GetComponent<TMP_Text>();
 
             base.Awake();
         }
 #endregion
 
-        protected override float GetCurrentValue() => _canvasGroup.alpha;
+        protected override float GetCurrentValue() => _text.alpha;
 
-        protected override void ApplyValue(float value) => _canvasGroup.alpha = value;
+        protected override void ApplyValue(float value) => _text.alpha = value;
 
         protected override TweenBase CreateTween(bool isReversed)
         {
@@ -46,7 +47,7 @@ namespace Base.SystemsCorePackage.Tweening.Components.UITweens
                 ApplyValue,
                 TweenLerpUtility.LerpFloatUnclamped,
                 Easings.Get(TweenSettings.Easing),
-                _canvasGroup,
+                _text,
                 TweenSettings.Delay,
                 fromGetter: () => from);
         }

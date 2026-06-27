@@ -1,19 +1,17 @@
-﻿using Base.SystemsCorePackage.Tweening.Core;
+using Base.SystemsCorePackage.Tweening.Core;
 using Base.SystemsCorePackage.Tweening.Core.Data;
 using UnityEngine;
 
 namespace Base.SystemsCorePackage.Tweening.Components.TransformTweens
 {
     /// <summary>
-    /// Tweens the rotation of a Transform between two fixed Euler values (startEulerAngles → targetEulerAngles).
+    /// Tweens the rotation of a Transform by a delta in Euler degrees, relative to the
+    /// rotation at the moment the tween is created.
     /// </summary>
-    public sealed class RotationTween : TweenBehaviour<Vector3>
+    public sealed class RotationByTween : TweenBehaviour<Vector3>
     {
-        [SerializeField] [Tooltip("The starting rotation in Euler degrees.")]
-        private Vector3 startEulerAngles;
-
-        [SerializeField] [Tooltip("The target rotation in Euler degrees.")]
-        private Vector3 targetEulerAngles;
+        [SerializeField] [Tooltip("Rotation delta in Euler degrees.")]
+        private Vector3 deltaEulerAngles;
 
         [SerializeField] [Tooltip("If true, tween the local rotation; otherwise, tween the global rotation.")]
         private bool useLocalRotation = true;
@@ -33,13 +31,16 @@ namespace Base.SystemsCorePackage.Tweening.Components.TransformTweens
 
         protected override TweenBase CreateTween(bool isReversed)
         {
+            Vector3 start = GetCurrentValue();
+            Vector3 end = start + deltaEulerAngles;
+
             Vector3 from = isReversed
-                ? targetEulerAngles
-                : startEulerAngles;
+                ? end
+                : start;
 
             Vector3 to = isReversed
-                ? startEulerAngles
-                : targetEulerAngles;
+                ? start
+                : end;
 
             return new Tween<Vector3>(to,
                 TweenSettings.Duration,
