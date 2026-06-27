@@ -1,4 +1,4 @@
-using Base.SystemsCorePackage.Tweening.Core;
+﻿using Base.SystemsCorePackage.Tweening.Core;
 using Base.SystemsCorePackage.Tweening.Core.Data;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,23 +6,28 @@ using UnityEngine.UI;
 namespace Base.SystemsCorePackage.Tweening.Components.UITweens
 {
     /// <summary>
-    /// Tweens the color of a UI Graphic.
+    /// Tweens the color of a UI Graphic between two fixed values (startColor → targetColor).
     /// This can be used with any UI element that inherits from Graphic, such as Text, Image, etc.
     /// </summary>
     [RequireComponent(typeof(Graphic))]
     public sealed class GraphicColorTween : TweenBehaviour<Color>
     {
-        [SerializeField, Tooltip("The target color to tween to.")]
+        [SerializeField] [Tooltip("The starting color to tween from.")]
+        private Color startColor = Color.white;
+
+        [SerializeField] [Tooltip("The target color to tween to.")]
         private Color targetColor = Color.white;
 
         private Graphic _graphic;
 
+#region Unity Callbacks
         protected override void Awake()
         {
             _graphic = GetComponent<Graphic>();
 
             base.Awake();
         }
+#endregion
 
         protected override Color GetCurrentValue() => _graphic.color;
 
@@ -30,19 +35,22 @@ namespace Base.SystemsCorePackage.Tweening.Components.UITweens
 
         protected override TweenBase CreateTween(bool isReversed)
         {
-            Color from = isReversed ? targetColor : DefaultValue;
-            Color to = isReversed ? DefaultValue : targetColor;
+            Color from = isReversed
+                ? targetColor
+                : startColor;
 
-            return new Tween<Color>(
-                to: to,
-                duration: TweenSettings.Duration,
-                setter: ApplyValue,
-                lerpFunc: TweenLerpUtility.LerpColorUnclamped,
-                ease: Easings.Get(TweenSettings.Easing),
-                targetObj: _graphic,
-                delay: TweenSettings.Delay,
-                fromGetter: () => from
-            );
+            Color to = isReversed
+                ? startColor
+                : targetColor;
+
+            return new Tween<Color>(to,
+                TweenSettings.Duration,
+                ApplyValue,
+                TweenLerpUtility.LerpColorUnclamped,
+                Easings.Get(TweenSettings.Easing),
+                _graphic,
+                TweenSettings.Delay,
+                fromGetter: () => from);
         }
     }
 }

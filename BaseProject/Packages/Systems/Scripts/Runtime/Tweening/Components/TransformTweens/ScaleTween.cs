@@ -1,16 +1,18 @@
-using Base.SystemsCorePackage.Tweening.Core;
+﻿using Base.SystemsCorePackage.Tweening.Core;
 using Base.SystemsCorePackage.Tweening.Core.Data;
 using UnityEngine;
 
 namespace Base.SystemsCorePackage.Tweening.Components.TransformTweens
 {
     /// <summary>
-    /// Tweens the local scale of a Transform from the start scale (captured at <c>Awake</c>)
-    /// to a target scale.
+    /// Tweens the local scale of a Transform between two fixed values (startScale → targetScale).
     /// </summary>
     public sealed class ScaleTween : TweenBehaviour<Vector3>
     {
-        [SerializeField, Tooltip("The target scale to tween to.")]
+        [SerializeField] [Tooltip("The starting scale to tween from.")]
+        private Vector3 startScale = Vector3.one;
+
+        [SerializeField] [Tooltip("The target scale to tween to.")]
         private Vector3 targetScale = Vector3.one;
 
         protected override Vector3 GetCurrentValue() => transform.localScale;
@@ -19,19 +21,22 @@ namespace Base.SystemsCorePackage.Tweening.Components.TransformTweens
 
         protected override TweenBase CreateTween(bool isReversed)
         {
-            Vector3 from = isReversed ? targetScale : DefaultValue;
-            Vector3 to = isReversed ? DefaultValue : targetScale;
+            Vector3 from = isReversed
+                ? targetScale
+                : startScale;
 
-            return new Tween<Vector3>(
-                to: to,
-                duration: TweenSettings.Duration,
-                setter: ApplyValue,
-                lerpFunc: TweenLerpUtility.LerpVector3Unclamped,
-                ease: Easings.Get(TweenSettings.Easing),
-                targetObj: transform,
-                delay: TweenSettings.Delay,
-                fromGetter: () => from
-            );
+            Vector3 to = isReversed
+                ? startScale
+                : targetScale;
+
+            return new Tween<Vector3>(to,
+                TweenSettings.Duration,
+                ApplyValue,
+                TweenLerpUtility.LerpVector3Unclamped,
+                Easings.Get(TweenSettings.Easing),
+                transform,
+                TweenSettings.Delay,
+                fromGetter: () => from);
         }
     }
 }

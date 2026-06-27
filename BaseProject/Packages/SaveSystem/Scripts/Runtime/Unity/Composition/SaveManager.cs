@@ -2,7 +2,6 @@ using Base.SaveSystemPackage.Savable;
 using Base.SaveSystemPackage.Slots;
 using Base.SystemsCorePackage.Services;
 using Base.SystemsCorePackage.Services.Shutdown;
-using Base.UtilityPackage.Logging;
 using UnityEngine;
 
 namespace Base.SaveSystemPackage.Unity.Composition
@@ -17,27 +16,28 @@ namespace Base.SaveSystemPackage.Unity.Composition
         [SerializeField] private SaveSystemSettings settings = new();
 
         public ISaveSystem SaveSystem { get; private set; }
+
         public ISavableRegistry Savables { get; private set; }
+
         public ISaveSlotProvider Slots { get; private set; }
+
         public SaveSlotSelection Selection { get; private set; }
 
         public bool HasShutDown { get; private set; }
 
+#region Unity Callbacks
         protected override void Awake()
         {
             base.Awake();
 
             ShutdownManager.Register(this);
 
-            Bundle bundle = SaveSystemFactory.Create(settings, migrations: null);
+            Bundle bundle = SaveSystemFactory.Create(settings, null);
 
             SaveSystem = bundle.System;
             Savables = bundle.Registry;
             Slots = bundle.Slots;
             Selection = bundle.Selection;
-
-            CustomLogger.Log($"Ready. Model: {settings.SlotModel}. " +
-                             $"Encrypt-on-write: {settings.ShouldEncryptOnWrite()}.", this);
         }
 
         protected override void OnDestroy()
@@ -47,6 +47,7 @@ namespace Base.SaveSystemPackage.Unity.Composition
             if (!HasShutDown)
                 Shutdown();
         }
+#endregion
 
         public void Shutdown()
         {
