@@ -43,7 +43,7 @@ namespace Base.ControllerSupport.Controller.Navigation
         private readonly List<NavigableElement> _elements = new();
         private readonly List<Selectable> _validationBuffer = new();
 
-        private bool isActive;
+        private bool _isActive;
 
         private FocusWatchdog _focusWatchdog;
         private GameObject _lastSelected;
@@ -51,7 +51,7 @@ namespace Base.ControllerSupport.Controller.Navigation
 #region Unity Callbacks
         private void LateUpdate()
         {
-            if (!isActive || !rememberLastSelected || EventSystem.current == null)
+            if (!_isActive || !rememberLastSelected || EventSystem.current == null)
                 return;
 
             GameObject current = EventSystem.current.currentSelectedGameObject;
@@ -72,23 +72,23 @@ namespace Base.ControllerSupport.Controller.Navigation
         /// <summary>Registers the group with the watchdog so its default can be restored on focus loss.</summary>
         public void Activate()
         {
-            if (isActive)
+            if (_isActive)
                 return;
 
             if (_focusWatchdog == null)
                 ServiceLocator.TryGet(out _focusWatchdog);
 
-            isActive = true;
+            _isActive = true;
             _focusWatchdog?.RegisterGroup(this);
         }
 
         /// <summary>Removes the group from the watchdog. Its elements stop being focus targets.</summary>
         public void Deactivate()
         {
-            if (!isActive)
+            if (!_isActive)
                 return;
 
-            isActive = false;
+            _isActive = false;
             _focusWatchdog?.DeregisterGroup(this);
         }
 
