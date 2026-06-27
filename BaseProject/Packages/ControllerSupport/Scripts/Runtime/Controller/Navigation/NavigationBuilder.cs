@@ -8,10 +8,15 @@ namespace Base.ControllerSupport.Controller.Navigation
     /// <summary>
     /// Computes and writes explicit four-way navigation across a set of <see cref="NavigableElement"/>s
     /// from their on-screen position. For each element it picks the nearest aligned neighbor in every
-    /// direction, mirroring uGUI's built-in directional scoring so the result feels familiar.
+    /// direction, mirroring uGUI's built-in directional scoring.
     /// </summary>
     public static class NavigationBuilder
     {
+        private const float MaxDirectionAngleDegrees = 45f;
+        private const float MinSqrDistance = 0.0001f;
+
+        private static readonly float MinDirectionAlignment = Mathf.Cos(MaxDirectionAngleDegrees * Mathf.Deg2Rad);
+
         /// <summary>
         /// Wires explicit up, down, left and right navigation across the navigable elements in the list.
         /// Non-navigable elements are skipped. When <paramref name="wrap"/> is true, edges loop to the
@@ -72,12 +77,22 @@ namespace Base.ControllerSupport.Controller.Navigation
                     continue;
 
                 Vector2 toTarget = GetCenter(candidate.Selectable) - origin;
+                float sqrDistance = toTarget.sqrMagnitude;
+
+                if (sqrDistance < MinSqrDistance)
+                    continue;
+
+                float distance = Mathf.Sqrt(sqrDistance);
                 float forward = Vector2.Dot(direction, toTarget);
 
                 if (forward > 0f)
                 {
+                    // Reject targets outside the directional cone so off-axis elements are not wired.
+                    if (forward < distance * MinDirectionAlignment)
+                        continue;
+
                     // Favor aligned and near candidates, the same heuristic uGUI uses internally.
-                    float score = forward / toTarget.sqrMagnitude;
+                    float score = forward / sqrDistance;
 
                     if (score > bestScore)
                     {
@@ -91,10 +106,13 @@ namespace Base.ControllerSupport.Controller.Navigation
                 if (!wrap)
                     continue;
 
-                // Track the element furthest in the opposite direction as the wrap target.
-                float opposite = Vector2.Dot(-direction, toTarget);
+                // Track the element furthest in the opposite direction as the wrap target, on-axis only.
+                float opposite = -forward;
 
-                if (!(opposite > wrapScore))
+                if (opposite < distance * MinDirectionAlignment)
+                    continue;
+
+                if (opposite <= wrapScore)
                     continue;
 
                 wrapScore = opposite;

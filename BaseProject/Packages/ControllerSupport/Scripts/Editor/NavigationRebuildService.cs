@@ -1,7 +1,8 @@
 #if UNITY_EDITOR
+using Base.ControllerSupport.Controller.Navigation;
 using UnityEngine;
 
-namespace Base.ControllerSupport.Controller.Navigation.Editor
+namespace Base.ControllerSupport.Editor
 {
     /// <summary>
     /// Keeps every <see cref="NavigableGroup"/> wired without manual upkeep. Rebuilds all groups in the

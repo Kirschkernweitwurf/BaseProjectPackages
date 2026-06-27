@@ -49,7 +49,8 @@ namespace Base.ControllerSupport.Controller.Scrolling
                 ? _scrollRect.viewport
                 : (RectTransform)_scrollRect.transform;
 
-            Canvas.ForceUpdateCanvases();
+            // Rebuild only this scroll view's content layout, not every canvas in the scene.
+            LayoutRebuilder.ForceRebuildLayoutImmediate(_scrollRect.content);
 
             target.GetWorldCorners(_worldCorners);
             Vector2 min = viewport.InverseTransformPoint(_worldCorners[0]);

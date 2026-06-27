@@ -1,8 +1,9 @@
 #if UNITY_EDITOR
+using Base.ControllerSupport.Controller.Navigation;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.ControllerSupport.Controller.Navigation.Editor
+namespace Base.ControllerSupport.Editor
 {
     /// <summary>
     /// Adds "Rebuild" and "Rebuild All" buttons to the <see cref="NavigableGroup"/> inspector so
