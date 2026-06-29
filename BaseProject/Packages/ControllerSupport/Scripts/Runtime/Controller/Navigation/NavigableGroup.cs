@@ -49,6 +49,12 @@ namespace Base.ControllerSupport.Controller.Navigation
         private GameObject _lastSelected;
 
 #region Unity Callbacks
+        private void OnEnable()
+        {
+            if (autoActivate)
+                Activate();
+        }
+
         private void LateUpdate()
         {
             if (!_isActive || !rememberLastSelected || EventSystem.current == null)
@@ -58,12 +64,6 @@ namespace Base.ControllerSupport.Controller.Navigation
 
             if (current != null && current.transform.IsChildOf(transform))
                 _lastSelected = current;
-        }
-
-        private void OnEnable()
-        {
-            if (autoActivate)
-                Activate();
         }
 
         private void OnDisable() => Deactivate();

@@ -10,7 +10,7 @@ namespace Base.UtilityPackage.Identification
     /// <summary>
     /// A ScriptableObject that holds a unique ID.
     /// </summary>
-    [CreateAssetMenu(menuName = "ScriptableObjects/Base/UniqueId/UniqueIdScriptableObject", fileName = "UniqueId",
+    [CreateAssetMenu(menuName = "Scriptable Objects/Base/UniqueId/UniqueIdScriptableObject", fileName = "UniqueId",
         order = MenuOrders.Code)]
     public sealed class UniqueIdScriptableObject : ScriptableObject, IUniquelyIdentifiable
     {

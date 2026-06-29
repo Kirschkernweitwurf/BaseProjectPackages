@@ -7,7 +7,7 @@ namespace Base.SystemsCorePackage.MenuManaging.Identifier
     /// Holds references to all <see cref="MenuIdentifier"/> assets in the project so they can be resolved at runtime.
     /// </summary>
     [CreateAssetMenu(fileName = "MenuIdentifierRegistry",
-        menuName = "ScriptableObjects/Base/Menus/Menu Identifier Registry", order = MenuOrders.Asset)]
+        menuName = "Scriptable Objects/Base/Menus/Menu Identifier Registry", order = MenuOrders.Asset)]
     public class MenuIdentifierRegistry : ScriptableObject
     {
         [SerializeField] private MenuIdentifier[] entries;

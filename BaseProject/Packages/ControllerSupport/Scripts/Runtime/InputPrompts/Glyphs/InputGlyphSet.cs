@@ -11,7 +11,7 @@ namespace Base.ControllerSupport.InputPrompts.Glyphs
     /// A set of action-to-glyph mappings for one device family. Author one asset per device type
     /// (mouse/keyboard, gamepad) and assign them to the <see cref="InputGlyphProvider"/>.
     /// </summary>
-    [CreateAssetMenu(fileName = "InputGlyphSet", menuName = "ScriptableObjects/Base/Input/Glyph Set",
+    [CreateAssetMenu(fileName = "InputGlyphSet", menuName = "Scriptable Objects/Base/Input/Glyph Set",
         order = MenuOrders.Asset)]
     public sealed class InputGlyphSet : ScriptableObject
     {
