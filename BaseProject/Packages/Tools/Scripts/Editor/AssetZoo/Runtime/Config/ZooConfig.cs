@@ -8,7 +8,7 @@ namespace Base.ToolPackage.Editor.AssetZoo.Runtime.Config
     /// Author-time configuration for an asset zoo. Create one or more of these as
     /// project assets via Assets &gt; Create &gt; Asset Zoo &gt; Zoo Config.
     /// </summary>
-    [CreateAssetMenu(fileName = "ZooConfig", menuName = "ScriptableObjects/Base/Asset Zoo/Zoo Config",
+    [CreateAssetMenu(fileName = "ZooConfig", menuName = "Scriptable Objects/Base/Asset Zoo/Zoo Config",
         order = MenuOrders.Team)]
     public class ZooConfig : ScriptableObject
     {
