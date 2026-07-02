@@ -8,14 +8,29 @@ using UnityEngine;
 namespace Base.UtilityPackage.Editor.UnityConstants
 {
     /// <summary>
-    /// Generates a class with all Unity Layers as const int indices (0-31).
+    /// Generates a class with all Unity Layers as const int indices (0-31)
+    /// and a nested Masks class with their bit-shifted layer mask values.
     /// </summary>
     public static class LayersGenerator
     {
+        private const int LayerCount = 32;
+
         [MenuItem("Tools/Base Packages/Code Generation/Generate Layers", priority = MenuOrders.Code)]
         public static void Generate()
         {
             GeneratorUtility.EnsureFolderExists(GeneratorUtility.OutputFolder);
+
+            List<(int Index, string FieldName)> layers = new();
+            HashSet<string> usedNames = new();
+            for (int i = 0; i < LayerCount; i++)
+            {
+                string name = LayerMask.LayerToName(i);
+                if (string.IsNullOrEmpty(name))
+                    continue;
+
+                string fieldName = GeneratorUtility.MakeUniqueIdentifier(name, usedNames);
+                layers.Add((i, fieldName));
+            }
 
             StringBuilder sb = new();
             GeneratorUtility.WriteFileHeader(sb);
@@ -25,17 +40,20 @@ namespace Base.UtilityPackage.Editor.UnityConstants
             sb.AppendLine("    public static class Layers");
             sb.AppendLine("    {");
 
-            HashSet<string> usedNames = new();
-            for (int i = 0; i < 32; i++)
-            {
-                string name = LayerMask.LayerToName(i);
-                if (string.IsNullOrEmpty(name))
-                    continue;
+            foreach ((int index, string fieldName) in layers)
+                sb.AppendLine($"        public const int {fieldName} = {index};");
 
-                string fieldName = GeneratorUtility.MakeUniqueIdentifier(name, usedNames);
-                sb.AppendLine($"        public const int {fieldName} = {i};");
-            }
+            sb.AppendLine();
+            sb.AppendLine(
+                "        /// <summary>Bit-shifted layer mask values (1 << index) for use with LayerMask fields.</summary>");
 
+            sb.AppendLine("        public static class Masks");
+            sb.AppendLine("        {");
+
+            foreach ((int index, string fieldName) in layers)
+                sb.AppendLine($"            public const int {fieldName} = 1 << {index};");
+
+            sb.AppendLine("        }");
             sb.AppendLine("    }");
             sb.AppendLine("}");
 
