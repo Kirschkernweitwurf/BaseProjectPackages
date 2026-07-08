@@ -271,7 +271,7 @@ MonoBehaviour:
   contentRoot: {fileID: 3277375166199916956}
   <MenuPriority>k__BackingField: 0
   openOnStart: 0
-  <ListenToOnBackAction>k__BackingField: 1
+  <ListenToOnBackAction>k__BackingField: 0
   blockingMenus: []
   logText: {fileID: 7132897532432047581}
   scrollRect: {fileID: 5632288569816299079}
