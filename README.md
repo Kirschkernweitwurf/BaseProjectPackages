@@ -1,6 +1,6 @@
 # BaseProjectPackages
 
-My personal collection of base Unity packages, the stack I use myself for every project. Built up over years of past projects (especially [Laskards](https://github.com/JonathanAlber/Laskards), source also on my GitHub) and continuously updated.
+My personal collection of base Unity packages, the stack I use myself for every project. Built up over years of past projects (especially [Laskards](https://github.com/Kirschkernweitwurf/Laskards), source also on my GitHub) and continuously updated.
 
 ## What's inside
 
@@ -14,12 +14,12 @@ My personal collection of base Unity packages, the stack I use myself for every 
 
 ## Installation
 
-The easiest way is to use the [BaseProjectPackageInstaller](https://github.com/JonathanAlber/BasePackageInstaller), one click and you're done.
+The easiest way is to use the [BaseProjectPackageInstaller](https://github.com/Kirschkernweitwurf/BasePackageInstaller), one click and you're done.
 
 Or install individual packages manually via the Unity Package Manager using a Git URL like:
 
 ```
-https://github.com/JonathanAlber/BaseProjectPackages.git?path=BaseProject/Packages/<PackageName>
+https://github.com/Kirschkernweitwurf/BaseProjectPackages.git?path=BaseProject/Packages/<PackageName>
 ```
 
 Replace `<PackageName>` with one of: `Tools`, `Attributes`, `Systems`, `UI`, `Utility`, `ScreenShake`.
