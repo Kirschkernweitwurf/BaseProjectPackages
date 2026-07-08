@@ -48,8 +48,13 @@ namespace Base.CorePackage.MenuManaging
         [Tooltip("Menus that block this menu from opening if they are currently open.")]
         [SerializeField] private MenuIdentifier[] blockingMenus;
 
+        /// <summary><c>true</c> if the menu is currently open.</summary>
         public bool IsOpen { get; private set; }
 
+        /// <summary><c>true</c> if the menu is currently transitioning between open and closed states.</summary>
+        public bool IsTransitioning { get; private set; }
+
+        /// <summary><c>true</c> if the menu has been shut down and is no longer valid.</summary>
         public bool HasShutDown { get; private set; }
 
         /// <summary>The root tween group driving this menu's open and close animation.</summary>
@@ -77,8 +82,12 @@ namespace Base.CorePackage.MenuManaging
         protected virtual void Start()
         {
             if (openOnStart)
+            {
                 Open();
-            else
+                return;
+            }
+
+            if (!IsOpen)
                 contentRoot.SetVisibility(false);
         }
 
@@ -117,34 +126,34 @@ namespace Base.CorePackage.MenuManaging
                 return;
             }
 
-            foreach (MenuIdentifier blockingMenu in blockingMenus)
+            if (IsTransitioning)
             {
-                if (blockingMenu == null)
-                    continue;
-
-                if (!ServiceLocator.TryGet(out MenuManager menuManager))
-                    continue;
-
-                if (!menuManager.IsMenuOpen(blockingMenu))
-                    continue;
-
-                CustomLogger.LogWarning(
-                    $"Cannot open menu \"{MenuIdentifier}\" because blocking" + $" menu \"{blockingMenu}\" is open.",
-                    this);
-
+                CustomLogger.LogWarning($"Menu \"{MenuIdentifier}\" is currently transitioning.", this);
                 return;
             }
 
+            IsTransitioning = true;
             IsOpen = true;
 
             contentRoot.SetVisibility(true);
-            contentRoot?.Show();
+
+            contentRoot.OnFinished -= HandleOpened;
+            contentRoot.OnFinished += HandleOpened;
+            contentRoot.Show();
 
             RegisterParentMenu(parentMenuIdentifier);
             ServiceLocator.Get<MenuManager>()?.RegisterOpenMenu(this, (uint)MenuPriority, this);
 
             OnOpened();
             Opened?.Invoke();
+
+            return;
+
+            void HandleOpened()
+            {
+                contentRoot.OnFinished -= HandleOpened;
+                IsTransitioning = false;
+            }
         }
 
         /// <summary>
@@ -158,27 +167,31 @@ namespace Base.CorePackage.MenuManaging
                 return;
             }
 
-            if (contentRoot != null)
+            if (IsTransitioning)
             {
-                contentRoot.OnFinished -= HandleCloseComplete;
-                contentRoot.OnFinished += HandleCloseComplete;
-
-                contentRoot.Hide();
-            }
-            else
-            {
-                HandleCloseComplete();
+                CustomLogger.LogWarning($"Menu \"{MenuIdentifier}\" is currently transitioning.", this);
+                return;
             }
 
-            IsOpen = false;
+            IsTransitioning = true;
+
+            contentRoot.OnFinished -= HandleCloseComplete;
+            contentRoot.OnFinished += HandleCloseComplete;
+            contentRoot.Hide();
 
             return;
 
             void HandleCloseComplete()
             {
                 contentRoot.OnFinished -= HandleCloseComplete;
+
+                IsTransitioning = false;
+                IsOpen = false;
+
                 contentRoot.SetVisibility(false);
+
                 CleanupMenuState(closingMenuIdentifier);
+
                 OnClosed();
                 Closed?.Invoke();
             }

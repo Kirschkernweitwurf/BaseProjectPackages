@@ -6,7 +6,7 @@ using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Base.CorePackage.CheatConsole
+namespace Base.CorePackage.DebugMenu.CheatConsole
 {
     /// <summary>
     /// Provides discovery of cheat commands from assemblies and scene objects.

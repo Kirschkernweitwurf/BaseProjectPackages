@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 using Base.UtilityPackage.Logging;
 
-namespace Base.CorePackage.CheatConsole
+namespace Base.CorePackage.DebugMenu.CheatConsole
 {
     /// <summary>
     /// Model for the cheat console, responsible for command registration, parsing,

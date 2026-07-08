@@ -35,7 +35,6 @@ namespace Base.CorePackage.Input
             base.Awake();
 
             _tracker.OnCurrentActiveItemChanged += OnActiveInputMapChanged;
-
             BaseInputActions = new BaseInputActions();
             BaseInputActions.Permanent.Enable();
         }
