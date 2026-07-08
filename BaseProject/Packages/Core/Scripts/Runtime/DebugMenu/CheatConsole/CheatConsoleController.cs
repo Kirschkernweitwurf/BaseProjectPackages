@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
-using Base.CorePackage.CheatConsole.Cheats;
+using Base.CorePackage.DebugMenu.CheatConsole.Cheats;
 using Base.CorePackage.Input;
 using Base.CorePackage.Services;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
-namespace Base.CorePackage.CheatConsole
+namespace Base.CorePackage.DebugMenu.CheatConsole
 {
     /// <summary>
     /// Controller for the cheat console. Subscribes to input actions, coordinates the
@@ -34,7 +34,6 @@ namespace Base.CorePackage.CheatConsole
             if (!ServiceLocator.TryGet(out InputManager inputManager))
                 return;
 
-            inputManager.BaseInputActions.Permanent.ToggleCheatConsole.performed += OnToggleConsole;
             inputManager.BaseInputActions.Cheats.ExecuteCommand.started += OnExecuteCommand;
             inputManager.BaseInputActions.Cheats.AutoComplete.started += OnAutoComplete;
             inputManager.BaseInputActions.Cheats.PreviousCommand.started += OnPreviousCommand;
@@ -46,7 +45,6 @@ namespace Base.CorePackage.CheatConsole
             if (!ServiceLocator.TryGet(out InputManager inputManager))
                 return;
 
-            inputManager.BaseInputActions.Permanent.ToggleCheatConsole.performed -= OnToggleConsole;
             inputManager.BaseInputActions.Cheats.ExecuteCommand.started -= OnExecuteCommand;
             inputManager.BaseInputActions.Cheats.AutoComplete.started -= OnAutoComplete;
             inputManager.BaseInputActions.Cheats.PreviousCommand.started -= OnPreviousCommand;
@@ -130,14 +128,6 @@ namespace Base.CorePackage.CheatConsole
 
             List<string> suggestions = _model.GetSuggestions(newText);
             _view.ShowSuggestions(suggestions);
-        }
-
-        private void OnToggleConsole(InputAction.CallbackContext ctx)
-        {
-            if (!_view.IsOpen)
-                _view.Open();
-            else
-                _view.Close();
         }
 #endif
     }

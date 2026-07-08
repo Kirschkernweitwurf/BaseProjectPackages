@@ -1,4 +1,4 @@
-namespace Base.CorePackage.CheatConsole
+namespace Base.CorePackage.DebugMenu.CheatConsole
 {
     /// <summary>
     /// Represents the result of executing a cheat command.

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Base.UtilityPackage.Logging;
 
-namespace Base.CorePackage.CheatConsole
+namespace Base.CorePackage.DebugMenu.CheatConsole
 {
     /// <summary>
     /// Utility class to discover and create <see cref="CheatCommandInfo"/> instances

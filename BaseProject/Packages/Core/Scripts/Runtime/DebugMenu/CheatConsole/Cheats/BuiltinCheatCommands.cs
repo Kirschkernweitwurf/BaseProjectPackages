@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Base.CorePackage.CheatConsole.Cheats
+namespace Base.CorePackage.DebugMenu.CheatConsole.Cheats
 {
     /// <summary>
     /// Contains built-in cheat commands such as help and clear.
