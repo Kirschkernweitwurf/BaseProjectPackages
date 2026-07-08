@@ -14,9 +14,9 @@ namespace Base.CorePackage.MenuManaging.Identifier.Editor
     /// </summary>
     public static class MenuIdentifierGenerator
     {
-        private const string LoaderNamespace = "Base.SystemsCorePackage.MenuManaging.Identifier";
-        private const string MenuIdentifierNamespace = "Base.SystemsCorePackage.MenuManaging";
-        private const string Namespace = "Base.SystemsCorePackage.MenuManaging.Generated";
+        private const string LoaderNamespace = "Base.CorePackage.MenuManaging.Identifier";
+        private const string MenuIdentifierNamespace = "Base.CorePackage.MenuManaging";
+        private const string Namespace = "Base.CorePackage.MenuManaging.Generated";
         private const string OutputPath = "Assets/Generated/MenuIdentifiers/MenuIdentifiers.cs";
         private const string RegistryPath = "Assets/Generated/Resources/MenuIdentifierRegistry.asset";
 
