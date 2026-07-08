@@ -1,6 +1,7 @@
 using Base.AttributePackage;
 using Base.CorePackage.Input;
 using Base.CorePackage.Services;
+using Base.CorePackage.Services.Shutdown;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -10,10 +11,12 @@ namespace Base.CorePackage.MenuManaging.Modules
     /// Overrides the active input action map while the owning menu is open, scoped by the menu's
     /// priority. Restores the previous map on close or when destroyed.
     /// </summary>
-    public sealed class MenuInputMapModule : MenuModule
+    public sealed class MenuInputMapModule : MenuModule, IShutdownHandler
     {
         [Tooltip("The action map activated while the menu is open.")]
         [SerializeField] private InputActionMapReference actionMap;
+
+        public bool HasShutDown { get; private set; }
 
         private bool _isApplied;
 
@@ -21,9 +24,18 @@ namespace Base.CorePackage.MenuManaging.Modules
         protected override void OnDestroy()
         {
             base.OnDestroy();
-            Release();
+
+            if (!HasShutDown)
+                Shutdown();
         }
 #endregion
+
+        public void Shutdown()
+        {
+            Release();
+
+            HasShutDown = true;
+        }
 
         protected override void OnMenuOpened()
         {

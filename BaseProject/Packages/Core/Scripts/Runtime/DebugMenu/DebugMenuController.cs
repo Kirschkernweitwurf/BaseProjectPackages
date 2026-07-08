@@ -43,29 +43,24 @@ namespace Base.CorePackage.DebugMenu
 
             if (logConsole == null)
                 CustomLogger.LogError("Log console reference is missing.", this);
-
-            if (!ServiceLocator.TryGet(out InputManager inputManager))
-                return;
-
-            inputManager.BaseInputActions.Permanent.ToggleCheatConsole.performed += OnToggleConsole;
-        }
-
-        protected override void OnDestroy()
-        {
-            if (ServiceLocator.TryGet(out InputManager inputManager))
-                inputManager.BaseInputActions.Permanent.ToggleCheatConsole.performed -= OnToggleConsole;
-
-            base.OnDestroy();
         }
 
         private void OnEnable()
         {
+            if (!ServiceLocator.TryGet(out InputManager inputManager))
+                return;
+
+            inputManager.BaseInputActions.Permanent.ToggleCheatConsole.performed += OnToggleConsole;
+
             cheatConsoleButton.onClick.AddListener(ShowCheatConsole);
             logConsoleButton.onClick.AddListener(ShowLogConsole);
         }
 
         private void OnDisable()
         {
+            if (ServiceLocator.TryGet(out InputManager inputManager))
+                inputManager.BaseInputActions.Permanent.ToggleCheatConsole.performed -= OnToggleConsole;
+
             cheatConsoleButton.onClick.RemoveListener(ShowCheatConsole);
             logConsoleButton.onClick.RemoveListener(ShowLogConsole);
         }
