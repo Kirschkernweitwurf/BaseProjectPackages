@@ -1,10 +1,10 @@
 using System.Collections;
 using Base.AttributePackage;
-using Base.SystemsCorePackage.MenuManaging;
+using Base.CorePackage.MenuManaging;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Base.SystemsCorePackage.SceneManagement
+namespace Base.CorePackage.SceneManagement
 {
     /// <summary>
     /// Handles the display and animation of the loading screen UI during scene transitions.
@@ -13,6 +13,7 @@ namespace Base.SystemsCorePackage.SceneManagement
     public class LoadingScreen : Menu
     {
         [Header("Loading Screen References")]
+
         [Tooltip("The image used to display load progress via fill amount.")]
         [SerializeField] private Image progressImage;
 
@@ -20,6 +21,7 @@ namespace Base.SystemsCorePackage.SceneManagement
         [SerializeField] private RectTransform spinner;
 
         [Header("Animation Settings")]
+
         [Tooltip("Rotation speed for the spinner, in degrees per second.")]
         [SerializeField] private float spinnerRotationSpeed = 180f;
 
@@ -27,6 +29,7 @@ namespace Base.SystemsCorePackage.SceneManagement
         [SerializeField] private float fillSmoothSpeed = 5f;
 
         [Header("Minimum Show Time")]
+
         [Tooltip("If enabled, the loading screen will stay visible for at least this duration.")]
         [SerializeField] private bool hasMinimumShowTime = true;
 
@@ -34,8 +37,9 @@ namespace Base.SystemsCorePackage.SceneManagement
         [SerializeField] private float minimumShowTime = 1.0f;
 
         [Header("Scene Filtering")]
+
         [Tooltip("If non-empty, the loading screen will only show for these scenes.")]
-        [SceneName, SerializeField] private string[] scenesToShowFor;
+        [SceneName] [SerializeField] private string[] scenesToShowFor;
 
         private Coroutine _loadingRoutine;
         private Coroutine _closeRoutine;
@@ -43,6 +47,7 @@ namespace Base.SystemsCorePackage.SceneManagement
         private float _targetFillAmount;
         private float _shownTime;
 
+#region Unity Callbacks
         private void OnEnable()
         {
             SceneLoadEvents.OnSceneLoadStarted += HandleLoadStarted;
@@ -56,6 +61,7 @@ namespace Base.SystemsCorePackage.SceneManagement
             SceneLoadEvents.OnSceneLoadProgress -= HandleLoadProgress;
             SceneLoadEvents.OnSceneLoadCompleted -= HandleLoadCompleted;
         }
+#endregion
 
         private void HandleLoadStarted(string sceneName)
         {
@@ -109,19 +115,16 @@ namespace Base.SystemsCorePackage.SceneManagement
                 _shownTime += Time.deltaTime;
 
                 if (progressImage != null)
-                {
-                    progressImage.fillAmount = Mathf.Lerp(
-                        progressImage.fillAmount,
+                    progressImage.fillAmount = Mathf.Lerp(progressImage.fillAmount,
                         _targetFillAmount,
-                        Time.deltaTime * fillSmoothSpeed
-                    );
-                }
+                        Time.deltaTime * fillSmoothSpeed);
 
                 if (spinner != null)
                     spinner.Rotate(0f, 0f, -spinnerRotationSpeed * Time.unscaledDeltaTime, Space.Self);
 
                 yield return null;
             }
+
             // ReSharper disable once IteratorNeverReturns
         }
 

@@ -1,5 +1,5 @@
-using Base.SystemsCorePackage.Tweening.Components.System;
 using System;
+using Base.CorePackage.Tweening.Components.System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,12 +13,15 @@ namespace Base.SettingsPackage.GUI
     public sealed class SelectionIndicatorButton : MonoBehaviour
     {
         [Header("Dependencies")]
+
         [SerializeField] private TweenGroup tweenGroup;
         [SerializeField] private Button button;
 
         private Action _onClick;
 
+#region Unity Callbacks
         private void OnDestroy() => button.onClick.RemoveListener(HandleClick);
+#endregion
 
         /// <summary>Wires the click action and sets the initial selected state.</summary>
         public void Initialize(bool isSelected, Action onClick)

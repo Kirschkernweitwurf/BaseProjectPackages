@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.SystemsCorePackage.Tweening.Core
+namespace Base.CorePackage.Tweening.Core
 {
     /// <summary>
     /// Unclamped linear interpolation helpers for common Unity types.
@@ -28,8 +28,6 @@ namespace Base.SystemsCorePackage.Tweening.Core
         /// Uses Unity's <see cref="Quaternion.LerpUnclamped(Quaternion, Quaternion, float)"/>.
         /// </summary>
         public static Quaternion LerpQuaternionUnclamped(Quaternion a, Quaternion b, float t)
-        {
-            return Quaternion.LerpUnclamped(a, b, t);
-        }
+            => Quaternion.LerpUnclamped(a, b, t);
     }
 }

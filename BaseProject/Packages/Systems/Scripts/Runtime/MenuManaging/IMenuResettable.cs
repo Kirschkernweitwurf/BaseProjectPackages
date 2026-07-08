@@ -1,4 +1,4 @@
-namespace Base.SystemsCorePackage.MenuManaging
+namespace Base.CorePackage.MenuManaging
 {
     /// <summary>
     /// Implemented by components that should reset to a known baseline when their

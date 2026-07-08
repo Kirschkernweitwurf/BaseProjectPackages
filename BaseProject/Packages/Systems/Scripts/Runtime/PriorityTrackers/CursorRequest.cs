@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Base.SystemsCorePackage.PriorityTrackers
+namespace Base.CorePackage.PriorityTrackers
 {
     /// <summary>
     /// Represents settings for the cursor, including visibility and lock mode.
@@ -10,6 +10,7 @@ namespace Base.SystemsCorePackage.PriorityTrackers
     public class CursorRequest
     {
         [field: SerializeField] public bool IsCursorVisible { get; private set; }
+
         [field: SerializeField] public CursorLockMode LockMode { get; private set; }
 
         public CursorRequest(bool visible = true, CursorLockMode lockMode = CursorLockMode.None)

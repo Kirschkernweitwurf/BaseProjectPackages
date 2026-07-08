@@ -1,4 +1,4 @@
-namespace Base.SystemsCorePackage.CheatConsole
+namespace Base.CorePackage.CheatConsole
 {
     /// <summary>
     /// Represents the severity of a message written to the cheat console.

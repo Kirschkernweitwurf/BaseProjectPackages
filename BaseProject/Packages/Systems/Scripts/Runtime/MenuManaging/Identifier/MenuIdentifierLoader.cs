@@ -1,7 +1,8 @@
 using Base.UtilityPackage.Logging;
+using UnityEditor;
 using UnityEngine;
 
-namespace Base.SystemsCorePackage.MenuManaging.Identifier
+namespace Base.CorePackage.MenuManaging.Identifier
 {
     /// <summary>
     /// Loads <see cref="MenuIdentifier"/> assets at runtime by their asset name.
@@ -11,11 +12,6 @@ namespace Base.SystemsCorePackage.MenuManaging.Identifier
     {
         private static MenuIdentifierRegistry _registry;
 
-#if UNITY_EDITOR
-        [UnityEditor.InitializeOnEnterPlayMode]
-        private static void ResetStatics() => _registry = null;
-#endif
-
         public static MenuIdentifier Load(string identifierName)
         {
             if (_registry == null)
@@ -23,12 +19,21 @@ namespace Base.SystemsCorePackage.MenuManaging.Identifier
 
             if (_registry == null)
             {
-                CustomLogger.LogError("MenuIdentifierRegistry not found in Resources. " +
-                               "Run Tools > Menus > Regenerate Menu Identifiers.", null);
+                CustomLogger.LogError(
+                    "MenuIdentifierRegistry not found in Resources. "
+                    + "Run Tools > Menus > Regenerate Menu Identifiers.", null);
+
                 return null;
             }
 
-            return _registry.TryGet(identifierName, out MenuIdentifier identifier) ? identifier : null;
+            return _registry.TryGet(identifierName, out MenuIdentifier identifier)
+                ? identifier
+                : null;
         }
+
+#if UNITY_EDITOR
+        [InitializeOnEnterPlayMode]
+        private static void ResetStatics() => _registry = null;
+#endif
     }
 }

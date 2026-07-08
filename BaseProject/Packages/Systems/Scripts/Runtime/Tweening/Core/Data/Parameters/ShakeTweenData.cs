@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Base.SystemsCorePackage.Tweening.Core.Data.Parameters
+namespace Base.CorePackage.Tweening.Core.Data.Parameters
 {
     /// <summary>
     /// Serializable data describing a shake tween for transforms.

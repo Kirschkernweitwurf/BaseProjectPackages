@@ -1,7 +1,7 @@
 using Base.UtilityPackage.Logging;
 using UnityEngine;
 
-namespace Base.SystemsCorePackage.MenuManaging.Modules
+namespace Base.CorePackage.MenuManaging.Modules
 {
     /// <summary>
     /// Base for components that react to a <see cref="Menu"/>'s lifecycle. Lets single-purpose menu

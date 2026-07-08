@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
-using Base.SystemsCorePackage.MenuManaging;
-using Base.SystemsCorePackage.MenuManaging.Identifier;
-using Base.SystemsCorePackage.Services;
+using Base.CorePackage.MenuManaging;
+using Base.CorePackage.MenuManaging.Identifier;
+using Base.CorePackage.Services;
 using Base.UtilityPackage.Logging;
 using UnityEngine;
 
@@ -17,6 +17,7 @@ namespace Base.UIPackage.Confirmation
 
         private ConfirmationMenu _menu;
 
+#region Unity Callbacks
         private void Start()
         {
             if (!ServiceLocator.TryGet(out MenuManager manager))
@@ -28,9 +29,11 @@ namespace Base.UIPackage.Confirmation
             if (foundMenu is ConfirmationMenu confirmationMenu)
                 _menu = confirmationMenu;
             else
-                CustomLogger.LogError("Menu with Confirmation identifier is not of type ConfirmationMenu. " +
-                                      "Ensure it is registered correctly", this);
+                CustomLogger.LogError(
+                    "Menu with Confirmation identifier is not of type ConfirmationMenu. "
+                    + "Ensure it is registered correctly", this);
         }
+#endregion
 
         /// <summary>
         /// Shows a confirmation popup and awaits the user's response.
@@ -47,8 +50,7 @@ namespace Base.UIPackage.Confirmation
 
             _menu.Show(request.Message, request.ConfirmText, request.CancelText,
                 onConfirm: () => tcs.TrySetResult(true),
-                onCancel: () => tcs.TrySetResult(false)
-            );
+                onCancel: () => tcs.TrySetResult(false));
 
             // Await until user confirms or cancels
             bool result = await tcs.Task;

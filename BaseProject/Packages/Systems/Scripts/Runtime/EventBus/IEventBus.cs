@@ -1,6 +1,6 @@
 using System;
 
-namespace Base.SystemsCorePackage.EventBus
+namespace Base.CorePackage.EventBus
 {
     /// <summary>
     /// Strongly-typed, in-process publish/subscribe bus.

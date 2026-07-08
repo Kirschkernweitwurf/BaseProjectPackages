@@ -1,9 +1,9 @@
-using Base.SystemsCorePackage.Tweening.Core;
-using Base.SystemsCorePackage.Tweening.Core.Data;
+using Base.CorePackage.Tweening.Core;
+using Base.CorePackage.Tweening.Core.Data;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Base.SystemsCorePackage.Tweening.Components.UITweens
+namespace Base.CorePackage.Tweening.Components.UITweens
 {
     /// <summary>
     /// Tweens the color of a UI Graphic from the Graphic's start color (captured at <c>Awake</c>) to a target color.

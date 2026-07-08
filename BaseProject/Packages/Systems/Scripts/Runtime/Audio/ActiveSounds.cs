@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Base.SystemsCorePackage.Audio
+namespace Base.CorePackage.Audio
 {
     /// <summary>
     /// Tracks the <see cref="AudioSource"/>s currently playing for each
@@ -46,26 +46,28 @@ namespace Base.SystemsCorePackage.Audio
         /// <summary>
         /// Gets the sources currently playing for a container, or null if none.
         /// </summary>
-        public IReadOnlyList<AudioSource> GetSources(AudioContainer container) =>
-            _sourcesByContainer.GetValueOrDefault(container);
+        public IReadOnlyList<AudioSource> GetSources(AudioContainer container)
+            => _sourcesByContainer.GetValueOrDefault(container);
 
         /// <summary>
         /// Gets the container a source is playing for, if it is tracked.
         /// </summary>
-        public bool TryGetContainer(AudioSource source, out AudioContainer container) =>
-            _containerBySource.TryGetValue(source, out container);
+        public bool TryGetContainer(AudioSource source, out AudioContainer container)
+            => _containerBySource.TryGetValue(source, out container);
 
         /// <summary>
         /// Counts how many sources are playing for a container.
         /// </summary>
-        public int CountOf(AudioContainer container) =>
-            _sourcesByContainer.TryGetValue(container, out List<AudioSource> sources) ? sources.Count : 0;
+        public int CountOf(AudioContainer container)
+            => _sourcesByContainer.TryGetValue(container, out List<AudioSource> sources)
+                ? sources.Count
+                : 0;
 
         /// <summary>
         /// Gets the oldest source playing for a container, or null if none.
         /// </summary>
-        public AudioSource GetOldest(AudioContainer container) =>
-            _sourcesByContainer.TryGetValue(container, out List<AudioSource> sources) && sources.Count > 0
+        public AudioSource GetOldest(AudioContainer container)
+            => _sourcesByContainer.TryGetValue(container, out List<AudioSource> sources) && sources.Count > 0
                 ? sources[0]
                 : null;
     }

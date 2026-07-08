@@ -1,6 +1,6 @@
 using System;
 
-namespace Base.SystemsCorePackage.EventBus
+namespace Base.CorePackage.EventBus
 {
     /// <summary>
     /// RAII-style subscription token returned by <see cref="EventBus.Subscribe{TEvent}"/>

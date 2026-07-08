@@ -1,4 +1,4 @@
-using Base.SystemsCorePackage.Services;
+using Base.CorePackage.Services;
 using UnityEngine;
 
 namespace Base.SaveSystemPackage.Unity.Capture
@@ -8,9 +8,11 @@ namespace Base.SaveSystemPackage.Unity.Capture
     /// </summary>
     public sealed class ScreenCapturer : MonoBehaviour, IScreenshotCapturer
     {
+#region Unity Callbacks
         private void Awake() => ServiceLocator.Register<IScreenshotCapturer>(this);
 
         private void OnDestroy() => ServiceLocator.Deregister<IScreenshotCapturer>();
+#endregion
 
         /// <inheritdoc/>
         public async Awaitable<Texture2D> CaptureAsync(int maxWidth = 480)
@@ -31,7 +33,9 @@ namespace Base.SaveSystemPackage.Unity.Capture
         private static Texture2D Downscale(Texture2D src, int targetWidth, int targetHeight)
         {
             bool linearProject = QualitySettings.activeColorSpace == ColorSpace.Linear;
-            RenderTextureReadWrite rw = linearProject ? RenderTextureReadWrite.sRGB : RenderTextureReadWrite.Linear;
+            RenderTextureReadWrite rw = linearProject
+                ? RenderTextureReadWrite.sRGB
+                : RenderTextureReadWrite.Linear;
 
             RenderTextureDescriptor fullDesc = new(src.width, src.height, RenderTextureFormat.ARGB32, 0)
             {
@@ -39,6 +43,7 @@ namespace Base.SaveSystemPackage.Unity.Capture
                 autoGenerateMips = false,
                 sRGB = linearProject
             };
+
             RenderTexture pyramid = RenderTexture.GetTemporary(fullDesc);
 
             Graphics.Blit(src, pyramid);

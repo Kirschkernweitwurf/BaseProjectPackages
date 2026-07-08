@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Base.UtilityPackage.Logging;
 
-namespace Base.SystemsCorePackage.Tracking
+namespace Base.CorePackage.Tracking
 {
     /// <summary>
     /// Generic tracker that maps unique keys to values, which allows registration,

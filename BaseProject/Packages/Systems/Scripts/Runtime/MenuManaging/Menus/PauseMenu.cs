@@ -1,6 +1,6 @@
 using System;
 
-namespace Base.SystemsCorePackage.MenuManaging.Menus
+namespace Base.CorePackage.MenuManaging.Menus
 {
     /// <summary>
     /// Represents the pause menu in the game.

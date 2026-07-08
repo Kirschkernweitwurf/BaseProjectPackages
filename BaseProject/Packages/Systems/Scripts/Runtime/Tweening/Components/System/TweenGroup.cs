@@ -1,14 +1,14 @@
 using System;
 using System.Collections.Generic;
-using Base.SystemsCorePackage.MenuManaging;
-using Base.SystemsCorePackage.Services.Shutdown;
-using Base.SystemsCorePackage.Tweening.Core;
-using Base.SystemsCorePackage.Tweening.Core.Data;
-using UnityEngine;
+using Base.CorePackage.MenuManaging;
+using Base.CorePackage.Services.Shutdown;
+using Base.CorePackage.Tweening.Core;
+using Base.CorePackage.Tweening.Core.Data;
 using Base.UtilityPackage.Logging;
+using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace Base.SystemsCorePackage.Tweening.Components.System
+namespace Base.CorePackage.Tweening.Components.System
 {
     /// <summary>
     /// Groups multiple tweens together to play them as one sequence or in parallel.
@@ -16,24 +16,6 @@ namespace Base.SystemsCorePackage.Tweening.Components.System
     /// </summary>
     public sealed class TweenGroup : MonoBehaviour, IShutdownHandler, IMenuResettable
     {
-        [FormerlySerializedAs("tweenBehaviours")]
-        [Tooltip("The list of behaviours that should be played when showing the object.")]
-        [SerializeField] private List<TweenBehaviourBase> showTweenBehaviours = new();
-
-        [Tooltip("The list of behaviours that should be played when hiding the object.")]
-        [SerializeField] private List<TweenBehaviourBase> hideTweenBehaviours = new();
-
-        [Header("Settings")]
-        [Tooltip("If true, this group will auto-play once the object starts.")]
-        [SerializeField] private bool playOnStart;
-
-        [Tooltip("How the tweens in this group should be played.")]
-        [SerializeField] private ESequenceMode sequenceMode;
-
-        public bool HasShutDown { get; private set; }
-
-        private TweenSequence _sequence;
-
         /// <summary>
         /// Fired when the full sequence has finished (all tweens complete or stopped with
         /// <c>complete</c> set to <c>true</c>).
@@ -46,6 +28,26 @@ namespace Base.SystemsCorePackage.Tweening.Components.System
         /// </summary>
         public event Action OnKilled;
 
+        [FormerlySerializedAs("tweenBehaviours")]
+        [Tooltip("The list of behaviours that should be played when showing the object.")]
+        [SerializeField] private List<TweenBehaviourBase> showTweenBehaviours = new();
+
+        [Tooltip("The list of behaviours that should be played when hiding the object.")]
+        [SerializeField] private List<TweenBehaviourBase> hideTweenBehaviours = new();
+
+        [Header("Settings")]
+
+        [Tooltip("If true, this group will auto-play once the object starts.")]
+        [SerializeField] private bool playOnStart;
+
+        [Tooltip("How the tweens in this group should be played.")]
+        [SerializeField] private ESequenceMode sequenceMode;
+
+        public bool HasShutDown { get; private set; }
+
+        private TweenSequence _sequence;
+
+#region Unity Callbacks
         private void Start()
         {
             ShutdownManager.Register(this);
@@ -58,6 +60,15 @@ namespace Base.SystemsCorePackage.Tweening.Components.System
         {
             if (!HasShutDown)
                 Shutdown();
+        }
+#endregion
+
+        public void ResetState()
+        {
+            Stop();
+
+            ResetBehaviours(showTweenBehaviours);
+            ResetBehaviours(hideTweenBehaviours);
         }
 
         public void Shutdown()
@@ -77,31 +88,41 @@ namespace Base.SystemsCorePackage.Tweening.Components.System
         /// <summary>
         /// Plays the show behaviors forward.
         /// </summary>
-        public void Show() => PlayInternal(showTweenBehaviours, isReversed: false);
+        public void Show() => PlayInternal(showTweenBehaviours, false);
 
         /// <summary>
         /// Plays the hide behaviors forward. If no hide behaviors are assigned, falls back to
         /// playing the show behaviors reversed so setups without a dedicated hide list still work.
         /// </summary>
-        public void Hide()
+        public void Hide() => PlayInternal(hideTweenBehaviours is
         {
-            PlayInternal(hideTweenBehaviours is { Count: > 0 }
-                ? hideTweenBehaviours
-                : showTweenBehaviours, isReversed: true);
+            Count: > 0
         }
+            ? hideTweenBehaviours
+            : showTweenBehaviours, true);
 
         /// <summary>
         /// Stops all tweens in this group.
         /// </summary>
-        /// <param name="complete">If <c>true</c>, each tween snaps to its end value and the group
+        /// <param name="complete">
+        /// If <c>true</c>, each tween snaps to its end value and the group
         /// fires <see cref="OnFinished"/> before <see cref="OnKilled"/>. Useful to resolve gameplay
-        /// logic that depends on the group finishing.</param>
+        /// logic that depends on the group finishing.
+        /// </param>
+
         // ReSharper disable once MemberCanBePrivate.Global
         public void Stop(bool complete = false)
         {
-            bool wasRunning = _sequence is { IsRunning: true } || HasAnyActiveTween();
+            bool wasRunning = _sequence is
+                {
+                    IsRunning: true
+                }
+                || HasAnyActiveTween();
 
-            if (_sequence is { IsRunning: true })
+            if (_sequence is
+                {
+                    IsRunning: true
+                })
             {
                 _sequence.OnComplete -= HandleSequenceComplete;
                 _sequence.Stop(complete);
@@ -118,6 +139,33 @@ namespace Base.SystemsCorePackage.Tweening.Components.System
                 OnFinished?.Invoke();
 
             OnKilled?.Invoke();
+        }
+
+        private static void StopBehaviours(List<TweenBehaviourBase> behaviours, bool complete)
+        {
+            foreach (TweenBehaviourBase behaviour in behaviours)
+                behaviour?.Stop(complete);
+        }
+
+        private static bool HasActiveTween(List<TweenBehaviourBase> behaviours)
+        {
+            foreach (TweenBehaviourBase behaviour in behaviours)
+            {
+                if (behaviour != null
+                    && behaviour.ActiveTween is
+                    {
+                        IsRunning: true
+                    })
+                    return true;
+            }
+
+            return false;
+        }
+
+        private static void ResetBehaviours(List<TweenBehaviourBase> behaviours)
+        {
+            foreach (TweenBehaviourBase behaviour in behaviours)
+                behaviour?.ResetToDefault();
         }
 
         /// <summary>
@@ -145,8 +193,9 @@ namespace Base.SystemsCorePackage.Tweening.Components.System
             {
                 if (behaviour == null)
                 {
-                    CustomLogger.LogWarning("Skipping null TweenBehaviour in TweenGroup on GameObject" +
-                                            $" '{gameObject.name}'.", this);
+                    CustomLogger.LogWarning(
+                        "Skipping null TweenBehaviour in TweenGroup on GameObject" + $" '{gameObject.name}'.", this);
+
                     continue;
                 }
 
@@ -170,36 +219,6 @@ namespace Base.SystemsCorePackage.Tweening.Components.System
             OnKilled?.Invoke();
         }
 
-        private bool HasAnyActiveTween() =>
-            HasActiveTween(showTweenBehaviours) || HasActiveTween(hideTweenBehaviours);
-
-        public void ResetState()
-        {
-            Stop();
-
-            ResetBehaviours(showTweenBehaviours);
-            ResetBehaviours(hideTweenBehaviours);
-        }
-
-        private static void StopBehaviours(List<TweenBehaviourBase> behaviours, bool complete)
-        {
-            foreach (TweenBehaviourBase behaviour in behaviours)
-                behaviour?.Stop(complete);
-        }
-
-        private static bool HasActiveTween(List<TweenBehaviourBase> behaviours)
-        {
-            foreach (TweenBehaviourBase behaviour in behaviours)
-                if (behaviour != null && behaviour.ActiveTween is { IsRunning: true })
-                    return true;
-
-            return false;
-        }
-
-        private static void ResetBehaviours(List<TweenBehaviourBase> behaviours)
-        {
-            foreach (TweenBehaviourBase behaviour in behaviours)
-                behaviour?.ResetToDefault();
-        }
+        private bool HasAnyActiveTween() => HasActiveTween(showTweenBehaviours) || HasActiveTween(hideTweenBehaviours);
     }
 }

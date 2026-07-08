@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using UnityEngine;
 using Base.UtilityPackage.Logging;
+using UnityEditor;
+using UnityEngine;
+using Object = UnityEngine.Object;
 
-namespace Base.SystemsCorePackage.CheatConsole
+namespace Base.CorePackage.CheatConsole
 {
     /// <summary>
     /// Provides discovery of cheat commands from assemblies and scene objects.
@@ -12,11 +14,6 @@ namespace Base.SystemsCorePackage.CheatConsole
     internal static class CheatCommandProvider
     {
         private static List<CheatCommandInfo> _cachedStaticCommands;
-
-#if UNITY_EDITOR
-        [UnityEditor.InitializeOnEnterPlayMode]
-        private static void ResetStatics() => _cachedStaticCommands = null;
-#endif
 
         /// <summary>
         /// Discovers all cheat commands available in the current context.
@@ -32,12 +29,15 @@ namespace Base.SystemsCorePackage.CheatConsole
                 if (_cachedStaticCommands == null)
                 {
                     Assembly executingAssembly = Assembly.GetExecutingAssembly();
-                    _cachedStaticCommands = CheatCommandRegistry.CreateFromStaticMethods(new[] { executingAssembly });
+                    _cachedStaticCommands = CheatCommandRegistry.CreateFromStaticMethods(new[]
+                    {
+                        executingAssembly
+                    });
                 }
 
                 result.AddRange(_cachedStaticCommands);
 
-                MonoBehaviour[] behaviours = UnityEngine.Object.FindObjectsByType(typeof(MonoBehaviour),
+                MonoBehaviour[] behaviours = Object.FindObjectsByType(typeof(MonoBehaviour),
                     FindObjectsInactive.Include, FindObjectsSortMode.None) as MonoBehaviour[];
 
                 result.AddRange(CheatCommandRegistry.CreateFromTargets(behaviours));
@@ -49,5 +49,10 @@ namespace Base.SystemsCorePackage.CheatConsole
 
             return result;
         }
+
+#if UNITY_EDITOR
+        [InitializeOnEnterPlayMode]
+        private static void ResetStatics() => _cachedStaticCommands = null;
+#endif
     }
 }

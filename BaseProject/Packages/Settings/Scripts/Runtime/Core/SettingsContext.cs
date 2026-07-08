@@ -1,4 +1,4 @@
-using Base.SystemsCorePackage.Services;
+using Base.CorePackage.Services;
 using UnityEngine;
 
 namespace Base.SettingsPackage.Core
@@ -17,6 +17,7 @@ namespace Base.SettingsPackage.Core
         /// <summary>The store the registry persists to.</summary>
         public ISettingsStore Store { get; private set; }
 
+#region Unity Callbacks
         protected override void Awake()
         {
             base.Awake();
@@ -31,6 +32,7 @@ namespace Base.SettingsPackage.Core
 
             Save();
         }
+#endregion
 
         /// <summary>Persists all settings.</summary>
         public void Save() => Registry?.SaveAll();

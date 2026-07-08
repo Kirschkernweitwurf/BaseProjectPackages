@@ -1,9 +1,9 @@
 using System.Threading;
+using Base.CorePackage.Services;
 using Base.SaveSystemPackage.Model;
 using Base.SaveSystemPackage.Slots;
 using Base.SaveSystemPackage.Unity.Capture;
 using Base.SaveSystemPackage.Unity.Playtime;
-using Base.SystemsCorePackage.Services;
 using Base.UtilityPackage.Logging;
 using UnityEngine;
 
@@ -43,9 +43,11 @@ namespace Base.SaveSystemPackage.Unity.Buttons
                 }
             }
 
-            double? playSeconds = ServiceLocator.TryGet(out IPlaytimeProvider pt) ? pt.TotalSeconds : null;
+            double? playSeconds = ServiceLocator.TryGet(out IPlaytimeProvider pt)
+                ? pt.TotalSeconds
+                : null;
 
-            await Saves.SaveAsync(new SaveRequest(slotId, displayName: null, playSeconds, shot), ct);
+            await Saves.SaveAsync(new SaveRequest(slotId, null, playSeconds, shot), ct);
             await Slots.EnforcePolicyAsync(slotId, ct);
             Selection.Select(slotId);
             Debug.Log($"Saved game to slot '{slotId}'.", this);
@@ -56,7 +58,10 @@ namespace Base.SaveSystemPackage.Unity.Buttons
             if (Slots.Model == ESlotModel.Fixed && fixedSlotIndex >= 0)
                 return Slots.TryResolveSaveTarget(FixedSlotProvider.SlotId(fixedSlotIndex), out slotId);
 
-            string selected = forceNewSlot ? null : Selection.SelectedSlotId;
+            string selected = forceNewSlot
+                ? null
+                : Selection.SelectedSlotId;
+
             return Slots.TryResolveSaveTarget(selected, out slotId);
         }
     }

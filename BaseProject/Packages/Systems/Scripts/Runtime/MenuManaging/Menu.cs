@@ -1,15 +1,15 @@
 using System;
 using System.Collections.Generic;
-using Base.SystemsCorePackage.MenuManaging.Identifier;
-using Base.SystemsCorePackage.MenuManaging.Modules;
-using Base.SystemsCorePackage.Services;
-using Base.SystemsCorePackage.Services.Shutdown;
-using Base.SystemsCorePackage.Tracking;
-using Base.SystemsCorePackage.Tweening.Components.System;
+using Base.CorePackage.MenuManaging.Identifier;
+using Base.CorePackage.MenuManaging.Modules;
+using Base.CorePackage.Services;
+using Base.CorePackage.Services.Shutdown;
+using Base.CorePackage.Tracking;
+using Base.CorePackage.Tweening.Components.System;
 using Base.UtilityPackage.Logging;
 using UnityEngine;
 
-namespace Base.SystemsCorePackage.MenuManaging
+namespace Base.CorePackage.MenuManaging
 {
     /// <summary>
     /// Base class for all menus in the game. Handles lifecycle and open/close animations. System

@@ -1,7 +1,7 @@
 using Base.ToolPackage.Editor.Generated;
 using UnityEngine;
 
-namespace Base.SystemsCorePackage.MenuManaging.Identifier
+namespace Base.CorePackage.MenuManaging.Identifier
 {
     /// <summary>
     /// Holds references to all <see cref="MenuIdentifier"/> assets in the project so they can be resolved at runtime.

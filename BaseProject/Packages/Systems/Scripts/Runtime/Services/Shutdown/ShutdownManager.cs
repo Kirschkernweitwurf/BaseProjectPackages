@@ -3,7 +3,7 @@ using Base.UtilityPackage.Logging;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.SystemsCorePackage.Services.Shutdown
+namespace Base.CorePackage.Services.Shutdown
 {
     /// <summary>
     /// Manages the orderly shutdown of registered classes when the application is quitting,

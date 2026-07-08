@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-namespace Components.Activation
+namespace Base.CorePackage.Activation
 {
     /// <summary>
     /// Activates a target GameObject after a delay in seconds.

@@ -1,10 +1,20 @@
-namespace Base.SystemsCorePackage.CheatConsole
+namespace Base.CorePackage.CheatConsole
 {
     /// <summary>
     /// Represents the result of executing a cheat command.
     /// </summary>
     public sealed class CheatConsoleResult
     {
+        /// <summary>
+        /// Gets the descriptive message resulting from execution.
+        /// </summary>
+        public string Message { get; }
+
+        /// <summary>
+        /// Gets the message type to display.
+        /// </summary>
+        public CheatConsoleMessageType MessageType { get; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="CheatConsoleResult"/> class.
         /// </summary>
@@ -15,15 +25,5 @@ namespace Base.SystemsCorePackage.CheatConsole
             Message = message;
             MessageType = messageType;
         }
-
-        /// <summary>
-        /// Gets the descriptive message resulting from execution.
-        /// </summary>
-        public string Message { get; }
-
-        /// <summary>
-        /// Gets the message type to display.
-        /// </summary>
-        public CheatConsoleMessageType MessageType { get; }
     }
 }

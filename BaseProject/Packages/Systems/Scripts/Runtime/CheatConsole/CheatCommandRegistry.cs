@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Base.UtilityPackage.Logging;
 
-namespace Base.SystemsCorePackage.CheatConsole
+namespace Base.CorePackage.CheatConsole
 {
     /// <summary>
     /// Utility class to discover and create <see cref="CheatCommandInfo"/> instances
@@ -32,8 +32,9 @@ namespace Base.SystemsCorePackage.CheatConsole
                     continue;
 
                 Type type = target.GetType();
-                MethodInfo[] methods = type.GetMethods(BindingFlags.Instance | BindingFlags.Public
-                                                                             | BindingFlags.NonPublic);
+                MethodInfo[] methods = type.GetMethods(BindingFlags.Instance
+                    | BindingFlags.Public
+                    | BindingFlags.NonPublic);
 
                 foreach (MethodInfo method in methods)
                 {
@@ -88,7 +89,8 @@ namespace Base.SystemsCorePackage.CheatConsole
                     if (type == null)
                         continue;
 
-                    MethodInfo[] methods = type.GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+                    MethodInfo[] methods =
+                        type.GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
 
                     foreach (MethodInfo method in methods)
                     {

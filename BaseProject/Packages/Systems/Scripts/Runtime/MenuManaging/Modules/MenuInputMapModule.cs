@@ -1,10 +1,10 @@
 using Base.AttributePackage;
-using Base.SystemsCorePackage.Input;
-using Base.SystemsCorePackage.Services;
+using Base.CorePackage.Input;
+using Base.CorePackage.Services;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace Base.SystemsCorePackage.MenuManaging.Modules
+namespace Base.CorePackage.MenuManaging.Modules
 {
     /// <summary>
     /// Overrides the active input action map while the owning menu is open, scoped by the menu's

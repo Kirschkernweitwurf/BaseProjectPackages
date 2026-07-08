@@ -1,8 +1,9 @@
 using System;
 using UnityEngine;
+
 // ReSharper disable MemberCanBePrivate.Global
 
-namespace Base.SystemsCorePackage.Tweening.Core.Data
+namespace Base.CorePackage.Tweening.Core.Data
 {
     /// <summary>
     /// Provides easing function delegates for tween interpolation.
@@ -15,27 +16,24 @@ namespace Base.SystemsCorePackage.Tweening.Core.Data
         /// </summary>
         /// <param name="type">The type of easing function to retrieve.</param>
         /// <returns><see cref="Func{T, TResult}"/> delegate representing the easing function.</returns>
-        public static Func<float, float> Get(EEasingType type)
+        public static Func<float, float> Get(EEasingType type) => type switch
         {
-            return type switch
-            {
-                EEasingType.Linear => Linear,
-                EEasingType.EaseInQuad => EaseInQuad,
-                EEasingType.EaseOutQuad => EaseOutQuad,
-                EEasingType.EaseInOutQuad => EaseInOutQuad,
-                EEasingType.EaseOutBack => EaseOutBack,
-                EEasingType.EaseInBounce => EaseInBounce,
-                EEasingType.EaseOutBounce => EaseOutBounce,
-                EEasingType.EaseInExpo => EaseInExpo,
-                EEasingType.EaseOutExpo => EaseOutExpo,
-                EEasingType.EaseInOut => EaseInOut,
-                EEasingType.EaseInOutCubic => EaseInOutCubic,
-                EEasingType.EaseInOutExpo => EaseInOutExpo,
-                EEasingType.EaseInElastic => EaseInElastic,
-                EEasingType.EaseOutElastic => EaseOutElastic,
-                _ => Linear
-            };
-        }
+            EEasingType.Linear => Linear,
+            EEasingType.EaseInQuad => EaseInQuad,
+            EEasingType.EaseOutQuad => EaseOutQuad,
+            EEasingType.EaseInOutQuad => EaseInOutQuad,
+            EEasingType.EaseOutBack => EaseOutBack,
+            EEasingType.EaseInBounce => EaseInBounce,
+            EEasingType.EaseOutBounce => EaseOutBounce,
+            EEasingType.EaseInExpo => EaseInExpo,
+            EEasingType.EaseOutExpo => EaseOutExpo,
+            EEasingType.EaseInOut => EaseInOut,
+            EEasingType.EaseInOutCubic => EaseInOutCubic,
+            EEasingType.EaseInOutExpo => EaseInOutExpo,
+            EEasingType.EaseInElastic => EaseInElastic,
+            EEasingType.EaseOutElastic => EaseOutElastic,
+            _ => Linear
+        };
 
         public static float Linear(float t) => t;
 
@@ -43,26 +41,17 @@ namespace Base.SystemsCorePackage.Tweening.Core.Data
 
         public static float EaseOutQuad(float t) => t * (2f - t);
 
-        public static float EaseInOutQuad(float t)
-        {
-            return t < 0.5f
-                ? 2f * t * t
-                : -1f + (4f - 2f * t) * t;
-        }
+        public static float EaseInOutQuad(float t) => t < 0.5f
+            ? 2f * t * t
+            : -1f + (4f - 2f * t) * t;
 
-        public static float EaseInExpo(float t)
-        {
-            return t == 0f
-                ? 0f
-                : Mathf.Pow(2f, 10f * (t - 1f));
-        }
+        public static float EaseInExpo(float t) => t == 0f
+            ? 0f
+            : Mathf.Pow(2f, 10f * (t - 1f));
 
-        public static float EaseOutExpo(float t)
-        {
-            return Mathf.Approximately(t, 1f)
-                ? 1f
-                : 1f - Mathf.Pow(2f, -10f * t);
-        }
+        public static float EaseOutExpo(float t) => Mathf.Approximately(t, 1f)
+            ? 1f
+            : 1f - Mathf.Pow(2f, -10f * t);
 
         public static float EaseInOutExpo(float t)
         {
@@ -79,12 +68,9 @@ namespace Base.SystemsCorePackage.Tweening.Core.Data
 
         public static float EaseInOut(float t) => t * t * (3f - 2f * t);
 
-        public static float EaseInOutCubic(float t)
-        {
-            return t < 0.5f
-                ? 4f * t * t * t
-                : 1f - Mathf.Pow(-2f * t + 2f, 3f) / 2f;
-        }
+        public static float EaseInOutCubic(float t) => t < 0.5f
+            ? 4f * t * t * t
+            : 1f - Mathf.Pow(-2f * t + 2f, 3f) / 2f;
 
         public static float EaseOutBack(float t)
         {

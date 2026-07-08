@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
 using Base.UtilityPackage.Logging;
+using Object = UnityEngine.Object;
 
-namespace Base.SystemsCorePackage.Tracking
+namespace Base.CorePackage.Tracking
 {
     /// <summary>
     /// Tracks items with associated priorities.
@@ -12,14 +13,14 @@ namespace Base.SystemsCorePackage.Tracking
     public class PriorityTracker<T>
     {
         /// <summary>
-        /// The currently active (highest-priority) tracked item.
-        /// </summary>
-        public TrackedItem<T> CurrentTrackedItem { get; private set; }
-
-        /// <summary>
         /// Invoked whenever the current tracked item changes.
         /// </summary>
         public event Action<TrackedItem<T>> OnCurrentActiveItemChanged;
+
+        /// <summary>
+        /// The currently active (highest-priority) tracked item.
+        /// </summary>
+        public TrackedItem<T> CurrentTrackedItem { get; private set; }
 
         public readonly List<TrackedItem<T>> TrackedItems = new();
         private readonly Dictionary<object, TrackedItem<T>> _callerToTracked = new();
@@ -103,15 +104,24 @@ namespace Base.SystemsCorePackage.Tracking
                 if (Equals(t.Item, item))
                     return true;
             }
+
             return false;
         }
 
         /// <summary>
         /// Checks if a caller currently has an active tracked item.
         /// </summary>
-        public bool HasCaller(object caller)
+        public bool HasCaller(object caller) => caller != null && _callerToTracked.ContainsKey(caller);
+
+        /// <summary>
+        /// Compares two items for equality, with special handling for UnityEngine.Object types.
+        /// </summary>
+        private static bool Equals(T a, T b)
         {
-            return caller != null && _callerToTracked.ContainsKey(caller);
+            if (a is Object ao && b is Object bo)
+                return ao == bo;
+
+            return EqualityComparer<T>.Default.Equals(a, b);
         }
 
         private void ReevaluateCurrent()
@@ -130,11 +140,8 @@ namespace Base.SystemsCorePackage.Tracking
             for (int i = 1; i < TrackedItems.Count; i++)
             {
                 TrackedItem<T> next = TrackedItems[i];
-                if (next.Priority > top.Priority ||
-                    (next.Priority == top.Priority && next.Order > top.Order))
-                {
+                if (next.Priority > top.Priority || next.Priority == top.Priority && next.Order > top.Order)
                     top = next;
-                }
             }
 
             if (Equals(CurrentTrackedItem, top))
@@ -142,17 +149,6 @@ namespace Base.SystemsCorePackage.Tracking
 
             CurrentTrackedItem = top;
             OnCurrentActiveItemChanged?.Invoke(CurrentTrackedItem);
-        }
-
-        /// <summary>
-        /// Compares two items for equality, with special handling for UnityEngine.Object types.
-        /// </summary>
-        private static bool Equals(T a, T b)
-        {
-            if (a is UnityEngine.Object ao && b is UnityEngine.Object bo)
-                return ao == bo;
-
-            return EqualityComparer<T>.Default.Equals(a, b);
         }
     }
 }

@@ -1,6 +1,6 @@
 using System;
 
-namespace Base.SystemsCorePackage.SceneManagement
+namespace Base.CorePackage.SceneManagement
 {
     /// <summary>
     /// Provides events related to scene loading operations.
@@ -22,8 +22,7 @@ namespace Base.SystemsCorePackage.SceneManagement
         /// </summary>
         public static event Action<string, bool> OnSceneLoadCompleted;
 
-        internal static void InvokeSceneLoadStarted(string sceneName)
-            => OnSceneLoadStarted?.Invoke(sceneName);
+        internal static void InvokeSceneLoadStarted(string sceneName) => OnSceneLoadStarted?.Invoke(sceneName);
 
         internal static void InvokeSceneLoadProgress(string sceneName, float progress)
             => OnSceneLoadProgress?.Invoke(sceneName, progress);

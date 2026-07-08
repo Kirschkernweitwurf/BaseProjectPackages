@@ -2,7 +2,7 @@
 using Base.UtilityPackage.Logging;
 
 // ReSharper disable MemberCanBePrivate.Global
-namespace Base.SystemsCorePackage.Timers
+namespace Base.CorePackage.Timers
 {
     /// <summary>
     /// A reusable countdown timer driven by <see cref="TimerManager"/>.

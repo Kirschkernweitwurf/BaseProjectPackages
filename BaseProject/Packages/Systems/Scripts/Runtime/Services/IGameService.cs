@@ -1,4 +1,4 @@
-namespace Base.SystemsCorePackage.Services
+namespace Base.CorePackage.Services
 {
     /// <summary>
     /// Interface for game services that can be registered with the <see cref="ServiceLocator"/>.

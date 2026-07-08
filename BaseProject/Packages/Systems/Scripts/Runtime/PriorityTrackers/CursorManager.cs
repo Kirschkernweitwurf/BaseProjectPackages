@@ -1,8 +1,8 @@
-using Base.SystemsCorePackage.Services;
-using Base.SystemsCorePackage.Tracking;
+using Base.CorePackage.Services;
+using Base.CorePackage.Tracking;
 using UnityEngine;
 
-namespace Base.SystemsCorePackage.PriorityTrackers
+namespace Base.CorePackage.PriorityTrackers
 {
     /// <summary>
     /// Manages the cursor state based on priority requests, using a PriorityTracker instance.
@@ -14,6 +14,7 @@ namespace Base.SystemsCorePackage.PriorityTrackers
 
         public readonly PriorityTracker<CursorRequest> CursorTracker = new();
 
+#region Unity Callbacks
         protected override void Awake()
         {
             base.Awake();
@@ -29,6 +30,17 @@ namespace Base.SystemsCorePackage.PriorityTrackers
             if (CursorTracker != null)
                 CursorTracker.OnCurrentActiveItemChanged -= HandleCursorChange;
         }
+#endregion
+
+        /// <summary>
+        /// Requests a cursor state change with the given priority.
+        /// </summary>
+        /// <param name="request">The cursor request.</param>
+        private static void ApplyCursorState(CursorRequest request)
+        {
+            Cursor.visible = request.IsCursorVisible;
+            Cursor.lockState = request.LockMode;
+        }
 
         /// <summary>
         /// Adds a cursor request with the specified priority on behalf of the caller.
@@ -43,16 +55,6 @@ namespace Base.SystemsCorePackage.PriorityTrackers
             }
 
             ApplyCursorState(trackedItem.Item);
-        }
-
-        /// <summary>
-        /// Requests a cursor state change with the given priority.
-        /// </summary>
-        /// <param name="request">The cursor request.</param>
-        private static void ApplyCursorState(CursorRequest request)
-        {
-            Cursor.visible = request.IsCursorVisible;
-            Cursor.lockState = request.LockMode;
         }
     }
 }

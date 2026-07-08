@@ -1,12 +1,14 @@
 using System;
-using Base.SystemsCorePackage.Tweening.Core.Data;
-using Base.SystemsCorePackage.Tweening.Core.Data.Parameters;
+using Base.CorePackage.Tweening.Core.Data;
+using Base.CorePackage.Tweening.Core.Data.Parameters;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
+using Random = UnityEngine.Random;
+
 // ReSharper disable MemberCanBePrivate.Global
 
-namespace Base.SystemsCorePackage.Tweening.Core
+namespace Base.CorePackage.Tweening.Core
 {
     /// <summary>
     /// High-level tween factories for common Unity components.
@@ -18,8 +20,6 @@ namespace Base.SystemsCorePackage.Tweening.Core
     /// </remarks>
     public static class TweenFX
     {
-        #region --- ScaleTo ---
-
         /// <summary>
         /// Tweens a transform's local scale to the specified value.
         /// </summary>
@@ -29,16 +29,14 @@ namespace Base.SystemsCorePackage.Tweening.Core
             if (target == null)
                 return null;
 
-            Tween<Vector3> tween = new(
-                to: targetScale,
-                duration: duration,
+            Tween<Vector3> tween = new(targetScale,
+                duration,
                 setter: v => target.localScale = v,
-                lerpFunc: TweenLerpUtility.LerpVector3Unclamped,
-                ease: Easings.Get(easing),
-                targetObj: target,
-                delay: delay,
-                fromGetter: () => target.localScale
-            );
+                TweenLerpUtility.LerpVector3Unclamped,
+                Easings.Get(easing),
+                target,
+                delay,
+                fromGetter: () => target.localScale);
 
             tween.Start();
             return tween;
@@ -48,13 +46,7 @@ namespace Base.SystemsCorePackage.Tweening.Core
         /// Tweens a transform's local scale using structured tween data.
         /// </summary>
         public static TweenBase ScaleTo(Transform target, Vector3 targetScale, TweenData data)
-        {
-            return ScaleTo(target, targetScale, data.Duration, data.Easing, data.Delay);
-        }
-
-        #endregion
-
-        #region --- MoveTo ---
+            => ScaleTo(target, targetScale, data.Duration, data.Easing, data.Delay);
 
         /// <summary>
         /// Tweens a transform's position to the specified target.
@@ -91,16 +83,14 @@ namespace Base.SystemsCorePackage.Tweening.Core
                 setter = v => target.position = v;
             }
 
-            Tween<Vector3> tween = new(
-                to: targetPosition,
-                duration: duration,
-                setter: setter,
-                lerpFunc: TweenLerpUtility.LerpVector3Unclamped,
-                ease: Easings.Get(easing),
-                targetObj: target,
-                delay: delay,
-                fromGetter: fromGetter
-            );
+            Tween<Vector3> tween = new(targetPosition,
+                duration,
+                setter,
+                TweenLerpUtility.LerpVector3Unclamped,
+                Easings.Get(easing),
+                target,
+                delay,
+                fromGetter);
 
             tween.Start();
             return tween;
@@ -110,13 +100,7 @@ namespace Base.SystemsCorePackage.Tweening.Core
         /// Tweens a transform's position using structured tween data.
         /// </summary>
         public static TweenBase MoveTo(Transform target, Vector3 targetPosition, TweenData data, bool local = false)
-        {
-            return MoveTo(target, targetPosition, data.Duration, data.Easing, local, data.Delay);
-        }
-
-        #endregion
-
-        #region --- RotateTo ---
+            => MoveTo(target, targetPosition, data.Duration, data.Easing, local, data.Delay);
 
         /// <summary>
         /// Tweens a transform's rotation to the specified target rotation.
@@ -141,16 +125,14 @@ namespace Base.SystemsCorePackage.Tweening.Core
                 setter = v => target.rotation = v;
             }
 
-            Tween<Quaternion> tween = new(
-                to: targetRotation,
-                duration: duration,
-                setter: setter,
-                lerpFunc: TweenLerpUtility.LerpQuaternionUnclamped,
-                ease: Easings.Get(easing),
-                targetObj: target,
-                delay: delay,
-                fromGetter: fromGetter
-            );
+            Tween<Quaternion> tween = new(targetRotation,
+                duration,
+                setter,
+                TweenLerpUtility.LerpQuaternionUnclamped,
+                Easings.Get(easing),
+                target,
+                delay,
+                fromGetter);
 
             tween.Start();
             return tween;
@@ -159,10 +141,8 @@ namespace Base.SystemsCorePackage.Tweening.Core
         /// <summary>
         /// Tweens a transform's rotation using structured tween data.
         /// </summary>
-        public static TweenBase RotateTo(Transform target, Quaternion targetRotation, TweenData data, bool local = false)
-        {
-            return RotateTo(target, targetRotation, data.Duration, data.Easing, local, data.Delay);
-        }
+        public static TweenBase RotateTo(Transform target, Quaternion targetRotation, TweenData data,
+            bool local = false) => RotateTo(target, targetRotation, data.Duration, data.Easing, local, data.Delay);
 
         /// <summary>
         /// Tweens a transform's rotation (as Euler angles) using structured tween data.
@@ -173,10 +153,6 @@ namespace Base.SystemsCorePackage.Tweening.Core
             return RotateTo(target, targetQuat, data.Duration, data.Easing, local, data.Delay);
         }
 
-        #endregion
-
-        #region --- FadeTo ---
-
         /// <summary>
         /// Tweens a <see cref="CanvasGroup"/> alpha to the target value.
         /// </summary>
@@ -186,16 +162,14 @@ namespace Base.SystemsCorePackage.Tweening.Core
             if (canvasGroup == null)
                 return null;
 
-            Tween<float> tween = new(
-                to: targetAlpha,
-                duration: duration,
+            Tween<float> tween = new(targetAlpha,
+                duration,
                 setter: v => canvasGroup.alpha = v,
-                lerpFunc: TweenLerpUtility.LerpFloatUnclamped,
-                ease: Easings.Get(easing),
-                targetObj: canvasGroup,
-                delay: delay,
-                fromGetter: () => canvasGroup.alpha
-            );
+                TweenLerpUtility.LerpFloatUnclamped,
+                Easings.Get(easing),
+                canvasGroup,
+                delay,
+                fromGetter: () => canvasGroup.alpha);
 
             tween.Start();
             return tween;
@@ -204,15 +178,9 @@ namespace Base.SystemsCorePackage.Tweening.Core
         /// <summary>
         /// Tweens a <see cref="CanvasGroup"/> alpha using structured tween data.
         /// </summary>
-        public static TweenBase FadeTo(CanvasGroup canvasGroup, FadeTweenData data)
-        {
-            return FadeTo(canvasGroup, data.TargetAlpha, data.TweenData.Duration, data.TweenData.Easing,
-                data.TweenData.Delay);
-        }
-
-        #endregion
-
-        #region --- ColorTo ---
+        public static TweenBase FadeTo(CanvasGroup canvasGroup, FadeTweenData data) => FadeTo(canvasGroup,
+            data.TargetAlpha, data.TweenData.Duration, data.TweenData.Easing,
+            data.TweenData.Delay);
 
         /// <summary>
         /// Tweens the color of a UI <see cref="Graphic"/> to the target color.
@@ -223,16 +191,14 @@ namespace Base.SystemsCorePackage.Tweening.Core
             if (graphic == null)
                 return null;
 
-            Tween<Color> tween = new(
-                to: targetColor,
-                duration: duration,
+            Tween<Color> tween = new(targetColor,
+                duration,
                 setter: v => graphic.color = v,
-                lerpFunc: TweenLerpUtility.LerpColorUnclamped,
-                ease: Easings.Get(easing),
-                targetObj: graphic,
-                delay: delay,
-                fromGetter: () => graphic.color
-            );
+                TweenLerpUtility.LerpColorUnclamped,
+                Easings.Get(easing),
+                graphic,
+                delay,
+                fromGetter: () => graphic.color);
 
             tween.Start();
             return tween;
@@ -242,9 +208,7 @@ namespace Base.SystemsCorePackage.Tweening.Core
         /// Tweens a UI <see cref="Graphic"/> color using structured tween data.
         /// </summary>
         public static TweenBase ColorTo(Graphic graphic, Color targetColor, TweenData data)
-        {
-            return ColorTo(graphic, targetColor, data.Duration, data.Easing, data.Delay);
-        }
+            => ColorTo(graphic, targetColor, data.Duration, data.Easing, data.Delay);
 
         /// <summary>
         /// Tweens a <see cref="SpriteRenderer"/> color to the target value.
@@ -255,16 +219,14 @@ namespace Base.SystemsCorePackage.Tweening.Core
             if (renderer == null)
                 return null;
 
-            Tween<Color> tween = new(
-                to: targetColor,
-                duration: duration,
+            Tween<Color> tween = new(targetColor,
+                duration,
                 setter: v => renderer.color = v,
-                lerpFunc: TweenLerpUtility.LerpColorUnclamped,
-                ease: Easings.Get(easing),
-                targetObj: renderer,
-                delay: delay,
-                fromGetter: () => renderer.color
-            );
+                TweenLerpUtility.LerpColorUnclamped,
+                Easings.Get(easing),
+                renderer,
+                delay,
+                fromGetter: () => renderer.color);
 
             tween.Start();
             return tween;
@@ -274,9 +236,7 @@ namespace Base.SystemsCorePackage.Tweening.Core
         /// Tweens a <see cref="SpriteRenderer"/> color using structured tween data.
         /// </summary>
         public static TweenBase ColorTo(SpriteRenderer renderer, Color targetColor, TweenData data)
-        {
-            return ColorTo(renderer, targetColor, data.Duration, data.Easing, data.Delay);
-        }
+            => ColorTo(renderer, targetColor, data.Duration, data.Easing, data.Delay);
 
         /// <summary>
         /// Tweens a color value from its current value (via getter) to the target value.
@@ -287,16 +247,14 @@ namespace Base.SystemsCorePackage.Tweening.Core
             if (setter == null)
                 return null;
 
-            Tween<Color> tween = new(
-                to: targetValue,
-                duration: duration,
-                setter: setter,
-                lerpFunc: TweenLerpUtility.LerpColorUnclamped,
-                ease: Easings.Get(easing),
-                targetObj: targetObj,
-                delay: delay,
-                fromGetter: fromGetter
-            );
+            Tween<Color> tween = new(targetValue,
+                duration,
+                setter,
+                TweenLerpUtility.LerpColorUnclamped,
+                Easings.Get(easing),
+                targetObj,
+                delay,
+                fromGetter);
 
             tween.Start();
             return tween;
@@ -306,14 +264,8 @@ namespace Base.SystemsCorePackage.Tweening.Core
         /// Tweens a color value from its current value (via getter) to the target value.
         /// </summary>
         public static TweenBase ColorTo(Func<Color> fromGetter, Action<Color> setter, Color targetValue, TweenData data,
-            Object targetObj = null)
-        {
-            return ColorTo(fromGetter, setter, targetValue, data.Duration, data.Easing, data.Delay, targetObj);
-        }
-
-        #endregion
-
-        #region --- Shake ---
+            Object targetObj = null) => ColorTo(fromGetter, setter, targetValue, data.Duration, data.Easing, data.Delay,
+            targetObj);
 
         /// <summary>
         /// Creates a shake animation by applying randomized offsets to the transform's position.
@@ -327,15 +279,16 @@ namespace Base.SystemsCorePackage.Tweening.Core
 
             RectTransform rectTransform = target as RectTransform;
             bool isUI = rectTransform != null;
-            Vector3 original = isUI ? rectTransform.anchoredPosition : target.localPosition;
+            Vector3 original = isUI
+                ? rectTransform.anchoredPosition
+                : target.localPosition;
 
-            Tween<float> tween = new(
-                to: 1f,
-                duration: duration,
+            Tween<float> tween = new(1f,
+                duration,
                 setter: _ =>
                 {
-                    float angle = UnityEngine.Random.value * Mathf.PI * 2f;
-                    float offset = UnityEngine.Random.value * strength;
+                    float angle = Random.value * Mathf.PI * 2f;
+                    float offset = Random.value * strength;
                     Vector3 delta = new Vector3(Mathf.Cos(angle), Mathf.Sin(angle), 0f) * offset;
 
                     if (isUI)
@@ -343,12 +296,11 @@ namespace Base.SystemsCorePackage.Tweening.Core
                     else
                         target.localPosition = original + delta;
                 },
-                lerpFunc: TweenLerpUtility.LerpFloatUnclamped,
-                ease: Easings.Get(easing),
-                targetObj: target,
-                delay: delay,
-                fromGetter: () => 0f
-            );
+                TweenLerpUtility.LerpFloatUnclamped,
+                Easings.Get(easing),
+                target,
+                delay,
+                fromGetter: () => 0f);
 
             // Restore the original position whenever the shake ends (either naturally or via Stop).
             tween.OnKill += RestorePosition;
@@ -371,14 +323,8 @@ namespace Base.SystemsCorePackage.Tweening.Core
         /// <summary>
         /// Creates a shake animation using structured tween data.
         /// </summary>
-        public static TweenBase Shake(Transform target, ShakeTweenData data)
-        {
-            return Shake(target, data.Strength, data.TweenData.Duration, data.TweenData.Easing, data.TweenData.Delay);
-        }
-
-        #endregion
-
-        #region --- Value Fade ---
+        public static TweenBase Shake(Transform target, ShakeTweenData data) => Shake(target, data.Strength,
+            data.TweenData.Duration, data.TweenData.Easing, data.TweenData.Delay);
 
         /// <summary>
         /// Tweens a float value from its current value (via getter) to the target value.
@@ -389,16 +335,14 @@ namespace Base.SystemsCorePackage.Tweening.Core
             if (setter == null)
                 return null;
 
-            Tween<float> tween = new(
-                to: targetValue,
-                duration: duration,
-                setter: setter,
-                lerpFunc: TweenLerpUtility.LerpFloatUnclamped,
-                ease: Easings.Get(easing),
-                targetObj: targetObj,
-                delay: delay,
-                fromGetter: fromGetter
-            );
+            Tween<float> tween = new(targetValue,
+                duration,
+                setter,
+                TweenLerpUtility.LerpFloatUnclamped,
+                Easings.Get(easing),
+                targetObj,
+                delay,
+                fromGetter);
 
             tween.Start();
             return tween;
@@ -408,10 +352,8 @@ namespace Base.SystemsCorePackage.Tweening.Core
         /// Tweens a float value from its current value (via getter) to the target value.
         /// </summary>
         public static TweenBase FadeFloatTo(Func<float> fromGetter, Action<float> setter, float targetValue,
-            TweenData data, Object targetObj = null)
-        {
-            return FadeFloatTo(fromGetter, setter, targetValue, data.Duration, data.Easing, data.Delay, targetObj);
-        }
+            TweenData data, Object targetObj = null) => FadeFloatTo(fromGetter, setter, targetValue, data.Duration,
+            data.Easing, data.Delay, targetObj);
 
         /// <summary>
         /// Tweens an int value from its current value (via getter) to the target value.
@@ -425,16 +367,14 @@ namespace Base.SystemsCorePackage.Tweening.Core
             if (setter == null)
                 return null;
 
-            Tween<float> tween = new(
-                to: targetValue,
-                duration: duration,
+            Tween<float> tween = new(targetValue,
+                duration,
                 setter: v => setter(Mathf.RoundToInt(v)),
-                lerpFunc: TweenLerpUtility.LerpFloatUnclamped,
-                ease: Easings.Get(easing),
-                targetObj: targetObj,
-                delay: delay,
-                fromGetter: () => fromGetter?.Invoke() ?? 0
-            );
+                TweenLerpUtility.LerpFloatUnclamped,
+                Easings.Get(easing),
+                targetObj,
+                delay,
+                fromGetter: () => fromGetter?.Invoke() ?? 0);
 
             tween.Start();
             return tween;
@@ -444,11 +384,7 @@ namespace Base.SystemsCorePackage.Tweening.Core
         /// Convenience overload: fades an int with structured tween data.
         /// </summary>
         public static TweenBase FadeIntTo(Func<int> fromGetter, Action<int> setter, int targetValue, TweenData data,
-            Object targetObj = null)
-        {
-            return FadeIntTo(fromGetter, setter, targetValue, data.Duration, data.Easing, data.Delay, targetObj);
-        }
-
-        #endregion
+            Object targetObj = null) => FadeIntTo(fromGetter, setter, targetValue, data.Duration, data.Easing,
+            data.Delay, targetObj);
     }
 }

@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using Base.UtilityPackage.Logging;
+using UnityEditor;
+using Object = UnityEngine.Object;
 
-namespace Base.SystemsCorePackage.Services
+namespace Base.CorePackage.Services
 {
     /// <summary>
     /// A simple service locator for managing and accessing game services.
@@ -13,11 +15,6 @@ namespace Base.SystemsCorePackage.Services
     {
         private static readonly Dictionary<Type, IGameService> Services = new();
 
-#if UNITY_EDITOR
-        [UnityEditor.InitializeOnEnterPlayMode]
-        private static void ResetStatics() => Services.Clear();
-#endif
-
         /// <summary>
         /// Adds or updates a service in the locator.
         /// </summary>
@@ -26,10 +23,9 @@ namespace Base.SystemsCorePackage.Services
         public static void Register(Type type, IGameService service)
         {
             if (Services.ContainsKey(type))
-            {
-                CustomLogger.LogWarning($"Service {type.Name} is already registered. " +
-                                        "Overwriting with new instance.", service as UnityEngine.Object);
-            }
+                CustomLogger.LogWarning(
+                    $"Service {type.Name} is already registered. " + "Overwriting with new instance.",
+                    service as Object);
 
             Services[type] = service;
         }
@@ -44,10 +40,9 @@ namespace Base.SystemsCorePackage.Services
             Type type = typeof(T);
 
             if (Services.ContainsKey(type))
-            {
-                CustomLogger.LogWarning($"Service {type.Name} is already registered. " +
-                                        "Overwriting with new instance.", service as UnityEngine.Object);
-            }
+                CustomLogger.LogWarning(
+                    $"Service {type.Name} is already registered. " + "Overwriting with new instance.",
+                    service as Object);
 
             Services[type] = service;
         }
@@ -122,6 +117,11 @@ namespace Base.SystemsCorePackage.Services
             foreach (KeyValuePair<Type, IGameService> kvp in Services)
                 CustomLogger.LogError($"Service {kvp.Key.Name} was not deregistered properly.", null);
         }
+#endif
+
+#if UNITY_EDITOR
+        [InitializeOnEnterPlayMode]
+        private static void ResetStatics() => Services.Clear();
 #endif
     }
 }

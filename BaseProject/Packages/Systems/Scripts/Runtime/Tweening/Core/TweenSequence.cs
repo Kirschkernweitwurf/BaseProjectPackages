@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using Base.SystemsCorePackage.Tweening.Core.Data;
+using Base.CorePackage.Tweening.Core.Data;
 using Base.UtilityPackage.Logging;
 
-namespace Base.SystemsCorePackage.Tweening.Core
+namespace Base.CorePackage.Tweening.Core
 {
     /// <summary>
     /// A sequence of tweens that can run sequentially or in parallel.

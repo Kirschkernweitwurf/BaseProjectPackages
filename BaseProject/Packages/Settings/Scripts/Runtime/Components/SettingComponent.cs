@@ -1,5 +1,5 @@
+using Base.CorePackage.Services;
 using Base.SettingsPackage.Core;
-using Base.SystemsCorePackage.Services;
 using Base.UtilityPackage.Identification;
 using UnityEngine;
 
@@ -20,6 +20,7 @@ namespace Base.SettingsPackage.Components
         /// </summary>
         public abstract ISetting Setting { get; }
 
+#region Unity Callbacks
         protected virtual void Awake()
         {
             if (!ServiceLocator.TryGet(out SettingsContext context) || context.Registry == null)
@@ -28,10 +29,8 @@ namespace Base.SettingsPackage.Components
             RegisterAndSubscribe(context);
         }
 
-        protected virtual void OnDestroy()
-        {
-            Unsubscribe();
-        }
+        protected virtual void OnDestroy() => Unsubscribe();
+#endregion
 
         /// <summary>Creates the setting, registers it on the context, and subscribes the applier.</summary>
         protected abstract void RegisterAndSubscribe(SettingsContext context);

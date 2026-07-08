@@ -8,7 +8,7 @@ using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Base.SystemsCorePackage.Audio.Editor
+namespace Base.CorePackage.Audio.Editor
 {
     /// <summary>
     /// Editor window that finds AudioClip assets which are not referenced
@@ -119,8 +119,7 @@ namespace Base.SystemsCorePackage.Audio.Editor
         {
             if (!AssetDatabase.IsValidFolder(ContainersFolder))
             {
-                CustomLogger.LogWarning(
-                    $"Containers folder '{ContainersFolder}' does not exist."
+                CustomLogger.LogWarning($"Containers folder '{ContainersFolder}' does not exist."
                     + " No clips will be found in containers.", null);
 
                 return;

@@ -5,7 +5,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Base.SystemsCorePackage.Services
+namespace Base.CorePackage.Services
 {
     /// <summary>
     /// Bootstrapper class to initialize persistent and scene-specific managers.
@@ -13,6 +13,7 @@ namespace Base.SystemsCorePackage.Services
     [DefaultExecutionOrder(-99)]
     public class Bootstrapper : MonoBehaviour
     {
+        private static bool _persistentLoaded;
         [Header("Prefabs to Load")]
 
         [SerializeField] private GameObject persistentManagerPrefab;
@@ -22,8 +23,6 @@ namespace Base.SystemsCorePackage.Services
         [Header("Scene Filtering")]
 
         [SceneName] [SerializeField] private string[] gameplayScenes;
-
-        private static bool _persistentLoaded;
 
 #region Unity Callbacks
         private void Awake()

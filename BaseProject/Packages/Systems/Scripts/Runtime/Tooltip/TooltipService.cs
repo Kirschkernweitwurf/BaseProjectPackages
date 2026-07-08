@@ -1,7 +1,7 @@
-using Base.SystemsCorePackage.Services;
-using Base.SystemsCorePackage.Tracking;
+using Base.CorePackage.Services;
+using Base.CorePackage.Tracking;
 
-namespace Base.SystemsCorePackage.Tooltip
+namespace Base.CorePackage.Tooltip
 {
     /// <summary>
     /// Manages Tooltips shown on screen, ensuring the highest priority tooltip is displayed.
@@ -13,12 +13,14 @@ namespace Base.SystemsCorePackage.Tooltip
 
         private TooltipView _view;
 
+#region Unity Callbacks
         protected override void OnDestroy()
         {
             base.OnDestroy();
 
             _tracker.OnCurrentActiveItemChanged -= OnTooltipChanged;
         }
+#endregion
 
         /// <summary>
         /// Sets the view responsible for displaying tooltips.

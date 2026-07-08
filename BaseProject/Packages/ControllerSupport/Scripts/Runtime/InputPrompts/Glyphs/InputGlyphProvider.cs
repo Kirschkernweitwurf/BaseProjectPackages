@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Base.ControllerSupport.InputPrompts.Devices;
-using Base.SystemsCorePackage.Services;
+using Base.CorePackage.Services;
 using UnityEngine;
 using UnityEngine.InputSystem;
 

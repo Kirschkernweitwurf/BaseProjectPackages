@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
-using Base.SystemsCorePackage.Tweening.Components.System;
-using UnityEngine;
+using Base.CorePackage.Tweening.Components.System;
 using Base.UtilityPackage.Logging;
+using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Base.SystemsCorePackage.ObjectPooling
+namespace Base.CorePackage.ObjectPooling
 {
     /// <summary>
     /// Specialized object pool for animated UI objects.
@@ -18,10 +18,7 @@ namespace Base.SystemsCorePackage.ObjectPooling
         private readonly Dictionary<T, TweenGroup> _tweenCache;
 
         public AnimatedUIObjectPool(T prefab, Transform parent = null, Action<T> resetAction = null)
-            : base(prefab, parent, resetAction)
-        {
-            _tweenCache = new Dictionary<T, TweenGroup>();
-        }
+            : base(prefab, parent, resetAction) => _tweenCache = new Dictionary<T, TweenGroup>();
 
         /// <summary>
         /// Creates a new instance from the prefab and caches its <see cref="TweenGroup"/> if present.

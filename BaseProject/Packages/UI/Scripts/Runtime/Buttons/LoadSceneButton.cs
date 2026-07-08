@@ -1,9 +1,9 @@
 using System;
 using Base.AttributePackage;
-using Base.SystemsCorePackage.SceneManagement;
-using Base.SystemsCorePackage.Services;
-using UnityEngine;
+using Base.CorePackage.SceneManagement;
+using Base.CorePackage.Services;
 using Base.UtilityPackage.Logging;
+using UnityEngine;
 
 namespace Base.UIPackage.Buttons
 {
@@ -18,7 +18,7 @@ namespace Base.UIPackage.Buttons
         {
             try
             {
-                if(ServiceLocator.TryGet(out SceneLoadingManager sceneLoader))
+                if (ServiceLocator.TryGet(out SceneLoadingManager sceneLoader))
                     await sceneLoader.LoadSceneAsync(sceneNameToLoad);
             }
             catch (Exception e)

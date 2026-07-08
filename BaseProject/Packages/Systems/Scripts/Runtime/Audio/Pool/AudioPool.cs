@@ -1,7 +1,7 @@
+using Base.CorePackage.ObjectPooling;
 using UnityEngine;
-using Base.SystemsCorePackage.ObjectPooling;
 
-namespace Base.SystemsCorePackage.Audio.Pool
+namespace Base.CorePackage.Audio.Pool
 {
     /// <summary>
     /// Manages object pooling for AudioSources to optimize performance.
@@ -25,16 +25,6 @@ namespace Base.SystemsCorePackage.Audio.Pool
         }
 
         /// <summary>
-        /// Resets an AudioSource before it is returned to the pool.
-        /// </summary>
-        /// <param name="src"></param>
-        private static void ResetSource(AudioSource src)
-        {
-            if (src != null)
-                src.Stop();
-        }
-
-        /// <summary>
         /// Retrieves an AudioSource from the pool.
         /// </summary>
         /// <returns>Available AudioSource</returns>
@@ -54,6 +44,16 @@ namespace Base.SystemsCorePackage.Audio.Pool
         /// Clears the pool by releasing all active instances back to it.
         /// </summary>
         public void ClearPool() => _pool.ReleaseAll();
+
+        /// <summary>
+        /// Resets an AudioSource before it is returned to the pool.
+        /// </summary>
+        /// <param name="src"></param>
+        private static void ResetSource(AudioSource src)
+        {
+            if (src != null)
+                src.Stop();
+        }
 
         /// <summary>
         /// Prewarms the pool by creating and immediately releasing instances.

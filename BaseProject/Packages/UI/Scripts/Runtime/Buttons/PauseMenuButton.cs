@@ -1,7 +1,7 @@
-using Base.SystemsCorePackage.MenuManaging;
-using Base.SystemsCorePackage.MenuManaging.Identifier;
-using Base.SystemsCorePackage.MenuManaging.Menus;
-using Base.SystemsCorePackage.Services;
+using Base.CorePackage.MenuManaging;
+using Base.CorePackage.MenuManaging.Identifier;
+using Base.CorePackage.MenuManaging.Menus;
+using Base.CorePackage.Services;
 using UnityEngine;
 
 namespace Base.UIPackage.Buttons
@@ -12,12 +12,15 @@ namespace Base.UIPackage.Buttons
     public class PauseMenuButton : CustomButton
     {
         [Header("Identifier")]
+
         [SerializeField] private MenuIdentifier pauseMenuIdentifier;
 
         [Header("Icons")]
+
         [SerializeField] private Sprite pauseIcon;
         [SerializeField] private Sprite playIcon;
 
+#region Unity Callbacks
         private void Start()
         {
             if (!ServiceLocator.TryGet(out MenuManager menuManager))
@@ -33,6 +36,7 @@ namespace Base.UIPackage.Buttons
 
             PauseMenu.OnPauseStateChanged -= SetButtonIcon;
         }
+#endregion
 
         protected override void OnClick()
         {
@@ -51,6 +55,8 @@ namespace Base.UIPackage.Buttons
             }
         }
 
-        private void SetButtonIcon(bool isPaused) => button.image.sprite = isPaused ? pauseIcon : playIcon;
+        private void SetButtonIcon(bool isPaused) => button.image.sprite = isPaused
+            ? pauseIcon
+            : playIcon;
     }
 }

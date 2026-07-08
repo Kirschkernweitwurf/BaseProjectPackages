@@ -1,7 +1,7 @@
+using Base.CorePackage.Services;
+using Base.CorePackage.Services.Shutdown;
 using Base.SaveSystemPackage.Savable;
 using Base.SaveSystemPackage.Slots;
-using Base.SystemsCorePackage.Services;
-using Base.SystemsCorePackage.Services.Shutdown;
 using UnityEngine;
 
 namespace Base.SaveSystemPackage.Unity.Composition
@@ -32,7 +32,7 @@ namespace Base.SaveSystemPackage.Unity.Composition
 
             ShutdownManager.Register(this);
 
-            Bundle bundle = SaveSystemFactory.Create(settings, null);
+            Bundle bundle = SaveSystemFactory.Create(settings);
 
             SaveSystem = bundle.System;
             Savables = bundle.Registry;
