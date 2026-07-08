@@ -1,5 +1,6 @@
 using System.Linq;
 using Base.AttributePackage;
+using Base.UtilityPackage;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -30,12 +31,12 @@ namespace Base.SystemsCorePackage.Services
             // Load persistent managers only once
             if (!_persistentLoaded)
             {
-                CleanInstantiate(persistentManagerPrefab, true);
+                InstantiationUtility.CleanInstantiate(persistentManagerPrefab, dontDestroy: true);
                 _persistentLoaded = true;
             }
 
             // Load scene managers for every scene
-            CleanInstantiate(sceneManagerPrefab);
+            InstantiationUtility.CleanInstantiate(sceneManagerPrefab, transform);
 
             // Load gameplay managers for gameplay scenes only
             bool isGameplaySceneLoaded = false;
@@ -50,7 +51,7 @@ namespace Base.SystemsCorePackage.Services
             }
 
             if (isGameplaySceneLoaded)
-                CleanInstantiate(gameplayManagerPrefab);
+                InstantiationUtility.CleanInstantiate(gameplayManagerPrefab, transform);
         }
 #endregion
 
@@ -58,23 +59,5 @@ namespace Base.SystemsCorePackage.Services
         [InitializeOnEnterPlayMode]
         private static void ResetStatics() => _persistentLoaded = false;
 #endif
-
-        /// <summary>
-        /// Instantiates a prefab and optionally marks it to not be destroyed on load.
-        /// Also cleans up the name by removing "(Clone)".
-        /// </summary>
-        private void CleanInstantiate(GameObject prefab, bool dontDestroy = false)
-        {
-            if (!prefab)
-                return;
-
-            GameObject instance = Instantiate(prefab);
-            if (dontDestroy)
-                DontDestroyOnLoad(instance);
-            else
-                instance.transform.SetParent(transform);
-
-            instance.name = instance.name.Replace("(Clone)", string.Empty);
-        }
     }
 }
