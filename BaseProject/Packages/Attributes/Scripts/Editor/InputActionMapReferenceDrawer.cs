@@ -31,7 +31,12 @@ namespace Base.AttributePackage.Editor
             if (asset == null)
             {
                 using (new EditorGUI.DisabledScope(true))
-                    EditorGUI.Popup(mapRect, 0, new[] { "<assign asset>" });
+                {
+                    EditorGUI.Popup(mapRect, 0, new[]
+                    {
+                        "<assign asset>"
+                    });
+                }
 
                 EditorGUI.EndProperty();
                 return;
@@ -46,7 +51,8 @@ namespace Base.AttributePackage.Editor
             {
                 names[i] = asset.actionMaps[i].name;
                 ids[i] = asset.actionMaps[i].id.ToString();
-                if (ids[i] == mapIdProp.stringValue) currentIndex = i;
+                if (ids[i] == mapIdProp.stringValue)
+                    currentIndex = i;
             }
 
             int newIndex = EditorGUI.Popup(mapRect, Mathf.Max(0, currentIndex), names);

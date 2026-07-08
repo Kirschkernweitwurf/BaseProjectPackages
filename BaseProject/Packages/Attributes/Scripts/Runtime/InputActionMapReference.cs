@@ -42,6 +42,8 @@ namespace Base.AttributePackage
         /// Returns <c>null</c> if the reference is invalid.
         /// </summary>
         /// <returns>The resolved <see cref="InputActionMap"/>, or null if the reference is invalid.</returns>
-        public InputActionMap Resolve() => !IsValid ? null : asset.FindActionMap(mapId);
+        public InputActionMap Resolve() => !IsValid
+            ? null
+            : asset.FindActionMap(mapId);
     }
 }

@@ -1,4 +1,6 @@
 #if UNITY_EDITOR
+using System;
+using System.IO;
 using UnityEditor;
 using UnityEngine;
 
@@ -25,12 +27,12 @@ namespace Base.AttributePackage.Editor
             for (int i = 0; i < scenePaths.Length; i++)
             {
                 string path = scenePaths[i];
-                string name = System.IO.Path.GetFileNameWithoutExtension(path);
+                string name = Path.GetFileNameWithoutExtension(path);
                 sceneNames[i] = name;
             }
 
             // Find current index
-            int currentIndex = Mathf.Max(0, System.Array.IndexOf(sceneNames, property.stringValue));
+            int currentIndex = Mathf.Max(0, Array.IndexOf(sceneNames, property.stringValue));
             int selectedIndex = EditorGUI.Popup(position, label.text, currentIndex, sceneNames);
 
             // Update string value
