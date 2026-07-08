@@ -2,7 +2,7 @@
 #if !BASE_PACKAGES_DEV
 using UnityEditor;
 
-namespace Base.SystemsCorePackage.MenuManaging.Identifier.Editor
+namespace Base.CorePackage.MenuManaging.Identifier.Editor
 {
     /// <summary>
     /// Watches for changes to <see cref="MenuIdentifier"/> assets
