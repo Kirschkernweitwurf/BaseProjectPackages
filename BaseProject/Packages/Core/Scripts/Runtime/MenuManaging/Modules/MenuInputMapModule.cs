@@ -21,12 +21,21 @@ namespace Base.CorePackage.MenuManaging.Modules
         private bool _isApplied;
 
 #region Unity Callbacks
+        protected override void Awake()
+        {
+            base.Awake();
+
+            ShutdownManager.Register(this);
+        }
+
         protected override void OnDestroy()
         {
             base.OnDestroy();
 
             if (!HasShutDown)
                 Shutdown();
+
+            ShutdownManager.Deregister(this);
         }
 #endregion
 
