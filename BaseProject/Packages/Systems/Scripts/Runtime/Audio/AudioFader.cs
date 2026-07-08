@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-namespace Base.SystemsCorePackage.Audio
+namespace Base.CorePackage.Audio
 {
     /// <summary>
     /// Provides reusable volume tweening for <see cref="AudioSource"/>s.

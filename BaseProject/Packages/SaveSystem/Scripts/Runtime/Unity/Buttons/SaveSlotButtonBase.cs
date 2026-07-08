@@ -1,9 +1,8 @@
 using System;
 using System.Threading;
+using Base.CorePackage.Services;
 using Base.SaveSystemPackage.Slots;
-using Base.SaveSystemPackage.System;
 using Base.SaveSystemPackage.Unity.Composition;
-using Base.SystemsCorePackage.Services;
 using Base.UtilityPackage.Logging;
 using UnityEngine;
 using UnityEngine.UI;
@@ -18,13 +17,16 @@ namespace Base.SaveSystemPackage.Unity.Buttons
     public abstract class SaveSlotButtonBase : MonoBehaviour
     {
         protected ISaveSystem Saves { get; private set; }
+
         protected ISaveSlotProvider Slots { get; private set; }
+
         protected SaveSlotSelection Selection { get; private set; }
 
         private bool _busy;
         private Button _button;
         private CancellationTokenSource _cts;
 
+#region Unity Callbacks
         protected virtual void Awake()
         {
             if (TryGetComponent(out _button))
@@ -39,6 +41,7 @@ namespace Base.SaveSystemPackage.Unity.Buttons
             _cts?.Cancel();
             _cts?.Dispose();
         }
+#endregion
 
         /// <summary>What this specific button does.</summary>
         protected abstract Awaitable OnClickAsync(CancellationToken ct);
@@ -70,9 +73,7 @@ namespace Base.SaveSystemPackage.Unity.Buttons
             {
                 await OnClickAsync(_cts.Token);
             }
-            catch (OperationCanceledException)
-            {
-            }
+            catch (OperationCanceledException) { }
             catch (Exception e)
             {
                 CustomLogger.LogError($"Save button action failed: {e.Message}", this);

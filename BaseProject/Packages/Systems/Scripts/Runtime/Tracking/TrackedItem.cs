@@ -1,4 +1,4 @@
-namespace Base.SystemsCorePackage.Tracking
+namespace Base.CorePackage.Tracking
 {
     /// <summary>
     /// Internal class to track an item along with its priority and insertion order.

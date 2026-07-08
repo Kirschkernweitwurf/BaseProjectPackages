@@ -2,7 +2,7 @@
   "name": "com.baseprojectpackages.controllersupport",
   "displayName": "Base Controller Support",
   "description": "A package that helps with adding support for controllers in the Base Project.",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "unity": "6000.3",
   "author": {
     "name": "Jonathan Alber"

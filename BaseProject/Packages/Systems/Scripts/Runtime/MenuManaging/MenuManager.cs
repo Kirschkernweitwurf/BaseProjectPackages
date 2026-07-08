@@ -1,14 +1,14 @@
 using System.Linq;
+using Base.CorePackage.Input;
+using Base.CorePackage.MenuManaging.Identifier;
+using Base.CorePackage.Services;
+using Base.CorePackage.Services.Shutdown;
+using Base.CorePackage.Tracking;
+using Base.UtilityPackage.Logging;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using Base.UtilityPackage.Logging;
-using Base.SystemsCorePackage.Input;
-using Base.SystemsCorePackage.MenuManaging.Identifier;
-using Base.SystemsCorePackage.Services;
-using Base.SystemsCorePackage.Tracking;
-using Base.SystemsCorePackage.Services.Shutdown;
 
-namespace Base.SystemsCorePackage.MenuManaging
+namespace Base.CorePackage.MenuManaging
 {
     /// <summary>
     /// Manages the registration, opening, and closing of menus in the game.
@@ -17,8 +17,9 @@ namespace Base.SystemsCorePackage.MenuManaging
     public class MenuManager : GameServiceBehaviour, IShutdownHandler
     {
         [Header("Back Action Settings")]
-        [Tooltip("The menu to open when the back action is performed and no other menu is currently listening" +
-                 " (e.g. the Pause menu). Leave empty to disable this fallback.")]
+
+        [Tooltip("The menu to open when the back action is performed and no other menu is currently listening"
+            + " (e.g. the Pause menu). Leave empty to disable this fallback.")]
         [SerializeField] private MenuIdentifier defaultBackMenu;
 
         public bool HasShutDown { get; private set; }
@@ -31,6 +32,7 @@ namespace Base.SystemsCorePackage.MenuManaging
         /// </summary>
         private Menu _highestPriorityBackMenu;
 
+#region Unity Callbacks
         protected override void Awake()
         {
             base.Awake();
@@ -50,6 +52,7 @@ namespace Base.SystemsCorePackage.MenuManaging
             if (!HasShutDown)
                 Shutdown();
         }
+#endregion
 
         public void Shutdown()
         {
@@ -112,9 +115,7 @@ namespace Base.SystemsCorePackage.MenuManaging
         /// <param name="priority">The priority of the menu. Higher values indicate higher priority.</param>
         /// <param name="caller">The object registering the menu, used for tracking purposes.</param>
         public void RegisterOpenMenu(Menu item, uint priority, object caller)
-        {
-            _menuPriorityTracker.Add(item, priority, caller);
-        }
+            => _menuPriorityTracker.Add(item, priority, caller);
 
         /// <summary>
         /// Deregisters a menu from being tracked for opening.
@@ -127,12 +128,16 @@ namespace Base.SystemsCorePackage.MenuManaging
         /// Optionally closes all other menus before opening the specified one.
         /// </summary>
         /// <param name="identifier">The identifier of the menu to open.</param>
-        /// <param name = "parentMenuIdentifier">The identifier of the parent menu, if any.
+        /// <param name="parentMenuIdentifier">
+        /// The identifier of the parent menu, if any.
         /// This is used for hierarchical menu structures. So, e.g. if a settings menu is opened
         /// from the pause menu, the pause menu can be set as the parent and the settings menu
-        /// is closed when the pause menu is.</param>
-        /// <param name="closeOthers">If set to <c>true</c>, closes all
-        /// other menus before opening the specified one.</param>
+        /// is closed when the pause menu is.
+        /// </param>
+        /// <param name="closeOthers">
+        /// If set to <c>true</c>, closes all
+        /// other menus before opening the specified one.
+        /// </param>
         public void OpenMenu(MenuIdentifier identifier, MenuIdentifier parentMenuIdentifier = null,
             bool closeOthers = false)
         {
@@ -155,7 +160,7 @@ namespace Base.SystemsCorePackage.MenuManaging
         /// Closes the menu associated with the given identifier if it is currently open.
         /// </summary>
         /// <param name="identifier">The identifier of the menu to close.</param>
-        /// <param name = "closingMenuIdentifier">The identifier of the menu that is closing this menu, if any.</param>
+        /// <param name="closingMenuIdentifier">The identifier of the menu that is closing this menu, if any.</param>
         public void CloseMenu(MenuIdentifier identifier, MenuIdentifier closingMenuIdentifier = null)
         {
             if (identifier == null)
@@ -249,7 +254,8 @@ namespace Base.SystemsCorePackage.MenuManaging
             _highestPriorityBackMenu = _menuPriorityTracker.TrackedItems
                 .OrderByDescending(x => x.Priority)
                 .ThenByDescending(x => x.Order)
-                .FirstOrDefault(x => x.Item.ListenToOnBackAction)?.Item;
+                .FirstOrDefault(x => x.Item.ListenToOnBackAction)
+                ?.Item;
         }
 
         /// <summary>

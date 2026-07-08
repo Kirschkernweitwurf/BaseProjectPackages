@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
-using UnityEngine;
 using Base.UtilityPackage.Logging;
+using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Base.SystemsCorePackage.ObjectPooling
+namespace Base.CorePackage.ObjectPooling
 {
     /// <summary>
     /// A lightweight, high-performance object pool based on <see cref="HashSet{T}"/>.
@@ -68,6 +68,7 @@ namespace Base.SystemsCorePackage.ObjectPooling
         /// </summary>
         /// <param name="element">The retrieved object, or null if instantiation failed.</param>
         /// <returns><c>true</c> if an object was successfully retrieved; otherwise, <c>false</c>.</returns>
+
         // ReSharper disable once MemberCanBePrivate.Global
         public bool TryGet(out T element)
         {
@@ -100,7 +101,9 @@ namespace Base.SystemsCorePackage.ObjectPooling
         /// a new instance is created by instantiating the prefab.
         /// </summary>
         /// <returns>The retrieved object.</returns>
-        public T Get() => TryGet(out T element) ? element : null;
+        public T Get() => TryGet(out T element)
+            ? element
+            : null;
 
         /// <summary>
         /// Releases an object back to the pool. The object is reset using the provided reset action, if any.

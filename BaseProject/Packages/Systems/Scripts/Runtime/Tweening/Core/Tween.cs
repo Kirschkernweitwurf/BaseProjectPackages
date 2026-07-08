@@ -1,10 +1,10 @@
 using System;
-using Base.SystemsCorePackage.Services;
-using UnityEngine;
+using Base.CorePackage.Services;
 using Base.UtilityPackage.Logging;
+using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Base.SystemsCorePackage.Tweening.Core
+namespace Base.CorePackage.Tweening.Core
 {
     /// <summary>
     /// Generic tween that interpolates from a captured start value to a target value over time.
@@ -14,6 +14,10 @@ namespace Base.SystemsCorePackage.Tweening.Core
     /// <typeparam name="T">The value type being tweened.</typeparam>
     public sealed class Tween<T> : TweenBase
     {
+        public override bool IsRunning => _isRunning;
+
+        public override bool IsCompleted => _isCompleted;
+
         /// <summary>
         /// Optional initial value used if <see cref="_fromGetter"/> is not supplied.
         /// This value is not applied until the tween actually starts after any delay.
@@ -69,10 +73,6 @@ namespace Base.SystemsCorePackage.Tweening.Core
         private bool _hasStarted;
         private T _capturedFromValue;
 
-        public override bool IsRunning => _isRunning;
-
-        public override bool IsCompleted => _isCompleted;
-
         /// <summary>
         /// Creates a tween with the specified configuration.
         /// All delegates must be non-null.
@@ -105,7 +105,10 @@ namespace Base.SystemsCorePackage.Tweening.Core
             _isCompleted = false;
             _hasStarted = false;
 
-            _capturedFromValue = _fromGetter != null ? _fromGetter() : _from;
+            _capturedFromValue = _fromGetter != null
+                ? _fromGetter()
+                : _from;
+
             _setter(_capturedFromValue);
 
             if (ServiceLocator.TryGet(out TweenRunner runner))

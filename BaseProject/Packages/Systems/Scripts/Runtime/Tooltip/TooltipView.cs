@@ -1,11 +1,11 @@
 using System;
 using System.Collections;
-using Base.SystemsCorePackage.Services;
+using Base.CorePackage.Services;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Base.SystemsCorePackage.Tooltip
+namespace Base.CorePackage.Tooltip
 {
     /// <summary>
     /// Manages the visual representation of tooltips on the screen.
@@ -14,12 +14,12 @@ namespace Base.SystemsCorePackage.Tooltip
     [DisallowMultipleComponent]
     public class TooltipView : MonoBehaviour
     {
-        private static readonly Vector2 TopLeftPivot = new(0f, 1f);
-
         private const int BottomLeftCorner = 0;
         private const int TopRightCorner = 2;
+        private static readonly Vector2 TopLeftPivot = new(0f, 1f);
 
         [Header("Settings")]
+
         [Tooltip("Distance in pixels between the cursor and the tooltip.")]
         [SerializeField] private Vector2 screenOffset = new(15f, 15f);
 
@@ -41,12 +41,14 @@ namespace Base.SystemsCorePackage.Tooltip
         private Coroutine _followRoutine;
         private Func<Vector2> _getScreenPosition;
 
+#region Unity Callbacks
         private void Start()
         {
             canvas = GetComponentInParent<Canvas>();
             ServiceLocator.Get<TooltipService>()?.SetView(this);
             Hide();
         }
+#endregion
 
         /// <summary>
         /// Shows the tooltip with the specified data.
@@ -124,17 +126,21 @@ namespace Base.SystemsCorePackage.Tooltip
             float left = mouse.x + offsetX;
             if (left + width > Screen.width - edgeMargin)
                 left = mouse.x - offsetX - width;
+
             float maxLeft = Mathf.Max(edgeMargin, Screen.width - edgeMargin - width);
             left = Mathf.Clamp(left, edgeMargin, maxLeft);
 
             float top = mouse.y - offsetY;
             if (top - height < edgeMargin)
                 top = mouse.y + offsetY + height;
+
             float maxTop = Mathf.Max(edgeMargin + height, Screen.height - edgeMargin);
             top = Mathf.Clamp(top, edgeMargin + height, maxTop);
 
             Vector2 pivotScreen = new(left, top);
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, pivotScreen, cam, out Vector2 localPoint);
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, pivotScreen, cam,
+                out Vector2 localPoint);
+
             tooltipRect.localPosition = localPoint;
         }
     }

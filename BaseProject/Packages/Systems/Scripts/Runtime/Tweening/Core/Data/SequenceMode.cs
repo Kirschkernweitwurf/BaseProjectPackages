@@ -1,4 +1,4 @@
-namespace Base.SystemsCorePackage.Tweening.Core.Data
+namespace Base.CorePackage.Tweening.Core.Data
 {
     /// <summary>
     /// Defines how the sequence should execute.

@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Base.SystemsCorePackage.Tweening.Core
+namespace Base.CorePackage.Tweening.Core
 {
     /// <summary>
     /// Non-generic base class that exposes behavior-level control for grouping/sequencing.

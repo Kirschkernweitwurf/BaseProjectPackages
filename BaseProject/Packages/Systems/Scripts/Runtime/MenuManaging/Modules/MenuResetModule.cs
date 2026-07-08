@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Base.SystemsCorePackage.MenuManaging.Modules
+namespace Base.CorePackage.MenuManaging.Modules
 {
     /// <summary>
     /// Resets stateful children that implement <see cref="IMenuResettable"/> whenever the owning menu

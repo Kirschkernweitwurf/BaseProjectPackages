@@ -1,4 +1,4 @@
-namespace Base.SystemsCorePackage.EventBus
+namespace Base.CorePackage.EventBus
 {
     /// <summary>
     /// Marker interface for every payload dispatched through the <see cref="IEventBus"/>.

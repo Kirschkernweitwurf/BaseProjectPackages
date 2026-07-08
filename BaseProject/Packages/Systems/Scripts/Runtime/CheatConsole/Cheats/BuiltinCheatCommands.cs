@@ -1,6 +1,7 @@
 using System.Collections.Generic;
+using UnityEngine;
 
-namespace Base.SystemsCorePackage.CheatConsole.Cheats
+namespace Base.CorePackage.CheatConsole.Cheats
 {
     /// <summary>
     /// Contains built-in cheat commands such as help and clear.
@@ -12,14 +13,16 @@ namespace Base.SystemsCorePackage.CheatConsole.Cheats
 
         public static void Register(CheatConsoleModel model, CheatConsoleView view)
         {
-            model.RegisterBuiltinCommand("help", "Lists all available cheat commands.", () => Help(model, view));
-            model.RegisterBuiltinCommand("clear", "Clears the on-screen console log.", () => Clear(view));
+            model.RegisterBuiltinCommand("help", "Lists all available cheat commands.",
+                action: () => Help(model, view));
+
+            model.RegisterBuiltinCommand("clear", "Clears the on-screen console log.", action: () => Clear(view));
             model.RegisterBuiltinCommand("log_timescale", "Logs the current time scale.", LogTimescale);
         }
 
         private static string LogTimescale()
         {
-            float timeScale = UnityEngine.Time.timeScale;
+            float timeScale = Time.timeScale;
             return string.Format(TimescaleFormat, timeScale);
         }
 
@@ -39,11 +42,11 @@ namespace Base.SystemsCorePackage.CheatConsole.Cheats
                     : pair.Value.Attribute.Usage;
 
                 string desc = string.IsNullOrWhiteSpace(pair.Value.Attribute.Description)
-                    ? ""
+                    ? string.Empty
                     : pair.Value.Attribute.Description;
 
-                string usageColored  = $"<color=#9FFCFD>{usage}</color>";
-                string descColored  = $"<color=#CFCFCF>{desc}</color>";
+                string usageColored = $"<color=#9FFCFD>{usage}</color>";
+                string descColored = $"<color=#CFCFCF>{desc}</color>";
                 lines.Add($"• {usageColored}: {descColored}");
             }
 

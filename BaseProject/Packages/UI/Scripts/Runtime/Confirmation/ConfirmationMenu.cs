@@ -1,5 +1,5 @@
 using System;
-using Base.SystemsCorePackage.MenuManaging;
+using Base.CorePackage.MenuManaging;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -27,6 +27,7 @@ namespace Base.UIPackage.Confirmation
         private Action _onConfirm;
         private Action _onCancel;
 
+#region Unity Callbacks
         protected override void Awake()
         {
             base.Awake();
@@ -42,6 +43,7 @@ namespace Base.UIPackage.Confirmation
             confirmButton.onClick.RemoveAllListeners();
             cancelButton.onClick.RemoveAllListeners();
         }
+#endregion
 
         /// <summary>
         /// Displays the confirmation menu with the specified message and button texts.
@@ -55,8 +57,13 @@ namespace Base.UIPackage.Confirmation
         public void Show(string message, string confirmText, string cancelText, Action onConfirm, Action onCancel)
         {
             messageText.text = message;
-            confirmButtonText.text = string.IsNullOrEmpty(confirmText) ? defaultConfirmText : confirmText;
-            cancelButtonText.text = string.IsNullOrEmpty(cancelText) ? defaultCancelText : cancelText;
+            confirmButtonText.text = string.IsNullOrEmpty(confirmText)
+                ? defaultConfirmText
+                : confirmText;
+
+            cancelButtonText.text = string.IsNullOrEmpty(cancelText)
+                ? defaultCancelText
+                : cancelText;
 
             _onConfirm = onConfirm;
             _onCancel = onCancel;

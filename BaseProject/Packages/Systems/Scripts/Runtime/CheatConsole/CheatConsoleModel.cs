@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 using Base.UtilityPackage.Logging;
 
-namespace Base.SystemsCorePackage.CheatConsole
+namespace Base.CorePackage.CheatConsole
 {
     /// <summary>
     /// Model for the cheat console, responsible for command registration, parsing,
@@ -13,6 +13,11 @@ namespace Base.SystemsCorePackage.CheatConsole
     /// </summary>
     public sealed class CheatConsoleModel
     {
+        /// <summary>
+        /// Gets a read-only view of the registered commands.
+        /// </summary>
+        public IReadOnlyDictionary<string, CheatCommandInfo> Commands => _commands;
+
         private readonly List<string> _history;
         private readonly Dictionary<string, CheatCommandInfo> _commands;
 
@@ -37,11 +42,6 @@ namespace Base.SystemsCorePackage.CheatConsole
             foreach (CheatCommandInfo command in commands)
                 RegisterCommand(command);
         }
-
-        /// <summary>
-        /// Gets a read-only view of the registered commands.
-        /// </summary>
-        public IReadOnlyDictionary<string, CheatCommandInfo> Commands => _commands;
 
         /// <summary>
         /// Executes a raw input string as a cheat command.
@@ -79,8 +79,8 @@ namespace Base.SystemsCorePackage.CheatConsole
             catch (TargetParameterCountException exception)
             {
                 string usage = exception.Message;
-                string message = $"Command '{commandInfo.Attribute.Command}' called with incorrect number of " +
-                                 $"arguments. Try to use it like this:\n{usage}";
+                string message = $"Command '{commandInfo.Attribute.Command}' called with incorrect number of "
+                    + $"arguments. Try to use it like this:\n{usage}";
 
                 return new CheatConsoleResult(message, CheatConsoleMessageType.Warning);
             }
@@ -145,9 +145,7 @@ namespace Base.SystemsCorePackage.CheatConsole
             {
                 if (command.StartsWith(trimmed, StringComparison.OrdinalIgnoreCase)
                     && !string.Equals(command, trimmed, StringComparison.OrdinalIgnoreCase))
-                {
                     results.Add(command);
-                }
             }
 
             results.Sort(StringComparer.OrdinalIgnoreCase);
@@ -158,7 +156,7 @@ namespace Base.SystemsCorePackage.CheatConsole
         /// Registers a built-in command with the specified name and action.
         /// </summary>
         /// <param name="name">The name of the command.</param>
-        /// <param name = "description">The description of the command.</param>
+        /// <param name="description">The description of the command.</param>
         /// <param name="action">The action to execute for the command.</param>
         public void RegisterBuiltinCommand(string name, string description, Func<string> action)
         {
@@ -200,8 +198,9 @@ namespace Base.SystemsCorePackage.CheatConsole
 
             if (parameters.Length != arguments.Length)
             {
-                string usage = commandInfo.Attribute.Usage ?? $"Usage: {commandInfo.Attribute.Command}" +
-                    $"({string.Join(", ", parameters.Select(p => p.Name))})";
+                string usage = commandInfo.Attribute.Usage
+                    ?? $"Usage: {commandInfo.Attribute.Command}"
+                    + $"({string.Join(", ", parameters.Select(p => p.Name))})";
 
                 throw new TargetParameterCountException(usage);
             }
@@ -251,7 +250,9 @@ namespace Base.SystemsCorePackage.CheatConsole
                 char c = input[i];
 
                 if (c == '"')
+                {
                     inQuotes = !inQuotes;
+                }
                 else if (char.IsWhiteSpace(c) && !inQuotes)
                 {
                     if (i > startIndex)

@@ -1,11 +1,11 @@
-using Base.SystemsCorePackage.Services;
-using Base.SystemsCorePackage.Tracking;
+using Base.CorePackage.Services;
+using Base.CorePackage.Tracking;
 using Base.UtilityPackage.Logging;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
-namespace Base.SystemsCorePackage.Tooltip
+namespace Base.CorePackage.Tooltip
 {
     /// <summary>
     /// The purpose of this class is to show a tooltip when hovering a GameObject with this component.
@@ -22,6 +22,7 @@ namespace Base.SystemsCorePackage.Tooltip
 
         private TooltipService _service;
 
+#region Unity Callbacks
         private void Awake() => ServiceLocator.TryGet(out _service);
 
         private void OnDisable()
@@ -32,6 +33,7 @@ namespace Base.SystemsCorePackage.Tooltip
             if (_service.HasTooltipFromCaller(this))
                 _service.RemoveTooltip(this);
         }
+#endregion
 
         public void OnPointerEnter(PointerEventData eventData)
         {
@@ -40,8 +42,9 @@ namespace Base.SystemsCorePackage.Tooltip
 
             if (string.IsNullOrEmpty(tooltipText))
             {
-                CustomLogger.LogWarning($"{nameof(TooltipTrigger)} on GameObject '{gameObject.name}' " +
-                                        "has empty tooltip text.", this);
+                CustomLogger.LogWarning(
+                    $"{nameof(TooltipTrigger)} on GameObject '{gameObject.name}' " + "has empty tooltip text.", this);
+
                 return;
             }
 
@@ -51,7 +54,7 @@ namespace Base.SystemsCorePackage.Tooltip
                 return;
             }
 
-            TooltipData data = new(tooltipText, () => Mouse.current.position.ReadValue());
+            TooltipData data = new(tooltipText, getScreenPosition: () => Mouse.current.position.ReadValue());
 
             _service.AddTooltip(data, (uint)priority, this);
         }
@@ -87,7 +90,7 @@ namespace Base.SystemsCorePackage.Tooltip
 
             _service.RemoveTooltip(this);
 
-            TooltipData data = new(tooltipText, () => Mouse.current.position.ReadValue());
+            TooltipData data = new(tooltipText, getScreenPosition: () => Mouse.current.position.ReadValue());
             _service.AddTooltip(data, (uint)priority, this);
         }
     }

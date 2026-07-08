@@ -1,4 +1,4 @@
-namespace Base.SystemsCorePackage.Tweening.Core
+namespace Base.CorePackage.Tweening.Core
 {
     /// <summary>
     /// Interface for tween-like objects.

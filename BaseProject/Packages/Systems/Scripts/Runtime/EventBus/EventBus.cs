@@ -1,14 +1,14 @@
 using System;
 using System.Collections.Generic;
-using Base.SystemsCorePackage.Services;
+using Base.CorePackage.Services;
 using UnityEngine;
 
-namespace Base.SystemsCorePackage.EventBus
+namespace Base.CorePackage.EventBus
 {
     /// <summary>
     /// Default <see cref="IEventBus"/> implementation backed by multicast delegates.
     /// </summary>
-    public sealed partial class EventBus : GameServiceBehaviour, IEventBus
+    public sealed class EventBus : GameServiceBehaviour, IEventBus
     {
         private readonly Dictionary<Type, Delegate> _handlers = new();
 

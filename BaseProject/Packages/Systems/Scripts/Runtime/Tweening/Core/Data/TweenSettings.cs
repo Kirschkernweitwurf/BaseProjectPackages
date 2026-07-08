@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Base.SystemsCorePackage.Tweening.Core.Data
+namespace Base.CorePackage.Tweening.Core.Data
 {
     /// <summary>
     /// Settings for individual tweens.

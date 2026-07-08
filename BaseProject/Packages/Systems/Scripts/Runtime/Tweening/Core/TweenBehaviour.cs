@@ -1,9 +1,9 @@
 using System;
-using Base.SystemsCorePackage.Services.Shutdown;
-using Base.SystemsCorePackage.Tweening.Core.Data;
+using Base.CorePackage.Services.Shutdown;
+using Base.CorePackage.Tweening.Core.Data;
 using UnityEngine;
 
-namespace Base.SystemsCorePackage.Tweening.Core
+namespace Base.CorePackage.Tweening.Core
 {
     /// <summary>
     /// Generic base class providing tween lifecycle control, looping behavior, and default-value caching.
@@ -21,18 +21,19 @@ namespace Base.SystemsCorePackage.Tweening.Core
 
         [Tooltip("The settings for looping the tween, if needed.")]
         [SerializeField] private LoopSettings loopSettings;
-        [Space]
-
-        protected T DefaultValue;
 
         public bool HasShutDown { get; private set; }
 
         public override TweenBase ActiveTween => _activeTween;
 
+        [Space]
+        protected T DefaultValue;
+
         private TweenBase _activeTween;
         private int _currentLoop;
         private bool _currentReversed;
 
+#region Unity Callbacks
         protected virtual void Awake() => DefaultValue = GetCurrentValue();
 
         protected virtual void Start() => ShutdownManager.Register(this);
@@ -42,6 +43,7 @@ namespace Base.SystemsCorePackage.Tweening.Core
             if (!HasShutDown)
                 Shutdown();
         }
+#endregion
 
         public void Shutdown()
         {

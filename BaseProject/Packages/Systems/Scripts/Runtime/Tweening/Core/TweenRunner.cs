@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
-using Base.SystemsCorePackage.Services;
+using Base.CorePackage.Services;
 using UnityEngine;
+
 // ReSharper disable ForCanBeConvertedToForeach
 
-namespace Base.SystemsCorePackage.Tweening.Core
+namespace Base.CorePackage.Tweening.Core
 {
     /// <summary>
     /// Central update service that manages and advances all active tweens.
@@ -28,6 +29,7 @@ namespace Base.SystemsCorePackage.Tweening.Core
         public static event Action<ITween> OnTweenDeregistered;
 
         [Header("Delta Time Spike Handling")]
+
         [Tooltip("Max unscaled dt step used for tween progression. Prevents hitch/breakpoint fast-forward.")]
         [SerializeField] private float maxUnscaledDeltaTime = 0.05f;
 
@@ -41,6 +43,7 @@ namespace Base.SystemsCorePackage.Tweening.Core
         private bool _skipNextUpdate;
         private bool _isUpdating;
 
+#region Unity Callbacks
         private void Update()
         {
             if (_skipNextUpdate)
@@ -58,15 +61,6 @@ namespace Base.SystemsCorePackage.Tweening.Core
             ProcessTweens(dt);
         }
 
-        private void OnApplicationFocus(bool hasFocus)
-        {
-            if (!hasFocus)
-                return;
-
-            if (skipFirstFrameAfterFocusOrPause)
-                _skipNextUpdate = true;
-        }
-
         private void OnApplicationPause(bool isPaused)
         {
             if (isPaused)
@@ -76,51 +70,15 @@ namespace Base.SystemsCorePackage.Tweening.Core
                 _skipNextUpdate = true;
         }
 
-        private void ProcessTweens(float deltaTime)
+        private void OnApplicationFocus(bool hasFocus)
         {
-            _isUpdating = true;
-
-            for (int i = 0; i < _tweens.Count; i++)
-            {
-                ITween tween = _tweens[i];
-
-                tween.Tick(deltaTime);
-                OnTweenUpdated?.Invoke(tween);
-
-                if (tween.IsCompleted && !_pendingRemovals.Contains(tween))
-                    _pendingRemovals.Add(tween);
-            }
-
-            _isUpdating = false;
-
-            // Apply removals.
-            if (_pendingRemovals.Count > 0)
-            {
-                for (int i = 0; i < _pendingRemovals.Count; i++)
-                {
-                    ITween tween = _pendingRemovals[i];
-                    if (_tweens.Remove(tween))
-                        OnTweenDeregistered?.Invoke(tween);
-                }
-                _pendingRemovals.Clear();
-            }
-
-            // Apply additions.
-            if (_pendingAdditions.Count == 0)
+            if (!hasFocus)
                 return;
 
-            for (int i = 0; i < _pendingAdditions.Count; i++)
-            {
-                ITween tween = _pendingAdditions[i];
-                if (tween == null || _tweens.Contains(tween) || _pendingRemovals.Contains(tween))
-                    continue;
-
-                _tweens.Add(tween);
-                OnTweenRegistered?.Invoke(tween);
-            }
-
-            _pendingAdditions.Clear();
+            if (skipFirstFrameAfterFocusOrPause)
+                _skipNextUpdate = true;
         }
+#endregion
 
         /// <summary>
         /// Registers a tween to be updated each frame.
@@ -157,11 +115,59 @@ namespace Base.SystemsCorePackage.Tweening.Core
             {
                 if (_tweens.Remove(tween))
                     OnTweenDeregistered?.Invoke(tween);
+
                 return;
             }
 
             if (_tweens.Contains(tween) && !_pendingRemovals.Contains(tween))
                 _pendingRemovals.Add(tween);
+        }
+
+        private void ProcessTweens(float deltaTime)
+        {
+            _isUpdating = true;
+
+            for (int i = 0; i < _tweens.Count; i++)
+            {
+                ITween tween = _tweens[i];
+
+                tween.Tick(deltaTime);
+                OnTweenUpdated?.Invoke(tween);
+
+                if (tween.IsCompleted && !_pendingRemovals.Contains(tween))
+                    _pendingRemovals.Add(tween);
+            }
+
+            _isUpdating = false;
+
+            // Apply removals.
+            if (_pendingRemovals.Count > 0)
+            {
+                for (int i = 0; i < _pendingRemovals.Count; i++)
+                {
+                    ITween tween = _pendingRemovals[i];
+                    if (_tweens.Remove(tween))
+                        OnTweenDeregistered?.Invoke(tween);
+                }
+
+                _pendingRemovals.Clear();
+            }
+
+            // Apply additions.
+            if (_pendingAdditions.Count == 0)
+                return;
+
+            for (int i = 0; i < _pendingAdditions.Count; i++)
+            {
+                ITween tween = _pendingAdditions[i];
+                if (tween == null || _tweens.Contains(tween) || _pendingRemovals.Contains(tween))
+                    continue;
+
+                _tweens.Add(tween);
+                OnTweenRegistered?.Invoke(tween);
+            }
+
+            _pendingAdditions.Clear();
         }
     }
 }

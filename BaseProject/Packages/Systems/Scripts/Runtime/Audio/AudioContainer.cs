@@ -1,7 +1,7 @@
 using Base.ToolPackage.Editor.Generated;
 using UnityEngine;
 
-namespace Base.SystemsCorePackage.Audio
+namespace Base.CorePackage.Audio
 {
     /// <summary>
     /// ScriptableObject container for audio clips and their properties.

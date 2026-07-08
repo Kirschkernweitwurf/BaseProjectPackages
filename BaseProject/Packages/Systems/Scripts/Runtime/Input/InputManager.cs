@@ -1,12 +1,12 @@
 using Base.AttributePackage;
-using Base.SystemsCorePackage.Services;
-using Base.SystemsCorePackage.Tracking;
+using Base.CorePackage.Services;
+using Base.CorePackage.Tracking;
 using Base.UtilityPackage.Logging;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
-namespace Base.SystemsCorePackage.Input
+namespace Base.CorePackage.Input
 {
     /// <summary>
     /// Scene-level manager of input action maps. Action maps can be registered with a priority and the manager will

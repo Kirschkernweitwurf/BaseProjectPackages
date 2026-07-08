@@ -1,13 +1,28 @@
 using System.Reflection;
 using Base.UtilityPackage.Logging;
 
-namespace Base.SystemsCorePackage.CheatConsole
+namespace Base.CorePackage.CheatConsole
 {
     /// <summary>
     /// Immutable data describing a cheat command and how to invoke it.
     /// </summary>
     public sealed class CheatCommandInfo
     {
+        /// <summary>
+        /// Gets the cheat command attribute metadata.
+        /// </summary>
+        public CheatCommandAttribute Attribute { get; }
+
+        /// <summary>
+        /// Gets the method that will be invoked when the command is executed.
+        /// </summary>
+        public MethodInfo Method { get; }
+
+        /// <summary>
+        /// Gets the target instance on which the method is invoked, or null if the method is static.
+        /// </summary>
+        public object Target { get; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="CheatCommandInfo"/> class.
         /// </summary>
@@ -34,20 +49,5 @@ namespace Base.SystemsCorePackage.CheatConsole
             Method = method;
             Target = target;
         }
-
-        /// <summary>
-        /// Gets the cheat command attribute metadata.
-        /// </summary>
-        public CheatCommandAttribute Attribute { get; }
-
-        /// <summary>
-        /// Gets the method that will be invoked when the command is executed.
-        /// </summary>
-        public MethodInfo Method { get; }
-
-        /// <summary>
-        /// Gets the target instance on which the method is invoked, or null if the method is static.
-        /// </summary>
-        public object Target { get; }
     }
 }

@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
+using Base.CorePackage.Services;
+using Base.CorePackage.Tracking;
 using Base.SaveSystemPackage.Unity.Composition;
-using Base.SystemsCorePackage.Services;
-using Base.SystemsCorePackage.Tracking;
 using Base.UtilityPackage.Identification;
 using UnityEngine;
 
@@ -16,24 +16,16 @@ namespace Base.SaveSystemPackage.Savable.Example
     /// </summary>
     public sealed class PlayerSaveHandler : MonoBehaviour, ISavable
     {
-        [Serializable]
-        private struct State
-        {
-            public int level;
-            public float health;
-            public Vector3 position;
-            public List<string> inventory;
-        }
+        private static readonly PersistentKey Key = new("player");
 
         public PersistentKey PersistentKey => Key;
 
         public EPriority Priority => EPriority.High;
 
-        private static readonly PersistentKey Key = new("player");
-
         private PlayerManager _player;
         private ISavableRegistry _registry;
 
+#region Unity Callbacks
         private void Start()
         {
             if (!ServiceLocator.TryGet(out SaveManager saveManager))
@@ -45,6 +37,7 @@ namespace Base.SaveSystemPackage.Savable.Example
         }
 
         private void OnDestroy() => _registry?.Deregister(this);
+#endregion
 
         public string Serialize()
         {
@@ -55,6 +48,7 @@ namespace Base.SaveSystemPackage.Savable.Example
                 position = _player.Position,
                 inventory = _player.Inventory
             };
+
             return JsonUtility.ToJson(state);
         }
 
@@ -68,6 +62,15 @@ namespace Base.SaveSystemPackage.Savable.Example
             _player.Health = state.health;
             _player.Position = state.position;
             _player.Inventory = state.inventory ?? new List<string>();
+        }
+
+        [Serializable]
+        private struct State
+        {
+            public int level;
+            public float health;
+            public Vector3 position;
+            public List<string> inventory;
         }
     }
 }

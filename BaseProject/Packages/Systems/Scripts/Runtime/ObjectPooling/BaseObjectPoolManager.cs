@@ -1,21 +1,22 @@
 using Base.UtilityPackage;
-using UnityEngine;
 using Base.UtilityPackage.Logging;
+using UnityEngine;
 
-namespace Base.SystemsCorePackage.ObjectPooling
+namespace Base.CorePackage.ObjectPooling
 {
     /// <summary>
     /// Base class for global object pool managers.
     /// Provides lifecycle control and easy access to pooled Unity objects.
     /// </summary>
     /// <typeparam name="TAsset">The Unity object type to pool.</typeparam>
-    /// <typeparam name = "TPool">The type of the pool manager.</typeparam>
+    /// <typeparam name="TPool">The type of the pool manager.</typeparam>
     [DefaultExecutionOrder(-1)]
     public abstract class BaseObjectPoolManager<TAsset, TPool> : CustomSingleton<TPool>
         where TAsset : Object
         where TPool : BaseObjectPoolManager<TAsset, TPool>
     {
         [Header("Pooling Settings")]
+
         [Tooltip("Prefab to instantiate when new objects are needed.")]
         [SerializeField] protected TAsset prefab;
 
@@ -27,6 +28,7 @@ namespace Base.SystemsCorePackage.ObjectPooling
 
         private HashSetObjectPool<TAsset> _pool;
 
+#region Unity Callbacks
         protected override void Awake()
         {
             base.Awake();
@@ -42,6 +44,7 @@ namespace Base.SystemsCorePackage.ObjectPooling
             if (prewarmCount > 0)
                 Prewarm(prewarmCount);
         }
+#endregion
 
         /// <summary>
         /// Gets an instance from the pool.
@@ -92,15 +95,12 @@ namespace Base.SystemsCorePackage.ObjectPooling
         /// </summary>
         /// <param name="obj">The Unity Object.</param>
         /// <returns>The Transform component or null.</returns>
-        private static Transform GetTransform(Object obj)
+        private static Transform GetTransform(Object obj) => obj switch
         {
-            return obj switch
-            {
-                GameObject go => go.transform,
-                Component comp => comp.transform,
-                _ => null
-            };
-        }
+            GameObject go => go.transform,
+            Component comp => comp.transform,
+            _ => null
+        };
 
         private void Prewarm(int count)
         {

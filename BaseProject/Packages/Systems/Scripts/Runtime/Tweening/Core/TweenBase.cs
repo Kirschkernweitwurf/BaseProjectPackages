@@ -1,6 +1,6 @@
 using System;
 
-namespace Base.SystemsCorePackage.Tweening.Core
+namespace Base.CorePackage.Tweening.Core
 {
     /// <summary>
     /// Base type for all tween instances. Provides lifecycle and completion events.
@@ -8,9 +8,9 @@ namespace Base.SystemsCorePackage.Tweening.Core
     /// <remarks>
     /// Event order:
     /// <list type="bullet">
-    ///   <item><description>Natural finish: <c>OnComplete</c> → <c>OnKill</c></description></item>
-    ///   <item><description><c>Stop(complete: true)</c>: snap to end, <c>OnComplete</c> → <c>OnKill</c></description></item>
-    ///   <item><description><c>Stop(complete: false)</c>: <c>OnKill</c> only</description></item>
+    /// <item><description>Natural finish: <c>OnComplete</c> → <c>OnKill</c></description></item>
+    /// <item><description><c>Stop(complete: true)</c>: snap to end, <c>OnComplete</c> → <c>OnKill</c></description></item>
+    /// <item><description><c>Stop(complete: false)</c>: <c>OnKill</c> only</description></item>
     /// </list>
     /// </remarks>
     public abstract class TweenBase : ITween

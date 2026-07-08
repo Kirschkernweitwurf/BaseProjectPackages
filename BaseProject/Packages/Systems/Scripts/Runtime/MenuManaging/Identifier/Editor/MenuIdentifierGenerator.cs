@@ -6,7 +6,7 @@ using Base.ToolPackage.Editor.Generated;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.SystemsCorePackage.MenuManaging.Identifier.Editor
+namespace Base.CorePackage.MenuManaging.Identifier.Editor
 {
     /// <summary>
     /// Editor utility that scans the project for all <see cref="MenuIdentifier"/> assets and generates

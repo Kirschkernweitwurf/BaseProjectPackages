@@ -1,8 +1,8 @@
-using Base.SystemsCorePackage.Tweening.Core;
-using Base.SystemsCorePackage.Tweening.Core.Data;
+using Base.CorePackage.Tweening.Core;
+using Base.CorePackage.Tweening.Core.Data;
 using UnityEngine;
 
-namespace Base.SystemsCorePackage.Tweening.Components.TransformTweens
+namespace Base.CorePackage.Tweening.Components.TransformTweens
 {
     /// <summary>
     /// Tweens the local scale of a Transform from the start scale (captured at <c>Awake</c>)

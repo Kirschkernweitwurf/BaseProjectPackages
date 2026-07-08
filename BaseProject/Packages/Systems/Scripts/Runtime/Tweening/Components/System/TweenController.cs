@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using Base.SystemsCorePackage.Services;
-using Base.SystemsCorePackage.Tweening.Core;
+using Base.CorePackage.Services;
+using Base.CorePackage.Tweening.Core;
 
-namespace Base.SystemsCorePackage.Tweening.Components.System
+namespace Base.CorePackage.Tweening.Components.System
 {
     /// <summary>
     /// Generic base controller that tracks active tweens per target.
@@ -25,17 +25,21 @@ namespace Base.SystemsCorePackage.Tweening.Components.System
             }
 
             foreach (TweenBase t in tweens)
+            {
                 if (t != null)
                     list.Add(t);
+            }
         }
 
         /// <summary>
         /// Kills all active tweens currently registered for the specified key.
         /// </summary>
         /// <param name="key">The key whose tweens should be killed.</param>
-        /// <param name="complete">If <c>true</c>, each tween snaps to its end value and fires
+        /// <param name="complete">
+        /// If <c>true</c>, each tween snaps to its end value and fires
         /// <c>OnComplete</c> before <c>OnKill</c>. Useful to resolve gameplay logic that depends
-        /// on these tweens finishing.</param>
+        /// on these tweens finishing.
+        /// </param>
         protected void KillTweens(T key, bool complete = false)
         {
             if (!_activeTweens.TryGetValue(key, out List<TweenBase> list))

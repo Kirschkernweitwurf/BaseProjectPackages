@@ -1,4 +1,4 @@
-using Base.SystemsCorePackage.Services;
+using Base.CorePackage.Services;
 using UnityEngine;
 
 namespace Base.SaveSystemPackage.Unity.Playtime
@@ -30,15 +30,17 @@ namespace Base.SaveSystemPackage.Unity.Playtime
 
         public PlaytimeTracker(double previousTotalSeconds = 0) => _accumulated = previousTotalSeconds;
 
+#region Unity Callbacks
         private void Awake() => ServiceLocator.Register<IPlaytimeProvider>(this);
-
-        private void OnDestroy() => ServiceLocator.Deregister<IPlaytimeProvider>();
 
         public void Start()
         {
             _sessionStart = Time.realtimeSinceStartup;
             _running = true;
         }
+
+        private void OnDestroy() => ServiceLocator.Deregister<IPlaytimeProvider>();
+#endregion
 
         /// <summary>
         /// Call when the game is paused or the player returns to a menu.

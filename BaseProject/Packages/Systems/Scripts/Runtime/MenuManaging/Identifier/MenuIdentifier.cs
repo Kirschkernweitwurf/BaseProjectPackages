@@ -1,7 +1,7 @@
 using Base.ToolPackage.Editor.Generated;
 using UnityEngine;
 
-namespace Base.SystemsCorePackage.MenuManaging.Identifier
+namespace Base.CorePackage.MenuManaging.Identifier
 {
     /// <summary>
     /// A ScriptableObject used to uniquely identify different types of menus in the game.

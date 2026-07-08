@@ -1,4 +1,4 @@
-using Base.SystemsCorePackage.Services;
+using Base.CorePackage.Services;
 using UnityEngine;
 
 namespace Base.SaveSystemPackage.Unity.Capture
@@ -11,8 +11,10 @@ namespace Base.SaveSystemPackage.Unity.Capture
         /// <summary>
         /// Capture a thumbnail. Must be awaited (it waits for end of frame).
         /// </summary>
-        /// <param name="maxWidth">Target width. The full screen is returned untouched
-        /// if it is already this small or smaller.</param>
+        /// <param name="maxWidth">
+        /// Target width. The full screen is returned untouched
+        /// if it is already this small or smaller.
+        /// </param>
         Awaitable<Texture2D> CaptureAsync(int maxWidth = 480);
     }
 }

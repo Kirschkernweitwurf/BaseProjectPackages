@@ -1,13 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
-using Base.SystemsCorePackage.Audio.Pool;
-using Base.SystemsCorePackage.Services;
-using UnityEngine;
+using Base.CorePackage.Audio.Pool;
+using Base.CorePackage.Services;
 using Base.UtilityPackage.Logging;
+using UnityEngine;
 using Random = UnityEngine.Random;
+
 // ReSharper disable MemberCanBePrivate.Global
 
-namespace Base.SystemsCorePackage.Audio
+namespace Base.CorePackage.Audio
 {
     /// <summary>
     /// Manages the playback of sound effects and music.
@@ -15,11 +16,13 @@ namespace Base.SystemsCorePackage.Audio
     public class AudioManager : GameServiceBehaviour
     {
         [Header("Settings")]
+
         [SerializeField] private float minimumDelay = 0.1f;
         [SerializeField] private float minPitchInclusive = 0.95f;
         [SerializeField] private float maxPitchInclusive = 1.05f;
 
         [Header("Dependencies")]
+
         [SerializeField] private AudioPoolManager audioPoolManager;
 
         private readonly ActiveSounds _activeSounds = new();
@@ -131,6 +134,7 @@ namespace Base.SystemsCorePackage.Audio
         public IEnumerator FadeOut(AudioSource source, float duration)
         {
             yield return AudioFader.To(source, 0f, duration);
+
             Release(source);
         }
 
@@ -150,6 +154,27 @@ namespace Base.SystemsCorePackage.Audio
 
             yield return AudioFader.To(source, targetVolume, duration);
         }
+
+        /// <summary>
+        /// Plays a source after a delay, if it still exists.
+        /// </summary>
+        private static IEnumerator PlayAfterDelay(AudioSource source, float delay)
+        {
+            yield return new WaitForSeconds(delay);
+
+            if (source != null)
+                source.Play();
+        }
+
+        /// <summary>
+        /// Selects a random clip from an array, or null if it is empty.
+        /// </summary>
+        private static AudioClip ChooseRandomClip(AudioClip[] clips) => clips is
+        {
+            Length: > 0
+        }
+            ? clips[Random.Range(0, clips.Length)]
+            : null;
 
         /// <summary>
         /// Releases the oldest sources until the container is below its play limit.
@@ -205,7 +230,10 @@ namespace Base.SystemsCorePackage.Audio
             out IReadOnlyList<AudioSource> sources)
         {
             sources = _activeSounds.GetSources(container);
-            if (sources is { Count: > 0 })
+            if (sources is
+                {
+                    Count: > 0
+                })
                 return true;
 
             CustomLogger.LogWarning($"Tried {action} {container.name} but it's not playing.", this);
@@ -213,29 +241,17 @@ namespace Base.SystemsCorePackage.Audio
         }
 
         /// <summary>
-        /// Plays a source after a delay, if it still exists.
-        /// </summary>
-        private static IEnumerator PlayAfterDelay(AudioSource source, float delay)
-        {
-            yield return new WaitForSeconds(delay);
-            if (source != null)
-                source.Play();
-        }
-
-        /// <summary>
         /// Releases a source back to the pool once its clip has finished playing.
         /// </summary>
         private IEnumerator ReleaseAfterPlayback(AudioSource source, AudioContainer container)
         {
-            float clipLength = source.clip != null ? source.clip.length : 0f;
+            float clipLength = source.clip != null
+                ? source.clip.length
+                : 0f;
+
             yield return new WaitForSeconds(clipLength + container.delay + minimumDelay);
+
             Release(source);
         }
-
-        /// <summary>
-        /// Selects a random clip from an array, or null if it is empty.
-        /// </summary>
-        private static AudioClip ChooseRandomClip(AudioClip[] clips) =>
-            clips is { Length: > 0 } ? clips[Random.Range(0, clips.Length)] : null;
     }
 }

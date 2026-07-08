@@ -1,12 +1,12 @@
 using System;
 using System.IO;
-using Base.SystemsCorePackage.Input;
-using Base.SystemsCorePackage.Services.Shutdown;
+using Base.CorePackage.Input;
+using Base.CorePackage.Services.Shutdown;
 using Base.UtilityPackage.Logging;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace Base.SystemsCorePackage.Services.Managers
+namespace Base.CorePackage.Services.Managers
 {
     /// <summary>
     /// Manages the creation and storage of screenshots on input.

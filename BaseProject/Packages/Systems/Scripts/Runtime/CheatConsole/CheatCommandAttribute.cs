@@ -1,6 +1,6 @@
 using System;
 
-namespace Base.SystemsCorePackage.CheatConsole
+namespace Base.CorePackage.CheatConsole
 {
     /// <summary>
     /// Marks a method as a cheat command that can be invoked via the cheat console.
@@ -8,14 +8,6 @@ namespace Base.SystemsCorePackage.CheatConsole
     [AttributeUsage(AttributeTargets.Method, Inherited = false)]
     public sealed class CheatCommandAttribute : Attribute
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="CheatCommandAttribute"/> class.
-        /// </summary>
-        /// <param name="command">
-        /// The command string used to trigger this cheat (e.g. "god", "give_gold").
-        /// </param>
-        public CheatCommandAttribute(string command) => Command = command;
-
         /// <summary>
         /// Gets the command string that will be typed into the console to execute this cheat.
         /// </summary>
@@ -30,5 +22,13 @@ namespace Base.SystemsCorePackage.CheatConsole
         /// Gets or sets the usage string showing how to call this command, including parameters.
         /// </summary>
         public string Usage { get; set; }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CheatCommandAttribute"/> class.
+        /// </summary>
+        /// <param name="command">
+        /// The command string used to trigger this cheat (e.g. "god", "give_gold").
+        /// </param>
+        public CheatCommandAttribute(string command) => Command = command;
     }
 }

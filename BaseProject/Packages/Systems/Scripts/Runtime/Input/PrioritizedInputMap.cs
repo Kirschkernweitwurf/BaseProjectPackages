@@ -1,7 +1,7 @@
-using Base.SystemsCorePackage.Tracking;
+using Base.CorePackage.Tracking;
 using UnityEngine.InputSystem;
 
-namespace Base.SystemsCorePackage.Input
+namespace Base.CorePackage.Input
 {
     /// <summary>
     /// Bundles an <see cref="InputActionMap"/> with its <see cref="EPriority"/>.

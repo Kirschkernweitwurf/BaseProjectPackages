@@ -1,8 +1,8 @@
-﻿using Base.SystemsCorePackage.Tweening.Core;
-using Base.SystemsCorePackage.Tweening.Core.Data;
+﻿using Base.CorePackage.Tweening.Core;
+using Base.CorePackage.Tweening.Core.Data;
 using UnityEngine;
 
-namespace Base.SystemsCorePackage.Tweening.Components.RendererTweens
+namespace Base.CorePackage.Tweening.Components.RendererTweens
 {
     /// <summary>
     /// Tweens the color of a SpriteRenderer from the current color (captured at <c>Awake</c>)

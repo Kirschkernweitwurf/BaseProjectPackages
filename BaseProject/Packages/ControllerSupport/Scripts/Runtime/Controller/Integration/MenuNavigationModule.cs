@@ -1,12 +1,12 @@
 using Base.ControllerSupport.Controller.Navigation;
-using Base.SystemsCorePackage.MenuManaging.Modules;
+using Base.CorePackage.MenuManaging.Modules;
 using Base.UtilityPackage.Logging;
 using UnityEngine;
 
 namespace Base.ControllerSupport.Controller.Integration
 {
     /// <summary>
-    /// Bridges a <see cref="Base.SystemsCorePackage.MenuManaging.Menu"/>'s lifecycle to a
+    /// Bridges a <see cref="Base.CorePackage.MenuManaging.Menu"/>'s lifecycle to a
     /// <see cref="NavigableGroup"/>. Activates the group when the menu opens and deactivates it when the
     /// menu closes. This is the single deliberate seam between the menu layer and the controller
     /// package, so navigation stays menu agnostic everywhere else. It depends on both layers, so it

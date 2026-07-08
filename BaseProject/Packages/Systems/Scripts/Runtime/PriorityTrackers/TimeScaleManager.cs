@@ -1,9 +1,9 @@
-using Base.SystemsCorePackage.Services;
-using Base.SystemsCorePackage.Tracking;
+using Base.CorePackage.Services;
+using Base.CorePackage.Tracking;
 using Base.UtilityPackage.Logging;
 using UnityEngine;
 
-namespace Base.SystemsCorePackage.PriorityTrackers
+namespace Base.CorePackage.PriorityTrackers
 {
     /// <summary>
     /// Class to control the game's timescale based on priority requests.
@@ -18,6 +18,7 @@ namespace Base.SystemsCorePackage.PriorityTrackers
 
         public readonly PriorityTracker<float> TimeScaleTracker = new();
 
+#region Unity Callbacks
         protected override void Awake()
         {
             base.Awake();
@@ -31,14 +32,17 @@ namespace Base.SystemsCorePackage.PriorityTrackers
 
             if (TimeScaleTracker == null)
             {
-                CustomLogger.LogWarning($"{nameof(TimeScaleTracker)} is null during OnDestroy. This likely means" +
-                                        " it was not initialized properly or has already been destroyed." +
-                                        " Skipping event unsubscription to avoid potential errors.", this);
+                CustomLogger.LogWarning(
+                    $"{nameof(TimeScaleTracker)} is null during OnDestroy. This likely means"
+                    + " it was not initialized properly or has already been destroyed."
+                    + " Skipping event unsubscription to avoid potential errors.", this);
+
                 return;
             }
 
             TimeScaleTracker.OnCurrentActiveItemChanged -= OnCurrentActiveItemChanged;
         }
+#endregion
 
         private static void OnCurrentActiveItemChanged(TrackedItem<float> trackedItem)
         {

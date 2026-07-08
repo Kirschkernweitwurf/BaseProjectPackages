@@ -1,8 +1,8 @@
-using Base.SystemsCorePackage.PriorityTrackers;
-using Base.SystemsCorePackage.Services;
+using Base.CorePackage.PriorityTrackers;
+using Base.CorePackage.Services;
 using UnityEngine;
 
-namespace Base.SystemsCorePackage.MenuManaging.Modules
+namespace Base.CorePackage.MenuManaging.Modules
 {
     /// <summary>
     /// Applies custom cursor settings while the owning menu is open, scoped by the menu's priority.

@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Base.SystemsCorePackage.ObjectPooling;
+using Base.CorePackage.ObjectPooling;
 using Base.UtilityPackage;
 using TMPro;
 using UnityEngine;
@@ -14,6 +14,7 @@ namespace Base.SettingsPackage.GUI
     public abstract class MultipleChoiceElement : SettingElement
     {
         [Header("Multiple Choice")]
+
         [SerializeField] private Button leftButton;
         [SerializeField] private Button rightButton;
         [SerializeField] private TMP_Text valueText;
@@ -30,11 +31,10 @@ namespace Base.SettingsPackage.GUI
 
         private HashSetObjectPool<SelectionIndicatorButton> _indicatorPool;
 
-        private void Awake()
-        {
-            _indicatorPool = new HashSetObjectPool<SelectionIndicatorButton>(selectionIndicatorPrefab,
-                selectionIndicatorParent, CleanupIndicator);
-        }
+#region Unity Callbacks
+        private void Awake() => _indicatorPool = new HashSetObjectPool<SelectionIndicatorButton>(
+            selectionIndicatorPrefab,
+            selectionIndicatorParent, CleanupIndicator);
 
         protected override void OnEnable()
         {
@@ -53,6 +53,7 @@ namespace Base.SettingsPackage.GUI
             leftButton.onClick.RemoveListener(SelectPrevious);
             rightButton.onClick.RemoveListener(SelectNext);
         }
+#endregion
 
         /// <summary>Pushes the current index into the bound setting.</summary>
         protected abstract void ApplySelection();
@@ -67,7 +68,7 @@ namespace Base.SettingsPackage.GUI
             {
                 int index = i;
                 SelectionIndicatorButton indicator = _indicatorPool.Get();
-                indicator.Initialize(index == CurrentIndex, () => Select(index));
+                indicator.Initialize(index == CurrentIndex, onClick: () => Select(index));
                 _indicators.Add(indicator);
             }
         }
@@ -86,6 +87,8 @@ namespace Base.SettingsPackage.GUI
                 valueText.text = options[CurrentIndex];
         }
 
+        private static void CleanupIndicator(SelectionIndicatorButton indicator) => indicator.Cleanup();
+
         private void Select(int index)
         {
             if (options.Count == 0)
@@ -100,7 +103,5 @@ namespace Base.SettingsPackage.GUI
         private void SelectPrevious() => Select(CurrentIndex - 1);
 
         private void SelectNext() => Select(CurrentIndex + 1);
-
-        private static void CleanupIndicator(SelectionIndicatorButton indicator) => indicator.Cleanup();
     }
 }

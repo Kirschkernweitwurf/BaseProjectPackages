@@ -1,7 +1,7 @@
 using System;
 using System.IO;
-using Base.SystemsCorePackage.SceneManagement;
-using Base.SystemsCorePackage.Timers;
+using Base.CorePackage.SceneManagement;
+using Base.CorePackage.Timers;
 using Base.UtilityPackage.Logging;
 using UnityEngine;
 using UnityMemoryProfiler = Unity.Profiling.Memory.MemoryProfiler;

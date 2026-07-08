@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.LowLevel;
 using UnityEngine.PlayerLoop;
 
-namespace Base.SystemsCorePackage.Timers
+namespace Base.CorePackage.Timers
 {
     /// <summary>
     /// Updates every active <see cref="Timer"/> each frame through the Player Loop,

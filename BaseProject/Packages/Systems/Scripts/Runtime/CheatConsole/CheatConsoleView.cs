@@ -1,13 +1,13 @@
 using System.Collections.Generic;
 using System.Linq;
-using Base.SystemsCorePackage.MenuManaging;
-using Base.SystemsCorePackage.ObjectPooling;
+using Base.CorePackage.MenuManaging;
+using Base.CorePackage.ObjectPooling;
+using Base.UtilityPackage.Logging;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using Base.UtilityPackage.Logging;
 
-namespace Base.SystemsCorePackage.CheatConsole
+namespace Base.CorePackage.CheatConsole
 {
     /// <summary>
     /// Unity view implementation for the cheat console.
@@ -16,18 +16,22 @@ namespace Base.SystemsCorePackage.CheatConsole
     {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         [field: Header("Input")]
+
         [field: SerializeField] public TMP_InputField InputField { get; private set; }
 
         [Header("Log")]
+
         [SerializeField] private TMP_Text logText;
         [SerializeField] private ScrollRect scrollRect;
 
         [Header("Suggestions")]
+
         [SerializeField] private TMP_Text suggestionPrefab;
         [SerializeField] private Transform suggestionParent;
         [SerializeField] private int maxSuggestions = 5;
 
         [Header("Colors")]
+
         [SerializeField] private Color infoColor = Color.white;
         [SerializeField] private Color warningColor = new(1f, 0.6f, 0.2f);
         [SerializeField] private Color errorColor = Color.red;
@@ -132,16 +136,13 @@ namespace Base.SystemsCorePackage.CheatConsole
             SetInputText(string.Empty);
         }
 
-        private static string GetPrefix(CheatConsoleMessageType type)
+        private static string GetPrefix(CheatConsoleMessageType type) => type switch
         {
-            return type switch
-            {
-                CheatConsoleMessageType.Error => "[Error] ",
-                CheatConsoleMessageType.Warning => "[Warning] ",
-                CheatConsoleMessageType.Command => "> ",
-                _ => string.Empty
-            };
-        }
+            CheatConsoleMessageType.Error => "[Error] ",
+            CheatConsoleMessageType.Warning => "[Warning] ",
+            CheatConsoleMessageType.Command => "> ",
+            _ => string.Empty
+        };
 
         private void ResetSuggestion(TMP_Text text)
         {
@@ -156,16 +157,13 @@ namespace Base.SystemsCorePackage.CheatConsole
             text.transform.SetParent(suggestionParent, false);
         }
 
-        private Color GetColor(CheatConsoleMessageType type)
+        private Color GetColor(CheatConsoleMessageType type) => type switch
         {
-            return type switch
-            {
-                CheatConsoleMessageType.Error => errorColor,
-                CheatConsoleMessageType.Warning => warningColor,
-                CheatConsoleMessageType.Command => commandColor,
-                _ => infoColor
-            };
-        }
+            CheatConsoleMessageType.Error => errorColor,
+            CheatConsoleMessageType.Warning => warningColor,
+            CheatConsoleMessageType.Command => commandColor,
+            _ => infoColor
+        };
 #endif
     }
 }
