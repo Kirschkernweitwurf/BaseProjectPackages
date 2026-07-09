@@ -7,5 +7,5 @@ namespace Base.AttributePackage.References
     /// Auto-assigns the field with a component of the field type on the same GameObject when empty.
     /// </summary>
     [AttributeUsage(AttributeTargets.Field)]
-    public sealed class FindComponentAttribute : PropertyAttribute { }
+    public sealed class GetComponentAttribute : PropertyAttribute { }
 }

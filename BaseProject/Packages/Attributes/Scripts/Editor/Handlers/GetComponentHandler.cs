@@ -7,14 +7,14 @@ using UnityEngine;
 
 namespace Base.AttributePackage.Editor.Handlers
 {
-    /// <summary>Auto-assigns a <see cref="FindComponentAttribute"/> field from the same GameObject.</summary>
-    public sealed class FindComponentHandler : IAfterFieldHandler
+    /// <summary>Auto-assigns a <see cref="GetComponentAttribute"/> field from the same GameObject.</summary>
+    public sealed class GetComponentHandler : IAfterFieldHandler
     {
         public int Order => 5;
 
         public void AfterField(in MemberContext context)
         {
-            if (context.GetAttribute<FindComponentAttribute>() == null)
+            if (context.GetAttribute<GetComponentAttribute>() == null)
                 return;
 
             if (context.Property.propertyType != SerializedPropertyType.ObjectReference)
@@ -26,7 +26,7 @@ namespace Base.AttributePackage.Editor.Handlers
             if (context.Editor.serializedObject.isEditingMultipleObjects)
                 return;
 
-            if (!(context.Target is Component component))
+            if (context.Target is not Component component)
                 return;
 
             Type type = context.Field?.FieldType;

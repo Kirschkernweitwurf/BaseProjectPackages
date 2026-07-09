@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace Base.AttributePackage.Editor.Core
@@ -39,7 +40,7 @@ namespace Base.AttributePackage.Editor.Core
                 return null;
 
             const string marker = "/Resources/";
-            int index = normalized.LastIndexOf(marker, System.StringComparison.Ordinal);
+            int index = normalized.LastIndexOf(marker, StringComparison.Ordinal);
             if (index < 0)
                 return null;
 
