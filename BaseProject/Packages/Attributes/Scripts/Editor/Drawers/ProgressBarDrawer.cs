@@ -10,7 +10,8 @@ using Object = UnityEngine.Object;
 namespace Base.AttributePackage.Editor.Drawers
 {
     /// <summary>
-    /// Draws a numeric field as a read-only progress bar for <see cref="ProgressBarAttribute"/>.
+    /// Draws a numeric field as a progress bar for <see cref="ProgressBarAttribute"/>.
+    /// The bar is draggable unless the attribute is marked read-only.
     /// </summary>
     [CustomPropertyDrawer(typeof(ProgressBarAttribute))]
     public sealed class ProgressBarDrawer : PropertyDrawer
@@ -20,16 +21,7 @@ namespace Base.AttributePackage.Editor.Drawers
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            float value;
-            if (property.propertyType == SerializedPropertyType.Integer)
-            {
-                value = property.intValue;
-            }
-            else if (property.propertyType == SerializedPropertyType.Float)
-            {
-                value = property.floatValue;
-            }
-            else
+            if (!IsNumber(property))
             {
                 EditorGUI.LabelField(position, label.text, "Use [ProgressBar] with an int or float.");
                 return;
@@ -40,16 +32,21 @@ namespace Base.AttributePackage.Editor.Drawers
             if (max <= 0f)
                 max = 1f;
 
+            EditorGUI.BeginProperty(position, label, property);
+
+            Rect barRect = EditorGUI.PrefixLabel(position, label);
+
+            if (!bar.ReadOnly)
+                HandleInput(barRect, property, max);
+
+            float value = ReadValue(property);
             float fill = Mathf.Clamp01(value / max);
             Color color = bar.PresetColor == EColor.Default
                 ? DefaultColor
                 : bar.PresetColor.ToColor();
 
-            Rect barRect = EditorGUI.PrefixLabel(position, label);
-
             EditorGUI.DrawRect(barRect, new Color(0f, 0f, 0f, 0.25f));
-            Rect fillRect = new(barRect.x, barRect.y, barRect.width * fill, barRect.height);
-            EditorGUI.DrawRect(fillRect, color);
+            EditorGUI.DrawRect(new Rect(barRect.x, barRect.y, barRect.width * fill, barRect.height), color);
 
             if (_valueStyle == null)
             {
@@ -62,6 +59,36 @@ namespace Base.AttributePackage.Editor.Drawers
             }
 
             EditorGUI.LabelField(barRect, Format(value) + " / " + Format(max), _valueStyle);
+
+            EditorGUI.EndProperty();
+        }
+
+        private static void HandleInput(Rect rect, SerializedProperty property, float max)
+        {
+            Event current = Event.current;
+            int controlId = GUIUtility.GetControlID(FocusType.Passive);
+
+            bool grab = current.type == EventType.MouseDown
+                && current.button == 0
+                && rect.Contains(current.mousePosition);
+
+            bool dragging = GUIUtility.hotControl == controlId
+                && (current.type == EventType.MouseDrag || current.type == EventType.MouseMove);
+
+            if (grab || dragging)
+            {
+                GUIUtility.hotControl = controlId;
+
+                float normalized = Mathf.Clamp01((current.mousePosition.x - rect.xMin) / rect.width);
+                WriteValue(property, normalized * max, max);
+
+                GUI.changed = true;
+                current.Use();
+            }
+            else if (GUIUtility.hotControl == controlId && current.rawType == EventType.MouseUp)
+            {
+                GUIUtility.hotControl = 0;
+            }
         }
 
         private static float ResolveMax(SerializedProperty property, ProgressBarAttribute bar)
@@ -94,6 +121,24 @@ namespace Base.AttributePackage.Editor.Drawers
             return bar.Max > 0f
                 ? bar.Max
                 : 1f;
+        }
+
+        private static bool IsNumber(SerializedProperty property)
+            => property.propertyType == SerializedPropertyType.Integer
+                || property.propertyType == SerializedPropertyType.Float;
+
+        private static float ReadValue(SerializedProperty property)
+            => property.propertyType == SerializedPropertyType.Integer
+                ? property.intValue
+                : property.floatValue;
+
+        private static void WriteValue(SerializedProperty property, float value, float max)
+        {
+            value = Mathf.Clamp(value, 0f, max);
+            if (property.propertyType == SerializedPropertyType.Integer)
+                property.intValue = Mathf.RoundToInt(value);
+            else
+                property.floatValue = value;
         }
 
         private static string Format(float value) => Mathf.Approximately(value, Mathf.Round(value))
