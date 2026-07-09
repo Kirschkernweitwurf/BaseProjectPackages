@@ -4,10 +4,10 @@ using UnityEngine;
 namespace Base.AttributePackage.Editor
 {
     /// <summary>
-    /// Draws a folder path field with a browse button for <see cref="FolderPathAttribute"/>.
+    /// Draws a file path field with a browse button for <see cref="FilePathAttribute"/>.
     /// </summary>
-    [CustomPropertyDrawer(typeof(FolderPathAttribute))]
-    public sealed class FolderPathDrawer : PropertyDrawer
+    [CustomPropertyDrawer(typeof(FilePathAttribute))]
+    public sealed class FilePathDrawer : PropertyDrawer
     {
         private const float ButtonWidth = 28f;
         private const float Spacing = 2f;
@@ -16,7 +16,7 @@ namespace Base.AttributePackage.Editor
         {
             if (property.propertyType != SerializedPropertyType.String)
             {
-                EditorGUI.LabelField(position, label.text, "Use [FolderPath] with a string.");
+                EditorGUI.LabelField(position, label.text, "Use [FilePath] with a string.");
                 return;
             }
 
@@ -33,16 +33,17 @@ namespace Base.AttributePackage.Editor
             if (!browseClicked)
                 return;
 
-            FolderPathAttribute folder = (FolderPathAttribute)attribute;
+            FilePathAttribute file = (FilePathAttribute)attribute;
             SerializedObject serializedObject = property.serializedObject;
             string propertyPath = property.propertyPath;
-            bool absolute = folder.Absolute;
+            bool absolute = file.Absolute;
+            string extension = file.Extension;
 
-            // OpenFolderPanel clears Unity's internal property stack while open. Running it inside
+            // OpenFilePanel clears Unity's internal property stack while open. Running it inside
             // OnGUI corrupts the outer PropertyDrawer.OnGUISafe pop, so defer to delayCall.
             EditorApplication.delayCall += () =>
             {
-                string selected = EditorUtility.OpenFolderPanel("Select Folder", Application.dataPath, string.Empty);
+                string selected = EditorUtility.OpenFilePanel("Select File", Application.dataPath, extension);
                 if (string.IsNullOrEmpty(selected))
                     return;
 
