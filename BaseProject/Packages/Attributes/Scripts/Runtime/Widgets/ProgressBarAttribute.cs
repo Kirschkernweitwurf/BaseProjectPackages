@@ -5,7 +5,8 @@ using UnityEngine;
 namespace Base.AttributePackage.Widgets
 {
     /// <summary>
-    /// Draws a numeric field as a read-only progress bar. The maximum is a constant or a numeric member.
+    /// Draws a numeric field as a progress bar. The maximum is a constant or a numeric member.
+    /// The bar is draggable by default; pass readOnly to make it a pure display.
     /// </summary>
     [AttributeUsage(AttributeTargets.Field)]
     public sealed class ProgressBarAttribute : PropertyAttribute
@@ -19,18 +20,23 @@ namespace Base.AttributePackage.Widgets
         /// <summary>Optional preset fill color.</summary>
         public EColor PresetColor { get; }
 
-        /// <summary>Creates the attribute with a constant maximum and an optional color.</summary>
-        public ProgressBarAttribute(float max, EColor color = EColor.Default)
+        /// <summary>When true, the bar only displays the value and cannot be dragged.</summary>
+        public bool ReadOnly { get; }
+
+        /// <summary>Creates the attribute with a constant maximum, an optional color and read-only mode.</summary>
+        public ProgressBarAttribute(float max, EColor color = EColor.Default, bool readOnly = false)
         {
             Max = max;
             PresetColor = color;
+            ReadOnly = readOnly;
         }
 
-        /// <summary>Creates the attribute with a member-driven maximum and an optional color.</summary>
-        public ProgressBarAttribute(string maxMember, EColor color = EColor.Default)
+        /// <summary>Creates the attribute with a member-driven maximum, an optional color and read-only mode.</summary>
+        public ProgressBarAttribute(string maxMember, EColor color = EColor.Default, bool readOnly = false)
         {
             MaxMember = maxMember;
             PresetColor = color;
+            ReadOnly = readOnly;
         }
     }
 }
