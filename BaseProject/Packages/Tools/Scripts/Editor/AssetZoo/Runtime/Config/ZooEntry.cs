@@ -13,6 +13,6 @@ namespace Base.ToolPackage.Editor.AssetZoo.Runtime.Config
         [field: SerializeField] public GameObject Prefab { get; private set; }
 
         [field: Tooltip("Optional. If empty, the prefab name is used as the label.")]
-        [field: SerializeField] public string LabelOverride  { get; private set; }
+        [field: SerializeField] public string LabelOverride { get; private set; }
     }
 }

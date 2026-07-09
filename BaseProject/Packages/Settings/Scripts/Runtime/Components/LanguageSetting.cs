@@ -13,6 +13,7 @@ namespace Base.SettingsPackage.Components
     public sealed class LanguageSetting : IntSettingComponent
     {
         [Header("Language")]
+
         [Tooltip("Locales exposed to the player, in the order they appear in the menu.")]
         [SerializeField] private Locale[] availableLocales;
 
@@ -20,7 +21,8 @@ namespace Base.SettingsPackage.Components
 
         /// <summary>The locale currently selected by the player.</summary>
         public Locale CurrentLocale => availableLocales[Mathf.Clamp(TypedSetting?
-            .Value ?? defaultIndex, 0, availableLocales.Length - 1)];
+                .Value
+            ?? defaultIndex, 0, availableLocales.Length - 1)];
 
         /// <inheritdoc/>
         public override PersistentKey Key => new("Language");

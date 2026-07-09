@@ -11,18 +11,21 @@ namespace Base.UIPackage.Utility
     public class Billboard : MonoBehaviour
     {
         [Header("Settings")]
-        [Tooltip("Locks the billboard to rotate only around the Y axis, keeping it upright. " +
-                 "If unchecked, the billboard will always face the camera directly.")]
+
+        [Tooltip("Locks the billboard to rotate only around the Y axis, keeping it upright. "
+            + "If unchecked, the billboard will always face the camera directly.")]
         [SerializeField] private bool lockYAxis;
 
         private Camera _targetCamera;
 
+#region Unity Callbacks
         private void Start()
         {
             if (Camera.main == null)
             {
-                CustomLogger.LogWarning("No main camera found for Billboard. " +
-                                        "Please assign a camera with the 'MainCamera' tag.", this);
+                CustomLogger.LogWarning(
+                    "No main camera found for Billboard. " + "Please assign a camera with the 'MainCamera' tag.", this);
+
                 return;
             }
 
@@ -45,5 +48,6 @@ namespace Base.UIPackage.Utility
                 transform.forward = _targetCamera.transform.forward;
             }
         }
+#endregion
     }
 }

@@ -16,20 +16,112 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
     public static class StaticResetScanner
     {
         private static readonly HashSet<string> Modifiers = new()
-            { "readonly", "volatile", "unsafe", "extern", "event" };
+        {
+            "readonly",
+            "volatile",
+            "unsafe",
+            "extern",
+            "event"
+        };
 
         private static readonly HashSet<string> Keywords = new()
         {
-            "static", "public", "private", "protected", "internal", "readonly", "volatile", "unsafe",
-            "extern", "event", "new", "abstract", "virtual", "override", "sealed", "async", "partial",
-            "const", "ref", "out", "in", "params", "this", "base", "return", "void", "var", "dynamic",
-            "int", "uint", "long", "ulong", "short", "ushort", "byte", "sbyte", "float", "double", "decimal",
-            "bool", "char", "string", "object", "nint", "nuint", "delegate", "enum", "struct", "class",
-            "interface", "record", "namespace", "using", "if", "else", "for", "foreach", "while", "do",
-            "switch", "case", "default", "break", "continue", "throw", "try", "catch", "finally", "lock",
-            "fixed", "checked", "unchecked", "typeof", "sizeof", "nameof", "true", "false", "null",
-            "operator", "implicit", "explicit", "where", "get", "set", "init", "value", "yield", "await",
-            "global", "is", "as", "when", "stackalloc", "goto", "add", "remove"
+            "static",
+            "public",
+            "private",
+            "protected",
+            "internal",
+            "readonly",
+            "volatile",
+            "unsafe",
+            "extern",
+            "event",
+            "new",
+            "abstract",
+            "virtual",
+            "override",
+            "sealed",
+            "async",
+            "partial",
+            "const",
+            "ref",
+            "out",
+            "in",
+            "params",
+            "this",
+            "base",
+            "return",
+            "void",
+            "var",
+            "dynamic",
+            "int",
+            "uint",
+            "long",
+            "ulong",
+            "short",
+            "ushort",
+            "byte",
+            "sbyte",
+            "float",
+            "double",
+            "decimal",
+            "bool",
+            "char",
+            "string",
+            "object",
+            "nint",
+            "nuint",
+            "delegate",
+            "enum",
+            "struct",
+            "class",
+            "interface",
+            "record",
+            "namespace",
+            "using",
+            "if",
+            "else",
+            "for",
+            "foreach",
+            "while",
+            "do",
+            "switch",
+            "case",
+            "default",
+            "break",
+            "continue",
+            "throw",
+            "try",
+            "catch",
+            "finally",
+            "lock",
+            "fixed",
+            "checked",
+            "unchecked",
+            "typeof",
+            "sizeof",
+            "nameof",
+            "true",
+            "false",
+            "null",
+            "operator",
+            "implicit",
+            "explicit",
+            "where",
+            "get",
+            "set",
+            "init",
+            "value",
+            "yield",
+            "await",
+            "global",
+            "is",
+            "as",
+            "when",
+            "stackalloc",
+            "goto",
+            "add",
+            "remove"
         };
 
         public static List<Finding> Scan(ScanOptions opt, out int filesScanned)
@@ -39,8 +131,8 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
 
             DirectoryInfo dataDir = Directory.GetParent(Application.dataPath);
             if (dataDir == null)
-                throw new DirectoryNotFoundException("Could not find project root from data path: " +
-                                                     Application.dataPath);
+                throw new DirectoryNotFoundException("Could not find project root from data path: "
+                    + Application.dataPath);
 
             string projectRoot = dataDir.FullName;
             string absRoot = Path.IsPathRooted(opt.RootFolder)
@@ -131,7 +223,8 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
         private static string BuildResetSearchText(Context ctx)
         {
             StringBuilder sb = new();
-            foreach (string b in ctx.ResetBodies) sb.Append('\n').Append(b);
+            foreach (string b in ctx.ResetBodies)
+                sb.Append('\n').Append(b);
 
             if (!ctx.Opt.ExpandHelpers || ctx.ResetBodies.Count <= 0)
                 return sb.ToString();
@@ -142,14 +235,16 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
             {
                 List<string> next = new();
                 foreach (string body in frontier)
-                foreach (Match call in Regex.Matches(body, @"\b(\w+)\s*\("))
                 {
-                    string name = call.Groups[1].Value;
-                    if (!ctx.StaticMethods.TryGetValue(name, out string item) || !seen.Add(name))
-                        continue;
+                    foreach (Match call in Regex.Matches(body, @"\b(\w+)\s*\("))
+                    {
+                        string name = call.Groups[1].Value;
+                        if (!ctx.StaticMethods.TryGetValue(name, out string item) || !seen.Add(name))
+                            continue;
 
-                    sb.Append('\n').Append(item);
-                    next.Add(item);
+                        sb.Append('\n').Append(item);
+                        next.Add(item);
+                    }
                 }
 
                 frontier = next;
@@ -369,9 +464,14 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
             {
                 string decl = declarators[d];
                 int eq = IndexOfTopLevelAssign(decl);
-                string left = eq >= 0 ? decl[..eq] : decl;
+                string left = eq >= 0
+                    ? decl[..eq]
+                    : decl;
 
-                string name = d == 0 ? LastIdentifier(left) : FirstIdentifier(left);
+                string name = d == 0
+                    ? LastIdentifier(left)
+                    : FirstIdentifier(left);
+
                 if (string.IsNullOrEmpty(name) || IsKeyword(name))
                     continue;
 
@@ -379,7 +479,9 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
                 {
                     Index = AbsoluteNameIndex(pos, full, name),
                     Name = name,
-                    Kind = isEvent ? "static event" : "static field"
+                    Kind = isEvent
+                        ? "static event"
+                        : "static field"
                 });
             }
         }
@@ -393,13 +495,16 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
                 char c = s[j];
                 if (c is '}' or '{' or ';')
                     break;
+
                 j--;
             }
 
             string prefix = s.Substring(j + 1, pos - (j + 1));
             foreach (string attr in ctx.Opt.ResetAttributes)
+            {
                 if (Regex.IsMatch(prefix, $@"\b{Regex.Escape(attr)}\b"))
                     return true;
+            }
 
             return false;
         }
@@ -430,7 +535,10 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
                         i += 2;
                         while (i < n && !(s[i] == '*' && i + 1 < n && s[i + 1] == '/'))
                         {
-                            sb.Append(s[i] == '\n' ? '\n' : ' ');
+                            sb.Append(s[i] == '\n'
+                                ? '\n'
+                                : ' ');
+
                             i++;
                         }
 
@@ -449,13 +557,17 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
                         bool verbatim = false;
                         while (j < n && (s[j] == '@' || s[j] == '$'))
                         {
-                            if (s[j] == '@') verbatim = true;
+                            if (s[j] == '@')
+                                verbatim = true;
+
                             j++;
                         }
 
                         if (j < n && s[j] == '"')
                         {
-                            for (int k = i; k < j; k++) sb.Append(' ');
+                            for (int k = i; k < j; k++)
+                                sb.Append(' ');
+
                             i = BlankString(s, j, verbatim, sb);
                             continue;
                         }
@@ -504,7 +616,10 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
                         return i;
                     }
 
-                    sb.Append(c == '\n' ? '\n' : ' ');
+                    sb.Append(c == '\n'
+                        ? '\n'
+                        : ' ');
+
                     i++;
                 }
                 else
@@ -617,7 +732,9 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
                     }
                     case ')':
                     {
-                        if (p > 0) p--;
+                        if (p > 0)
+                            p--;
+
                         break;
                     }
                     case '[':
@@ -627,7 +744,9 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
                     }
                     case ']':
                     {
-                        if (b > 0) b--;
+                        if (b > 0)
+                            b--;
+
                         break;
                     }
                     case '{':
@@ -637,7 +756,9 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
                     }
                     case '}':
                     {
-                        if (c > 0) c--;
+                        if (c > 0)
+                            c--;
+
                         break;
                     }
                     case ';':
@@ -666,25 +787,33 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
                         a++;
                         break;
                     case '>':
-                        if (a > 0) a--;
+                        if (a > 0)
+                            a--;
+
                         break;
                     case '(':
                         p++;
                         break;
                     case ')':
-                        if (p > 0) p--;
+                        if (p > 0)
+                            p--;
+
                         break;
                     case '[':
                         b++;
                         break;
                     case ']':
-                        if (b > 0) b--;
+                        if (b > 0)
+                            b--;
+
                         break;
                     case '{':
                         c++;
                         break;
                     case '}':
-                        if (c > 0) c--;
+                        if (c > 0)
+                            c--;
+
                         break;
                 }
 
@@ -716,6 +845,7 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
                     {
                         if (a > 0)
                             a--;
+
                         break;
                     }
                     case '(':
@@ -727,6 +857,7 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
                     {
                         if (p > 0)
                             p--;
+
                         break;
                     }
                     case '[':
@@ -738,6 +869,7 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
                     {
                         if (b > 0)
                             b--;
+
                         break;
                     }
                     case '{':
@@ -749,6 +881,7 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
                     {
                         if (c > 0)
                             c--;
+
                         break;
                     }
                 }
@@ -756,13 +889,30 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
                 if (ch != '=' || a != 0 || p != 0 || b != 0 || c != 0)
                     continue;
 
-                char nx = i + 1 < s.Length ? s[i + 1] : '\0';
-                char pv = i > 0 ? s[i - 1] : '\0';
-                if (nx == '>' || nx == '=' ||
-                    pv == '=' || pv == '!' || pv == '<' || pv == '>' ||
-                    pv == '+' || pv == '-' || pv == '*' || pv == '/' ||
-                    pv == '%' || pv == '&' || pv == '|' || pv == '^')
+                char nx = i + 1 < s.Length
+                    ? s[i + 1]
+                    : '\0';
+
+                char pv = i > 0
+                    ? s[i - 1]
+                    : '\0';
+
+                if (nx == '>'
+                    || nx == '='
+                    || pv == '='
+                    || pv == '!'
+                    || pv == '<'
+                    || pv == '>'
+                    || pv == '+'
+                    || pv == '-'
+                    || pv == '*'
+                    || pv == '/'
+                    || pv == '%'
+                    || pv == '&'
+                    || pv == '|'
+                    || pv == '^')
                     continue;
+
                 return i;
             }
 
@@ -826,7 +976,9 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
             while (i < s.Length && (char.IsLetterOrDigit(s[i]) || s[i] == '_'))
                 i++;
 
-            return i > st ? s.Substring(st, i - st) : null;
+            return i > st
+                ? s.Substring(st, i - st)
+                : null;
         }
 
         private static string ReadIdentifierBefore(string s, int index)
@@ -875,7 +1027,9 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
             while (idx >= 0 && char.IsWhiteSpace(s[idx]))
                 idx--;
 
-            return idx >= 0 ? s[idx] : '\0';
+            return idx >= 0
+                ? s[idx]
+                : '\0';
         }
 
         private static bool PrecededByWord(string s, int pos, string word)
@@ -894,17 +1048,26 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
         private static int AbsoluteNameIndex(int pos, string text, string name)
         {
             MatchCollection matches = Regex.Matches(text, $@"\b{Regex.Escape(name)}\b");
-            return matches.Count > 0 ? pos + matches[^1].Index : pos;
+            return matches.Count > 0
+                ? pos + matches[^1].Index
+                : pos;
         }
 
         private static bool IsKeyword(string s) => Keywords.Contains(s);
 
         private static int[] BuildLineStarts(string s)
         {
-            List<int> list = new() { 0 };
+            List<int> list = new()
+            {
+                0
+            };
+
             for (int i = 0; i < s.Length; i++)
+            {
                 if (s[i] == '\n')
                     list.Add(i + 1);
+            }
+
             return list.ToArray();
         }
 
@@ -932,12 +1095,17 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
         {
             int idx = line1Based - 1;
             if (idx < 0 || idx >= lineStarts.Length)
-                return "";
+                return string.Empty;
 
             int start = lineStarts[idx];
-            int end = idx + 1 < lineStarts.Length ? lineStarts[idx + 1] : source.Length;
+            int end = idx + 1 < lineStarts.Length
+                ? lineStarts[idx + 1]
+                : source.Length;
+
             string text = source.Substring(start, end - start).TrimEnd('\r', '\n');
-            return text.Length > 200 ? text[..200] : text;
+            return text.Length > 200
+                ? text[..200]
+                : text;
         }
 
         private static string ToAssetPath(string absolute, PackageInfo[] packages)

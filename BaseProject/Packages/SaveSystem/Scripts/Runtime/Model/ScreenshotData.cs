@@ -6,7 +6,9 @@ namespace Base.SaveSystemPackage.Model
     public readonly struct ScreenshotData
     {
         public byte[] Png { get; }
+
         public int Width { get; }
+
         public int Height { get; }
 
         public ScreenshotData(byte[] png, int width, int height)

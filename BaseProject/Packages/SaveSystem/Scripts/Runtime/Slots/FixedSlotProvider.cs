@@ -13,12 +13,13 @@ namespace Base.SaveSystemPackage.Slots
     /// </summary>
     public sealed class FixedSlotProvider : ISaveSlotProvider
     {
+        public ESlotModel Model => ESlotModel.Fixed;
+
+        public bool SupportsNewSlots => false;
+
         private readonly ISaveReader _reader;
         private readonly HashSet<string> _ids;
         private readonly IReadOnlyList<string> _orderedIds;
-
-        public ESlotModel Model => ESlotModel.Fixed;
-        public bool SupportsNewSlots => false;
 
         public FixedSlotProvider(ISaveReader reader, int count)
         {
@@ -33,8 +34,6 @@ namespace Base.SaveSystemPackage.Slots
             _orderedIds = ids;
             _ids = new HashSet<string>(ids);
         }
-
-        public static string SlotId(int index) => $"slot_{index}";
 
         public async Awaitable<IReadOnlyList<SlotInfo>> ListSlotsAsync(CancellationToken ct = default)
         {
@@ -51,7 +50,9 @@ namespace Base.SaveSystemPackage.Slots
             return !string.IsNullOrEmpty(selectedSlotId) && _ids.Contains(selectedSlotId);
         }
 
-        public async Awaitable EnforcePolicyAsync(string savedSlotId, CancellationToken ct = default) =>
-            await Task.CompletedTask;
+        public async Awaitable EnforcePolicyAsync(string savedSlotId, CancellationToken ct = default)
+            => await Task.CompletedTask;
+
+        public static string SlotId(int index) => $"slot_{index}";
     }
 }

@@ -26,9 +26,6 @@ namespace Base.UtilityPackage
         /// <summary>
         /// Compares two rotations for near equality using dot product precision.
         /// </summary>
-        public static bool ApproximatelyEqual(Quaternion a, Quaternion b)
-        {
-            return Mathf.Abs(Quaternion.Dot(a, b)) > 0.9999f;
-        }
+        public static bool ApproximatelyEqual(Quaternion a, Quaternion b) => Mathf.Abs(Quaternion.Dot(a, b)) > 0.9999f;
     }
 }

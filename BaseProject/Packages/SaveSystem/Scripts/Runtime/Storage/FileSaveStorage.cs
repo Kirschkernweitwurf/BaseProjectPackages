@@ -17,11 +17,9 @@ namespace Base.SaveSystemPackage.Storage
         private readonly string _root;
 
         public FileSaveStorage(string root = null)
-        {
-            _root = root ?? Path.Combine(Application.persistentDataPath, "Saves");
-        }
+            => _root = root ?? Path.Combine(Application.persistentDataPath, "Saves");
 
-        /// <inheritdoc />
+        /// <inheritdoc/>
         public async Awaitable WriteAsync(string key, byte[] bytes, CancellationToken ct = default)
         {
             if (!TryGetPathForKey(key, out string path))
@@ -47,7 +45,7 @@ namespace Base.SaveSystemPackage.Storage
             }
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc/>
         public async Awaitable<byte[]> ReadAsync(string key, CancellationToken ct = default)
         {
             if (!TryGetPathForKey(key, out string path))
@@ -67,7 +65,7 @@ namespace Base.SaveSystemPackage.Storage
             }
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc/>
         public async Awaitable<bool> ExistsAsync(string key, CancellationToken ct = default)
         {
             if (!TryGetPathForKey(key, out string path))
@@ -84,7 +82,7 @@ namespace Base.SaveSystemPackage.Storage
             }
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc/>
         public async Awaitable DeleteAsync(string key, CancellationToken ct = default)
         {
             if (!TryGetPathForKey(key, out string path))
@@ -99,12 +97,18 @@ namespace Base.SaveSystemPackage.Storage
 
                     // Remove the parent folder if it's empty now
                     string parent = Path.GetDirectoryName(path);
-                    if (!string.IsNullOrEmpty(parent) && parent != _root && Directory.Exists(parent)
+                    if (!string.IsNullOrEmpty(parent)
+                        && parent != _root
+                        && Directory.Exists(parent)
                         && Directory.GetFileSystemEntries(parent).Length == 0)
-                    {
-                        try { Directory.Delete(parent); }
-                        catch { /* folder busy or already gone; not a problem */ }
-                    }
+                        try
+                        {
+                            Directory.Delete(parent);
+                        }
+                        catch
+                        {
+                            /* folder busy or already gone; not a problem */
+                        }
                 }
             }
             finally
@@ -113,7 +117,7 @@ namespace Base.SaveSystemPackage.Storage
             }
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc/>
         public async Awaitable<IReadOnlyList<string>> ListKeysAsync(string prefix = null,
             CancellationToken ct = default)
         {
@@ -137,6 +141,7 @@ namespace Base.SaveSystemPackage.Storage
                     if (prefix == null || rel.StartsWith(prefix))
                         result.Add(rel);
                 }
+
                 return result;
             }
             finally

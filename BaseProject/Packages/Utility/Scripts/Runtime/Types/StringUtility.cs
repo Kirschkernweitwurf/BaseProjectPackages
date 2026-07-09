@@ -25,12 +25,8 @@ namespace Base.UtilityPackage.Types
             {
                 char currentChar = variableName[i];
 
-                if (i > 0 &&
-                    char.IsUpper(currentChar) &&
-                    char.IsLower(variableName[i - 1]))
-                {
+                if (i > 0 && char.IsUpper(currentChar) && char.IsLower(variableName[i - 1]))
                     result.Append(' ');
-                }
 
                 result.Append(currentChar);
             }

@@ -9,9 +9,11 @@ namespace Base.SettingsPackage.GUI
         [SerializeField] private TMP_Text titleText;
         [SerializeField] private TMP_Text descriptionText;
 
+#region Unity Callbacks
         private void OnEnable() => SettingElement.OnHoverFlavourChanged += SetFlavourText;
 
         private void OnDisable() => SettingElement.OnHoverFlavourChanged -= SetFlavourText;
+#endregion
 
         private void SetFlavourText(string title, string description)
         {

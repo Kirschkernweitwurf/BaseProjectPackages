@@ -2,7 +2,7 @@
   "name": "com.baseprojectpackages.settings",
   "displayName": "Base Settings Package",
   "description": "A package that contains basic settings to be used in any project based on PlayerPrefs.",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "unity": "6000.3",
   "author": {
     "name": "Jonathan Alber"

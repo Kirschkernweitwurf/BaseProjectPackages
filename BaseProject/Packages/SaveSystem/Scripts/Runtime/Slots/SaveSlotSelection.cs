@@ -9,11 +9,11 @@ namespace Base.SaveSystemPackage.Slots
     /// </summary>
     public sealed class SaveSlotSelection
     {
-        /// <summary>The selected slot id, or <c>null</c> when nothing is selected.</summary>
-        public string SelectedSlotId { get; private set; }
-
         /// <summary>Raised whenever the selection changes, including when cleared.</summary>
         public event Action<string> Changed;
+
+        /// <summary>The selected slot id, or <c>null</c> when nothing is selected.</summary>
+        public string SelectedSlotId { get; private set; }
 
         public void Select(string slotId)
         {

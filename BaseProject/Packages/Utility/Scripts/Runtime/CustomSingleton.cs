@@ -1,5 +1,5 @@
-using UnityEngine;
 using Base.UtilityPackage.Logging;
+using UnityEngine;
 
 namespace Base.UtilityPackage
 {
@@ -9,10 +9,11 @@ namespace Base.UtilityPackage
     /// </summary>
     public abstract class CustomSingleton<T> : MonoBehaviour where T : MonoBehaviour
     {
-        public static T Instance { get; protected set; } //reset-ignore
-
         [SerializeField] private bool dontDestroyOnLoad;
 
+        public static T Instance { get; protected set; } //reset-ignore
+
+#region Unity Callbacks
         protected virtual void Awake()
         {
             if (Instance == null)
@@ -24,10 +25,12 @@ namespace Base.UtilityPackage
             }
             else if (Instance != this)
             {
-                CustomLogger.LogWarning($"Duplicate instance of {typeof(T)} detected. " +
-                                        $"Destroying {gameObject.name}.", this);
+                CustomLogger.LogWarning(
+                    $"Duplicate instance of {typeof(T)} detected. " + $"Destroying {gameObject.name}.", this);
+
                 Destroy(gameObject);
             }
         }
+#endregion
     }
 }

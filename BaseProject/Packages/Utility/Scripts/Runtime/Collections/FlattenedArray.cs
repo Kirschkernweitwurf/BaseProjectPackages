@@ -19,25 +19,6 @@ namespace Base.UtilityPackage.Collections
         /// </summary>
         public int Height { get; }
 
-        private readonly T[] _data;
-
-        public FlattenedArray(int width, int height)
-        {
-            Width = width;
-            Height = height;
-            _data = new T[width * height];
-        }
-
-        /// <summary>
-        /// Set the value at (x, y).
-        /// </summary>
-        public void Set(int x, int y, T value) => _data[ToIndex(x, y)] = value;
-
-        /// <summary>
-        /// Get the value at (x, y).
-        /// </summary>
-        public T Get(int x, int y) => _data[ToIndex(x, y)];
-
         /// <summary>
         /// Direct array access if needed.
         /// </summary>
@@ -52,6 +33,15 @@ namespace Base.UtilityPackage.Collections
         /// </summary>
         public int Length => _data.Length;
 
+        private readonly T[] _data;
+
+        public FlattenedArray(int width, int height)
+        {
+            Width = width;
+            Height = height;
+            _data = new T[width * height];
+        }
+
         public IEnumerator<T> GetEnumerator()
         {
             foreach (T t in _data)
@@ -59,6 +49,16 @@ namespace Base.UtilityPackage.Collections
         }
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+        /// <summary>
+        /// Set the value at (x, y).
+        /// </summary>
+        public void Set(int x, int y, T value) => _data[ToIndex(x, y)] = value;
+
+        /// <summary>
+        /// Get the value at (x, y).
+        /// </summary>
+        public T Get(int x, int y) => _data[ToIndex(x, y)];
 
         /// <summary>
         /// Converts (x, y) into a flat array index.

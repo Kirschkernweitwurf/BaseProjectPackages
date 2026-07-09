@@ -13,6 +13,7 @@ namespace Base.SettingsPackage.GUI
         private TMP_Dropdown _dropdown;
         private IntSetting _setting;
 
+#region Unity Callbacks
         private void Awake() => _dropdown = GetComponent<TMP_Dropdown>();
 
         private void OnDestroy()
@@ -22,6 +23,7 @@ namespace Base.SettingsPackage.GUI
 
             _dropdown.onValueChanged.RemoveListener(OnDropdownChanged);
         }
+#endregion
 
         /// <inheritdoc/>
         protected override void Bind(SettingsRegistry registry)

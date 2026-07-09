@@ -8,7 +8,6 @@ namespace Base.SaveSystemPackage.Encryption
     /// <summary>
     /// Adds a tiny header to save files to identify them and their encryption mode,
     /// so the same code can read both dev and build saves without guessing or separate folders.
-    ///
     /// <code>
     ///   [ 'B','S','V' ]  magic, 3 bytes      -> "is this even our file?"
     ///   [ formatVersion ] 1 byte             -> header layout version
@@ -21,7 +20,12 @@ namespace Base.SaveSystemPackage.Encryption
         private const byte FormatVersion = 1;
         private const int HeaderSize = 5;
 
-        private static readonly byte[] Magic = { (byte)'B', (byte)'S', (byte)'V' };
+        private static readonly byte[] Magic =
+        {
+            (byte)'B',
+            (byte)'S',
+            (byte)'V'
+        };
 
         private readonly ISaveSerializer _serializer;
         private readonly ISaveEncryptor _writeEncryptor;
@@ -30,11 +34,15 @@ namespace Base.SaveSystemPackage.Encryption
         /// <summary>
         /// Create a new SaveCodec.
         /// </summary>
-        /// <param name ="serializer">Used for the actual serialization of objects.
-        /// The codec just adds a header and encryption on top of that.</param>
+        /// <param name="serializer">
+        /// Used for the actual serialization of objects.
+        /// The codec just adds a header and encryption on top of that.
+        /// </param>
         /// <param name="writeEncryptor">Used when saving. Use <see cref="NoOpEncryptor"/> for plain saves.</param>
-        /// <param name="readEncryptors">All encryptors that might be needed to read.
-        /// Always include NoOp + AES so you can read both dev and build saves.</param>
+        /// <param name="readEncryptors">
+        /// All encryptors that might be needed to read.
+        /// Always include NoOp + AES so you can read both dev and build saves.
+        /// </param>
         public SaveCodec(ISaveSerializer serializer, ISaveEncryptor writeEncryptor,
             IEnumerable<ISaveEncryptor> readEncryptors)
         {
@@ -42,13 +50,15 @@ namespace Base.SaveSystemPackage.Encryption
             _writeEncryptor = writeEncryptor ?? throw new ArgumentNullException(nameof(writeEncryptor));
 
             foreach (ISaveEncryptor enc in readEncryptors)
+            {
                 if (enc != null)
                     _readEncryptors[enc.Mode] = enc;
+            }
 
             _readEncryptors[_writeEncryptor.Mode] = _writeEncryptor;
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc/>
         public byte[] Encode<T>(T value)
         {
             byte[] payload = _writeEncryptor.Encrypt(_serializer.Serialize(value));
@@ -64,19 +74,22 @@ namespace Base.SaveSystemPackage.Encryption
             return result;
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc/>
         public T Decode<T>(byte[] bytes)
         {
-            if (bytes == null || bytes.Length < HeaderSize ||
-                bytes[0] != Magic[0] || bytes[1] != Magic[1] || bytes[2] != Magic[2])
+            if (bytes == null
+                || bytes.Length < HeaderSize
+                || bytes[0] != Magic[0]
+                || bytes[1] != Magic[1]
+                || bytes[2] != Magic[2])
                 throw new InvalidDataException("Not a valid save file (bad header).");
 
             ESaveEncryption mode = (ESaveEncryption)bytes[4];
 
             if (!_readEncryptors.TryGetValue(mode, out ISaveEncryptor encryptor))
                 throw new InvalidDataException(
-                    $"Save uses encryption mode '{mode}', but no matching encryptor is set up. " +
-                    "Make sure the same passphrase/encryptors are configured.");
+                    $"Save uses encryption mode '{mode}', but no matching encryptor is set up. "
+                    + "Make sure the same passphrase/encryptors are configured.");
 
             byte[] payload = new byte[bytes.Length - HeaderSize];
             Buffer.BlockCopy(bytes, HeaderSize, payload, 0, payload.Length);

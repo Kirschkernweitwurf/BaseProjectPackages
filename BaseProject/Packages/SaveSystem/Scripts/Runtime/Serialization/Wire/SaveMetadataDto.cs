@@ -34,9 +34,7 @@ namespace Base.SaveSystemPackage.Serialization.Wire
             screenshotHeight = m.ScreenshotHeight
         };
 
-        public SaveMetadata ToDomain() => new
-        (
-            slotId,
+        public SaveMetadata ToDomain() => new(slotId,
             displayName,
             saveVersion,
             appVersion,
@@ -45,7 +43,6 @@ namespace Base.SaveSystemPackage.Serialization.Wire
             TimeSpan.FromSeconds(totalPlaySeconds),
             hasScreenshot,
             screenshotWidth,
-            screenshotHeight
-        );
+            screenshotHeight);
     }
 }

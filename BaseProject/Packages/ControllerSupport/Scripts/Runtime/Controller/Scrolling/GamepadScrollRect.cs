@@ -31,6 +31,8 @@ namespace Base.ControllerSupport.Controller.Scrolling
 #region Unity Callbacks
         private void Awake() => _scrollRect = GetComponent<ScrollRect>();
 
+        private void OnEnable() => scrollAction?.action?.Enable();
+
         private void Update()
         {
             if (scrollAction?.action == null)
@@ -43,8 +45,6 @@ namespace Base.ControllerSupport.Controller.Scrolling
 
             Apply(input);
         }
-
-        private void OnEnable() => scrollAction?.action?.Enable();
 
         private void OnDisable() => scrollAction?.action?.Disable();
 #endregion

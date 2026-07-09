@@ -10,11 +10,13 @@ namespace Base.SettingsPackage.GUI
     {
         private IntSetting _setting;
 
+#region Unity Callbacks
         private void OnDestroy()
         {
             if (_setting != null)
                 _setting.OnValueChanged -= OnSettingChanged;
         }
+#endregion
 
         /// <inheritdoc/>
         protected override void Bind(SettingsRegistry registry)

@@ -10,10 +10,12 @@ namespace Base.UIPackage.Utility
     {
         private Canvas _canvas;
 
+#region Unity Callbacks
         private void Awake()
         {
             _canvas = GetComponent<Canvas>();
             _canvas.worldCamera = Camera.main;
         }
+#endregion
     }
 }

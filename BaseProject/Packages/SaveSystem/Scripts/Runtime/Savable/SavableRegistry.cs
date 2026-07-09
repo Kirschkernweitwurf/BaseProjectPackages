@@ -1,5 +1,5 @@
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using Base.UtilityPackage.Identification;
 using Base.UtilityPackage.Logging;
 
@@ -20,16 +20,18 @@ namespace Base.SaveSystemPackage.Savable
 
             if (savable.PersistentKey.IsEmpty)
             {
-                CustomLogger.LogWarning("A savable was registered with an empty PersistentKey. " +
-                                        "Each savable must expose a valid PersistentKey. Skipping registration.", null);
+                CustomLogger.LogWarning("A savable was registered with an empty PersistentKey. "
+                    + "Each savable must expose a valid PersistentKey. Skipping registration.", null);
+
                 return;
             }
 
             if (_items.Any(s => s.PersistentKey == savable.PersistentKey))
             {
-                CustomLogger.LogWarning($"A savable with {nameof(PersistentKey)} '{savable.PersistentKey}'" +
-                                        " is already registered. Each savable must have a unique key." +
-                                        " Skipping registration.", null);
+                CustomLogger.LogWarning($"A savable with {nameof(PersistentKey)} '{savable.PersistentKey}'"
+                    + " is already registered. Each savable must have a unique key."
+                    + " Skipping registration.", null);
+
                 return;
             }
 
@@ -42,14 +44,11 @@ namespace Base.SaveSystemPackage.Savable
                 _items.Remove(savable);
         }
 
-        public IReadOnlyList<ISavable> GetOrdered()
-        {
-            return _items
-                .Select((item, index) => (item, index))
-                .OrderByDescending(x => (byte)x.item.Priority)
-                .ThenBy(x => x.index)
-                .Select(x => x.item)
-                .ToList();
-        }
+        public IReadOnlyList<ISavable> GetOrdered() => _items
+            .Select((item, index) => (item, index))
+            .OrderByDescending(x => (byte)x.item.Priority)
+            .ThenBy(x => x.index)
+            .Select(x => x.item)
+            .ToList();
     }
 }

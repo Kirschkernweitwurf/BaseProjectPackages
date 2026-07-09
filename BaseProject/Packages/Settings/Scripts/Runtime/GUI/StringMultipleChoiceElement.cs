@@ -11,11 +11,13 @@ namespace Base.SettingsPackage.GUI
     {
         private StringSetting _setting;
 
+#region Unity Callbacks
         private void OnDestroy()
         {
             if (_setting != null)
                 _setting.OnValueChanged -= OnSettingChanged;
         }
+#endregion
 
         /// <inheritdoc/>
         protected override void Bind(SettingsRegistry registry)
@@ -50,7 +52,9 @@ namespace Base.SettingsPackage.GUI
         private int IndexOf(string value)
         {
             int index = options.IndexOf(value);
-            return index < 0 ? 0 : index;
+            return index < 0
+                ? 0
+                : index;
         }
     }
 }

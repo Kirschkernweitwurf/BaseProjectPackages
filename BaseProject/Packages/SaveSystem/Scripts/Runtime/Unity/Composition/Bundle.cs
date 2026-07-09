@@ -10,8 +10,11 @@ namespace Base.SaveSystemPackage.Unity.Composition
     public sealed class Bundle
     {
         public ISaveSystem System { get; }
+
         public ISavableRegistry Registry { get; }
+
         public ISaveSlotProvider Slots { get; }
+
         public SaveSlotSelection Selection { get; }
 
         public Bundle(ISaveSystem system, ISavableRegistry registry, ISaveSlotProvider slots,

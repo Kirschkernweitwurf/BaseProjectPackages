@@ -14,13 +14,14 @@ namespace Base.SaveSystemPackage.Slots
     /// </summary>
     public sealed class NamedSlotProvider : ISaveSlotProvider
     {
-        private readonly ISaveReader _reader;
-
         public ESlotModel Model => ESlotModel.Named;
+
         public bool SupportsNewSlots => true;
 
-        public NamedSlotProvider(ISaveReader reader) =>
-            _reader = reader ?? throw new ArgumentNullException(nameof(reader));
+        private readonly ISaveReader _reader;
+
+        public NamedSlotProvider(ISaveReader reader)
+            => _reader = reader ?? throw new ArgumentNullException(nameof(reader));
 
         public async Awaitable<IReadOnlyList<SlotInfo>> ListSlotsAsync(CancellationToken ct = default)
         {
@@ -37,12 +38,15 @@ namespace Base.SaveSystemPackage.Slots
 
         public bool TryResolveSaveTarget(string selectedSlotId, out string slotId)
         {
-            slotId = string.IsNullOrEmpty(selectedSlotId) ? CreateNewSlotId() : selectedSlotId;
+            slotId = string.IsNullOrEmpty(selectedSlotId)
+                ? CreateNewSlotId()
+                : selectedSlotId;
+
             return true;
         }
 
-        public async Awaitable EnforcePolicyAsync(string savedSlotId, CancellationToken ct = default) =>
-            await Task.CompletedTask;
+        public async Awaitable EnforcePolicyAsync(string savedSlotId, CancellationToken ct = default)
+            => await Task.CompletedTask;
 
         private static string CreateNewSlotId() => Guid.NewGuid().ToString("N");
     }

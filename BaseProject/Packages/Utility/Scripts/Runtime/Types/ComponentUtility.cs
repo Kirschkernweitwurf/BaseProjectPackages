@@ -25,8 +25,9 @@ namespace Base.UtilityPackage.Types
                     return comp.TryGetComponentInParent(out component);
 
                 default:
-                    CustomLogger.LogWarning($"TryGetComponentInParent failed: Object of identifier {obj.GetType()} " +
-                                            "is not a GameObject or Component.", null);
+                    CustomLogger.LogWarning($"TryGetComponentInParent failed: Object of identifier {obj.GetType()} "
+                        + "is not a GameObject or Component.", null);
+
                     return false;
             }
         }

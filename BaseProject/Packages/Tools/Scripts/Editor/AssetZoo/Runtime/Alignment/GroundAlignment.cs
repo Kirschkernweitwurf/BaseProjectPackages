@@ -8,8 +8,6 @@ namespace Base.ToolPackage.Editor.AssetZoo.Runtime.Alignment
     public class GroundAlignment : IAlignmentStrategy
     {
         public Vector3 GetOffset(Bounds prefabBounds)
-        {
-            return new Vector3(-prefabBounds.center.x, -prefabBounds.min.y, -prefabBounds.center.z);
-        }
+            => new(-prefabBounds.center.x, -prefabBounds.min.y, -prefabBounds.center.z);
     }
 }

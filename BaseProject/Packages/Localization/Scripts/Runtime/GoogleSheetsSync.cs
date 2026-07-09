@@ -14,10 +14,10 @@ namespace Base.Localization
     /// </summary>
     public static class GoogleSheetsSync
     {
-        public static IReadOnlyList<StringTableCollection> Collections =>
-            LocalizationEditorSettings.GetStringTableCollections()
-                .Where(c => c.Extensions.Any(e => e is GoogleSheetsExtension))
-                .ToList();
+        public static IReadOnlyList<StringTableCollection> Collections => LocalizationEditorSettings
+            .GetStringTableCollections()
+            .Where(c => c.Extensions.Any(e => e is GoogleSheetsExtension))
+            .ToList();
 
         /// <summary>
         /// Syncs a String Table Collection with Google Sheets based on the Google Sheets extension settings.
@@ -52,12 +52,10 @@ namespace Base.Localization
                 ProgressBarReporter reporter = new();
 
                 if (direction == ESyncDirection.Pull)
-                    google.PullIntoStringTableCollection(
-                        extension.SheetId, collection, extension.Columns,
+                    google.PullIntoStringTableCollection(extension.SheetId, collection, extension.Columns,
                         extension.RemoveMissingPulledKeys, reporter, true);
                 else
-                    google.PushStringTableCollection(
-                        extension.SheetId, collection, extension.Columns, reporter);
+                    google.PushStringTableCollection(extension.SheetId, collection, extension.Columns, reporter);
             }
 
             if (direction == ESyncDirection.Pull)
@@ -79,15 +77,14 @@ namespace Base.Localization
 
             if (collections.Count == 0)
             {
-                EditorUtility.DisplayDialog(
-                    "Localization",
+                EditorUtility.DisplayDialog("Localization",
                     "No collection with a Google Sheets extension found.", "OK");
+
                 return;
             }
 
-            if (direction == ESyncDirection.Push &&
-                !EditorUtility.DisplayDialog(
-                    "Push to Google Sheets",
+            if (direction == ESyncDirection.Push
+                && !EditorUtility.DisplayDialog("Push to Google Sheets",
                     $"This overwrites the sheets with local data for {collections.Count} collection(s). Continue?",
                     "Push", "Cancel"))
                 return;
@@ -100,8 +97,7 @@ namespace Base.Localization
                 for (int i = 0; i < collections.Count; i++)
                 {
                     StringTableCollection collection = collections[i];
-                    EditorUtility.DisplayProgressBar(
-                        $"{direction} from Google Sheets",
+                    EditorUtility.DisplayProgressBar($"{direction} from Google Sheets",
                         collection.TableCollectionName,
                         (float)i / collections.Count);
 
@@ -129,9 +125,8 @@ namespace Base.Localization
                 return;
             }
 
-            Debug.LogWarning(
-                $"[Localization] {direction} done for {succeeded} collection(s). " +
-                $"Skipped {failed.Count}:\n - {string.Join("\n - ", failed)}");
+            Debug.LogWarning($"[Localization] {direction} done for {succeeded} collection(s). "
+                + $"Skipped {failed.Count}:\n - {string.Join("\n - ", failed)}");
         }
     }
 }

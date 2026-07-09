@@ -1,8 +1,8 @@
 using System.IO;
 using System.Linq;
+using Base.UtilityPackage;
 using TMPro;
 using UnityEngine;
-using Base.UtilityPackage;
 
 namespace Base.UIPackage.Utility
 {
@@ -17,6 +17,7 @@ namespace Base.UIPackage.Utility
         [SerializeField] private bool hideOnRelease;
         [SerializeField] private TMP_Text versionText;
 
+#region Unity Callbacks
         private void Start()
         {
             if (hideOnRelease && Platform.IsRelease)
@@ -24,13 +25,16 @@ namespace Base.UIPackage.Utility
             else
                 DisplayVersionInfo();
         }
+#endregion
 
 #if UNITY_EDITOR
         public static void UpdateVersionInfo()
         {
             // Read Current Version Info (To Increase Build Number)
             string[] versionInfo = ReadVersionInfo();
-            int buildNumber = int.TryParse(versionInfo[2], out buildNumber) ? buildNumber + 1 : 1;
+            int buildNumber = int.TryParse(versionInfo[2], out buildNumber)
+                ? buildNumber + 1
+                : 1;
 
             // Update Current Version Info
             versionInfo[1] = Application.version;
@@ -45,17 +49,6 @@ namespace Base.UIPackage.Utility
         }
 #endif
 
-        private void DisplayVersionInfo()
-        {
-            string[] versionInfo = ReadVersionInfo();
-
-            // ReSharper disable once ConvertIfStatementToConditionalTernaryExpression
-            if (versionInfo.All(string.IsNullOrEmpty))
-                versionText.text = "";
-            else
-                versionText.text = $"{versionInfo.ElementAtOrDefault(1)} [{versionInfo.ElementAtOrDefault(2)}]";
-        }
-
         private static string[] ReadVersionInfo()
         {
             string[] versionInfo = new string[3];
@@ -64,6 +57,17 @@ namespace Base.UIPackage.Utility
                 versionInfo = File.ReadAllLines(PathVersionFile);
 
             return versionInfo;
+        }
+
+        private void DisplayVersionInfo()
+        {
+            string[] versionInfo = ReadVersionInfo();
+
+            // ReSharper disable once ConvertIfStatementToConditionalTernaryExpression
+            if (versionInfo.All(string.IsNullOrEmpty))
+                versionText.text = string.Empty;
+            else
+                versionText.text = $"{versionInfo.ElementAtOrDefault(1)} [{versionInfo.ElementAtOrDefault(2)}]";
         }
     }
 }

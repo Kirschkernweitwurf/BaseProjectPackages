@@ -29,8 +29,7 @@ namespace Base.UIPackage.Confirmation
             if (foundMenu is ConfirmationMenu confirmationMenu)
                 _menu = confirmationMenu;
             else
-                CustomLogger.LogError(
-                    "Menu with Confirmation identifier is not of type ConfirmationMenu. "
+                CustomLogger.LogError("Menu with Confirmation identifier is not of type ConfirmationMenu. "
                     + "Ensure it is registered correctly", this);
         }
 #endregion

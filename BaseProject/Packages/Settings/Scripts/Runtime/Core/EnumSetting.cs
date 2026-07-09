@@ -13,9 +13,7 @@ namespace Base.SettingsPackage.Core
 
         /// <inheritdoc/>
         protected override TEnum Read(ISettingsStore store, TEnum fallback)
-        {
-            return (TEnum)Enum.ToObject(typeof(TEnum), store.GetInt(Key.Value, Convert.ToInt32(fallback)));
-        }
+            => (TEnum)Enum.ToObject(typeof(TEnum), store.GetInt(Key.Value, Convert.ToInt32(fallback)));
 
         /// <inheritdoc/>
         protected override void Write(ISettingsStore store, TEnum value)

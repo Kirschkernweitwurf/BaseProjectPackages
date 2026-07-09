@@ -13,12 +13,13 @@ namespace Base.SaveSystemPackage.Slots
     /// </summary>
     public sealed class AppendingSlotProvider : ISaveSlotProvider
     {
+        public ESlotModel Model => ESlotModel.Appending;
+
+        public bool SupportsNewSlots => true;
+
         private readonly ISaveReader _reader;
         private readonly ISaveWriter _writer;
         private readonly int _maxSaves;
-
-        public ESlotModel Model => ESlotModel.Appending;
-        public bool SupportsNewSlots => true;
 
         public AppendingSlotProvider(ISaveReader reader, ISaveWriter writer, int maxSaves = 0)
         {

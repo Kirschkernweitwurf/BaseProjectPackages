@@ -15,10 +15,6 @@ namespace Base.UtilityPackage.Collections
     {
         [SerializeField] private List<SerializableDictionaryEntry<TKey, TValue>> entries = new();
 
-        private Dictionary<TKey, TValue> _dict;
-
-        private bool _isDirty = true;
-
         /// <summary>
         /// Gets the number of key-value pairs contained in the dictionary.
         /// </summary>
@@ -77,6 +73,21 @@ namespace Base.UtilityPackage.Collections
                 return _dict.Values;
             }
         }
+
+        private Dictionary<TKey, TValue> _dict;
+
+        private bool _isDirty = true;
+
+        /// <summary>
+        /// Returns an enumerator that iterates through the dictionary.
+        /// </summary>
+        public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
+        {
+            EnsureDictionary();
+            return _dict.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         /// <summary>
         /// Adds a new key-value pair to the dictionary.
@@ -142,17 +153,6 @@ namespace Base.UtilityPackage.Collections
         }
 
         /// <summary>
-        /// Returns an enumerator that iterates through the dictionary.
-        /// </summary>
-        public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
-        {
-            EnsureDictionary();
-            return _dict.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-
-        /// <summary>
         /// Ensures the runtime dictionary is initialized and synchronized with the serialized entries.
         /// </summary>
         private void EnsureDictionary()
@@ -182,6 +182,7 @@ namespace Base.UtilityPackage.Collections
                 index = i;
                 return true;
             }
+
             index = -1;
             return false;
         }

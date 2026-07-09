@@ -11,6 +11,7 @@ namespace Base.SettingsPackage.GUI
     public sealed class SettingToggle : SettingElement
     {
         [Header("Toggle")]
+
         [SerializeField] private TMP_Text stateText;
         [SerializeField] private LocalizedString onLabel;
         [SerializeField] private LocalizedString offLabel;
@@ -18,6 +19,7 @@ namespace Base.SettingsPackage.GUI
         private Toggle _toggle;
         private BoolSetting _setting;
 
+#region Unity Callbacks
         private void Awake() => _toggle = GetComponent<Toggle>();
 
         private void OnDestroy()
@@ -27,6 +29,7 @@ namespace Base.SettingsPackage.GUI
 
             _toggle.onValueChanged.RemoveListener(OnToggleChanged);
         }
+#endregion
 
         /// <inheritdoc/>
         protected override void Bind(SettingsRegistry registry)
@@ -46,7 +49,9 @@ namespace Base.SettingsPackage.GUI
         private void OnSettingChanged(bool state)
         {
             _toggle.SetIsOnWithoutNotify(state);
-            stateText.text = state ? onLabel.GetLocalizedString() : offLabel.GetLocalizedString();
+            stateText.text = state
+                ? onLabel.GetLocalizedString()
+                : offLabel.GetLocalizedString();
         }
 
         private void OnToggleChanged(bool state) => _setting.Value = state;

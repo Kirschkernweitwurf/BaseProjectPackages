@@ -13,6 +13,8 @@ namespace Base.ScreenShakePackage
 
         protected CinemachineImpulseSourceWrapper ImpulseSourceWrapper;
 
+#region Unity Callbacks
         private void Awake() => ImpulseSourceWrapper = GetComponent<CinemachineImpulseSourceWrapper>();
+#endregion
     }
 }

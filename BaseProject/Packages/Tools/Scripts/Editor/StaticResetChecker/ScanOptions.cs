@@ -6,7 +6,11 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
     public class ScanOptions
     {
         public string RootFolder = "Assets";
-        public string[] ResetAttributes = { "InitializeOnEnterPlayMode", "RuntimeInitializeOnLoadMethod" };
+        public string[] ResetAttributes =
+        {
+            "InitializeOnEnterPlayMode",
+            "RuntimeInitializeOnLoadMethod"
+        };
         public string IgnoreMarker = "reset-ignore";
         public bool IncludeEvents = true;
         public bool IncludeAutoProperties = true;

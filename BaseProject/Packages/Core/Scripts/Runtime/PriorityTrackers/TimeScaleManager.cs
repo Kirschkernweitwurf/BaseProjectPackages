@@ -32,8 +32,7 @@ namespace Base.CorePackage.PriorityTrackers
 
             if (TimeScaleTracker == null)
             {
-                CustomLogger.LogWarning(
-                    $"{nameof(TimeScaleTracker)} is null during OnDestroy. This likely means"
+                CustomLogger.LogWarning($"{nameof(TimeScaleTracker)} is null during OnDestroy. This likely means"
                     + " it was not initialized properly or has already been destroyed."
                     + " Skipping event unsubscription to avoid potential errors.", this);
 

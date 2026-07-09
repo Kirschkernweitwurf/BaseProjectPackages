@@ -24,7 +24,7 @@ namespace Base.UtilityPackage.Editor
         // False on instances Unity allocates without running our constructor.
         // Detected in OnAfterDeserialize so defaults are applied exactly once,
         // and never overwrite values the user has subsequently authored.
-        [SerializeField, HideInInspector] private bool hasDefaults;
+        [SerializeField] [HideInInspector] private bool hasDefaults;
 
         void ISerializationCallbackReceiver.OnBeforeSerialize() { }
 

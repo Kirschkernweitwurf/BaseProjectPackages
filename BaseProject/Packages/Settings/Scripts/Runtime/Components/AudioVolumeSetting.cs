@@ -12,16 +12,17 @@ namespace Base.SettingsPackage.Components
     /// </summary>
     public sealed class AudioVolumeSetting : FloatSettingComponent
     {
-        private const float SilenceThreshold = 0.0001f;
         private const float SilenceDecibels = -80f;
+        private const float SilenceThreshold = 0.0001f;
 
         [Header("Audio Volume")]
+
         [SerializeField] private AudioMixer audioMixer;
 
         [Tooltip("Name of the exposed AudioMixer parameter. Also used as the setting's registry key.")]
         [SerializeField] private string mixerParameter = "MasterVolume";
 
-        [SerializeField, Range(0f, 1f)] private float defaultVolume = 0.7f;
+        [SerializeField] [Range(0f, 1f)] private float defaultVolume = 0.7f;
 
         /// <inheritdoc/>
         public override PersistentKey Key => new(mixerParameter);
@@ -32,9 +33,10 @@ namespace Base.SettingsPackage.Components
         /// <inheritdoc/>
         protected override void Apply(float linear)
         {
-            float decibel = linear <=  SilenceThreshold
+            float decibel = linear <= SilenceThreshold
                 ? SilenceDecibels
                 : AudioMathUtility.ConvertLinearToDecibel(linear);
+
             audioMixer.SetFloat(mixerParameter, decibel);
         }
     }
