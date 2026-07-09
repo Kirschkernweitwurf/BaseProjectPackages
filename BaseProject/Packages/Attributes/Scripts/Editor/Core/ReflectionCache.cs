@@ -18,6 +18,32 @@ namespace Base.AttributePackage.Editor.Core
 
         private static readonly Dictionary<Type, Dictionary<string, PropertyInfo>> Properties = new();
 
+        private static readonly Dictionary<FieldInfo, Dictionary<Type, Attribute>> AttributesByField = new();
+
+        /// <summary>
+        /// Returns the field attribute of the given type, cached per field. Attributes are compile-time
+        /// metadata, so this avoids repeated reflection during inspector repaints.
+        /// </summary>
+        public static T GetAttribute<T>(FieldInfo field) where T : Attribute
+        {
+            if (field == null)
+                return null;
+
+            if (!AttributesByField.TryGetValue(field, out Dictionary<Type, Attribute> map))
+            {
+                map = new Dictionary<Type, Attribute>();
+                AttributesByField[field] = map;
+            }
+
+            if (!map.TryGetValue(typeof(T), out Attribute cached))
+            {
+                cached = field.GetCustomAttribute<T>();
+                map[typeof(T)] = cached;
+            }
+
+            return (T)cached;
+        }
+
         /// <summary>Returns the field with the given name anywhere in the type hierarchy, or null.</summary>
         public static FieldInfo GetField(Type type, string name)
             => GetMap(Fields, type, BuildFields).TryGetValue(name, out FieldInfo field)

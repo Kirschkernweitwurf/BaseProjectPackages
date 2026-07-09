@@ -11,6 +11,8 @@ namespace Base.AttributePackage.Editor.Handlers
     {
         public int Order => 0;
 
+        private static GUIStyle _style;
+
         public void BeforeField(in MemberContext context)
         {
             TitleAttribute attribute = context.GetAttribute<TitleAttribute>();
@@ -22,11 +24,14 @@ namespace Base.AttributePackage.Editor.Handlers
 
             GUILayout.Space(6f);
 
-            GUIStyle style = new(EditorStyles.boldLabel);
-            if (hasColor)
-                style.normal.textColor = color;
+            if (_style == null)
+                _style = new GUIStyle(EditorStyles.boldLabel);
 
-            EditorGUILayout.LabelField(attribute.Title, style);
+            _style.normal.textColor = hasColor
+                ? color
+                : EditorStyles.boldLabel.normal.textColor;
+
+            EditorGUILayout.LabelField(attribute.Title, _style);
 
             Rect lineRect = EditorGUILayout.GetControlRect(false, 3f);
             lineRect.height = 1f;
