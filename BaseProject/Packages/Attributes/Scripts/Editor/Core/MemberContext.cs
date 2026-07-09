@@ -40,8 +40,8 @@ namespace Base.AttributePackage.Editor.Core
             ObjectReferenceBefore = objectReferenceBefore;
         }
 
-        /// <summary>Returns the field attribute of the given type, or null.</summary>
-        public T GetAttribute<T>() where T : Attribute => Field?.GetCustomAttribute<T>();
+        /// <summary>Returns the field attribute of the given type, or null. Cached per field.</summary>
+        public T GetAttribute<T>() where T : Attribute => ReflectionCache.GetAttribute<T>(Field);
 
         /// <summary>Human-readable label derived from the property name.</summary>
         public string DisplayName => ObjectNames.NicifyVariableName(Property.name);

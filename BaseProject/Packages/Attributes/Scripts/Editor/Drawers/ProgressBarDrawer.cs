@@ -16,6 +16,7 @@ namespace Base.AttributePackage.Editor.Drawers
     public sealed class ProgressBarDrawer : PropertyDrawer
     {
         private static readonly Color DefaultColor = new(0.26f, 0.59f, 0.98f);
+        private static GUIStyle _valueStyle;
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
@@ -50,13 +51,17 @@ namespace Base.AttributePackage.Editor.Drawers
             Rect fillRect = new(barRect.x, barRect.y, barRect.width * fill, barRect.height);
             EditorGUI.DrawRect(fillRect, color);
 
-            GUIStyle centered = new(EditorStyles.miniLabel)
+            if (_valueStyle == null)
             {
-                alignment = TextAnchor.MiddleCenter
-            };
+                _valueStyle = new GUIStyle(EditorStyles.miniLabel)
+                {
+                    alignment = TextAnchor.MiddleCenter
+                };
 
-            centered.normal.textColor = Color.white;
-            EditorGUI.LabelField(barRect, Format(value) + " / " + Format(max), centered);
+                _valueStyle.normal.textColor = Color.white;
+            }
+
+            EditorGUI.LabelField(barRect, Format(value) + " / " + Format(max), _valueStyle);
         }
 
         private static float ResolveMax(SerializedProperty property, ProgressBarAttribute bar)
