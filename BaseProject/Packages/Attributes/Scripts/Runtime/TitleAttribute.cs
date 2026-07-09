@@ -7,7 +7,7 @@ namespace Base.AttributePackage
     /// Draws a bold section title with an underline above the decorated field.
     /// Does not render a value of its own and is attached above a field like <c>[Header]</c>.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Field, AllowMultiple = true, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = true)]
     public sealed class TitleAttribute : PropertyAttribute
     {
         /// <summary>Text shown as the bold title.</summary>

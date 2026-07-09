@@ -7,7 +7,7 @@ namespace Base.AttributePackage
     /// Draws a plain horizontal separator line above the decorated field.
     /// Attached above a field like <c>[Header]</c>.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Field, AllowMultiple = true, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = true)]
     public sealed class HorizontalLineAttribute : PropertyAttribute
     {
         /// <summary>Optional HTML color for the line, for example "#3498DB". Null uses the default color.</summary>
