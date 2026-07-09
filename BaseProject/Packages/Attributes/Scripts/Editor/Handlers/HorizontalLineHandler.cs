@@ -11,7 +11,7 @@ namespace Base.AttributePackage.Editor.Handlers
     {
         public int Order => 10;
 
-        private static readonly Color DefaultColor = new Color(0.5f, 0.5f, 0.5f, 1f);
+        private static readonly Color DefaultColor = new(0.5f, 0.5f, 0.5f, 1f);
 
         public void BeforeField(in MemberContext context)
         {
