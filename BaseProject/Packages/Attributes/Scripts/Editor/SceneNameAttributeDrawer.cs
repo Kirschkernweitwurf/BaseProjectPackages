@@ -1,4 +1,3 @@
-#if UNITY_EDITOR
 using System;
 using System.IO;
 using UnityEditor;
@@ -8,37 +7,50 @@ namespace Base.AttributePackage.Editor
 {
     /// <summary>
     /// Property drawer for <see cref="SceneNameAttribute"/>.
-    /// Displays a dropdown of all scenes included in the Build Settings.
+    /// Shows a dropdown of the scenes in the Build Settings. On a string field it stores the scene
+    /// name, on an int field it stores the build index. Dropdown labels include the build index.
     /// </summary>
     [CustomPropertyDrawer(typeof(SceneNameAttribute))]
-    public class SceneNameAttributeDrawer : PropertyDrawer
+    public sealed class SceneNameAttributeDrawer : PropertyDrawer
     {
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            if (property.propertyType != SerializedPropertyType.String)
+            string[] scenePaths = EditorBuildSettingsScene.GetActiveSceneList(EditorBuildSettings.scenes);
+
+            if (scenePaths.Length == 0)
             {
-                EditorGUI.LabelField(position, label.text, "Use [SceneName] with string.");
+                EditorGUI.LabelField(position, label.text, "No scenes in Build Settings.");
                 return;
             }
 
-            // Get all scene names from Build Settings
-            string[] scenePaths = EditorBuildSettingsScene.GetActiveSceneList(EditorBuildSettings.scenes);
             string[] sceneNames = new string[scenePaths.Length];
+            string[] displayNames = new string[scenePaths.Length];
             for (int i = 0; i < scenePaths.Length; i++)
             {
-                string path = scenePaths[i];
-                string name = Path.GetFileNameWithoutExtension(path);
-                sceneNames[i] = name;
+                sceneNames[i] = Path.GetFileNameWithoutExtension(scenePaths[i]);
+                displayNames[i] = i + ": " + sceneNames[i];
             }
 
-            // Find current index
-            int currentIndex = Mathf.Max(0, Array.IndexOf(sceneNames, property.stringValue));
-            int selectedIndex = EditorGUI.Popup(position, label.text, currentIndex, sceneNames);
+            EditorGUI.BeginProperty(position, label, property);
 
-            // Update string value
-            if (selectedIndex >= 0 && selectedIndex < sceneNames.Length)
-                property.stringValue = sceneNames[selectedIndex];
+            if (property.propertyType == SerializedPropertyType.String)
+            {
+                int current = Mathf.Max(0, Array.IndexOf(sceneNames, property.stringValue));
+                int selected = EditorGUI.Popup(position, label.text, current, displayNames);
+                property.stringValue = sceneNames[selected];
+            }
+            else if (property.propertyType == SerializedPropertyType.Integer)
+            {
+                int current = Mathf.Clamp(property.intValue, 0, sceneNames.Length - 1);
+                int selected = EditorGUI.Popup(position, label.text, current, displayNames);
+                property.intValue = selected;
+            }
+            else
+            {
+                EditorGUI.LabelField(position, label.text, "Use [SceneName] with string or int.");
+            }
+
+            EditorGUI.EndProperty();
         }
     }
 }
-#endif

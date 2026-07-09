@@ -9,7 +9,7 @@ namespace Base.AttributePackage.Editor
     [CustomPropertyDrawer(typeof(HorizontalLineAttribute))]
     public sealed class HorizontalLineDrawer : DecoratorDrawer
     {
-        private static readonly Color DefaultColor = new Color(0.5f, 0.5f, 0.5f, 1f);
+        private static readonly Color DefaultColor = new(0.5f, 0.5f, 0.5f, 1f);
 
         public override float GetHeight()
         {
@@ -25,8 +25,7 @@ namespace Base.AttributePackage.Editor
                 ? resolved
                 : DefaultColor;
 
-            Rect lineRect = new Rect(
-                position.x,
+            Rect lineRect = new(position.x,
                 position.y + line.Padding,
                 position.width,
                 line.Thickness);

@@ -30,7 +30,7 @@ namespace Base.AttributePackage.Editor
                 return true;
             }
 
-            color = default;
+            color = default(Color);
             return false;
         }
     }
