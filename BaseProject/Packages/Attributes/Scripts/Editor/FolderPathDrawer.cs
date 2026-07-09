@@ -20,38 +20,45 @@ namespace Base.AttributePackage.Editor
                 return;
             }
 
-            FolderPathAttribute folder = (FolderPathAttribute)attribute;
-
-            Rect fieldRect = new(position.x, position.y, position.width - ButtonWidth - Spacing, position.height);
-            Rect buttonRect = new(fieldRect.xMax + Spacing, position.y, ButtonWidth, position.height);
-
             EditorGUI.BeginProperty(position, label, property);
-            EditorGUI.PropertyField(fieldRect, property, label);
 
-            if (GUI.Button(buttonRect, "..."))
-            {
-                string selected = EditorUtility.OpenFolderPanel("Select Folder", Application.dataPath, string.Empty);
-                if (!string.IsNullOrEmpty(selected))
-                    property.stringValue = folder.Absolute
-                        ? selected
-                        : ToRelativePath(selected);
-            }
+            Rect fieldRect = new Rect(position.x, position.y, position.width - ButtonWidth - Spacing, position.height);
+            Rect buttonRect = new Rect(fieldRect.xMax + Spacing, position.y, ButtonWidth, position.height);
+
+            EditorGUI.PropertyField(fieldRect, property, label);
+            bool browseClicked = GUI.Button(buttonRect, "...");
 
             EditorGUI.EndProperty();
-        }
 
-        private static string ToRelativePath(string absolute)
-        {
-            string dataPath = Application.dataPath.Replace("\\", "/");
-            string normalized = absolute.Replace("\\", "/");
+            if (!browseClicked)
+                return;
 
-            if (normalized == dataPath)
-                return "Assets";
+            FolderPathAttribute folder = (FolderPathAttribute)attribute;
+            SerializedObject serializedObject = property.serializedObject;
+            string propertyPath = property.propertyPath;
+            bool absolute = folder.Absolute;
 
-            if (normalized.StartsWith(dataPath + "/"))
-                return "Assets" + normalized.Substring(dataPath.Length);
+            // OpenFolderPanel clears Unity's internal property stack while open. Running it inside
+            // OnGUI corrupts the outer PropertyDrawer.OnGUISafe pop, so defer to delayCall.
+            EditorApplication.delayCall += () =>
+            {
+                string selected = EditorUtility.OpenFolderPanel("Select Folder", Application.dataPath, string.Empty);
+                if (string.IsNullOrEmpty(selected))
+                    return;
 
-            return absolute;
+                if (serializedObject.targetObject == null)
+                    return;
+
+                serializedObject.Update();
+                SerializedProperty deferred = serializedObject.FindProperty(propertyPath);
+                if (deferred != null)
+                {
+                    deferred.stringValue = absolute ? PathUtility.Normalize(selected) : PathUtility.ToProjectRelative(selected);
+                    serializedObject.ApplyModifiedProperties();
+                }
+
+                EditorGUIUtility.editingTextField = false;
+            };
         }
     }
 }
