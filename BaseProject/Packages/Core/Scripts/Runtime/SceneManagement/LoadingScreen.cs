@@ -1,5 +1,5 @@
 using System.Collections;
-using Base.AttributePackage;
+using Base.AttributePackage.References;
 using Base.CorePackage.MenuManaging;
 using UnityEngine;
 using UnityEngine.UI;
