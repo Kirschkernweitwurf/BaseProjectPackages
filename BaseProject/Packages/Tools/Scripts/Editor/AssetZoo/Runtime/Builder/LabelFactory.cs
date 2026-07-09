@@ -1,5 +1,6 @@
 using Base.UIPackage.Utility;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace Base.ToolPackage.Editor.AssetZoo.Runtime.Builder
 {
@@ -31,7 +32,7 @@ namespace Base.ToolPackage.Editor.AssetZoo.Runtime.Builder
             MeshRenderer renderer = go.GetComponent<MeshRenderer>();
             if (renderer != null)
             {
-                renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+                renderer.shadowCastingMode = ShadowCastingMode.Off;
                 renderer.receiveShadows = false;
             }
 

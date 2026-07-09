@@ -19,7 +19,9 @@ namespace Base.ScreenShakePackage.Editor
             SerializedProperty impulseDuration = serializedObject.FindProperty("<ImpulseDuration>k__BackingField");
             SerializedProperty impulseType = serializedObject.FindProperty("<ImpulseType>k__BackingField");
             SerializedProperty impulseShape = serializedObject.FindProperty("<ImpulseShape>k__BackingField");
-            SerializedProperty customImpulseShape = serializedObject.FindProperty("<CustomImpulseShape>k__BackingField");
+            SerializedProperty customImpulseShape =
+                serializedObject.FindProperty("<CustomImpulseShape>k__BackingField");
+
             SerializedProperty defaultVelocity = serializedObject.FindProperty("<DefaultVelocity>k__BackingField");
             SerializedProperty listenerAmplitude = serializedObject.FindProperty("<ListenerAmplitude>k__BackingField");
             SerializedProperty listenerFrequency = serializedObject.FindProperty("<ListenerFrequency>k__BackingField");

@@ -37,13 +37,13 @@ namespace Base.UtilityPackage.Collections
             if (array == null)
             {
                 CustomLogger.LogWarning("GetRandomElement called on a null array.", null);
-                return default;
+                return default(T);
             }
 
             if (array.Length == 0)
             {
                 CustomLogger.LogWarning("GetRandomElement called on an empty array.", null);
-                return default;
+                return default(T);
             }
 
             int index = Random.Range(0, array.Length);
@@ -58,13 +58,13 @@ namespace Base.UtilityPackage.Collections
             if (list == null)
             {
                 CustomLogger.LogWarning("GetRandomElement called on a null list.", null);
-                return default;
+                return default(T);
             }
 
             if (list.Count == 0)
             {
                 CustomLogger.LogWarning("GetRandomElement called on an empty list.", null);
-                return default;
+                return default(T);
             }
 
             int index = Random.Range(0, list.Count);

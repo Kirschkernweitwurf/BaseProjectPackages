@@ -14,6 +14,7 @@ namespace Base.SettingsPackage.GUI
     public sealed class SettingSlider : SettingElement
     {
         [Header("Slider")]
+
         [SerializeField] private TMP_Text percentageText;
         [SerializeField] private Button decreaseButton;
         [SerializeField] private Button increaseButton;
@@ -22,6 +23,7 @@ namespace Base.SettingsPackage.GUI
         private FloatSetting _setting;
         private Slider _slider;
 
+#region Unity Callbacks
         private void Awake() => _slider = GetComponent<Slider>();
 
         private void OnDestroy()
@@ -33,6 +35,7 @@ namespace Base.SettingsPackage.GUI
             decreaseButton?.onClick.RemoveListener(Decrease);
             increaseButton?.onClick.RemoveListener(Increase);
         }
+#endregion
 
         /// <inheritdoc/>
         protected override void Bind(SettingsRegistry registry)
@@ -52,9 +55,7 @@ namespace Base.SettingsPackage.GUI
         protected override void ResetSetting() => _setting?.ResetToDefault();
 
         private void StepBy(float amount)
-        {
-            _slider.value = Mathf.Clamp(_slider.value + amount, _slider.minValue, _slider.maxValue);
-        }
+            => _slider.value = Mathf.Clamp(_slider.value + amount, _slider.minValue, _slider.maxValue);
 
         private void OnSliderChanged(float value)
         {

@@ -44,10 +44,12 @@ namespace Base.ToolPackage.Editor.AssetZoo.Runtime.Builder
             }
 
             if (!hasBounds)
-                CustomLogger.LogWarning($"Prefab '{prefab.name}' has no valid MeshFilter or SkinnedMeshRenderer bounds." +
-                                        " Returning default bounds.", null);
+                CustomLogger.LogWarning($"Prefab '{prefab.name}' has no valid MeshFilter or SkinnedMeshRenderer bounds."
+                    + " Returning default bounds.", null);
 
-            return hasBounds ? combined : new Bounds(Vector3.zero, Vector3.one);
+            return hasBounds
+                ? combined
+                : new Bounds(Vector3.zero, Vector3.one);
         }
 
         private static void Encapsulate(ref Bounds combined, ref bool hasBounds,
@@ -73,13 +75,13 @@ namespace Base.ToolPackage.Editor.AssetZoo.Runtime.Builder
 
             Vector3 p = m.MultiplyPoint3x4(c + new Vector3(-e.x, -e.y, -e.z));
             Bounds result = new(p, Vector3.zero);
-            result.Encapsulate(m.MultiplyPoint3x4(c + new Vector3( e.x, -e.y, -e.z)));
-            result.Encapsulate(m.MultiplyPoint3x4(c + new Vector3(-e.x,  e.y, -e.z)));
-            result.Encapsulate(m.MultiplyPoint3x4(c + new Vector3( e.x,  e.y, -e.z)));
-            result.Encapsulate(m.MultiplyPoint3x4(c + new Vector3(-e.x, -e.y,  e.z)));
-            result.Encapsulate(m.MultiplyPoint3x4(c + new Vector3( e.x, -e.y,  e.z)));
-            result.Encapsulate(m.MultiplyPoint3x4(c + new Vector3(-e.x,  e.y,  e.z)));
-            result.Encapsulate(m.MultiplyPoint3x4(c + new Vector3( e.x,  e.y,  e.z)));
+            result.Encapsulate(m.MultiplyPoint3x4(c + new Vector3(e.x, -e.y, -e.z)));
+            result.Encapsulate(m.MultiplyPoint3x4(c + new Vector3(-e.x, e.y, -e.z)));
+            result.Encapsulate(m.MultiplyPoint3x4(c + new Vector3(e.x, e.y, -e.z)));
+            result.Encapsulate(m.MultiplyPoint3x4(c + new Vector3(-e.x, -e.y, e.z)));
+            result.Encapsulate(m.MultiplyPoint3x4(c + new Vector3(e.x, -e.y, e.z)));
+            result.Encapsulate(m.MultiplyPoint3x4(c + new Vector3(-e.x, e.y, e.z)));
+            result.Encapsulate(m.MultiplyPoint3x4(c + new Vector3(e.x, e.y, e.z)));
             return result;
         }
     }

@@ -37,19 +37,20 @@ namespace Base.SaveSystemPackage
         }
 
         private static ISaveSlotProvider BuildSlotProvider(SaveSystemSettings settings, ISaveSystem system)
-        {
-            return settings.SlotModel switch
+            => settings.SlotModel switch
             {
                 ESlotModel.Fixed => new FixedSlotProvider(system, settings.FixedSlotCount),
                 ESlotModel.Appending => new AppendingSlotProvider(system, system, settings.MaxAppendingSaves),
                 _ => new NamedSlotProvider(system)
             };
-        }
 
         private static ISaveCodec BuildCodec(SaveSystemSettings settings, ISaveSerializer serializer)
         {
             NoOpEncryptor noop = new();
-            List<ISaveEncryptor> readers = new() { noop };
+            List<ISaveEncryptor> readers = new()
+            {
+                noop
+            };
 
             ISaveEncryptor aes = null;
             if (!string.IsNullOrEmpty(settings.EncryptionPassphrase))
@@ -57,12 +58,15 @@ namespace Base.SaveSystemPackage
                 byte[] saltBytes = string.IsNullOrEmpty(settings.Salt)
                     ? null
                     : Encoding.UTF8.GetBytes(settings.Salt);
+
                 aes = new AesEncryptor(settings.EncryptionPassphrase, saltBytes);
                 readers.Add(aes);
             }
 
             bool encrypt = settings.ShouldEncryptOnWrite();
-            ISaveEncryptor writer = encrypt && aes != null ? aes : noop;
+            ISaveEncryptor writer = encrypt && aes != null
+                ? aes
+                : noop;
 
             return new SaveCodec(serializer, writer, readers);
         }

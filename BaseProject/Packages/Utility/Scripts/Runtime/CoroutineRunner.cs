@@ -1,8 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using Base.UtilityPackage.Logging;
+using UnityEditor;
+using UnityEngine;
 
 namespace Base.UtilityPackage
 {
@@ -14,11 +15,7 @@ namespace Base.UtilityPackage
     {
         private readonly List<Coroutine> _coroutines = new();
 
-#if UNITY_EDITOR
-        [UnityEditor.InitializeOnEnterPlayMode]
-        private static void ResetStatics() => Instance = null;
-#endif
-
+#region Unity Callbacks
         /// <summary>
         /// Ensures all coroutines are stopped when this component is destroyed.
         /// </summary>
@@ -27,31 +24,7 @@ namespace Base.UtilityPackage
             StopAllCoroutines();
             _coroutines.Clear();
         }
-
-        /// <summary>
-        /// Runs the specified <paramref name="actionToRun"/> after waiting for the given number of frames.
-        /// </summary>
-        /// <param name="actionToRun">The action to run after the specified number of frames.</param>
-        /// <param name="frameCount">The number of frames to wait before running the action.</param>
-        private static IEnumerator RunAfterFramesCoroutine(Action actionToRun, int frameCount)
-        {
-            for (int i = 0; i < frameCount; i++)
-                yield return null;
-
-            actionToRun?.Invoke();
-        }
-
-        /// <summary>
-        /// Runs the specified <paramref name="actionToRun"/> after waiting for the provided
-        /// <paramref name="yieldInstruction"/>.
-        /// </summary>
-        /// <param name="actionToRun">The action to run after the wait instruction completes.</param>
-        /// <param name="yieldInstruction">The yield instruction to wait for before executing the action.</param>
-        private static IEnumerator RunActionDelayed(Action actionToRun, YieldInstruction yieldInstruction)
-        {
-            yield return yieldInstruction;
-            actionToRun?.Invoke();
-        }
+#endregion
 
         /// <summary>
         /// Starts a coroutine and adds it to the list of tracked coroutines.
@@ -80,6 +53,7 @@ namespace Base.UtilityPackage
             IEnumerator RunCoroutineWithCallback(IEnumerator coro, Action callback)
             {
                 yield return StartCoroutineInternal(coro);
+
                 callback?.Invoke();
             }
         }
@@ -187,6 +161,37 @@ namespace Base.UtilityPackage
         {
             StopAllCoroutines();
             _coroutines.Clear();
+        }
+
+#if UNITY_EDITOR
+        [InitializeOnEnterPlayMode]
+        private static void ResetStatics() => Instance = null;
+#endif
+
+        /// <summary>
+        /// Runs the specified <paramref name="actionToRun"/> after waiting for the given number of frames.
+        /// </summary>
+        /// <param name="actionToRun">The action to run after the specified number of frames.</param>
+        /// <param name="frameCount">The number of frames to wait before running the action.</param>
+        private static IEnumerator RunAfterFramesCoroutine(Action actionToRun, int frameCount)
+        {
+            for (int i = 0; i < frameCount; i++)
+                yield return null;
+
+            actionToRun?.Invoke();
+        }
+
+        /// <summary>
+        /// Runs the specified <paramref name="actionToRun"/> after waiting for the provided
+        /// <paramref name="yieldInstruction"/>.
+        /// </summary>
+        /// <param name="actionToRun">The action to run after the wait instruction completes.</param>
+        /// <param name="yieldInstruction">The yield instruction to wait for before executing the action.</param>
+        private static IEnumerator RunActionDelayed(Action actionToRun, YieldInstruction yieldInstruction)
+        {
+            yield return yieldInstruction;
+
+            actionToRun?.Invoke();
         }
 
         /// <summary>

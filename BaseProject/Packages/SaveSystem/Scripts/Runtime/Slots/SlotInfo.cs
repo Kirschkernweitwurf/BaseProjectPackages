@@ -9,6 +9,7 @@ namespace Base.SaveSystemPackage.Slots
     public readonly struct SlotInfo
     {
         public string Id { get; }
+
         public bool Exists { get; }
 
         /// <summary>Metadata if the slot holds a save, otherwise <c>null</c>.</summary>

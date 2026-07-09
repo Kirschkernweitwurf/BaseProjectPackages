@@ -28,12 +28,9 @@ namespace Base.SettingsPackage.Display
         }
 
         /// <summary>Returns the label for the resolution currently presented by the screen.</summary>
-        public static string GetCurrentResolutionLabel()
-        {
-            return Screen.fullScreenMode == FullScreenMode.Windowed
-                ? Format(Screen.width, Screen.height)
-                : Format(Screen.currentResolution.width, Screen.currentResolution.height);
-        }
+        public static string GetCurrentResolutionLabel() => Screen.fullScreenMode == FullScreenMode.Windowed
+            ? Format(Screen.width, Screen.height)
+            : Format(Screen.currentResolution.width, Screen.currentResolution.height);
 
         /// <summary>Parses a resolution label into its width and height. Returns false on a malformed label.</summary>
         public static bool TryParse(string label, out int width, out int height)
@@ -46,8 +43,8 @@ namespace Base.SettingsPackage.Display
 
             string[] parts = label.Split('x');
             return parts.Length == 2
-                   && int.TryParse(parts[0].Trim(), out width)
-                   && int.TryParse(parts[1].Trim(), out height);
+                && int.TryParse(parts[0].Trim(), out width)
+                && int.TryParse(parts[1].Trim(), out height);
         }
 
         /// <summary>Formats a width and height into the canonical resolution label.</summary>

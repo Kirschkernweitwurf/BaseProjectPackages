@@ -24,6 +24,7 @@ namespace Base.ToolPackage.Editor.AssetZoo.Runtime.Layout
             float minRadius = itemCount > 1
                 ? itemCount * (cellSize.x + settings.Spacing) / (2f * Mathf.PI)
                 : 0f;
+
             float radius = Mathf.Max(settings.CircleRadius, minRadius);
 
             Vector3[] positions = new Vector3[itemCount];

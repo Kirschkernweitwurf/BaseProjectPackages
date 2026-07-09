@@ -19,8 +19,7 @@ namespace Base.CorePackage.MenuManaging.Identifier
 
             if (_registry == null)
             {
-                CustomLogger.LogError(
-                    "MenuIdentifierRegistry not found in Resources. "
+                CustomLogger.LogError("MenuIdentifierRegistry not found in Resources. "
                     + "Run Tools > Menus > Regenerate Menu Identifiers.", null);
 
                 return null;

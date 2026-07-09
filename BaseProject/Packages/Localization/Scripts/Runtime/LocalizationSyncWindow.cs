@@ -14,6 +14,7 @@ namespace Base.Localization
         private IReadOnlyList<StringTableCollection> _collections = new List<StringTableCollection>();
         private Vector2 _scroll;
 
+#region Unity Callbacks
         private void OnEnable() => Refresh();
 
         private void OnGUI()
@@ -27,8 +28,7 @@ namespace Base.Localization
 
             if (_collections.Count == 0)
             {
-                EditorGUILayout.HelpBox(
-                    "No collection with a Google Sheets extension found.", MessageType.Info);
+                EditorGUILayout.HelpBox("No collection with a Google Sheets extension found.", MessageType.Info);
                 return;
             }
 
@@ -36,6 +36,7 @@ namespace Base.Localization
             {
                 if (GUILayout.Button("Pull All", GUILayout.Height(26)))
                     GoogleSheetsSync.SyncAll(ESyncDirection.Pull);
+
                 if (GUILayout.Button("Push All", GUILayout.Height(26)))
                     GoogleSheetsSync.SyncAll(ESyncDirection.Push);
             }
@@ -50,12 +51,15 @@ namespace Base.Localization
                     EditorGUILayout.LabelField(collection.TableCollectionName);
                     if (GUILayout.Button("Pull", GUILayout.Width(60)))
                         Run(collection, ESyncDirection.Pull);
+
                     if (GUILayout.Button("Push", GUILayout.Width(60)))
                         Run(collection, ESyncDirection.Push);
                 }
             }
+
             EditorGUILayout.EndScrollView();
         }
+#endregion
 
         /// <summary>
         /// Opens the Localization Sync window. Tools &gt; Base Packages &gt; Localization &gt; Open Sync Window.
@@ -67,8 +71,6 @@ namespace Base.Localization
             window.Refresh();
             window.Show();
         }
-
-        private void Refresh() => _collections = GoogleSheetsSync.Collections;
 
         private static void Run(StringTableCollection collection, ESyncDirection direction)
         {
@@ -84,6 +86,8 @@ namespace Base.Localization
                     $"[Localization] {direction} '{collection.TableCollectionName}' skipped: {result.Message}");
             }
         }
+
+        private void Refresh() => _collections = GoogleSheetsSync.Collections;
     }
 }
 #endif

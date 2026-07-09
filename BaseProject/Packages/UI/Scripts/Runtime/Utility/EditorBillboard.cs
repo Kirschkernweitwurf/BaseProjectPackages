@@ -14,34 +14,19 @@ namespace Base.UIPackage.Utility
         private Quaternion _lastCameraRot;
         private bool _hasCachedCamera;
 
-#if UNITY_EDITOR
-        private void OnEnable()
-        {
-            if (Application.isPlaying)
-                return;
-
-            SceneView.duringSceneGui += OnSceneGUI;
-        }
-
-        private void OnDisable()
-        {
-            if (Application.isPlaying)
-                return;
-
-            SceneView.duringSceneGui -= OnSceneGUI;
-        }
-
-        private void OnSceneGUI(SceneView sceneView) => FaceCameraIfMoved(sceneView.camera);
-#endif
-
+#region Unity Callbacks
         private void LateUpdate()
         {
             if (!Application.isPlaying)
                 return;
 
-            Camera cam = Camera.main != null ? Camera.main : Camera.current;
+            Camera cam = Camera.main != null
+                ? Camera.main
+                : Camera.current;
+
             FaceCameraIfMoved(cam);
         }
+#endregion
 
         private void FaceCameraIfMoved(Camera cam)
         {
@@ -61,5 +46,25 @@ namespace Base.UIPackage.Utility
 
             transform.forward = camT.forward;
         }
+
+#if UNITY_EDITOR
+        private void OnEnable()
+        {
+            if (Application.isPlaying)
+                return;
+
+            SceneView.duringSceneGui += OnSceneGUI;
+        }
+
+        private void OnDisable()
+        {
+            if (Application.isPlaying)
+                return;
+
+            SceneView.duringSceneGui -= OnSceneGUI;
+        }
+
+        private void OnSceneGUI(SceneView sceneView) => FaceCameraIfMoved(sceneView.camera);
+#endif
     }
 }

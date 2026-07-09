@@ -45,7 +45,7 @@ namespace Base.UtilityPackage.Identification
         {
             if (!TryValidate(value, out _))
             {
-                key = default;
+                key = default(PersistentKey);
                 return false;
             }
 
@@ -60,8 +60,9 @@ namespace Base.UtilityPackage.Identification
 
         public override bool Equals(object obj) => obj is PersistentKey other && Equals(other);
 
-        public override int GetHashCode() =>
-            Value is null ? 0 : StringComparer.Ordinal.GetHashCode(Value);
+        public override int GetHashCode() => Value is null
+            ? 0
+            : StringComparer.Ordinal.GetHashCode(Value);
 
         public static bool operator ==(PersistentKey left, PersistentKey right) => left.Equals(right);
 

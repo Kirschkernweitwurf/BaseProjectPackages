@@ -13,15 +13,9 @@ namespace Base.UtilityPackage.Raycasting
     /// </summary>
     public static class RaycastUtility
     {
-#if UNITY_EDITOR
-        private const float DebugRayLength = 25f;
-        private const float DebugDuration = 1f;
-
-        private static readonly Color DebugRayColor = new(0.1f, 0.8f, 1f, 0.8f);
-#endif
-
         /// <summary>
-        /// Attempts to raycast from the main camera at the current mouse position to find a component of type <typeparamref name="T"/>.
+        /// Attempts to raycast from the main camera at the current mouse position to find a component of type
+        /// <typeparamref name="T"/>.
         /// Works for 2D gameplay oriented in the XY plane (Z is depth).
         /// </summary>
         /// <typeparam name="T">The component type to look for.</typeparam>
@@ -29,7 +23,7 @@ namespace Base.UtilityPackage.Raycasting
         /// <returns>True if a hit with the target component was detected; otherwise, false.</returns>
         public static bool TryGetFromMousePosition<T>(out T result)
         {
-            result = default;
+            result = default(T);
 
             Camera cam = Camera.main;
             if (cam == null)
@@ -63,7 +57,7 @@ namespace Base.UtilityPackage.Raycasting
         /// <returns>True if a hit with the target component was detected; otherwise, false.</returns>
         public static bool TryGetFromScreenPoint<T>(Camera camera, Vector3 screenPoint, out T result)
         {
-            result = default;
+            result = default(T);
 
             if (camera == null)
                 return false;
@@ -88,7 +82,7 @@ namespace Base.UtilityPackage.Raycasting
         /// <returns></returns>
         public static bool TryGetUIElement<T>(GraphicRaycaster graphicRaycaster, out T component)
         {
-            component = default;
+            component = default(T);
 
             if (EventSystem.current == null)
             {
@@ -133,11 +127,22 @@ namespace Base.UtilityPackage.Raycasting
         private static void DrawDebugRay(Ray ray, RaycastHit2D hit)
         {
             Vector3 start = ray.origin;
-            Vector3 end = hit ? hit.point : ray.origin + ray.direction * DebugRayLength;
+            Vector3 end = hit
+                ? hit.point
+                : ray.origin + ray.direction * DebugRayLength;
 
-            Color color = hit ? Color.green : DebugRayColor;
+            Color color = hit
+                ? Color.green
+                : DebugRayColor;
+
             Debug.DrawLine(start, end, color, DebugDuration);
         }
+#endif
+#if UNITY_EDITOR
+        private const float DebugRayLength = 25f;
+        private const float DebugDuration = 1f;
+
+        private static readonly Color DebugRayColor = new(0.1f, 0.8f, 1f, 0.8f);
 #endif
     }
 }

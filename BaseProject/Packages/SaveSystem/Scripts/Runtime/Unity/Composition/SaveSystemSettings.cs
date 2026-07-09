@@ -8,7 +8,6 @@ namespace Base.SaveSystemPackage.Unity.Composition
     /// <summary>
     /// All save settings, shaped for the inspector. Lives on the SaveManager component, so the
     /// slot model, encryption and versioning can be changed without code.
-    ///
     /// On the encryption choice: a single bool cannot mean "off in editor, on in build" because it
     /// is one stored value. The 3-way enum makes that intent explicit while still being forceable.
     /// </summary>
@@ -18,6 +17,7 @@ namespace Base.SaveSystemPackage.Unity.Composition
         public const string DefaultSubFolder = "Saves";
 
         [field: Header("Slot model")]
+
         [field: Tooltip("Fixed: numbered slots. Appending: a new save each time. Named: unlimited named slots.")]
         [field: SerializeField] public ESlotModel SlotModel { get; private set; } = ESlotModel.Named;
 
@@ -28,16 +28,19 @@ namespace Base.SaveSystemPackage.Unity.Composition
         [field: SerializeField] public int MaxAppendingSaves { get; private set; } = 20;
 
         [field: Header("Encryption")]
+
         [field: Tooltip("Encryption mode on write. Reading always auto-detects.")]
         [field: SerializeField] public EEncryption Encryption { get; private set; } = EEncryption.Auto;
 
         [field: Tooltip("Secret used for AES. Change it for your project. Keep it stable across versions.")]
         [field: SerializeField] public string EncryptionPassphrase { get; private set; } = "ChangeThis";
 
-        [field: Tooltip("Salt used for AES key derivation. Change it for your project. Keep it stable across versions.")]
+        [field:
+            Tooltip("Salt used for AES key derivation. Change it for your project. Keep it stable across versions.")]
         [field: SerializeField] public string Salt { get; private set; } = "ChangeThis";
 
         [field: Header("Serialization")]
+
         [field: Tooltip("Indent JSON so it is easy to read. Handy while developing.")]
         [field: SerializeField] public bool PrettyPrint { get; private set; } = true;
 

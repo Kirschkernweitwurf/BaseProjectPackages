@@ -15,11 +15,16 @@ namespace Base.ToolPackage.Editor.AutoStartScene
         private AutoStartSceneSettingsProvider(string path, SettingsScope scope = SettingsScope.Project)
             : base(path, scope) { }
 
+        [SettingsProvider]
+        public static SettingsProvider CreateSettingsProvider()
+            => new AutoStartSceneSettingsProvider("Project/Custom Tools/Auto Start Scene");
+
         public override void OnGUI(string searchContext)
         {
             GUILayout.Label("Auto Start Scene", EditorStyles.boldLabel);
             GUILayout.Label("Select a scene to automatically load when entering Play mode.",
                 EditorStyles.wordWrappedLabel);
+
             GUILayout.Space(10);
 
             // Toggle
@@ -33,6 +38,7 @@ namespace Base.ToolPackage.Editor.AutoStartScene
             EditorGUI.BeginChangeCheck();
             _startScene = (SceneAsset)EditorGUILayout.ObjectField("Start Scene",
                 AutoStartSceneSettings.GetStartScene(), typeof(SceneAsset), false);
+
             if (EditorGUI.EndChangeCheck())
                 AutoStartSceneSettings.SetStartScene(_startScene);
 
@@ -45,12 +51,6 @@ namespace Base.ToolPackage.Editor.AutoStartScene
                 EditorGUILayout.HelpBox("No start scene set.", MessageType.Warning);
 
             EditorGUI.EndDisabledGroup();
-        }
-
-        [SettingsProvider]
-        public static SettingsProvider CreateSettingsProvider()
-        {
-            return new AutoStartSceneSettingsProvider("Project/Custom Tools/Auto Start Scene");
         }
     }
 }

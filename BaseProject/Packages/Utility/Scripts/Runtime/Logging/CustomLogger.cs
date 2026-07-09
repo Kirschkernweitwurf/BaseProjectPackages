@@ -1,6 +1,6 @@
 using System.IO;
-using UnityEngine;
 using System.Runtime.CompilerServices;
+using UnityEngine;
 
 namespace Base.UtilityPackage.Logging
 {
@@ -50,7 +50,10 @@ namespace Base.UtilityPackage.Logging
 
         private static string FormatMessage(string message, string className)
         {
-            string editorMarker = Platform.IsEditorMode() ? LogTextFormatter.EditorMarker : string.Empty;
+            string editorMarker = Platform.IsEditorMode()
+                ? LogTextFormatter.EditorMarker
+                : string.Empty;
+
             string color = CustomLoggingUtils.GetColor(className);
             return $"{editorMarker}<color={color}><b>[{className}]</b></color> {message}";
         }

@@ -10,7 +10,9 @@ namespace Base.UtilityPackage.Types
         /// </summary>
         /// <param name="value"> The boolean value to convert.</param>
         /// <returns>value ? 1 : 0</returns>
-        public static int ToInt(this bool value) => value ? 1 : 0;
+        public static int ToInt(this bool value) => value
+            ? 1
+            : 0;
 
         /// <summary>
         /// Converts an integer value to a boolean.

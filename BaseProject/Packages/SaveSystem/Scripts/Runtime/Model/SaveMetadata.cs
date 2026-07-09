@@ -8,14 +8,23 @@ namespace Base.SaveSystemPackage.Model
     public sealed class SaveMetadata
     {
         public string SlotId { get; }
+
         public string DisplayName { get; }
+
         public int SaveVersion { get; }
+
         public string AppVersion { get; }
+
         public DateTime CreatedUtc { get; }
+
         public DateTime LastSavedUtc { get; }
+
         public TimeSpan TotalPlayTime { get; }
+
         public bool HasScreenshot { get; }
+
         public int ScreenshotWidth { get; }
+
         public int ScreenshotHeight { get; }
 
         public SaveMetadata(string slotId, string displayName, int saveVersion, string appVersion,
@@ -35,43 +44,34 @@ namespace Base.SaveSystemPackage.Model
         }
 
         /// <summary>
+        /// A fresh metadata for a brand-new save in the given slot.
+        /// </summary>
+        public static SaveMetadata CreateNew(string slotId, int saveVersion, string appVersion, DateTime nowUtc) => new(
+            slotId,
+            null,
+            saveVersion,
+            appVersion,
+            nowUtc,
+            nowUtc,
+            TimeSpan.Zero,
+            false,
+            0,
+            0);
+
+        /// <summary>
         /// Returns a copy with the given fields replaced. Pass only what changes; the rest is kept.
         /// </summary>
         public SaveMetadata With(string displayName = null, int? saveVersion = null, string appVersion = null,
             DateTime? lastSavedUtc = null, TimeSpan? totalPlayTime = null, bool? hasScreenshot = null,
-            int? screenshotWidth = null, int? screenshotHeight = null)
-        {
-            return new SaveMetadata(
-                SlotId,
-                displayName ?? DisplayName,
-                saveVersion ?? SaveVersion,
-                appVersion ?? AppVersion,
-                CreatedUtc,
-                lastSavedUtc ?? LastSavedUtc,
-                totalPlayTime ?? TotalPlayTime,
-                hasScreenshot ?? HasScreenshot,
-                screenshotWidth ?? ScreenshotWidth,
-                screenshotHeight ?? ScreenshotHeight);
-        }
-
-        /// <summary>
-        /// A fresh metadata for a brand-new save in the given slot.
-        /// </summary>
-        public static SaveMetadata CreateNew(string slotId, int saveVersion, string appVersion, DateTime nowUtc)
-        {
-            return new SaveMetadata
-            (
-                slotId,
-                displayName: null,
-                saveVersion,
-                appVersion,
-                createdUtc: nowUtc,
-                lastSavedUtc: nowUtc,
-                totalPlayTime: TimeSpan.Zero,
-                hasScreenshot: false,
-                screenshotWidth: 0,
-                screenshotHeight: 0
-            );
-        }
+            int? screenshotWidth = null, int? screenshotHeight = null) => new(SlotId,
+            displayName ?? DisplayName,
+            saveVersion ?? SaveVersion,
+            appVersion ?? AppVersion,
+            CreatedUtc,
+            lastSavedUtc ?? LastSavedUtc,
+            totalPlayTime ?? TotalPlayTime,
+            hasScreenshot ?? HasScreenshot,
+            screenshotWidth ?? ScreenshotWidth,
+            screenshotHeight ?? ScreenshotHeight);
     }
 }

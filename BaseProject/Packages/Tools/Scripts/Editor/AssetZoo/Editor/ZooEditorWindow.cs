@@ -25,8 +25,6 @@ namespace Base.ToolPackage.Editor.AssetZoo.Editor
         private UnityEditor.Editor _cachedConfigEditor;
 
 #region Unity Callbacks
-        private void OnDisable() => ClearCachedEditor();
-
         private void OnGUI()
         {
             EditorGUILayout.LabelField("Asset Zoo Builder", EditorStyles.boldLabel);
@@ -90,6 +88,8 @@ namespace Base.ToolPackage.Editor.AssetZoo.Editor
 
             EditorGUILayout.EndScrollView();
         }
+
+        private void OnDisable() => ClearCachedEditor();
 #endregion
 
         /// <summary>

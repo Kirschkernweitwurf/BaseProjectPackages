@@ -22,8 +22,6 @@ namespace Base.UtilityPackage.Types
         /// Example: 0.56 → "56%"
         /// </summary>
         public static string ToPercentString(float value, int decimals = 0)
-        {
-            return ToPercent(value).ToString($"F{decimals}") + "%";
-        }
+            => ToPercent(value).ToString($"F{decimals}") + "%";
     }
 }

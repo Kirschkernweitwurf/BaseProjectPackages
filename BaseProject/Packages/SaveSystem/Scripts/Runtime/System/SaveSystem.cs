@@ -17,11 +17,9 @@ namespace Base.SaveSystemPackage.System
     /// The default <see cref="ISaveSystem"/>. Uses an <see cref="ISaveStorage"/> for bytes, an
     /// <see cref="ISaveCodec"/> for serialize/encrypt, and an injected <see cref="ISavableRegistry"/>
     /// for the objects to collect from (no global statics).
-    ///
     /// Each slot is a folder holding up to three files: the data, the screenshot, and the metadata.
     /// The metadata is written LAST and acts as the commit marker: if it is present, the save is
     /// complete. A crash mid-save therefore never looks like a finished save.
-    ///
     /// Writes are serialized through a gate so two saves cannot interleave; <see cref="FlushAsync"/>
     /// waits for the current one.
     /// </summary>
@@ -71,7 +69,13 @@ namespace Base.SaveSystemPackage.System
 
                 await _storage.WriteAsync(DataKey(request.SlotId), dataBytes, ct);
 
-                if (request.Screenshot is { Png: { Length: > 0 } } shot)
+                if (request.Screenshot is
+                    {
+                        Png:
+                        {
+                            Length: > 0
+                        }
+                    } shot)
                     await _storage.WriteAsync(ShotKey(request.SlotId), shot.Png, ct);
 
                 await _storage.WriteAsync(MetaKey(request.SlotId), metaBytes, ct);
@@ -111,8 +115,9 @@ namespace Base.SaveSystemPackage.System
             int storedVersion = metaDto.saveVersion;
             if (storedVersion > _saveVersion)
             {
-                CustomLogger.LogWarning($"Slot '{slotId}' was saved at version {storedVersion}, " +
-                                        $"newer than supported version {_saveVersion}.", null);
+                CustomLogger.LogWarning($"Slot '{slotId}' was saved at version {storedVersion}, "
+                    + $"newer than supported version {_saveVersion}.", null);
+
                 return ESaveLoadResult.VersionTooNew;
             }
 
@@ -128,9 +133,7 @@ namespace Base.SaveSystemPackage.System
         }
 
         public async Awaitable<bool> ExistsAsync(string slotId, CancellationToken ct = default)
-        {
-            return await _storage.ExistsAsync(MetaKey(slotId), ct);
-        }
+            => await _storage.ExistsAsync(MetaKey(slotId), ct);
 
         public async Awaitable DeleteAsync(string slotId, CancellationToken ct = default)
         {
@@ -165,9 +168,7 @@ namespace Base.SaveSystemPackage.System
         }
 
         public async Awaitable<byte[]> LoadScreenshotPngAsync(string slotId, CancellationToken ct = default)
-        {
-            return await _storage.ReadAsync(ShotKey(slotId), ct);
-        }
+            => await _storage.ReadAsync(ShotKey(slotId), ct);
 
         public async Awaitable<IReadOnlyList<SaveMetadata>> ListSavesAsync(CancellationToken ct = default)
         {
@@ -203,14 +204,20 @@ namespace Base.SaveSystemPackage.System
             _writeGate.Release();
         }
 
+        private static string DataKey(string slotId) => slotId + DataSuffix;
+
+        private static string MetaKey(string slotId) => slotId + MetaSuffix;
+
+        private static string ShotKey(string slotId) => slotId + ShotSuffix;
+
         private SaveMetadata BuildMetadata(SaveMetadata existing, SaveRequest request)
         {
             DateTime nowUtc = DateTime.UtcNow;
 
-            SaveMetadata meta = existing ?? SaveMetadata.CreateNew(request.SlotId, _saveVersion, Application.version, nowUtc);
+            SaveMetadata meta =
+                existing ?? SaveMetadata.CreateNew(request.SlotId, _saveVersion, Application.version, nowUtc);
 
-            meta = meta.With(
-                saveVersion: _saveVersion,
+            meta = meta.With(saveVersion: _saveVersion,
                 appVersion: Application.version,
                 lastSavedUtc: nowUtc,
                 displayName: request.DisplayName,
@@ -218,7 +225,13 @@ namespace Base.SaveSystemPackage.System
                     ? TimeSpan.FromSeconds(request.PlaytimeSeconds.Value)
                     : null);
 
-            if (request.Screenshot is { Png: { Length: > 0 } } shot)
+            if (request.Screenshot is
+                {
+                    Png:
+                    {
+                        Length: > 0
+                    }
+                } shot)
                 meta = meta.With(hasScreenshot: true, screenshotWidth: shot.Width, screenshotHeight: shot.Height);
 
             return meta;
@@ -233,8 +246,9 @@ namespace Base.SaveSystemPackage.System
                     ISaveMigration step = _migrations.FirstOrDefault(m => m.FromVersion == v);
                     if (step == null)
                     {
-                        CustomLogger.LogError($"No migration from version {v} for slot '{slotId}'." +
-                                              " Cannot upgrade save.", null);
+                        CustomLogger.LogError(
+                            $"No migration from version {v} for slot '{slotId}'." + " Cannot upgrade save.", null);
+
                         return false;
                     }
 
@@ -249,9 +263,5 @@ namespace Base.SaveSystemPackage.System
                 return false;
             }
         }
-
-        private static string DataKey(string slotId) => slotId + DataSuffix;
-        private static string MetaKey(string slotId) => slotId + MetaSuffix;
-        private static string ShotKey(string slotId) => slotId + ShotSuffix;
     }
 }

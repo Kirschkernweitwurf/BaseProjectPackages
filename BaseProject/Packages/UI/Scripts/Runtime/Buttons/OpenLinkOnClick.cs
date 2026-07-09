@@ -1,5 +1,5 @@
-using UnityEngine;
 using Base.UtilityPackage.Logging;
+using UnityEngine;
 
 namespace Base.UIPackage.Buttons
 {

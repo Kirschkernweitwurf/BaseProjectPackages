@@ -13,6 +13,7 @@ namespace Base.ScreenShakePackage
     {
         private CinemachineImpulseListener _listener;
 
+#region Unity Callbacks
         private void Awake()
         {
             _listener = GetComponent<CinemachineImpulseListener>();
@@ -21,6 +22,7 @@ namespace Base.ScreenShakePackage
         }
 
         private void OnDestroy() => ScreenShakeManager.DeregisterListener(ApplyProfile);
+#endregion
 
         /// <summary>
         /// Applies the settings from the given <see cref="ScreenShakeProfile"/>

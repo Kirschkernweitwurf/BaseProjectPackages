@@ -1,7 +1,6 @@
 using System;
 using System.Security.Cryptography;
 using System.Text;
-using Base.SaveSystemPackage.Storage;
 using Base.UtilityPackage.Logging;
 
 namespace Base.SaveSystemPackage.Encryption
@@ -12,24 +11,27 @@ namespace Base.SaveSystemPackage.Encryption
     /// </summary>
     public sealed class AesEncryptor : ISaveEncryptor
     {
+        private const string FallbackSalt = "3a3tsUZLSjZNTXR#7Tsgz3c95OIXsHsYia";
+        private const int Iterations = 100_000;
         private const int IvSize = 16;
         private const int KeySize = 32;
-        private const int Iterations = 100_000;
-        private const string FallbackSalt = "3a3tsUZLSjZNTXR#7Tsgz3c95OIXsHsYia";
 
         public ESaveEncryption Mode => ESaveEncryption.Aes;
 
         private readonly byte[] _key;
 
-        /// <param name="passphrase">Any secret string. Keep it the same across versions
-        /// or old saves will fail to decrypt.</param>
+        /// <param name="passphrase">
+        /// Any secret string. Keep it the same across versions
+        /// or old saves will fail to decrypt.
+        /// </param>
         /// <param name="salt">Optional. Pass your own for extra safety.</param>
         public AesEncryptor(string passphrase, byte[] salt = null)
         {
             if (string.IsNullOrEmpty(passphrase))
             {
-                CustomLogger.LogWarning("Passphrase is null or empty. This is not secure!" +
-                                        " Please provide a strong passphrase.", null);
+                CustomLogger.LogWarning(
+                    "Passphrase is null or empty. This is not secure!" + " Please provide a strong passphrase.", null);
+
                 return;
             }
 
@@ -38,7 +40,7 @@ namespace Base.SaveSystemPackage.Encryption
             _key = kdf.GetBytes(KeySize);
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc/>
         public byte[] Encrypt(byte[] plain)
         {
             using Aes aes = Aes.Create();
@@ -54,10 +56,13 @@ namespace Base.SaveSystemPackage.Encryption
             return result;
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc/>
         public byte[] Decrypt(byte[] data)
         {
-            if (data is not { Length: > IvSize })
+            if (data is not
+                {
+                    Length: > IvSize
+                })
             {
                 CustomLogger.LogError("Data is null or too short to contain an IV. Decryption failed.", null);
                 return Array.Empty<byte>();

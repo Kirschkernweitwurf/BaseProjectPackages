@@ -23,9 +23,7 @@ namespace Base.SettingsPackage.Display
 
         /// <summary>Applies a full screen mode while keeping the current resolution.</summary>
         public static void SetFullScreenMode(FullScreenMode mode)
-        {
-            Screen.SetResolution(Screen.width, Screen.height, mode);
-        }
+            => Screen.SetResolution(Screen.width, Screen.height, mode);
 
         /// <summary>Applies a resolution from a "{width}x{height}" label. Returns false on a malformed label.</summary>
         public static bool SetResolution(string label, FullScreenMode mode)

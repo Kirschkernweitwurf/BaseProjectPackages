@@ -78,9 +78,11 @@ namespace Base.ToolPackage.Editor.AssetZoo.Editor
             {
                 case ELayoutType.Grid:
                     yield return nameof(LayoutSettings.GridColumns);
+
                     break;
                 case ELayoutType.Circle:
                     yield return nameof(LayoutSettings.CircleRadius);
+
                     break;
                 case ELayoutType.Line:
                 default:

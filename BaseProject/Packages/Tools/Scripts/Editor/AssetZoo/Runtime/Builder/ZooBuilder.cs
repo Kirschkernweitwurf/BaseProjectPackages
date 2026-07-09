@@ -14,20 +14,20 @@ namespace Base.ToolPackage.Editor.AssetZoo.Runtime.Builder
     /// </summary>
     public class ZooBuilder
     {
-        private const string ZooRootName = "AssetZoo_Generated";
         private const string BuildUndoLabel = "Build Asset Zoo";
         private const string ClearUndoLabel = "Clear Asset Zoo";
         private const string UnnamedCategoryFallback = "Unnamed Category";
-
-        // Cached reference to the most recently built zoo root. Lost on editor reload
-        // or when a new builder instance is constructed; GetZooRoot() repopulates via
-        // marker lookup in those cases.
-        private GameObject _cachedRoot;
+        private const string ZooRootName = "AssetZoo_Generated";
 
         /// <summary>
         /// True when a built zoo exists in the scene that this builder can act on.
         /// </summary>
         public bool HasZoo => GetZooRoot() != null;
+
+        // Cached reference to the most recently built zoo root. Lost on editor reload
+        // or when a new builder instance is constructed; GetZooRoot() repopulates via
+        // marker lookup in those cases.
+        private GameObject _cachedRoot;
 
         /// <summary>
         /// Returns the current zoo root, or null if none exists. Uses an internal cache
@@ -39,7 +39,10 @@ namespace Base.ToolPackage.Editor.AssetZoo.Runtime.Builder
                 return _cachedRoot;
 
             ZooRootMarker marker = Object.FindAnyObjectByType<ZooRootMarker>();
-            _cachedRoot = marker != null ? marker.gameObject : null;
+            _cachedRoot = marker != null
+                ? marker.gameObject
+                : null;
+
             return _cachedRoot;
         }
 
@@ -85,7 +88,8 @@ namespace Base.ToolPackage.Editor.AssetZoo.Runtime.Builder
                 if (category?.Entries == null || category.Entries.Count == 0)
                     continue;
 
-                BuildCategory(config, category, root.transform, layoutStrategy, alignment, direction, ref categoryOffsetZ);
+                BuildCategory(config, category, root.transform, layoutStrategy, alignment, direction,
+                    ref categoryOffsetZ);
             }
 
 #if UNITY_EDITOR
@@ -119,23 +123,6 @@ namespace Base.ToolPackage.Editor.AssetZoo.Runtime.Builder
                 Undo.CollapseUndoOperations(undoGroup);
             }
 #endif
-        }
-
-        private void ClearExisting()
-        {
-            GameObject existing = GetZooRoot();
-            _cachedRoot = null;
-
-            if (existing == null)
-                return;
-#if UNITY_EDITOR
-            if (!Application.isPlaying)
-            {
-                Undo.DestroyObjectImmediate(existing);
-                return;
-            }
-#endif
-            Object.Destroy(existing);
         }
 
         private static void RegisterTracked(GameObject go, string undoLabel)
@@ -204,10 +191,15 @@ namespace Base.ToolPackage.Editor.AssetZoo.Runtime.Builder
             LayoutResult result = layoutStrategy.Layout(validEntries.Count, maxCell, config.Layout);
 
             // When stacking in a negative direction, mirror positions along the stacking axis
-            Vector3 mirror = new(
-                direction.x < 0f ? -1f : 1f,
-                direction.y < 0f ? -1f : 1f,
-                direction.z < 0f ? -1f : 1f);
+            Vector3 mirror = new(direction.x < 0f
+                    ? -1f
+                    : 1f,
+                direction.y < 0f
+                    ? -1f
+                    : 1f,
+                direction.z < 0f
+                    ? -1f
+                    : 1f);
 
             for (int i = 0; i < validEntries.Count; i++)
             {
@@ -250,6 +242,7 @@ namespace Base.ToolPackage.Editor.AssetZoo.Runtime.Builder
             Vector3 labelLocalPos = new(0f, bounds.size.y + config.Labels.ItemLabelHeight, 0f);
             GameObject labelGo = LabelFactory.CreateLabel(label, entryRoot.transform, labelLocalPos,
                 config.Labels.ItemFontSize, config.Labels.ItemColor, LabelSettings.ItemWorldScale);
+
             RegisterTracked(labelGo, BuildUndoLabel);
         }
 
@@ -283,5 +276,22 @@ namespace Base.ToolPackage.Editor.AssetZoo.Runtime.Builder
             ECategoryDirection.Right => Vector3.right,
             _ => Vector3.up
         };
+
+        private void ClearExisting()
+        {
+            GameObject existing = GetZooRoot();
+            _cachedRoot = null;
+
+            if (existing == null)
+                return;
+#if UNITY_EDITOR
+            if (!Application.isPlaying)
+            {
+                Undo.DestroyObjectImmediate(existing);
+                return;
+            }
+#endif
+            Object.Destroy(existing);
+        }
     }
 }

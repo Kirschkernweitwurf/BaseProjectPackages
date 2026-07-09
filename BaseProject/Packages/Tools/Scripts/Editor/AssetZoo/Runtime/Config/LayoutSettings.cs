@@ -16,7 +16,8 @@ namespace Base.ToolPackage.Editor.AssetZoo.Runtime.Config
         [field: SerializeField] public EAlignmentMode Alignment { get; private set; } = EAlignmentMode.Ground;
 
         [field: Tooltip("Direction in which categories are placed.")]
-        [field: SerializeField] public ECategoryDirection CategoryDirection { get; private set; } = ECategoryDirection.Left;
+        [field: SerializeField] public ECategoryDirection CategoryDirection { get; private set; } =
+            ECategoryDirection.Left;
 
         [field: Tooltip("Gap between items inside a category.")]
         [field: Min(0f)]

@@ -32,8 +32,14 @@ namespace Base.UtilityPackage.Editor
             }
 
             // Build list with "None" entry first
-            List<string> names = new() { "None" };
-            names.AddRange(options.Select(o => o != null ? o.name : "<NULL>"));
+            List<string> names = new()
+            {
+                "None"
+            };
+
+            names.AddRange(options.Select(o => o != null
+                ? o.name
+                : "<NULL>"));
 
             Object current = property.objectReferenceValue;
 

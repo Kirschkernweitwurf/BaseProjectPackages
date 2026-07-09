@@ -15,17 +15,17 @@ namespace Base.MemoryProfiler
         /// <summary>Asset file name (without extension).</summary>
         public const string ConfigName = "MemoryProfilerConfig";
 
-        private const CaptureFlags DefaultCaptureFlags = CaptureFlags.ManagedObjects
-            | CaptureFlags.NativeObjects
-            | CaptureFlags.NativeAllocations
-            | CaptureFlags.NativeAllocationSites
-            | CaptureFlags.NativeStackTraces;
-
         /// <summary>Default storage path, matching the Memory Profiler preference default.</summary>
         public const string DefaultStoragePath = "./MemoryCaptures";
 
         /// <summary>Path used by Resources.Load, relative to a Resources folder.</summary>
         public const string ResourcePath = ResourceSubFolder + "/" + ConfigName;
+
+        private const CaptureFlags DefaultCaptureFlags = CaptureFlags.ManagedObjects
+            | CaptureFlags.NativeObjects
+            | CaptureFlags.NativeAllocations
+            | CaptureFlags.NativeAllocationSites
+            | CaptureFlags.NativeStackTraces;
 
         private const string ResourceSubFolder = "MemoryProfilerConfig";
 

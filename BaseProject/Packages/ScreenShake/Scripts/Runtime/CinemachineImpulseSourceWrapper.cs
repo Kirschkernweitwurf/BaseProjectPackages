@@ -16,6 +16,7 @@ namespace Base.ScreenShakePackage
 
         private CinemachineImpulseSource _source;
 
+#region Unity Callbacks
         private void Awake()
         {
             _source = GetComponent<CinemachineImpulseSource>();
@@ -32,6 +33,7 @@ namespace Base.ScreenShakePackage
                 ApplyProfile(profile);
         }
 #endif
+#endregion
 
         /// <summary>
         /// Generates a screen shake using the current profile settings.

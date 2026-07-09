@@ -1,7 +1,7 @@
 using System.Globalization;
+using Base.UtilityPackage;
 using TMPro;
 using UnityEngine;
-using Base.UtilityPackage;
 
 namespace Base.UIPackage.Utility
 {
@@ -15,6 +15,7 @@ namespace Base.UIPackage.Utility
 
         private float _deltaTime;
 
+#region Unity Callbacks
         private void Awake()
         {
             if (Platform.IsRelease && !showInReleaseBuilds)
@@ -27,5 +28,6 @@ namespace Base.UIPackage.Utility
             float fps = 1.0f / _deltaTime;
             fpsText.text = Mathf.Ceil(fps).ToString(CultureInfo.InvariantCulture) + " FPS";
         }
+#endregion
     }
 }
