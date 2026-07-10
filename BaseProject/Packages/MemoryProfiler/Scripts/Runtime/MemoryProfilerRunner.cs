@@ -3,6 +3,7 @@ using System.IO;
 using Base.CorePackage.SceneManagement;
 using Base.CorePackage.Timers;
 using Base.UtilityPackage.Logging;
+using UnityEditor;
 using UnityEngine;
 using UnityMemoryProfiler = Unity.Profiling.Memory.MemoryProfiler;
 
@@ -54,6 +55,12 @@ namespace Base.MemoryProfiler
             string root = Directory.GetParent(Application.dataPath)?.FullName ?? Application.dataPath;
             return ResolveAbsolute(config.SnapshotStoragePath, root);
         }
+
+
+#if UNITY_EDITOR
+        [InitializeOnEnterPlayMode]
+        private static void ResetStatics() => LastSnapshotPath = string.Empty;
+#endif
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]

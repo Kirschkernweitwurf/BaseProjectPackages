@@ -1,4 +1,5 @@
 using System;
+using UnityEditor;
 
 namespace Base.CorePackage.MenuManaging.Menus
 {
@@ -33,5 +34,10 @@ namespace Base.CorePackage.MenuManaging.Menus
             IsPaused = false;
             OnPauseStateChanged?.Invoke(false);
         }
+
+#if UNITY_EDITOR
+        [InitializeOnEnterPlayMode]
+        private static void ResetStatics() => IsPaused = false;
+#endif
     }
 }
