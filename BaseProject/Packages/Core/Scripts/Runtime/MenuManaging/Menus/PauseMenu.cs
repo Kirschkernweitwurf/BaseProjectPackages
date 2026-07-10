@@ -13,10 +13,16 @@ namespace Base.CorePackage.MenuManaging.Menus
         /// </summary>
         public static event Action<bool> OnPauseStateChanged;
 
+        /// <summary>
+        /// Gets whether the game is currently paused.
+        /// </summary>
+        public static bool IsPaused { get; private set; }
+
         protected override void OnOpened()
         {
             base.OnOpened();
 
+            IsPaused = true;
             OnPauseStateChanged?.Invoke(true);
         }
 
@@ -24,6 +30,7 @@ namespace Base.CorePackage.MenuManaging.Menus
         {
             base.OnClosed();
 
+            IsPaused = false;
             OnPauseStateChanged?.Invoke(false);
         }
     }
