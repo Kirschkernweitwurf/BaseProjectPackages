@@ -68,8 +68,6 @@ namespace Base.CorePackage.ObjectPooling
         /// </summary>
         /// <param name="element">The retrieved object, or null if instantiation failed.</param>
         /// <returns><c>true</c> if an object was successfully retrieved; otherwise, <c>false</c>.</returns>
-
-        // ReSharper disable once MemberCanBePrivate.Global
         public bool TryGet(out T element)
         {
             element = null;
