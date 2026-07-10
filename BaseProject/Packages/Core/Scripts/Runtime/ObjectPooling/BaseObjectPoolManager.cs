@@ -20,13 +20,16 @@ namespace Base.CorePackage.ObjectPooling
         [Tooltip("Prefab to instantiate when new objects are needed.")]
         [SerializeField] protected TAsset prefab;
 
-        [Tooltip("Optional parent for pooled objects.")]
+        [Tooltip("Optional parent where pooled objects will be instantiated.")]
         [SerializeField] protected Transform poolParent;
 
         [Tooltip("Optional number of instances to prewarm on startup.")]
         [SerializeField] private int prewarmCount;
 
-        private HashSetObjectPool<TAsset> _pool;
+        /// <summary>
+        /// The object pool instance. This is where pooled objects are managed.
+        /// </summary>
+        public HashSetObjectPool<TAsset> Pool { get; private set; }
 
 #region Unity Callbacks
         protected override void Awake()
@@ -39,7 +42,7 @@ namespace Base.CorePackage.ObjectPooling
                 return;
             }
 
-            _pool = CreatePoolInstance();
+            Pool = CreatePoolInstance();
 
             if (prewarmCount > 0)
                 Prewarm(prewarmCount);
@@ -52,8 +55,8 @@ namespace Base.CorePackage.ObjectPooling
         /// <returns>The pooled instance.</returns>
         public virtual TAsset Get()
         {
-            if (_pool != null)
-                return _pool.Get();
+            if (Pool != null)
+                return Pool.Get();
 
             CustomLogger.LogError("Pool not initialized.", this);
             return null;
@@ -65,13 +68,13 @@ namespace Base.CorePackage.ObjectPooling
         /// <param name="instance">The instance to release.</param>
         public virtual void Release(TAsset instance)
         {
-            if (_pool == null)
+            if (Pool == null)
             {
                 CustomLogger.LogError("Pool not initialized.", this);
                 return;
             }
 
-            _pool.Release(instance);
+            Pool.Release(instance);
         }
 
         /// <summary>
@@ -106,8 +109,8 @@ namespace Base.CorePackage.ObjectPooling
         {
             for (int i = 0; i < count; i++)
             {
-                TAsset instance = _pool.Get();
-                _pool.Release(instance);
+                TAsset instance = Pool.Get();
+                Pool.Release(instance);
             }
         }
     }
