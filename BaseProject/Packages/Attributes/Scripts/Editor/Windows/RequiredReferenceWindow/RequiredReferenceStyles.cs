@@ -1,0 +1,111 @@
+using UnityEditor;
+using UnityEngine;
+
+namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
+{
+    /// <summary>
+    /// Cached styles, colors and icons for the required-reference window.
+    /// Pure presentation.
+    /// </summary>
+    public sealed class RequiredReferenceStyles
+    {
+        private const string AlertIcon = "console.erroricon.sml";
+        private const string ObjectIcon = "GameObject Icon";
+        private const string SuccessIcon = "TestPassed";
+
+        /// <summary>Accent used for problems.</summary>
+        public static Color Accent => new(0.86f, 0.30f, 0.32f);
+
+        /// <summary>Accent used for the all-good state.</summary>
+        public static Color Success => new(0.36f, 0.76f, 0.46f);
+
+        /// <summary>Subtle background behind a group header.</summary>
+        public static Color Header => EditorGUIUtility.isProSkin
+            ? new Color(1f, 1f, 1f, 0.05f)
+            : new Color(0f, 0f, 0f, 0.05f);
+
+        /// <summary>Bold label for the object name in a group header.</summary>
+        public GUIStyle Name { get; private set; }
+
+        /// <summary>Label for a single missing-reference path.</summary>
+        public GUIStyle Path { get; private set; }
+
+        /// <summary>Centered white label used inside the count badge.</summary>
+        public GUIStyle Badge { get; private set; }
+
+        /// <summary>Centered label shown when everything is valid.</summary>
+        public GUIStyle Empty { get; private set; }
+
+        /// <summary>Toolbar style used for the success state.</summary>
+        public GUIStyle ToolbarSuccess { get; private set; }
+
+        /// <summary>Toolbar style used for the error state.</summary>
+        public GUIStyle ToolbarError { get; private set; }
+
+        /// <summary>Red alert icon shown per missing reference.</summary>
+        public Texture ErrorTexture => EditorGUIUtility.IconContent(AlertIcon).image;
+
+        /// <summary>Green success icon shown in the toolbar and empty state.</summary>
+        public Texture SuccessTexture => EditorGUIUtility.IconContent(SuccessIcon).image;
+
+        /// <summary>Default object icon for a group header.</summary>
+        public Texture ObjectTexture => EditorGUIUtility.IconContent(ObjectIcon).image;
+
+        /// <summary>Builds the GUI styles once. Must run inside a GUI callback.</summary>
+        public void EnsureBuilt()
+        {
+            if (Name != null)
+                return;
+
+            Name = new GUIStyle(EditorStyles.boldLabel)
+            {
+                alignment = TextAnchor.MiddleLeft
+            };
+
+            Path = new GUIStyle(EditorStyles.label)
+            {
+                alignment = TextAnchor.MiddleLeft
+            };
+
+            Badge = new GUIStyle(EditorStyles.miniBoldLabel)
+            {
+                alignment = TextAnchor.MiddleCenter,
+                normal =
+                {
+                    textColor = Color.white
+                }
+            };
+
+            Empty = new GUIStyle(EditorStyles.boldLabel)
+            {
+                alignment = TextAnchor.MiddleCenter,
+                normal =
+                {
+                    textColor = Success
+                }
+            };
+
+            ToolbarSuccess = new GUIStyle(EditorStyles.toolbarButton)
+            {
+                alignment = TextAnchor.MiddleLeft,
+                fontStyle = FontStyle.Bold
+            };
+
+            ToolbarSuccess.normal.textColor = Success;
+            ToolbarSuccess.active.textColor = Success;
+            ToolbarSuccess.hover.textColor = Success;
+            ToolbarSuccess.focused.textColor = Success;
+
+            ToolbarError = new GUIStyle(EditorStyles.toolbarButton)
+            {
+                alignment = TextAnchor.MiddleLeft,
+                fontStyle = FontStyle.Bold
+            };
+
+            ToolbarError.normal.textColor = Accent;
+            ToolbarError.active.textColor = Accent;
+            ToolbarError.hover.textColor = Accent;
+            ToolbarError.focused.textColor = Accent;
+        }
+    }
+}

@@ -1,16 +1,17 @@
 {
-  "name": "Base.AttributePackage",
-  "rootNamespace": "Base.AttributePackage",
-  "references": [
-    "GUID:75469ad4d38634e559750d17036d5f7c"
-  ],
-  "includePlatforms": [],
-  "excludePlatforms": [],
-  "allowUnsafeCode": false,
-  "overrideReferences": false,
-  "precompiledReferences": [],
-  "autoReferenced": true,
-  "defineConstraints": [],
-  "versionDefines": [],
-  "noEngineReferences": false
+    "name": "Base.AttributePackage",
+    "rootNamespace": "Base.AttributePackage",
+    "references": [
+        "GUID:75469ad4d38634e559750d17036d5f7c",
+        "GUID:922d81cfb9ff6984da4cb2213b66a375"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }
