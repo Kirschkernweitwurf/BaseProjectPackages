@@ -1,3 +1,4 @@
+using System;
 using System.Reflection;
 using Base.AttributePackage.Editor.Core.Interfaces;
 using Base.AttributePackage.Editor.Handlers;
@@ -10,18 +11,28 @@ namespace Base.AttributePackage.Editor.Core
 {
     /// <summary>
     /// Runs the per-member pipeline: visibility, enable state, before-field decorations, the field
-    /// itself, then after-field handlers.
+    /// itself, then after-field handlers. Descends into nested serializable types so the same pipeline
+    /// applies at any depth, instead of handing the whole subtree to Unity's default drawing.
     /// </summary>
     public static class MemberRenderer
     {
-        /// <summary>Draws a single member through all handlers.</summary>
+        private const string UnityAssemblyPrefix = "Unity";
+        private const string SystemAssemblyPrefix = "System";
+        private const string CoreLibraryAssembly = "mscorlib";
+
+        /// <summary>Draws a top-level member through all handlers.</summary>
         public static void Draw(SerializedProperty property, FieldInfo field, AttributePackageEditor editor)
+            => Draw(property, field, editor.target.GetType(), editor.target, editor);
+
+        private static void Draw(SerializedProperty property, FieldInfo field, Type declaringType,
+            object declaringObject, AttributePackageEditor editor)
         {
             Object before = property.propertyType == SerializedPropertyType.ObjectReference
                 ? property.objectReferenceValue
                 : null;
 
-            MemberContext context = new(property, field, editor.target, editor, before);
+            MemberContext context =
+                new(property, field, editor.target, declaringType, declaringObject, editor, before);
 
             foreach (IVisibilityHandler handler in HandlerRegistry.Visibility)
             {
@@ -47,12 +58,73 @@ namespace Base.AttributePackage.Editor.Core
 
             EditorGUI.indentLevel += amount;
             using (new EditorGUI.DisabledScope(!enabled))
-                EditorGUILayout.PropertyField(property, true);
+                DrawBody(context, field, editor);
 
             EditorGUI.indentLevel -= amount;
 
             foreach (IAfterFieldHandler handler in HandlerRegistry.AfterField)
                 handler.AfterField(context);
+        }
+
+        private static void DrawBody(in MemberContext context, FieldInfo field, AttributePackageEditor editor)
+        {
+            SerializedProperty property = context.Property;
+
+            if (!CanDescend(property, field, out Type nestedType))
+            {
+                EditorGUILayout.PropertyField(property, true);
+                return;
+            }
+
+            property.isExpanded = EditorGUILayout.Foldout(property.isExpanded, context.DisplayName, true);
+            if (!property.isExpanded)
+                return;
+
+            object instance = SerializedPropertyReflection.GetValue(property);
+
+            EditorGUI.indentLevel++;
+            DrawChildren(property, nestedType, instance, editor);
+            EditorGUI.indentLevel--;
+        }
+
+        private static void DrawChildren(SerializedProperty parent, Type declaringType, object declaringObject,
+            AttributePackageEditor editor)
+        {
+            SerializedProperty iterator = parent.Copy();
+            SerializedProperty end = parent.GetEndProperty();
+            bool enterChildren = true;
+
+            while (iterator.NextVisible(enterChildren) && !SerializedProperty.EqualContents(iterator, end))
+            {
+                enterChildren = false;
+                FieldInfo childField = ReflectionCache.GetField(declaringType, iterator.name);
+                Draw(iterator.Copy(), childField, declaringType, declaringObject, editor);
+            }
+        }
+
+        private static bool CanDescend(SerializedProperty property, FieldInfo field, out Type nestedType)
+        {
+            nestedType = null;
+
+            if (property.propertyType != SerializedPropertyType.Generic || property.isArray)
+                return false;
+
+            nestedType = field?.FieldType;
+            if (nestedType == null || nestedType == typeof(string))
+                return false;
+
+            if (IsFrameworkType(nestedType))
+                return false;
+
+            return !PropertyDrawerCache.HasDrawer(nestedType);
+        }
+
+        private static bool IsFrameworkType(Type type)
+        {
+            string assembly = type.Assembly.GetName().Name;
+            return assembly.StartsWith(UnityAssemblyPrefix)
+                || assembly.StartsWith(SystemAssemblyPrefix)
+                || assembly == CoreLibraryAssembly;
         }
     }
 }
