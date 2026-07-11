@@ -17,7 +17,7 @@ namespace Base.AttributePackage.Editor.Handlers
             if (attribute == null)
                 return;
 
-            MethodInfo method = ReflectionCache.GetMethod(context.Target.GetType(), attribute.MethodName);
+            MethodInfo method = ReflectionCache.GetMethod(context.DeclaringType, attribute.MethodName);
             if (method == null)
                 EditorGUILayout.HelpBox("Validation method not found: " + attribute.MethodName, MessageType.Warning);
             else if (!Invoke(method, context))
@@ -35,14 +35,14 @@ namespace Base.AttributePackage.Editor.Handlers
             else if (parameters.Length == 1)
                 arguments = new[]
                 {
-                    context.Field?.GetValue(context.Target)
+                    context.Field?.GetValue(context.DeclaringObject)
                 };
             else
                 return true;
 
             try
             {
-                object result = method.Invoke(context.Target, arguments);
+                object result = method.Invoke(context.DeclaringObject, arguments);
                 return !(result is bool valid) || valid;
             }
             catch
