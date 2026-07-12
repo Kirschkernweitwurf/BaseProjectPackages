@@ -1,8 +1,7 @@
 using System;
-using Base.AttributePackage.ColorEnums;
 using UnityEngine;
 
-namespace Base.AttributePackage.Widgets
+namespace Base.AttributePackage
 {
     /// <summary>
     /// Constrains an AnimationCurve field to a range and optionally tints the curve.

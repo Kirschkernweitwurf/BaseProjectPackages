@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Base.AttributePackage.Validation
+namespace Base.AttributePackage
 {
     /// <summary>
     /// Restricts an object reference to project assets. Scene object assignments are rejected.

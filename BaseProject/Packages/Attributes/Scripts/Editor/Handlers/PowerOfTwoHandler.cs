@@ -1,10 +1,7 @@
-using Base.AttributePackage.Editor.Core;
-using Base.AttributePackage.Editor.Core.Interfaces;
-using Base.AttributePackage.Validation;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Handlers
+namespace Base.AttributePackage.Editor
 {
     /// <summary>Snaps <see cref="PowerOfTwoAttribute"/> int fields to the nearest power of two.</summary>
     public sealed class PowerOfTwoHandler : IAfterFieldHandler

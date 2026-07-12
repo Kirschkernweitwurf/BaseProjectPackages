@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Base.AttributePackage.References
+namespace Base.AttributePackage
 {
     /// <summary>
     /// Draws a string field as a dropdown of project tags.

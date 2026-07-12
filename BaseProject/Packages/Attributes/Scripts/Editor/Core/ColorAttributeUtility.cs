@@ -1,7 +1,6 @@
-using Base.AttributePackage.ColorEnums;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Core
+namespace Base.AttributePackage.Editor
 {
     /// <summary>
     /// Resolves an explicit color from an HTML hex string or an <see cref="EColor"/> preset.

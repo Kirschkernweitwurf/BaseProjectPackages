@@ -1,13 +1,9 @@
 using System;
 using System.Reflection;
-using Base.AttributePackage.Editor.Core.Interfaces;
-using Base.AttributePackage.Editor.Handlers;
-using Base.AttributePackage.Editor.Inspectors;
-using Base.AttributePackage.Layout;
 using UnityEditor;
 using Object = UnityEngine.Object;
 
-namespace Base.AttributePackage.Editor.Core
+namespace Base.AttributePackage.Editor
 {
     /// <summary>
     /// Runs the per-member pipeline: visibility, enable state, before-field decorations, the field
@@ -16,9 +12,9 @@ namespace Base.AttributePackage.Editor.Core
     /// </summary>
     public static class MemberRenderer
     {
-        private const string UnityAssemblyPrefix = "Unity";
-        private const string SystemAssemblyPrefix = "System";
         private const string CoreLibraryAssembly = "mscorlib";
+        private const string SystemAssemblyPrefix = "System";
+        private const string UnityAssemblyPrefix = "Unity";
 
         /// <summary>Draws a top-level member through all handlers.</summary>
         public static void Draw(SerializedProperty property, FieldInfo field, AttributePackageEditor editor)

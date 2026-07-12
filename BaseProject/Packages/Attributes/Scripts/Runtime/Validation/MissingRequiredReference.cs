@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Base.AttributePackage.Validation
+namespace Base.AttributePackage
 {
     /// <summary>
     /// A single required object reference found to be null, including the nested path to it.

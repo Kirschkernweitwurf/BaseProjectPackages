@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Base.AttributePackage.Conditional
+namespace Base.AttributePackage
 {
     /// <summary>
     /// Enables the field only while the referenced bool member is true.

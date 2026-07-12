@@ -1,6 +1,6 @@
 using System;
 
-namespace Base.AttributePackage.Widgets
+namespace Base.AttributePackage
 {
     /// <summary>
     /// Draws an inspector button that invokes the decorated parameterless method.

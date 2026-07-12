@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Base.AttributePackage.Layout
+namespace Base.AttributePackage
 {
     /// <summary>
     /// Groups consecutive serialized fields into a tab bar.

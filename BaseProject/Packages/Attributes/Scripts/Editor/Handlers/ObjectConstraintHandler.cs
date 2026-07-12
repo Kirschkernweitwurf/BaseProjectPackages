@@ -1,11 +1,8 @@
-using Base.AttributePackage.Editor.Core;
-using Base.AttributePackage.Editor.Core.Interfaces;
-using Base.AttributePackage.Validation;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Base.AttributePackage.Editor.Handlers
+namespace Base.AttributePackage.Editor
 {
     /// <summary>
     /// Enforces <see cref="AssetOnlyAttribute"/> and <see cref="SceneObjectOnlyAttribute"/>.

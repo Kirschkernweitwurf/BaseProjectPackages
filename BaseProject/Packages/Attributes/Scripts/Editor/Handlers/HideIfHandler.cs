@@ -1,7 +1,4 @@
-using Base.AttributePackage.Conditional;
-using Base.AttributePackage.Editor.Core;
-
-namespace Base.AttributePackage.Editor.Handlers
+namespace Base.AttributePackage.Editor
 {
     /// <summary>Hides the field while the referenced bool member is true.</summary>
     public sealed class HideIfHandler : IVisibilityHandler

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.References
+namespace Base.AttributePackage
 {
     /// <summary>
     /// Attribute to show a dropdown of all scenes included in the Build Settings in the inspector.

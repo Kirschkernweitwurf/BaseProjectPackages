@@ -1,10 +1,9 @@
 using System.Reflection;
-using Base.AttributePackage.Widgets;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Base.AttributePackage.Editor.Core
+namespace Base.AttributePackage.Editor
 {
     /// <summary>
     /// Draws inspector buttons for methods marked with <see cref="ButtonAttribute"/>.

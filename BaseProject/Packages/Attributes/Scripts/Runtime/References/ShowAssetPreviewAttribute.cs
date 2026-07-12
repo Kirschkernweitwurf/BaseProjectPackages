@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Base.AttributePackage.References
+namespace Base.AttributePackage
 {
     /// <summary>
     /// Shows a thumbnail preview below an assigned asset reference.

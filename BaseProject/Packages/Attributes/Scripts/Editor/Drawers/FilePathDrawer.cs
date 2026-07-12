@@ -1,9 +1,7 @@
-using Base.AttributePackage.Editor.Core;
 using UnityEditor;
 using UnityEngine;
-using FilePathAttribute = Base.AttributePackage.References.FilePathAttribute;
 
-namespace Base.AttributePackage.Editor.Drawers
+namespace Base.AttributePackage.Editor
 {
     /// <summary>
     /// Draws a file path field with a browse button for <see cref="FilePathAttribute"/>.

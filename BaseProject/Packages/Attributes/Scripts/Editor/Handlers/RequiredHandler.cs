@@ -1,9 +1,6 @@
-using Base.AttributePackage.Editor.Core;
-using Base.AttributePackage.Editor.Core.Interfaces;
-using Base.AttributePackage.Validation;
 using UnityEditor;
 
-namespace Base.AttributePackage.Editor.Handlers
+namespace Base.AttributePackage.Editor
 {
     /// <summary>Shows an error when a <see cref="RequiredAttribute"/> reference is null.</summary>
     public sealed class RequiredHandler : IAfterFieldHandler

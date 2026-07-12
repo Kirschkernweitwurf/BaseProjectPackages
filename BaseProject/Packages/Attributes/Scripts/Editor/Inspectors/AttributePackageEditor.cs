@@ -1,12 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Base.AttributePackage.Editor.Core;
-using Base.AttributePackage.Layout;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Inspectors
+namespace Base.AttributePackage.Editor
 {
     /// <summary>
     /// Base inspector for the attribute package. Handles the serialized script field, foldout and

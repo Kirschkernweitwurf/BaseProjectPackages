@@ -1,9 +1,7 @@
-using Base.AttributePackage.ColorEnums;
-using Base.AttributePackage.Widgets;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Drawers
+namespace Base.AttributePackage.Editor
 {
     /// <summary>
     /// Draws a ranged, optionally tinted curve field for <see cref="CurveRangeAttribute"/>.

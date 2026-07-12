@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Base.AttributePackage.Validation
+namespace Base.AttributePackage
 {
     /// <summary>
     /// Marks an object reference field as required. Shows an error box when the reference is null.

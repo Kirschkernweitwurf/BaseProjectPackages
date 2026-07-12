@@ -1,7 +1,4 @@
-using Base.AttributePackage.Conditional;
-using Base.AttributePackage.Editor.Core;
-
-namespace Base.AttributePackage.Editor.Handlers
+namespace Base.AttributePackage.Editor
 {
     /// <summary>Hides the field unless the referenced enum member equals one of the given values.</summary>
     public sealed class ShowIfEnumHandler : IVisibilityHandler

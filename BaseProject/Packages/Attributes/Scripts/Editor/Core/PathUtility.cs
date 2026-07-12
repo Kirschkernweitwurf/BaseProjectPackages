@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Core
+namespace Base.AttributePackage.Editor
 {
     /// <summary>
     /// Path helpers shared by the folder and file path drawers.

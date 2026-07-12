@@ -1,10 +1,9 @@
 using System;
 using System.IO;
-using Base.AttributePackage.References;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Drawers
+namespace Base.AttributePackage.Editor
 {
     /// <summary>
     /// Property drawer for <see cref="SceneNameAttribute"/>.

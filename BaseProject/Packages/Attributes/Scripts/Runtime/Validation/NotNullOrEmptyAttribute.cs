@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Base.AttributePackage.Validation
+namespace Base.AttributePackage
 {
     /// <summary>
     /// Requires a string to be non-empty or a list or array to contain at least one element.

@@ -1,10 +1,7 @@
-using Base.AttributePackage.Editor.Core;
-using Base.AttributePackage.Editor.Core.Interfaces;
-using Base.AttributePackage.Layout;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Handlers
+namespace Base.AttributePackage.Editor
 {
     /// <summary>Draws the bold title and underline for <see cref="TitleAttribute"/>.</summary>
     public sealed class TitleHandler : IBeforeFieldHandler

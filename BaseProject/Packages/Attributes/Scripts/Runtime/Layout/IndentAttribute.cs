@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Base.AttributePackage.Layout
+namespace Base.AttributePackage
 {
     /// <summary>
     /// Increases the inspector indent level of the decorated field.

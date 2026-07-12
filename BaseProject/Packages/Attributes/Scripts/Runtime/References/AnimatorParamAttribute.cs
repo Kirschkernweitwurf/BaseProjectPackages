@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Base.AttributePackage.References
+namespace Base.AttributePackage
 {
     /// <summary>
     /// Draws a dropdown of the parameters of a sibling Animator field. On a string field it stores the

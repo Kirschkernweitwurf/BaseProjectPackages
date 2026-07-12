@@ -1,4 +1,4 @@
-namespace Base.AttributePackage.ColorEnums
+namespace Base.AttributePackage
 {
     /// <summary>
     /// Predefined colors accepted by color-aware attributes.

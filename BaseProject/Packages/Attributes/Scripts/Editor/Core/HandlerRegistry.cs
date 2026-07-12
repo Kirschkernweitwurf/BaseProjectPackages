@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
-using Base.AttributePackage.Editor.Core.Interfaces;
-using Base.AttributePackage.Editor.Handlers;
 using UnityEditor;
 
-namespace Base.AttributePackage.Editor.Core
+namespace Base.AttributePackage.Editor
 {
     /// <summary>
     /// Discovers and instantiates all handlers via <see cref="TypeCache"/>. Adding a handler

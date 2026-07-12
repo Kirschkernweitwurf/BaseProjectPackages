@@ -1,11 +1,10 @@
 using System;
 using System.Reflection;
-using Base.AttributePackage.Layout;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Base.AttributePackage.Editor.Core
+namespace Base.AttributePackage.Editor
 {
     /// <summary>
     /// Draws read-only values for members marked with <see cref="ShowNonSerializedAttribute"/>

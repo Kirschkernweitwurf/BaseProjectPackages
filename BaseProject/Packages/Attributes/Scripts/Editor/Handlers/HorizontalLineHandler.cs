@@ -1,10 +1,7 @@
-using Base.AttributePackage.Editor.Core;
-using Base.AttributePackage.Editor.Core.Interfaces;
-using Base.AttributePackage.Layout;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Handlers
+namespace Base.AttributePackage.Editor
 {
     /// <summary>Draws the separator line for <see cref="HorizontalLineAttribute"/>.</summary>
     public sealed class HorizontalLineHandler : IBeforeFieldHandler

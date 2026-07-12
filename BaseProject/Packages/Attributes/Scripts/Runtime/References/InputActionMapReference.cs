@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace Base.AttributePackage.References
+namespace Base.AttributePackage
 {
     /// <summary>
     /// Serializable reference to an <see cref="InputActionMap"/> inside an

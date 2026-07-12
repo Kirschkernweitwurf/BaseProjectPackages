@@ -1,12 +1,10 @@
 using System.Reflection;
-using Base.AttributePackage.Editor.Core;
-using Base.AttributePackage.References;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Audio;
 using Object = UnityEngine.Object;
 
-namespace Base.AttributePackage.Editor.Drawers
+namespace Base.AttributePackage.Editor
 {
     /// <summary>
     /// Draws an AudioMixerGroup field as a dropdown of a mixer's groups for

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Reflection;
 using UnityEditor;
 
-namespace Base.AttributePackage.Editor.Core
+namespace Base.AttributePackage.Editor
 {
     /// <summary>
     /// Resolves the managed object behind a <see cref="SerializedProperty"/> so the handler pipeline
