@@ -12,6 +12,7 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
         private const string AlertIcon = "console.erroricon.sml";
         private const string ObjectIcon = "GameObject Icon";
         private const string SuccessIcon = "TestPassed";
+        private const int TitleFontSize = 15;
 
         /// <summary>Accent used for problems.</summary>
         public static Color Accent => new(0.86f, 0.30f, 0.32f);
@@ -33,14 +34,11 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
         /// <summary>Centered white label used inside the count badge.</summary>
         public GUIStyle Badge { get; private set; }
 
-        /// <summary>Centered label shown when everything is valid.</summary>
-        public GUIStyle Empty { get; private set; }
+        /// <summary>Large green title shown when everything is assigned.</summary>
+        public GUIStyle SuccessTitle { get; private set; }
 
-        /// <summary>Toolbar style used for the success state.</summary>
-        public GUIStyle ToolbarSuccess { get; private set; }
-
-        /// <summary>Toolbar style used for the error state.</summary>
-        public GUIStyle ToolbarError { get; private set; }
+        /// <summary>Muted subtitle shown under the success title.</summary>
+        public GUIStyle SuccessSubtitle { get; private set; }
 
         /// <summary>Red alert icon shown per missing reference.</summary>
         public Texture ErrorTexture => EditorGUIUtility.IconContent(AlertIcon).image;
@@ -76,36 +74,25 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
                 }
             };
 
-            Empty = new GUIStyle(EditorStyles.boldLabel)
+            SuccessTitle = new GUIStyle(EditorStyles.boldLabel)
             {
                 alignment = TextAnchor.MiddleCenter,
+                fontSize = TitleFontSize,
                 normal =
                 {
                     textColor = Success
                 }
             };
 
-            ToolbarSuccess = new GUIStyle(EditorStyles.toolbarButton)
+            SuccessSubtitle = new GUIStyle(EditorStyles.label)
             {
-                alignment = TextAnchor.MiddleLeft,
-                fontStyle = FontStyle.Bold
+                alignment = TextAnchor.MiddleCenter,
+                wordWrap = true,
+                normal =
+                {
+                    textColor = new Color(0.5f, 0.5f, 0.5f)
+                }
             };
-
-            ToolbarSuccess.normal.textColor = Success;
-            ToolbarSuccess.active.textColor = Success;
-            ToolbarSuccess.hover.textColor = Success;
-            ToolbarSuccess.focused.textColor = Success;
-
-            ToolbarError = new GUIStyle(EditorStyles.toolbarButton)
-            {
-                alignment = TextAnchor.MiddleLeft,
-                fontStyle = FontStyle.Bold
-            };
-
-            ToolbarError.normal.textColor = Accent;
-            ToolbarError.active.textColor = Accent;
-            ToolbarError.hover.textColor = Accent;
-            ToolbarError.focused.textColor = Accent;
         }
     }
 }
