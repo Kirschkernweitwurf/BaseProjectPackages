@@ -11,7 +11,6 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
         private const float BadgeInset = 4f;
         private const float BadgePadding = 6f;
         private const float BadgeReserve = 60f;
-        private const float EmptyIconSize = 32f;
         private const float GroupSpacing = 8f;
         private const float HeaderHeight = 24f;
         private const float IconSize = 15f;
@@ -19,6 +18,8 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
         private const float LeftPadding = 8f;
         private const float RowHeight = 20f;
         private const float RowIndent = 22f;
+        private const float SuccessGap = 8f;
+        private const float SuccessIconSize = 48f;
 
         /// <summary>Draws every group filtered by search. Returns the clicked owner, or null.</summary>
         public static GameObject DrawGroups(List<RequiredReferenceGroup> groups,
@@ -47,27 +48,25 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
             return clicked;
         }
 
-        /// <summary>Draws the success state shown when nothing is missing.</summary>
-        public static void DrawEmptyState(RequiredReferenceStyles styles)
+        /// <summary>Draws the rewarding success state shown when nothing is missing.</summary>
+        public static void DrawSuccess(RequiredReferenceStyles styles)
         {
             GUILayout.FlexibleSpace();
 
             EditorGUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();
 
-            EditorGUILayout.BeginVertical();
-
             GUILayout.Label(new GUIContent(styles.SuccessTexture),
-                GUILayout.Width(EmptyIconSize),
-                GUILayout.Height(EmptyIconSize));
-
-            GUILayout.Label("All required references are assigned.",
-                styles.Empty);
-
-            EditorGUILayout.EndVertical();
+                GUILayout.Width(SuccessIconSize),
+                GUILayout.Height(SuccessIconSize));
 
             GUILayout.FlexibleSpace();
             EditorGUILayout.EndHorizontal();
+
+            GUILayout.Space(SuccessGap);
+
+            GUILayout.Label("All references assigned", styles.SuccessTitle);
+            GUILayout.Label("Everything is wired up. Nothing to fix.", styles.SuccessSubtitle);
 
             GUILayout.FlexibleSpace();
         }

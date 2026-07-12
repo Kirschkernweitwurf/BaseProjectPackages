@@ -47,7 +47,7 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
 
             if (_total == 0)
             {
-                RequiredReferenceView.DrawEmptyState(_styles);
+                RequiredReferenceView.DrawSuccess(_styles);
                 return;
             }
 
