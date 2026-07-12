@@ -1,11 +1,9 @@
 using System;
-using Base.AttributePackage.Editor.Core;
-using Base.AttributePackage.References;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Base.AttributePackage.Editor.Drawers
+namespace Base.AttributePackage.Editor
 {
     /// <summary>
     /// Draws a string field as an object picker that stores a Resources-relative path for

@@ -1,6 +1,4 @@
-using Base.AttributePackage.Editor.Core;
-
-namespace Base.AttributePackage.Editor.Handlers
+namespace Base.AttributePackage.Editor
 {
     /// <summary>
     /// Decides whether a member is drawn at all. All handlers must agree for the field to show.

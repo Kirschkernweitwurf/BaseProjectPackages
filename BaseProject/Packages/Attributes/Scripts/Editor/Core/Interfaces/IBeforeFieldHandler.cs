@@ -1,4 +1,4 @@
-namespace Base.AttributePackage.Editor.Core.Interfaces
+namespace Base.AttributePackage.Editor
 {
     /// <summary>
     /// Runs before a member is drawn. Used for section titles, separator lines and info boxes.

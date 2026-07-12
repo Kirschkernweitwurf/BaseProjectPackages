@@ -1,9 +1,6 @@
-using Base.AttributePackage.Editor.Core;
-using Base.AttributePackage.Editor.Core.Interfaces;
-using Base.AttributePackage.Layout;
 using UnityEditor;
 
-namespace Base.AttributePackage.Editor.Handlers
+namespace Base.AttributePackage.Editor
 {
     /// <summary>Draws the help box for <see cref="InfoBoxAttribute"/>.</summary>
     public sealed class InfoBoxHandler : IBeforeFieldHandler

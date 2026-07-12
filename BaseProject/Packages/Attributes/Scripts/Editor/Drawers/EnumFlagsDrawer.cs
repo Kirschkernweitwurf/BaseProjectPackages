@@ -1,9 +1,8 @@
 using System;
-using Base.AttributePackage.Widgets;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Drawers
+namespace Base.AttributePackage.Editor
 {
     /// <summary>
     /// Draws a multi-select mask field for <see cref="EnumFlagsAttribute"/>.

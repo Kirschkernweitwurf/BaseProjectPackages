@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.ColorEnums
+namespace Base.AttributePackage
 {
     /// <summary>
     /// Maps <see cref="EColor"/> values to concrete <see cref="Color"/> values.

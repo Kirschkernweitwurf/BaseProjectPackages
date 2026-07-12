@@ -1,12 +1,9 @@
 using System;
-using Base.AttributePackage.Editor.Core;
-using Base.AttributePackage.Editor.Core.Interfaces;
-using Base.AttributePackage.References;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Base.AttributePackage.Editor.Handlers
+namespace Base.AttributePackage.Editor
 {
     /// <summary>Auto-assigns a <see cref="ChildAttribute"/> field from the children.</summary>
     public sealed class ChildHandler : IAfterFieldHandler

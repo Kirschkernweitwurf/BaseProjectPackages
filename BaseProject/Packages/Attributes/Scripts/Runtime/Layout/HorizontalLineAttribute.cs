@@ -1,8 +1,7 @@
 using System;
-using Base.AttributePackage.ColorEnums;
 using UnityEngine;
 
-namespace Base.AttributePackage.Layout
+namespace Base.AttributePackage
 {
     /// <summary>
     /// Draws a plain horizontal separator line above the decorated field.

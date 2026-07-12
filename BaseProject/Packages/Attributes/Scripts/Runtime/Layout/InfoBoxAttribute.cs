@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Base.AttributePackage.Layout
+namespace Base.AttributePackage
 {
     /// <summary>
     /// Draws a help or warning box with a message above the decorated field.

@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Base.AttributePackage.Conditional
+namespace Base.AttributePackage
 {
     /// <summary>
     /// Marks a serialized field as non-editable in the inspector while keeping it visible.

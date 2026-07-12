@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
-using Base.AttributePackage.References;
+using Base.AttributePackage;
 using Base.CorePackage.Services;
 using Base.UtilityPackage.Logging;
 using UnityEngine;

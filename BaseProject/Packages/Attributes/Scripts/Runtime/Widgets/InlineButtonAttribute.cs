@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Base.AttributePackage.Widgets
+namespace Base.AttributePackage
 {
     /// <summary>
     /// Draws a button next to the field that invokes a parameterless method on the same object.

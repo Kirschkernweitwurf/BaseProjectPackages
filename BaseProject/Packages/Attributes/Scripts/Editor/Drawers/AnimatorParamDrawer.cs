@@ -1,13 +1,11 @@
 using System.Collections.Generic;
 using System.Reflection;
-using Base.AttributePackage.Editor.Core;
-using Base.AttributePackage.References;
 using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Base.AttributePackage.Editor.Drawers
+namespace Base.AttributePackage.Editor
 {
     /// <summary>
     /// Draws a dropdown of Animator parameters for <see cref="AnimatorParamAttribute"/>.
@@ -18,7 +16,7 @@ namespace Base.AttributePackage.Editor.Drawers
     {
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            AnimatorParamAttribute attribute = (AnimatorParamAttribute)this.attribute;
+            AnimatorParamAttribute animatorParamAttribute = (AnimatorParamAttribute)attribute;
 
             bool isString = property.propertyType == SerializedPropertyType.String;
             bool isInt = property.propertyType == SerializedPropertyType.Integer;
@@ -28,7 +26,7 @@ namespace Base.AttributePackage.Editor.Drawers
                 return;
             }
 
-            AnimatorController controller = ResolveController(property, attribute.AnimatorField);
+            AnimatorController controller = ResolveController(property, animatorParamAttribute.AnimatorField);
             if (controller == null)
             {
                 EditorGUI.PropertyField(position, property, label);
@@ -38,7 +36,7 @@ namespace Base.AttributePackage.Editor.Drawers
             List<string> names = new();
             foreach (AnimatorControllerParameter parameter in controller.parameters)
             {
-                if (!attribute.HasFilter || parameter.type == attribute.Type)
+                if (!animatorParamAttribute.HasFilter || parameter.type == animatorParamAttribute.Type)
                     names.Add(parameter.name);
             }
 

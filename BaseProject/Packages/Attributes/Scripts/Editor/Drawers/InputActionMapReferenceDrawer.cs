@@ -1,10 +1,9 @@
 #if UNITY_EDITOR
-using Base.AttributePackage.References;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace Base.AttributePackage.Editor.Drawers
+namespace Base.AttributePackage.Editor
 {
     /// <summary>
     /// Property drawer for <see cref="InputActionMapReference"/>.

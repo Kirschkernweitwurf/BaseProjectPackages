@@ -1,10 +1,7 @@
-using Base.AttributePackage.Editor.Core;
-using Base.AttributePackage.Editor.Core.Interfaces;
-using Base.AttributePackage.Validation;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Handlers
+namespace Base.AttributePackage.Editor
 {
     /// <summary>Clamps int and float fields marked with <see cref="MinMaxAttribute"/>.</summary>
     public sealed class MinMaxHandler : IAfterFieldHandler

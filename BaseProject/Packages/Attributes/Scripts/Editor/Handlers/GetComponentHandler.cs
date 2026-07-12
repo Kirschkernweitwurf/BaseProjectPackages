@@ -1,11 +1,8 @@
 using System;
-using Base.AttributePackage.Editor.Core;
-using Base.AttributePackage.Editor.Core.Interfaces;
-using Base.AttributePackage.References;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Handlers
+namespace Base.AttributePackage.Editor
 {
     /// <summary>Auto-assigns a <see cref="GetComponentAttribute"/> field from the same GameObject.</summary>
     public sealed class GetComponentHandler : IAfterFieldHandler

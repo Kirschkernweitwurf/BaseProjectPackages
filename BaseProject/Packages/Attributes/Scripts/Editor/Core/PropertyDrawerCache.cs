@@ -4,7 +4,7 @@ using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Core
+namespace Base.AttributePackage.Editor
 {
     /// <summary>
     /// Caches which serializable types have a registered <see cref="CustomPropertyDrawer"/>. The
@@ -45,6 +45,7 @@ namespace Base.AttributePackage.Editor.Core
 
             FieldInfo targetField =
                 typeof(CustomPropertyDrawer).GetField(TargetTypeField, BindingFlags.Instance | BindingFlags.NonPublic);
+
             FieldInfo childrenField = typeof(CustomPropertyDrawer)
                 .GetField(UseForChildrenField, BindingFlags.Instance | BindingFlags.NonPublic);
 

@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Base.AttributePackage.Conditional
+namespace Base.AttributePackage
 {
     /// <summary>
     /// Hides the field while the referenced bool member is true.

@@ -1,10 +1,9 @@
 using System;
-using Base.AttributePackage.References;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Drawers
+namespace Base.AttributePackage.Editor
 {
     /// <summary>
     /// Draws a string field as a dropdown of project tags for <see cref="TagAttribute"/>.

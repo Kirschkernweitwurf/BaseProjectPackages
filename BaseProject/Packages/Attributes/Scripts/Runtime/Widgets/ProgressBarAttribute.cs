@@ -1,8 +1,7 @@
 using System;
-using Base.AttributePackage.ColorEnums;
 using UnityEngine;
 
-namespace Base.AttributePackage.Widgets
+namespace Base.AttributePackage
 {
     /// <summary>
     /// Draws a numeric field as a progress bar. The maximum is a constant or a numeric member.

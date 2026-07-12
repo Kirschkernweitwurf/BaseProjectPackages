@@ -1,7 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Inspectors
+namespace Base.AttributePackage.Editor
 {
     /// <summary>
     /// Applies the attribute package inspector to all ScriptableObject types without an own editor.

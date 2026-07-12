@@ -1,9 +1,6 @@
-using Base.AttributePackage.Editor.Core;
-using Base.AttributePackage.Editor.Core.Interfaces;
-using Base.AttributePackage.Validation;
 using UnityEditor;
 
-namespace Base.AttributePackage.Editor.Handlers
+namespace Base.AttributePackage.Editor
 {
     /// <summary>Shows an error when a <see cref="NotNullOrEmptyAttribute"/> value is null or empty.</summary>
     public sealed class NotNullOrEmptyHandler : IAfterFieldHandler

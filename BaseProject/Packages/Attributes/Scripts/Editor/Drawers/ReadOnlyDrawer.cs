@@ -1,8 +1,7 @@
-using Base.AttributePackage.Conditional;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Drawers
+namespace Base.AttributePackage.Editor
 {
     /// <summary>
     /// Draws fields marked with <see cref="ReadOnlyAttribute"/> as disabled.

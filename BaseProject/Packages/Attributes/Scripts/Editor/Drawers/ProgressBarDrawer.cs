@@ -1,13 +1,10 @@
 using System;
 using System.Reflection;
-using Base.AttributePackage.ColorEnums;
-using Base.AttributePackage.Editor.Core;
-using Base.AttributePackage.Widgets;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Base.AttributePackage.Editor.Drawers
+namespace Base.AttributePackage.Editor
 {
     /// <summary>
     /// Draws a numeric field as a progress bar for <see cref="ProgressBarAttribute"/>.

@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Base.AttributePackage.References
+namespace Base.AttributePackage
 {
     /// <summary>
     /// Draws a dropdown of the exposed parameters of a sibling AudioMixer field. Stores the name.

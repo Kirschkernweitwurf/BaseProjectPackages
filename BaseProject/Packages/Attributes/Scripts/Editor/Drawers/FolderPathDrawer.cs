@@ -1,9 +1,7 @@
-using Base.AttributePackage.Editor.Core;
-using Base.AttributePackage.References;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Drawers
+namespace Base.AttributePackage.Editor
 {
     /// <summary>
     /// Draws a folder path field with a browse button for <see cref="FolderPathAttribute"/>.

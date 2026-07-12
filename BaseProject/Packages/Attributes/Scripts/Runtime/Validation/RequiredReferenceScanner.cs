@@ -5,7 +5,7 @@ using System.Reflection;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Base.AttributePackage.Validation
+namespace Base.AttributePackage
 {
     /// <summary>
     /// Finds every <see cref="RequiredAttribute"/> object reference on a component that is null, at any
@@ -15,11 +15,10 @@ namespace Base.AttributePackage.Validation
     /// </summary>
     public static class RequiredReferenceScanner
     {
-        private const int MaxDepth = 10;
-        private const string PathSeparator = ".";
-
         private const BindingFlags Flags =
             BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly;
+        private const int MaxDepth = 10;
+        private const string PathSeparator = ".";
 
         private static readonly Dictionary<Type, FieldInfo[]> SerializedFields = new();
 
@@ -56,6 +55,7 @@ namespace Base.AttributePackage.Validation
                     object value = field.GetValue(instance);
                     Scan(value?.GetType() ?? fieldType, value, component, Combine(prefix, field.Name), depth + 1,
                         results);
+
                     continue;
                 }
 
@@ -101,13 +101,12 @@ namespace Base.AttributePackage.Validation
             return result;
         }
 
-        private static bool IsNestedSerializable(Type type)
-            => !type.IsPrimitive
-                && type != typeof(string)
-                && !type.IsEnum
-                && !typeof(Object).IsAssignableFrom(type)
-                && !IsFrameworkType(type)
-                && Attribute.IsDefined(type, typeof(SerializableAttribute));
+        private static bool IsNestedSerializable(Type type) => !type.IsPrimitive
+            && type != typeof(string)
+            && !type.IsEnum
+            && !typeof(Object).IsAssignableFrom(type)
+            && !IsFrameworkType(type)
+            && Attribute.IsDefined(type, typeof(SerializableAttribute));
 
         private static bool IsSerializableCollection(Type type, out Type element)
         {
@@ -131,9 +130,8 @@ namespace Base.AttributePackage.Validation
 
         private static string MessageOf(FieldInfo field) => field.GetCustomAttribute<RequiredAttribute>(true)?.Message;
 
-        private static string Combine(string prefix, string name)
-            => prefix == null
-                ? name
-                : prefix + PathSeparator + name;
+        private static string Combine(string prefix, string name) => prefix == null
+            ? name
+            : prefix + PathSeparator + name;
     }
 }

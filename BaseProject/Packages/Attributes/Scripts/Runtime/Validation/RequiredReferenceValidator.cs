@@ -3,7 +3,7 @@ using Base.UtilityPackage.Logging;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Base.AttributePackage.Validation
+namespace Base.AttributePackage
 {
     /// <summary>
     /// Scans loaded scenes on play-mode start and logs an error for every <see cref="RequiredAttribute"/>

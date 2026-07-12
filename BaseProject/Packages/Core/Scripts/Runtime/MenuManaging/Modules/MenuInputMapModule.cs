@@ -1,4 +1,4 @@
-using Base.AttributePackage.References;
+using Base.AttributePackage;
 using Base.CorePackage.Input;
 using Base.CorePackage.Services;
 using Base.CorePackage.Services.Shutdown;

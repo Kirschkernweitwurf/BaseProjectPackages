@@ -1,10 +1,7 @@
 using System.Reflection;
-using Base.AttributePackage.Editor.Core;
-using Base.AttributePackage.Editor.Core.Interfaces;
-using Base.AttributePackage.Validation;
 using UnityEditor;
 
-namespace Base.AttributePackage.Editor.Handlers
+namespace Base.AttributePackage.Editor
 {
     /// <summary>Runs the custom method of a <see cref="ValidateInputAttribute"/> and reports failures.</summary>
     public sealed class ValidateInputHandler : IAfterFieldHandler

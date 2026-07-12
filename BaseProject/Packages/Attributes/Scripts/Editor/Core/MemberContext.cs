@@ -1,10 +1,9 @@
 using System;
 using System.Reflection;
-using Base.AttributePackage.Editor.Inspectors;
 using UnityEditor;
 using Object = UnityEngine.Object;
 
-namespace Base.AttributePackage.Editor.Core
+namespace Base.AttributePackage.Editor
 {
     /// <summary>
     /// Everything a handler needs about a single inspected member, passed by reference.

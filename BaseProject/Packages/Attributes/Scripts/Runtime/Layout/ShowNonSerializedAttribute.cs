@@ -1,6 +1,6 @@
 using System;
 
-namespace Base.AttributePackage.Layout
+namespace Base.AttributePackage
 {
     /// <summary>
     /// Shows a non-serialized field as a read-only value in the inspector.

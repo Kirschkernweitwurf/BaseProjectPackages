@@ -1,4 +1,4 @@
-namespace Base.AttributePackage.Widgets
+namespace Base.AttributePackage
 {
     /// <summary>
     /// Controls in which editor state a button drawn by <see cref="ButtonAttribute"/> is enabled.
