@@ -1,10 +1,11 @@
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
 {
-    /// <summary>Renders the grouped list of missing references. Returns the object a click targeted.</summary>
+    /// <summary>Renders the grouped list of issues. Returns the object a click targeted.</summary>
     public static class RequiredReferenceView
     {
         private const float AccentWidth = 3f;
@@ -18,16 +19,16 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
         private const float LeftPadding = 8f;
         private const float RowHeight = 20f;
         private const float RowIndent = 22f;
-        private const float SuccessGap = 8f;
         private const float SuccessIconSize = 48f;
+        private const float SuccessGap = 8f;
 
         /// <summary>Draws every group filtered by search. Returns the clicked owner, or null.</summary>
-        public static GameObject DrawGroups(List<RequiredReferenceGroup> groups,
+        public static Object DrawGroups(List<RequiredReferenceGroup> groups,
             string search,
             RequiredReferenceStyles styles,
             out bool anyShown)
         {
-            GameObject clicked = null;
+            Object clicked = null;
             anyShown = false;
 
             foreach (RequiredReferenceGroup group in groups)
@@ -71,7 +72,7 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
             GUILayout.FlexibleSpace();
         }
 
-        private static GameObject DrawHeader(RequiredReferenceGroup group,
+        private static Object DrawHeader(RequiredReferenceGroup group,
             int count,
             RequiredReferenceStyles styles)
         {
@@ -80,11 +81,15 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
             EditorGUI.DrawRect(rect, RequiredReferenceStyles.Header);
 
             Rect iconRect = new(rect.x + LeftPadding,
-                rect.y + (rect.height - IconSize) * .5f,
+                rect.y + (rect.height - IconSize) * 0.5f,
                 IconSize,
                 IconSize);
 
-            GUI.DrawTexture(iconRect, styles.ObjectTexture);
+            Texture icon = group.Owner != null
+                ? AssetPreview.GetMiniThumbnail(group.Owner)
+                : styles.ObjectTexture;
+
+            GUI.DrawTexture(iconRect, icon);
 
             string name = group.Owner != null
                 ? group.Owner.name
@@ -123,7 +128,7 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
             GUI.Label(badge, text, styles.Badge);
         }
 
-        private static GameObject DrawRow(GameObject owner,
+        private static Object DrawRow(Object owner,
             string detail,
             RequiredReferenceStyles styles)
         {
@@ -133,7 +138,7 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
                 RequiredReferenceStyles.Accent);
 
             Rect icon = new(rect.x + RowIndent,
-                rect.y + (rect.height - IconSize) * .5f,
+                rect.y + (rect.height - IconSize) * 0.5f,
                 IconSize,
                 IconSize);
 
@@ -151,7 +156,7 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
             return Clicked(rect, owner);
         }
 
-        private static GameObject Clicked(Rect rect, GameObject owner)
+        private static Object Clicked(Rect rect, Object owner)
         {
             if (Event.current.type != EventType.MouseDown)
                 return null;
