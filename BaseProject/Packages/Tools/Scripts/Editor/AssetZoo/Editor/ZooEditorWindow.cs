@@ -1,7 +1,7 @@
 #if UNITY_EDITOR
 using Base.ToolPackage.Editor.AssetZoo.Runtime.Builder;
 using Base.ToolPackage.Editor.AssetZoo.Runtime.Config;
-using Base.ToolPackage.Editor.Generated;
+using Base.UtilityPackage.Generated;
 using UnityEditor;
 using UnityEngine;
 

@@ -1,7 +1,7 @@
 ﻿#if UNITY_EDITOR
 using System;
 using System.Collections.Generic;
-using Base.ToolPackage.Editor.Generated;
+using Base.UtilityPackage.Generated;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;

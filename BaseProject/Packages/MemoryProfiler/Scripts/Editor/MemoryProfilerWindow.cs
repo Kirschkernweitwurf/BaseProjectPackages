@@ -1,6 +1,6 @@
 #if UNITY_EDITOR
 using System.IO;
-using Base.ToolPackage.Editor.Generated;
+using Base.UtilityPackage.Generated;
 using UnityEditor;
 using UnityEngine;
 
@@ -11,7 +11,7 @@ namespace Base.MemoryProfiler.Editor
     /// </summary>
     public class MemoryProfilerWindow : EditorWindow
     {
-        private const string MenuPath = "Tools/Base Packages/Profiling/Memory Profiler Automation";
+        private const string MenuPath = "Tools/Base Packages/Unity Editor/Memory Profiler Automation";
         private const float MinIntervalSeconds = 1f;
         private const string ResourcesFolder = "Assets/Resources/MemoryProfilerConfig";
         private const string WindowTitle = "Auto Memory Profiler";
@@ -71,7 +71,7 @@ namespace Base.MemoryProfiler.Editor
         private void OnInspectorUpdate() => Repaint();
 #endregion
 
-        [MenuItem(MenuPath, priority = MenuOrders.Profiling)]
+        [MenuItem(MenuPath, priority = MenuOrders.UnityEditor)]
         private static void Open()
         {
             MemoryProfilerWindow window = GetWindow<MemoryProfilerWindow>();

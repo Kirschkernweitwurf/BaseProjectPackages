@@ -1,4 +1,4 @@
-using Base.ToolPackage.Editor.Generated;
+using Base.UtilityPackage.Generated;
 using UnityEngine;
 
 namespace Base.CorePackage.MenuManaging.Identifier
