@@ -10,7 +10,7 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
     public sealed class RequiredReferenceOverviewWindow : EditorWindow
     {
         private const float ListSpacing = 4f;
-        private const string MenuPath = "Tools/Base Packages/Required References";
+        private const string MenuPath = "Tools/Base Packages/Unity Editor/Required References";
         private const double MinScanInterval = 0.3;
         private const double SafetyPollInterval = 1.0;
         private const float SearchWidth = 180f;

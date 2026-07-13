@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Base.ToolPackage.Editor.Generated;
+using Base.UtilityPackage.Generated;
 using UnityEngine;
 
 namespace Base.ToolPackage.Editor.AssetZoo.Runtime.Config

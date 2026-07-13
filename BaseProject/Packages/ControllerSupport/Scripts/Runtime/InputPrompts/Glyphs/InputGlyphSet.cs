@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Base.ControllerSupport.InputPrompts.Devices;
-using Base.ToolPackage.Editor.Generated;
+using Base.UtilityPackage.Generated;
 using UnityEngine;
 using UnityEngine.InputSystem;
 

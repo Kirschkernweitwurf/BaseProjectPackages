@@ -1,5 +1,5 @@
 using System;
-using Base.ToolPackage.Editor.Generated;
+using Base.UtilityPackage.Generated;
 using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;

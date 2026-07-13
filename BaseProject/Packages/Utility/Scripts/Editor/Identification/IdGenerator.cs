@@ -1,6 +1,6 @@
 #if UNITY_EDITOR
 using System;
-using Base.ToolPackage.Editor.Generated;
+using Base.UtilityPackage.Generated;
 using Base.UtilityPackage.Identification;
 using Base.UtilityPackage.Logging;
 using UnityEditor;
