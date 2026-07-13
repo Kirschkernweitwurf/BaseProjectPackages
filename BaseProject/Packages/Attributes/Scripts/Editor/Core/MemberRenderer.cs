@@ -1,6 +1,7 @@
 using System;
 using System.Reflection;
 using UnityEditor;
+using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace Base.AttributePackage.Editor
@@ -15,6 +16,8 @@ namespace Base.AttributePackage.Editor
         private const string CoreLibraryAssembly = "mscorlib";
         private const string SystemAssemblyPrefix = "System";
         private const string UnityAssemblyPrefix = "Unity";
+
+        private const float WidgetGap = 2f;
 
         /// <summary>Draws a top-level member through all handlers.</summary>
         public static void Draw(SerializedProperty property, FieldInfo field, AttributePackageEditor editor)
@@ -68,7 +71,7 @@ namespace Base.AttributePackage.Editor
 
             if (!CanDescend(property, field, out Type nestedType))
             {
-                EditorGUILayout.PropertyField(property, true);
+                DrawLeafField(context);
                 return;
             }
 
@@ -81,6 +84,46 @@ namespace Base.AttributePackage.Editor
             EditorGUI.indentLevel++;
             DrawChildren(property, nestedType, instance, editor);
             EditorGUI.indentLevel--;
+        }
+
+        private static void DrawLeafField(in MemberContext context)
+        {
+            SerializedProperty property = context.Property;
+            IInlineFieldWidget[] widgets = HandlerRegistry.InlineWidgets;
+
+            float trailing = 0f;
+            foreach (IInlineFieldWidget widget in widgets)
+            {
+                float w = widget.GetWidth(context);
+                if (w > 0f)
+                    trailing += w + WidgetGap;
+            }
+
+            if (trailing <= 0f)
+            {
+                EditorGUILayout.PropertyField(property, true);
+                return;
+            }
+
+            float height = EditorGUI.GetPropertyHeight(property, true);
+            Rect line = EditorGUILayout.GetControlRect(true, height);
+            Rect fieldRect = new(line.x, line.y, line.width - trailing, line.height);
+            EditorGUI.PropertyField(fieldRect, property, true);
+
+            float x = fieldRect.xMax + WidgetGap;
+            using (new EditorGUI.DisabledScope(false))
+            {
+                foreach (IInlineFieldWidget widget in widgets)
+                {
+                    float w = widget.GetWidth(context);
+                    if (w <= 0f)
+                        continue;
+
+                    Rect widgetRect = new(x, line.y, w, EditorGUIUtility.singleLineHeight);
+                    widget.Draw(widgetRect, context);
+                    x += w + WidgetGap;
+                }
+            }
         }
 
         private static void DrawChildren(SerializedProperty parent, Type declaringType, object declaringObject,
