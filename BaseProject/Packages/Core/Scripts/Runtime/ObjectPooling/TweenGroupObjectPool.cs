@@ -13,11 +13,11 @@ namespace Base.CorePackage.ObjectPooling
     /// and plays enter/exit animations on activation and deactivation.
     /// </summary>
     /// <typeparam name="T">The pooled Unity object type.</typeparam>
-    public sealed class AnimatedUIObjectPool<T> : HashSetObjectPool<T> where T : Object
+    public sealed class TweenGroupObjectPool<T> : HashSetObjectPool<T> where T : Object
     {
         private readonly Dictionary<T, TweenGroup> _tweenCache;
 
-        public AnimatedUIObjectPool(T prefab, Transform parent = null, Action<T> resetAction = null)
+        public TweenGroupObjectPool(T prefab, Transform parent = null, Action<T> resetAction = null)
             : base(prefab, parent, resetAction) => _tweenCache = new Dictionary<T, TweenGroup>();
 
         /// <summary>

@@ -25,7 +25,7 @@ namespace Base.AttributePackage.Editor
             if (context.Editor.serializedObject.isEditingMultipleObjects)
                 return;
 
-            if (!(context.Target is Component component))
+            if (context.Target is not Component component)
                 return;
 
             Type type = context.Field?.FieldType;

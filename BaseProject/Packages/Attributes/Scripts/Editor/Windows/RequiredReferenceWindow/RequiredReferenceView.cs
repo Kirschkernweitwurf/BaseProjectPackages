@@ -19,8 +19,8 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
         private const float LeftPadding = 8f;
         private const float RowHeight = 20f;
         private const float RowIndent = 22f;
-        private const float SuccessIconSize = 48f;
         private const float SuccessGap = 8f;
+        private const float SuccessIconSize = 48f;
 
         /// <summary>Draws every group filtered by search. Returns the clicked owner, or null.</summary>
         public static Object DrawGroups(List<RequiredReferenceGroup> groups,
@@ -57,7 +57,7 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
             EditorGUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();
 
-            GUILayout.Label(new GUIContent(styles.SuccessTexture),
+            GUILayout.Label(new GUIContent(RequiredReferenceStyles.SuccessTexture),
                 GUILayout.Width(SuccessIconSize),
                 GUILayout.Height(SuccessIconSize));
 
@@ -87,7 +87,7 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
 
             Texture icon = group.Owner != null
                 ? AssetPreview.GetMiniThumbnail(group.Owner)
-                : styles.ObjectTexture;
+                : RequiredReferenceStyles.ObjectTexture;
 
             GUI.DrawTexture(iconRect, icon);
 
@@ -142,7 +142,7 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
                 IconSize,
                 IconSize);
 
-            GUI.DrawTexture(icon, styles.ErrorTexture);
+            GUI.DrawTexture(icon, RequiredReferenceStyles.ErrorTexture);
 
             Rect label = new(icon.xMax + LabelGap,
                 rect.y,

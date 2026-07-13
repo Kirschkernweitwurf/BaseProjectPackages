@@ -7,9 +7,9 @@ using UnityEngine;
 namespace Base.AttributePackage.Editor
 {
     /// <summary>
-    /// Base inspector for the attribute package. Handles the serialized script field, foldout and
-    /// tab grouping, then delegates each member to <see cref="MemberRenderer"/> and the handler
-    /// pipeline. Read-only native members and buttons are drawn by their renderers.
+    /// Base inspector for the attribute package. Handles the serialized script field, foldout, tab and
+    /// collapsible title grouping, then delegates each member to <see cref="MemberRenderer"/> and the
+    /// handler pipeline. Read-only native members and buttons are drawn by their renderers.
     /// Derive concrete editors targeting MonoBehaviour and ScriptableObject.
     /// </summary>
     public abstract class AttributePackageEditor : UnityEditor.Editor
@@ -43,6 +43,8 @@ namespace Base.AttributePackage.Editor
             int index = 0;
             string activeFoldout = null;
             bool activeExpanded = true;
+            string activeTitleSection = null;
+            bool titleSectionExpanded = true;
 
             while (index < properties.Count)
             {
@@ -52,7 +54,29 @@ namespace Base.AttributePackage.Editor
                 if (field?.GetCustomAttribute<TabAttribute>() != null)
                 {
                     activeFoldout = null;
+                    activeTitleSection = null;
                     index = DrawTabGroup(properties, index);
+                    continue;
+                }
+
+                TitleAttribute title = field?.GetCustomAttribute<TitleAttribute>();
+                if (title != null)
+                {
+                    if (title.Foldout)
+                    {
+                        activeTitleSection = title.Title;
+                        titleSectionExpanded = TitleRenderer.DrawCollapsible(type, title);
+                    }
+                    else
+                    {
+                        activeTitleSection = null;
+                        titleSectionExpanded = true;
+                    }
+                }
+
+                if (activeTitleSection != null && !titleSectionExpanded)
+                {
+                    index++;
                     continue;
                 }
 
@@ -71,10 +95,18 @@ namespace Base.AttributePackage.Editor
                     continue;
                 }
 
+                bool sectionIndent = activeTitleSection != null;
+
                 if (foldoutName != null)
                     EditorGUI.indentLevel++;
 
+                if (sectionIndent)
+                    EditorGUI.indentLevel++;
+
                 MemberRenderer.Draw(property, field, this);
+
+                if (sectionIndent)
+                    EditorGUI.indentLevel--;
 
                 if (foldoutName != null)
                     EditorGUI.indentLevel--;

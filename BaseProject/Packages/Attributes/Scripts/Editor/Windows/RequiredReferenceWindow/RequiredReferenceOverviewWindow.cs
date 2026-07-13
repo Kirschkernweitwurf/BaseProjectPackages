@@ -12,11 +12,14 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
     /// </summary>
     public sealed class RequiredReferenceOverviewWindow : EditorWindow
     {
+        private const float ButtonHeight = 26f;
+        private const float ButtonWidth = 140f;
         private const float ListSpacing = 4f;
         private const string MenuPath = "Tools/Base Packages/Unity Editor/Required References";
         private const double MinScanInterval = 0.3;
         private const double SafetyPollInterval = 1.0;
-        private const float SearchWidth = 180f;
+        private const float SearchHeight = 20f;
+        private const float SearchWidth = 200f;
         private const string WindowTitle = "Required References";
 
         [SerializeField] private Vector2 scrollPosition;
@@ -54,7 +57,8 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
         {
             _styles.EnsureBuilt();
 
-            DrawToolbar();
+            DrawActionBar();
+            DrawSummary();
 
             if (_total == 0)
             {
@@ -122,42 +126,48 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
             EditorGUIUtility.PingObject(owner);
         }
 
-        private void DrawToolbar()
+        private void DrawActionBar()
         {
-            EditorGUILayout.BeginHorizontal(EditorStyles.toolbar);
+            EditorGUILayout.Space(4f);
 
-            DrawStatus();
+            EditorGUILayout.BeginHorizontal();
 
-            GUILayout.FlexibleSpace();
+            EditorGUILayout.Space(4f, false);
 
-            search = GUILayout.TextField(search,
-                EditorStyles.toolbarSearchField,
-                GUILayout.Width(SearchWidth));
-
-            if (GUILayout.Button("Refresh", EditorStyles.toolbarButton))
+            if (GUILayout.Button("Refresh", GUILayout.Height(ButtonHeight), GUILayout.Width(ButtonWidth)))
             {
                 _assetsDirty = true;
                 Rescan();
                 GUIUtility.ExitGUI();
             }
 
+            GUILayout.FlexibleSpace();
+
+            search = EditorGUILayout.TextField(search,
+                EditorStyles.toolbarSearchField,
+                GUILayout.Width(SearchWidth),
+                GUILayout.Height(SearchHeight));
+
+            EditorGUILayout.Space(4f, false);
+
             EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.Space(4f);
         }
 
-        private void DrawStatus()
+        private void DrawSummary()
         {
-            bool ok = _total == 0;
+            EditorGUILayout.BeginHorizontal(EditorStyles.helpBox);
 
-            Texture icon = ok
-                ? _styles.SuccessTexture
-                : _styles.ErrorTexture;
+            string message = _total == 0
+                ? "No missing references."
+                : $"{_total} missing {(_total == 1 ? "reference" : "references")}.";
 
-            GUILayout.Label(new GUIContent(ok
-                        ? "All references assigned"
-                        : $"{_total} missing references",
-                    icon),
-                EditorStyles.label,
-                GUILayout.Height(18));
+            GUILayout.Label(message, _styles.Summary);
+
+            GUILayout.FlexibleSpace();
+
+            EditorGUILayout.EndHorizontal();
         }
 
         private void Rescan()
