@@ -3,16 +3,16 @@ using UnityEngine;
 
 namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
 {
-    /// <summary>A set of missing required references that all live on the same object.</summary>
+    /// <summary>A set of validation issues that all live on the same object or asset.</summary>
     public sealed class RequiredReferenceGroup
     {
-        /// <summary>The object that owns the missing references.</summary>
-        public GameObject Owner { get; }
+        /// <summary>The owner of the issues. A GameObject for scene items, the asset otherwise.</summary>
+        public Object Owner { get; }
 
-        /// <summary>All missing references on the object.</summary>
+        /// <summary>All issues on the owner.</summary>
         public List<RequiredReferenceEntry> Entries { get; } = new();
 
         /// <summary>Creates a group for the given owner.</summary>
-        public RequiredReferenceGroup(GameObject owner) => Owner = owner;
+        public RequiredReferenceGroup(Object owner) => Owner = owner;
     }
 }

@@ -2,7 +2,7 @@ using UnityEditor;
 
 namespace Base.AttributePackage.Editor
 {
-    /// <summary>Shows an error when a <see cref="NotNullOrEmptyAttribute"/> value is null or empty.</summary>
+    /// <summary>Shows a compact error when a <see cref="NotNullOrEmptyAttribute"/> value is null or empty.</summary>
     public sealed class NotNullOrEmptyHandler : IAfterFieldHandler
     {
         public int Order => 20;
@@ -14,8 +14,7 @@ namespace Base.AttributePackage.Editor
                 return;
 
             if (IsNullOrEmpty(context.Property))
-                EditorGUILayout.HelpBox(attribute.Message ?? context.DisplayName + " must not be empty.",
-                    MessageType.Error);
+                CompactHelpBox.Error(attribute.Message ?? context.DisplayName + " must not be empty");
         }
 
         private static bool IsNullOrEmpty(SerializedProperty property)

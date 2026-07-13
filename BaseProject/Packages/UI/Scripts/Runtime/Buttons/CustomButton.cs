@@ -1,3 +1,4 @@
+using Base.AttributePackage;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,14 +10,15 @@ namespace Base.UIPackage.Buttons
     [RequireComponent(typeof(Button))]
     public abstract class CustomButton : MonoBehaviour
     {
-        protected Button button;
+        /// <summary>
+        /// The button component that will be used to call the OnClick method
+        /// </summary>
+        [Tooltip("The button component that will be used to call the OnClick method."
+            + " It automatically gets assigned if possible.")]
+        [GetComponent] [SerializeField] protected Button button;
 
 #region Unity Callbacks
-        protected virtual void Awake()
-        {
-            button = GetComponent<Button>();
-            button.onClick.AddListener(OnClick);
-        }
+        protected virtual void Awake() => button.onClick.AddListener(OnClick);
 
         protected virtual void OnDestroy() => button.onClick.RemoveListener(OnClick);
 #endregion

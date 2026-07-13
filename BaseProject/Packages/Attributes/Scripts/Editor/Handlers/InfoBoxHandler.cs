@@ -2,18 +2,25 @@ using UnityEditor;
 
 namespace Base.AttributePackage.Editor
 {
-    /// <summary>Draws the help box for <see cref="InfoBoxAttribute"/>.</summary>
-    public sealed class InfoBoxHandler : IBeforeFieldHandler
+    /// <summary>Draws the box for <see cref="InfoBoxAttribute"/>, above or below, compact or full.</summary>
+    public sealed class InfoBoxHandler : IBeforeFieldHandler, IAfterFieldHandler
     {
         public int Order => 20;
 
-        public void BeforeField(in MemberContext context)
+        public void AfterField(in MemberContext context) => Draw(context, EInfoBoxPosition.Below);
+
+        public void BeforeField(in MemberContext context) => Draw(context, EInfoBoxPosition.Above);
+
+        private static void Draw(in MemberContext context, EInfoBoxPosition position)
         {
             InfoBoxAttribute attribute = context.GetAttribute<InfoBoxAttribute>();
-            if (attribute == null)
+            if (attribute == null || attribute.Position != position)
                 return;
 
-            EditorGUILayout.HelpBox(attribute.Message, ToMessageType(attribute.Type));
+            if (attribute.Compact || attribute.HasExplicitColor)
+                CompactHelpBox.Draw(attribute.Message, attribute.Type, attribute.ColorHex, attribute.PresetColor);
+            else
+                EditorGUILayout.HelpBox(attribute.Message, ToMessageType(attribute.Type));
         }
 
         private static MessageType ToMessageType(EInfoBoxType type)
