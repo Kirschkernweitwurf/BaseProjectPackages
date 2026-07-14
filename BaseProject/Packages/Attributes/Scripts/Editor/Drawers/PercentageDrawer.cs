@@ -6,13 +6,19 @@ namespace Base.AttributePackage.Editor
     /// <summary>
     /// Draws a normalized float as a percentage for <see cref="PercentageAttribute"/>. The value is
     /// shown and edited in the zero to one hundred range with a trailing percent sign, while it stays
-    /// stored as zero to one.
+    /// stored as zero to one. The field keeps its label so the value stays drag editable.
     /// </summary>
     [CustomPropertyDrawer(typeof(PercentageAttribute))]
     public sealed class PercentageDrawer : PropertyDrawer
     {
-        private const float SignWidth = 14f;
         private const float Gap = 2f;
+        private const float SignWidth = 16f;
+        private const float ValueWidth = 50f;
+
+        private static GUIStyle SignStyle => _signStyle ??= new GUIStyle(EditorStyles.label)
+        {
+            alignment = TextAnchor.MiddleLeft
+        };
 
         private static GUIStyle _signStyle;
 
@@ -26,13 +32,20 @@ namespace Base.AttributePackage.Editor
 
             PercentageAttribute percentage = (PercentageAttribute)attribute;
 
-            EditorGUI.BeginProperty(position, label, property);
+            label = EditorGUI.BeginProperty(position, label, property);
             EditorGUI.BeginChangeCheck();
 
-            Rect controlRect = new(position.x, position.y, position.width - SignWidth - Gap, position.height);
+            float fullWidth = position.width - SignWidth - Gap;
+            float controlWidth = percentage.Slider
+                ? fullWidth
+                : Mathf.Min(EditorGUIUtility.labelWidth + ValueWidth, fullWidth);
+
+            Rect controlRect = new(position.x, position.y, controlWidth, position.height);
             Rect signRect = new(controlRect.xMax + Gap, position.y, SignWidth, position.height);
 
             float percent = Mathf.Clamp01(property.floatValue) * 100f;
+
+            // The label is passed to the field on purpose: hovering it gives the drag to scrub cursor.
             float edited = percentage.Slider
                 ? EditorGUI.Slider(controlRect, label, percent, 0f, 100f)
                 : EditorGUI.FloatField(controlRect, label, percent);
@@ -44,10 +57,5 @@ namespace Base.AttributePackage.Editor
 
             EditorGUI.EndProperty();
         }
-
-        private static GUIStyle SignStyle => _signStyle ??= new GUIStyle(EditorStyles.miniLabel)
-        {
-            alignment = TextAnchor.MiddleLeft
-        };
     }
 }

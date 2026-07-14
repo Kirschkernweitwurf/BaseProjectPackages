@@ -21,6 +21,7 @@ MonoBehaviour:
   menuItemRoot:
   - rid: 5339058366598611045
   - rid: 5339058366598611046
+  - rid: 5339058371163849016
   createAssetRoot:
   - rid: 5339058371163848704
   menuItemGroups: []
@@ -228,5 +229,16 @@ MonoBehaviour:
           enabled: 1
           kind: 1
           createFileName: MenuIdentifierRegistry
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 5339058371163849016
+      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
+      data:
+        entry:
+          id: MI:Base.ToolPackage.Editor.CreateAssetMenuOverview.CreateAssetMenuOverviewWindow.Open
+          path: Tools/Base Packages/Code Health/Create Asset Menu Overview
+          enabled: 1
+          kind: 0
+          createFileName: 
           overridePriority: 0
           overrideValue: 0

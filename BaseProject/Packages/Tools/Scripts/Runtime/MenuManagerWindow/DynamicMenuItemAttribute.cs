@@ -1,4 +1,5 @@
 using System;
+using JetBrains.Annotations;
 
 namespace Base.ToolPackage.MenuManagerWindow
 {
@@ -7,6 +8,7 @@ namespace Base.ToolPackage.MenuManagerWindow
     /// window.
     /// </summary>
     [AttributeUsage(AttributeTargets.Method, Inherited = false)]
+    [MeansImplicitUse]
     public sealed class DynamicMenuItemAttribute : Attribute
     {
         /// <summary>Full menu path used until it is changed in the window, for example "Tools/My Tool".</summary>

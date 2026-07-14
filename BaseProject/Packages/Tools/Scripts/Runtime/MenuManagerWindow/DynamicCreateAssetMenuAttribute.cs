@@ -1,4 +1,5 @@
 using System;
+using JetBrains.Annotations;
 
 namespace Base.ToolPackage.MenuManagerWindow
 {
@@ -7,9 +8,13 @@ namespace Base.ToolPackage.MenuManagerWindow
     /// Manager window.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class, Inherited = false)]
+    [MeansImplicitUse(ImplicitUseKindFlags.InstantiatedNoFixedConstructorSignature, ImplicitUseTargetFlags.WithMembers)]
     public sealed class DynamicCreateAssetMenuAttribute : Attribute
     {
-        /// <summary>Path relative to "Assets/Create/" used until it is changed in the window, for example "Gameplay/Card".</summary>
+        /// <summary>
+        /// Path relative to "Assets/Create/" used until it is
+        /// changed in the window, for example "Gameplay/Card".
+        /// </summary>
         public string DefaultPath { get; }
 
         /// <summary>Default file name for the created asset, without extension.</summary>
