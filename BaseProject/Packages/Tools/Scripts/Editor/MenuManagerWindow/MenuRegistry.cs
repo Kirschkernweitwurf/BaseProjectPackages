@@ -11,7 +11,7 @@ using PackageInfo = UnityEditor.PackageManager.PackageInfo;
 
 namespace Base.ToolPackage.Editor.MenuManagerWindow
 {
-    /// <summary>Central store of all managed entries as a nested tree, saved as an asset so it ships with the package.</summary>
+    /// <summary>The shipped package layout, saved as an asset so it travels with the package.</summary>
     public sealed class MenuRegistry : ScriptableObject
     {
         private const string AssetFileName = "MenuManagerRegistry.asset";
@@ -53,6 +53,9 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
 
         [SerializeField]
         private List<MenuGroup> groups = new();
+
+        [NonSerialized]
+        private bool? readOnly;
 
         /// <summary>The shared registry instance, loaded from or created as an asset in the package folder.</summary>
         public static MenuRegistry Instance
@@ -112,17 +115,9 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
             set => columnStatusWidth = Mathf.Clamp(value, 36f, 400f);
         }
 
-        [NonSerialized]
-        private bool? readOnly;
-
-        private int walkPriority;
-        private bool walkFirst;
-        private bool walkPendingGap;
-
         /// <summary>Returns the top level node list for the given kind.</summary>
-        public List<MenuNode> RootFor(EMenuEntryKind kind) => kind == EMenuEntryKind.CreateAsset
-            ? createAssetRoot
-            : menuItemRoot;
+        public List<MenuNode> RootFor(EMenuEntryKind kind) =>
+            kind == EMenuEntryKind.CreateAsset ? createAssetRoot : menuItemRoot;
 
         /// <summary>Moves legacy data into the tree and normalizes it for the current path model. Runs once.</summary>
         public void Migrate()
@@ -148,49 +143,6 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
             }
 
             Persist();
-        }
-
-        /// <summary>Adds newly discovered entries, flags missing ones, and refreshes kinds.</summary>
-        public void Sync(IReadOnlyDictionary<string, ResolvedMenu> resolved)
-        {
-            HashSet<string> known = new();
-
-            MarkTree(menuItemRoot, resolved, known);
-            MarkTree(createAssetRoot, resolved, known);
-
-            foreach (KeyValuePair<string, ResolvedMenu> pair in resolved)
-            {
-                if (known.Contains(pair.Key))
-                    continue;
-
-                MenuEntry entry = new(pair.Key, pair.Value.DefaultPath, pair.Value.Kind);
-
-                if (pair.Value.Kind == EMenuEntryKind.CreateAsset)
-                    entry.CreateFileName = pair.Value.DefaultFileName;
-
-                RootFor(pair.Value.Kind).Add(new MenuEntryNode(entry));
-            }
-        }
-
-        /// <summary>Recomputes derived priorities for both kinds independently.</summary>
-        public void RecalculatePriorities()
-        {
-            WalkPriorities(menuItemRoot);
-            WalkPriorities(createAssetRoot);
-        }
-
-        /// <summary>Returns every entry of a kind paired with its full resolved menu path, in tree order.</summary>
-        public List<(MenuEntry entry, string path)> ResolvedEntriesFor(EMenuEntryKind kind)
-        {
-            List<(MenuEntry, string)> result = new();
-            List<string> prefix = new();
-            string root = MenuPath.Prefix(kind);
-
-            if (!string.IsNullOrEmpty(root))
-                prefix.Add(root);
-
-            CollectPaths(RootFor(kind), prefix, result);
-            return result;
         }
 
         /// <summary>Writes the asset to disk unless it is read only.</summary>
@@ -278,57 +230,41 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
                 return "Assets";
 
             string folder = Path.GetDirectoryName(scriptPath);
-            return string.IsNullOrEmpty(folder)
-                ? "Assets"
-                : folder.Replace("\\", "/");
+            return string.IsNullOrEmpty(folder) ? "Assets" : folder.Replace("\\", "/");
         }
 
-        private static void CollectPaths(List<MenuNode> nodes, List<string> prefix, List<(MenuEntry, string)> result)
+        private bool ComputeReadOnly()
         {
-            foreach (MenuNode node in nodes)
+            string path = AssetDatabase.GetAssetPath(this);
+
+            if (string.IsNullOrEmpty(path))
+                return false;
+
+            PackageInfo package = PackageInfo.FindForAssetPath(path);
+
+            if (package != null && package.source != PackageSource.Embedded && package.source != PackageSource.Local)
+                return true;
+
+            try
             {
-                if (node is MenuGroupNode group)
-                {
-                    prefix.Add(group.Name);
-                    CollectPaths(group.Children, prefix, result);
-                    prefix.RemoveAt(prefix.Count - 1);
-                }
-                else if (node is MenuEntryNode entryNode)
-                {
-                    prefix.Add(entryNode.Entry.Path);
-                    result.Add((entryNode.Entry, MenuPath.Combine(prefix)));
-                    prefix.RemoveAt(prefix.Count - 1);
-                }
+                string full = Path.GetFullPath(path);
+
+                if (File.Exists(full) && (File.GetAttributes(full) & FileAttributes.ReadOnly) != 0)
+                    return true;
             }
+            catch (Exception)
+            {
+                return false;
+            }
+
+            return false;
         }
 
-        private static void MarkTree(List<MenuNode> nodes, IReadOnlyDictionary<string, ResolvedMenu> resolved,
-            HashSet<string> known)
+        private void NormalizeForPaths()
         {
-            foreach (MenuNode node in nodes)
-            {
-                if (node is MenuGroupNode group)
-                {
-                    MarkTree(group.Children, resolved, known);
-                    continue;
-                }
-
-                if (node is not MenuEntryNode entryNode)
-                    continue;
-
-                MenuEntry entry = entryNode.Entry;
-                known.Add(entry.Id);
-                bool present = resolved.TryGetValue(entry.Id, out ResolvedMenu match);
-                entry.Missing = !present;
-
-                if (!present)
-                    continue;
-
-                entry.Kind = match.Kind;
-
-                if (match.Kind == EMenuEntryKind.CreateAsset && string.IsNullOrWhiteSpace(entry.CreateFileName))
-                    entry.CreateFileName = match.DefaultFileName;
-            }
+            DissolveLegacyGroup(menuItemRoot);
+            DissolveLegacyGroup(createAssetRoot);
+            StripAssetPrefix(createAssetRoot);
         }
 
         private static void DissolveLegacyGroup(List<MenuNode> root)
@@ -389,88 +325,9 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
             legacy.Clear();
         }
 
-        private bool ComputeReadOnly()
-        {
-            string path = AssetDatabase.GetAssetPath(this);
-
-            if (string.IsNullOrEmpty(path))
-                return false;
-
-            PackageInfo package = PackageInfo.FindForAssetPath(path);
-
-            if (package != null && package.source != PackageSource.Embedded && package.source != PackageSource.Local)
-                return true;
-
-            try
-            {
-                string full = Path.GetFullPath(path);
-
-                if (File.Exists(full) && (File.GetAttributes(full) & FileAttributes.ReadOnly) != 0)
-                    return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-
-            return false;
-        }
-
-        private void WalkPriorities(List<MenuNode> nodes)
-        {
-            walkPriority = startPriority;
-            walkFirst = true;
-            walkPendingGap = false;
-            WalkNodes(nodes);
-        }
-
-        private void WalkNodes(List<MenuNode> nodes)
-        {
-            foreach (MenuNode node in nodes)
-            {
-                if (node is MenuGroupNode group)
-                {
-                    walkPendingGap = true;
-                    WalkNodes(group.Children);
-                    walkPendingGap = true;
-                }
-                else if (node is MenuEntryNode entryNode)
-                {
-                    EmitPriority(entryNode.Entry);
-                }
-            }
-        }
-
-        private void EmitPriority(MenuEntry entry)
-        {
-            if (!entry.Enabled || entry.Missing || string.IsNullOrWhiteSpace(entry.Path))
-            {
-                entry.Priority = int.MinValue;
-                return;
-            }
-
-            if (walkFirst)
-                walkFirst = false;
-            else if (walkPendingGap)
-                walkPriority += separatorGap;
-
-            walkPendingGap = false;
-            entry.Priority = walkPriority;
-            walkPriority++;
-        }
-
-        private void NormalizeForPaths()
-        {
-            DissolveLegacyGroup(menuItemRoot);
-            DissolveLegacyGroup(createAssetRoot);
-            StripAssetPrefix(createAssetRoot);
-        }
-
         private MenuGroup GetLegacyGroup(EMenuEntryKind kind, string name)
         {
-            List<MenuGroup> list = kind == EMenuEntryKind.CreateAsset
-                ? createAssetGroups
-                : menuItemGroups;
+            List<MenuGroup> list = kind == EMenuEntryKind.CreateAsset ? createAssetGroups : menuItemGroups;
 
             foreach (MenuGroup group in list)
             {

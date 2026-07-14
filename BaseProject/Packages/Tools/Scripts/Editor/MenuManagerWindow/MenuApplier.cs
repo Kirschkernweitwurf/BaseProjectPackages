@@ -15,38 +15,30 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
 
         static MenuApplier() => EditorApplication.delayCall += () => Apply(false);
 
-        /// <summary>Rescans, syncs the registry, and re-registers every enabled entry of both kinds.</summary>
+        /// <summary>Rescans, syncs both stores, and re-registers every enabled entry of both kinds.</summary>
         public static void Apply(bool log)
         {
             Dictionary<string, ResolvedMenu> resolved = MenuScanner.Scan();
-            MenuRegistry registry = MenuRegistry.Instance;
-
-            registry.Migrate();
-            registry.Sync(resolved);
-            registry.RecalculatePriorities();
+            MenuComposite.Sync(resolved);
 
             if (!MenuBridge.IsAvailable)
-            {
-                registry.Persist();
                 return;
-            }
 
             RemoveAll();
 
             HashSet<string> usedPaths = new();
+            HashSet<string> usedIds = new();
             int count = 0;
 
-            count += Register(registry.ResolvedEntriesFor(EMenuEntryKind.MenuItem), resolved, usedPaths, log);
-            count += Register(registry.ResolvedEntriesFor(EMenuEntryKind.CreateAsset), resolved, usedPaths, log);
-
-            registry.Persist();
+            count += Register(MenuComposite.ResolvedEntries(EMenuEntryKind.MenuItem), resolved, usedPaths, usedIds, log);
+            count += Register(MenuComposite.ResolvedEntries(EMenuEntryKind.CreateAsset), resolved, usedPaths, usedIds, log);
 
             if (log)
                 CustomLogger.Log($"Menu Manager: registered {count} menu entr(y/ies).", null);
         }
 
-        private static int Register(List<(MenuEntry entry, string path)> entries,
-            IReadOnlyDictionary<string, ResolvedMenu> resolved, HashSet<string> usedPaths, bool log)
+        private static int Register(List<(MenuEntry entry, string path)> entries, IReadOnlyDictionary<string, ResolvedMenu> resolved,
+            HashSet<string> usedPaths, HashSet<string> usedIds, bool log)
         {
             int count = 0;
 
@@ -56,6 +48,9 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
                     continue;
 
                 if (!resolved.TryGetValue(entry.Id, out ResolvedMenu match))
+                    continue;
+
+                if (!usedIds.Add(entry.Id))
                     continue;
 
                 if (!usedPaths.Add(path))
@@ -81,9 +76,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
                 return match.Execute;
 
             Type type = match.AssetType;
-            string fileName = string.IsNullOrWhiteSpace(entry.CreateFileName)
-                ? match.DefaultFileName
-                : entry.CreateFileName;
+            string fileName = string.IsNullOrWhiteSpace(entry.CreateFileName) ? match.DefaultFileName : entry.CreateFileName;
 
             return () =>
             {
