@@ -894,7 +894,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
         private void HandleUndoCommands(Event current)
         {
             if (current.type == EventType.ValidateCommand
-                && (current.commandName == "Undo" || current.commandName == "Redo"))
+                && current.commandName is "Undo" or "Redo")
             {
                 current.Use();
                 return;
