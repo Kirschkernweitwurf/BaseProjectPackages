@@ -6,19 +6,15 @@ namespace Base.AttributePackage.Editor
     /// <summary>
     /// Draws a normalized float as a percentage for <see cref="PercentageAttribute"/>. The value is
     /// shown and edited in the zero to one hundred range with a trailing percent sign, while it stays
-    /// stored as zero to one. The field keeps its label so the value stays drag editable.
+    /// stored as zero to one. The field keeps its label so the value stays drag editable, and the sign
+    /// is drawn at indent level zero so it is not pushed off screen inside indented or foldout sections.
     /// </summary>
     [CustomPropertyDrawer(typeof(PercentageAttribute))]
     public sealed class PercentageDrawer : PropertyDrawer
     {
-        private const float Gap = 2f;
         private const float SignWidth = 16f;
+        private const float Gap = 2f;
         private const float ValueWidth = 50f;
-
-        private static GUIStyle SignStyle => _signStyle ??= new GUIStyle(EditorStyles.label)
-        {
-            alignment = TextAnchor.MiddleLeft
-        };
 
         private static GUIStyle _signStyle;
 
@@ -50,12 +46,21 @@ namespace Base.AttributePackage.Editor
                 ? EditorGUI.Slider(controlRect, label, percent, 0f, 100f)
                 : EditorGUI.FloatField(controlRect, label, percent);
 
+            // Draw the sign at indent level zero, otherwise it is shifted right and clipped in foldouts.
+            int indent = EditorGUI.indentLevel;
+            EditorGUI.indentLevel = 0;
             EditorGUI.LabelField(signRect, "%", SignStyle);
+            EditorGUI.indentLevel = indent;
 
             if (EditorGUI.EndChangeCheck())
                 property.floatValue = Mathf.Clamp01(edited / 100f);
 
             EditorGUI.EndProperty();
         }
+
+        private static GUIStyle SignStyle => _signStyle ??= new GUIStyle(EditorStyles.label)
+        {
+            alignment = TextAnchor.MiddleLeft
+        };
     }
 }
