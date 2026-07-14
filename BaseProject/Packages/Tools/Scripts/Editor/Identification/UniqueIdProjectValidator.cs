@@ -1,10 +1,10 @@
 #if UNITY_EDITOR
-using Base.UtilityPackage.Identification;
+using Base.ToolPackage.Identification;
 using Base.UtilityPackage.Logging;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.UtilityPackage.Editor.Identification
+namespace Base.ToolPackage.Editor.Identification
 {
     /// <summary>
     /// Responsible for building a clean UniqueId registry

@@ -1,9 +1,9 @@
 #if UNITY_EDITOR
-using Base.UtilityPackage.Identification;
+using Base.ToolPackage.Identification;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.UtilityPackage.Editor.Identification
+namespace Base.ToolPackage.Editor.Identification
 {
     /// <summary>
     /// Runs after assets are imported (including newly created or duplicated). <br/>

@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Base.UtilityPackage.Generated;
+using Base.ToolPackage.MenuManagerWindow;
 using UnityEngine;
 
 namespace Base.ToolPackage.Editor.AssetZoo.Runtime.Config
@@ -8,8 +8,7 @@ namespace Base.ToolPackage.Editor.AssetZoo.Runtime.Config
     /// Author-time configuration for an asset zoo. Create one or more of these as
     /// project assets via Assets &gt; Create &gt; Asset Zoo &gt; Zoo Config.
     /// </summary>
-    [CreateAssetMenu(fileName = "ZooConfig", menuName = "Scriptable Objects/Base/Asset Zoo/Zoo Config",
-        order = MenuOrders.Team)]
+    [DynamicCreateAssetMenu("Scriptable Objects/Base/Asset Zoo/Zoo Config", "ZooConfig")]
     public class ZooConfig : ScriptableObject
     {
         [Header("Settings")]

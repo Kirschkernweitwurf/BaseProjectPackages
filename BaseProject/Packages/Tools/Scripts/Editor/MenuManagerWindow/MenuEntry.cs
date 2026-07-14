@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Base.ToolPackage.Editor.MenuManagerWindow
 {
-    /// <summary>Single managed menu entry. Path and grouping are stored, priority is derived at runtime.</summary>
+    /// <summary>Single managed menu entry. Path, grouping, and asset file name are stored, priority is derived at runtime.</summary>
     [Serializable]
     public sealed class MenuEntry
     {
@@ -19,6 +19,9 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
 
         [SerializeField]
         private EMenuEntryKind kind;
+
+        [SerializeField]
+        private string createFileName;
 
         /// <summary>Stable identity derived from the marked method or type.</summary>
         public string Id
@@ -46,6 +49,13 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
         {
             get => kind;
             set => kind = value;
+        }
+
+        /// <summary>File name used when creating an asset, without extension. Only used for asset entries.</summary>
+        public string CreateFileName
+        {
+            get => createFileName;
+            set => createFileName = value;
         }
 
         /// <summary>Derived priority. Set to int.MinValue when the entry is not registered.</summary>

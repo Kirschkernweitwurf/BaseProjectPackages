@@ -110,6 +110,20 @@ namespace Base.ToolPackage.Editor.EmptyFoldersOverviewWindow
             return texture;
         }
 
+        private static void DrawHint(string message)
+        {
+            GUILayout.FlexibleSpace();
+
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                GUILayout.FlexibleSpace();
+                GUILayout.Label(message, EditorStyles.centeredGreyMiniLabel);
+                GUILayout.FlexibleSpace();
+            }
+
+            GUILayout.FlexibleSpace();
+        }
+
         private void DrawActionBar(List<EmptyFolderEntry> filtered)
         {
             EditorGUILayout.Space(4f);
@@ -288,20 +302,6 @@ namespace Base.ToolPackage.Editor.EmptyFoldersOverviewWindow
                 Repaint();
         }
 
-        private void DrawHint(string message)
-        {
-            GUILayout.FlexibleSpace();
-
-            using (new EditorGUILayout.HorizontalScope())
-            {
-                GUILayout.FlexibleSpace();
-                GUILayout.Label(message, EditorStyles.centeredGreyMiniLabel);
-                GUILayout.FlexibleSpace();
-            }
-
-            GUILayout.FlexibleSpace();
-        }
-
         private void DrawSuccess(string title, string subtitle)
         {
             GUILayout.FlexibleSpace();
@@ -354,13 +354,20 @@ namespace Base.ToolPackage.Editor.EmptyFoldersOverviewWindow
                 }
             };
 
+            Color successTitleColor = new(0.36f, 0.76f, 0.46f);
+            Color successSubtitleColor = new(0.5f, 0.5f, 0.5f);
+
             _successTitleStyle = new GUIStyle(EditorStyles.boldLabel)
             {
                 alignment = TextAnchor.MiddleCenter,
                 fontSize = SuccessTitleFontSize,
                 normal =
                 {
-                    textColor = new Color(0.36f, 0.76f, 0.46f)
+                    textColor = successTitleColor
+                },
+                hover =
+                {
+                    textColor = successTitleColor
                 }
             };
 
@@ -370,7 +377,11 @@ namespace Base.ToolPackage.Editor.EmptyFoldersOverviewWindow
                 wordWrap = true,
                 normal =
                 {
-                    textColor = new Color(0.5f, 0.5f, 0.5f)
+                    textColor = successSubtitleColor
+                },
+                hover =
+                {
+                    textColor = successSubtitleColor
                 }
             };
 

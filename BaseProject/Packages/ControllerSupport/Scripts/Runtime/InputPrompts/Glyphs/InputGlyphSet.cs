@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Base.ControllerSupport.InputPrompts.Devices;
-using Base.UtilityPackage.Generated;
+using Base.ToolPackage.MenuManagerWindow;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -11,8 +11,7 @@ namespace Base.ControllerSupport.InputPrompts.Glyphs
     /// A set of action-to-glyph mappings for one device family. Author one asset per device type
     /// (mouse/keyboard, gamepad) and assign them to the <see cref="InputGlyphProvider"/>.
     /// </summary>
-    [CreateAssetMenu(fileName = "InputGlyphSet", menuName = "Scriptable Objects/Base/Input/Glyph Set",
-        order = MenuOrders.Asset)]
+    [DynamicCreateAssetMenu("Scriptable Objects/Base/Input/Glyph Set", "InputGlyphSet")]
     public sealed class InputGlyphSet : ScriptableObject
     {
         [field: Tooltip("The device family these glyphs represent.")]

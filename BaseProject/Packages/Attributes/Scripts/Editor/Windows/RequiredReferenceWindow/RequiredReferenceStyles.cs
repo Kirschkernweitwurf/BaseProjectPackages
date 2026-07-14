@@ -91,8 +91,14 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
                 normal =
                 {
                     textColor = Success
+                },
+                hover =
+                {
+                    textColor = Success
                 }
             };
+
+            Color subtitleColor = new Color(0.5f, 0.5f, 0.5f);
 
             SuccessSubtitle = new GUIStyle(EditorStyles.label)
             {
@@ -100,7 +106,11 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
                 wordWrap = true,
                 normal =
                 {
-                    textColor = new Color(0.5f, 0.5f, 0.5f)
+                    textColor = subtitleColor
+                },
+                hover =
+                {
+                    textColor = subtitleColor
                 }
             };
         }

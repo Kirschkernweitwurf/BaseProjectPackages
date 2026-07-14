@@ -1,4 +1,4 @@
-using Base.UtilityPackage.Generated;
+using Base.ToolPackage.MenuManagerWindow;
 using Unity.Profiling.Memory;
 using UnityEngine;
 
@@ -8,8 +8,7 @@ namespace Base.MemoryProfiler
     /// Runtime configuration for automated memory profiling.
     /// Loaded from a Resources folder so it ships in development builds.
     /// </summary>
-    [CreateAssetMenu(fileName = ConfigName, menuName = "Scriptable Objects/Base/Memory Profiler/Memory Profiler Config",
-        order = MenuOrders.Code)]
+    [DynamicCreateAssetMenu("Scriptable Objects/Base/Memory Profiler/Memory Profiler Config", ConfigName)]
     public class MemoryProfilerConfigSo : ScriptableObject
     {
         /// <summary>Asset file name (without extension).</summary>

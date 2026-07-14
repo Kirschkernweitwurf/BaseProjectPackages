@@ -1,6 +1,6 @@
 using System;
 
-namespace Base.UtilityPackage.Identification
+namespace Base.ToolPackage.Identification
 {
     /// <summary>
     /// A stable, human-authored key that survives being written to disk and read back again.

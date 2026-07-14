@@ -1,4 +1,4 @@
-using Base.UtilityPackage.Generated;
+using Base.ToolPackage.MenuManagerWindow;
 using Unity.Cinemachine;
 using UnityEngine;
 
@@ -7,8 +7,7 @@ namespace Base.ScreenShakePackage
     /// <summary>
     /// ScriptableObject that defines a screen shake profile.
     /// </summary>
-    [CreateAssetMenu(fileName = "ScreenShakeProfile", menuName = "Scriptable Objects/Base/Screen-Shake/New Profile",
-        order = MenuOrders.Asset)]
+    [DynamicCreateAssetMenu("Scriptable Objects/Base/Screen-Shake/New Profile", "ScreenShakeProfile")]
     public class ScreenShakeProfile : ScriptableObject
     {
         [field: Header("Shake Settings")]
