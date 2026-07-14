@@ -28,22 +28,17 @@ namespace Base.CorePackage.MenuManaging.Modules
             ShutdownManager.Register(this);
         }
 
-        protected override void OnDestroy()
-        {
-            base.OnDestroy();
-
-            if (!HasShutDown)
-                Shutdown();
-
-            ShutdownManager.Deregister(this);
-        }
+        private void OnDestroy() => Shutdown();
 #endregion
 
         public void Shutdown()
         {
-            Release();
+            if (HasShutDown)
+                return;
 
             HasShutDown = true;
+            Release();
+            ShutdownManager.Deregister(this);
         }
 
         protected override void OnMenuOpened()

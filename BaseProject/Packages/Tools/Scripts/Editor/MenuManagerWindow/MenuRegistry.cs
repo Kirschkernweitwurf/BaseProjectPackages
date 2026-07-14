@@ -1,4 +1,5 @@
 #if UNITY_EDITOR
+using System;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -9,14 +10,27 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
     [FilePath(FilePathValue, FilePathAttribute.Location.ProjectFolder)]
     public sealed class MenuRegistry : ScriptableSingleton<MenuRegistry>
     {
-        private const string DefaultGroupName = "Ungrouped";
+        private const int CurrentSchema = 2;
         private const string FilePathValue = "ProjectSettings/MenuManagerRegistry.asset";
+        private const string LegacyGroupName = "Ungrouped";
+
+        [SerializeField]
+        private int schemaVersion;
 
         [SerializeField]
         private int startPriority;
 
         [SerializeField]
         private int separatorGap = 11;
+
+        [SerializeField]
+        private float columnFileWidth = 130f;
+
+        [SerializeField]
+        private float columnPriorityWidth = 72f;
+
+        [SerializeField]
+        private float columnStatusWidth = 52f;
 
         [SerializeReference]
         private List<MenuNode> menuItemRoot = new();
@@ -47,6 +61,27 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
             set => separatorGap = Mathf.Max(1, value);
         }
 
+        /// <summary>Width of the file name column.</summary>
+        public float ColumnFileWidth
+        {
+            get => columnFileWidth;
+            set => columnFileWidth = Mathf.Clamp(value, 36f, 400f);
+        }
+
+        /// <summary>Width of the priority column.</summary>
+        public float ColumnPriorityWidth
+        {
+            get => columnPriorityWidth;
+            set => columnPriorityWidth = Mathf.Clamp(value, 36f, 400f);
+        }
+
+        /// <summary>Width of the state column.</summary>
+        public float ColumnStatusWidth
+        {
+            get => columnStatusWidth;
+            set => columnStatusWidth = Mathf.Clamp(value, 36f, 400f);
+        }
+
         private int walkPriority;
         private bool walkFirst;
         private bool walkPendingGap;
@@ -56,7 +91,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
             ? createAssetRoot
             : menuItemRoot;
 
-        /// <summary>Moves legacy flat data into the nested tree. Runs once.</summary>
+        /// <summary>Moves legacy data into the tree and normalizes it for the current path model. Runs once.</summary>
         public void Migrate()
         {
             if (groups.Count > 0)
@@ -72,6 +107,13 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
 
             ConvertLegacy(menuItemGroups, menuItemRoot);
             ConvertLegacy(createAssetGroups, createAssetRoot);
+
+            if (schemaVersion < CurrentSchema)
+            {
+                NormalizeForPaths();
+                schemaVersion = CurrentSchema;
+            }
+
             Persist();
         }
 
@@ -93,7 +135,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
                 if (pair.Value.Kind == EMenuEntryKind.CreateAsset)
                     entry.CreateFileName = pair.Value.DefaultFileName;
 
-                GetDefaultGroup(RootFor(pair.Value.Kind)).Children.Add(new MenuEntryNode(entry));
+                RootFor(pair.Value.Kind).Add(new MenuEntryNode(entry));
             }
         }
 
@@ -104,21 +146,39 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
             WalkPriorities(createAssetRoot);
         }
 
-        /// <summary>Enumerates every entry of a kind in tree order.</summary>
-        public IEnumerable<MenuEntry> EntriesFor(EMenuEntryKind kind) => Flatten(RootFor(kind));
+        /// <summary>Returns every entry of a kind paired with its full resolved menu path, in tree order.</summary>
+        public List<(MenuEntry entry, string path)> ResolvedEntriesFor(EMenuEntryKind kind)
+        {
+            List<(MenuEntry, string)> result = new();
+            List<string> prefix = new();
+            string root = MenuPath.Prefix(kind);
+
+            if (!string.IsNullOrEmpty(root))
+                prefix.Add(root);
+
+            CollectPaths(RootFor(kind), prefix, result);
+            return result;
+        }
 
         /// <summary>Writes the in-memory state to disk.</summary>
         public void Persist() => Save(true);
 
-        private static IEnumerable<MenuEntry> Flatten(List<MenuNode> nodes)
+        private static void CollectPaths(List<MenuNode> nodes, List<string> prefix, List<(MenuEntry, string)> result)
         {
             foreach (MenuNode node in nodes)
             {
-                if (node is MenuEntryNode entryNode)
-                    yield return entryNode.Entry;
-                else if (node is MenuGroupNode group)
-                    foreach (MenuEntry entry in Flatten(group.Children))
-                        yield return entry;
+                if (node is MenuGroupNode group)
+                {
+                    prefix.Add(group.Name);
+                    CollectPaths(group.Children, prefix, result);
+                    prefix.RemoveAt(prefix.Count - 1);
+                }
+                else if (node is MenuEntryNode entryNode)
+                {
+                    prefix.Add(entryNode.Entry.Path);
+                    result.Add((entryNode.Entry, MenuPath.Combine(prefix)));
+                    prefix.RemoveAt(prefix.Count - 1);
+                }
             }
         }
 
@@ -151,17 +211,44 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
             }
         }
 
-        private static MenuGroupNode GetDefaultGroup(List<MenuNode> root)
+        private static void DissolveLegacyGroup(List<MenuNode> root)
         {
+            List<MenuNode> flat = new();
+
             foreach (MenuNode node in root)
             {
-                if (node is MenuGroupNode group && group.Name == DefaultGroupName)
-                    return group;
+                if (node is MenuGroupNode group && group.Name == LegacyGroupName)
+                    flat.AddRange(group.Children);
+                else
+                    flat.Add(node);
             }
 
-            MenuGroupNode created = new(DefaultGroupName);
-            root.Add(created);
-            return created;
+            root.Clear();
+            root.AddRange(flat);
+        }
+
+        private static void StripAssetPrefix(List<MenuNode> nodes)
+        {
+            const string prefix = MenuPath.AssetRoot + "/";
+
+            foreach (MenuNode node in nodes)
+            {
+                if (node is MenuGroupNode group)
+                {
+                    StripAssetPrefix(group.Children);
+                    continue;
+                }
+
+                if (node is not MenuEntryNode entryNode)
+                    continue;
+
+                string path = entryNode.Entry.Path;
+
+                if (path == MenuPath.AssetRoot)
+                    entryNode.Entry.Path = string.Empty;
+                else if (path != null && path.StartsWith(prefix, StringComparison.Ordinal))
+                    entryNode.Entry.Path = path.Substring(prefix.Length);
+            }
         }
 
         private static void ConvertLegacy(List<MenuGroup> legacy, List<MenuNode> root)
@@ -223,6 +310,13 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
             walkPendingGap = false;
             entry.Priority = walkPriority;
             walkPriority++;
+        }
+
+        private void NormalizeForPaths()
+        {
+            DissolveLegacyGroup(menuItemRoot);
+            DissolveLegacyGroup(createAssetRoot);
+            StripAssetPrefix(createAssetRoot);
         }
 
         private MenuGroup GetLegacyGroup(EMenuEntryKind kind, string name)

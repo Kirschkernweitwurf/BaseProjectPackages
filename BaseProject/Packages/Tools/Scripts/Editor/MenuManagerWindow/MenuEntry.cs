@@ -23,6 +23,12 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
         [SerializeField]
         private string createFileName;
 
+        [SerializeField]
+        private bool overridePriority;
+
+        [SerializeField]
+        private int overrideValue;
+
         /// <summary>Stable identity derived from the marked method or type.</summary>
         public string Id
         {
@@ -57,6 +63,25 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
             get => createFileName;
             set => createFileName = value;
         }
+
+        /// <summary>Whether the derived priority is replaced by a manual value.</summary>
+        public bool OverridePriority
+        {
+            get => overridePriority;
+            set => overridePriority = value;
+        }
+
+        /// <summary>Manual priority used when OverridePriority is true.</summary>
+        public int OverrideValue
+        {
+            get => overrideValue;
+            set => overrideValue = value;
+        }
+
+        /// <summary>Priority used for registration. The manual override when set, otherwise the derived value.</summary>
+        public int EffectivePriority => overridePriority
+            ? overrideValue
+            : priority;
 
         /// <summary>Derived priority. Set to int.MinValue when the entry is not registered.</summary>
         public int Priority

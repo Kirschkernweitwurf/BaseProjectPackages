@@ -10,16 +10,19 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
     public abstract class MenuManagerWindowBase : EditorWindow
     {
         private const float DragThreshold = 4f;
-        private const float FileWidth = 130f;
         private const float FoldWidth = 14f;
         private const float GripWidth = 18f;
         private const float HeaderHeight = 24f;
         private const float Indent = 14f;
+
+        private const int MaxUndoSteps = 100;
         private const float Pad = 4f;
-        private const float PriorityWidth = 44f;
         private const float RowHeight = 22f;
-        private const float StatusWidth = 52f;
+        private const float SplitterWidth = 6f;
         private const float ToggleWidth = 18f;
+
+        private static readonly GUIContent AutoContent = new("A", "Reset to automatic priority");
+        private static readonly GUIContent OverrideContent = new("M", "Override priority manually");
 
         /// <summary>Kind of entries this window manages.</summary>
         protected abstract EMenuEntryKind Kind { get; }
@@ -30,6 +33,8 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
         private List<MenuNode> Root => registry.RootFor(Kind);
 
         private readonly HashSet<List<MenuNode>> dragForbidden = new();
+        private readonly List<State> undoStates = new();
+        private readonly List<State> redoStates = new();
 
         private readonly List<Row> rows = new();
 
@@ -37,6 +42,8 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
         private Dictionary<string, ResolvedMenu> resolved = new();
         private Vector2 scroll;
         private Action pending;
+        private string hoverPreview = string.Empty;
+        private int activeSplitter = -1;
 
         private bool stylesReady;
         private GUIStyle titleStyle;
@@ -60,6 +67,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
         private void OnEnable()
         {
             registry = MenuRegistry.instance;
+            wantsMouseMove = true;
             RefreshScan();
         }
 
@@ -71,12 +79,24 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
             EnsureStyles();
             Event current = Event.current;
 
+            if (current.type == EventType.MouseMove)
+                Repaint();
+
+            HandleUndoCommands(current);
+            hoverPreview = string.Empty;
+
             DrawToolbar();
             registry.RecalculatePriorities();
-            DrawColumnHeader();
+            DrawColumnHeader(current);
 
             rows.Clear();
-            BuildRows(Root, 0, rows);
+            List<string> prefix = new();
+            string rootPrefix = MenuPath.Prefix(Kind);
+
+            if (!string.IsNullOrEmpty(rootPrefix))
+                prefix.Add(rootPrefix);
+
+            BuildRows(Root, 0, prefix, rows);
 
             scroll = EditorGUILayout.BeginScrollView(scroll);
 
@@ -89,6 +109,8 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
             ResolveDrag(current);
 
             EditorGUILayout.EndScrollView();
+
+            DrawStatusBar();
 
             if (pending == null)
                 return;
@@ -114,13 +136,50 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
 
         private static Color AccentColor() => new(0.23f, 0.55f, 0.95f, 0.9f);
 
+        private static Color OverrideColor() => new(0.95f, 0.75f, 0.2f, 0.18f);
+
         private static Color GuideColor() => EditorGUIUtility.isProSkin
             ? new Color(1f, 1f, 1f, 0.1f)
             : new Color(0f, 0f, 0f, 0.12f);
 
-        private static string PriorityLabel(MenuEntry entry) => entry.Priority == int.MinValue
-            ? "-"
-            : entry.Priority.ToString();
+        private static List<MenuNode> CloneNodes(List<MenuNode> nodes)
+        {
+            List<MenuNode> copy = new(nodes.Count);
+
+            foreach (MenuNode node in nodes)
+                copy.Add(CloneNode(node));
+
+            return copy;
+        }
+
+        private static MenuNode CloneNode(MenuNode node)
+        {
+            if (node is MenuGroupNode group)
+            {
+                MenuGroupNode clone = new(group.Name)
+                {
+                    Expanded = group.Expanded
+                };
+
+                foreach (MenuNode child in group.Children)
+                    clone.Children.Add(CloneNode(child));
+
+                return clone;
+            }
+
+            if (node is MenuEntryNode entryNode)
+                return new MenuEntryNode(CloneEntry(entryNode.Entry));
+
+            return null;
+        }
+
+        private static MenuEntry CloneEntry(MenuEntry entry) => new(entry.Id, entry.Path, entry.Kind)
+        {
+            Enabled = entry.Enabled,
+            CreateFileName = entry.CreateFileName,
+            OverridePriority = entry.OverridePriority,
+            OverrideValue = entry.OverrideValue
+        };
 
         private void EnsureStyles()
         {
@@ -170,43 +229,122 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
                 RefreshScan();
             }
 
+            using (new EditorGUI.DisabledScope(undoStates.Count == 0))
+            {
+                if (GUILayout.Button("Undo", EditorStyles.toolbarButton, GUILayout.Width(56f)))
+                    PerformUndo();
+            }
+
+            using (new EditorGUI.DisabledScope(redoStates.Count == 0))
+            {
+                if (GUILayout.Button("Redo", EditorStyles.toolbarButton, GUILayout.Width(56f)))
+                    PerformRedo();
+            }
+
             GUILayout.FlexibleSpace();
 
             EditorGUI.BeginChangeCheck();
 
             EditorGUILayout.LabelField("Start", GUILayout.Width(34f));
-            registry.StartPriority = EditorGUILayout.IntField(registry.StartPriority, EditorStyles.toolbarTextField,
+            int newStart = EditorGUILayout.IntField(registry.StartPriority, EditorStyles.toolbarTextField,
                 GUILayout.Width(50f));
 
             EditorGUILayout.LabelField("Gap", GUILayout.Width(28f));
-            registry.SeparatorGap = EditorGUILayout.IntField(registry.SeparatorGap, EditorStyles.toolbarTextField,
+            int newGap = EditorGUILayout.IntField(registry.SeparatorGap, EditorStyles.toolbarTextField,
                 GUILayout.Width(50f));
 
             if (EditorGUI.EndChangeCheck())
+            {
+                PushUndo();
+                registry.StartPriority = newStart;
+                registry.SeparatorGap = newGap;
                 registry.Persist();
+            }
 
             EditorGUILayout.EndHorizontal();
 
-            EditorGUILayout.LabelField(
-                "Drag the grip to move entries or whole groups. Drop on the lower half of a group to nest inside it.",
-                EditorStyles.miniLabel);
+            string hint = ShowFileName
+                ? "Group names build the path. Assets/Create is added automatically. Type only the custom part."
+                : "Group names build the path. Type only the custom part in each entry.";
+
+            EditorGUILayout.LabelField(hint, EditorStyles.miniLabel);
         }
 
-        private void DrawColumnHeader()
+        private void DrawColumnHeader(Event current)
         {
-            Rect rect = GUILayoutUtility.GetRect(0f, 16f, GUILayout.ExpandWidth(true));
-            Columns columns = Compute(rect, 0);
+            Rect rect = GUILayoutUtility.GetRect(0f, 18f, GUILayout.ExpandWidth(true));
 
-            EditorGUI.LabelField(columns.Path, "Path", columnStyle);
+            float statusW = registry.ColumnStatusWidth;
+            float priorityW = registry.ColumnPriorityWidth;
+            float fileW = registry.ColumnFileWidth;
+
+            float statusX = rect.xMax - statusW;
+            float priorityX = statusX - Pad - priorityW;
+            float fileX = ShowFileName
+                ? priorityX - Pad - fileW
+                : priorityX;
+
+            float h = EditorGUIUtility.singleLineHeight;
+            float y = rect.y + (rect.height - h) * 0.5f;
+            float pathStart = rect.x + GripWidth + Pad + ToggleWidth + Pad;
+            float pathEnd = ShowFileName
+                ? fileX - Pad
+                : priorityX - Pad;
+
+            EditorGUI.LabelField(new Rect(pathStart, y, Mathf.Max(30f, pathEnd - pathStart), h), "Path", columnStyle);
 
             if (ShowFileName)
-                EditorGUI.LabelField(columns.File, "File name", columnStyle);
+                EditorGUI.LabelField(new Rect(fileX, y, fileW, h), "File Name", columnStyle);
 
-            EditorGUI.LabelField(columns.Priority, "Prio", columnStyle);
-            EditorGUI.LabelField(columns.Status, "State", columnStyle);
+            EditorGUI.LabelField(new Rect(priorityX, y, priorityW, h), "Prio", columnStyle);
+            EditorGUI.LabelField(new Rect(statusX, y, statusW, h), "State", columnStyle);
+
+            DrawSplitter(rect, statusX, 2, current);
+            DrawSplitter(rect, priorityX, 1, current);
+
+            if (ShowFileName)
+                DrawSplitter(rect, fileX, 0, current);
+
+            if (activeSplitter < 0)
+                return;
+
+            if (current.type == EventType.MouseDrag)
+            {
+                float mouseX = current.mousePosition.x;
+
+                if (activeSplitter == 2)
+                    registry.ColumnStatusWidth = rect.xMax - mouseX;
+                else if (activeSplitter == 1)
+                    registry.ColumnPriorityWidth = statusX - mouseX;
+                else
+                    registry.ColumnFileWidth = priorityX - mouseX;
+
+                current.Use();
+                Repaint();
+            }
+            else if (current.type == EventType.MouseUp)
+            {
+                registry.Persist();
+                activeSplitter = -1;
+            }
         }
 
-        private void BuildRows(List<MenuNode> nodes, int depth, List<Row> output)
+        private void DrawSplitter(Rect header, float x, int id, Event current)
+        {
+            Rect handle = new(x - SplitterWidth * 0.5f, header.y, SplitterWidth, header.height);
+            EditorGUIUtility.AddCursorRect(handle, MouseCursor.ResizeHorizontal);
+
+            if (current.type == EventType.Repaint)
+                EditorGUI.DrawRect(new Rect(x - 0.5f, header.y, 1f, header.height), GuideColor());
+
+            if (current.type == EventType.MouseDown && current.button == 0 && handle.Contains(current.mousePosition))
+            {
+                activeSplitter = id;
+                current.Use();
+            }
+        }
+
+        private void BuildRows(List<MenuNode> nodes, int depth, List<string> prefix, List<Row> output)
         {
             for (int i = 0; i < nodes.Count; i++)
             {
@@ -227,6 +365,8 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
                     if (!group.Expanded)
                         continue;
 
+                    prefix.Add(group.Name);
+
                     if (group.Children.Count == 0)
                         output.Add(new Row
                         {
@@ -236,17 +376,24 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
                             IsPlaceholder = true
                         });
                     else
-                        BuildRows(group.Children, depth + 1, output);
+                        BuildRows(group.Children, depth + 1, prefix, output);
+
+                    prefix.RemoveAt(prefix.Count - 1);
                 }
                 else if (node is MenuEntryNode entryNode)
                 {
+                    prefix.Add(entryNode.Entry.Path);
+                    string full = MenuPath.Combine(prefix);
+                    prefix.RemoveAt(prefix.Count - 1);
+
                     output.Add(new Row
                     {
                         Node = node,
                         ParentList = nodes,
                         Index = i,
                         Depth = depth,
-                        Entry = entryNode.Entry
+                        Entry = entryNode.Entry,
+                        FullPath = full
                     });
                 }
             }
@@ -273,12 +420,12 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
             }
 
             if (row.IsGroup)
-                DrawGroupRow(full, content, row, current);
+                DrawGroupRow(content, row, current);
             else
-                DrawEntryRow(full, content, row, current);
+                DrawEntryRow(full, row, current);
         }
 
-        private void DrawGroupRow(Rect full, Rect content, Row row, Event current)
+        private void DrawGroupRow(Rect content, Row row, Event current)
         {
             MenuGroupNode group = row.Group;
             bool isSource = dragActive && dragNode == group;
@@ -308,12 +455,13 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
             float deleteWidth = 54f;
             Rect deleteRect = new(content.xMax - deleteWidth - 2f, y, deleteWidth, h);
             Rect addRect = new(deleteRect.x - addWidth - Pad, y, addWidth, h);
-            Rect nameRect = new(x, y, addRect.x - x - Pad, h);
+            Rect nameRect = new(x, y, Mathf.Max(40f, addRect.x - x - Pad), h);
 
             string newName = EditorGUI.DelayedTextField(nameRect, group.Name, titleStyle);
 
             if (newName != group.Name)
             {
+                PushUndo();
                 group.Name = newName;
                 registry.Persist();
             }
@@ -323,6 +471,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
                 MenuGroupNode captured = group;
                 pending = () =>
                 {
+                    PushUndo();
                     captured.Expanded = true;
                     captured.Children.Add(new MenuGroupNode("New Group"));
                 };
@@ -334,12 +483,16 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
                 {
                     List<MenuNode> parent = row.ParentList;
                     MenuGroupNode captured = group;
-                    pending = () => parent.Remove(captured);
+                    pending = () =>
+                    {
+                        PushUndo();
+                        parent.Remove(captured);
+                    };
                 }
             }
         }
 
-        private void DrawEntryRow(Rect full, Rect content, Row row, Event current)
+        private void DrawEntryRow(Rect full, Row row, Event current)
         {
             MenuEntry entry = row.Entry;
             bool isSource = dragActive && dragNode == row.Node;
@@ -350,6 +503,9 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
             if (current.type == EventType.Repaint && isSource)
                 EditorGUI.DrawRect(full, SelectionColor());
 
+            if (current.type == EventType.Repaint && !dragActive && full.Contains(current.mousePosition))
+                hoverPreview = row.FullPath;
+
             Columns columns = Compute(full, row.Depth);
             DrawGrip(columns.Grip, current, onPress: () => BeginEntryDrag(current, row.Node, row.ParentList));
 
@@ -357,6 +513,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
 
             if (enabled != entry.Enabled)
             {
+                PushUndo();
                 entry.Enabled = enabled;
                 registry.Persist();
             }
@@ -367,6 +524,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
 
                 if (path != entry.Path)
                 {
+                    PushUndo();
                     entry.Path = path;
                     registry.Persist();
                 }
@@ -377,13 +535,14 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
 
                     if (file != entry.CreateFileName)
                     {
+                        PushUndo();
                         entry.CreateFileName = file;
                         registry.Persist();
                     }
                 }
             }
 
-            EditorGUI.LabelField(columns.Priority, PriorityLabel(entry), EditorStyles.miniLabel);
+            DrawPriorityCell(columns.Priority, entry, current);
             EditorGUI.LabelField(columns.Status, entry.Missing
                 ? "missing"
                 : "ok", EditorStyles.miniLabel);
@@ -392,7 +551,20 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
         private void DrawFooter()
         {
             if (GUILayout.Button("Add Group", GUILayout.Height(24f)))
-                pending = () => Root.Add(new MenuGroupNode("New Group"));
+                pending = () =>
+                {
+                    PushUndo();
+                    Root.Add(new MenuGroupNode("New Group"));
+                };
+        }
+
+        private void DrawStatusBar()
+        {
+            string text = string.IsNullOrEmpty(hoverPreview)
+                ? " "
+                : "Resolves to:  " + hoverPreview;
+
+            EditorGUILayout.LabelField(text, EditorStyles.miniLabel);
         }
 
         private void DrawGrip(Rect rect, Event current, Action onPress)
@@ -555,6 +727,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
             if (sourceIndex < 0)
                 return;
 
+            PushUndo();
             dragSourceList.RemoveAt(sourceIndex);
             int target = dropIndex;
 
@@ -575,7 +748,9 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
                     : "Entry";
 
             if (string.IsNullOrEmpty(label))
-                label = "Group";
+                label = dragIsGroup
+                    ? "Group"
+                    : "Entry";
 
             GUI.Box(new Rect(mouse.x + 12f, mouse.y + 4f, 220f, 20f), label, ghostStyle);
         }
@@ -604,10 +779,14 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
             Rect toggle = new(x, y, ToggleWidth, h);
             x += ToggleWidth + Pad;
 
-            float statusX = full.xMax - StatusWidth;
-            float priorityX = statusX - Pad - PriorityWidth;
+            float statusW = registry.ColumnStatusWidth;
+            float priorityW = registry.ColumnPriorityWidth;
+            float fileW = registry.ColumnFileWidth;
+
+            float statusX = full.xMax - statusW;
+            float priorityX = statusX - Pad - priorityW;
             float fileX = ShowFileName
-                ? priorityX - Pad - FileWidth
+                ? priorityX - Pad - fileW
                 : priorityX;
 
             float pathEnd = ShowFileName
@@ -617,9 +796,9 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
             float pathWidth = Mathf.Max(60f, pathEnd - x);
 
             Rect path = new(x, y, pathWidth, h);
-            Rect file = new(fileX, y, FileWidth, h);
-            Rect priority = new(priorityX, y, PriorityWidth, h);
-            Rect status = new(statusX, y, StatusWidth, h);
+            Rect file = new(fileX, y, fileW, h);
+            Rect priority = new(priorityX, y, priorityW, h);
+            Rect status = new(statusX, y, statusW, h);
 
             return new Columns
             {
@@ -630,6 +809,131 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
                 Priority = priority,
                 Status = status
             };
+        }
+
+        private void DrawPriorityCell(Rect cell, MenuEntry entry, Event current)
+        {
+            const float buttonWidth = 18f;
+            Rect valueRect = new(cell.x, cell.y, Mathf.Max(18f, cell.width - buttonWidth - 2f), cell.height);
+            Rect buttonRect = new(valueRect.xMax + 2f, cell.y, buttonWidth, cell.height);
+
+            if (entry.OverridePriority)
+            {
+                if (current.type == EventType.Repaint)
+                    EditorGUI.DrawRect(valueRect, OverrideColor());
+
+                int value = EditorGUI.DelayedIntField(valueRect, entry.OverrideValue);
+
+                if (value != entry.OverrideValue)
+                {
+                    PushUndo();
+                    entry.OverrideValue = value;
+                    registry.Persist();
+                }
+
+                if (GUI.Button(buttonRect, AutoContent, EditorStyles.miniButton))
+                {
+                    PushUndo();
+                    entry.OverridePriority = false;
+                    registry.Persist();
+                }
+
+                return;
+            }
+
+            string label = entry.Priority == int.MinValue
+                ? "-"
+                : entry.Priority.ToString();
+
+            EditorGUI.LabelField(valueRect, label, EditorStyles.miniLabel);
+
+            if (GUI.Button(buttonRect, OverrideContent, EditorStyles.miniButton))
+            {
+                PushUndo();
+                entry.OverridePriority = true;
+                entry.OverrideValue = entry.Priority == int.MinValue
+                    ? 0
+                    : entry.Priority;
+
+                registry.Persist();
+            }
+        }
+
+        private void PushUndo()
+        {
+            undoStates.Add(CaptureState());
+
+            if (undoStates.Count > MaxUndoSteps)
+                undoStates.RemoveAt(0);
+
+            redoStates.Clear();
+        }
+
+        private void PerformUndo()
+        {
+            if (undoStates.Count == 0)
+                return;
+
+            redoStates.Add(CaptureState());
+            State state = undoStates[undoStates.Count - 1];
+            undoStates.RemoveAt(undoStates.Count - 1);
+            ApplyState(state);
+        }
+
+        private void PerformRedo()
+        {
+            if (redoStates.Count == 0)
+                return;
+
+            undoStates.Add(CaptureState());
+            State state = redoStates[redoStates.Count - 1];
+            redoStates.RemoveAt(redoStates.Count - 1);
+            ApplyState(state);
+        }
+
+        private void HandleUndoCommands(Event current)
+        {
+            if (current.type == EventType.ValidateCommand
+                && (current.commandName == "Undo" || current.commandName == "Redo"))
+            {
+                current.Use();
+                return;
+            }
+
+            if (current.type != EventType.ExecuteCommand)
+                return;
+
+            if (current.commandName == "Undo")
+            {
+                PerformUndo();
+                current.Use();
+            }
+            else if (current.commandName == "Redo")
+            {
+                PerformRedo();
+                current.Use();
+            }
+        }
+
+        private State CaptureState() => new()
+        {
+            Root = CloneNodes(Root),
+            Start = registry.StartPriority,
+            Gap = registry.SeparatorGap
+        };
+
+        private void ApplyState(State state)
+        {
+            GUIUtility.keyboardControl = 0;
+            EditorGUIUtility.editingTextField = false;
+            List<MenuNode> live = Root;
+            live.Clear();
+            live.AddRange(CloneNodes(state.Root));
+            registry.StartPriority = state.Start;
+            registry.SeparatorGap = state.Gap;
+            registry.RecalculatePriorities();
+            registry.Persist();
+            Repaint();
         }
 
         private struct Columns
@@ -652,7 +956,15 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
             public bool IsPlaceholder;
             public MenuGroupNode Group;
             public MenuEntry Entry;
+            public string FullPath;
             public Rect Rect;
+        }
+
+        private sealed class State
+        {
+            public List<MenuNode> Root;
+            public int Start;
+            public int Gap;
         }
     }
 }
