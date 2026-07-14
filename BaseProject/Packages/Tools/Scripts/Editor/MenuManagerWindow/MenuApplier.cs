@@ -19,7 +19,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
         public static void Apply(bool log)
         {
             Dictionary<string, ResolvedMenu> resolved = MenuScanner.Scan();
-            MenuRegistry registry = MenuRegistry.instance;
+            MenuRegistry registry = MenuRegistry.Instance;
 
             registry.Migrate();
             registry.Sync(resolved);

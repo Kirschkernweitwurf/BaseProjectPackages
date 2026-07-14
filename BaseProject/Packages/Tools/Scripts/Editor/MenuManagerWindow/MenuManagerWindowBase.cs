@@ -32,6 +32,8 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
 
         private List<MenuNode> Root => registry.RootFor(Kind);
 
+        private bool ReadOnly => registry != null && registry.IsReadOnly;
+
         private readonly HashSet<List<MenuNode>> dragForbidden = new();
         private readonly List<State> undoStates = new();
         private readonly List<State> redoStates = new();
@@ -66,7 +68,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
 #region Unity Callbacks
         private void OnEnable()
         {
-            registry = MenuRegistry.instance;
+            registry = MenuRegistry.Instance;
             wantsMouseMove = true;
             RefreshScan();
         }
@@ -86,6 +88,12 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
             hoverPreview = string.Empty;
 
             DrawToolbar();
+
+            if (ReadOnly)
+                EditorGUILayout.HelpBox(
+                    "Read only. This layout ships with the package. Edit it in the package's own project.",
+                    MessageType.Info);
+
             registry.RecalculatePriorities();
             DrawColumnHeader(current);
 
@@ -229,13 +237,13 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
                 RefreshScan();
             }
 
-            using (new EditorGUI.DisabledScope(undoStates.Count == 0))
+            using (new EditorGUI.DisabledScope(undoStates.Count == 0 || ReadOnly))
             {
                 if (GUILayout.Button("Undo", EditorStyles.toolbarButton, GUILayout.Width(56f)))
                     PerformUndo();
             }
 
-            using (new EditorGUI.DisabledScope(redoStates.Count == 0))
+            using (new EditorGUI.DisabledScope(redoStates.Count == 0 || ReadOnly))
             {
                 if (GUILayout.Button("Redo", EditorStyles.toolbarButton, GUILayout.Width(56f)))
                     PerformRedo();
@@ -245,13 +253,19 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
 
             EditorGUI.BeginChangeCheck();
 
-            EditorGUILayout.LabelField("Start", GUILayout.Width(34f));
-            int newStart = EditorGUILayout.IntField(registry.StartPriority, EditorStyles.toolbarTextField,
-                GUILayout.Width(50f));
+            int newStart;
+            int newGap;
 
-            EditorGUILayout.LabelField("Gap", GUILayout.Width(28f));
-            int newGap = EditorGUILayout.IntField(registry.SeparatorGap, EditorStyles.toolbarTextField,
-                GUILayout.Width(50f));
+            using (new EditorGUI.DisabledScope(ReadOnly))
+            {
+                EditorGUILayout.LabelField("Start", GUILayout.Width(34f));
+                newStart = EditorGUILayout.IntField(registry.StartPriority, EditorStyles.toolbarTextField,
+                    GUILayout.Width(50f));
+
+                EditorGUILayout.LabelField("Gap", GUILayout.Width(28f));
+                newGap = EditorGUILayout.IntField(registry.SeparatorGap, EditorStyles.toolbarTextField,
+                    GUILayout.Width(50f));
+            }
 
             if (EditorGUI.EndChangeCheck())
             {
@@ -457,7 +471,10 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
             Rect addRect = new(deleteRect.x - addWidth - Pad, y, addWidth, h);
             Rect nameRect = new(x, y, Mathf.Max(40f, addRect.x - x - Pad), h);
 
-            string newName = EditorGUI.DelayedTextField(nameRect, group.Name, titleStyle);
+            string newName;
+
+            using (new EditorGUI.DisabledScope(ReadOnly))
+                newName = EditorGUI.DelayedTextField(nameRect, group.Name, titleStyle);
 
             if (newName != group.Name)
             {
@@ -466,18 +483,21 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
                 registry.Persist();
             }
 
-            if (GUI.Button(addRect, "+ Group", EditorStyles.miniButton))
+            using (new EditorGUI.DisabledScope(ReadOnly))
             {
-                MenuGroupNode captured = group;
-                pending = () =>
+                if (GUI.Button(addRect, "+ Group", EditorStyles.miniButton))
                 {
-                    PushUndo();
-                    captured.Expanded = true;
-                    captured.Children.Add(new MenuGroupNode("New Group"));
-                };
+                    MenuGroupNode captured = group;
+                    pending = () =>
+                    {
+                        PushUndo();
+                        captured.Expanded = true;
+                        captured.Children.Add(new MenuGroupNode("New Group"));
+                    };
+                }
             }
 
-            using (new EditorGUI.DisabledScope(group.Children.Count != 0))
+            using (new EditorGUI.DisabledScope(group.Children.Count != 0 || ReadOnly))
             {
                 if (GUI.Button(deleteRect, "Delete", EditorStyles.miniButton))
                 {
@@ -509,7 +529,10 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
             Columns columns = Compute(full, row.Depth);
             DrawGrip(columns.Grip, current, onPress: () => BeginEntryDrag(current, row.Node, row.ParentList));
 
-            bool enabled = EditorGUI.Toggle(columns.Toggle, entry.Enabled);
+            bool enabled;
+
+            using (new EditorGUI.DisabledScope(ReadOnly))
+                enabled = EditorGUI.Toggle(columns.Toggle, entry.Enabled);
 
             if (enabled != entry.Enabled)
             {
@@ -518,7 +541,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
                 registry.Persist();
             }
 
-            using (new EditorGUI.DisabledScope(entry.Missing))
+            using (new EditorGUI.DisabledScope(entry.Missing || ReadOnly))
             {
                 string path = EditorGUI.DelayedTextField(columns.Path, entry.Path);
 
@@ -550,12 +573,15 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
 
         private void DrawFooter()
         {
-            if (GUILayout.Button("Add Group", GUILayout.Height(24f)))
-                pending = () =>
-                {
-                    PushUndo();
-                    Root.Add(new MenuGroupNode("New Group"));
-                };
+            using (new EditorGUI.DisabledScope(ReadOnly))
+            {
+                if (GUILayout.Button("Add Group", GUILayout.Height(24f)))
+                    pending = () =>
+                    {
+                        PushUndo();
+                        Root.Add(new MenuGroupNode("New Group"));
+                    };
+            }
         }
 
         private void DrawStatusBar()
@@ -569,8 +595,12 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
 
         private void DrawGrip(Rect rect, Event current, Action onPress)
         {
-            EditorGUIUtility.AddCursorRect(rect, MouseCursor.Pan);
             GUI.Label(rect, "\u2261", gripStyle);
+
+            if (ReadOnly)
+                return;
+
+            EditorGUIUtility.AddCursorRect(rect, MouseCursor.Pan);
 
             if (current.type == EventType.MouseDown && current.button == 0 && rect.Contains(current.mousePosition))
             {
@@ -817,6 +847,8 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
             Rect valueRect = new(cell.x, cell.y, Mathf.Max(18f, cell.width - buttonWidth - 2f), cell.height);
             Rect buttonRect = new(valueRect.xMax + 2f, cell.y, buttonWidth, cell.height);
 
+            using EditorGUI.DisabledScope disabled = new(ReadOnly);
+
             if (entry.OverridePriority)
             {
                 if (current.type == EventType.Repaint)
@@ -861,6 +893,9 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
 
         private void PushUndo()
         {
+            if (ReadOnly)
+                return;
+
             undoStates.Add(CaptureState());
 
             if (undoStates.Count > MaxUndoSteps)
@@ -871,7 +906,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
 
         private void PerformUndo()
         {
-            if (undoStates.Count == 0)
+            if (ReadOnly || undoStates.Count == 0)
                 return;
 
             redoStates.Add(CaptureState());
@@ -882,7 +917,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
 
         private void PerformRedo()
         {
-            if (redoStates.Count == 0)
+            if (ReadOnly || redoStates.Count == 0)
                 return;
 
             undoStates.Add(CaptureState());
@@ -894,7 +929,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
         private void HandleUndoCommands(Event current)
         {
             if (current.type == EventType.ValidateCommand
-                && current.commandName is "Undo" or "Redo")
+                && (current.commandName == "Undo" || current.commandName == "Redo"))
             {
                 current.Use();
                 return;

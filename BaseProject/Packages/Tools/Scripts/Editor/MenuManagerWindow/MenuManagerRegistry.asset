@@ -1,0 +1,232 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1466948471d772548a849344d981ff40, type: 3}
+  m_Name: MenuManagerRegistry
+  m_EditorClassIdentifier: Base.ToolPackage.Editor::Base.ToolPackage.Editor.MenuManagerWindow.MenuRegistry
+  schemaVersion: 2
+  startPriority: 0
+  separatorGap: 11
+  columnFileWidth: 155
+  columnPriorityWidth: 44
+  columnStatusWidth: 52
+  menuItemRoot:
+  - rid: 5339058366598611045
+  - rid: 5339058366598611046
+  createAssetRoot:
+  - rid: 5339058371163848704
+  menuItemGroups: []
+  createAssetGroups: []
+  groups: []
+  references:
+    version: 2
+    RefIds:
+    - rid: 5339058366598611045
+      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
+      data:
+        name: Unity Editor
+        expanded: 1
+        children:
+        - rid: 5339058366598611050
+    - rid: 5339058366598611046
+      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
+      data:
+        name: New Group
+        expanded: 1
+        children: []
+    - rid: 5339058366598611050
+      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
+      data:
+        entry:
+          id: MI:Base.ToolPackage.Editor.UnusedAssetsOverviewWindow.UnusedAssetsOverviewWindow.Open
+          path: Tools/Based/Unused Assets Overview
+          enabled: 1
+          kind: 0
+          createFileName: 
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 5339058371163848704
+      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
+      data:
+        name: Scriptable Objects
+        expanded: 1
+        children:
+        - rid: 5339058371163848705
+        - rid: 5339058371163848706
+    - rid: 5339058371163848705
+      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
+      data:
+        name: Base
+        expanded: 0
+        children:
+        - rid: 5339058371163848707
+        - rid: 5339058371163848708
+        - rid: 5339058371163848709
+        - rid: 5339058371163848710
+        - rid: 5339058371163848711
+        - rid: 5339058371163848712
+        - rid: 5339058371163848713
+    - rid: 5339058371163848706
+      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
+      data:
+        name: Test
+        expanded: 0
+        children:
+        - rid: 5339058371163848714
+    - rid: 5339058371163848707
+      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
+      data:
+        name: Asset Zoo
+        expanded: 1
+        children:
+        - rid: 5339058371163848715
+    - rid: 5339058371163848708
+      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
+      data:
+        name: Memory Profiler
+        expanded: 0
+        children:
+        - rid: 5339058371163848716
+    - rid: 5339058371163848709
+      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
+      data:
+        name: Audio
+        expanded: 0
+        children:
+        - rid: 5339058371163848717
+    - rid: 5339058371163848710
+      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
+      data:
+        name: Unique ID
+        expanded: 1
+        children:
+        - rid: 5339058371163848718
+    - rid: 5339058371163848711
+      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
+      data:
+        name: Input
+        expanded: 1
+        children:
+        - rid: 5339058371163848719
+    - rid: 5339058371163848712
+      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
+      data:
+        name: Screen Shake
+        expanded: 1
+        children:
+        - rid: 5339058371163848720
+    - rid: 5339058371163848713
+      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
+      data:
+        name: Menus
+        expanded: 0
+        children:
+        - rid: 5339058371163848721
+        - rid: 5339058371163848722
+    - rid: 5339058371163848714
+      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
+      data:
+        entry:
+          id: CA:RequiredSo
+          path: New RequiredSo
+          enabled: 1
+          kind: 1
+          createFileName: RequiredSo
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 5339058371163848715
+      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
+      data:
+        entry:
+          id: CA:Base.ToolPackage.Editor.AssetZoo.Runtime.Config.ZooConfig
+          path: New Config
+          enabled: 1
+          kind: 1
+          createFileName: ZooConfig
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 5339058371163848716
+      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
+      data:
+        entry:
+          id: CA:Base.MemoryProfiler.MemoryProfilerConfigSo
+          path: New Config
+          enabled: 1
+          kind: 1
+          createFileName: MemoryProfilerConfig
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 5339058371163848717
+      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
+      data:
+        entry:
+          id: CA:Base.CorePackage.Audio.AudioContainer
+          path: New Audio Container
+          enabled: 1
+          kind: 1
+          createFileName: AudioContainer
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 5339058371163848718
+      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
+      data:
+        entry:
+          id: CA:Base.ToolPackage.Identification.UniqueIdScriptableObject
+          path: New UniqueId
+          enabled: 1
+          kind: 1
+          createFileName: UniqueId
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 5339058371163848719
+      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
+      data:
+        entry:
+          id: CA:Base.ControllerSupport.InputPrompts.Glyphs.InputGlyphSet
+          path: New Glyph Set
+          enabled: 1
+          kind: 1
+          createFileName: InputGlyphSet
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 5339058371163848720
+      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
+      data:
+        entry:
+          id: CA:Base.ScreenShakePackage.ScreenShakeProfile
+          path: New Profile
+          enabled: 1
+          kind: 1
+          createFileName: ScreenShakeProfile
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 5339058371163848721
+      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
+      data:
+        entry:
+          id: CA:Base.CorePackage.MenuManaging.Identifier.MenuIdentifier
+          path: New Identifier
+          enabled: 1
+          kind: 1
+          createFileName: MenuIdentifier
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 5339058371163848722
+      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
+      data:
+        entry:
+          id: CA:Base.CorePackage.MenuManaging.Identifier.MenuIdentifierRegistry
+          path: New Identifier Registry
+          enabled: 1
+          kind: 1
+          createFileName: MenuIdentifierRegistry
+          overridePriority: 0
+          overrideValue: 0
