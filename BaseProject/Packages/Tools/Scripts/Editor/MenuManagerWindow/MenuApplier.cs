@@ -36,8 +36,8 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
             HashSet<string> usedPaths = new();
             int count = 0;
 
-            count += Register(registry.EntriesFor(EMenuEntryKind.MenuItem), resolved, usedPaths, log);
-            count += Register(registry.EntriesFor(EMenuEntryKind.CreateAsset), resolved, usedPaths, log);
+            count += Register(registry.ResolvedEntriesFor(EMenuEntryKind.MenuItem), resolved, usedPaths, log);
+            count += Register(registry.ResolvedEntriesFor(EMenuEntryKind.CreateAsset), resolved, usedPaths, log);
 
             registry.Persist();
 
@@ -45,30 +45,30 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
                 CustomLogger.Log($"Menu Manager: registered {count} menu entr(y/ies).", null);
         }
 
-        private static int Register(IEnumerable<MenuEntry> entries, IReadOnlyDictionary<string, ResolvedMenu> resolved,
-            HashSet<string> usedPaths, bool log)
+        private static int Register(List<(MenuEntry entry, string path)> entries,
+            IReadOnlyDictionary<string, ResolvedMenu> resolved, HashSet<string> usedPaths, bool log)
         {
             int count = 0;
 
-            foreach (MenuEntry entry in entries)
+            foreach ((MenuEntry entry, string path) in entries)
             {
-                if (!entry.Enabled || entry.Missing || string.IsNullOrWhiteSpace(entry.Path))
+                if (!entry.Enabled || entry.Missing || string.IsNullOrWhiteSpace(path))
                     continue;
 
                 if (!resolved.TryGetValue(entry.Id, out ResolvedMenu match))
                     continue;
 
-                if (!usedPaths.Add(entry.Path))
+                if (!usedPaths.Add(path))
                 {
                     if (log)
-                        CustomLogger.LogWarning($"Menu Manager: duplicate path '{entry.Path}' skipped.", null);
+                        CustomLogger.LogWarning($"Menu Manager: duplicate path '{path}' skipped.", null);
 
                     continue;
                 }
 
                 Action execute = BuildExecute(entry, match);
-                MenuBridge.Add(entry.Path, entry.Priority, execute, match.Validate);
-                RegisteredPaths.Add(entry.Path);
+                MenuBridge.Add(path, entry.EffectivePriority, execute, match.Validate);
+                RegisteredPaths.Add(path);
                 count++;
             }
 

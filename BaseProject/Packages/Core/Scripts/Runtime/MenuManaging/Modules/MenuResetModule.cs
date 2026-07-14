@@ -15,12 +15,22 @@ namespace Base.CorePackage.MenuManaging.Modules
         protected override void Awake()
         {
             base.Awake();
+
             Recache();
         }
 #endregion
 
+        protected override void OnMenuClosed()
+        {
+            if (_resettables == null)
+                return;
+
+            foreach (IMenuResettable resettable in _resettables)
+                resettable?.ResetState();
+        }
+
         /// <summary>Recollects the resettable children. Call after adding or removing them at runtime.</summary>
-        public void Recache()
+        private void Recache()
         {
             if (OwnerMenu == null)
                 return;
@@ -38,15 +48,6 @@ namespace Base.CorePackage.MenuManaging.Modules
             }
 
             _resettables = filtered.ToArray();
-        }
-
-        protected override void OnMenuClosed()
-        {
-            if (_resettables == null)
-                return;
-
-            foreach (IMenuResettable resettable in _resettables)
-                resettable?.ResetState();
         }
     }
 }

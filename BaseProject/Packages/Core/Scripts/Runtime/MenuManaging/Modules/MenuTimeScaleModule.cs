@@ -1,5 +1,6 @@
 using Base.CorePackage.PriorityTrackers;
 using Base.CorePackage.Services;
+using Base.CorePackage.Services.Shutdown;
 using UnityEngine;
 
 namespace Base.CorePackage.MenuManaging.Modules
@@ -8,20 +9,35 @@ namespace Base.CorePackage.MenuManaging.Modules
     /// Applies a custom timescale while the owning menu is open, scoped by the menu's priority.
     /// Removes it again on close or when destroyed.
     /// </summary>
-    public sealed class MenuTimeScaleModule : MenuModule
+    public sealed class MenuTimeScaleModule : MenuModule, IShutdownHandler
     {
         [Tooltip("The time scale applied while the menu is open.")]
         [SerializeField] private float timeScale;
 
+        public bool HasShutDown { get; private set; }
+
         private bool _isApplied;
 
 #region Unity Callbacks
-        protected override void OnDestroy()
+        protected override void Awake()
         {
-            base.OnDestroy();
-            Release();
+            base.Awake();
+
+            ShutdownManager.Register(this);
         }
+
+        private void OnDestroy() => Shutdown();
 #endregion
+
+        public void Shutdown()
+        {
+            if (HasShutDown)
+                return;
+
+            HasShutDown = true;
+            Release();
+            ShutdownManager.Deregister(this);
+        }
 
         protected override void OnMenuOpened()
         {

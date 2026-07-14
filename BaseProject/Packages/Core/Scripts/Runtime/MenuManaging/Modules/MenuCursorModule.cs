@@ -1,5 +1,6 @@
 using Base.CorePackage.PriorityTrackers;
 using Base.CorePackage.Services;
+using Base.CorePackage.Services.Shutdown;
 using UnityEngine;
 
 namespace Base.CorePackage.MenuManaging.Modules
@@ -8,20 +9,35 @@ namespace Base.CorePackage.MenuManaging.Modules
     /// Applies custom cursor settings while the owning menu is open, scoped by the menu's priority.
     /// Removes them again on close or when destroyed.
     /// </summary>
-    public sealed class MenuCursorModule : MenuModule
+    public sealed class MenuCursorModule : MenuModule, IShutdownHandler
     {
         [Tooltip("The cursor settings applied while the menu is open.")]
         [SerializeField] private CursorRequest cursorSettings = new();
 
+        public bool HasShutDown { get; private set; }
+
         private bool _isApplied;
 
 #region Unity Callbacks
-        protected override void OnDestroy()
+        protected override void Awake()
         {
-            base.OnDestroy();
-            Release();
+            base.Awake();
+
+            ShutdownManager.Register(this);
         }
+
+        private void OnDestroy() => Shutdown();
 #endregion
+
+        public void Shutdown()
+        {
+            if (HasShutDown)
+                return;
+
+            HasShutDown = true;
+            Release();
+            ShutdownManager.Deregister(this);
+        }
 
         protected override void OnMenuOpened()
         {

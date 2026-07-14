@@ -79,9 +79,8 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
                     : attribute.FileName;
 
                 string id = "CA:" + type.FullName;
-                string defaultPath = "Assets/Create/" + relative;
 
-                result[id] = ResolvedMenu.CreateAsset(defaultPath, type, fileName);
+                result[id] = ResolvedMenu.CreateAsset(relative, type, fileName);
             }
         }
 

@@ -19,8 +19,14 @@ namespace Base.CorePackage.MenuManaging.Modules
             OwnerMenu = GetComponent<Menu>();
 
             if (OwnerMenu == null)
+                CustomLogger.LogWarning("Requires a sibling Menu component.", this);
+        }
+
+        protected virtual void OnEnable()
+        {
+            if (OwnerMenu == null)
             {
-                CustomLogger.LogError("MenuModule requires a sibling Menu component.", this);
+                CustomLogger.LogWarning("Owning Menu was null on enable.", this);
                 return;
             }
 
@@ -28,10 +34,13 @@ namespace Base.CorePackage.MenuManaging.Modules
             OwnerMenu.Closed += HandleMenuClosed;
         }
 
-        protected virtual void OnDestroy()
+        protected virtual void OnDisable()
         {
             if (OwnerMenu == null)
+            {
+                CustomLogger.LogWarning("Owning Menu was null on disable.", this);
                 return;
+            }
 
             OwnerMenu.Opened -= HandleMenuOpened;
             OwnerMenu.Closed -= HandleMenuClosed;
