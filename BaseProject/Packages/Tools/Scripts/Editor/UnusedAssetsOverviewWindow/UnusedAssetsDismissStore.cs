@@ -45,6 +45,15 @@ namespace Base.ToolPackage.Editor.UnusedAssetsOverviewWindow
                 Save();
         }
 
+        public static void Restore(string guid)
+        {
+            if (string.IsNullOrEmpty(guid))
+                return;
+
+            if (Guids.Remove(guid))
+                Save();
+        }
+
         public static void Clear()
         {
             if (Guids.Count == 0)
@@ -53,6 +62,9 @@ namespace Base.ToolPackage.Editor.UnusedAssetsOverviewWindow
             Guids.Clear();
             Save();
         }
+
+        /// <summary>Snapshot of the dismissed GUIDs, safe to iterate while dismissing or restoring.</summary>
+        public static IReadOnlyList<string> GetAll() => Guids.ToList();
 
         private static HashSet<string> Load()
         {
