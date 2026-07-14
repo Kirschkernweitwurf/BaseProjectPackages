@@ -1,18 +1,25 @@
 #if UNITY_EDITOR
 using System;
 using System.Collections.Generic;
+using System.IO;
 using UnityEditor;
+using UnityEditor.PackageManager;
+using UnityEditorInternal;
 using UnityEngine;
+using Object = UnityEngine.Object;
+using PackageInfo = UnityEditor.PackageManager.PackageInfo;
 
 namespace Base.ToolPackage.Editor.MenuManagerWindow
 {
-    /// <summary>Central store of all managed entries as a nested tree, kept separate per kind.</summary>
-    [FilePath(FilePathValue, FilePathAttribute.Location.ProjectFolder)]
-    public sealed class MenuRegistry : ScriptableSingleton<MenuRegistry>
+    /// <summary>Central store of all managed entries as a nested tree, saved as an asset so it ships with the package.</summary>
+    public sealed class MenuRegistry : ScriptableObject
     {
+        private const string AssetFileName = "MenuManagerRegistry.asset";
         private const int CurrentSchema = 2;
-        private const string FilePathValue = "ProjectSettings/MenuManagerRegistry.asset";
         private const string LegacyGroupName = "Ungrouped";
+        private const string LegacySettingsPath = "ProjectSettings/MenuManagerRegistry.asset";
+
+        private static MenuRegistry _cached;
 
         [SerializeField]
         private int schemaVersion;
@@ -46,6 +53,29 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
 
         [SerializeField]
         private List<MenuGroup> groups = new();
+
+        /// <summary>The shared registry instance, loaded from or created as an asset in the package folder.</summary>
+        public static MenuRegistry Instance
+        {
+            get
+            {
+                if (_cached != null)
+                    return _cached;
+
+                _cached = LoadOrCreate();
+                return _cached;
+            }
+        }
+
+        /// <summary>True when the asset lives in an immutable package and must not be edited.</summary>
+        public bool IsReadOnly
+        {
+            get
+            {
+                readOnly ??= ComputeReadOnly();
+                return readOnly.Value;
+            }
+        }
 
         /// <summary>Priority assigned to the first registered entry of each kind.</summary>
         public int StartPriority
@@ -81,6 +111,9 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
             get => columnStatusWidth;
             set => columnStatusWidth = Mathf.Clamp(value, 36f, 400f);
         }
+
+        [NonSerialized]
+        private bool? readOnly;
 
         private int walkPriority;
         private bool walkFirst;
@@ -160,8 +193,95 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
             return result;
         }
 
-        /// <summary>Writes the in-memory state to disk.</summary>
-        public void Persist() => Save(true);
+        /// <summary>Writes the asset to disk unless it is read only.</summary>
+        public void Persist()
+        {
+            if (IsReadOnly)
+                return;
+
+            string path = AssetDatabase.GetAssetPath(this);
+
+            if (string.IsNullOrEmpty(path))
+                return;
+
+            EditorUtility.SetDirty(this);
+            AssetDatabase.SaveAssetIfDirty(this);
+        }
+
+        private static MenuRegistry LoadOrCreate()
+        {
+            foreach (string guid in AssetDatabase.FindAssets("t:" + nameof(MenuRegistry)))
+            {
+                string path = AssetDatabase.GUIDToAssetPath(guid);
+                MenuRegistry found = AssetDatabase.LoadAssetAtPath<MenuRegistry>(path);
+
+                if (found != null)
+                    return found;
+            }
+
+            MenuRegistry instance = LoadLegacySettings();
+
+            if (instance == null)
+                instance = CreateInstance<MenuRegistry>();
+
+            instance.hideFlags = HideFlags.None;
+            instance.name = "MenuManagerRegistry";
+
+            string folder = ResolveScriptFolder();
+            string assetPath = folder + "/" + AssetFileName;
+
+            try
+            {
+                AssetDatabase.CreateAsset(instance, assetPath);
+                AssetDatabase.SaveAssets();
+            }
+            catch (Exception)
+            {
+                // Creation can fail in an immutable project. The in-memory instance still works for the session.
+            }
+
+            instance.Migrate();
+            return instance;
+        }
+
+        private static MenuRegistry LoadLegacySettings()
+        {
+            if (!File.Exists(LegacySettingsPath))
+                return null;
+
+            try
+            {
+                Object[] objects = InternalEditorUtility.LoadSerializedFileAndForget(LegacySettingsPath);
+
+                foreach (Object candidate in objects)
+                {
+                    if (candidate is MenuRegistry legacy)
+                        return legacy;
+                }
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+
+            return null;
+        }
+
+        private static string ResolveScriptFolder()
+        {
+            MenuRegistry probe = CreateInstance<MenuRegistry>();
+            MonoScript script = MonoScript.FromScriptableObject(probe);
+            string scriptPath = AssetDatabase.GetAssetPath(script);
+            DestroyImmediate(probe);
+
+            if (string.IsNullOrEmpty(scriptPath))
+                return "Assets";
+
+            string folder = Path.GetDirectoryName(scriptPath);
+            return string.IsNullOrEmpty(folder)
+                ? "Assets"
+                : folder.Replace("\\", "/");
+        }
 
         private static void CollectPaths(List<MenuNode> nodes, List<string> prefix, List<(MenuEntry, string)> result)
         {
@@ -267,6 +387,33 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
             }
 
             legacy.Clear();
+        }
+
+        private bool ComputeReadOnly()
+        {
+            string path = AssetDatabase.GetAssetPath(this);
+
+            if (string.IsNullOrEmpty(path))
+                return false;
+
+            PackageInfo package = PackageInfo.FindForAssetPath(path);
+
+            if (package != null && package.source != PackageSource.Embedded && package.source != PackageSource.Local)
+                return true;
+
+            try
+            {
+                string full = Path.GetFullPath(path);
+
+                if (File.Exists(full) && (File.GetAttributes(full) & FileAttributes.ReadOnly) != 0)
+                    return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+            return false;
         }
 
         private void WalkPriorities(List<MenuNode> nodes)
