@@ -2,7 +2,7 @@
   "name": "com.baseprojectpackages.screenshake",
   "displayName": "Base Screen-Shake Package",
   "description": "A simple screen-shake implementation for Unity. This package provides a basic screen-shake effect that can be easily integrated into your Unity projects. It allows you to create dynamic and impactful camera shakes to enhance the visual feedback of your game.",
-  "version": "1.0.9",
+  "version": "1.1.0",
   "unity": "6000.3",
   "author": {
     "name": "Jonathan Alber"

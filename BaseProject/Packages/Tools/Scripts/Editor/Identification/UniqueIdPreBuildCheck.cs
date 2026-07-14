@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
 
-namespace Base.UtilityPackage.Editor.Identification
+namespace Base.ToolPackage.Editor.Identification
 {
     /// <summary>
     /// Build hook that guarantees all UniqueIds are valid before we produce a build.

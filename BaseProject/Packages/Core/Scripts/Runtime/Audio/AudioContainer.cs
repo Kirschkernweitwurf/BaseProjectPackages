@@ -1,4 +1,4 @@
-using Base.UtilityPackage.Generated;
+using Base.ToolPackage.MenuManagerWindow;
 using UnityEngine;
 
 namespace Base.CorePackage.Audio
@@ -6,8 +6,7 @@ namespace Base.CorePackage.Audio
     /// <summary>
     /// ScriptableObject container for audio clips and their properties.
     /// </summary>
-    [CreateAssetMenu(fileName = "AudioContainer", menuName = "Scriptable Objects/Base/Audio/New AudioContainer",
-        order = MenuOrders.Team)]
+    [DynamicCreateAssetMenu("Scriptable Objects/Base/Audio/New AudioContainer", "AudioContainer")]
     public class AudioContainer : ScriptableObject
     {
         /// <summary>

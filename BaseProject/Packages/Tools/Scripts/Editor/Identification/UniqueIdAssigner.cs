@@ -1,9 +1,9 @@
 #if UNITY_EDITOR
-using Base.UtilityPackage.Identification;
+using Base.ToolPackage.Identification;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.UtilityPackage.Editor.Identification
+namespace Base.ToolPackage.Editor.Identification
 {
     /// <summary>
     /// Ensures a specific <see cref="ScriptableObject"/> that implements <see cref="IUniquelyIdentifiable"/>

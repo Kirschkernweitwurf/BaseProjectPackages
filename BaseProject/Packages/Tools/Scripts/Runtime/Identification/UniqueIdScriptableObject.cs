@@ -1,17 +1,16 @@
 using System;
-using Base.UtilityPackage.Generated;
+using Base.ToolPackage.MenuManagerWindow;
 using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
 
-namespace Base.UtilityPackage.Identification
+namespace Base.ToolPackage.Identification
 {
     /// <summary>
     /// A ScriptableObject that holds a unique ID.
     /// </summary>
-    [CreateAssetMenu(menuName = "Scriptable Objects/Base/UniqueId/UniqueIdScriptableObject", fileName = "UniqueId",
-        order = MenuOrders.Code)]
+    [DynamicCreateAssetMenu("Scriptable Objects/Base/UniqueId/UniqueIdScriptableObject", "UniqueId")]
     public sealed class UniqueIdScriptableObject : ScriptableObject, IUniquelyIdentifiable
     {
         [field: SerializeField] [field: HideInInspector] public string UniqueId { get; private set; }

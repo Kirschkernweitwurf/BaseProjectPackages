@@ -1,4 +1,4 @@
-using Base.UtilityPackage.Generated;
+using Base.ToolPackage.MenuManagerWindow;
 using UnityEngine;
 
 namespace Base.CorePackage.MenuManaging.Identifier
@@ -6,8 +6,7 @@ namespace Base.CorePackage.MenuManaging.Identifier
     /// <summary>
     /// Holds references to all <see cref="MenuIdentifier"/> assets in the project so they can be resolved at runtime.
     /// </summary>
-    [CreateAssetMenu(fileName = "MenuIdentifierRegistry",
-        menuName = "Scriptable Objects/Base/Menus/Menu Identifier Registry", order = MenuOrders.Asset)]
+    [DynamicCreateAssetMenu("Scriptable Objects/Base/Menus/Menu Identifier Registry", "MenuIdentifierRegistry")]
     public class MenuIdentifierRegistry : ScriptableObject
     {
         [SerializeField] private MenuIdentifier[] entries;

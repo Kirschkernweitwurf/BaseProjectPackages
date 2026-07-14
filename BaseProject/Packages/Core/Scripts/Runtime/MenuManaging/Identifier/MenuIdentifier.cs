@@ -1,4 +1,4 @@
-using Base.UtilityPackage.Generated;
+using Base.ToolPackage.MenuManagerWindow;
 using UnityEngine;
 
 namespace Base.CorePackage.MenuManaging.Identifier
@@ -6,7 +6,6 @@ namespace Base.CorePackage.MenuManaging.Identifier
     /// <summary>
     /// A ScriptableObject used to uniquely identify different types of menus in the game.
     /// </summary>
-    [CreateAssetMenu(fileName = "MenuIdentifier", menuName = "Scriptable Objects/Base/Menus/Menu Identifier",
-        order = MenuOrders.Asset)]
+    [DynamicCreateAssetMenu("Scriptable Objects/Base/Menus/Menu Identifier", "MenuIdentifier")]
     public class MenuIdentifier : ScriptableObject { }
 }

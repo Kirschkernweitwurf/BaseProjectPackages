@@ -12,20 +12,36 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
         /// <summary>Full default path used when the entry is first discovered.</summary>
         public string DefaultPath { get; }
 
-        /// <summary>Action invoked when the menu item is clicked.</summary>
+        /// <summary>Action invoked when a menu item is clicked. Null for asset entries.</summary>
         public Action Execute { get; }
 
-        /// <summary>Optional validate function, or null.</summary>
+        /// <summary>Optional validate function for a menu item, or null.</summary>
         public Func<bool> Validate { get; }
 
-        /// <summary>Creates a resolved entry.</summary>
-        public ResolvedMenu(EMenuEntryKind kind, string defaultPath, Action execute, Func<bool> validate)
+        /// <summary>ScriptableObject type for an asset entry, or null.</summary>
+        public Type AssetType { get; }
+
+        /// <summary>Default asset file name for an asset entry, without extension.</summary>
+        public string DefaultFileName { get; }
+
+        private ResolvedMenu(EMenuEntryKind kind, string defaultPath, Action execute, Func<bool> validate,
+            Type assetType, string defaultFileName)
         {
             Kind = kind;
             DefaultPath = defaultPath;
             Execute = execute;
             Validate = validate;
+            AssetType = assetType;
+            DefaultFileName = defaultFileName;
         }
+
+        /// <summary>Creates a resolved menu item.</summary>
+        public static ResolvedMenu MenuItem(string defaultPath, Action execute, Func<bool> validate)
+            => new(EMenuEntryKind.MenuItem, defaultPath, execute, validate, null, string.Empty);
+
+        /// <summary>Creates a resolved asset creation entry.</summary>
+        public static ResolvedMenu CreateAsset(string defaultPath, Type assetType, string defaultFileName)
+            => new(EMenuEntryKind.CreateAsset, defaultPath, null, null, assetType, defaultFileName);
     }
 }
 #endif

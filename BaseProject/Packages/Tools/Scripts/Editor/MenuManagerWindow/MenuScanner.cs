@@ -52,7 +52,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
                 Action execute = CreateAction(method);
                 Func<bool> validate = CreateValidate(owner, attribute.ValidateMethod);
 
-                result[id] = new ResolvedMenu(EMenuEntryKind.MenuItem, defaultPath, execute, validate);
+                result[id] = ResolvedMenu.MenuItem(defaultPath, execute, validate);
             }
         }
 
@@ -81,16 +81,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
                 string id = "CA:" + type.FullName;
                 string defaultPath = "Assets/Create/" + relative;
 
-                Type captured = type;
-                string capturedFile = fileName;
-
-                Action execute = () =>
-                {
-                    ScriptableObject instance = ScriptableObject.CreateInstance(captured);
-                    ProjectWindowUtil.CreateAsset(instance, capturedFile + ".asset");
-                };
-
-                result[id] = new ResolvedMenu(EMenuEntryKind.CreateAsset, defaultPath, execute, null);
+                result[id] = ResolvedMenu.CreateAsset(defaultPath, type, fileName);
             }
         }
 

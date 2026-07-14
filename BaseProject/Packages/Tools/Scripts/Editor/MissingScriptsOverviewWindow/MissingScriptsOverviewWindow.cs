@@ -2,11 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Base.ToolPackage.Editor.MissingScriptsOverviewWindow;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.MissingScriptsPackage
+namespace Base.ToolPackage.Editor.MissingScriptsOverviewWindow
 {
     /// <summary>
     /// Editor window that lists every missing script in the project and jumps to it on click.
@@ -98,21 +97,6 @@ namespace Base.MissingScriptsPackage
             texture.SetPixel(0, 0, color);
             texture.Apply();
             return texture;
-        }
-
-        private static GUIContent GetSourceIcon(EMissingScriptSource source)
-        {
-            switch (source)
-            {
-                case EMissingScriptSource.Scene:
-                    return EditorGUIUtility.IconContent("SceneAsset Icon");
-
-                case EMissingScriptSource.Prefab:
-                    return EditorGUIUtility.IconContent("Prefab Icon");
-
-                default:
-                    return EditorGUIUtility.IconContent("ScriptableObject Icon");
-            }
         }
 
         private void DrawActionBar()
@@ -350,6 +334,21 @@ namespace Base.MissingScriptsPackage
             GUILayout.FlexibleSpace();
         }
 
+        private GUIContent GetSourceIcon(EMissingScriptSource source)
+        {
+            switch (source)
+            {
+                case EMissingScriptSource.Scene:
+                    return EditorGUIUtility.IconContent("SceneAsset Icon");
+
+                case EMissingScriptSource.Prefab:
+                    return EditorGUIUtility.IconContent("Prefab Icon");
+
+                default:
+                    return EditorGUIUtility.IconContent("ScriptableObject Icon");
+            }
+        }
+
         private void EnsureStyles()
         {
             if (_stylesReady)
@@ -385,13 +384,20 @@ namespace Base.MissingScriptsPackage
                 }
             };
 
+            Color successTitleColor = new(0.36f, 0.76f, 0.46f);
+            Color successSubtitleColor = new(0.5f, 0.5f, 0.5f);
+
             _successTitleStyle = new GUIStyle(EditorStyles.boldLabel)
             {
                 alignment = TextAnchor.MiddleCenter,
                 fontSize = SuccessTitleFontSize,
                 normal =
                 {
-                    textColor = new Color(0.36f, 0.76f, 0.46f)
+                    textColor = successTitleColor
+                },
+                hover =
+                {
+                    textColor = successTitleColor
                 }
             };
 
@@ -401,7 +407,11 @@ namespace Base.MissingScriptsPackage
                 wordWrap = true,
                 normal =
                 {
-                    textColor = new Color(0.5f, 0.5f, 0.5f)
+                    textColor = successSubtitleColor
+                },
+                hover =
+                {
+                    textColor = successSubtitleColor
                 }
             };
 

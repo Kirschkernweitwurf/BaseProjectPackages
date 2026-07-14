@@ -2,7 +2,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.UtilityPackage.Editor.Identification
+namespace Base.ToolPackage.Editor.Identification
 {
     /// <summary>
     /// Central on/off switch for the Unique ID package.

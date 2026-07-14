@@ -41,9 +41,11 @@ namespace Base.ToolPackage.Editor.UnusedAssetsOverviewWindow
         private GUIStyle _groupStyle;
         private GUIStyle _pathStyle;
         private GUIStyle _badgeStyle;
+        private GUIStyle _neutralBadgeStyle;
         private GUIStyle _successTitleStyle;
         private GUIStyle _successSubtitleStyle;
         private Texture2D _badgeTexture;
+        private Texture2D _neutralBadgeTexture;
         private Texture _successTexture;
         private bool _stylesReady;
 
@@ -245,7 +247,8 @@ namespace Base.ToolPackage.Editor.UnusedAssetsOverviewWindow
             {
                 _showDiscard = EditorGUILayout.Foldout(_showDiscard, "Dismissed", true);
                 GUILayout.FlexibleSpace();
-                GUILayout.Label(_discard.Count.ToString(), _badgeStyle, GUILayout.Width(30f), GUILayout.Height(16f));
+                GUILayout.Label(_discard.Count.ToString(), _neutralBadgeStyle, GUILayout.Width(30f),
+                    GUILayout.Height(16f));
             }
 
             if (!_showDiscard)
@@ -279,7 +282,7 @@ namespace Base.ToolPackage.Editor.UnusedAssetsOverviewWindow
                 GUILayout.Label(icon, GUILayout.Width(18f), GUILayout.Height(16f));
                 _discardFoldouts[key] = EditorGUILayout.Foldout(_discardFoldouts[key], group.Key, true);
                 GUILayout.FlexibleSpace();
-                GUILayout.Label(count.ToString(), _badgeStyle, GUILayout.Width(30f), GUILayout.Height(16f));
+                GUILayout.Label(count.ToString(), _neutralBadgeStyle, GUILayout.Width(30f), GUILayout.Height(16f));
             }
 
             if (!_discardFoldouts[key])
@@ -617,13 +620,34 @@ namespace Base.ToolPackage.Editor.UnusedAssetsOverviewWindow
                 }
             };
 
+            // Calm blue for the dismissed list, so it reads as stored, not as a problem.
+            _neutralBadgeTexture = MakeSolidTexture(new Color(0.33f, 0.52f, 0.74f));
+
+            _neutralBadgeStyle = new GUIStyle(EditorStyles.miniLabel)
+            {
+                alignment = TextAnchor.MiddleCenter,
+                fontStyle = FontStyle.Bold,
+                normal =
+                {
+                    textColor = Color.white,
+                    background = _neutralBadgeTexture
+                }
+            };
+
+            Color successTitleColor = new(0.36f, 0.76f, 0.46f);
+            Color successSubtitleColor = new(0.5f, 0.5f, 0.5f);
+
             _successTitleStyle = new GUIStyle(EditorStyles.boldLabel)
             {
                 alignment = TextAnchor.MiddleCenter,
                 fontSize = SuccessTitleFontSize,
                 normal =
                 {
-                    textColor = new Color(0.36f, 0.76f, 0.46f)
+                    textColor = successTitleColor
+                },
+                hover =
+                {
+                    textColor = successTitleColor
                 }
             };
 
@@ -633,7 +657,11 @@ namespace Base.ToolPackage.Editor.UnusedAssetsOverviewWindow
                 wordWrap = true,
                 normal =
                 {
-                    textColor = new Color(0.5f, 0.5f, 0.5f)
+                    textColor = successSubtitleColor
+                },
+                hover =
+                {
+                    textColor = successSubtitleColor
                 }
             };
 

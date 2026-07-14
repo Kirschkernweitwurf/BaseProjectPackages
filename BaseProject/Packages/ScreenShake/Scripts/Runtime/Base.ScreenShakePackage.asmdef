@@ -1,17 +1,18 @@
 {
-  "name": "Base.ScreenShakePackage",
-  "rootNamespace": "Base.ScreenShakePackage",
-  "references": [
-    "GUID:4307f53044263cf4b835bd812fc161a4",
-    "GUID:922d81cfb9ff6984da4cb2213b66a375"
-  ],
-  "includePlatforms": [],
-  "excludePlatforms": [],
-  "allowUnsafeCode": false,
-  "overrideReferences": false,
-  "precompiledReferences": [],
-  "autoReferenced": true,
-  "defineConstraints": [],
-  "versionDefines": [],
-  "noEngineReferences": false
+    "name": "Base.ScreenShakePackage",
+    "rootNamespace": "Base.ScreenShakePackage",
+    "references": [
+        "GUID:4307f53044263cf4b835bd812fc161a4",
+        "GUID:922d81cfb9ff6984da4cb2213b66a375",
+        "GUID:ef1475c04daed1943a99d3d610d12e02"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }

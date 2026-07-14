@@ -1,4 +1,4 @@
-using Base.UtilityPackage.Identification;
+using Base.ToolPackage.Identification;
 using UnityEngine;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
