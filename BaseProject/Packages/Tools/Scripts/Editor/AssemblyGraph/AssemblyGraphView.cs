@@ -11,10 +11,12 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
     {
         private static readonly Color UnusedEdgeColor = new(0.90f, 0.32f, 0.32f);
 
+        private readonly Action<AssemblyNodeInfo> _onFocusRequested;
         private readonly Action<AssemblyNodeInfo> _onCleanupRequested;
 
-        public AssemblyGraphView(Action<AssemblyNodeInfo> onCleanupRequested)
+        public AssemblyGraphView(Action<AssemblyNodeInfo> onFocusRequested, Action<AssemblyNodeInfo> onCleanupRequested)
         {
+            _onFocusRequested = onFocusRequested;
             _onCleanupRequested = onCleanupRequested;
 
             style.flexGrow = 1f;
@@ -29,7 +31,7 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
         }
 
         /// <summary>Clears and rebuilds the graph from the given visible nodes.</summary>
-        public void Rebuild(IReadOnlyList<AssemblyNodeInfo> visibleNodes)
+        public void Rebuild(IReadOnlyList<AssemblyNodeInfo> visibleNodes, string focusedName)
         {
             DeleteElements(graphElements.ToList());
             if (visibleNodes.Count == 0)
@@ -40,7 +42,8 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
 
             foreach (AssemblyNodeInfo info in visibleNodes)
             {
-                AssemblyGraphNode node = new(info, _onCleanupRequested);
+                bool isFocused = info.Name == focusedName;
+                AssemblyGraphNode node = new(info, isFocused, _onFocusRequested, _onCleanupRequested);
                 node.SetPosition(placements[info.Name]);
                 AddElement(node);
                 byName[info.Name] = node;

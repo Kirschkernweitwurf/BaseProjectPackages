@@ -6,17 +6,18 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
 {
     /// <summary>
     /// Calculates node positions. Assemblies are split into connected clusters, layered by dependency
-    /// depth, ordered to reduce edge crossings, and stacked cluster by cluster. Orphans go to their own block.
+    /// depth, and ordered to reduce edge crossings. Orphans dock to the cluster that shares their root
+    /// name. Orphans without any relative are listed in a single column of their own.
     /// </summary>
     public static class AssemblyGraphLayout
     {
         private const float BaseNodeHeight = 108f;
-        private const float ClusterGap = 120f;
+        private const float ClusterGap = 140f;
         private const float ColumnGap = 110f;
+        private const float HomelessBlockGap = 240f;
         private const float NodeWidth = 260f;
         private const int OrderingSweeps = 6;
-        private const float OrphanBlockGap = 220f;
-        private const int OrphanColumns = 6;
+        private const float OrphanColumnGap = 70f;
         private const float RowGap = 34f;
         private const float UnusedHeaderHeight = 46f;
         private const float UnusedLineHeight = 15f;
@@ -37,17 +38,19 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
 
             clusters.Sort((left, right) => right.Count.CompareTo(left.Count));
 
-            float cursorY = 0f;
-            float widestCluster = 0f;
+            List<List<string>> dockedOrphans = DockOrphans(orphans, clusters, byName, out List<string> homeless);
 
-            foreach (List<string> cluster in clusters)
+            float cursorY = 0f;
+            float widest = 0f;
+
+            for (int i = 0; i < clusters.Count; i++)
             {
-                Vector2 size = PlaceCluster(cluster, byName, outgoing, incoming, cursorY, result);
+                Vector2 size = PlaceCluster(clusters[i], dockedOrphans[i], byName, outgoing, incoming, cursorY, result);
                 cursorY += size.y + ClusterGap;
-                widestCluster = Mathf.Max(widestCluster, size.x);
+                widest = Mathf.Max(widest, size.x);
             }
 
-            PlaceOrphans(orphans, byName, widestCluster + OrphanBlockGap, result);
+            PlaceColumn(homeless, byName, widest + HomelessBlockGap, 0f, result);
             return result;
         }
 
@@ -168,8 +171,85 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
             return orphans;
         }
 
-        /// <summary>Lays out a single cluster and returns its bounding size.</summary>
+        /// <summary>
+        /// Assigns every orphan to the cluster that holds the most assemblies sharing its root name.
+        /// Orphans without any relative end up in the homeless list.
+        /// </summary>
+        private static List<List<string>> DockOrphans(List<string> orphans,
+            List<List<string>> clusters,
+            Dictionary<string, AssemblyNodeInfo> byName,
+            out List<string> homeless)
+        {
+            List<List<string>> docked = new(clusters.Count);
+            for (int i = 0; i < clusters.Count; i++)
+                docked.Add(new List<string>());
+
+            Dictionary<string, int[]> rootCounts = BuildRootCounts(clusters, byName);
+            homeless = new List<string>();
+
+            foreach (string orphan in orphans)
+            {
+                int target = FindBestCluster(byName[orphan].RootName, rootCounts);
+
+                if (target < 0)
+                {
+                    homeless.Add(orphan);
+                    continue;
+                }
+
+                docked[target].Add(orphan);
+            }
+
+            return docked;
+        }
+
+        private static Dictionary<string, int[]> BuildRootCounts(List<List<string>> clusters,
+            Dictionary<string, AssemblyNodeInfo> byName)
+        {
+            Dictionary<string, int[]> rootCounts = new();
+
+            for (int i = 0; i < clusters.Count; i++)
+            {
+                foreach (string name in clusters[i])
+                {
+                    string root = byName[name].RootName;
+
+                    if (!rootCounts.TryGetValue(root, out int[] counts))
+                    {
+                        counts = new int[clusters.Count];
+                        rootCounts[root] = counts;
+                    }
+
+                    counts[i]++;
+                }
+            }
+
+            return rootCounts;
+        }
+
+        private static int FindBestCluster(string rootName, Dictionary<string, int[]> rootCounts)
+        {
+            if (!rootCounts.TryGetValue(rootName, out int[] counts))
+                return -1;
+
+            int best = -1;
+            int bestCount = 0;
+
+            for (int i = 0; i < counts.Length; i++)
+            {
+                if (counts[i] <= bestCount)
+                    continue;
+
+                bestCount = counts[i];
+                best = i;
+            }
+
+            return best;
+        }
+
+        /// <summary>Lays out a single cluster plus its docked orphans and returns the bounding size.</summary>
         private static Vector2 PlaceCluster(List<string> cluster,
+            List<string> dockedOrphans,
             Dictionary<string, AssemblyNodeInfo> byName,
             Dictionary<string, List<string>> outgoing,
             Dictionary<string, List<string>> incoming,
@@ -181,24 +261,43 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
 
             ReduceCrossings(columns, outgoing, incoming, levels);
 
-            float tallestColumn = MeasureTallestColumn(columns, byName);
+            float orphanHeight = MeasureColumnHeight(dockedOrphans, byName);
+            float bandHeight = Mathf.Max(MeasureTallestColumn(columns, byName), orphanHeight);
 
             for (int level = 0; level < columns.Count; level++)
             {
                 float columnHeight = MeasureColumnHeight(columns[level], byName);
-                float cursorY = offsetY + (tallestColumn - columnHeight) * 0.5f;
                 float x = level * (NodeWidth + ColumnGap);
-
-                foreach (string name in columns[level])
-                {
-                    float height = EstimateHeight(byName[name]);
-                    result[name] = new Rect(x, cursorY, NodeWidth, height);
-                    cursorY += height + RowGap;
-                }
+                PlaceColumn(columns[level], byName, x, offsetY + (bandHeight - columnHeight) * 0.5f, result);
             }
 
             float width = columns.Count * (NodeWidth + ColumnGap) - ColumnGap;
-            return new Vector2(width, tallestColumn);
+
+            if (dockedOrphans.Count > 0)
+            {
+                float orphanX = width + OrphanColumnGap;
+                PlaceColumn(dockedOrphans, byName, orphanX, offsetY + (bandHeight - orphanHeight) * 0.5f, result);
+                width = orphanX + NodeWidth;
+            }
+
+            return new Vector2(width, bandHeight);
+        }
+
+        /// <summary>Stacks the given assemblies vertically at a fixed x.</summary>
+        private static void PlaceColumn(List<string> names,
+            Dictionary<string, AssemblyNodeInfo> byName,
+            float x,
+            float startY,
+            Dictionary<string, Rect> result)
+        {
+            float cursorY = startY;
+
+            foreach (string name in names)
+            {
+                float height = EstimateHeight(byName[name]);
+                result[name] = new Rect(x, cursorY, NodeWidth, height);
+                cursorY += height + RowGap;
+            }
         }
 
         private static List<List<string>> BuildColumns(List<string> cluster, Dictionary<string, int> levels)
@@ -278,7 +377,7 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
             });
         }
 
-        /// <summary>Average rank of the neighbors that sit in the neighboring direction. Anchorless nodes keep their rank.</summary>
+        /// <summary>Average rank of the neighbors in the sweep direction. Anchorless nodes keep their rank.</summary>
         private static float ComputeMedian(string name,
             Dictionary<string, List<string>> neighbors,
             Dictionary<string, int> ranks,
@@ -308,32 +407,6 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
             return count == 0
                 ? ranks[name]
                 : sum / count;
-        }
-
-        private static void PlaceOrphans(List<string> orphans,
-            Dictionary<string, AssemblyNodeInfo> byName,
-            float offsetX,
-            Dictionary<string, Rect> result)
-        {
-            float rowY = 0f;
-            float rowHeight = 0f;
-
-            for (int i = 0; i < orphans.Count; i++)
-            {
-                int column = i % OrphanColumns;
-                if (column == 0 && i > 0)
-                {
-                    rowY += rowHeight + RowGap;
-                    rowHeight = 0f;
-                }
-
-                AssemblyNodeInfo info = byName[orphans[i]];
-                float height = EstimateHeight(info);
-                rowHeight = Mathf.Max(rowHeight, height);
-
-                float x = offsetX + column * (NodeWidth + ColumnGap);
-                result[orphans[i]] = new Rect(x, rowY, NodeWidth, height);
-            }
         }
 
         private static float MeasureTallestColumn(List<List<string>> columns,
