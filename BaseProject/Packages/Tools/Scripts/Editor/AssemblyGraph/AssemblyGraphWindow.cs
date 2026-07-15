@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Base.AssemblyGraphPackage.Editor;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -17,7 +16,8 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
 
         private List<AssemblyNodeInfo> _allNodes = new();
 
-        private bool _showPackages;
+        private bool _showPackages = true;
+        private bool _showUnityPackages;
         private bool _showLibrary;
         private bool _onlyIssues;
         private string _search = string.Empty;
@@ -43,11 +43,12 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
             window.minSize = new Vector2(720f, 420f);
         }
 
-        private static ToolbarToggle BuildToggle(string label, Action<bool> onChanged)
+        private static ToolbarToggle BuildToggle(string label, bool initialValue, Action<bool> onChanged)
         {
             ToolbarToggle toggle = new()
             {
-                text = label
+                text = label,
+                value = initialValue
             };
 
             toggle.RegisterValueChangedCallback(evt => onChanged(evt.newValue));
@@ -58,16 +59,15 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
         {
             HashSet<string> set = new();
             foreach (AssemblyReferenceInfo reference in node.References)
-            {
                 if (reference.IsUnused)
                     set.Add(reference.TargetName);
-            }
 
             return set;
         }
 
         private static string BuildConfirmMessage(int assemblyCount, int referenceCount)
             => $"This removes {referenceCount} reference(s) from {assemblyCount} assembly file(s).\n\n"
+                + "Only your own assemblies are touched. Unity packages and libraries are never modified.\n\n"
                 + "Detection reads compiled metadata. A reference that only supplies a constant value can look unused "
                 + "but still be needed. Commit your work first, then let Unity recompile and check the console for errors.";
 
@@ -85,19 +85,25 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
                 text = "Clean Up All"
             });
 
-            toolbar.Add(BuildToggle("Packages", onChanged: value =>
+            toolbar.Add(BuildToggle("Packages", _showPackages, onChanged: value =>
             {
                 _showPackages = value;
                 ApplyFilter();
             }));
 
-            toolbar.Add(BuildToggle("Library", onChanged: value =>
+            toolbar.Add(BuildToggle("Unity Packages", _showUnityPackages, onChanged: value =>
+            {
+                _showUnityPackages = value;
+                ApplyFilter();
+            }));
+
+            toolbar.Add(BuildToggle("Library", _showLibrary, onChanged: value =>
             {
                 _showLibrary = value;
                 ApplyFilter();
             }));
 
-            toolbar.Add(BuildToggle("Only issues", onChanged: value =>
+            toolbar.Add(BuildToggle("Only issues", _onlyIssues, onChanged: value =>
             {
                 _onlyIssues = value;
                 ApplyFilter();
@@ -107,25 +113,13 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
             _searchField.RegisterValueChangedCallback(OnSearchChanged);
             toolbar.Add(_searchField);
 
-            VisualElement spacer = new()
-            {
-                style =
-                {
-                    flexGrow = 1f
-                }
-            };
-
+            VisualElement spacer = new();
+            spacer.style.flexGrow = 1f;
             toolbar.Add(spacer);
 
-            _statusLabel = new Label
-            {
-                style =
-                {
-                    unityTextAlign = TextAnchor.MiddleRight,
-                    marginRight = 8f
-                }
-            };
-
+            _statusLabel = new Label();
+            _statusLabel.style.unityTextAlign = TextAnchor.MiddleRight;
+            _statusLabel.style.marginRight = 8f;
             toolbar.Add(_statusLabel);
 
             return toolbar;
@@ -180,6 +174,8 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
                     return true;
                 case EAssemblyKind.Package:
                     return _showPackages;
+                case EAssemblyKind.UnityPackage:
+                    return _showUnityPackages;
                 default:
                     return _showLibrary;
             }
@@ -187,6 +183,9 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
 
         private void OnNodeCleanupRequested(AssemblyNodeInfo node)
         {
+            if (!node.IsCleanable)
+                return;
+
             HashSet<string> unused = CollectUnused(node);
             if (unused.Count == 0)
                 return;
@@ -209,7 +208,7 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
 
             foreach (AssemblyNodeInfo node in _allNodes)
             {
-                if (!node.HasAsmdef || !node.HasUnusedReferences)
+                if (!node.IsCleanable || !node.HasUnusedReferences)
                     continue;
 
                 HashSet<string> unused = CollectUnused(node);

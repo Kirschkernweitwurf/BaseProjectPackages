@@ -20,6 +20,29 @@ namespace Base.CorePackage.MenuManaging.Identifier.Editor
         private const string OutputPath = "Assets/Generated/MenuIdentifiers/MenuIdentifiers.cs";
         private const string RegistryPath = "Assets/Generated/Resources/MenuIdentifierRegistry.asset";
 
+        private static bool _pending;
+
+        /// <summary>
+        /// Queues a regeneration for the next editor tick.
+        /// Asset callbacks must not create or refresh assets while an import is in flight,
+        /// and a pending delete is only finished after the callback returns. Deferring also
+        /// coalesces a batch of changes into a single run.
+        /// </summary>
+        internal static void ScheduleRegenerate()
+        {
+            if (_pending)
+                return;
+
+            _pending = true;
+            EditorApplication.delayCall += RunPending;
+        }
+
+        private static void RunPending()
+        {
+            _pending = false;
+            Regenerate();
+        }
+
         [MenuItem("Tools/Base Packages/Menu/Regenerate Menu Identifiers", priority = MenuOrders.Asset)]
         public static void Regenerate()
         {
@@ -52,9 +75,7 @@ namespace Base.CorePackage.MenuManaging.Identifier.Editor
                 return;
             }
 
-            // 1. Build / update the registry asset from the live asset set.
-            MenuIdentifier[] assetArray = entries.Select(e => e.Asset).ToArray();
-
+            // 1. Build / update the registry asset
             MenuIdentifierRegistry registry = AssetDatabase.LoadAssetAtPath<MenuIdentifierRegistry>(RegistryPath);
             if (registry == null)
             {
@@ -63,13 +84,8 @@ namespace Base.CorePackage.MenuManaging.Identifier.Editor
                 AssetDatabase.CreateAsset(registry, RegistryPath);
             }
 
-            // Rebuild the whole array from live assets, so deleted ones drop out and no
-            // missing reference is left behind. Only write when the set actually changed.
-            if (!registry.EntriesEqual(assetArray))
-            {
-                registry.SetEntries(assetArray);
-                EditorUtility.SetDirty(registry);
-            }
+            registry.SetEntries(entries.Select(e => e.Asset).ToArray());
+            EditorUtility.SetDirty(registry);
 
             // 2. Generate the static accessor class
             StringBuilder sb = new();
