@@ -18,7 +18,8 @@ namespace Base.CorePackage.MenuManaging.Identifier.Editor
         private const string MenuIdentifierNamespace = "Base.CorePackage.MenuManaging";
         private const string Namespace = "Base.CorePackage.MenuManaging.Generated";
         private const string OutputPath = "Assets/Generated/MenuIdentifiers/MenuIdentifiers.cs";
-        private const string RegistryPath = "Assets/Generated/Resources/MenuIdentifierRegistry.asset";
+        private const string DefaultRegistryDirectory = "Assets/Generated/Resources";
+        private const string RegistryFileName = "MenuIdentifierRegistry.asset";
 
         private static bool _pending;
 
@@ -47,7 +48,7 @@ namespace Base.CorePackage.MenuManaging.Identifier.Editor
             {
                 foreach (var dup in duplicates)
                 {
-                    Debug.LogError($"Duplicate MenuIdentifier name '{dup.Key}'. "
+                    Debug.LogError($"Duplicate {nameof(MenuIdentifier)} name '{dup.Key}'. "
                         + $"Conflicts: {string.Join(", ", dup.Select(d => d.Path))}");
                 }
 
@@ -55,13 +56,7 @@ namespace Base.CorePackage.MenuManaging.Identifier.Editor
             }
 
             // 1. Build / update the registry asset
-            MenuIdentifierRegistry registry = AssetDatabase.LoadAssetAtPath<MenuIdentifierRegistry>(RegistryPath);
-            if (registry == null)
-            {
-                Directory.CreateDirectory(Path.GetDirectoryName(RegistryPath)!);
-                registry = ScriptableObject.CreateInstance<MenuIdentifierRegistry>();
-                AssetDatabase.CreateAsset(registry, RegistryPath);
-            }
+            MenuIdentifierRegistry registry = ResolveRegistry();
 
             // Only write when the set actually changed, otherwise the asset gets rewritten
             // on every run and shows up as modified in version control for no reason.
@@ -147,6 +142,62 @@ namespace Base.CorePackage.MenuManaging.Identifier.Editor
         {
             _pending = false;
             Regenerate();
+        }
+
+        /// <summary>
+        /// Returns the single registry of the project. Finds it by type, so it can live in any
+        /// directory the user picks. Creates one if none exists and deletes any duplicates.
+        /// </summary>
+        private static MenuIdentifierRegistry ResolveRegistry()
+        {
+            string[] paths = AssetDatabase.FindAssets($"t:{nameof(MenuIdentifierRegistry)}")
+                .Select(AssetDatabase.GUIDToAssetPath)
+                .Where(p => !string.IsNullOrEmpty(p))
+                .OrderBy(p => p)
+                .ToArray();
+
+            if (paths.Length == 0)
+                return CreateRegistry();
+
+            // Only one registry may exist. Keep the first by path for a stable, deterministic
+            // choice, and drop the rest so no stale copy can be picked up at runtime.
+            string keptPath = paths[0];
+            for (int i = 1; i < paths.Length; i++)
+            {
+                Debug.LogWarning($"Deleting duplicate MenuIdentifierRegistry at '{paths[i]}'. "
+                    + $"Keeping '{keptPath}'.");
+
+                AssetDatabase.DeleteAsset(paths[i]);
+            }
+
+            WarnIfOutsideResources(keptPath);
+            return AssetDatabase.LoadAssetAtPath<MenuIdentifierRegistry>(keptPath);
+        }
+
+        private static MenuIdentifierRegistry CreateRegistry()
+        {
+            string path = $"{DefaultRegistryDirectory}/{RegistryFileName}";
+            Directory.CreateDirectory(DefaultRegistryDirectory);
+            AssetDatabase.Refresh();
+
+            MenuIdentifierRegistry registry = ScriptableObject.CreateInstance<MenuIdentifierRegistry>();
+            AssetDatabase.CreateAsset(registry, path);
+            Debug.Log($"Created MenuIdentifierRegistry at '{path}'. Move it anywhere under a Resources folder.");
+
+            return registry;
+        }
+
+        /// <summary>
+        /// The registry is loaded through <see cref="UnityEngine.Resources"/> at runtime, so it is
+        /// only included in a build when it sits under a Resources folder.
+        /// </summary>
+        private static void WarnIfOutsideResources(string path)
+        {
+            if (path.Contains("/Resources/"))
+                return;
+
+            Debug.LogWarning($"MenuIdentifierRegistry at '{path}' is not under a Resources folder "
+                + "and will not be found in a build. Move it into one.");
         }
 
         private static string SanitizeIdentifier(string name)

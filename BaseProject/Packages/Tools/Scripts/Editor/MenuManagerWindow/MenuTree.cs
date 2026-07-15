@@ -10,19 +10,18 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
         /// <summary>Assigns derived priorities across a sequence of roots sharing one counter.</summary>
         public static void Priorities(IReadOnlyList<List<MenuNode>> roots, int start, int gap)
         {
-            int priority = start;
-            bool first = true;
+            Walk walk = new() { Priority = start, Gap = gap, First = true };
 
             foreach (List<MenuNode> root in roots)
             {
-                bool pending = true;
-                WalkNodes(root, gap, ref priority, ref first, ref pending);
+                walk.Pending = true;
+                walk.AfterGroup = false;
+                WalkNodes(root, walk);
             }
         }
 
         /// <summary>Marks entries as present or missing and returns true when serialized data changed.</summary>
-        public static bool Mark(List<MenuNode> nodes, IReadOnlyDictionary<string, ResolvedMenu> resolved,
-            HashSet<string> known)
+        public static bool Mark(List<MenuNode> nodes, IReadOnlyDictionary<string, ResolvedMenu> resolved, HashSet<string> known)
         {
             bool changed = false;
 
@@ -138,10 +137,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
             return false;
         }
 
-        /// <summary>
-        /// Rebuilds groups from each entry's default path, shortens every entry to its last segment, and resets asset
-        /// file names.
-        /// </summary>
+        /// <summary>Rebuilds groups from each entry's default path, shortens every entry to its last segment, and resets asset file names.</summary>
         public static bool AutoGroup(List<MenuNode> root, IReadOnlyDictionary<string, ResolvedMenu> resolved)
         {
             List<MenuEntryNode> entries = new();
@@ -165,7 +161,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
             if (movable.Count == 0)
                 return false;
 
-            RemoveEntries(root, ids.Contains);
+            RemoveEntries(root, id => ids.Contains(id));
 
             foreach ((MenuEntryNode node, ResolvedMenu match) in movable)
             {
@@ -182,7 +178,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
                     target = FindOrCreateGroup(target, name).Children;
                 }
 
-                node.Entry.Path = segments[^1].Trim();
+                node.Entry.Path = segments[segments.Length - 1].Trim();
 
                 if (match.Kind == EMenuEntryKind.CreateAsset && !string.IsNullOrWhiteSpace(match.DefaultFileName))
                     node.Entry.CreateFileName = match.DefaultFileName;
@@ -194,25 +190,33 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
             return true;
         }
 
-        /// <summary>Collects entries paired with their full resolved paths across a sequence of roots.</summary>
-        public static void Collect(IReadOnlyList<List<MenuNode>> roots, EMenuEntryKind kind,
-            List<(MenuEntry entry, string path)> result)
+        /// <summary>Sorts groups and entries by display name at every level. Returns true when the order changed.</summary>
+        public static bool Sort(List<MenuNode> nodes)
         {
-            string prefixRoot = MenuPath.Prefix(kind);
+            List<MenuNode> before = new(nodes);
+            nodes.Sort(CompareNodes);
+            bool changed = false;
 
-            foreach (List<MenuNode> root in roots)
+            for (int i = 0; i < nodes.Count; i++)
             {
-                List<string> prefix = new();
+                if (ReferenceEquals(before[i], nodes[i]))
+                    continue;
 
-                if (!string.IsNullOrEmpty(prefixRoot))
-                    prefix.Add(prefixRoot);
-
-                CollectPaths(root, prefix, result);
+                changed = true;
+                break;
             }
+
+            foreach (MenuNode node in nodes)
+            {
+                if (node is MenuGroupNode group)
+                    changed |= Sort(group.Children);
+            }
+
+            return changed;
         }
 
         /// <summary>Removes every group that holds no entries, innermost first. Returns true when anything was removed.</summary>
-        private static bool PruneEmptyGroups(List<MenuNode> nodes)
+        public static bool PruneEmptyGroups(List<MenuNode> nodes)
         {
             bool changed = false;
 
@@ -231,6 +235,22 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
             }
 
             return changed;
+        }
+
+        /// <summary>Collects entries paired with their full resolved paths across a sequence of roots.</summary>
+        public static void Collect(IReadOnlyList<List<MenuNode>> roots, EMenuEntryKind kind, List<(MenuEntry entry, string path)> result)
+        {
+            string prefixRoot = MenuPath.Prefix(kind);
+
+            foreach (List<MenuNode> root in roots)
+            {
+                List<string> prefix = new();
+
+                if (!string.IsNullOrEmpty(prefixRoot))
+                    prefix.Add(prefixRoot);
+
+                CollectPaths(root, prefix, result);
+            }
         }
 
         private static void CollectEntries(List<MenuNode> nodes, List<MenuEntryNode> result)
@@ -252,33 +272,36 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
                     return group;
             }
 
-            MenuGroupNode created = new(name)
-            {
-                Expanded = true
-            };
-
+            MenuGroupNode created = new(name) { Expanded = true };
             nodes.Add(created);
             return created;
         }
 
-        private static void WalkNodes(List<MenuNode> nodes, int gap, ref int priority, ref bool first, ref bool pending)
+        private static void WalkNodes(List<MenuNode> nodes, Walk walk)
         {
             foreach (MenuNode node in nodes)
             {
                 if (node is MenuGroupNode group)
                 {
-                    pending = true;
-                    WalkNodes(group.Children, gap, ref priority, ref first, ref pending);
-                    pending = true;
+                    if (!group.Merged)
+                        walk.Pending = true;
+
+                    walk.AfterGroup = false;
+                    WalkNodes(group.Children, walk);
+                    walk.AfterGroup = true;
                 }
                 else if (node is MenuEntryNode entryNode)
                 {
-                    Emit(entryNode.Entry, gap, ref priority, ref first, ref pending);
+                    if (walk.AfterGroup)
+                        walk.Pending = true;
+
+                    walk.AfterGroup = false;
+                    Emit(entryNode.Entry, walk);
                 }
             }
         }
 
-        private static void Emit(MenuEntry entry, int gap, ref int priority, ref bool first, ref bool pending)
+        private static void Emit(MenuEntry entry, Walk walk)
         {
             if (!entry.Enabled || entry.Missing || string.IsNullOrWhiteSpace(entry.Path))
             {
@@ -286,14 +309,14 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
                 return;
             }
 
-            if (first)
-                first = false;
-            else if (pending)
-                priority += gap;
+            if (walk.First)
+                walk.First = false;
+            else if (walk.Pending)
+                walk.Priority += walk.Gap;
 
-            pending = false;
-            entry.Priority = priority;
-            priority++;
+            walk.Pending = false;
+            entry.Priority = walk.Priority;
+            walk.Priority++;
         }
 
         private static void CollectPaths(List<MenuNode> nodes, List<string> prefix, List<(MenuEntry, string)> result)
@@ -313,6 +336,29 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
                     prefix.RemoveAt(prefix.Count - 1);
                 }
             }
+        }
+
+        private static int CompareNodes(MenuNode left, MenuNode right) =>
+            string.Compare(DisplayName(left), DisplayName(right), StringComparison.OrdinalIgnoreCase);
+
+        private static string DisplayName(MenuNode node)
+        {
+            if (node is MenuGroupNode group)
+                return group.Name;
+
+            if (node is MenuEntryNode entryNode)
+                return entryNode.Entry.Path;
+
+            return string.Empty;
+        }
+
+        private sealed class Walk
+        {
+            public int Priority;
+            public int Gap;
+            public bool First;
+            public bool Pending;
+            public bool AfterGroup;
         }
     }
 }

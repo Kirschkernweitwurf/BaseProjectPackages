@@ -15,8 +15,17 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
         [SerializeField]
         private bool expanded = true;
 
+        [SerializeField]
+        private bool merged;
+
         [SerializeReference]
         private List<MenuNode> children = new();
+
+        /// <summary>Required by serialization.</summary>
+        public MenuGroupNode() { }
+
+        /// <summary>Creates a named group.</summary>
+        public MenuGroupNode(string name) => this.name = name;
 
         /// <summary>Display name of the group.</summary>
         public string Name
@@ -32,14 +41,15 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
             set => expanded = value;
         }
 
+        /// <summary>When true no priority gap is inserted before the group, so it shares the block with what comes before.</summary>
+        public bool Merged
+        {
+            get => merged;
+            set => merged = value;
+        }
+
         /// <summary>Ordered child nodes.</summary>
         public List<MenuNode> Children => children;
-
-        /// <summary>Required by serialization.</summary>
-        public MenuGroupNode() { }
-
-        /// <summary>Creates a named group.</summary>
-        public MenuGroupNode(string name) => this.name = name;
     }
 }
 #endif
