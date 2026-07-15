@@ -19,17 +19,27 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
 
         private static readonly Color BodyColor = new(0.22f, 0.22f, 0.24f, 1f);
 
+        private readonly Action<AssemblyNodeInfo> _onFocusRequested;
         private readonly Action<AssemblyNodeInfo> _onCleanupRequested;
+        private readonly bool _isFocused;
 
-        public AssemblyGraphNode(AssemblyNodeInfo info, Action<AssemblyNodeInfo> onCleanupRequested)
+        public AssemblyGraphNode(AssemblyNodeInfo info,
+            bool isFocused,
+            Action<AssemblyNodeInfo> onFocusRequested,
+            Action<AssemblyNodeInfo> onCleanupRequested)
         {
             Info = info;
+            _isFocused = isFocused;
+            _onFocusRequested = onFocusRequested;
             _onCleanupRequested = onCleanupRequested;
 
             title = info.Name;
             AddToClassList("assembly-node");
             if (info.HasUnusedReferences)
                 AddToClassList("has-issues");
+
+            if (isFocused)
+                AddToClassList("is-focused");
 
             ApplyColors();
 
@@ -65,14 +75,7 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
             kindLabel.AddToClassList("kind-label");
             extensionContainer.Add(kindLabel);
 
-            Button goToButton = new(GoTo)
-            {
-                text = "Go to"
-            };
-
-            goToButton.AddToClassList("go-to-button");
-            goToButton.SetEnabled(Info.HasAsmdef);
-            extensionContainer.Add(goToButton);
+            extensionContainer.Add(BuildActionRow());
 
             List<string> unused = CollectUnusedNames();
             if (unused.Count == 0)
@@ -99,6 +102,34 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
 
             cleanButton.AddToClassList("clean-button");
             extensionContainer.Add(cleanButton);
+        }
+
+        private VisualElement BuildActionRow()
+        {
+            VisualElement row = new();
+            row.AddToClassList("action-row");
+
+            Button focusButton = new(() => _onFocusRequested?.Invoke(Info))
+            {
+                text = _isFocused
+                    ? "Clear focus"
+                    : "Focus"
+            };
+
+            focusButton.AddToClassList("focus-button");
+            focusButton.tooltip = "Show only this assembly, what it references, and what references it.";
+            row.Add(focusButton);
+
+            Button goToButton = new(GoTo)
+            {
+                text = "Go to"
+            };
+
+            goToButton.AddToClassList("go-to-button");
+            goToButton.SetEnabled(Info.HasAsmdef);
+            row.Add(goToButton);
+
+            return row;
         }
 
         private List<string> CollectUnusedNames()

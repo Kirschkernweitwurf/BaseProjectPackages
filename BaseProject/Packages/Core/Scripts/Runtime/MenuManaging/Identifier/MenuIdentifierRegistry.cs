@@ -35,6 +35,29 @@ namespace Base.CorePackage.MenuManaging.Identifier
         /// Editor-only: replaces all registered entries. Called by the generator.
         /// </summary>
         public void SetEntries(MenuIdentifier[] newEntries) => entries = newEntries;
+
+        /// <summary>
+        /// Editor-only: returns true if the current entries match the given set in the same order.
+        /// Lets the generator skip writing the asset when nothing actually changed.
+        /// </summary>
+        public bool EntriesEqual(MenuIdentifier[] candidate)
+        {
+            int currentCount = entries?.Length ?? 0;
+            int candidateCount = candidate?.Length ?? 0;
+            if (currentCount != candidateCount)
+                return false;
+
+            for (int i = 0; i < currentCount; i++)
+            {
+                if (entries == null || candidate == null)
+                    return false;
+
+                if (entries[i] != candidate[i])
+                    return false;
+            }
+
+            return true;
+        }
 #endif
     }
 }

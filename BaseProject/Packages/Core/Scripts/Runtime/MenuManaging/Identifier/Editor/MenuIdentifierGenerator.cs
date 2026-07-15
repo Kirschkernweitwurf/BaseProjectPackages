@@ -22,27 +22,6 @@ namespace Base.CorePackage.MenuManaging.Identifier.Editor
 
         private static bool _pending;
 
-        /// <summary>
-        /// Queues a regeneration for the next editor tick.
-        /// Asset callbacks must not create or refresh assets while an import is in flight,
-        /// and a pending delete is only finished after the callback returns. Deferring also
-        /// coalesces a batch of changes into a single run.
-        /// </summary>
-        internal static void ScheduleRegenerate()
-        {
-            if (_pending)
-                return;
-
-            _pending = true;
-            EditorApplication.delayCall += RunPending;
-        }
-
-        private static void RunPending()
-        {
-            _pending = false;
-            Regenerate();
-        }
-
         [MenuItem("Tools/Base Packages/Menu/Regenerate Menu Identifiers", priority = MenuOrders.Asset)]
         public static void Regenerate()
         {
@@ -84,8 +63,14 @@ namespace Base.CorePackage.MenuManaging.Identifier.Editor
                 AssetDatabase.CreateAsset(registry, RegistryPath);
             }
 
-            registry.SetEntries(entries.Select(e => e.Asset).ToArray());
-            EditorUtility.SetDirty(registry);
+            // Only write when the set actually changed, otherwise the asset gets rewritten
+            // on every run and shows up as modified in version control for no reason.
+            MenuIdentifier[] assetArray = entries.Select(e => e.Asset).ToArray();
+            if (!registry.EntriesEqual(assetArray))
+            {
+                registry.SetEntries(assetArray);
+                EditorUtility.SetDirty(registry);
+            }
 
             // 2. Generate the static accessor class
             StringBuilder sb = new();
@@ -141,6 +126,27 @@ namespace Base.CorePackage.MenuManaging.Identifier.Editor
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
             Debug.Log($"Generated MenuIdentifiers.cs with {entries.Length} entries.");
+        }
+
+        /// <summary>
+        /// Queues a regeneration for the next editor tick.
+        /// Asset callbacks must not create or refresh assets while an import is in flight,
+        /// and a pending delete is only finished after the callback returns. Deferring also
+        /// coalesces a batch of changes into a single run.
+        /// </summary>
+        internal static void ScheduleRegenerate()
+        {
+            if (_pending)
+                return;
+
+            _pending = true;
+            EditorApplication.delayCall += RunPending;
+        }
+
+        private static void RunPending()
+        {
+            _pending = false;
+            Regenerate();
         }
 
         private static string SanitizeIdentifier(string name)

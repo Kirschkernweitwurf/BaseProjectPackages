@@ -10,8 +10,11 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
     /// <summary>Editor window that visualizes project assemblies and their references.</summary>
     public sealed class AssemblyGraphWindow : EditorWindow
     {
+        private bool HasFocus => !string.IsNullOrEmpty(_focusedName);
+
         private AssemblyGraphView _graphView;
         private ToolbarSearchField _searchField;
+        private ToolbarButton _clearFocusButton;
         private Label _statusLabel;
 
         private List<AssemblyNodeInfo> _allNodes = new();
@@ -21,6 +24,7 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
         private bool _showLibrary;
         private bool _onlyIssues;
         private string _search = string.Empty;
+        private string _focusedName;
 
 #region Unity Callbacks
         private void CreateGUI()
@@ -28,7 +32,7 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
             LoadStyleSheet();
             rootVisualElement.Add(BuildToolbar());
 
-            _graphView = new AssemblyGraphView(OnNodeCleanupRequested);
+            _graphView = new AssemblyGraphView(OnFocusRequested, OnNodeCleanupRequested);
             rootVisualElement.Add(_graphView);
 
             Reload();
@@ -85,6 +89,13 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
                 text = "Clean Up All"
             });
 
+            _clearFocusButton = new ToolbarButton(ClearFocus)
+            {
+                text = "Clear Focus"
+            };
+
+            toolbar.Add(_clearFocusButton);
+
             toolbar.Add(BuildToggle("Packages", _showPackages, onChanged: value =>
             {
                 _showPackages = value;
@@ -140,12 +151,42 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
             ApplyFilter();
         }
 
+        /// <summary>Toggles focus on the clicked assembly.</summary>
+        private void OnFocusRequested(AssemblyNodeInfo node)
+        {
+            _focusedName = _focusedName == node.Name
+                ? null
+                : node.Name;
+
+            ApplyFilter();
+        }
+
+        private void ClearFocus()
+        {
+            if (!HasFocus)
+                return;
+
+            _focusedName = null;
+            ApplyFilter();
+        }
+
         private void ApplyFilter()
         {
             if (_graphView == null)
                 return;
 
+            List<AssemblyNodeInfo> visible = HasFocus
+                ? CollectFocusSet()
+                : CollectFilteredSet();
+
+            _graphView.Rebuild(visible, _focusedName);
+            UpdateToolbarState(visible.Count);
+        }
+
+        private List<AssemblyNodeInfo> CollectFilteredSet()
+        {
             List<AssemblyNodeInfo> visible = new();
+
             foreach (AssemblyNodeInfo node in _allNodes)
             {
                 if (!IsKindVisible(node))
@@ -154,16 +195,71 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
                 if (_onlyIssues && !node.HasUnusedReferences)
                     continue;
 
-                if (!string.IsNullOrEmpty(_search) && !node.Name.ToLowerInvariant().Contains(_search))
+                if (!MatchesSearch(node))
                     continue;
 
                 visible.Add(node);
             }
 
-            _graphView.Rebuild(visible);
+            return visible;
+        }
 
-            if (_statusLabel != null)
-                _statusLabel.text = $"{visible.Count} shown / {_allNodes.Count} total";
+        /// <summary>
+        /// Returns the focused assembly plus every direct neighbor in both directions.
+        /// Kind and issue filters are ignored so the dependency picture stays complete.
+        /// </summary>
+        private List<AssemblyNodeInfo> CollectFocusSet()
+        {
+            AssemblyNodeInfo focused = FindNode(_focusedName);
+            if (focused == null)
+            {
+                _focusedName = null;
+                return CollectFilteredSet();
+            }
+
+            HashSet<string> names = new()
+            {
+                focused.Name
+            };
+
+            foreach (AssemblyReferenceInfo reference in focused.References)
+                names.Add(reference.TargetName);
+
+            foreach (AssemblyNodeInfo node in _allNodes)
+            {
+                foreach (AssemblyReferenceInfo reference in node.References)
+                {
+                    if (reference.TargetName != focused.Name)
+                        continue;
+
+                    names.Add(node.Name);
+                    break;
+                }
+            }
+
+            List<AssemblyNodeInfo> visible = new();
+            foreach (AssemblyNodeInfo node in _allNodes)
+                if (names.Contains(node.Name))
+                    visible.Add(node);
+
+            return visible;
+        }
+
+        private AssemblyNodeInfo FindNode(string name)
+        {
+            foreach (AssemblyNodeInfo node in _allNodes)
+                if (node.Name == name)
+                    return node;
+
+            return null;
+        }
+
+        private bool MatchesSearch(AssemblyNodeInfo node)
+        {
+            if (string.IsNullOrEmpty(_search))
+                return true;
+
+            return node.Name.ToLowerInvariant().Contains(_search);
         }
 
         private bool IsKindVisible(AssemblyNodeInfo node)
@@ -179,6 +275,19 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
                 default:
                     return _showLibrary;
             }
+        }
+
+        private void UpdateToolbarState(int visibleCount)
+        {
+            if (_clearFocusButton != null)
+                _clearFocusButton.SetEnabled(HasFocus);
+
+            if (_statusLabel == null)
+                return;
+
+            _statusLabel.text = HasFocus
+                ? $"Focus: {_focusedName}  |  {visibleCount} shown"
+                : $"{visibleCount} shown / {_allNodes.Count} total";
         }
 
         private void OnNodeCleanupRequested(AssemblyNodeInfo node)

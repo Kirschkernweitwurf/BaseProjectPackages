@@ -2,7 +2,7 @@
   "name": "com.baseprojectpackages.tools",
   "displayName": "Base Tools Package",
   "description": "A collection of tools for any project. This package includes a variety of utilities and scripts that can be used to enhance the development workflow.",
-  "version": "1.3.1",
+  "version": "1.3.2",
   "unity": "6000.3",
   "author": {
     "name": "Jonathan Alber"

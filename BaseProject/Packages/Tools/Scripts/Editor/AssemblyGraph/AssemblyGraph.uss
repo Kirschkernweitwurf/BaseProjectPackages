@@ -28,6 +28,14 @@
     border-bottom-width: 2px;
 }
 
+.is-focused > #node-border {
+    border-color: rgb(240, 208, 96);
+    border-left-width: 3px;
+    border-right-width: 3px;
+    border-top-width: 3px;
+    border-bottom-width: 3px;
+}
+
 .kind-label {
     margin-left: 6px;
     margin-top: 4px;
@@ -35,7 +43,27 @@
     color: rgb(160, 160, 168);
 }
 
-.go-to-button,
+.action-row {
+    flex-direction: row;
+    margin-left: 4px;
+    margin-right: 4px;
+    margin-top: 4px;
+}
+
+.focus-button,
+.go-to-button {
+    flex-grow: 1;
+    height: 22px;
+    margin-left: 2px;
+    margin-right: 2px;
+    border-radius: 4px;
+}
+
+.is-focused .focus-button {
+    background-color: rgb(154, 128, 44);
+    color: rgb(250, 246, 232);
+}
+
 .clean-button {
     height: 22px;
     margin-left: 6px;
@@ -43,9 +71,6 @@
     margin-top: 4px;
     margin-bottom: 2px;
     border-radius: 4px;
-}
-
-.clean-button {
     background-color: rgb(168, 62, 62);
     color: rgb(248, 240, 240);
 }
