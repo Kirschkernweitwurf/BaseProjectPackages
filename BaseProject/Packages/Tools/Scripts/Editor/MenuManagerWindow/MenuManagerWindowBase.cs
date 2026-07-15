@@ -9,7 +9,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
     /// <summary>Shared window logic. Shows the shipped package tree read only and the project overlay tree editable.</summary>
     public abstract class MenuManagerWindowBase : EditorWindow
     {
-        protected const int MenuPriority = 11;
+        protected const int MenuPriority = 0;
         private const float DividerHeight = 8f;
         private const float DragThreshold = 4f;
         private const float FoldWidth = 14f;
@@ -29,6 +29,8 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
             new("Clean Missing", "Removes every entry whose code no longer exists.");
         private static readonly GUIContent DividerContent = new(string.Empty, "Click to toggle a separator line here.");
         private static readonly GUIContent OverrideContent = new("M", "Override priority manually");
+        private static readonly GUIContent ReloadContent = new("Reload",
+            "Forces a script reload so Unity rebuilds the whole menu from scratch. Use this when the layout looks stale.");
         private static readonly GUIContent RemoveContent = new("Remove",
             "The code behind this entry no longer exists. Click to drop it from the list.");
         private static readonly GUIContent SortContent =
@@ -217,88 +219,6 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
             ? new Color(1f, 1f, 1f, 0.1f)
             : new Color(0f, 0f, 0f, 0.12f);
 
-        private static void DrawGuides(Rect full, int depth)
-        {
-            for (int d = 1; d <= depth; d++)
-            {
-                float x = full.x + d * Indent - Indent * 0.5f;
-                EditorGUI.DrawRect(new Rect(x, full.y, 1f, full.height), GuideColor());
-            }
-        }
-
-        private static Rect LineAt(float y, Rect row, int depth) => new(row.x + depth * Indent + 6f, y - 1f,
-            row.width - depth * Indent - 12f, 2f);
-
-        private static void BuildNodes(List<MenuNode> nodes, int depth, List<string> prefix, bool locked,
-            List<Row> output)
-        {
-            for (int i = 0; i < nodes.Count; i++)
-            {
-                MenuNode node = nodes[i];
-
-                if (i > 0)
-                    output.Add(new Row
-                    {
-                        Node = node,
-                        ParentList = nodes,
-                        Index = i,
-                        Depth = depth,
-                        IsDivider = true,
-                        Locked = locked
-                    });
-
-                if (node is MenuGroupNode group)
-                {
-                    output.Add(new Row
-                    {
-                        Node = node,
-                        ParentList = nodes,
-                        Index = i,
-                        Depth = depth,
-                        IsGroup = true,
-                        Group = group,
-                        Locked = locked
-                    });
-
-                    if (!group.Expanded)
-                        continue;
-
-                    prefix.Add(group.Name);
-
-                    if (group.Children.Count == 0)
-                        output.Add(new Row
-                        {
-                            ParentList = group.Children,
-                            Index = 0,
-                            Depth = depth + 1,
-                            IsPlaceholder = true,
-                            Locked = locked
-                        });
-                    else
-                        BuildNodes(group.Children, depth + 1, prefix, locked, output);
-
-                    prefix.RemoveAt(prefix.Count - 1);
-                }
-                else if (node is MenuEntryNode entryNode)
-                {
-                    prefix.Add(entryNode.Entry.Path);
-                    string full = MenuPath.Combine(prefix);
-                    prefix.RemoveAt(prefix.Count - 1);
-
-                    output.Add(new Row
-                    {
-                        Node = node,
-                        ParentList = nodes,
-                        Index = i,
-                        Depth = depth,
-                        Entry = entryNode.Entry,
-                        FullPath = full,
-                        Locked = locked
-                    });
-                }
-            }
-        }
-
         private void EnsureStyles()
         {
             if (stylesReady)
@@ -350,6 +270,12 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
                 RefreshScan();
             }
 
+            if (GUILayout.Button(ReloadContent, EditorStyles.toolbarButton, GUILayout.Width(62f)))
+            {
+                Persist();
+                EditorUtility.RequestScriptReload();
+            }
+
             using (new EditorGUI.DisabledScope(undoStates.Count == 0))
             {
                 if (GUILayout.Button("Undo", EditorStyles.toolbarButton, GUILayout.Width(56f)))
@@ -382,16 +308,11 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
             EditorGUI.BeginChangeCheck();
 
             int newStart;
-            int newGap;
 
             using (new EditorGUI.DisabledScope(PackageLocked))
             {
                 EditorGUILayout.LabelField("Start", GUILayout.Width(34f));
                 newStart = EditorGUILayout.IntField(registry.StartPriority, EditorStyles.toolbarTextField,
-                    GUILayout.Width(50f));
-
-                EditorGUILayout.LabelField("Gap", GUILayout.Width(28f));
-                newGap = EditorGUILayout.IntField(registry.SeparatorGap, EditorStyles.toolbarTextField,
                     GUILayout.Width(50f));
             }
 
@@ -399,7 +320,6 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
             {
                 PushUndo();
                 registry.StartPriority = newStart;
-                registry.SeparatorGap = newGap;
                 Persist();
             }
 
@@ -572,6 +492,75 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
             {
                 if (node is MenuGroupNode group)
                     MarkListsLocked(group.Children);
+            }
+        }
+
+        private void BuildNodes(List<MenuNode> nodes, int depth, List<string> prefix, bool locked, List<Row> output)
+        {
+            for (int i = 0; i < nodes.Count; i++)
+            {
+                MenuNode node = nodes[i];
+
+                if (i > 0)
+                    output.Add(new Row
+                    {
+                        Node = node,
+                        ParentList = nodes,
+                        Index = i,
+                        Depth = depth,
+                        IsDivider = true,
+                        Locked = locked
+                    });
+
+                if (node is MenuGroupNode group)
+                {
+                    output.Add(new Row
+                    {
+                        Node = node,
+                        ParentList = nodes,
+                        Index = i,
+                        Depth = depth,
+                        IsGroup = true,
+                        Group = group,
+                        Locked = locked
+                    });
+
+                    if (!group.Expanded)
+                        continue;
+
+                    prefix.Add(group.Name);
+
+                    if (group.Children.Count == 0)
+                        output.Add(new Row
+                        {
+                            ParentList = group.Children,
+                            Index = 0,
+                            Depth = depth + 1,
+                            IsPlaceholder = true,
+                            Locked = locked
+                        });
+                    else
+                        BuildNodes(group.Children, depth + 1, prefix, locked, output);
+
+                    prefix.RemoveAt(prefix.Count - 1);
+                }
+                else if (node is MenuEntryNode entryNode)
+                {
+                    prefix.Add(entryNode.Entry.Path);
+                    string full = MenuPath.Combine(prefix);
+                    prefix.RemoveAt(prefix.Count - 1);
+
+                    output.Add(new Row
+                    {
+                        Node = node,
+                        ParentList = nodes,
+                        Index = i,
+                        Depth = depth,
+                        Entry = entryNode.Entry,
+                        FullPath = full,
+                        Locked = locked
+                    });
+                }
             }
         }
 
@@ -1088,9 +1077,9 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
                 return;
             }
 
-            if (rows.Count > 0 && mouse.y > rows[^1].Rect.yMax)
+            if (rows.Count > 0 && mouse.y > rows[rows.Count - 1].Rect.yMax)
                 Set(WritableRoot, WritableRoot.Count,
-                    LineAt(rows[^1].Rect.yMax, rows[^1].Rect, 0));
+                    LineAt(rows[rows.Count - 1].Rect.yMax, rows[rows.Count - 1].Rect, 0));
         }
 
         private void Set(List<MenuNode> parent, int index, Rect line)
@@ -1141,6 +1130,18 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
 
             GUI.Box(new Rect(mouse.x + 12f, mouse.y + 4f, 220f, 20f), label, ghostStyle);
         }
+
+        private void DrawGuides(Rect full, int depth)
+        {
+            for (int d = 1; d <= depth; d++)
+            {
+                float x = full.x + d * Indent - Indent * 0.5f;
+                EditorGUI.DrawRect(new Rect(x, full.y, 1f, full.height), GuideColor());
+            }
+        }
+
+        private Rect LineAt(float y, Rect row, int depth)
+            => new(row.x + depth * Indent + 6f, y - 1f, row.width - depth * Indent - 12f, 2f);
 
         private Columns Compute(Rect full, int depth)
         {
@@ -1202,7 +1203,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
                 return;
 
             redoStates.Add(CaptureState());
-            State state = undoStates[^1];
+            State state = undoStates[undoStates.Count - 1];
             undoStates.RemoveAt(undoStates.Count - 1);
             ApplyState(state);
         }
@@ -1213,7 +1214,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
                 return;
 
             undoStates.Add(CaptureState());
-            State state = redoStates[^1];
+            State state = redoStates[redoStates.Count - 1];
             redoStates.RemoveAt(redoStates.Count - 1);
             ApplyState(state);
         }
@@ -1246,8 +1247,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
         {
             Package = CloneNodes(registry.RootFor(Kind)),
             Overlay = CloneNodes(overlay.RootFor(Kind)),
-            Start = registry.StartPriority,
-            Gap = registry.SeparatorGap
+            Start = registry.StartPriority
         };
 
         private void ApplyState(State state)
@@ -1264,7 +1264,6 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
             overlayRoot.AddRange(CloneNodes(state.Overlay));
 
             registry.StartPriority = state.Start;
-            registry.SeparatorGap = state.Gap;
 
             MenuComposite.Recalculate();
             Persist();
@@ -1305,7 +1304,6 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
             public List<MenuNode> Package;
             public List<MenuNode> Overlay;
             public int Start;
-            public int Gap;
         }
     }
 }

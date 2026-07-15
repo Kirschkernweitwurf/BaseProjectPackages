@@ -28,9 +28,6 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
         private int startPriority;
 
         [SerializeField]
-        private int separatorGap = 11;
-
-        [SerializeField]
         private float columnFileWidth = 130f;
 
         [SerializeField]
@@ -85,13 +82,6 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
         {
             get => startPriority;
             set => startPriority = value;
-        }
-
-        /// <summary>Priority gap inserted at group boundaries. A gap of 11 or more draws a separator line.</summary>
-        public int SeparatorGap
-        {
-            get => separatorGap;
-            set => separatorGap = Mathf.Max(1, value);
         }
 
         /// <summary>Width of the file name column.</summary>
