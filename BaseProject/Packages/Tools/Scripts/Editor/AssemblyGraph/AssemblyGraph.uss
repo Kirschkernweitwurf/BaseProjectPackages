@@ -1,21 +1,23 @@
 .assembly-node > #node-border {
     border-radius: 8px;
+    background-color: rgb(56, 56, 61);
+    opacity: 1;
+}
+
+.assembly-node #contents {
+    background-color: rgb(56, 56, 61);
 }
 
 .assembly-node #title {
     -unity-font-style: bold;
 }
 
-.kind-project #title {
-    background-color: rgba(56, 112, 164, 0.92);
+.assembly-node #title-label {
+    color: rgb(246, 246, 248);
 }
 
-.kind-package #title {
-    background-color: rgba(96, 92, 120, 0.92);
-}
-
-.kind-library #title {
-    background-color: rgba(72, 72, 72, 0.92);
+.assembly-node #collapse-button {
+    background-color: rgba(0, 0, 0, 0);
 }
 
 .has-issues > #node-border {
@@ -24,6 +26,13 @@
     border-right-width: 2px;
     border-top-width: 2px;
     border-bottom-width: 2px;
+}
+
+.kind-label {
+    margin-left: 6px;
+    margin-top: 4px;
+    font-size: 10px;
+    color: rgb(160, 160, 168);
 }
 
 .go-to-button,
@@ -37,14 +46,14 @@
 }
 
 .clean-button {
-    background-color: rgba(178, 68, 68, 0.92);
-    color: rgb(245, 235, 235);
+    background-color: rgb(168, 62, 62);
+    color: rgb(248, 240, 240);
 }
 
 .unused-header {
     margin-left: 6px;
     margin-top: 6px;
-    color: rgb(232, 150, 150);
+    color: rgb(236, 156, 156);
     -unity-font-style: bold;
 }
 
@@ -52,5 +61,5 @@
     margin-left: 14px;
     margin-right: 6px;
     font-size: 11px;
-    color: rgb(220, 162, 162);
+    color: rgb(222, 168, 168);
 }
