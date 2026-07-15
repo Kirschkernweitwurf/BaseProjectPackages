@@ -7,14 +7,15 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
     /// <summary>
     /// Calculates node positions. Assemblies are split into connected clusters, layered by dependency
     /// depth, and ordered to reduce edge crossings. Orphans dock to the cluster that shares their root
-    /// name. Orphans without any relative are listed in a single column of their own.
+    /// name. Orphans without any relative form their own horizontal block above the clusters.
     /// </summary>
     public static class AssemblyGraphLayout
     {
         private const float BaseNodeHeight = 108f;
         private const float ClusterGap = 140f;
         private const float ColumnGap = 110f;
-        private const float HomelessBlockGap = 240f;
+        private const float HomelessBlockGap = 200f;
+        private const int HomelessColumns = 6;
         private const float NodeWidth = 260f;
         private const int OrderingSweeps = 6;
         private const float OrphanColumnGap = 70f;
@@ -40,17 +41,15 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
 
             List<List<string>> dockedOrphans = DockOrphans(orphans, clusters, byName, out List<string> homeless);
 
-            float cursorY = 0f;
-            float widest = 0f;
+            PlaceHomelessBlock(homeless, byName, result);
 
+            float cursorY = 0f;
             for (int i = 0; i < clusters.Count; i++)
             {
                 Vector2 size = PlaceCluster(clusters[i], dockedOrphans[i], byName, outgoing, incoming, cursorY, result);
                 cursorY += size.y + ClusterGap;
-                widest = Mathf.Max(widest, size.x);
             }
 
-            PlaceColumn(homeless, byName, widest + HomelessBlockGap, 0f, result);
             return result;
         }
 
@@ -281,6 +280,67 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
             }
 
             return new Vector2(width, bandHeight);
+        }
+
+        /// <summary>
+        /// Places orphans without relatives in their own horizontal block above the clusters,
+        /// so they read as a separate group.
+        /// </summary>
+        private static void PlaceHomelessBlock(List<string> homeless,
+            Dictionary<string, AssemblyNodeInfo> byName,
+            Dictionary<string, Rect> result)
+        {
+            if (homeless.Count == 0)
+                return;
+
+            List<List<string>> rows = BuildGridRows(homeless);
+            float startY = -(MeasureGridHeight(rows, byName) + HomelessBlockGap);
+
+            foreach (List<string> row in rows)
+            {
+                float rowHeight = MeasureTallestNode(row, byName);
+
+                for (int column = 0; column < row.Count; column++)
+                {
+                    float x = column * (NodeWidth + ColumnGap);
+                    result[row[column]] = new Rect(x, startY, NodeWidth, EstimateHeight(byName[row[column]]));
+                }
+
+                startY += rowHeight + RowGap;
+            }
+        }
+
+        private static List<List<string>> BuildGridRows(List<string> names)
+        {
+            List<List<string>> rows = new();
+
+            for (int i = 0; i < names.Count; i++)
+            {
+                if (i % HomelessColumns == 0)
+                    rows.Add(new List<string>());
+
+                rows[rows.Count - 1].Add(names[i]);
+            }
+
+            return rows;
+        }
+
+        private static float MeasureGridHeight(List<List<string>> rows, Dictionary<string, AssemblyNodeInfo> byName)
+        {
+            float total = 0f;
+            foreach (List<string> row in rows)
+                total += MeasureTallestNode(row, byName) + RowGap;
+
+            return total - RowGap;
+        }
+
+        private static float MeasureTallestNode(List<string> names, Dictionary<string, AssemblyNodeInfo> byName)
+        {
+            float tallest = 0f;
+            foreach (string name in names)
+                tallest = Mathf.Max(tallest, EstimateHeight(byName[name]));
+
+            return tallest;
         }
 
         /// <summary>Stacks the given assemblies vertically at a fixed x.</summary>
