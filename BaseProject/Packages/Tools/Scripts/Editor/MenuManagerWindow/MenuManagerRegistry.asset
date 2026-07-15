@@ -22,8 +22,9 @@ MonoBehaviour:
   - rid: 5339058366598611045
   - rid: 5339058366598611046
   - rid: 5339058371163849016
+  - rid: 5339058390505881686
   createAssetRoot:
-  - rid: 5339058371163848704
+  - rid: 5339058371163849017
   menuItemGroups: []
   createAssetGroups: []
   groups: []
@@ -54,85 +55,96 @@ MonoBehaviour:
           createFileName: 
           overridePriority: 0
           overrideValue: 0
-    - rid: 5339058371163848704
+    - rid: 5339058371163849016
+      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
+      data:
+        entry:
+          id: MI:Base.ToolPackage.Editor.CreateAssetMenuOverview.CreateAssetMenuOverviewWindow.Open
+          path: Tools/Base Packages/Code Health/Create Asset Menu Overview
+          enabled: 1
+          kind: 0
+          createFileName: 
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 5339058371163849017
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
         name: Scriptable Objects
         expanded: 1
         children:
-        - rid: 5339058371163848705
-        - rid: 5339058371163848706
-    - rid: 5339058371163848705
+        - rid: 5339058371163849018
+        - rid: 5339058371163849019
+    - rid: 5339058371163849018
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
         name: Base
         expanded: 0
         children:
-        - rid: 5339058371163848707
-        - rid: 5339058371163848708
-        - rid: 5339058371163848709
-        - rid: 5339058371163848710
-        - rid: 5339058371163848711
-        - rid: 5339058371163848712
-        - rid: 5339058371163848713
-    - rid: 5339058371163848706
+        - rid: 5339058371163849020
+        - rid: 5339058371163849021
+        - rid: 5339058371163849022
+        - rid: 5339058371163849023
+        - rid: 5339058371163849024
+        - rid: 5339058371163849025
+        - rid: 5339058371163849026
+    - rid: 5339058371163849019
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
         name: Test
         expanded: 0
         children:
-        - rid: 5339058371163848714
-    - rid: 5339058371163848707
+        - rid: 5339058371163849027
+    - rid: 5339058371163849020
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
         name: Asset Zoo
         expanded: 1
         children:
-        - rid: 5339058371163848715
-    - rid: 5339058371163848708
+        - rid: 5339058371163849028
+    - rid: 5339058371163849021
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
         name: Memory Profiler
         expanded: 0
         children:
-        - rid: 5339058371163848716
-    - rid: 5339058371163848709
+        - rid: 5339058371163849029
+    - rid: 5339058371163849022
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
         name: Audio
         expanded: 0
         children:
-        - rid: 5339058371163848717
-    - rid: 5339058371163848710
+        - rid: 5339058371163849030
+    - rid: 5339058371163849023
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
         name: Unique ID
         expanded: 1
         children:
-        - rid: 5339058371163848718
-    - rid: 5339058371163848711
+        - rid: 5339058371163849031
+    - rid: 5339058371163849024
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
         name: Input
         expanded: 1
         children:
-        - rid: 5339058371163848719
-    - rid: 5339058371163848712
+        - rid: 5339058371163849032
+    - rid: 5339058371163849025
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
         name: Screen Shake
         expanded: 1
         children:
-        - rid: 5339058371163848720
-    - rid: 5339058371163848713
+        - rid: 5339058371163849033
+    - rid: 5339058371163849026
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
         name: Menus
         expanded: 0
         children:
-        - rid: 5339058371163848721
-        - rid: 5339058371163848722
-    - rid: 5339058371163848714
+        - rid: 5339058371163849034
+        - rid: 5339058371163849035
+    - rid: 5339058371163849027
       type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
         entry:
@@ -143,7 +155,7 @@ MonoBehaviour:
           createFileName: RequiredSo
           overridePriority: 0
           overrideValue: 0
-    - rid: 5339058371163848715
+    - rid: 5339058371163849028
       type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
         entry:
@@ -154,7 +166,7 @@ MonoBehaviour:
           createFileName: ZooConfig
           overridePriority: 0
           overrideValue: 0
-    - rid: 5339058371163848716
+    - rid: 5339058371163849029
       type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
         entry:
@@ -165,7 +177,7 @@ MonoBehaviour:
           createFileName: MemoryProfilerConfig
           overridePriority: 0
           overrideValue: 0
-    - rid: 5339058371163848717
+    - rid: 5339058371163849030
       type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
         entry:
@@ -176,7 +188,7 @@ MonoBehaviour:
           createFileName: AudioContainer
           overridePriority: 0
           overrideValue: 0
-    - rid: 5339058371163848718
+    - rid: 5339058371163849031
       type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
         entry:
@@ -187,7 +199,7 @@ MonoBehaviour:
           createFileName: UniqueId
           overridePriority: 0
           overrideValue: 0
-    - rid: 5339058371163848719
+    - rid: 5339058371163849032
       type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
         entry:
@@ -198,7 +210,7 @@ MonoBehaviour:
           createFileName: InputGlyphSet
           overridePriority: 0
           overrideValue: 0
-    - rid: 5339058371163848720
+    - rid: 5339058371163849033
       type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
         entry:
@@ -209,7 +221,7 @@ MonoBehaviour:
           createFileName: ScreenShakeProfile
           overridePriority: 0
           overrideValue: 0
-    - rid: 5339058371163848721
+    - rid: 5339058371163849034
       type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
         entry:
@@ -220,7 +232,7 @@ MonoBehaviour:
           createFileName: MenuIdentifier
           overridePriority: 0
           overrideValue: 0
-    - rid: 5339058371163848722
+    - rid: 5339058371163849035
       type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
         entry:
@@ -231,12 +243,12 @@ MonoBehaviour:
           createFileName: MenuIdentifierRegistry
           overridePriority: 0
           overrideValue: 0
-    - rid: 5339058371163849016
+    - rid: 5339058390505881686
       type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
         entry:
-          id: MI:Base.ToolPackage.Editor.CreateAssetMenuOverview.CreateAssetMenuOverviewWindow.Open
-          path: Tools/Base Packages/Code Health/Create Asset Menu Overview
+          id: MI:Base.MemoryProfiler.Editor.MemoryProfilerWindow.Open
+          path: Tools/Base Packages/Unity Editor/Memory Profiler Automation
           enabled: 1
           kind: 0
           createFileName: 

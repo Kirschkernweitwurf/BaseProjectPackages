@@ -3,7 +3,6 @@
     "rootNamespace": "Base.SettingsPackage",
     "references": [
         "GUID:f2d8f8c295391d141aef02e29987cd86",
-        "GUID:f12f20722d8f4234b8dfcce9e344fb31",
         "GUID:922d81cfb9ff6984da4cb2213b66a375",
         "GUID:6055be8ebefd69e48b49212b09b47b2f",
         "GUID:eec0964c48f6f4e40bc3ec2257ccf8c5",
