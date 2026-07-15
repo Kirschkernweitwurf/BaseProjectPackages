@@ -5,7 +5,7 @@ namespace Base.AttributePackage
 {
     /// <summary>
     /// Turns a string field into a folder path field with a browse button.
-    /// By default the path is stored relative to the project, for example "Assets/Art".
+    /// By default, the path is stored relative to the project, for example "Assets/Art".
     /// </summary>
     [AttributeUsage(AttributeTargets.Field)]
     public sealed class FolderPathAttribute : PropertyAttribute

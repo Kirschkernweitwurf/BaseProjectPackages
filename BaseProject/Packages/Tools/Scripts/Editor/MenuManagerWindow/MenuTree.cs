@@ -15,7 +15,6 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
             foreach (List<MenuNode> root in roots)
             {
                 walk.Pending = true;
-                walk.AfterGroup = false;
                 WalkNodes(root, walk);
             }
         }
@@ -215,6 +214,27 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
             return changed;
         }
 
+        /// <summary>Rebuilds separator flags from the retired merged flag, preserving the old implicit gaps. Runs once.</summary>
+        public static void MigrateSeparators(List<MenuNode> nodes)
+        {
+            bool afterGroup = false;
+
+            foreach (MenuNode node in nodes)
+            {
+                if (node is MenuGroupNode group)
+                {
+                    group.MigrateMerged();
+                    MigrateSeparators(group.Children);
+                    afterGroup = true;
+                }
+                else if (node is MenuEntryNode entryNode)
+                {
+                    entryNode.Separator = afterGroup;
+                    afterGroup = false;
+                }
+            }
+        }
+
         /// <summary>Removes every group that holds no entries, innermost first. Returns true when anything was removed.</summary>
         public static bool PruneEmptyGroups(List<MenuNode> nodes)
         {
@@ -279,25 +299,19 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
 
         private static void WalkNodes(List<MenuNode> nodes, Walk walk)
         {
+            bool firstInList = true;
+
             foreach (MenuNode node in nodes)
             {
+                if (node.Separator && !firstInList)
+                    walk.Pending = true;
+
+                firstInList = false;
+
                 if (node is MenuGroupNode group)
-                {
-                    if (!group.Merged)
-                        walk.Pending = true;
-
-                    walk.AfterGroup = false;
                     WalkNodes(group.Children, walk);
-                    walk.AfterGroup = true;
-                }
                 else if (node is MenuEntryNode entryNode)
-                {
-                    if (walk.AfterGroup)
-                        walk.Pending = true;
-
-                    walk.AfterGroup = false;
                     Emit(entryNode.Entry, walk);
-                }
             }
         }
 
@@ -358,7 +372,6 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
             public int Gap;
             public bool First;
             public bool Pending;
-            public bool AfterGroup;
         }
     }
 }

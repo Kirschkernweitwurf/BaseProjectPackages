@@ -22,10 +22,10 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
         private List<MenuNode> children = new();
 
         /// <summary>Required by serialization.</summary>
-        public MenuGroupNode() { }
+        public MenuGroupNode() => Separator = true;
 
         /// <summary>Creates a named group.</summary>
-        public MenuGroupNode(string name) => this.name = name;
+        public MenuGroupNode(string name) : this() => this.name = name;
 
         /// <summary>Display name of the group.</summary>
         public string Name
@@ -41,15 +41,15 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
             set => expanded = value;
         }
 
-        /// <summary>When true no priority gap is inserted before the group, so it shares the block with what comes before.</summary>
-        public bool Merged
-        {
-            get => merged;
-            set => merged = value;
-        }
-
         /// <summary>Ordered child nodes.</summary>
         public List<MenuNode> Children => children;
+
+        /// <summary>Converts the retired merged flag into the separator flag. Runs once during migration.</summary>
+        public void MigrateMerged()
+        {
+            Separator = !merged;
+            merged = false;
+        }
     }
 }
 #endif

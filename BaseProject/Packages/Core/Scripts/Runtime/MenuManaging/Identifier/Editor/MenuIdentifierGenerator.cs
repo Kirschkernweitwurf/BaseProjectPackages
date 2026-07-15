@@ -14,12 +14,12 @@ namespace Base.CorePackage.MenuManaging.Identifier.Editor
     /// </summary>
     public static class MenuIdentifierGenerator
     {
+        private const string DefaultRegistryDirectory = "Assets/Generated/Resources";
         private const string LoaderNamespace = "Base.CorePackage.MenuManaging.Identifier";
         private const string MenuIdentifierNamespace = "Base.CorePackage.MenuManaging";
         private const string Namespace = "Base.CorePackage.MenuManaging.Generated";
         private const string OutputPath = "Assets/Generated/MenuIdentifiers/MenuIdentifiers.cs";
-        private const string DefaultRegistryDirectory = "Assets/Generated/Resources";
-        private const string RegistryFileName = "MenuIdentifierRegistry.asset";
+        private const string RegistryFileName = "MIR_Registry.asset";
 
         private static bool _pending;
 

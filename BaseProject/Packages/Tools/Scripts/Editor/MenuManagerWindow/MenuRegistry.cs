@@ -15,7 +15,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
     public sealed class MenuRegistry : ScriptableObject
     {
         private const string AssetFileName = "MenuManagerRegistry.asset";
-        private const int CurrentSchema = 2;
+        private const int CurrentSchema = 3;
         private const string LegacyGroupName = "Ungrouped";
         private const string LegacySettingsPath = "ProjectSettings/MenuManagerRegistry.asset";
 
@@ -136,12 +136,16 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
             ConvertLegacy(menuItemGroups, menuItemRoot);
             ConvertLegacy(createAssetGroups, createAssetRoot);
 
-            if (schemaVersion < CurrentSchema)
-            {
+            if (schemaVersion < 2)
                 NormalizeForPaths();
-                schemaVersion = CurrentSchema;
+
+            if (schemaVersion < 3)
+            {
+                MenuTree.MigrateSeparators(menuItemRoot);
+                MenuTree.MigrateSeparators(createAssetRoot);
             }
 
+            schemaVersion = CurrentSchema;
             Persist();
         }
 

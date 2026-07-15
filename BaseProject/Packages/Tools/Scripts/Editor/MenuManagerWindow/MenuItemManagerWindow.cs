@@ -12,7 +12,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
         /// <inheritdoc/>
         protected override EMenuEntryKind Kind => EMenuEntryKind.MenuItem;
 
-        [MenuItem("Tools/Base Packages/Menu Management/Menu Item Manager")]
+        [MenuItem("Tools/Base Packages/Menu Management/Menu Item Manager", false, MenuPriority)]
         private static void Open()
         {
             MenuItemManagerWindow window = GetWindow<MenuItemManagerWindow>();
