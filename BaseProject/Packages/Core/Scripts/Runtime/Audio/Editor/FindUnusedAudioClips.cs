@@ -1,7 +1,7 @@
 #if UNITY_EDITOR
 using System.Collections.Generic;
 using System.Linq;
-using Base.UtilityPackage.Generated;
+using Base.ToolPackage.MenuManagerWindow;
 using Base.UtilityPackage.Logging;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -62,7 +62,7 @@ namespace Base.CorePackage.Audio.Editor
         }
 #endregion
 
-        [MenuItem("Tools/Base Packages/Audio/Find Unused Audio Clips", priority = MenuOrders.Asset)]
+        [DynamicMenuItem("Tools/Base Packages/Audio/Find Unused Audio Clips")]
         public static void ShowWindow()
         {
             FindUnusedAudioClips window = GetWindow<FindUnusedAudioClips>("Unused Audio Clips Finder");

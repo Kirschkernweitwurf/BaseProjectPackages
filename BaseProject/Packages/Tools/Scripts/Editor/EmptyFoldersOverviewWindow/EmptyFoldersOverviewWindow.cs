@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Base.EmptyFoldersPackage;
+using Base.ToolPackage.MenuManagerWindow;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -13,7 +14,7 @@ namespace Base.ToolPackage.Editor.EmptyFoldersOverviewWindow
     /// </summary>
     public sealed class EmptyFoldersOverviewWindow : EditorWindow
     {
-        private const string MenuPath = "Tools/Base/Empty Folders Overview";
+        private const string MenuPath = "Tools/Base Packages/Project Health/Empty Folders Overview";
         private const float RowHeight = 22f;
         private const float SuccessGap = 8f;
         private const float SuccessIconSize = 48f;
@@ -71,7 +72,7 @@ namespace Base.ToolPackage.Editor.EmptyFoldersOverviewWindow
         }
 #endregion
 
-        [MenuItem(MenuPath)]
+        [DynamicMenuItem(MenuPath)]
         private static void Open()
         {
             EmptyFoldersOverviewWindow window = GetWindow<EmptyFoldersOverviewWindow>();

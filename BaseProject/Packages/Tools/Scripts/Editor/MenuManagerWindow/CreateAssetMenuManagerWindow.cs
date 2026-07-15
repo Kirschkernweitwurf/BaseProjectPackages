@@ -1,5 +1,5 @@
 #if UNITY_EDITOR
-using UnityEditor;
+using Base.ToolPackage.MenuManagerWindow;
 using UnityEngine;
 
 namespace Base.ToolPackage.Editor.MenuManagerWindow
@@ -15,7 +15,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
         /// <inheritdoc/>
         protected override bool ShowFileName => true;
 
-        [MenuItem("Tools/Base Packages/Menu Management/Create Asset Manager")]
+        [DynamicMenuItem("Tools/Base Packages/Menu Management/Create Asset Manager")]
         private static void Open()
         {
             CreateAssetMenuManagerWindow window = GetWindow<CreateAssetMenuManagerWindow>();

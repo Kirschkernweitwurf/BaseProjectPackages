@@ -2,7 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Text;
-using Base.UtilityPackage.Generated;
+using Base.ToolPackage.MenuManagerWindow;
 using UnityEditor;
 using UnityEngine;
 
@@ -22,7 +22,7 @@ namespace Base.CorePackage.MenuManaging.Identifier.Editor
 
         private static bool _pending;
 
-        [MenuItem("Tools/Base Packages/Menu/Regenerate Menu Identifiers", priority = MenuOrders.Asset)]
+        [DynamicMenuItem("Tools/Base Packages/Menu/Regenerate Menu Identifiers")]
         public static void Regenerate()
         {
             string[] guids = AssetDatabase.FindAssets($"t:{nameof(MenuIdentifier)}");

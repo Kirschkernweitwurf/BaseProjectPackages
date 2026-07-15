@@ -1,5 +1,5 @@
 #if UNITY_EDITOR
-using UnityEditor;
+using Base.ToolPackage.MenuManagerWindow;
 
 namespace Base.Localization
 {
@@ -11,13 +11,13 @@ namespace Base.Localization
     {
         private const string Root = "Tools/Base Packages/Localization/";
 
-        [MenuItem(Root + "Pull All String Tables", false, -47)]
+        [DynamicMenuItem(Root + "Pull All String Tables")]
         private static void PullAll() => GoogleSheetsSync.SyncAll(ESyncDirection.Pull);
 
-        [MenuItem(Root + "Push All String Tables", false, -47)]
+        [DynamicMenuItem(Root + "Push All String Tables")]
         private static void PushAll() => GoogleSheetsSync.SyncAll(ESyncDirection.Push);
 
-        [MenuItem(Root + "Open Sync Window", false, -47)]
+        [DynamicMenuItem(Root + "Open Sync Window")]
         private static void OpenWindow() => LocalizationSyncWindow.Open();
     }
 }

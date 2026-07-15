@@ -8,11 +8,11 @@ namespace Base.MemoryProfiler
     /// Runtime configuration for automated memory profiling.
     /// Loaded from a Resources folder so it ships in development builds.
     /// </summary>
-    [DynamicCreateAssetMenu("Scriptable Objects/Base/Memory Profiler/Memory Profiler Config", ConfigName)]
+    [DynamicCreateAssetMenu("Scriptable Objects/Base/Memory Profiler/New Memory Profiler Config", ConfigName)]
     public class MemoryProfilerConfigSo : ScriptableObject
     {
         /// <summary>Asset file name (without extension).</summary>
-        public const string ConfigName = "MemoryProfilerConfig";
+        public const string ConfigName = "MPC_MemoryProfilerConfig";
 
         /// <summary>Default storage path, matching the Memory Profiler preference default.</summary>
         public const string DefaultStoragePath = "./MemoryCaptures";

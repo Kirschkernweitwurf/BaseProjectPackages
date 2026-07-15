@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Base.ToolPackage.MenuManagerWindow;
 using Base.UnusedScriptsPackage;
 using UnityEditor;
 using UnityEngine;
@@ -16,7 +17,7 @@ namespace Base.ToolPackage.Editor.UnusedScriptsOverviewWindow
     public sealed class UnusedScriptsOverviewWindow : EditorWindow
     {
         private const float DiscardMaxHeight = 220f;
-        private const string MenuPath = "Tools/Base/Unused Scripts Overview";
+        private const string MenuPath = "Tools/Base Packages/Project Health/Unused Scripts Overview";
         private const float RowHeight = 22f;
         private const float SuccessGap = 8f;
         private const float SuccessIconSize = 48f;
@@ -99,7 +100,7 @@ namespace Base.ToolPackage.Editor.UnusedScriptsOverviewWindow
         }
 #endregion
 
-        [MenuItem(MenuPath)]
+        [DynamicMenuItem(MenuPath)]
         private static void Open()
         {
             UnusedScriptsOverviewWindow window = GetWindow<UnusedScriptsOverviewWindow>();

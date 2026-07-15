@@ -1,5 +1,5 @@
 #if UNITY_EDITOR
-using Base.UtilityPackage.Generated;
+using Base.ToolPackage.MenuManagerWindow;
 using UnityEditor;
 using UnityEngine;
 
@@ -44,7 +44,7 @@ namespace Base.ToolPackage.Editor.OrderManagement
         }
 #endregion
 
-        [MenuItem("Tools/Base Packages/Code Generation/Order Manager", priority = MenuOrders.UnityEditor)]
+        [DynamicMenuItem("Tools/Base Packages/Code Generation/Order Manager")]
         private static void Open()
         {
             OrderManagerWindow window = GetWindow<OrderManagerWindow>();

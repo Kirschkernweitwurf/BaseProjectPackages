@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Base.ToolPackage.MenuManagerWindow;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -39,7 +40,7 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
         }
 #endregion
 
-        [MenuItem("Tools/Assembly Graph")]
+        [DynamicMenuItem("Tools/Base Packages/Project Health/Assembly Graph")]
         public static void Open()
         {
             AssemblyGraphWindow window = GetWindow<AssemblyGraphWindow>();
@@ -63,8 +64,10 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
         {
             HashSet<string> set = new();
             foreach (AssemblyReferenceInfo reference in node.References)
+            {
                 if (reference.IsUnused)
                     set.Add(reference.TargetName);
+            }
 
             return set;
         }
@@ -124,13 +127,25 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
             _searchField.RegisterValueChangedCallback(OnSearchChanged);
             toolbar.Add(_searchField);
 
-            VisualElement spacer = new();
-            spacer.style.flexGrow = 1f;
+            VisualElement spacer = new()
+            {
+                style =
+                {
+                    flexGrow = 1f
+                }
+            };
+
             toolbar.Add(spacer);
 
-            _statusLabel = new Label();
-            _statusLabel.style.unityTextAlign = TextAnchor.MiddleRight;
-            _statusLabel.style.marginRight = 8f;
+            _statusLabel = new Label
+            {
+                style =
+                {
+                    unityTextAlign = TextAnchor.MiddleRight,
+                    marginRight = 8f
+                }
+            };
+
             toolbar.Add(_statusLabel);
 
             return toolbar;
@@ -239,17 +254,21 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
 
             List<AssemblyNodeInfo> visible = new();
             foreach (AssemblyNodeInfo node in _allNodes)
+            {
                 if (names.Contains(node.Name))
                     visible.Add(node);
+            }
 
             return visible;
         }
 
-        private AssemblyNodeInfo FindNode(string name)
+        private AssemblyNodeInfo FindNode(string nodeName)
         {
             foreach (AssemblyNodeInfo node in _allNodes)
-                if (node.Name == name)
+            {
+                if (node.Name == nodeName)
                     return node;
+            }
 
             return null;
         }

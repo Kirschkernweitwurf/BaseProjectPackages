@@ -1,7 +1,7 @@
 #if UNITY_EDITOR
 using Base.ToolPackage.Editor.AssetZoo.Runtime.Builder;
 using Base.ToolPackage.Editor.AssetZoo.Runtime.Config;
-using Base.UtilityPackage.Generated;
+using Base.ToolPackage.MenuManagerWindow;
 using UnityEditor;
 using UnityEngine;
 
@@ -95,7 +95,7 @@ namespace Base.ToolPackage.Editor.AssetZoo.Editor
         /// <summary>
         /// Opens the zoo builder window without a config.
         /// </summary>
-        [MenuItem("Tools/Base Packages/Asset Zoo/Open Zoo Builder", priority = MenuOrders.Team)]
+        [DynamicMenuItem("Tools/Base Packages/Asset Zoo/Open Zoo Builder")]
         public static void Open() => Open(null);
 
         public static void Open(ZooConfig config)
