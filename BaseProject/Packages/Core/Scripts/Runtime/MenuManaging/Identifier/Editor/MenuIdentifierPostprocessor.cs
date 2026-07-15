@@ -1,9 +1,8 @@
 #if UNITY_EDITOR
 #if !BASE_PACKAGES_DEV
-using Base.CorePackage.MenuManaging.Identifier.Editor;
 using UnityEditor;
 
-namespace Base.CorePackage.MenuManaging.Identifier
+namespace Base.CorePackage.MenuManaging.Identifier.Editor
 {
     /// <summary>
     /// Watches for changes to <see cref="MenuIdentifier"/> assets
@@ -17,11 +16,14 @@ namespace Base.CorePackage.MenuManaging.Identifier
         private static void OnPostprocessAllAssets(string[] imported, string[] deleted,
             string[] movedTo, string[] movedFrom)
         {
+            // Created and moved assets still exist, so their type can be checked directly.
+            // A deleted asset can no longer be typed, so any .asset deletion triggers a
+            // reconcile. The generator then rebuilds from the live asset set on the next
+            // tick and writes only if the set actually changed.
             bool affected =
                 AnyIsMenuIdentifier(imported)
-                || AnyIsMenuIdentifier(deleted)
                 || AnyIsMenuIdentifier(movedTo)
-                || AnyIsMenuIdentifier(movedFrom);
+                || AnyAssetDeleted(deleted);
 
             if (!affected || _pending)
                 return;
@@ -47,6 +49,17 @@ namespace Base.CorePackage.MenuManaging.Identifier
                     continue;
 
                 if (AssetDatabase.GetMainAssetTypeAtPath(path) == typeof(MenuIdentifier))
+                    return true;
+            }
+
+            return false;
+        }
+
+        private static bool AnyAssetDeleted(string[] deleted)
+        {
+            foreach (string path in deleted)
+            {
+                if (path.EndsWith(".asset"))
                     return true;
             }
 

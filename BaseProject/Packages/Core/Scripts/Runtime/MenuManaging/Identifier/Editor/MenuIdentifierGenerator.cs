@@ -35,7 +35,7 @@ namespace Base.CorePackage.MenuManaging.Identifier.Editor
                 .OrderBy(e => e.Asset.name)
                 .ToArray();
 
-            // Detect duplicate names — these would create invalid C#.
+            // Detect duplicate names, these would create invalid C#.
             var duplicates = entries
                 .GroupBy(e => SanitizeIdentifier(e.Asset.name))
                 .Where(g => g.Count() > 1)
@@ -52,7 +52,9 @@ namespace Base.CorePackage.MenuManaging.Identifier.Editor
                 return;
             }
 
-            // 1. Build / update the registry asset
+            // 1. Build / update the registry asset from the live asset set.
+            MenuIdentifier[] assetArray = entries.Select(e => e.Asset).ToArray();
+
             MenuIdentifierRegistry registry = AssetDatabase.LoadAssetAtPath<MenuIdentifierRegistry>(RegistryPath);
             if (registry == null)
             {
@@ -61,8 +63,13 @@ namespace Base.CorePackage.MenuManaging.Identifier.Editor
                 AssetDatabase.CreateAsset(registry, RegistryPath);
             }
 
-            registry.SetEntries(entries.Select(e => e.Asset).ToArray());
-            EditorUtility.SetDirty(registry);
+            // Rebuild the whole array from live assets, so deleted ones drop out and no
+            // missing reference is left behind. Only write when the set actually changed.
+            if (!registry.EntriesEqual(assetArray))
+            {
+                registry.SetEntries(assetArray);
+                EditorUtility.SetDirty(registry);
+            }
 
             // 2. Generate the static accessor class
             StringBuilder sb = new();
@@ -107,7 +114,7 @@ namespace Base.CorePackage.MenuManaging.Identifier.Editor
             string newContents = sb.ToString();
             Directory.CreateDirectory(Path.GetDirectoryName(OutputPath)!);
 
-            // Skip writing if nothing changed — avoids triggering pointless recompiles.
+            // Skip writing if nothing changed, avoids triggering pointless recompiles.
             if (File.Exists(OutputPath) && File.ReadAllText(OutputPath) == newContents)
             {
                 AssetDatabase.SaveAssets();

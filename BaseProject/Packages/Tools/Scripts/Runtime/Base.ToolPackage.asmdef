@@ -1,9 +1,7 @@
 {
     "name": "Base.ToolPackage",
     "rootNamespace": "Base.ToolPackage",
-    "references": [
-        "GUID:922d81cfb9ff6984da4cb2213b66a375"
-    ],
+    "references": [],
     "includePlatforms": [
         "Editor"
     ],

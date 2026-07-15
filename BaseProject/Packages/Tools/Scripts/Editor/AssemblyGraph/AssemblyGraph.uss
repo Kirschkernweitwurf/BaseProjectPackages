@@ -1,0 +1,56 @@
+.assembly-node > #node-border {
+    border-radius: 8px;
+}
+
+.assembly-node #title {
+    -unity-font-style: bold;
+}
+
+.kind-project #title {
+    background-color: rgba(56, 112, 164, 0.92);
+}
+
+.kind-package #title {
+    background-color: rgba(96, 92, 120, 0.92);
+}
+
+.kind-library #title {
+    background-color: rgba(72, 72, 72, 0.92);
+}
+
+.has-issues > #node-border {
+    border-color: rgb(220, 82, 82);
+    border-left-width: 2px;
+    border-right-width: 2px;
+    border-top-width: 2px;
+    border-bottom-width: 2px;
+}
+
+.go-to-button,
+.clean-button {
+    height: 22px;
+    margin-left: 6px;
+    margin-right: 6px;
+    margin-top: 4px;
+    margin-bottom: 2px;
+    border-radius: 4px;
+}
+
+.clean-button {
+    background-color: rgba(178, 68, 68, 0.92);
+    color: rgb(245, 235, 235);
+}
+
+.unused-header {
+    margin-left: 6px;
+    margin-top: 6px;
+    color: rgb(232, 150, 150);
+    -unity-font-style: bold;
+}
+
+.unused-line {
+    margin-left: 14px;
+    margin-right: 6px;
+    font-size: 11px;
+    color: rgb(220, 162, 162);
+}

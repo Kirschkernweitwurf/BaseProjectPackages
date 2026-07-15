@@ -1,6 +1,6 @@
 #if UNITY_EDITOR
 using System.IO;
-using Base.UtilityPackage.Generated;
+using Base.ToolPackage.MenuManagerWindow;
 using UnityEditor;
 using UnityEngine;
 
@@ -71,7 +71,7 @@ namespace Base.MemoryProfiler.Editor
         private void OnInspectorUpdate() => Repaint();
 #endregion
 
-        [MenuItem(MenuPath, priority = MenuOrders.UnityEditor)]
+        [DynamicMenuItem(MenuPath)]
         private static void Open()
         {
             MemoryProfilerWindow window = GetWindow<MemoryProfilerWindow>();
