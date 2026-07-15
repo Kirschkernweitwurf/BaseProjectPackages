@@ -9,6 +9,8 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
     [FilePath("ProjectSettings/MenuManagerOverlay.asset", FilePathAttribute.Location.ProjectFolder)]
     public sealed class MenuOverlay : ScriptableSingleton<MenuOverlay>
     {
+        private const int CurrentSchema = 3;
+
         [SerializeReference]
         private List<MenuNode> menuItemRoot = new();
 
@@ -17,6 +19,9 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
 
         [SerializeField]
         private bool shippedCollapsed;
+
+        [SerializeField]
+        private int schemaVersion;
 
         /// <summary>Whether the shipped, read only section is collapsed in the window.</summary>
         public bool ShippedCollapsed
@@ -28,6 +33,18 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
         /// <summary>Returns the top level node list for the given kind.</summary>
         public List<MenuNode> RootFor(EMenuEntryKind kind) =>
             kind == EMenuEntryKind.CreateAsset ? createAssetRoot : menuItemRoot;
+
+        /// <summary>Rebuilds separator flags from retired data. Runs once.</summary>
+        public void Migrate()
+        {
+            if (schemaVersion >= CurrentSchema)
+                return;
+
+            MenuTree.MigrateSeparators(menuItemRoot);
+            MenuTree.MigrateSeparators(createAssetRoot);
+            schemaVersion = CurrentSchema;
+            Persist();
+        }
 
         /// <summary>Writes the overlay to disk.</summary>
         public void Persist() => Save(true);

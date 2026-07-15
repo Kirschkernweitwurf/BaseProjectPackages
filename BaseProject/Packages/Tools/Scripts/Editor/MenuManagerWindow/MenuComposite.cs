@@ -18,6 +18,8 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
         /// <summary>Discovers new entries, flags missing ones, and routes new entries to the writable store.</summary>
         public static void Sync(IReadOnlyDictionary<string, ResolvedMenu> resolved)
         {
+            Overlay.Migrate();
+
             HashSet<string> known = new();
             HashSet<string> packageIds = new();
             bool changed = false;
