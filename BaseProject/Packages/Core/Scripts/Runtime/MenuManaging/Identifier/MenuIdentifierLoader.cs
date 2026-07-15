@@ -1,3 +1,4 @@
+using System.Linq;
 using Base.UtilityPackage.Logging;
 using UnityEditor;
 using UnityEngine;
@@ -15,12 +16,12 @@ namespace Base.CorePackage.MenuManaging.Identifier
         public static MenuIdentifier Load(string identifierName)
         {
             if (_registry == null)
-                _registry = Resources.Load<MenuIdentifierRegistry>(nameof(MenuIdentifierRegistry));
+                _registry = FindRegistry();
 
             if (_registry == null)
             {
-                CustomLogger.LogError("MenuIdentifierRegistry not found in Resources. "
-                    + "Run Tools > Menus > Regenerate Menu Identifiers.", null);
+                CustomLogger.LogError("No MenuIdentifierRegistry found under any Resources folder. "
+                    + "Run Tools > Base Packages > Menu > Regenerate Menu Identifiers.", null);
 
                 return null;
             }
@@ -28,6 +29,23 @@ namespace Base.CorePackage.MenuManaging.Identifier
             return _registry.TryGet(identifierName, out MenuIdentifier identifier)
                 ? identifier
                 : null;
+        }
+
+        /// <summary>
+        /// Finds the registry by type rather than by asset name, so it can be renamed and moved
+        /// freely as long as it stays under a Resources folder.
+        /// </summary>
+        private static MenuIdentifierRegistry FindRegistry()
+        {
+            MenuIdentifierRegistry[] found = Resources.LoadAll<MenuIdentifierRegistry>(string.Empty);
+            if (found.Length == 0)
+                return null;
+
+            if (found.Length > 1)
+                CustomLogger.LogError($"Found {found.Length} MenuIdentifierRegistry assets, expected one. "
+                    + $"Using '{found[0].name}'. Regenerate to remove the duplicates.", null);
+
+            return found.OrderBy(r => r.name).First();
         }
 
 #if UNITY_EDITOR

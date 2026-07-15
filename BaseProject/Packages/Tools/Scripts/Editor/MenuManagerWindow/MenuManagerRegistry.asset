@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: MenuManagerRegistry
   m_EditorClassIdentifier: Base.ToolPackage.Editor::Base.ToolPackage.Editor.MenuManagerWindow.MenuRegistry
   schemaVersion: 2
-  startPriority: 0
+  startPriority: 11
   separatorGap: 11
   columnFileWidth: 155
   columnPriorityWidth: 58
@@ -34,6 +34,7 @@ MonoBehaviour:
       data:
         name: Tools
         expanded: 1
+        merged: 0
         children:
         - rid: 5339058392838439271
         - rid: 5339058392838439272
@@ -41,7 +42,8 @@ MonoBehaviour:
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
         name: GameObject
-        expanded: 1
+        expanded: 0
+        merged: 0
         children:
         - rid: 5339058392838439273
     - rid: 5339058392838439271
@@ -49,23 +51,25 @@ MonoBehaviour:
       data:
         name: Base Packages
         expanded: 1
+        merged: 0
         children:
-        - rid: 5339058392838439274
-        - rid: 5339058392838439275
-        - rid: 5339058392838439276
-        - rid: 5339058392838439277
-        - rid: 5339058392838439278
+        - rid: 5339058392838439283
         - rid: 5339058392838439279
         - rid: 5339058392838439280
+        - rid: 5339058392838439277
         - rid: 5339058392838439281
+        - rid: 5339058392838439276
+        - rid: 5339058392838439274
+        - rid: 5339058392838439278
         - rid: 5339058392838439282
-        - rid: 5339058392838439283
         - rid: 5339058392838439284
+        - rid: 5339058392838439275
     - rid: 5339058392838439272
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
         name: Update Base Packages
-        expanded: 1
+        expanded: 0
+        merged: 0
         children:
         - rid: 5339058392838439285
         - rid: 5339058392838439286
@@ -76,6 +80,7 @@ MonoBehaviour:
       data:
         name: Base
         expanded: 1
+        merged: 0
         children:
         - rid: 5339058392838439289
         - rid: 5339058392838439290
@@ -83,7 +88,8 @@ MonoBehaviour:
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
         name: Code Health
-        expanded: 1
+        expanded: 0
+        merged: 1
         children:
         - rid: 5339058392838439291
         - rid: 5339058392838439292
@@ -93,7 +99,8 @@ MonoBehaviour:
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
         name: Unity Editor
-        expanded: 1
+        expanded: 0
+        merged: 1
         children:
         - rid: 5339058392838439295
         - rid: 5339058392838439296
@@ -101,74 +108,83 @@ MonoBehaviour:
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
         name: Code Generation
-        expanded: 1
+        expanded: 0
+        merged: 0
         children:
-        - rid: 5339058392838439297
         - rid: 5339058392838439298
+        - rid: 5339058392838439297
         - rid: 5339058392838439299
     - rid: 5339058392838439277
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
         name: Identifier
-        expanded: 1
+        expanded: 0
+        merged: 1
         children:
-        - rid: 5339058392838439300
         - rid: 5339058392838439301
+        - rid: 5339058392838439300
     - rid: 5339058392838439278
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
         name: Logging
-        expanded: 1
+        expanded: 0
+        merged: 0
         children:
         - rid: 5339058392838439302
     - rid: 5339058392838439279
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
         name: Localization
-        expanded: 1
+        expanded: 0
+        merged: 1
         children:
+        - rid: 5339058392838439305
         - rid: 5339058392838439303
         - rid: 5339058392838439304
-        - rid: 5339058392838439305
     - rid: 5339058392838439280
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
         name: Audio
-        expanded: 1
+        expanded: 0
+        merged: 0
         children:
         - rid: 5339058392838439306
     - rid: 5339058392838439281
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
         name: Menu
-        expanded: 1
+        expanded: 0
+        merged: 1
         children:
         - rid: 5339058392838439307
     - rid: 5339058392838439282
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
         name: Menu Management
-        expanded: 1
+        expanded: 0
+        merged: 1
         children:
         - rid: 5339058392838439308
     - rid: 5339058392838439283
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
         name: Asset Zoo
-        expanded: 1
+        expanded: 0
+        merged: 0
         children:
         - rid: 5339058392838439309
     - rid: 5339058392838439284
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
         name: Project Health
-        expanded: 1
+        expanded: 0
+        merged: 0
         children:
+        - rid: 5339058392838439314
+        - rid: 5339058392838439313
+        - rid: 5339058392838439312
         - rid: 5339058392838439310
         - rid: 5339058392838439311
-        - rid: 5339058392838439312
-        - rid: 5339058392838439313
-        - rid: 5339058392838439314
     - rid: 5339058392838439285
       type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
@@ -504,6 +520,7 @@ MonoBehaviour:
       data:
         name: Scriptable Objects
         expanded: 1
+        merged: 0
         children:
         - rid: 5339058393820954648
         - rid: 5339058393820954657
@@ -512,47 +529,53 @@ MonoBehaviour:
       data:
         name: Base
         expanded: 1
+        merged: 0
         children:
         - rid: 5339058393820954650
-        - rid: 5339058393820954651
         - rid: 5339058393820954652
         - rid: 5339058393820954654
-        - rid: 5339058393820954656
-        - rid: 5339058393820954750
         - rid: 5339058393820954751
+        - rid: 5339058393820954656
+        - rid: 5339058393820954651
+        - rid: 5339058393820954750
     - rid: 5339058393820954650
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
         name: Asset Zoo
-        expanded: 1
+        expanded: 0
+        merged: 0
         children:
         - rid: 5339058393820954658
     - rid: 5339058393820954651
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
         name: Memory Profiler
-        expanded: 1
+        expanded: 0
+        merged: 0
         children:
         - rid: 5339058393820954659
     - rid: 5339058393820954652
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
         name: Audio
-        expanded: 1
+        expanded: 0
+        merged: 1
         children:
         - rid: 5339058393820954660
     - rid: 5339058393820954654
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
         name: Input
-        expanded: 1
+        expanded: 0
+        merged: 0
         children:
         - rid: 5339058393820954662
     - rid: 5339058393820954656
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
         name: Menus
-        expanded: 1
+        expanded: 0
+        merged: 1
         children:
         - rid: 5339058393820954664
         - rid: 5339058393820954665
@@ -659,13 +682,15 @@ MonoBehaviour:
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
         name: UniqueId
-        expanded: 1
+        expanded: 0
+        merged: 1
         children:
         - rid: 5339058393820954661
     - rid: 5339058393820954751
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
         name: Screen-Shake
-        expanded: 1
+        expanded: 0
+        merged: 1
         children:
         - rid: 5339058393820954663

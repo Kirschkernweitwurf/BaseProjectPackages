@@ -1,4 +1,3 @@
-using Base.ToolPackage.MenuManagerWindow;
 using UnityEngine;
 
 namespace Base.CorePackage.MenuManaging.Identifier
@@ -6,8 +5,11 @@ namespace Base.CorePackage.MenuManaging.Identifier
     /// <summary>
     /// Holds references to all <see cref="MenuIdentifier"/> assets in the project so they can be resolved at runtime.
     /// </summary>
-    [DynamicCreateAssetMenu("Scriptable Objects/Base/Menus/New Menu Identifier Registry",
-        "MIDR_MenuIdentifierRegistry")]
+    /// <remarks>
+    /// Created and maintained automatically by the generator, and deliberately not creatable from
+    /// the asset menu. Exactly one registry exists per project. To relocate it, move the existing
+    /// asset in the Project window. It has to stay somewhere under a Resources folder.
+    /// </remarks>
     public class MenuIdentifierRegistry : ScriptableObject
     {
         [SerializeField] private MenuIdentifier[] entries;
