@@ -7,15 +7,41 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
     /// <summary>Pure tree algorithms shared by the package registry and the project overlay.</summary>
     public static class MenuTree
     {
-        /// <summary>Assigns derived priorities across a sequence of roots sharing one counter.</summary>
-        public static void Priorities(IReadOnlyList<List<MenuNode>> roots, int start, int gap)
+        /// <summary>Priority distance that makes Unity draw a separator line. Unity draws one when the gap is more than 10.</summary>
+        public const int SeparatorGap = 11;
+
+        /// <summary>Assigns every entry its derived priority.</summary>
+        /// <remarks>
+        /// Unity gives a submenu the priority of its first defined child, for ordering and for separator lines alike.
+        /// So a node only ever competes with its own siblings: it takes one slot, and a group lays its children out
+        /// starting at that same slot. What a group holds inside can never push a sibling group away.
+        /// </remarks>
+        public static void Priorities(IReadOnlyList<List<MenuNode>> roots, int start)
         {
-            Walk walk = new() { Priority = start, Gap = gap, First = true };
+            int slot = start;
+            bool first = true;
+            bool boundary = false;
 
             foreach (List<MenuNode> root in roots)
             {
-                walk.Pending = true;
-                WalkNodes(root, walk);
+                foreach (MenuNode node in root)
+                {
+                    if (!IsLive(node))
+                    {
+                        ClearDead(node);
+                        continue;
+                    }
+
+                    if (first)
+                        first = false;
+                    else
+                        slot += boundary || node.Separator ? SeparatorGap : 1;
+
+                    boundary = false;
+                    AssignSlot(node, slot);
+                }
+
+                boundary = !first;
             }
         }
 
@@ -297,40 +323,73 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
             return created;
         }
 
-        private static void WalkNodes(List<MenuNode> nodes, Walk walk)
+        private static void AssignSlot(MenuNode node, int slot)
         {
-            bool firstInList = true;
-
-            foreach (MenuNode node in nodes)
+            if (node is MenuEntryNode entryNode)
             {
-                if (node.Separator && !firstInList)
-                    walk.Pending = true;
-
-                firstInList = false;
-
-                if (node is MenuGroupNode group)
-                    WalkNodes(group.Children, walk);
-                else if (node is MenuEntryNode entryNode)
-                    Emit(entryNode.Entry, walk);
-            }
-        }
-
-        private static void Emit(MenuEntry entry, Walk walk)
-        {
-            if (!entry.Enabled || entry.Missing || string.IsNullOrWhiteSpace(entry.Path))
-            {
-                entry.Priority = int.MinValue;
+                entryNode.Entry.Priority = slot;
                 return;
             }
 
-            if (walk.First)
-                walk.First = false;
-            else if (walk.Pending)
-                walk.Priority += walk.Gap;
+            if (node is MenuGroupNode group)
+                LayoutChildren(group.Children, slot);
+        }
 
-            walk.Pending = false;
-            entry.Priority = walk.Priority;
-            walk.Priority++;
+        private static void LayoutChildren(List<MenuNode> nodes, int baseSlot)
+        {
+            int slot = baseSlot;
+            bool first = true;
+
+            foreach (MenuNode node in nodes)
+            {
+                if (!IsLive(node))
+                {
+                    ClearDead(node);
+                    continue;
+                }
+
+                if (first)
+                    first = false;
+                else
+                    slot += node.Separator ? SeparatorGap : 1;
+
+                AssignSlot(node, slot);
+            }
+        }
+
+        private static bool IsLive(MenuNode node)
+        {
+            if (node is MenuEntryNode entryNode)
+            {
+                MenuEntry entry = entryNode.Entry;
+                return entry.Enabled && !entry.Missing && !string.IsNullOrWhiteSpace(entry.Path);
+            }
+
+            if (node is not MenuGroupNode group)
+                return false;
+
+            foreach (MenuNode child in group.Children)
+            {
+                if (IsLive(child))
+                    return true;
+            }
+
+            return false;
+        }
+
+        private static void ClearDead(MenuNode node)
+        {
+            if (node is MenuEntryNode entryNode)
+            {
+                entryNode.Entry.Priority = int.MinValue;
+                return;
+            }
+
+            if (node is not MenuGroupNode group)
+                return;
+
+            foreach (MenuNode child in group.Children)
+                ClearDead(child);
         }
 
         private static void CollectPaths(List<MenuNode> nodes, List<string> prefix, List<(MenuEntry, string)> result)
@@ -366,13 +425,6 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
             return string.Empty;
         }
 
-        private sealed class Walk
-        {
-            public int Priority;
-            public int Gap;
-            public bool First;
-            public bool Pending;
-        }
     }
 }
 #endif

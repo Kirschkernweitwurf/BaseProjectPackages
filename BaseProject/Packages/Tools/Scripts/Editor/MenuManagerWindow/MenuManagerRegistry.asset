@@ -14,7 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Base.ToolPackage.Editor::Base.ToolPackage.Editor.MenuManagerWindow.MenuRegistry
   schemaVersion: 2
   startPriority: 11
-  separatorGap: 11
   columnFileWidth: 155
   columnPriorityWidth: 58
   columnStatusWidth: 52
@@ -23,7 +22,6 @@ MonoBehaviour:
   - rid: 5339058395782840411
   createAssetRoot:
   - rid: 5339058393820954647
-  - rid: 5339058395782840407
   menuItemGroups: []
   createAssetGroups: []
   groups: []
@@ -45,7 +43,7 @@ MonoBehaviour:
       data:
         separator: 1
         name: Base
-        expanded: 1
+        expanded: 0
         merged: 0
         children:
         - rid: 5339058393820954650
@@ -63,7 +61,7 @@ MonoBehaviour:
         expanded: 0
         merged: 0
         children:
-        - rid: 5339058393820954658
+        - rid: 5339058395782840407
     - rid: 5339058393820954651
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
@@ -103,25 +101,13 @@ MonoBehaviour:
     - rid: 5339058393820954657
       type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
-        separator: 0
+        separator: 1
         entry:
           id: CA:RequiredSo
           path: New RequiredSo
           enabled: 1
           kind: 1
           createFileName: RSO_RequiredSo
-          overridePriority: 0
-          overrideValue: 0
-    - rid: 5339058393820954658
-      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
-      data:
-        separator: 0
-        entry:
-          id: CA:Base.ToolPackage.Editor.AssetZoo.Runtime.Config.ZooConfig
-          path: New Config
-          enabled: 1
-          kind: 1
-          createFileName: ZC_ZooConfig
           overridePriority: 0
           overrideValue: 0
     - rid: 5339058393820954659
@@ -220,7 +206,7 @@ MonoBehaviour:
         separator: 0
         entry:
           id: CA:Base.ToolPackage.Editor.AssetZoo.Config.ZooConfig
-          path: Scriptable Objects/Base/Asset Zoo/New Config
+          path: New Config
           enabled: 1
           kind: 1
           createFileName: ZC_ZooConfig
@@ -273,15 +259,14 @@ MonoBehaviour:
         - rid: 5339058395782840423
         - rid: 5339058395782840424
         - rid: 5339058395782840425
-        - rid: 5339058395782840426
         - rid: 5339058395782840427
         - rid: 5339058395782840428
     - rid: 5339058395782840416
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
-        separator: 1
+        separator: 0
         name: Update Base Packages
-        expanded: 1
+        expanded: 0
         merged: 0
         children:
         - rid: 5339058395782840463
@@ -304,7 +289,7 @@ MonoBehaviour:
       data:
         separator: 1
         name: Asset Zoo
-        expanded: 1
+        expanded: 0
         merged: 0
         children:
         - rid: 5339058395782840412
@@ -313,7 +298,7 @@ MonoBehaviour:
       data:
         separator: 0
         name: Localization
-        expanded: 1
+        expanded: 0
         merged: 0
         children:
         - rid: 5339058395782840436
@@ -324,7 +309,7 @@ MonoBehaviour:
       data:
         separator: 1
         name: Audio
-        expanded: 1
+        expanded: 0
         merged: 0
         children:
         - rid: 5339058395782840439
@@ -333,7 +318,7 @@ MonoBehaviour:
       data:
         separator: 0
         name: Identifier
-        expanded: 1
+        expanded: 0
         merged: 0
         children:
         - rid: 5339058395782840440
@@ -375,7 +360,7 @@ MonoBehaviour:
       data:
         separator: 0
         name: Project Health
-        expanded: 1
+        expanded: 0
         merged: 0
         children:
         - rid: 5339058395782840450
@@ -383,21 +368,12 @@ MonoBehaviour:
         - rid: 5339058395782840452
         - rid: 5339058395782840453
         - rid: 5339058395782840454
-    - rid: 5339058395782840426
-      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
-      data:
-        separator: 1
-        name: Menu Management
-        expanded: 1
-        merged: 0
-        children:
-        - rid: 5339058395782840455
     - rid: 5339058395782840427
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
-        separator: 0
+        separator: 1
         name: Logging
-        expanded: 1
+        expanded: 0
         merged: 0
         children:
         - rid: 5339058395782840456
@@ -406,7 +382,7 @@ MonoBehaviour:
       data:
         separator: 0
         name: Unity Editor
-        expanded: 1
+        expanded: 0
         merged: 0
         children:
         - rid: 5339058395782840457
@@ -414,7 +390,7 @@ MonoBehaviour:
     - rid: 5339058395782840429
       type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
-        separator: 0
+        separator: 1
         entry:
           id: MI:EmptyFolderTestGenerator.Open
           path: Empty Folders Test Gen
@@ -630,7 +606,7 @@ MonoBehaviour:
     - rid: 5339058395782840449
       type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
-        separator: 0
+        separator: 1
         entry:
           id: MI:Base.ToolPackage.Editor.StaticResetChecker.StaticResetCheckerWindow.Open
           path: Static Reset Checker
@@ -654,7 +630,7 @@ MonoBehaviour:
     - rid: 5339058395782840451
       type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
-        separator: 0
+        separator: 1
         entry:
           id: MI:Base.ToolPackage.Editor.EmptyFoldersOverviewWindow.EmptyFoldersOverviewWindow.Open
           path: Empty Folders Overview
@@ -694,18 +670,6 @@ MonoBehaviour:
         entry:
           id: MI:Base.ToolPackage.Editor.UnusedScriptsOverviewWindow.UnusedScriptsOverviewWindow.Open
           path: Unused Scripts Overview
-          enabled: 1
-          kind: 0
-          createFileName: 
-          overridePriority: 0
-          overrideValue: 0
-    - rid: 5339058395782840455
-      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
-      data:
-        separator: 0
-        entry:
-          id: MI:Base.ToolPackage.Editor.MenuManagerWindow.CreateAssetMenuManagerWindow.Open
-          path: Create Asset Manager
           enabled: 1
           kind: 0
           createFileName: 
