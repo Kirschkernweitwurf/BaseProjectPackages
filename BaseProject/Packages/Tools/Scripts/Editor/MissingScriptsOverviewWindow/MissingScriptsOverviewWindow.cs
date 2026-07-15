@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Base.ToolPackage.MenuManagerWindow;
 using UnityEditor;
 using UnityEngine;
 
@@ -12,7 +13,7 @@ namespace Base.ToolPackage.Editor.MissingScriptsOverviewWindow
     /// </summary>
     public sealed class MissingScriptsOverviewWindow : EditorWindow
     {
-        private const string MenuPath = "Tools/Base/Missing Scripts Overview";
+        private const string MenuPath = "Tools/Base Packages/Project Health/Missing Scripts Overview";
         private const float RowHeight = 22f;
         private const float SuccessGap = 8f;
         private const float SuccessIconSize = 48f;
@@ -74,7 +75,7 @@ namespace Base.ToolPackage.Editor.MissingScriptsOverviewWindow
         }
 #endregion
 
-        [MenuItem(MenuPath)]
+        [DynamicMenuItem(MenuPath)]
         private static void Open()
         {
             MissingScriptsOverviewWindow window = GetWindow<MissingScriptsOverviewWindow>();

@@ -1,4 +1,5 @@
 #if UNITY_EDITOR
+using Base.ToolPackage.MenuManagerWindow;
 using UnityEditor;
 using UnityEngine;
 
@@ -20,7 +21,6 @@ namespace Base.ToolPackage.Editor.Identification
     public sealed class UniqueIdSettings : ScriptableSingleton<UniqueIdSettings>
     {
         private const string MenuPath = "Tools/Base Packages/Identifier/Enable Unique IDs";
-        private const int MenuPriority = -36;
 
         [SerializeField] private bool enabled = true;
 
@@ -41,11 +41,10 @@ namespace Base.ToolPackage.Editor.Identification
             }
         }
 
-        [MenuItem(MenuPath, priority = MenuPriority)]
+        [DynamicMenuItem(MenuPath, nameof(ToggleValidate))]
         private static void Toggle() => Enabled = !Enabled;
 
         // Puts the checkmark next to the menu item when the package is on.
-        [MenuItem(MenuPath, validate = true, priority = MenuPriority)]
         private static bool ToggleValidate()
         {
             Menu.SetChecked(MenuPath, Enabled);

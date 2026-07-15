@@ -1,11 +1,11 @@
 #if UNITY_EDITOR
 using System.Collections.Generic;
 using System.Text;
-using Base.UtilityPackage.Generated;
+using Base.ToolPackage.MenuManagerWindow;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.UtilityPackage.Editor.UnityConstants
+namespace Base.ToolPackage.Editor.UnityConstants
 {
     /// <summary>
     /// Generates a class with all Unity Layers as const int indices (0-31)
@@ -15,7 +15,7 @@ namespace Base.UtilityPackage.Editor.UnityConstants
     {
         private const int LayerCount = 32;
 
-        [MenuItem("Tools/Base Packages/Code Generation/Generate Layers", priority = MenuOrders.Code)]
+        [DynamicMenuItem("Tools/Base Packages/Code Generation/Generate Layers")]
         public static void Generate()
         {
             GeneratorUtility.EnsureFolderExists(GeneratorUtility.OutputFolder);

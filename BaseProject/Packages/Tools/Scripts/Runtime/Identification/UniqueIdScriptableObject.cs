@@ -10,7 +10,7 @@ namespace Base.ToolPackage.Identification
     /// <summary>
     /// A ScriptableObject that holds a unique ID.
     /// </summary>
-    [DynamicCreateAssetMenu("Scriptable Objects/Base/UniqueId/UniqueIdScriptableObject", "UniqueId")]
+    [DynamicCreateAssetMenu("Scriptable Objects/Base/UniqueId/New ScriptableObject", "UID_UniqueIdScriptableObject")]
     public sealed class UniqueIdScriptableObject : ScriptableObject, IUniquelyIdentifiable
     {
         [field: SerializeField] [field: HideInInspector] public string UniqueId { get; private set; }

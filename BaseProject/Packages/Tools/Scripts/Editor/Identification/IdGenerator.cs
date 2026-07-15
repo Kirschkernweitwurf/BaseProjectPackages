@@ -1,7 +1,7 @@
 #if UNITY_EDITOR
 using System;
 using Base.ToolPackage.Identification;
-using Base.UtilityPackage.Generated;
+using Base.ToolPackage.MenuManagerWindow;
 using Base.UtilityPackage.Logging;
 using UnityEditor;
 using UnityEngine;
@@ -14,7 +14,7 @@ namespace Base.ToolPackage.Editor.Identification
     /// </summary>
     public static class IdGenerator
     {
-        [MenuItem("Tools/Base Packages/Identifier/Generate Unique IDs", priority = MenuOrders.Asset)]
+        [DynamicMenuItem("Tools/Base Packages/Identifier/Generate Unique IDs")]
         public static void Generate()
         {
             string[] guids = AssetDatabase.FindAssets("t:ScriptableObject");

@@ -12,17 +12,17 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
         {
             int priority = start;
             bool first = true;
-            bool pending = false;
 
             foreach (List<MenuNode> root in roots)
             {
-                pending = true;
+                bool pending = true;
                 WalkNodes(root, gap, ref priority, ref first, ref pending);
             }
         }
 
         /// <summary>Marks entries as present or missing and returns true when serialized data changed.</summary>
-        public static bool Mark(List<MenuNode> nodes, IReadOnlyDictionary<string, ResolvedMenu> resolved, HashSet<string> known)
+        public static bool Mark(List<MenuNode> nodes, IReadOnlyDictionary<string, ResolvedMenu> resolved,
+            HashSet<string> known)
         {
             bool changed = false;
 
@@ -96,8 +96,107 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
             return changed;
         }
 
+        /// <summary>Removes every entry whose code no longer exists. Returns true when anything was removed.</summary>
+        public static bool RemoveMissing(List<MenuNode> nodes)
+        {
+            bool changed = false;
+
+            for (int i = nodes.Count - 1; i >= 0; i--)
+            {
+                MenuNode node = nodes[i];
+
+                if (node is MenuGroupNode group)
+                {
+                    changed |= RemoveMissing(group.Children);
+                }
+                else if (node is MenuEntryNode entryNode && entryNode.Entry.Missing)
+                {
+                    nodes.RemoveAt(i);
+                    changed = true;
+                }
+            }
+
+            return changed;
+        }
+
+        /// <summary>True when the tree holds at least one entry whose code no longer exists.</summary>
+        public static bool HasMissing(List<MenuNode> nodes)
+        {
+            foreach (MenuNode node in nodes)
+            {
+                if (node is MenuGroupNode group)
+                {
+                    if (HasMissing(group.Children))
+                        return true;
+                }
+                else if (node is MenuEntryNode entryNode && entryNode.Entry.Missing)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Rebuilds groups from each entry's default path, shortens every entry to its last segment, and resets asset
+        /// file names.
+        /// </summary>
+        public static bool AutoGroup(List<MenuNode> root, IReadOnlyDictionary<string, ResolvedMenu> resolved)
+        {
+            List<MenuEntryNode> entries = new();
+            CollectEntries(root, entries);
+
+            List<(MenuEntryNode node, ResolvedMenu match)> movable = new();
+            HashSet<string> ids = new();
+
+            foreach (MenuEntryNode node in entries)
+            {
+                if (!resolved.TryGetValue(node.Entry.Id, out ResolvedMenu match))
+                    continue;
+
+                if (string.IsNullOrWhiteSpace(match.DefaultPath))
+                    continue;
+
+                movable.Add((node, match));
+                ids.Add(node.Entry.Id);
+            }
+
+            if (movable.Count == 0)
+                return false;
+
+            RemoveEntries(root, ids.Contains);
+
+            foreach ((MenuEntryNode node, ResolvedMenu match) in movable)
+            {
+                string[] segments = match.DefaultPath.Split('/');
+                List<MenuNode> target = root;
+
+                for (int i = 0; i < segments.Length - 1; i++)
+                {
+                    string name = segments[i].Trim();
+
+                    if (name.Length == 0)
+                        continue;
+
+                    target = FindOrCreateGroup(target, name).Children;
+                }
+
+                node.Entry.Path = segments[^1].Trim();
+
+                if (match.Kind == EMenuEntryKind.CreateAsset && !string.IsNullOrWhiteSpace(match.DefaultFileName))
+                    node.Entry.CreateFileName = match.DefaultFileName;
+
+                target.Add(node);
+            }
+
+            PruneEmptyGroups(root);
+            return true;
+        }
+
         /// <summary>Collects entries paired with their full resolved paths across a sequence of roots.</summary>
-        public static void Collect(IReadOnlyList<List<MenuNode>> roots, EMenuEntryKind kind, List<(MenuEntry entry, string path)> result)
+        public static void Collect(IReadOnlyList<List<MenuNode>> roots, EMenuEntryKind kind,
+            List<(MenuEntry entry, string path)> result)
         {
             string prefixRoot = MenuPath.Prefix(kind);
 
@@ -110,6 +209,56 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
 
                 CollectPaths(root, prefix, result);
             }
+        }
+
+        /// <summary>Removes every group that holds no entries, innermost first. Returns true when anything was removed.</summary>
+        private static bool PruneEmptyGroups(List<MenuNode> nodes)
+        {
+            bool changed = false;
+
+            for (int i = nodes.Count - 1; i >= 0; i--)
+            {
+                if (nodes[i] is not MenuGroupNode group)
+                    continue;
+
+                changed |= PruneEmptyGroups(group.Children);
+
+                if (group.Children.Count != 0)
+                    continue;
+
+                nodes.RemoveAt(i);
+                changed = true;
+            }
+
+            return changed;
+        }
+
+        private static void CollectEntries(List<MenuNode> nodes, List<MenuEntryNode> result)
+        {
+            foreach (MenuNode node in nodes)
+            {
+                if (node is MenuGroupNode group)
+                    CollectEntries(group.Children, result);
+                else if (node is MenuEntryNode entryNode)
+                    result.Add(entryNode);
+            }
+        }
+
+        private static MenuGroupNode FindOrCreateGroup(List<MenuNode> nodes, string name)
+        {
+            foreach (MenuNode node in nodes)
+            {
+                if (node is MenuGroupNode group && string.Equals(group.Name, name, StringComparison.Ordinal))
+                    return group;
+            }
+
+            MenuGroupNode created = new(name)
+            {
+                Expanded = true
+            };
+
+            nodes.Add(created);
+            return created;
         }
 
         private static void WalkNodes(List<MenuNode> nodes, int gap, ref int priority, ref bool first, ref bool pending)

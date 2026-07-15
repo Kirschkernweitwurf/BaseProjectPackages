@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Base.UtilityPackage.Generated;
+using Base.ToolPackage.MenuManagerWindow;
 using Base.UtilityPackage.Logging;
 using UnityEditor;
 using UnityEditorInternal;
@@ -130,7 +130,7 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
         }
 #endregion
 
-        [MenuItem("Tools/Base Packages/Code Health/Static Reset Checker", priority = MenuOrders.Code)]
+        [DynamicMenuItem("Tools/Base Packages/Code Health/Static Reset Checker")]
         private static void Open()
         {
             StaticResetCheckerWindow w = GetWindow<StaticResetCheckerWindow>("Static Reset");

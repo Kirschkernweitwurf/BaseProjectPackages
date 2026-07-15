@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Base.UtilityPackage.Generated;
+using Base.ToolPackage.MenuManagerWindow;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -108,7 +108,7 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
         }
 #endregion
 
-        [MenuItem(MenuPath, priority = MenuOrders.UnityEditor)]
+        [DynamicMenuItem(MenuPath)]
         private static void Open()
         {
             RequiredReferenceOverviewWindow window = GetWindow<RequiredReferenceOverviewWindow>();

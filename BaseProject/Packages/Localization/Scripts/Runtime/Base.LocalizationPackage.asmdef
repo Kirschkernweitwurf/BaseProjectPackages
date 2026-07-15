@@ -1,16 +1,17 @@
 {
-  "name": "Base.Localization",
-  "rootNamespace": "Base.Localization",
-  "references": [
-    "GUID:2e77701fe0ceda44fb763f03ee704c37"
-  ],
-  "includePlatforms": [],
-  "excludePlatforms": [],
-  "allowUnsafeCode": false,
-  "overrideReferences": false,
-  "precompiledReferences": [],
-  "autoReferenced": true,
-  "defineConstraints": [],
-  "versionDefines": [],
-  "noEngineReferences": false
+    "name": "Base.Localization",
+    "rootNamespace": "Base.Localization",
+    "references": [
+        "GUID:2e77701fe0ceda44fb763f03ee704c37",
+        "GUID:ef1475c04daed1943a99d3d610d12e02"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }

@@ -1,7 +1,7 @@
 #if UNITY_EDITOR
 using System;
 using System.Collections.Generic;
-using Base.UtilityPackage.Generated;
+using Base.ToolPackage.MenuManagerWindow;
 using UnityEditor;
 using UnityEngine;
 
@@ -60,7 +60,7 @@ namespace Base.ToolPackage.Editor.MenuItemOverview
 #endregion
 
         /// <summary>Opens or focuses the window from the Tools menu.</summary>
-        [MenuItem("Tools/Base Packages/Code Health/Menu Item Overview", priority = MenuOrders.Code)]
+        [DynamicMenuItem("Tools/Base Packages/Code Health/Menu Item Overview")]
         private static void Open()
         {
             MenuItemOverviewWindow window = GetWindow<MenuItemOverviewWindow>("Menu Items");
