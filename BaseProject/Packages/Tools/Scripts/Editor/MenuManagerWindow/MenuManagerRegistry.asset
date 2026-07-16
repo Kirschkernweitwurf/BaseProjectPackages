@@ -12,14 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1466948471d772548a849344d981ff40, type: 3}
   m_Name: MenuManagerRegistry
   m_EditorClassIdentifier: Base.ToolPackage.Editor::Base.ToolPackage.Editor.MenuManagerWindow.MenuRegistry
-  schemaVersion: 2
+  schemaVersion: 4
   startPriority: -100
+  menuItemStart: -100
+  createAssetStart: 11
   columnFileWidth: 155
   columnPriorityWidth: 58
   columnStatusWidth: 52
   menuItemRoot:
   - rid: 5339058395782840410
   - rid: 5339058395782840411
+  - rid: 5339058411500208237
   createAssetRoot:
   - rid: 5339058393820954647
   menuItemGroups: []
@@ -33,7 +36,7 @@ MonoBehaviour:
       data:
         separator: 1
         name: Scriptable Objects
-        expanded: 1
+        expanded: 0
         merged: 0
         children:
         - rid: 5339058393820954648
@@ -217,7 +220,7 @@ MonoBehaviour:
       data:
         separator: 1
         name: Tools
-        expanded: 1
+        expanded: 0
         merged: 0
         children:
         - rid: 5339058395782840415
@@ -248,18 +251,18 @@ MonoBehaviour:
       data:
         separator: 1
         name: Base Packages
-        expanded: 0
+        expanded: 1
         merged: 0
         children:
         - rid: 5339058395782840418
-        - rid: 5339058395782840419
         - rid: 5339058395782840420
-        - rid: 5339058395782840421
-        - rid: 5339058395782840422
         - rid: 5339058395782840423
         - rid: 5339058395782840424
-        - rid: 5339058395782840425
+        - rid: 5339058395782840421
+        - rid: 5339058395782840419
         - rid: 5339058395782840427
+        - rid: 5339058395782840422
+        - rid: 5339058395782840425
         - rid: 5339058395782840428
     - rid: 5339058395782840416
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
@@ -340,8 +343,8 @@ MonoBehaviour:
         expanded: 1
         merged: 0
         children:
-        - rid: 5339058395782840444
         - rid: 5339058395782840462
+        - rid: 5339058395782840444
         - rid: 5339058395782840445
     - rid: 5339058395782840424
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
@@ -445,8 +448,8 @@ MonoBehaviour:
           enabled: 1
           kind: 0
           createFileName: 
-          overridePriority: 0
-          overrideValue: 160
+          overridePriority: 1
+          overrideValue: 1000
     - rid: 5339058395782840434
       type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
@@ -457,8 +460,8 @@ MonoBehaviour:
           enabled: 1
           kind: 0
           createFileName: 
-          overridePriority: 0
-          overrideValue: 0
+          overridePriority: 1
+          overrideValue: 1000
     - rid: 5339058395782840436
       type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
@@ -757,3 +760,15 @@ MonoBehaviour:
         children:
         - rid: 5339058395782840460
         - rid: 5339058395782840459
+    - rid: 5339058411500208237
+      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 0
+        entry:
+          id: MI:Base.ToolPackage.Editor.ComponentClipboard.ComponentClipboardWindow.Open
+          path: Tools/Base/Component Clipboard
+          enabled: 1
+          kind: 0
+          createFileName: 
+          overridePriority: 0
+          overrideValue: 0

@@ -312,14 +312,14 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
             using (new EditorGUI.DisabledScope(PackageLocked))
             {
                 EditorGUILayout.LabelField("Start", GUILayout.Width(34f));
-                newStart = EditorGUILayout.IntField(registry.StartPriority, EditorStyles.toolbarTextField,
+                newStart = EditorGUILayout.IntField(registry.StartFor(Kind), EditorStyles.toolbarTextField,
                     GUILayout.Width(50f));
             }
 
             if (EditorGUI.EndChangeCheck())
             {
                 PushUndo();
-                registry.StartPriority = newStart;
+                registry.SetStart(Kind, newStart);
                 Persist();
             }
 
@@ -1247,7 +1247,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
         {
             Package = CloneNodes(registry.RootFor(Kind)),
             Overlay = CloneNodes(overlay.RootFor(Kind)),
-            Start = registry.StartPriority
+            Start = registry.StartFor(Kind)
         };
 
         private void ApplyState(State state)
@@ -1263,7 +1263,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
             overlayRoot.Clear();
             overlayRoot.AddRange(CloneNodes(state.Overlay));
 
-            registry.StartPriority = state.Start;
+            registry.SetStart(Kind, state.Start);
 
             MenuComposite.Recalculate();
             Persist();

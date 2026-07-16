@@ -64,7 +64,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
         public static void Recalculate()
         {
             foreach (EMenuEntryKind kind in Kinds)
-                MenuTree.Priorities(RootsFor(kind), Registry.StartPriority);
+                MenuTree.Priorities(RootsFor(kind), Registry.StartFor(kind));
         }
 
         /// <summary>Returns every entry of a kind paired with its full resolved path, package first then overlay.</summary>
