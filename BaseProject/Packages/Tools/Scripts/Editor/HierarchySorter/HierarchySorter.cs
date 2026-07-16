@@ -1,7 +1,7 @@
 ﻿#if UNITY_EDITOR
 using System;
 using System.Collections.Generic;
-using Base.ToolPackage.MenuManagerWindow;
+using Base.UtilityPackage.Generated;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -18,7 +18,7 @@ namespace Base.ToolPackage.Editor.HierarchySorter
         private const string MenuPathSelected = "GameObject/Base/Sort Children Alphabetically";
         private const string UndoLabel = "Sort Children Alphabetically";
 
-        [DynamicMenuItem(MenuPathSelected, nameof(CanSortSelected))]
+        [MenuItem(MenuPathSelected, false, MenuOrders.GameObject)]
         private static void SortSelected()
         {
             GameObject selected = Selection.activeGameObject;
@@ -30,9 +30,10 @@ namespace Base.ToolPackage.Editor.HierarchySorter
             EditorSceneManager.MarkSceneDirty(selected.scene);
         }
 
+        [MenuItem(MenuPathSelected, true, MenuOrders.GameObject)]
         private static bool CanSortSelected() => Selection.activeGameObject != null;
 
-        [DynamicMenuItem(MenuPathScene)]
+        [MenuItem(MenuPathScene, false, MenuOrders.GameObject)]
         private static void SortActiveScene()
         {
             Scene scene = SceneManager.GetActiveScene();

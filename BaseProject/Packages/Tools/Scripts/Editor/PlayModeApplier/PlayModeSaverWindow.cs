@@ -1,3 +1,4 @@
+using Base.ToolPackage.MenuManagerWindow;
 using UnityEditor;
 using UnityEngine;
 
@@ -19,7 +20,7 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
         private const float RemoveButtonWidth = 22f;
         private const float TargetFieldWidth = 110f;
         private const float TimestampWidth = 58f;
-        private const string WindowMenuPath = "Tools/Base Packages/Play Mode Saver";
+        private const string WindowMenuPath = "Tools/Base Packages/Unity Editor/Play Mode Saver";
         private const string WindowTitle = "Play Mode Saver";
 
         private static readonly Color AppliedColor = new(0.4f, 0.85f, 0.45f);
@@ -32,15 +33,7 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
         private Vector2 scrollPosition;
 
 #region Unity Callbacks
-        private void OnEnable()
-        {
-            EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
-        }
-
-        private void OnDisable()
-        {
-            EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
-        }
+        private void OnEnable() => EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
 
         private void OnGUI()
         {
@@ -54,9 +47,11 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
             DrawHistory(store);
             EditorGUILayout.EndScrollView();
         }
+
+        private void OnDisable() => EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
 #endregion
 
-        [MenuItem(WindowMenuPath)]
+        [DynamicMenuItem(WindowMenuPath)]
         private static void Open()
         {
             PlayModeSaverWindow window = GetWindow<PlayModeSaverWindow>(WindowTitle);
@@ -83,6 +78,7 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
                 EditorGUILayout.HelpBox(
                     "Enter play mode, then right click a component header and choose Save Play Mode Changes.",
                     MessageType.Info);
+
                 return;
             }
 
@@ -93,9 +89,7 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
             }
 
             for (int index = PlayModeMarks.Components.Count - 1; index >= 0; index--)
-            {
                 DrawMarkRow(index);
-            }
         }
 
         private void DrawMarkRow(int index)
@@ -124,9 +118,7 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
             }
 
             for (int index = store.Payloads.Count - 1; index >= 0; index--)
-            {
                 DrawPayloadRow(store, index);
-            }
 
             EditorGUILayout.Space();
             DrawBulkActions(store);
@@ -237,9 +229,7 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
             }
 
             for (int index = store.History.Count - 1; index >= 0; index--)
-            {
                 DrawHistoryRow(store.History[index], index);
-            }
 
             EditorGUILayout.Space();
 

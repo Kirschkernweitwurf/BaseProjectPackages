@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.LightingProfiles
+namespace Base.ToolPackage.LightingProfileApplier
 {
     /// <summary>
     /// Applies a lighting profile as soon as the scene holding this component is loaded.
@@ -14,7 +14,7 @@ namespace Base.LightingProfiles
         private void Awake()
         {
             if (profile == null)
-                throw new MissingReferenceException($"{nameof(profile)} is not assigned on {name}.");
+                throw new MissingReferenceException($"{typeof(LightingProfile)} is not assigned on {name}.");
 
             profile.Apply();
             if (sun != null)
@@ -22,4 +22,4 @@ namespace Base.LightingProfiles
         }
 #endregion
     }
-}
+}

@@ -2,18 +2,18 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace Base.AttributePackage.Validation
+namespace Base.AttributePackage
 {
     /// <summary>
     /// Discovers every <see cref="IValidationRule"/> implementation once and caches it. Add a new rule
-    /// class with a public parameterless constructor and it is included automatically.
+    /// class with a public parameterless constructor, and it is included automatically.
     /// </summary>
     public static class ValidationRules
     {
-        private static IValidationRule[] _rules;
-
         /// <summary>All discovered rules.</summary>
         public static IReadOnlyList<IValidationRule> All => _rules ??= Discover();
+
+        private static IValidationRule[] _rules; // reset-ignore
 
         private static IValidationRule[] Discover()
         {
@@ -54,11 +54,10 @@ namespace Base.AttributePackage.Validation
             }
         }
 
-        private static bool IsFrameworkAssembly(string name)
-            => name.StartsWith("Unity")
-                || name.StartsWith("System")
-                || name.StartsWith("Mono.")
-                || name.StartsWith("netstandard")
-                || name == "mscorlib";
+        private static bool IsFrameworkAssembly(string name) => name.StartsWith("Unity")
+            || name.StartsWith("System")
+            || name.StartsWith("Mono.")
+            || name.StartsWith("netstandard")
+            || name == "mscorlib";
     }
 }
