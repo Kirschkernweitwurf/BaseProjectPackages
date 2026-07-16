@@ -15,7 +15,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
     public sealed class MenuRegistry : ScriptableObject
     {
         private const string AssetFileName = "MenuManagerRegistry.asset";
-        private const int CurrentSchema = 3;
+        private const int CurrentSchema = 4;
         private const string LegacyGroupName = "Ungrouped";
         private const string LegacySettingsPath = "ProjectSettings/MenuManagerRegistry.asset";
 
@@ -26,6 +26,12 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
 
         [SerializeField]
         private int startPriority;
+
+        [SerializeField]
+        private int menuItemStart;
+
+        [SerializeField]
+        private int createAssetStart;
 
         [SerializeField]
         private float columnFileWidth = 130f;
@@ -77,13 +83,6 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
             }
         }
 
-        /// <summary>Priority assigned to the first registered entry of each kind.</summary>
-        public int StartPriority
-        {
-            get => startPriority;
-            set => startPriority = value;
-        }
-
         /// <summary>Width of the file name column.</summary>
         public float ColumnFileWidth
         {
@@ -109,9 +108,27 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
         public List<MenuNode> RootFor(EMenuEntryKind kind) =>
             kind == EMenuEntryKind.CreateAsset ? createAssetRoot : menuItemRoot;
 
+        /// <summary>Priority given to the first entry of a kind. Each kind is its own menu and numbers independently.</summary>
+        public int StartFor(EMenuEntryKind kind) =>
+            kind == EMenuEntryKind.CreateAsset ? createAssetStart : menuItemStart;
+
+        /// <summary>Sets the priority given to the first entry of a kind.</summary>
+        public void SetStart(EMenuEntryKind kind, int value)
+        {
+            if (kind == EMenuEntryKind.CreateAsset)
+                createAssetStart = value;
+            else
+                menuItemStart = value;
+        }
+
         /// <summary>Moves legacy data into the tree and normalizes it for the current path model. Runs once.</summary>
         public void Migrate()
         {
+            bool hasLegacy = groups.Count > 0 || menuItemGroups.Count > 0 || createAssetGroups.Count > 0;
+
+            if (!hasLegacy && schemaVersion >= CurrentSchema)
+                return;
+
             if (groups.Count > 0)
             {
                 foreach (MenuGroup legacy in groups)
@@ -129,10 +146,10 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
             if (schemaVersion < 2)
                 NormalizeForPaths();
 
-            if (schemaVersion < 3)
+            if (schemaVersion < 4)
             {
-                MenuTree.MigrateSeparators(menuItemRoot);
-                MenuTree.MigrateSeparators(createAssetRoot);
+                menuItemStart = startPriority;
+                createAssetStart = startPriority;
             }
 
             schemaVersion = CurrentSchema;
@@ -161,8 +178,11 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
                 string path = AssetDatabase.GUIDToAssetPath(guid);
                 MenuRegistry found = AssetDatabase.LoadAssetAtPath<MenuRegistry>(path);
 
-                if (found != null)
-                    return found;
+                if (found == null)
+                    continue;
+
+                found.Migrate();
+                return found;
             }
 
             MenuRegistry instance = LoadLegacySettings();
