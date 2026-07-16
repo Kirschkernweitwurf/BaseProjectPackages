@@ -1,13 +1,28 @@
 using System;
 using Base.CorePackage.Services.Shutdown;
 using Base.CorePackage.Tweening.Core.Data;
+using Base.CorePackage.Tweening.Core.Data.Profiles;
+using Base.UtilityPackage.Logging;
 using UnityEngine;
+using UnityEngine.Serialization;
+using Object = UnityEngine.Object;
 
 namespace Base.CorePackage.Tweening.Core
 {
     /// <summary>
-    /// Generic base class providing tween lifecycle control, looping behavior, and default-value caching.
+    /// Generic base class providing tween lifecycle control, loop behavior, default-value caching
+    /// and optional asset driven configuration.
     /// </summary>
+    /// <remarks>
+    /// A tween reads its setup from the first source that is turned on:
+    /// <list type="number">
+    /// <item><description>a profile asset, which drives the values, the timing and the loop</description></item>
+    /// <item><description>a settings asset, which drives the timing and the loop</description></item>
+    /// <item><description>the fields on the component itself</description></item>
+    /// </list>
+    /// The inspector only shows the fields that are actually in use. Resolved settings are always a
+    /// private copy, so <see cref="SetDuration"/> and friends never write into a shared asset.
+    /// </remarks>
     public abstract class TweenBehaviour<T> : TweenBehaviourBase, IShutdownHandler
     {
         /// <inheritdoc/>
@@ -16,22 +31,86 @@ namespace Base.CorePackage.Tweening.Core
         /// <inheritdoc/>
         public override event Action OnKilled;
 
-        [field: Tooltip("The settings for the tween.")]
-        [field: SerializeField] public TweenSettings TweenSettings { get; private set; }
+        private static readonly Func<T, T, float, T> DefaultLerpFunc = TweenLerpUtility.Resolve<T>();
 
-        [Tooltip("The settings for looping the tween, if needed.")]
-        [SerializeField] private LoopSettings loopSettings;
+        [Tooltip("If true, a profile asset drives the values, the timing and the loop behavior.")]
+        [SerializeField] private bool useProfile;
+
+        [Tooltip("If true, a shared settings asset drives the timing and the loop behavior.")]
+        [SerializeField] private bool useSettingsAsset;
+
+        [Tooltip("The shared timing asset, used while the toggle above is on.")]
+        [SerializeField] private TweenSettingsSo settingsAsset;
+
+        [FormerlySerializedAs("<TweenSettings>k__BackingField")]
+        [Tooltip("Duration, delay and easing of this tween.")]
+        [SerializeField] private TweenSettings tweenSettings = new();
+
+        [Tooltip("Loop behavior of this tween.")]
+        [SerializeField] private LoopSettings loopSettings = new();
+
+        protected T DefaultValue;
+
+        private TweenBase _activeTween;
+        private TweenSettings _resolvedSettings;
+        private LoopSettings _resolvedLoopSettings;
+        private int _currentLoop;
+        private bool _currentReversed;
 
         public bool HasShutDown { get; private set; }
 
         public override TweenBase ActiveTween => _activeTween;
 
-        [Space]
-        protected T DefaultValue;
+        /// <summary>
+        /// The resolved timing of this tween. This is a private copy, so changing it never touches
+        /// a shared asset.
+        /// </summary>
+        public TweenSettings TweenSettings => Application.isPlaying
+            ? _resolvedSettings ??= ResolveSettings()
+            : ResolveSettings();
 
-        private TweenBase _activeTween;
-        private int _currentLoop;
-        private bool _currentReversed;
+        /// <summary>The resolved loop behavior of this tween. This is a private copy.</summary>
+        public LoopSettings LoopSettings => Application.isPlaying
+            ? _resolvedLoopSettings ??= ResolveLoopSettings()
+            : ResolveLoopSettings();
+
+        /// <summary>
+        /// The profile driving this tween, or <c>null</c> while the profile toggle is off.
+        /// </summary>
+        protected TweenValueProfileSo<T> Profile => useProfile
+            ? ProfileAsset
+            : null;
+
+        /// <summary>
+        /// The profile field declared on the component. Every component declares its own typed
+        /// field, so only profiles of a matching value type can be assigned.
+        /// </summary>
+        protected abstract TweenValueProfileSo<T> ProfileAsset { get; }
+
+        /// <summary>The value the tween starts from.</summary>
+        protected virtual T StartValue => Profile != null
+            ? Profile.StartValue
+            : LocalStartValue;
+
+        /// <summary>The value the tween moves to.</summary>
+        protected virtual T TargetValue => Profile != null
+            ? Profile.TargetValue
+            : LocalTargetValue;
+
+        /// <summary>The start value authored on the component, used when no profile is assigned.</summary>
+        protected virtual T LocalStartValue => DefaultValue;
+
+        /// <summary>The target value authored on the component, used when no profile is assigned.</summary>
+        protected virtual T LocalTargetValue => DefaultValue;
+
+        /// <summary>The object whose destruction stops the tween. Defaults to this component.</summary>
+        protected virtual Object TweenTarget => this;
+
+        /// <summary>
+        /// The interpolation function used by the default <see cref="CreateTween"/>. Override this
+        /// for value types that <see cref="TweenLerpUtility.Resolve{T}"/> does not know.
+        /// </summary>
+        protected virtual Func<T, T, float, T> LerpFunc => DefaultLerpFunc;
 
 #region Unity Callbacks
         protected virtual void Awake() => DefaultValue = GetCurrentValue();
@@ -99,6 +178,36 @@ namespace Base.CorePackage.Tweening.Core
         public void SetDuration(float duration) => TweenSettings.SetDuration(duration);
 
         /// <summary>
+        /// Sets the easing of the tween to the specified value.
+        /// </summary>
+        public void SetEasing(EEasingType easing) => TweenSettings.SetEasing(easing);
+
+        /// <summary>
+        /// Swaps the shared timing asset at runtime and turns its toggle on. The timing is resolved
+        /// again, which drops changes made through <see cref="SetDuration"/> and friends.
+        /// </summary>
+        /// <param name="newSettingsAsset">
+        /// The asset to use, or <c>null</c> to fall back to the fields on this component.
+        /// </param>
+        public void SetSettingsAsset(TweenSettingsSo newSettingsAsset)
+        {
+            settingsAsset = newSettingsAsset;
+            useSettingsAsset = newSettingsAsset != null;
+
+            RefreshSettings();
+        }
+
+        /// <summary>
+        /// Drops the resolved copies, so the next access reads from the assets again. Call this
+        /// after changing an asset that this tween uses at runtime.
+        /// </summary>
+        public void RefreshSettings()
+        {
+            _resolvedSettings = null;
+            _resolvedLoopSettings = null;
+        }
+
+        /// <summary>
         /// Returns the current value of the property being tweened.
         /// </summary>
         protected abstract T GetCurrentValue();
@@ -110,10 +219,67 @@ namespace Base.CorePackage.Tweening.Core
         protected abstract void ApplyValue(T value);
 
         /// <summary>
-        /// Implementations must create a tween. If <c>isReversed==true</c> they should swap from/to
-        /// and make use of <see cref="DefaultValue"/> for the original start value.
+        /// Creates the tween instance for one play. The default implementation covers every tween
+        /// that moves from <see cref="StartValue"/> to <see cref="TargetValue"/>. Override it only
+        /// for exotic setups.
         /// </summary>
-        protected abstract TweenBase CreateTween(bool isReversed);
+        /// <param name="isReversed">If <c>true</c>, start and target are swapped.</param>
+        protected virtual TweenBase CreateTween(bool isReversed)
+        {
+            Func<T, T, float, T> lerpFunc = LerpFunc;
+
+            if (lerpFunc == null)
+            {
+                CustomLogger.LogError(
+                    $"No interpolation function for '{typeof(T).Name}'. Override LerpFunc or CreateTween.", this);
+
+                return null;
+            }
+
+            T start = StartValue;
+            T target = TargetValue;
+
+            T from = isReversed
+                ? target
+                : start;
+
+            T to = isReversed
+                ? start
+                : target;
+
+            TweenSettings settings = TweenSettings;
+
+            return new Tween<T>(to,
+                settings.Duration,
+                ApplyValue,
+                lerpFunc,
+                Easings.Get(settings.Easing),
+                TweenTarget,
+                settings.Delay,
+                fromGetter: () => from);
+        }
+
+        private TweenSettings ResolveSettings()
+        {
+            if (Profile != null)
+                return Profile.Settings.Copy();
+
+            if (useSettingsAsset && settingsAsset != null)
+                return settingsAsset.Settings.Copy();
+
+            return tweenSettings.Copy();
+        }
+
+        private LoopSettings ResolveLoopSettings()
+        {
+            if (Profile != null)
+                return Profile.Loop.Copy();
+
+            if (useSettingsAsset && settingsAsset != null)
+                return settingsAsset.Loop.Copy();
+
+            return loopSettings.Copy();
+        }
 
         /// <summary>
         /// Centralized start for a tween instance (subscribes and starts).
@@ -141,9 +307,10 @@ namespace Base.CorePackage.Tweening.Core
             completedTween.OnComplete -= HandleTweenComplete;
             _activeTween = null;
 
-            bool hasLoopBudget = loopSettings.LoopCount == -1 || _currentLoop < loopSettings.LoopCount;
+            LoopSettings loops = LoopSettings;
+            bool hasLoopBudget = loops.LoopCount == -1 || _currentLoop < loops.LoopCount;
 
-            if (loopSettings.LoopType == ELoopType.None || !hasLoopBudget)
+            if (loops.LoopType == ELoopType.None || !hasLoopBudget)
             {
                 OnFinished?.Invoke();
                 OnKilled?.Invoke();
@@ -152,7 +319,7 @@ namespace Base.CorePackage.Tweening.Core
 
             _currentLoop++;
 
-            switch (loopSettings.LoopType)
+            switch (loops.LoopType)
             {
                 case ELoopType.Restart:
                     ApplyValue(DefaultValue);

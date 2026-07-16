@@ -1,4 +1,4 @@
-namespace Base.ToolPackage.Editor.UnusedAssetsOverviewWindow
+namespace Base.ToolPackage.Editor.OverviewGui.UnusedAssetsOverviewWindow
 {
     /// <summary>
     /// One asset that looks unreferenced, with its type and size for display.

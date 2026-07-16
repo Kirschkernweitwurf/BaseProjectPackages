@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.UnusedAssetsOverviewWindow
+namespace Base.ToolPackage.Editor.OverviewGui.UnusedAssetsOverviewWindow
 {
     /// <summary>
     /// Remembers assets the user chose to keep. Stored by GUID in a per-project file under

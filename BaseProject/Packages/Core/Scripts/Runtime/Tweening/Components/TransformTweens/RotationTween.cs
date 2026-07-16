@@ -1,6 +1,8 @@
-﻿using Base.CorePackage.Tweening.Core;
+using Base.CorePackage.Tweening.Core;
 using Base.CorePackage.Tweening.Core.Data;
+using Base.CorePackage.Tweening.Core.Data.Profiles;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Base.CorePackage.Tweening.Components.TransformTweens
 {
@@ -9,14 +11,25 @@ namespace Base.CorePackage.Tweening.Components.TransformTweens
     /// </summary>
     public sealed class RotationTween : TweenBehaviour<Vector3>
     {
-        [SerializeField] [Tooltip("The starting rotation in Euler degrees.")]
+        [SerializeField] [Tooltip("The profile driving this tween, used while the profile toggle is on.")]
+        private Vector3TweenProfileSo profile;
+
+        [SerializeField] [TweenValue] [Tooltip("The starting rotation in Euler degrees.")]
         private Vector3 startEulerAngles;
 
-        [SerializeField] [Tooltip("The target rotation in Euler degrees.")]
+        [SerializeField] [TweenValue] [Tooltip("The target rotation in Euler degrees.")]
         private Vector3 targetEulerAngles;
 
         [SerializeField] [Tooltip("If true, tween the local rotation; otherwise, tween the global rotation.")]
         private bool useLocalRotation = true;
+
+        protected override TweenValueProfileSo<Vector3> ProfileAsset => profile;
+
+        protected override Object TweenTarget => transform;
+
+        protected override Vector3 LocalStartValue => startEulerAngles;
+
+        protected override Vector3 LocalTargetValue => targetEulerAngles;
 
         protected override Vector3 GetCurrentValue() => useLocalRotation
             ? transform.localEulerAngles
@@ -24,31 +37,12 @@ namespace Base.CorePackage.Tweening.Components.TransformTweens
 
         protected override void ApplyValue(Vector3 euler)
         {
-            Quaternion q = Quaternion.Euler(euler);
+            Quaternion rotation = Quaternion.Euler(euler);
+
             if (useLocalRotation)
-                transform.localRotation = q;
+                transform.localRotation = rotation;
             else
-                transform.rotation = q;
-        }
-
-        protected override TweenBase CreateTween(bool isReversed)
-        {
-            Vector3 from = isReversed
-                ? targetEulerAngles
-                : startEulerAngles;
-
-            Vector3 to = isReversed
-                ? startEulerAngles
-                : targetEulerAngles;
-
-            return new Tween<Vector3>(to,
-                TweenSettings.Duration,
-                ApplyValue,
-                TweenLerpUtility.LerpVector3Unclamped,
-                Easings.Get(TweenSettings.Easing),
-                transform,
-                TweenSettings.Delay,
-                fromGetter: () => from);
+                transform.rotation = rotation;
         }
     }
 }

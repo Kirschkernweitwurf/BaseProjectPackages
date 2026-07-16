@@ -18,6 +18,17 @@ namespace Base.CorePackage.Tweening.Core.Data
         [field: Tooltip("Easing function to use for the tween.")]
         [field: SerializeField] public EEasingType Easing { get; private set; }
 
+        /// <summary>Creates settings with the default values.</summary>
+        public TweenSettings() { }
+
+        /// <summary>Creates settings with the specified values.</summary>
+        public TweenSettings(float duration, float delay, EEasingType easing)
+        {
+            Duration = duration;
+            Delay = delay;
+            Easing = easing;
+        }
+
         /// <summary>
         /// Sets the duration of the tween to the specified value.
         /// </summary>
@@ -27,5 +38,16 @@ namespace Base.CorePackage.Tweening.Core.Data
         /// Sets the delay of the tween to the specified value.
         /// </summary>
         public void SetDelay(float delay) => Delay = delay;
+
+        /// <summary>
+        /// Sets the easing of the tween to the specified value.
+        /// </summary>
+        public void SetEasing(EEasingType easing) => Easing = easing;
+
+        /// <summary>
+        /// Returns an independent copy of these settings. Used to keep runtime changes from
+        /// leaking into shared assets.
+        /// </summary>
+        public TweenSettings Copy() => new(Duration, Delay, Easing);
     }
 }
