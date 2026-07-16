@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: MenuManagerRegistry
   m_EditorClassIdentifier: Base.ToolPackage.Editor::Base.ToolPackage.Editor.MenuManagerWindow.MenuRegistry
   schemaVersion: 2
-  startPriority: 11
+  startPriority: -100
   columnFileWidth: 155
   columnPriorityWidth: 58
   columnStatusWidth: 52
@@ -248,7 +248,7 @@ MonoBehaviour:
       data:
         separator: 1
         name: Base Packages
-        expanded: 1
+        expanded: 0
         merged: 0
         children:
         - rid: 5339058395782840418
@@ -264,7 +264,7 @@ MonoBehaviour:
     - rid: 5339058395782840416
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
-        separator: 0
+        separator: 1
         name: Update Base Packages
         expanded: 0
         merged: 0
