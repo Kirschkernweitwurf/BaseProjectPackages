@@ -1,7 +1,8 @@
+using Base.ToolPackage.LightingProfileApplier;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.LightingProfiles.Editor
+namespace Base.ToolPackage.Editor.LightingProfileApplier
 {
     /// <summary>
     /// Adds capture and preview buttons to the lighting profile inspector.
@@ -31,4 +32,4 @@ namespace Base.LightingProfiles.Editor
             AssetDatabase.SaveAssetIfDirty(profile);
         }
     }
-}
+}

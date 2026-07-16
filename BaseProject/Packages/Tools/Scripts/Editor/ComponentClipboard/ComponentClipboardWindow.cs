@@ -15,10 +15,10 @@ namespace Base.ToolPackage.Editor.ComponentClipboard
         private const string AddBadge = "Add";
         private const float BadgeWidth = 80f;
         private const int LeftMouseButton = 0;
-        private const string MenuPath = "Tools/Base/Component Clipboard";
-        private const string MissingBadge = "Missing";
+        private const string MenuPath = "Tools/Base Packages/Unity Editor/Component Clipboard";
         private const float MinWindowHeight = 280f;
         private const float MinWindowWidth = 300f;
+        private const string MissingBadge = "Missing";
         private const int NoIndex = -1;
         private const string OverwriteBadge = "Overwrite";
         private const float RowHeight = 20f;

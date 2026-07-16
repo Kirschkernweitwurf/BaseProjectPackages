@@ -21,8 +21,6 @@ MonoBehaviour:
   columnStatusWidth: 52
   menuItemRoot:
   - rid: 5339058395782840410
-  - rid: 5339058395782840411
-  - rid: 5339058411500208237
   createAssetRoot:
   - rid: 5339058393820954647
   menuItemGroups: []
@@ -36,7 +34,7 @@ MonoBehaviour:
       data:
         separator: 1
         name: Scriptable Objects
-        expanded: 0
+        expanded: 1
         merged: 0
         children:
         - rid: 5339058393820954648
@@ -46,7 +44,7 @@ MonoBehaviour:
       data:
         separator: 1
         name: Base
-        expanded: 0
+        expanded: 1
         merged: 0
         children:
         - rid: 5339058393820954650
@@ -56,6 +54,7 @@ MonoBehaviour:
         - rid: 5339058393820954656
         - rid: 5339058393820954651
         - rid: 5339058393820954750
+        - rid: 5339058419491930199
     - rid: 5339058393820954650
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
@@ -220,20 +219,11 @@ MonoBehaviour:
       data:
         separator: 1
         name: Tools
-        expanded: 0
+        expanded: 1
         merged: 0
         children:
         - rid: 5339058395782840415
         - rid: 5339058395782840416
-    - rid: 5339058395782840411
-      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
-      data:
-        separator: 1
-        name: GameObject
-        expanded: 1
-        merged: 0
-        children:
-        - rid: 5339058395782840417
     - rid: 5339058395782840412
       type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
@@ -277,16 +267,6 @@ MonoBehaviour:
         - rid: 5339058395782840430
         - rid: 5339058395782840431
         - rid: 5339058395782840432
-    - rid: 5339058395782840417
-      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
-      data:
-        separator: 1
-        name: Base
-        expanded: 1
-        merged: 0
-        children:
-        - rid: 5339058395782840433
-        - rid: 5339058395782840434
     - rid: 5339058395782840418
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
@@ -310,7 +290,7 @@ MonoBehaviour:
     - rid: 5339058395782840420
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
-        separator: 1
+        separator: 0
         name: Audio
         expanded: 0
         merged: 0
@@ -331,7 +311,7 @@ MonoBehaviour:
       data:
         separator: 0
         name: Menu
-        expanded: 1
+        expanded: 0
         merged: 0
         children:
         - rid: 5339058395782840442
@@ -340,7 +320,7 @@ MonoBehaviour:
       data:
         separator: 1
         name: Code Generation
-        expanded: 1
+        expanded: 0
         merged: 0
         children:
         - rid: 5339058395782840462
@@ -351,7 +331,7 @@ MonoBehaviour:
       data:
         separator: 0
         name: Code Health
-        expanded: 1
+        expanded: 0
         merged: 0
         children:
         - rid: 5339058395782840446
@@ -390,6 +370,8 @@ MonoBehaviour:
         children:
         - rid: 5339058395782840457
         - rid: 5339058395782840458
+        - rid: 5339058411500208237
+        - rid: 5339058419491930200
     - rid: 5339058395782840429
       type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
@@ -438,30 +420,6 @@ MonoBehaviour:
           createFileName: 
           overridePriority: 0
           overrideValue: 0
-    - rid: 5339058395782840433
-      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
-      data:
-        separator: 0
-        entry:
-          id: MI:Base.ToolPackage.Editor.HierarchySorter.HierarchySorter.SortActiveScene
-          path: Sort Active Scene Alphabetically
-          enabled: 1
-          kind: 0
-          createFileName: 
-          overridePriority: 1
-          overrideValue: 1000
-    - rid: 5339058395782840434
-      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
-      data:
-        separator: 0
-        entry:
-          id: MI:Base.ToolPackage.Editor.HierarchySorter.HierarchySorter.SortSelected
-          path: Sort Children Alphabetically
-          enabled: 1
-          kind: 0
-          createFileName: 
-          overridePriority: 1
-          overrideValue: 1000
     - rid: 5339058395782840436
       type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
@@ -755,7 +713,7 @@ MonoBehaviour:
       data:
         separator: 1
         name: Asset Zoo
-        expanded: 1
+        expanded: 0
         merged: 0
         children:
         - rid: 5339058395782840460
@@ -766,7 +724,40 @@ MonoBehaviour:
         separator: 0
         entry:
           id: MI:Base.ToolPackage.Editor.ComponentClipboard.ComponentClipboardWindow.Open
-          path: Tools/Base/Component Clipboard
+          path: Component Clipboard
+          enabled: 1
+          kind: 0
+          createFileName: 
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 5339058419491930196
+      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 0
+        entry:
+          id: CA:Base.ToolPackage.LightingProfileApplier.LightingProfile
+          path: New Profile
+          enabled: 1
+          kind: 1
+          createFileName: LP_LightingProfile
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 5339058419491930199
+      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 0
+        name: Lighting Profile
+        expanded: 0
+        merged: 0
+        children:
+        - rid: 5339058419491930196
+    - rid: 5339058419491930200
+      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 0
+        entry:
+          id: MI:Base.ToolPackage.Editor.PlayModeApplier.PlayModeSaverWindow.Open
+          path: Play Mode Saver
           enabled: 1
           kind: 0
           createFileName: 

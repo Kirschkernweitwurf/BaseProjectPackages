@@ -1,12 +1,13 @@
+using Base.ToolPackage.MenuManagerWindow;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-namespace Base.LightingProfiles
+namespace Base.ToolPackage.LightingProfileApplier
 {
     /// <summary>
     /// Stores the render settings of a scene so they can be applied without making that scene the active one.
     /// </summary>
-    [CreateAssetMenu(fileName = "LightingProfile", menuName = "Base/Lighting Profile")]
+    [DynamicCreateAssetMenu("Scriptable Objects/Base/Lighting Profile/New Profile", "LP_LightingProfile")]
     public class LightingProfile : ScriptableObject
     {
         [SerializeField] private Material skybox;
@@ -88,4 +89,4 @@ namespace Base.LightingProfiles
             flareFadeSpeed = RenderSettings.flareFadeSpeed;
         }
     }
-}
+}
