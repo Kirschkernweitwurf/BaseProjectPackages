@@ -247,12 +247,12 @@ MonoBehaviour:
         children:
         - rid: 5339058395782840418
         - rid: 5339058395782840420
-        - rid: 5339058395782840423
-        - rid: 5339058395782840424
-        - rid: 5339058395782840421
         - rid: 5339058395782840419
+        - rid: 5339058395782840421
         - rid: 5339058395782840427
         - rid: 5339058395782840422
+        - rid: 5339058395782840423
+        - rid: 5339058395782840424
         - rid: 5339058395782840425
         - rid: 5339058395782840428
     - rid: 5339058395782840416
@@ -300,7 +300,7 @@ MonoBehaviour:
     - rid: 5339058395782840421
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
-        separator: 0
+        separator: 1
         name: Identifier
         expanded: 0
         merged: 0
@@ -342,7 +342,7 @@ MonoBehaviour:
     - rid: 5339058395782840425
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
-        separator: 0
+        separator: 1
         name: Project Health
         expanded: 0
         merged: 0
@@ -359,7 +359,7 @@ MonoBehaviour:
     - rid: 5339058395782840427
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
-        separator: 1
+        separator: 0
         name: Logging
         expanded: 0
         merged: 0
