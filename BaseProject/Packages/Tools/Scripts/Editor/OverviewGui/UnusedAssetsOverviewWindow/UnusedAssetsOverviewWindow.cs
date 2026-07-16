@@ -5,9 +5,8 @@ using System.Linq;
 using Base.ToolPackage.MenuManagerWindow;
 using UnityEditor;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
-namespace Base.ToolPackage.Editor.UnusedAssetsOverviewWindow
+namespace Base.ToolPackage.Editor.OverviewGui.UnusedAssetsOverviewWindow
 {
     /// <summary>
     /// Editor window that lists assets that look unused and lets you ping, dismiss, or delete them.
@@ -16,12 +15,10 @@ namespace Base.ToolPackage.Editor.UnusedAssetsOverviewWindow
     /// </summary>
     public sealed class UnusedAssetsOverviewWindow : EditorWindow
     {
-        private const float DiscardMaxHeight = 220f;
+        private const float DiscardDefaultHeight = 220f;
+        private const string DiscardHeightKey = "Base.UnusedAssetsOverview.DiscardHeight";
+        private const float DiscardMinHeight = 60f;
         private const string MenuPath = "Tools/Base Packages/Project Health/Unused Assets Overview";
-        private const float RowHeight = 22f;
-        private const float SuccessGap = 8f;
-        private const float SuccessIconSize = 48f;
-        private const int SuccessTitleFontSize = 15;
 
         private readonly List<UnusedAssetEntry> _entries = new();
         private readonly Dictionary<string, bool> _foldouts = new();
@@ -29,31 +26,24 @@ namespace Base.ToolPackage.Editor.UnusedAssetsOverviewWindow
 
         private Vector2 _scroll;
         private Vector2 _discardScroll;
+        private float _discardHeight;
+        private float _discardContentHeight;
         private string _search = string.Empty;
         private bool _ignoreEditorFolders = true;
         private bool _hasScanned;
         private bool _showDiscard;
+        private bool _showFound = true;
         private string _hoveredKey;
         private int _rowIndex;
 
         private List<UnusedAssetEntry> _discard;
 
-        private GUIStyle _headerStyle;
-        private GUIStyle _groupStyle;
-        private GUIStyle _pathStyle;
-        private GUIStyle _badgeStyle;
-        private GUIStyle _neutralBadgeStyle;
-        private GUIStyle _successTitleStyle;
-        private GUIStyle _successSubtitleStyle;
-        private Texture2D _badgeTexture;
-        private Texture2D _neutralBadgeTexture;
-        private Texture _successTexture;
-        private bool _stylesReady;
-
 #region Unity Callbacks
+        private void OnEnable() => _discardHeight = EditorPrefs.GetFloat(DiscardHeightKey, DiscardDefaultHeight);
+
         private void OnGUI()
         {
-            EnsureStyles();
+            OverviewGui.EnsureStyles();
             HandleMouseMove();
 
             List<UnusedAssetEntry> active = _hasScanned
@@ -70,7 +60,7 @@ namespace Base.ToolPackage.Editor.UnusedAssetsOverviewWindow
 
             if (!_hasScanned)
             {
-                DrawHint("Press Scan to search the project for unused assets.");
+                OverviewGui.DrawHint("Press Scan to search the project for unused assets.");
                 return;
             }
 
@@ -86,13 +76,13 @@ namespace Base.ToolPackage.Editor.UnusedAssetsOverviewWindow
                     ? "Everything else is dismissed. Nothing left to review."
                     : "Nothing under Assets looks unreferenced.";
 
-                DrawSuccess("No unused assets", subtitle);
+                OverviewGui.DrawSuccess("No unused assets", subtitle);
                 return;
             }
 
             if (filtered.Count == 0)
             {
-                DrawHint("No results match the search.");
+                OverviewGui.DrawHint("No results match the search.");
                 return;
             }
 
@@ -109,33 +99,6 @@ namespace Base.ToolPackage.Editor.UnusedAssetsOverviewWindow
             window.Show();
         }
 
-        private static void Navigate(UnusedAssetEntry entry)
-        {
-            Object asset = AssetDatabase.LoadMainAssetAtPath(entry.Path);
-
-            if (asset == null)
-                return;
-
-            EditorUtility.FocusProjectWindow();
-            Selection.activeObject = asset;
-            EditorGUIUtility.PingObject(asset);
-        }
-
-        private static string Plural(int amount, string singular, string plural) => amount == 1
-            ? singular
-            : plural;
-
-        private static string FormatSize(long bytes)
-        {
-            if (bytes >= 1024L * 1024L)
-                return (bytes / (1024f * 1024f)).ToString("0.0") + " MB";
-
-            if (bytes >= 1024L)
-                return (bytes / 1024f).ToString("0.0") + " KB";
-
-            return bytes + " B";
-        }
-
         private static long GetFileSize(string assetPath)
         {
             try
@@ -149,16 +112,32 @@ namespace Base.ToolPackage.Editor.UnusedAssetsOverviewWindow
             }
         }
 
-        private static Texture2D MakeSolidTexture(Color color)
+        private static List<UnusedAssetEntry> BuildDiscard()
         {
-            Texture2D texture = new(1, 1)
-            {
-                hideFlags = HideFlags.HideAndDontSave
-            };
+            List<UnusedAssetEntry> list = new();
 
-            texture.SetPixel(0, 0, color);
-            texture.Apply();
-            return texture;
+            foreach (string guid in UnusedAssetsDismissStore.GetAll())
+            {
+                string path = AssetDatabase.GUIDToAssetPath(guid);
+
+                if (string.IsNullOrEmpty(path))
+                    continue;
+
+                Type type = AssetDatabase.GetMainAssetTypeAtPath(path);
+                list.Add(new UnusedAssetEntry(path, guid, type != null
+                    ? type.Name
+                    : "Unknown", GetFileSize(path)));
+            }
+
+            list.Sort((first, second) =>
+            {
+                int byType = string.Compare(first.TypeName, second.TypeName, StringComparison.Ordinal);
+                return byType != 0
+                    ? byType
+                    : string.Compare(first.Path, second.Path, StringComparison.Ordinal);
+            });
+
+            return list;
         }
 
         private void DrawActionBar(List<UnusedAssetEntry> filtered)
@@ -233,9 +212,10 @@ namespace Base.ToolPackage.Editor.UnusedAssetsOverviewWindow
             {
                 string message = count == 0
                     ? "No unused assets."
-                    : $"{count} unused {Plural(count, "asset", "assets")}, {FormatSize(totalBytes)}.";
+                    : $"{count} unused {OverviewGui.Plural(count, "asset", "assets")}, "
+                    + $"{OverviewGui.FormatSize(totalBytes)}.";
 
-                GUILayout.Label(message, _headerStyle);
+                GUILayout.Label(message, OverviewGui.HeaderStyle);
             }
         }
 
@@ -244,27 +224,35 @@ namespace Base.ToolPackage.Editor.UnusedAssetsOverviewWindow
             if (_discard.Count == 0)
                 return;
 
-            using (new EditorGUILayout.HorizontalScope(_groupStyle))
-            {
-                _showDiscard = EditorGUILayout.Foldout(_showDiscard, "Dismissed", true);
-                GUILayout.FlexibleSpace();
-                GUILayout.Label(_discard.Count.ToString(), _neutralBadgeStyle, GUILayout.Width(30f),
-                    GUILayout.Height(16f));
-            }
+            _showDiscard = OverviewGui.DrawSectionHeader(_showDiscard, "Dismissed", _discard.Count,
+                EOverviewAccent.Neutral);
 
             if (!_showDiscard)
                 return;
 
-            _discardScroll = EditorGUILayout.BeginScrollView(_discardScroll, GUILayout.MaxHeight(DiscardMaxHeight));
+            float maxHeight = _discardContentHeight > 0f
+                ? _discardContentHeight
+                : _discardHeight;
 
-            IEnumerable<IGrouping<string, UnusedAssetEntry>> groups =
-                _discard.GroupBy(entry => entry.TypeName).OrderBy(group => group.Key);
+            float height = Mathf.Clamp(_discardHeight, DiscardMinHeight, Mathf.Max(DiscardMinHeight, maxHeight));
 
-            foreach (IGrouping<string, UnusedAssetEntry> group in groups)
-                DrawDiscardGroup(group);
+            _discardScroll = EditorGUILayout.BeginScrollView(_discardScroll, GUILayout.Height(height));
+
+            using (new EditorGUILayout.VerticalScope())
+            {
+                IEnumerable<IGrouping<string, UnusedAssetEntry>> groups =
+                    _discard.GroupBy(entry => entry.TypeName).OrderBy(group => group.Key);
+
+                foreach (IGrouping<string, UnusedAssetEntry> group in groups)
+                    DrawDiscardGroup(group);
+            }
+
+            if (Event.current.type == EventType.Repaint)
+                _discardContentHeight = GUILayoutUtility.GetLastRect().height;
 
             EditorGUILayout.EndScrollView();
 
+            _discardHeight = OverviewGui.DrawResizeHandle(height, DiscardMinHeight, maxHeight, DiscardHeightKey);
             EditorGUILayout.Space(4f);
         }
 
@@ -272,18 +260,18 @@ namespace Base.ToolPackage.Editor.UnusedAssetsOverviewWindow
         {
             string key = "discard:" + group.Key;
 
-            if (!_discardFoldouts.ContainsKey(key))
-                _discardFoldouts[key] = true;
+            _discardFoldouts.TryAdd(key, true);
 
             int count = group.Count();
             Texture icon = AssetDatabase.GetCachedIcon(group.First().Path);
 
-            using (new EditorGUILayout.HorizontalScope(_groupStyle))
+            using (new EditorGUILayout.HorizontalScope(OverviewGui.GroupStyle))
             {
                 GUILayout.Label(icon, GUILayout.Width(18f), GUILayout.Height(16f));
                 _discardFoldouts[key] = EditorGUILayout.Foldout(_discardFoldouts[key], group.Key, true);
                 GUILayout.FlexibleSpace();
-                GUILayout.Label(count.ToString(), _neutralBadgeStyle, GUILayout.Width(30f), GUILayout.Height(16f));
+                GUILayout.Label(count.ToString(), OverviewGui.NeutralBadgeStyle, GUILayout.Width(30f),
+                    GUILayout.Height(16f));
             }
 
             if (!_discardFoldouts[key])
@@ -295,23 +283,7 @@ namespace Base.ToolPackage.Editor.UnusedAssetsOverviewWindow
 
         private void DrawDiscardRow(UnusedAssetEntry entry)
         {
-            Rect rect = EditorGUILayout.GetControlRect(false, RowHeight);
-            string key = "discard:" + entry.Path;
-            bool even = _rowIndex % 2 == 0;
-            _rowIndex++;
-
-            if (rect.Contains(Event.current.mousePosition))
-                _hoveredKey = key;
-
-            bool hovered = key == _hoveredKey;
-
-            if (Event.current.type == EventType.Repaint)
-            {
-                if (hovered)
-                    EditorGUI.DrawRect(rect, new Color(0.35f, 0.55f, 0.95f, 0.18f));
-                else if (even)
-                    EditorGUI.DrawRect(rect, new Color(0f, 0f, 0f, 0.06f));
-            }
+            Rect rect = BeginRow("discard:" + entry.Path);
 
             Rect iconRect = new(rect.x + 24f, rect.y + 3f, 16f, 16f);
             Texture icon = AssetDatabase.GetCachedIcon(entry.Path);
@@ -325,24 +297,25 @@ namespace Base.ToolPackage.Editor.UnusedAssetsOverviewWindow
             Rect restoreRect = new(body.xMax - 64f, body.y + 3f, 64f, body.height - 6f);
 
             GUI.Label(labelRect,
-                new GUIContent(entry.Path, entry.Path + "\n" + FormatSize(entry.SizeBytes)),
-                _pathStyle);
+                new GUIContent(entry.Path, entry.Path + "\n" + OverviewGui.FormatSize(entry.SizeBytes)),
+                OverviewGui.PathStyle);
 
             if (GUI.Button(gotoRect, "Go to"))
-                Navigate(entry);
+                OverviewGui.Navigate(entry.Path);
 
             if (GUI.Button(restoreRect, "Restore"))
                 Restore(entry);
 
-            if (Event.current.type == EventType.MouseDown && labelRect.Contains(Event.current.mousePosition))
-            {
-                Navigate(entry);
-                Event.current.Use();
-            }
+            HandleRowClick(labelRect, entry);
         }
 
         private void DrawResults(List<UnusedAssetEntry> filtered)
         {
+            _showFound = OverviewGui.DrawSectionHeader(_showFound, "Found", filtered.Count, EOverviewAccent.Warning);
+
+            if (!_showFound)
+                return;
+
             IEnumerable<IGrouping<string, UnusedAssetEntry>> groups =
                 filtered.GroupBy(entry => entry.TypeName).OrderBy(group => group.Key);
 
@@ -358,18 +331,18 @@ namespace Base.ToolPackage.Editor.UnusedAssetsOverviewWindow
         {
             string key = group.Key;
 
-            if (!_foldouts.ContainsKey(key))
-                _foldouts[key] = true;
+            _foldouts.TryAdd(key, true);
 
             int count = group.Count();
             Texture icon = AssetDatabase.GetCachedIcon(group.First().Path);
 
-            using (new EditorGUILayout.HorizontalScope(_groupStyle))
+            using (new EditorGUILayout.HorizontalScope(OverviewGui.GroupStyle))
             {
                 GUILayout.Label(icon, GUILayout.Width(18f), GUILayout.Height(16f));
                 _foldouts[key] = EditorGUILayout.Foldout(_foldouts[key], key, true);
                 GUILayout.FlexibleSpace();
-                GUILayout.Label(count.ToString(), _badgeStyle, GUILayout.Width(30f), GUILayout.Height(16f));
+                GUILayout.Label(count.ToString(), OverviewGui.WarningBadgeStyle, GUILayout.Width(30f),
+                    GUILayout.Height(16f));
             }
 
             if (!_foldouts[key])
@@ -381,23 +354,7 @@ namespace Base.ToolPackage.Editor.UnusedAssetsOverviewWindow
 
         private void DrawRow(UnusedAssetEntry entry)
         {
-            Rect rect = EditorGUILayout.GetControlRect(false, RowHeight);
-            string key = entry.Path;
-            bool even = _rowIndex % 2 == 0;
-            _rowIndex++;
-
-            if (rect.Contains(Event.current.mousePosition))
-                _hoveredKey = key;
-
-            bool hovered = key == _hoveredKey;
-
-            if (Event.current.type == EventType.Repaint)
-            {
-                if (hovered)
-                    EditorGUI.DrawRect(rect, new Color(0.35f, 0.55f, 0.95f, 0.18f));
-                else if (even)
-                    EditorGUI.DrawRect(rect, new Color(0f, 0f, 0f, 0.06f));
-            }
+            Rect rect = BeginRow(entry.Path);
 
             Rect iconRect = new(rect.x + 24f, rect.y + 3f, 16f, 16f);
             Texture icon = AssetDatabase.GetCachedIcon(entry.Path);
@@ -412,11 +369,11 @@ namespace Base.ToolPackage.Editor.UnusedAssetsOverviewWindow
             Rect removeRect = new(body.xMax - 64f, body.y + 3f, 64f, body.height - 6f);
 
             GUI.Label(labelRect,
-                new GUIContent(entry.Path, entry.Path + "\n" + FormatSize(entry.SizeBytes)),
-                _pathStyle);
+                new GUIContent(entry.Path, entry.Path + "\n" + OverviewGui.FormatSize(entry.SizeBytes)),
+                OverviewGui.PathStyle);
 
             if (GUI.Button(gotoRect, "Go to"))
-                Navigate(entry);
+                OverviewGui.Navigate(entry.Path);
 
             if (GUI.Button(dismissRect, "Dismiss"))
                 Dismiss(entry);
@@ -424,11 +381,31 @@ namespace Base.ToolPackage.Editor.UnusedAssetsOverviewWindow
             if (GUI.Button(removeRect, "Remove"))
                 RemoveEntry(entry);
 
-            if (Event.current.type == EventType.MouseDown && labelRect.Contains(Event.current.mousePosition))
-            {
-                Navigate(entry);
-                Event.current.Use();
-            }
+            HandleRowClick(labelRect, entry);
+        }
+
+        private Rect BeginRow(string key)
+        {
+            Rect rect = EditorGUILayout.GetControlRect(false, OverviewGui.RowHeight);
+            bool even = _rowIndex % 2 == 0;
+            _rowIndex++;
+
+            if (rect.Contains(Event.current.mousePosition))
+                _hoveredKey = key;
+
+            OverviewGui.DrawRowBackground(rect, key == _hoveredKey, even);
+
+            return rect;
+        }
+
+        private void HandleRowClick(Rect labelRect, UnusedAssetEntry entry)
+        {
+            if (Event.current.type != EventType.MouseDown
+                || !labelRect.Contains(Event.current.mousePosition))
+                return;
+
+            OverviewGui.Navigate(entry.Path);
+            Event.current.Use();
         }
 
         private void Dismiss(UnusedAssetEntry entry)
@@ -471,7 +448,7 @@ namespace Base.ToolPackage.Editor.UnusedAssetsOverviewWindow
                 return;
 
             bool confirmed = EditorUtility.DisplayDialog("Delete Unused Assets",
-                $"Delete {entries.Count} {Plural(entries.Count, "asset", "assets")}?\n\n"
+                $"Delete {entries.Count} {OverviewGui.Plural(entries.Count, "asset", "assets")}?\n\n"
                 + "This only checks build scenes, Resources, the render pipeline, preloaded assets, "
                 + "ProjectSettings, and Addressables. Assets loaded by code or by path are not detected, "
                 + "so review the list first.",
@@ -504,34 +481,6 @@ namespace Base.ToolPackage.Editor.UnusedAssetsOverviewWindow
                 .ToList();
         }
 
-        private List<UnusedAssetEntry> BuildDiscard()
-        {
-            List<UnusedAssetEntry> list = new();
-
-            foreach (string guid in UnusedAssetsDismissStore.GetAll())
-            {
-                string path = AssetDatabase.GUIDToAssetPath(guid);
-
-                if (string.IsNullOrEmpty(path))
-                    continue;
-
-                Type type = AssetDatabase.GetMainAssetTypeAtPath(path);
-                list.Add(new UnusedAssetEntry(path, guid, type != null
-                    ? type.Name
-                    : "Unknown", GetFileSize(path)));
-            }
-
-            list.Sort((first, second) =>
-            {
-                int byType = string.Compare(first.TypeName, second.TypeName, StringComparison.Ordinal);
-                return byType != 0
-                    ? byType
-                    : string.Compare(first.Path, second.Path, StringComparison.Ordinal);
-            });
-
-            return list;
-        }
-
         private void Rescan()
         {
             _entries.Clear();
@@ -547,128 +496,6 @@ namespace Base.ToolPackage.Editor.UnusedAssetsOverviewWindow
 
             if (Event.current.type == EventType.MouseMove)
                 Repaint();
-        }
-
-        private void DrawHint(string message)
-        {
-            GUILayout.FlexibleSpace();
-
-            using (new EditorGUILayout.HorizontalScope())
-            {
-                GUILayout.FlexibleSpace();
-                GUILayout.Label(message, EditorStyles.centeredGreyMiniLabel);
-                GUILayout.FlexibleSpace();
-            }
-
-            GUILayout.FlexibleSpace();
-        }
-
-        private void DrawSuccess(string title, string subtitle)
-        {
-            GUILayout.FlexibleSpace();
-
-            using (new EditorGUILayout.HorizontalScope())
-            {
-                GUILayout.FlexibleSpace();
-
-                GUILayout.Label(new GUIContent(_successTexture),
-                    GUILayout.Width(SuccessIconSize),
-                    GUILayout.Height(SuccessIconSize));
-
-                GUILayout.FlexibleSpace();
-            }
-
-            GUILayout.Space(SuccessGap);
-
-            GUILayout.Label(title, _successTitleStyle);
-            GUILayout.Label(subtitle, _successSubtitleStyle);
-
-            GUILayout.FlexibleSpace();
-        }
-
-        private void EnsureStyles()
-        {
-            if (_stylesReady)
-                return;
-
-            _headerStyle = new GUIStyle(EditorStyles.boldLabel)
-            {
-                fontSize = 12
-            };
-
-            _groupStyle = new GUIStyle(EditorStyles.helpBox)
-            {
-                margin = new RectOffset(2, 2, 2, 0),
-                padding = new RectOffset(6, 6, 3, 3)
-            };
-
-            _pathStyle = new GUIStyle(EditorStyles.label)
-            {
-                alignment = TextAnchor.MiddleLeft
-            };
-
-            // Warning yellow, matching the Unity console warning icon, with dark text for contrast.
-            _badgeTexture = MakeSolidTexture(new Color(0.96f, 0.78f, 0.12f));
-
-            _badgeStyle = new GUIStyle(EditorStyles.miniLabel)
-            {
-                alignment = TextAnchor.MiddleCenter,
-                fontStyle = FontStyle.Bold,
-                normal =
-                {
-                    textColor = new Color(0.15f, 0.13f, 0.05f),
-                    background = _badgeTexture
-                }
-            };
-
-            // Calm blue for the dismissed list, so it reads as stored, not as a problem.
-            _neutralBadgeTexture = MakeSolidTexture(new Color(0.33f, 0.52f, 0.74f));
-
-            _neutralBadgeStyle = new GUIStyle(EditorStyles.miniLabel)
-            {
-                alignment = TextAnchor.MiddleCenter,
-                fontStyle = FontStyle.Bold,
-                normal =
-                {
-                    textColor = Color.white,
-                    background = _neutralBadgeTexture
-                }
-            };
-
-            Color successTitleColor = new(0.36f, 0.76f, 0.46f);
-            Color successSubtitleColor = new(0.5f, 0.5f, 0.5f);
-
-            _successTitleStyle = new GUIStyle(EditorStyles.boldLabel)
-            {
-                alignment = TextAnchor.MiddleCenter,
-                fontSize = SuccessTitleFontSize,
-                normal =
-                {
-                    textColor = successTitleColor
-                },
-                hover =
-                {
-                    textColor = successTitleColor
-                }
-            };
-
-            _successSubtitleStyle = new GUIStyle(EditorStyles.label)
-            {
-                alignment = TextAnchor.MiddleCenter,
-                wordWrap = true,
-                normal =
-                {
-                    textColor = successSubtitleColor
-                },
-                hover =
-                {
-                    textColor = successSubtitleColor
-                }
-            };
-
-            _successTexture = EditorGUIUtility.IconContent("TestPassed").image;
-
-            _stylesReady = true;
         }
     }
 }

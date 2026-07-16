@@ -1,21 +1,34 @@
-﻿using Base.CorePackage.Tweening.Core;
+using Base.CorePackage.Tweening.Core;
 using Base.CorePackage.Tweening.Core.Data;
+using Base.CorePackage.Tweening.Core.Data.Profiles;
 using UnityEngine;
 using UnityEngine.UI;
+using Object = UnityEngine.Object;
 
 namespace Base.CorePackage.Tweening.Components.UITweens
 {
     /// <summary>
-    /// Tweens the fill amount of a UI Image from the current fill amount (captured at <c>Awake</c>)
-    /// to a target fill amount.
+    /// Tweens the fill amount of a UI Image from the current fill amount (captured at
+    /// <c>Awake</c>) to a target fill amount.
     /// </summary>
     [RequireComponent(typeof(Image))]
     public sealed class ImageFillAmountToTween : TweenBehaviour<float>
     {
-        [SerializeField] [Tooltip("The target fill amount to tween to.")]
+        [SerializeField] [Tooltip("The profile driving this tween, used while the profile toggle is on.")]
+        private FloatTweenProfileSo profile;
+
+        [SerializeField] [TweenValue] [Tooltip("The target fill amount to tween to.")]
         private float targetFillAmount = 1f;
 
         private Image _image;
+
+        protected override TweenValueProfileSo<float> ProfileAsset => profile;
+
+        protected override Object TweenTarget => _image;
+
+        protected override float StartValue => DefaultValue;
+
+        protected override float LocalTargetValue => targetFillAmount;
 
 #region Unity Callbacks
         protected override void Awake()
@@ -29,25 +42,5 @@ namespace Base.CorePackage.Tweening.Components.UITweens
         protected override float GetCurrentValue() => _image.fillAmount;
 
         protected override void ApplyValue(float value) => _image.fillAmount = value;
-
-        protected override TweenBase CreateTween(bool isReversed)
-        {
-            float from = isReversed
-                ? targetFillAmount
-                : DefaultValue;
-
-            float to = isReversed
-                ? DefaultValue
-                : targetFillAmount;
-
-            return new Tween<float>(to,
-                TweenSettings.Duration,
-                ApplyValue,
-                TweenLerpUtility.LerpFloatUnclamped,
-                Easings.Get(TweenSettings.Easing),
-                _image,
-                TweenSettings.Delay,
-                fromGetter: () => from);
-        }
     }
 }

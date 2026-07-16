@@ -1,6 +1,4 @@
-using System.IO;
-
-namespace Base.EmptyFoldersPackage
+namespace Base.ToolPackage.Editor.EmptyFoldersOverviewWindow
 {
     /// <summary>
     /// One empty folder, plus how many folders get removed with it (itself and nested empties).
@@ -18,7 +16,5 @@ namespace Base.EmptyFoldersPackage
             Path = path;
             NestedFolderCount = nestedFolderCount;
         }
-
-        public string Name => System.IO.Path.GetFileName(Path);
     }
 }

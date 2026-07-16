@@ -7,7 +7,7 @@ using UnityEditor;
 using UnityEditor.Compilation;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.UnusedScriptsOverviewWindow
+namespace Base.ToolPackage.Editor.OverviewGui.UnusedScriptsOverviewWindow
 {
     /// <summary>
     /// Finds scripts that look dead. A script counts as alive when a scene, prefab, or asset

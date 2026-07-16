@@ -1,4 +1,4 @@
-namespace Base.ToolPackage.Editor.UnusedScriptsOverviewWindow
+namespace Base.ToolPackage.Editor.OverviewGui.UnusedScriptsOverviewWindow
 {
     /// <summary>
     /// One script that looks dead, with its folder for grouping and GUID for stable reference.

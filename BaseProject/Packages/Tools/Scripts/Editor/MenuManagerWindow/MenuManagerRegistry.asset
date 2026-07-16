@@ -55,6 +55,7 @@ MonoBehaviour:
         - rid: 5339058393820954651
         - rid: 5339058393820954750
         - rid: 5339058419491930199
+        - rid: 5339058420681015300
     - rid: 5339058393820954650
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
@@ -346,11 +347,15 @@ MonoBehaviour:
         expanded: 0
         merged: 0
         children:
+        - rid: 5339058395782840453
+        - rid: 5339058395782840454
+        - rid: 5339058420681015388
+        - rid: 5339058420681015389
         - rid: 5339058395782840450
         - rid: 5339058395782840451
         - rid: 5339058395782840452
-        - rid: 5339058395782840453
-        - rid: 5339058395782840454
+        - rid: 5339058420681015390
+        - rid: 5339058420681015391
     - rid: 5339058395782840427
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
@@ -758,6 +763,123 @@ MonoBehaviour:
         entry:
           id: MI:Base.ToolPackage.Editor.PlayModeApplier.PlayModeSaverWindow.Open
           path: Play Mode Saver
+          enabled: 1
+          kind: 0
+          createFileName: 
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 5339058420681015296
+      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 0
+        entry:
+          id: CA:Base.CorePackage.Tweening.Core.Data.Profiles.TweenSettingsSo
+          path: New TweenSettings
+          enabled: 1
+          kind: 1
+          createFileName: TPC_TweenSettings
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 5339058420681015297
+      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 0
+        entry:
+          id: CA:Base.CorePackage.Tweening.Core.Data.Profiles.FloatTweenProfileSo
+          path: New FloatTweenProfile
+          enabled: 1
+          kind: 1
+          createFileName: TPC_FloatTweenProfile
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 5339058420681015298
+      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 0
+        entry:
+          id: CA:Base.CorePackage.Tweening.Core.Data.Profiles.Vector3TweenProfileSo
+          path: New Vector3TweenProfile
+          enabled: 1
+          kind: 1
+          createFileName: TPC_Vector3TweenProfile
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 5339058420681015299
+      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 0
+        entry:
+          id: CA:Base.CorePackage.Tweening.Core.Data.Profiles.ColorTweenProfileSo
+          path: New ColorTweenProfile
+          enabled: 1
+          kind: 1
+          createFileName: TPC_ColorTweenProfile
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 5339058420681015300
+      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 1
+        name: Tweening
+        expanded: 1
+        merged: 0
+        children:
+        - rid: 5339058420681015296
+        - rid: 5339058420681015301
+    - rid: 5339058420681015301
+      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 1
+        name: Profiles
+        expanded: 1
+        merged: 0
+        children:
+        - rid: 5339058420681015297
+        - rid: 5339058420681015298
+        - rid: 5339058420681015299
+    - rid: 5339058420681015388
+      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 0
+        entry:
+          id: MI:Base.ToolPackage.Editor.UnusedOverviewWindows.UnusedScriptsOverviewWindow.UnusedScriptsOverviewWindow.Open
+          path: Unused Scripts Overview
+          enabled: 1
+          kind: 0
+          createFileName: 
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 5339058420681015389
+      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 0
+        entry:
+          id: MI:Base.ToolPackage.Editor.UnusedOverviewWindows.UnusedAssetsOverviewWindow.UnusedAssetsOverviewWindow.Open
+          path: Unused Assets Overview
+          enabled: 1
+          kind: 0
+          createFileName: 
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 5339058420681015390
+      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 0
+        entry:
+          id: MI:Base.ToolPackage.Editor.OverviewGui.UnusedAssetsOverviewWindow.UnusedAssetsOverviewWindow.Open
+          path: Unused Assets Overview
+          enabled: 1
+          kind: 0
+          createFileName: 
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 5339058420681015391
+      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 0
+        entry:
+          id: MI:Base.ToolPackage.Editor.OverviewGui.UnusedScriptsOverviewWindow.UnusedScriptsOverviewWindow.Open
+          path: Unused Scripts Overview
           enabled: 1
           kind: 0
           createFileName: 

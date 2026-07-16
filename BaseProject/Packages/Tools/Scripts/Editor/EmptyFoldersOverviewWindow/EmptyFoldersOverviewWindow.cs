@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Base.EmptyFoldersPackage;
 using Base.ToolPackage.MenuManagerWindow;
 using UnityEditor;
 using UnityEngine;
@@ -21,12 +20,15 @@ namespace Base.ToolPackage.Editor.EmptyFoldersOverviewWindow
         private const int SuccessTitleFontSize = 15;
 
         private readonly List<EmptyFolderEntry> _entries = new();
+        private readonly List<EmptyFolderEntry> _pendingDeletes = new();
 
         private Vector2 _scroll;
         private string _search = string.Empty;
         private bool _hasScanned;
         private string _hoveredKey;
         private int _rowIndex;
+        private bool _pendingRescan;
+        private bool _pendingDeleteAll;
 
         private GUIStyle _headerStyle;
         private GUIStyle _pathStyle;
@@ -49,26 +51,8 @@ namespace Base.ToolPackage.Editor.EmptyFoldersOverviewWindow
 
             DrawActionBar(filtered);
             DrawSummary();
-
-            if (!_hasScanned)
-            {
-                DrawHint("Press Scan to search the project for empty folders.");
-                return;
-            }
-
-            if (_entries.Count == 0)
-            {
-                DrawSuccess("No empty folders", "Every folder has content. Nothing to clean up.");
-                return;
-            }
-
-            if (filtered.Count == 0)
-            {
-                DrawHint("No results match the search.");
-                return;
-            }
-
-            DrawResults(filtered);
+            DrawBody(filtered);
+            ProcessPendingActions(filtered);
         }
 #endregion
 
@@ -134,13 +118,13 @@ namespace Base.ToolPackage.Editor.EmptyFoldersOverviewWindow
                 EditorGUILayout.Space(4f, false);
 
                 if (GUILayout.Button("Scan Project", GUILayout.Height(26f), GUILayout.Width(140f)))
-                    Rescan();
+                    _pendingRescan = true;
 
                 using (new EditorGUI.DisabledScope(!_hasScanned || filtered.Count == 0))
                 {
                     if (GUILayout.Button($"Delete All ({filtered.Count})", GUILayout.Height(26f),
                             GUILayout.Width(130f)))
-                        DeleteAll(filtered);
+                        _pendingDeleteAll = true;
                 }
 
                 GUILayout.FlexibleSpace();
@@ -178,6 +162,29 @@ namespace Base.ToolPackage.Editor.EmptyFoldersOverviewWindow
                     GUILayout.Label(message + ".", _headerStyle);
                 }
             }
+        }
+
+        private void DrawBody(List<EmptyFolderEntry> filtered)
+        {
+            if (!_hasScanned)
+            {
+                DrawHint("Press Scan to search the project for empty folders.");
+                return;
+            }
+
+            if (_entries.Count == 0)
+            {
+                DrawSuccess("No empty folders", "Every folder has content. Nothing to clean up.");
+                return;
+            }
+
+            if (filtered.Count == 0)
+            {
+                DrawHint("No results match the search.");
+                return;
+            }
+
+            DrawResults(filtered);
         }
 
         private void DrawResults(List<EmptyFolderEntry> filtered)
@@ -234,13 +241,40 @@ namespace Base.ToolPackage.Editor.EmptyFoldersOverviewWindow
                 Navigate(entry);
 
             if (GUI.Button(deleteRect, "Delete"))
-                DeleteEntry(entry);
+                _pendingDeletes.Add(entry);
 
             if (Event.current.type == EventType.MouseDown && labelRect.Contains(Event.current.mousePosition))
             {
                 Navigate(entry);
                 Event.current.Use();
             }
+        }
+
+        private void ProcessPendingActions(List<EmptyFolderEntry> filtered)
+        {
+            if (_pendingDeleteAll)
+            {
+                _pendingDeleteAll = false;
+                _pendingDeletes.Clear();
+                DeleteAll(filtered);
+                return;
+            }
+
+            if (_pendingDeletes.Count > 0)
+            {
+                foreach (EmptyFolderEntry entry in _pendingDeletes)
+                    DeleteEntry(entry);
+
+                _pendingDeletes.Clear();
+                Repaint();
+                return;
+            }
+
+            if (!_pendingRescan)
+                return;
+
+            _pendingRescan = false;
+            Rescan();
         }
 
         private void DeleteEntry(EmptyFolderEntry entry)
@@ -250,7 +284,6 @@ namespace Base.ToolPackage.Editor.EmptyFoldersOverviewWindow
 
             AssetDatabase.Refresh();
             _entries.Remove(entry);
-            Repaint();
         }
 
         private void DeleteAll(List<EmptyFolderEntry> entries)
@@ -278,7 +311,7 @@ namespace Base.ToolPackage.Editor.EmptyFoldersOverviewWindow
         private List<EmptyFolderEntry> FilterEntries()
         {
             if (string.IsNullOrWhiteSpace(_search))
-                return _entries;
+                return new List<EmptyFolderEntry>(_entries);
 
             string term = _search.Trim();
 
@@ -303,7 +336,7 @@ namespace Base.ToolPackage.Editor.EmptyFoldersOverviewWindow
                 Repaint();
         }
 
-        private void DrawSuccess(string title, string subtitle)
+        private void DrawSuccess(string successTitle, string subtitle)
         {
             GUILayout.FlexibleSpace();
 
@@ -320,7 +353,7 @@ namespace Base.ToolPackage.Editor.EmptyFoldersOverviewWindow
 
             GUILayout.Space(SuccessGap);
 
-            GUILayout.Label(title, _successTitleStyle);
+            GUILayout.Label(successTitle, _successTitleStyle);
             GUILayout.Label(subtitle, _successSubtitleStyle);
 
             GUILayout.FlexibleSpace();
