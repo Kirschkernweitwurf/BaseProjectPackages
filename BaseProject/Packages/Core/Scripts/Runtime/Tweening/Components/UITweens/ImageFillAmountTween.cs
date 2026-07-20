@@ -1,3 +1,4 @@
+using Base.AttributePackage;
 using Base.CorePackage.Tweening.Core;
 using Base.CorePackage.Tweening.Core.Data;
 using Base.CorePackage.Tweening.Core.Data.Profiles;
@@ -23,27 +24,18 @@ namespace Base.CorePackage.Tweening.Components.UITweens
         [SerializeField] [TweenValue] [Tooltip("The target fill amount to tween to.")]
         private float targetFillAmount = 1f;
 
-        private Image _image;
+        [GetComponent] [SerializeField] private Image image;
 
         protected override TweenValueProfileSo<float> ProfileAsset => profile;
 
-        protected override Object TweenTarget => _image;
+        protected override Object TweenTarget => image;
 
         protected override float LocalStartValue => startFillAmount;
 
         protected override float LocalTargetValue => targetFillAmount;
 
-#region Unity Callbacks
-        protected override void Awake()
-        {
-            _image = GetComponent<Image>();
+        protected override float GetCurrentValue() => image.fillAmount;
 
-            base.Awake();
-        }
-#endregion
-
-        protected override float GetCurrentValue() => _image.fillAmount;
-
-        protected override void ApplyValue(float value) => _image.fillAmount = value;
+        protected override void ApplyValue(float value) => image.fillAmount = value;
     }
 }

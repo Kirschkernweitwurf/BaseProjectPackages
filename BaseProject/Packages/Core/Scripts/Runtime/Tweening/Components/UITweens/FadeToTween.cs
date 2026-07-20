@@ -1,3 +1,4 @@
+using Base.AttributePackage;
 using Base.CorePackage.Tweening.Core;
 using Base.CorePackage.Tweening.Core.Data;
 using Base.CorePackage.Tweening.Core.Data.Profiles;
@@ -19,27 +20,18 @@ namespace Base.CorePackage.Tweening.Components.UITweens
         [SerializeField] [TweenValue] [Tooltip("The target alpha value to tween to.")]
         private float targetAlpha = 1f;
 
-        private CanvasGroup _canvasGroup;
+        [GetComponent] [SerializeField] private CanvasGroup canvasGroup;
 
         protected override TweenValueProfileSo<float> ProfileAsset => profile;
 
-        protected override Object TweenTarget => _canvasGroup;
+        protected override Object TweenTarget => canvasGroup;
 
         protected override float StartValue => DefaultValue;
 
         protected override float LocalTargetValue => targetAlpha;
 
-#region Unity Callbacks
-        protected override void Awake()
-        {
-            _canvasGroup = GetComponent<CanvasGroup>();
+        protected override float GetCurrentValue() => canvasGroup.alpha;
 
-            base.Awake();
-        }
-#endregion
-
-        protected override float GetCurrentValue() => _canvasGroup.alpha;
-
-        protected override void ApplyValue(float value) => _canvasGroup.alpha = value;
+        protected override void ApplyValue(float value) => canvasGroup.alpha = value;
     }
 }

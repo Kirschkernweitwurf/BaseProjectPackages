@@ -99,7 +99,6 @@ namespace Base.ControllerSupport.Controller.Navigation
                 return;
 
             Selectable target = ResolveFocusTarget();
-
             if (target == null)
             {
                 CustomLogger.LogWarning($"Navigable group \"{name}\" has no valid element to focus.", this);

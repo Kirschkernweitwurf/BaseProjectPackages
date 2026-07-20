@@ -1,3 +1,4 @@
+using Base.AttributePackage;
 using Base.CorePackage.Tweening.Core;
 using Base.CorePackage.Tweening.Core.Data;
 using Base.CorePackage.Tweening.Core.Data.Profiles;
@@ -21,27 +22,18 @@ namespace Base.CorePackage.Tweening.Components.RendererTweens
         [SerializeField] [TweenValue] [Tooltip("The target color to tween to.")]
         private Color targetColor = Color.white;
 
-        private SpriteRenderer _spriteRenderer;
+        [GetComponent] [SerializeField] private SpriteRenderer spriteRenderer;
 
         protected override TweenValueProfileSo<Color> ProfileAsset => profile;
 
-        protected override Object TweenTarget => _spriteRenderer;
+        protected override Object TweenTarget => spriteRenderer;
 
         protected override Color LocalStartValue => startColor;
 
         protected override Color LocalTargetValue => targetColor;
 
-#region Unity Callbacks
-        protected override void Awake()
-        {
-            _spriteRenderer = GetComponent<SpriteRenderer>();
+        protected override Color GetCurrentValue() => spriteRenderer.color;
 
-            base.Awake();
-        }
-#endregion
-
-        protected override Color GetCurrentValue() => _spriteRenderer.color;
-
-        protected override void ApplyValue(Color value) => _spriteRenderer.color = value;
+        protected override void ApplyValue(Color value) => spriteRenderer.color = value;
     }
 }
