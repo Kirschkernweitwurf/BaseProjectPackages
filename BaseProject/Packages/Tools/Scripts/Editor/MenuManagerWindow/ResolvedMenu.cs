@@ -24,8 +24,11 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
         /// <summary>Default asset file name for an asset entry, without extension.</summary>
         public string DefaultFileName { get; }
 
+        /// <summary>Type that declares the entry, used to locate its script on disk.</summary>
+        public Type DeclaringType { get; }
+
         private ResolvedMenu(EMenuEntryKind kind, string defaultPath, Action execute, Func<bool> validate,
-            Type assetType, string defaultFileName)
+            Type assetType, string defaultFileName, Type declaringType)
         {
             Kind = kind;
             DefaultPath = defaultPath;
@@ -33,15 +36,16 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
             Validate = validate;
             AssetType = assetType;
             DefaultFileName = defaultFileName;
+            DeclaringType = declaringType;
         }
 
         /// <summary>Creates a resolved menu item.</summary>
-        public static ResolvedMenu MenuItem(string defaultPath, Action execute, Func<bool> validate)
-            => new(EMenuEntryKind.MenuItem, defaultPath, execute, validate, null, string.Empty);
+        public static ResolvedMenu MenuItem(string defaultPath, Action execute, Func<bool> validate, Type declaringType)
+            => new(EMenuEntryKind.MenuItem, defaultPath, execute, validate, null, string.Empty, declaringType);
 
         /// <summary>Creates a resolved asset creation entry.</summary>
         public static ResolvedMenu CreateAsset(string defaultPath, Type assetType, string defaultFileName)
-            => new(EMenuEntryKind.CreateAsset, defaultPath, null, null, assetType, defaultFileName);
+            => new(EMenuEntryKind.CreateAsset, defaultPath, null, null, assetType, defaultFileName, assetType);
     }
 }
 #endif

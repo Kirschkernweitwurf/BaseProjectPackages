@@ -18,7 +18,7 @@ namespace Base.ToolPackage.Editor.OverviewGui.UnusedAssetsOverviewWindow
         private const float DiscardDefaultHeight = 220f;
         private const string DiscardHeightKey = "Base.UnusedAssetsOverview.DiscardHeight";
         private const float DiscardMinHeight = 60f;
-        private const string MenuPath = "Tools/Base Packages/Project Health/Unused Assets Overview";
+        private const string MenuPath = "Tools/Base Packages/Unity Editor/Project Health/Unused/Unused Assets Overview";
 
         private readonly List<UnusedAssetEntry> _entries = new();
         private readonly Dictionary<string, bool> _foldouts = new();

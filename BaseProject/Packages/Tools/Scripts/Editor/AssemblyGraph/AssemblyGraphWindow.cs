@@ -40,7 +40,7 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
         }
 #endregion
 
-        [DynamicMenuItem("Tools/Base Packages/Project Health/Assembly Graph")]
+        [DynamicMenuItem("Tools/Base Packages/Unity Editor/Project Health/Assembly Graph")]
         public static void Open()
         {
             AssemblyGraphWindow window = GetWindow<AssemblyGraphWindow>();

@@ -13,7 +13,8 @@ namespace Base.ToolPackage.Editor.MissingScriptsOverviewWindow
     /// </summary>
     public sealed class MissingScriptsOverviewWindow : EditorWindow
     {
-        private const string MenuPath = "Tools/Base Packages/Project Health/Missing Scripts Overview";
+        private const string MenuPath =
+            "Tools/Base Packages/Unity Editor/Project Health/Unused/Missing Scripts Overview";
         private const float RowHeight = 22f;
         private const float SuccessGap = 8f;
         private const float SuccessIconSize = 48f;

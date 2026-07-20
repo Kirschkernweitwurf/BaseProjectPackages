@@ -13,7 +13,7 @@ namespace Base.ToolPackage.Editor.UnityConstants
     /// </summary>
     public static class TagsGenerator
     {
-        [DynamicMenuItem("Tools/Base Packages/Code Generation/Generate Tags")]
+        [DynamicMenuItem("Tools/Base Packages/Code/Generation/Generate Tags")]
         public static void Generate()
         {
             GeneratorUtility.EnsureFolderExists(GeneratorUtility.OutputFolder);

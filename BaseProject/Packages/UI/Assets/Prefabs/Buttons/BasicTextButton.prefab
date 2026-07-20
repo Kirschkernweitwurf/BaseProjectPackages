@@ -381,11 +381,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a693cd76956f4233a6d230c30c907685, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Systems.Tweening.Components.UITweens.TextColorTween
-  <TweenSettings>k__BackingField:
+  useProfile: 0
+  useSettingsAsset: 0
+  settingsAsset: {fileID: 0}
+  tweenSettings:
     <Duration>k__BackingField: 0.2
     <Delay>k__BackingField: 0
     <Easing>k__BackingField: 0
   loopSettings:
     <LoopCount>k__BackingField: 0
     <LoopType>k__BackingField: 0
+  profile: {fileID: 0}
   targetColor: {r: 0.19607845, g: 0.49803925, b: 0.38431376, a: 1}
+  graphic: {fileID: 5352189115371341460}

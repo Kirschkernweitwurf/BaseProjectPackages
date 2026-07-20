@@ -52,7 +52,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
                 Action execute = CreateAction(method);
                 Func<bool> validate = CreateValidate(owner, attribute.ValidateMethod);
 
-                result[id] = ResolvedMenu.MenuItem(defaultPath, execute, validate);
+                result[id] = ResolvedMenu.MenuItem(defaultPath, execute, validate, owner);
             }
         }
 

@@ -11,8 +11,8 @@ namespace Base.CorePackage.Editor.Tweening
     /// Shared inspector layout for tween components and tween profile assets. It draws the fields in a
     /// fixed order (profile, values, timing, references) and hides every field that a turned on asset
     /// already provides. Value and reference fields run through the attribute package pipeline, so
-    /// attributes like [GetComponent] and [TweenValue] keep working here. Reference fields are always
-    /// drawn last, separated by a space.
+    /// attributes like <see cref="GetComponentAttribute"/> and <see cref="TweenValueAttribute"/> keep
+    /// working here. Reference fields are always drawn last, separated by a space.
     /// </summary>
     internal static class TweenInspectorLayout
     {

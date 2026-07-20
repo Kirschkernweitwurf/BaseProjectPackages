@@ -130,7 +130,7 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
         }
 #endregion
 
-        [DynamicMenuItem("Tools/Base Packages/Code Health/Static Reset Checker")]
+        [DynamicMenuItem("Tools/Base Packages/Code/Health/Static Reset Checker")]
         private static void Open()
         {
             StaticResetCheckerWindow w = GetWindow<StaticResetCheckerWindow>("Static Reset");

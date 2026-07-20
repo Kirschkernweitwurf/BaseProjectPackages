@@ -9,7 +9,7 @@ namespace Base.Localization
     /// </summary>
     public static class LocalizationMenu
     {
-        private const string Root = "Tools/Base Packages/Localization/";
+        private const string Root = "Tools/Base Packages/Assets/Localization/";
 
         [DynamicMenuItem(Root + "Pull All String Tables")]
         private static void PullAll() => GoogleSheetsSync.SyncAll(ESyncDirection.Pull);

@@ -60,7 +60,7 @@ namespace Base.ToolPackage.Editor.MenuItemOverview
 #endregion
 
         /// <summary>Opens or focuses the window from the Tools menu.</summary>
-        [DynamicMenuItem("Tools/Base Packages/Code Health/Menu Item Overview")]
+        [DynamicMenuItem("Tools/Base Packages/Code/Health/Menu Item Overview")]
         private static void Open()
         {
             MenuItemOverviewWindow window = GetWindow<MenuItemOverviewWindow>("Menu Items");
