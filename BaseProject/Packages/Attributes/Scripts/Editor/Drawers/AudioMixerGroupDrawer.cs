@@ -17,7 +17,8 @@ namespace Base.AttributePackage.Editor
         {
             if (property.propertyType != SerializedPropertyType.ObjectReference)
             {
-                EditorGUI.LabelField(position, label.text, "Use [AudioMixerGroup] with an AudioMixerGroup field.");
+                EditorGUI.LabelField(position, label.text,
+                    AttributeNames.Usage<AudioMixerGroupAttribute>("an AudioMixerGroup field"));
                 return;
             }
 

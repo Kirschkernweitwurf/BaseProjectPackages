@@ -18,11 +18,16 @@ namespace Base.AttributePackage.Editor
 
         private static GUIStyle _signStyle;
 
+        private static GUIStyle SignStyle => _signStyle ??= new GUIStyle(EditorStyles.label)
+        {
+            alignment = TextAnchor.MiddleLeft
+        };
+
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             if (property.propertyType != SerializedPropertyType.Float)
             {
-                EditorGUI.LabelField(position, label.text, "Use [Percentage] with a float.");
+                EditorGUI.LabelField(position, label.text, AttributeNames.Usage<PercentageAttribute>("a float"));
                 return;
             }
 
@@ -57,10 +62,5 @@ namespace Base.AttributePackage.Editor
 
             EditorGUI.EndProperty();
         }
-
-        private static GUIStyle SignStyle => _signStyle ??= new GUIStyle(EditorStyles.label)
-        {
-            alignment = TextAnchor.MiddleLeft
-        };
     }
 }

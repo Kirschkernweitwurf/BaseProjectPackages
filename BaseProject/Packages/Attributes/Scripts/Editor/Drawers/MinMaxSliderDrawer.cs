@@ -14,7 +14,7 @@ namespace Base.AttributePackage.Editor
         {
             if (property.propertyType != SerializedPropertyType.Vector2)
             {
-                EditorGUI.LabelField(position, label.text, "Use [MinMaxSlider] with a Vector2.");
+                EditorGUI.LabelField(position, label.text, AttributeNames.Usage<MinMaxSliderAttribute>("a Vector2"));
                 return;
             }
 

@@ -1,4 +1,3 @@
-#if UNITY_EDITOR
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -11,19 +10,22 @@ namespace Base.AttributePackage.Editor
     /// Stores the map's GUID, so it survives renames.
     /// </summary>
     [CustomPropertyDrawer(typeof(InputActionMapReference))]
-    public class InputActionMapReferenceDrawer : PropertyDrawer
+    public sealed class InputActionMapReferenceDrawer : PropertyDrawer
     {
+        private const string MissingAssetLabel = "<assign asset>";
+        private const float Spacing = 4f;
+
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             EditorGUI.BeginProperty(position, label, property);
             position = EditorGUI.PrefixLabel(position, label);
 
-            SerializedProperty assetProp = property.FindPropertyRelative("asset");
-            SerializedProperty mapIdProp = property.FindPropertyRelative("mapId");
+            SerializedProperty assetProp = property.FindPropertyRelative(InputActionMapReference.AssetFieldName);
+            SerializedProperty mapIdProp = property.FindPropertyRelative(InputActionMapReference.MapIdFieldName);
 
-            float half = position.width * 0.5f - 2f;
+            float half = (position.width - Spacing) * 0.5f;
             Rect assetRect = new(position.x, position.y, half, position.height);
-            Rect mapRect = new(position.x + half + 4, position.y, half, position.height);
+            Rect mapRect = new(position.x + half + Spacing, position.y, half, position.height);
 
             EditorGUI.PropertyField(assetRect, assetProp, GUIContent.none);
 
@@ -32,10 +34,7 @@ namespace Base.AttributePackage.Editor
             {
                 using (new EditorGUI.DisabledScope(true))
                 {
-                    EditorGUI.Popup(mapRect, 0, new[]
-                    {
-                        "<assign asset>"
-                    });
+                    EditorGUI.Popup(mapRect, 0, new[] { MissingAssetLabel });
                 }
 
                 EditorGUI.EndProperty();
@@ -63,4 +62,3 @@ namespace Base.AttributePackage.Editor
         }
     }
 }
-#endif

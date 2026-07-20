@@ -11,8 +11,15 @@ namespace Base.AttributePackage.Editor
     /// </summary>
     public static class HandlerRegistry
     {
+        private static IAfterFieldHandler[] _afterField;
+        private static IBeforeFieldHandler[] _beforeField;
+        private static IEnableHandler[] _enable;
+        private static IInlineFieldWidget[] _inlineWidgets;
+        private static IVisibilityHandler[] _visibility;
+
         /// <summary>All before-field handlers, sorted by order.</summary>
-        public static IBeforeFieldHandler[] BeforeField => _beforeField ??= CreateBeforeField();
+        public static IBeforeFieldHandler[] BeforeField
+            => _beforeField ??= CreateSorted<IBeforeFieldHandler>(handler => handler.Order);
 
         /// <summary>All visibility handlers.</summary>
         public static IVisibilityHandler[] Visibility => _visibility ??= Create<IVisibilityHandler>();
@@ -21,16 +28,12 @@ namespace Base.AttributePackage.Editor
         public static IEnableHandler[] Enable => _enable ??= Create<IEnableHandler>();
 
         /// <summary>All after-field handlers, sorted by order.</summary>
-        public static IAfterFieldHandler[] AfterField => _afterField ??= CreateAfterField();
+        public static IAfterFieldHandler[] AfterField
+            => _afterField ??= CreateSorted<IAfterFieldHandler>(handler => handler.Order);
 
         /// <summary>All inline field widgets, sorted by order.</summary>
-        public static IInlineFieldWidget[] InlineWidgets => _inlineWidgets ??= CreateInlineWidgets();
-
-        private static IBeforeFieldHandler[] _beforeField;
-        private static IVisibilityHandler[] _visibility;
-        private static IEnableHandler[] _enable;
-        private static IAfterFieldHandler[] _afterField;
-        private static IInlineFieldWidget[] _inlineWidgets;
+        public static IInlineFieldWidget[] InlineWidgets
+            => _inlineWidgets ??= CreateSorted<IInlineFieldWidget>(widget => widget.Order);
 
         private static T[] Create<T>()
         {
@@ -44,25 +47,11 @@ namespace Base.AttributePackage.Editor
             return handlers.ToArray();
         }
 
-        private static IBeforeFieldHandler[] CreateBeforeField()
+        private static T[] CreateSorted<T>(Func<T, int> order)
         {
-            IBeforeFieldHandler[] handlers = Create<IBeforeFieldHandler>();
-            Array.Sort(handlers, comparison: (a, b) => a.Order.CompareTo(b.Order));
+            T[] handlers = Create<T>();
+            Array.Sort(handlers, comparison: (a, b) => order(a).CompareTo(order(b)));
             return handlers;
-        }
-
-        private static IAfterFieldHandler[] CreateAfterField()
-        {
-            IAfterFieldHandler[] handlers = Create<IAfterFieldHandler>();
-            Array.Sort(handlers, comparison: (a, b) => a.Order.CompareTo(b.Order));
-            return handlers;
-        }
-
-        private static IInlineFieldWidget[] CreateInlineWidgets()
-        {
-            IInlineFieldWidget[] widgets = Create<IInlineFieldWidget>();
-            Array.Sort(widgets, comparison: (a, b) => a.Order.CompareTo(b.Order));
-            return widgets;
         }
     }
 }

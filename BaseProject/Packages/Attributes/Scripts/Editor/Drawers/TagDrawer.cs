@@ -15,7 +15,7 @@ namespace Base.AttributePackage.Editor
         {
             if (property.propertyType != SerializedPropertyType.String)
             {
-                EditorGUI.LabelField(position, label.text, "Use [Tag] with a string.");
+                EditorGUI.LabelField(position, label.text, AttributeNames.Usage<TagAttribute>("a string"));
                 return;
             }
 

@@ -47,7 +47,7 @@ namespace Base.AttributePackage.Editor
             }
             else
             {
-                EditorGUI.LabelField(position, label.text, "Use [SceneName] with string or int.");
+                EditorGUI.LabelField(position, label.text, AttributeNames.Usage<SceneNameAttribute>("a string or int"));
             }
 
             EditorGUI.EndProperty();

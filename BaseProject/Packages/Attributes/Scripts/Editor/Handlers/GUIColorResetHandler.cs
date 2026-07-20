@@ -1,4 +1,3 @@
-using Base.AttributePackage.ColorAttributes;
 using UnityEngine;
 
 namespace Base.AttributePackage.Editor

@@ -7,6 +7,6 @@ namespace Base.AttributePackage
         public const string LogPointer = "See Required References window\n" + MenuLocation;
 
         /// <summary>Human-readable menu location of the overview window.</summary>
-        public const string MenuLocation = "Tools > Base Packages > Required References";
+        public const string MenuLocation = "Tools > Base Packages > Unity Editor > References > Required References";
     }
 }

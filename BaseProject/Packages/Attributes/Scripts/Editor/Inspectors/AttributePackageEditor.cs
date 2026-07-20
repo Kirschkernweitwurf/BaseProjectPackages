@@ -7,16 +7,16 @@ using UnityEngine;
 namespace Base.AttributePackage.Editor
 {
     /// <summary>
-    /// Base inspector for the attribute package. Handles the serialized script field, foldout, tab and
+    /// Base inspector for the attribute package. Handles the serialized script field, foldout and
     /// collapsible title grouping, then delegates each member to <see cref="MemberRenderer"/> and the
-    /// handler pipeline. Read-only native members and buttons are drawn by their renderers.
-    /// Derive concrete editors targeting MonoBehaviour and ScriptableObject.
+    /// handler pipeline. Tab groups are drawn by <see cref="TabGroupRenderer"/>, read-only native
+    /// members and buttons by their renderers. Derive concrete editors targeting MonoBehaviour and
+    /// ScriptableObject.
     /// </summary>
     public abstract class AttributePackageEditor : UnityEditor.Editor
     {
         private const string KeySeparator = ".";
         private const string ScriptPropertyPath = "m_Script";
-        private const string TabKeyPrefix = "TAB";
 
         public override void OnInspectorGUI()
         {
@@ -29,15 +29,16 @@ namespace Base.AttributePackage.Editor
 
         private static void DrawScriptField(SerializedProperty scriptProperty)
         {
-            bool previousState = GUI.enabled;
-            GUI.enabled = false;
-            EditorGUILayout.PropertyField(scriptProperty, true);
-            GUI.enabled = previousState;
+            using (new EditorGUI.DisabledScope(true))
+                EditorGUILayout.PropertyField(scriptProperty, true);
         }
 
         private void DrawFields()
         {
-            List<SerializedProperty> properties = CollectProperties();
+            List<SerializedProperty> properties = CollectProperties(out SerializedProperty script);
+            if (script != null)
+                DrawScriptField(script);
+
             Type type = target.GetType();
 
             int index = 0;
@@ -55,7 +56,7 @@ namespace Base.AttributePackage.Editor
                 {
                     activeFoldout = null;
                     activeTitleSection = null;
-                    index = DrawTabGroup(properties, index);
+                    index = TabGroupRenderer.Draw(properties, index, this);
                     continue;
                 }
 
@@ -115,9 +116,11 @@ namespace Base.AttributePackage.Editor
             }
         }
 
-        private List<SerializedProperty> CollectProperties()
+        private List<SerializedProperty> CollectProperties(out SerializedProperty script)
         {
+            script = null;
             List<SerializedProperty> properties = new();
+
             SerializedProperty iterator = serializedObject.GetIterator();
             bool enterChildren = true;
 
@@ -126,65 +129,12 @@ namespace Base.AttributePackage.Editor
                 enterChildren = false;
 
                 if (iterator.propertyPath == ScriptPropertyPath)
-                {
-                    DrawScriptField(iterator);
-                    continue;
-                }
-
-                properties.Add(iterator.Copy());
+                    script = iterator.Copy();
+                else
+                    properties.Add(iterator.Copy());
             }
 
             return properties;
-        }
-
-        private int DrawTabGroup(List<SerializedProperty> properties, int startIndex)
-        {
-            Type type = target.GetType();
-            string group = ReflectionCache.GetField(type, properties[startIndex].name)
-                .GetCustomAttribute<TabAttribute>()
-                .Group;
-
-            List<SerializedProperty> members = new();
-            List<FieldInfo> fields = new();
-            List<string> memberTabs = new();
-            List<string> tabOrder = new();
-
-            int index = startIndex;
-            while (index < properties.Count)
-            {
-                FieldInfo field = ReflectionCache.GetField(type, properties[index].name);
-                TabAttribute tab = field?.GetCustomAttribute<TabAttribute>();
-                if (tab == null || tab.Group != group)
-                    break;
-
-                members.Add(properties[index]);
-                fields.Add(field);
-                memberTabs.Add(tab.Name);
-                if (!tabOrder.Contains(tab.Name))
-                    tabOrder.Add(tab.Name);
-
-                index++;
-            }
-
-            string key = type.FullName + KeySeparator + TabKeyPrefix + KeySeparator + group;
-            int stored = Mathf.Clamp(EditorPrefs.GetInt(key, 0), 0, tabOrder.Count - 1);
-
-            int selected = GUILayout.Toolbar(stored, tabOrder.ToArray());
-            if (selected != stored)
-                EditorPrefs.SetInt(key, selected);
-
-            string selectedTab = tabOrder[selected];
-
-            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-            for (int i = 0; i < members.Count; i++)
-            {
-                if (memberTabs[i] == selectedTab)
-                    MemberRenderer.Draw(members[i], fields[i], this);
-            }
-
-            EditorGUILayout.EndVertical();
-
-            return index;
         }
 
         private bool DrawFoldoutHeader(string foldoutName)

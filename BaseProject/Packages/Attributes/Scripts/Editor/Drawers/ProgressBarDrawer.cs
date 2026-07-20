@@ -1,5 +1,3 @@
-using System;
-using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -14,13 +12,32 @@ namespace Base.AttributePackage.Editor
     public sealed class ProgressBarDrawer : PropertyDrawer
     {
         private static readonly Color DefaultColor = new(0.26f, 0.59f, 0.98f);
+
         private static GUIStyle _valueStyle;
+
+        private static GUIStyle ValueStyle
+        {
+            get
+            {
+                if (_valueStyle != null)
+                    return _valueStyle;
+
+                _valueStyle = new GUIStyle(EditorStyles.miniLabel)
+                {
+                    alignment = TextAnchor.MiddleCenter
+                };
+
+                _valueStyle.normal.textColor = Color.white;
+                return _valueStyle;
+            }
+        }
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             if (!IsNumber(property))
             {
-                EditorGUI.LabelField(position, label.text, "Use [ProgressBar] with an int or float.");
+                EditorGUI.LabelField(position, label.text,
+                    AttributeNames.Usage<ProgressBarAttribute>("an int or float"));
                 return;
             }
 
@@ -45,17 +62,7 @@ namespace Base.AttributePackage.Editor
             EditorGUI.DrawRect(barRect, new Color(0f, 0f, 0f, 0.25f));
             EditorGUI.DrawRect(new Rect(barRect.x, barRect.y, barRect.width * fill, barRect.height), color);
 
-            if (_valueStyle == null)
-            {
-                _valueStyle = new GUIStyle(EditorStyles.miniLabel)
-                {
-                    alignment = TextAnchor.MiddleCenter
-                };
-
-                _valueStyle.normal.textColor = Color.white;
-            }
-
-            EditorGUI.LabelField(barRect, Format(value) + " / " + Format(max), _valueStyle);
+            EditorGUI.LabelField(barRect, Format(value) + " / " + Format(max), ValueStyle);
 
             EditorGUI.EndProperty();
         }
@@ -94,20 +101,7 @@ namespace Base.AttributePackage.Editor
                 return bar.Max;
 
             Object target = property.serializedObject.targetObject;
-            Type type = target.GetType();
-
-            object value = null;
-            FieldInfo field = ReflectionCache.GetField(type, bar.MaxMember);
-            if (field != null)
-            {
-                value = field.GetValue(target);
-            }
-            else
-            {
-                PropertyInfo info = ReflectionCache.GetProperty(type, bar.MaxMember);
-                if (info != null && info.CanRead)
-                    value = info.GetValue(target, null);
-            }
+            MemberValueResolver.TryResolve(target.GetType(), target, bar.MaxMember, out object value);
 
             if (value is float floatValue)
                 return floatValue;

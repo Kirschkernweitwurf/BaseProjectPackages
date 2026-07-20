@@ -18,6 +18,13 @@ namespace Base.AttributePackage.Editor
         private static GUIStyle _labelStyle;
         private static GUIStyle _foldoutStyle;
 
+        private static GUIStyle LabelStyle => _labelStyle ??= new GUIStyle(EditorStyles.boldLabel);
+
+        private static GUIStyle FoldoutStyle => _foldoutStyle ??= new GUIStyle(EditorStyles.foldout)
+        {
+            fontStyle = FontStyle.Bold
+        };
+
         /// <summary>Draws a plain bold title with an underline.</summary>
         public static void DrawPlain(TitleAttribute attribute)
         {
@@ -80,11 +87,5 @@ namespace Base.AttributePackage.Editor
                 : DefaultLine);
         }
 
-        private static GUIStyle LabelStyle => _labelStyle ??= new GUIStyle(EditorStyles.boldLabel);
-
-        private static GUIStyle FoldoutStyle => _foldoutStyle ??= new GUIStyle(EditorStyles.foldout)
-        {
-            fontStyle = FontStyle.Bold
-        };
     }
 }

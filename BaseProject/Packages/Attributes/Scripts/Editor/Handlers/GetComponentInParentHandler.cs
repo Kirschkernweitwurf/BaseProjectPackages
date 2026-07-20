@@ -35,38 +35,11 @@ namespace Base.AttributePackage.Editor
             if (type == null)
                 return;
 
-            Object found = Search(component.transform, type, attribute.Name, attribute.IncludeInactive);
+            Object found = ParentComponentSearch.FindInParents(component.transform, type, attribute.Name,
+                attribute.IncludeInactive);
+
             if (found != null)
                 context.Property.objectReferenceValue = found;
-        }
-
-        private static Object Search(Transform start, Type type, string name, bool includeInactive)
-        {
-            for (Transform current = start.parent; current != null; current = current.parent)
-            {
-                if (!includeInactive && !current.gameObject.activeInHierarchy)
-                    continue;
-
-                if (!string.IsNullOrEmpty(name) && current.name != name)
-                    continue;
-
-                Object match = Match(current, type);
-                if (match != null)
-                    return match;
-            }
-
-            return null;
-        }
-
-        private static Object Match(Transform current, Type type)
-        {
-            if (type == typeof(Transform))
-                return current;
-
-            if (type == typeof(GameObject))
-                return current.gameObject;
-
-            return current.GetComponent(type);
         }
     }
 }

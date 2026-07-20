@@ -14,7 +14,7 @@ namespace Base.AttributePackage.Editor
         {
             if (property.propertyType != SerializedPropertyType.Enum)
             {
-                EditorGUI.LabelField(position, label.text, "Use [EnumFlags] with an enum.");
+                EditorGUI.LabelField(position, label.text, AttributeNames.Usage<EnumFlagsAttribute>("an enum"));
                 return;
             }
 
