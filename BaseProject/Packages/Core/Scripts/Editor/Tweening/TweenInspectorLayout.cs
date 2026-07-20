@@ -1,23 +1,21 @@
 using System;
 using System.Reflection;
+using Base.AttributePackage;
+using Base.AttributePackage.Editor;
 using Base.CorePackage.Tweening.Core.Data;
 using UnityEditor;
-using Object = UnityEngine.Object;
 
 namespace Base.CorePackage.Editor.Tweening
 {
     /// <summary>
-    /// Shared inspector layout for tween components and tween profile assets. It draws the fields
-    /// in a fixed order (profile, values, timing) and hides every field that a turned on asset
-    /// already provides, so each visible field is one that actually applies.
+    /// Shared inspector layout for tween components and tween profile assets. It draws the fields in a
+    /// fixed order (profile, values, timing, references) and hides every field that a turned on asset
+    /// already provides. Value and reference fields run through the attribute package pipeline, so
+    /// attributes like [GetComponent] and [TweenValue] keep working here. Reference fields are always
+    /// drawn last, separated by a space.
     /// </summary>
     internal static class TweenInspectorLayout
     {
-        private const BindingFlags FieldFlags = BindingFlags.Instance
-            | BindingFlags.Public
-            | BindingFlags.NonPublic
-            | BindingFlags.DeclaredOnly;
-
         private const string LoopSettingsField = "loopSettings";
         private const string MissingAssetWarning = "No asset assigned. The fields below are used instead.";
         private const string ProfileField = "profile";
@@ -32,9 +30,10 @@ namespace Base.CorePackage.Editor.Tweening
         /// <summary>
         /// Draws the full inspector for the given tween component or tween profile.
         /// </summary>
-        /// <param name="serializedObject">The object being inspected.</param>
-        public static void Draw(SerializedObject serializedObject)
+        /// <param name="editor">The attribute package editor whose object is inspected.</param>
+        public static void Draw(AttributePackageEditor editor)
         {
+            SerializedObject serializedObject = editor.serializedObject;
             serializedObject.Update();
 
             DrawScript(serializedObject);
@@ -44,10 +43,12 @@ namespace Base.CorePackage.Editor.Tweening
             if (usesProfile)
                 DrawAsset(serializedObject, ProfileField, ProfileInfo);
 
-            DrawFields(serializedObject, usesProfile);
+            DrawValueFields(editor, usesProfile);
 
             if (!usesProfile)
                 DrawTiming(serializedObject);
+
+            DrawReferenceFields(editor);
 
             serializedObject.ApplyModifiedProperties();
         }
@@ -100,8 +101,10 @@ namespace Base.CorePackage.Editor.Tweening
             EditorGUILayout.HelpBox(info, MessageType.None);
         }
 
-        private static void DrawFields(SerializedObject serializedObject, bool usesProfile)
+        private static void DrawValueFields(AttributePackageEditor editor, bool usesProfile)
         {
+            SerializedObject serializedObject = editor.serializedObject;
+            Type type = serializedObject.targetObject.GetType();
             SerializedProperty property = serializedObject.GetIterator();
             bool enterChildren = true;
 
@@ -112,10 +115,38 @@ namespace Base.CorePackage.Editor.Tweening
                 if (IsLayoutField(property.name))
                     continue;
 
-                if (usesProfile && IsProfileValue(serializedObject.targetObject, property.name))
+                if (IsReferenceField(type, property.name))
                     continue;
 
-                EditorGUILayout.PropertyField(property, true);
+                if (usesProfile && IsProfileValue(type, property.name))
+                    continue;
+
+                DrawMember(editor, property, type);
+            }
+        }
+
+        private static void DrawReferenceFields(AttributePackageEditor editor)
+        {
+            SerializedObject serializedObject = editor.serializedObject;
+            Type type = serializedObject.targetObject.GetType();
+            SerializedProperty property = serializedObject.GetIterator();
+            bool enterChildren = true;
+            bool drewSpace = false;
+
+            while (property.NextVisible(enterChildren))
+            {
+                enterChildren = false;
+
+                if (!IsReferenceField(type, property.name))
+                    continue;
+
+                if (!drewSpace)
+                {
+                    EditorGUILayout.Space();
+                    drewSpace = true;
+                }
+
+                DrawMember(editor, property, type);
             }
         }
 
@@ -137,6 +168,12 @@ namespace Base.CorePackage.Editor.Tweening
             EditorGUILayout.PropertyField(serializedObject.FindProperty(LoopSettingsField), true);
         }
 
+        private static void DrawMember(AttributePackageEditor editor, SerializedProperty property, Type type)
+        {
+            FieldInfo field = ReflectionCache.GetField(type, property.name);
+            MemberRenderer.Draw(property.Copy(), field, editor);
+        }
+
         private static bool IsLayoutField(string propertyName) => propertyName == LoopSettingsField
             || propertyName == ProfileField
             || propertyName == ScriptField
@@ -145,17 +182,21 @@ namespace Base.CorePackage.Editor.Tweening
             || propertyName == UseProfileField
             || propertyName == UseSettingsAssetField;
 
-        private static bool IsProfileValue(Object target, string propertyName)
+        private static bool IsReferenceField(Type type, string propertyName)
         {
-            for (Type type = target.GetType(); type != null; type = type.BaseType)
-            {
-                FieldInfo field = type.GetField(propertyName, FieldFlags);
+            FieldInfo field = ReflectionCache.GetField(type, propertyName);
 
-                if (field != null)
-                    return field.IsDefined(typeof(TweenValueAttribute), false);
-            }
+            if (field == null)
+                return false;
 
-            return false;
+            return field.IsDefined(typeof(GetComponentAttribute), false)
+                || field.IsDefined(typeof(GetComponentInParentAttribute), false);
+        }
+
+        private static bool IsProfileValue(Type type, string propertyName)
+        {
+            FieldInfo field = ReflectionCache.GetField(type, propertyName);
+            return field?.IsDefined(typeof(TweenValueAttribute), false) ?? false;
         }
     }
 }
