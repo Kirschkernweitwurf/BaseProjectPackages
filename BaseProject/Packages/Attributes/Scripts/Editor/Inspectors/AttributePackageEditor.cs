@@ -140,8 +140,11 @@ namespace Base.AttributePackage.Editor
         private bool DrawFoldoutHeader(string foldoutName)
         {
             string key = target.GetType().FullName + KeySeparator + foldoutName;
-            bool expanded = EditorGUILayout.Foldout(EditorPrefs.GetBool(key, true), foldoutName, true);
-            EditorPrefs.SetBool(key, expanded);
+            bool stored = EditorPrefs.GetBool(key, true);
+            bool expanded = EditorGUILayout.Foldout(stored, foldoutName, true);
+            if (expanded != stored)
+                EditorPrefs.SetBool(key, expanded);
+
             return expanded;
         }
     }
