@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
@@ -18,6 +19,8 @@ namespace Base.AttributePackage.Editor
         private const string UnityAssemblyPrefix = "Unity";
 
         private const float WidgetGap = 2f;
+
+        private static readonly Dictionary<Type, bool> FrameworkTypes = new();
 
         private static float[] _widgetWidths;
 
@@ -161,10 +164,16 @@ namespace Base.AttributePackage.Editor
 
         private static bool IsFrameworkType(Type type)
         {
+            if (FrameworkTypes.TryGetValue(type, out bool cached))
+                return cached;
+
             string assembly = type.Assembly.GetName().Name;
-            return assembly.StartsWith(UnityAssemblyPrefix)
+            bool result = assembly.StartsWith(UnityAssemblyPrefix)
                 || assembly.StartsWith(SystemAssemblyPrefix)
                 || assembly == CoreLibraryAssembly;
+
+            FrameworkTypes[type] = result;
+            return result;
         }
     }
 }

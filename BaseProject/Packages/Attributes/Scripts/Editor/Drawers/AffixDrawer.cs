@@ -1,4 +1,3 @@
-using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
@@ -18,8 +17,8 @@ namespace Base.AttributePackage.Editor
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            PrefixAttribute prefix = fieldInfo?.GetCustomAttribute<PrefixAttribute>(false);
-            SuffixAttribute suffix = fieldInfo?.GetCustomAttribute<SuffixAttribute>(false);
+            PrefixAttribute prefix = ReflectionCache.GetAttribute<PrefixAttribute>(fieldInfo);
+            SuffixAttribute suffix = ReflectionCache.GetAttribute<SuffixAttribute>(fieldInfo);
 
             // When both attributes are present Unity chains two invocations. The suffix invocation owns
             // the drawing, the prefix invocation only forwards the value, so nothing is drawn twice.

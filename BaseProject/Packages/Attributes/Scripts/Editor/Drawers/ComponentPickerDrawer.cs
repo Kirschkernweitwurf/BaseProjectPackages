@@ -2,13 +2,15 @@ using System;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace Base.AttributePackage.Editor
 {
     /// <summary>
-    /// Draws fields marked with <see cref="ComponentPickerAttribute"/> and resolves drops of GameObjects
-    /// that carry more than one component of the field type.
+    /// Draws fields marked with <see cref="ComponentPickerAttribute"/>. Dropping a GameObject assigns
+    /// the first matching component through Unity's default handling. Every assigned field shows an
+    /// index badge that opens a picker menu for switching between the sibling components of the field
+    /// type; the badge is disabled while the GameObject holds no other component of that type. On
+    /// list elements the menu also offers adding every matching component at once.
     /// </summary>
     [CustomPropertyDrawer(typeof(ComponentPickerAttribute))]
     public sealed class ComponentPickerDrawer : PropertyDrawer
@@ -31,10 +33,8 @@ namespace Base.AttributePackage.Editor
                 return;
             }
 
-            HandleDragAndDrop(position, property, componentType);
-
             Component[] siblings = GetSiblings(property, componentType);
-            bool isBadgeVisible = siblings.Length > 1;
+            bool isBadgeVisible = property.objectReferenceValue != null;
 
             Rect fieldRect = position;
             if (isBadgeVisible)
@@ -58,21 +58,6 @@ namespace Base.AttributePackage.Editor
             return component.GetComponents(componentType);
         }
 
-        private static List<Component> CollectCandidates(Type componentType)
-        {
-            List<Component> result = new();
-            foreach (Object draggedObject in DragAndDrop.objectReferences)
-            {
-                GameObject gameObject = draggedObject as GameObject;
-                if (gameObject == null)
-                    continue;
-
-                result.AddRange(gameObject.GetComponents(componentType));
-            }
-
-            return result;
-        }
-
         private static SerializedProperty GetParentArray(SerializedProperty property)
         {
             int tokenIndex = property.propertyPath.LastIndexOf(ArrayToken, StringComparison.Ordinal);
@@ -85,6 +70,9 @@ namespace Base.AttributePackage.Editor
 
         private static void AssignSingle(SerializedObject serializedObject, string propertyPath, Component component)
         {
+            if (serializedObject.targetObject == null)
+                return;
+
             serializedObject.Update();
             SerializedProperty property = serializedObject.FindProperty(propertyPath);
             if (property == null)
@@ -96,6 +84,9 @@ namespace Base.AttributePackage.Editor
 
         private static void AddAll(SerializedObject serializedObject, string arrayPath, List<Component> components)
         {
+            if (serializedObject.targetObject == null)
+                return;
+
             serializedObject.Update();
             SerializedProperty arrayProperty = serializedObject.FindProperty(arrayPath);
             if (arrayProperty == null || !arrayProperty.isArray)
@@ -141,35 +132,15 @@ namespace Base.AttributePackage.Editor
             return -1;
         }
 
-        private void HandleDragAndDrop(Rect position, SerializedProperty property, Type componentType)
+        private static void ShowPickerMenu(SerializedObject serializedObject, string propertyPath,
+            List<Component> candidates)
         {
-            Event currentEvent = Event.current;
-            if (currentEvent.type != EventType.DragUpdated && currentEvent.type != EventType.DragPerform)
+            if (serializedObject.targetObject == null)
                 return;
 
-            if (!position.Contains(currentEvent.mousePosition))
+            SerializedProperty property = serializedObject.FindProperty(propertyPath);
+            if (property == null)
                 return;
-
-            List<Component> candidates = CollectCandidates(componentType);
-            if (candidates.Count < 2)
-                return;
-
-            DragAndDrop.visualMode = DragAndDropVisualMode.Link;
-            if (currentEvent.type != EventType.DragPerform)
-            {
-                currentEvent.Use();
-                return;
-            }
-
-            DragAndDrop.AcceptDrag();
-            currentEvent.Use();
-            ShowPickerMenu(property, candidates);
-        }
-
-        private void ShowPickerMenu(SerializedProperty property, List<Component> candidates)
-        {
-            SerializedObject serializedObject = property.serializedObject;
-            string propertyPath = property.propertyPath;
 
             GenericMenu menu = new();
             for (int i = 0; i < candidates.Count; i++)
@@ -193,7 +164,7 @@ namespace Base.AttributePackage.Editor
             menu.ShowAsContext();
         }
 
-        private void DrawIndexBadge(Rect position, SerializedProperty property, Component[] siblings)
+        private static void DrawIndexBadge(Rect position, SerializedProperty property, Component[] siblings)
         {
             Component component = property.objectReferenceValue as Component;
             int index = component == null
@@ -204,12 +175,16 @@ namespace Base.AttributePackage.Editor
                 ? "#?"
                 : $"#{index}";
 
-            GUIContent content = new(text, "Click to switch to another component of the same type.");
+            bool hasAlternatives = siblings.Length > 1;
+            GUIContent content = new(text, hasAlternatives
+                ? "Click to switch to another component of the same type."
+                : "The GameObject holds no other component of this type.");
 
-            if (!GUI.Button(position, content, EditorStyles.miniButton))
-                return;
-
-            ShowPickerMenu(property, new List<Component>(siblings));
+            using (new EditorGUI.DisabledScope(!hasAlternatives))
+            {
+                if (GUI.Button(position, content, EditorStyles.miniButton))
+                    ShowPickerMenu(property.serializedObject, property.propertyPath, new List<Component>(siblings));
+            }
         }
 
         private Type GetComponentType()

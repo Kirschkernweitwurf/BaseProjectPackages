@@ -49,7 +49,7 @@ namespace Base.AttributePackage.Editor
 
             EditorGUI.BeginProperty(position, label, property);
             int selected = EditorGUI.Popup(position, label.text, current, names);
-            if (selected >= 0 && selected < groups.Length)
+            if (selected >= 0 && selected < groups.Length && selected != current)
                 property.objectReferenceValue = groups[selected];
 
             EditorGUI.EndProperty();

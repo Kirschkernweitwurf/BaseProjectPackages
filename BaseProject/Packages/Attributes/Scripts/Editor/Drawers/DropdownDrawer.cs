@@ -33,7 +33,7 @@ namespace Base.AttributePackage.Editor
 
             EditorGUI.BeginProperty(position, label, property);
             int selected = EditorGUI.Popup(position, label.text, current, labels);
-            if (selected >= 0 && selected < values.Count)
+            if (selected >= 0 && selected < values.Count && selected != current)
                 SetValue(property, values[selected]);
 
             EditorGUI.EndProperty();

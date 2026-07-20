@@ -15,14 +15,26 @@ namespace Base.AttributePackage.Editor
         private const string TargetTypeField = "m_Type";
         private const string UseForChildrenField = "m_UseForChildren";
 
+        private static readonly Dictionary<Type, bool> Results = new();
+
         private static HashSet<Type> _exactTypes;
         private static List<Type> _baseTypes;
 
         /// <summary>Returns true when the given type is drawn by a registered property drawer.</summary>
         public static bool HasDrawer(Type type)
         {
+            if (Results.TryGetValue(type, out bool cached))
+                return cached;
+
             Build();
 
+            bool result = Resolve(type);
+            Results[type] = result;
+            return result;
+        }
+
+        private static bool Resolve(Type type)
+        {
             if (_exactTypes.Contains(type))
                 return true;
 

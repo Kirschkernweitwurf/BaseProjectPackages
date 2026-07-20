@@ -54,7 +54,8 @@ namespace Base.AttributePackage.Editor
             GUILayout.Space(6f);
 
             string key = ownerType.FullName + KeySeparator + FoldoutKeyPrefix + KeySeparator + attribute.Title;
-            bool expanded = EditorPrefs.GetBool(key, attribute.DefaultExpanded);
+            bool stored = EditorPrefs.GetBool(key, attribute.DefaultExpanded);
+            bool expanded = stored;
 
             Color previous = FoldoutStyle.normal.textColor;
             if (hasColor)
@@ -71,7 +72,8 @@ namespace Base.AttributePackage.Editor
                 FoldoutStyle.onNormal.textColor = previous;
             }
 
-            EditorPrefs.SetBool(key, expanded);
+            if (expanded != stored)
+                EditorPrefs.SetBool(key, expanded);
 
             DrawUnderline(hasColor, color);
             GUILayout.Space(2f);
