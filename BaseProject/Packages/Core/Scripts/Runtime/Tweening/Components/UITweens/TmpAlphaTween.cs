@@ -1,3 +1,4 @@
+using Base.AttributePackage;
 using Base.CorePackage.Tweening.Core;
 using Base.CorePackage.Tweening.Core.Data;
 using Base.CorePackage.Tweening.Core.Data.Profiles;
@@ -22,27 +23,18 @@ namespace Base.CorePackage.Tweening.Components.UITweens
         [SerializeField] [TweenValue] [Tooltip("The target alpha value to tween to.")]
         private float targetAlpha = 1f;
 
-        private TMP_Text _text;
+        [GetComponent] [SerializeField] private TMP_Text text;
 
         protected override TweenValueProfileSo<float> ProfileAsset => profile;
 
-        protected override Object TweenTarget => _text;
+        protected override Object TweenTarget => text;
 
         protected override float LocalStartValue => startAlpha;
 
         protected override float LocalTargetValue => targetAlpha;
 
-#region Unity Callbacks
-        protected override void Awake()
-        {
-            _text = GetComponent<TMP_Text>();
+        protected override float GetCurrentValue() => text.alpha;
 
-            base.Awake();
-        }
-#endregion
-
-        protected override float GetCurrentValue() => _text.alpha;
-
-        protected override void ApplyValue(float value) => _text.alpha = value;
+        protected override void ApplyValue(float value) => text.alpha = value;
     }
 }
