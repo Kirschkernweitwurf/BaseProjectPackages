@@ -23,8 +23,8 @@ namespace Base.AttributePackage.Editor
         public static int Draw(List<SerializedProperty> properties, int startIndex, AttributePackageEditor editor)
         {
             Type type = editor.target.GetType();
-            string group = ReflectionCache.GetField(type, properties[startIndex].name)
-                .GetCustomAttribute<TabAttribute>()
+            string group = ReflectionCache
+                .GetAttribute<TabAttribute>(ReflectionCache.GetField(type, properties[startIndex].name))
                 .Group;
 
             List<SerializedProperty> members = new();
@@ -36,7 +36,7 @@ namespace Base.AttributePackage.Editor
             while (index < properties.Count)
             {
                 FieldInfo field = ReflectionCache.GetField(type, properties[index].name);
-                TabAttribute tab = field?.GetCustomAttribute<TabAttribute>();
+                TabAttribute tab = ReflectionCache.GetAttribute<TabAttribute>(field);
                 if (tab == null || tab.Group != group)
                     break;
 

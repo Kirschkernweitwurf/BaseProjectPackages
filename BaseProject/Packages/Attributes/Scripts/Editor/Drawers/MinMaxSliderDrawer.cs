@@ -34,14 +34,18 @@ namespace Base.AttributePackage.Editor
             float min = range.x;
             float max = range.y;
 
+            EditorGUI.BeginChangeCheck();
+
             min = EditorGUI.FloatField(minRect, min);
             EditorGUI.MinMaxSlider(sliderRect, ref min, ref max, attribute.Min, attribute.Max);
             max = EditorGUI.FloatField(maxRect, max);
 
-            min = Mathf.Clamp(min, attribute.Min, max);
-            max = Mathf.Clamp(max, min, attribute.Max);
-
-            property.vector2Value = new Vector2(min, max);
+            if (EditorGUI.EndChangeCheck())
+            {
+                min = Mathf.Clamp(min, attribute.Min, max);
+                max = Mathf.Clamp(max, min, attribute.Max);
+                property.vector2Value = new Vector2(min, max);
+            }
 
             EditorGUI.EndProperty();
         }

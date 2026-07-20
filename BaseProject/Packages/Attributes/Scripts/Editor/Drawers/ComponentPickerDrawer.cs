@@ -33,9 +33,8 @@ namespace Base.AttributePackage.Editor
 
             HandleDragAndDrop(position, property, componentType);
 
-            ComponentPickerAttribute pickerAttribute = (ComponentPickerAttribute)attribute;
             Component[] siblings = GetSiblings(property, componentType);
-            bool isBadgeVisible = pickerAttribute.ShowIndexBadge && siblings.Length > 1;
+            bool isBadgeVisible = siblings.Length > 1;
 
             Rect fieldRect = position;
             if (isBadgeVisible)
@@ -171,7 +170,6 @@ namespace Base.AttributePackage.Editor
         {
             SerializedObject serializedObject = property.serializedObject;
             string propertyPath = property.propertyPath;
-            ComponentPickerAttribute pickerAttribute = (ComponentPickerAttribute)attribute;
 
             GenericMenu menu = new();
             for (int i = 0; i < candidates.Count; i++)
@@ -183,7 +181,7 @@ namespace Base.AttributePackage.Editor
             }
 
             SerializedProperty arrayProperty = GetParentArray(property);
-            if (pickerAttribute.AllowFillList && arrayProperty != null)
+            if (arrayProperty != null)
             {
                 string arrayPath = arrayProperty.propertyPath;
                 List<Component> all = new(candidates);
