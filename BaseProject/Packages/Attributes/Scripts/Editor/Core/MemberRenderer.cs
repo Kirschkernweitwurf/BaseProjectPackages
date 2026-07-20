@@ -19,6 +19,8 @@ namespace Base.AttributePackage.Editor
 
         private const float WidgetGap = 2f;
 
+        private static float[] _widgetWidths;
+
         /// <summary>Draws a top-level member through all handlers.</summary>
         public static void Draw(SerializedProperty property, FieldInfo field, AttributePackageEditor editor)
             => Draw(property, field, editor.target.GetType(), editor.target, editor);
@@ -90,13 +92,15 @@ namespace Base.AttributePackage.Editor
         {
             SerializedProperty property = context.Property;
             IInlineFieldWidget[] widgets = HandlerRegistry.InlineWidgets;
+            _widgetWidths ??= new float[widgets.Length];
 
             float trailing = 0f;
-            foreach (IInlineFieldWidget widget in widgets)
+            for (int i = 0; i < widgets.Length; i++)
             {
-                float w = widget.GetWidth(context);
-                if (w > 0f)
-                    trailing += w + WidgetGap;
+                float width = widgets[i].GetWidth(context);
+                _widgetWidths[i] = width;
+                if (width > 0f)
+                    trailing += width + WidgetGap;
             }
 
             if (trailing <= 0f)
@@ -111,18 +115,15 @@ namespace Base.AttributePackage.Editor
             EditorGUI.PropertyField(fieldRect, property, true);
 
             float x = fieldRect.xMax + WidgetGap;
-            using (new EditorGUI.DisabledScope(false))
+            for (int i = 0; i < widgets.Length; i++)
             {
-                foreach (IInlineFieldWidget widget in widgets)
-                {
-                    float w = widget.GetWidth(context);
-                    if (w <= 0f)
-                        continue;
+                float width = _widgetWidths[i];
+                if (width <= 0f)
+                    continue;
 
-                    Rect widgetRect = new(x, line.y, w, EditorGUIUtility.singleLineHeight);
-                    widget.Draw(widgetRect, context);
-                    x += w + WidgetGap;
-                }
+                Rect widgetRect = new(x, line.y, width, EditorGUIUtility.singleLineHeight);
+                widgets[i].Draw(widgetRect, context);
+                x += width + WidgetGap;
             }
         }
 

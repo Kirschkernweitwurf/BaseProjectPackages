@@ -6,12 +6,29 @@ using UnityEngine;
 namespace Base.AttributePackage.Editor
 {
     /// <summary>
-    /// Draws an enum as toolbar buttons for <see cref="EnumToggleButtonsAttribute"/>.
-    /// Flags enums become multi-select toggles.
+    /// Draws an enum as toggle buttons for <see cref="EnumToggleButtonsAttribute"/>. Flags enums
+    /// become multi-select toggles. Buttons wrap onto additional rows when they would not fit next to
+    /// each other, so labels stay readable no matter how many values the enum has. Labels and values
+    /// are cached per enum type.
     /// </summary>
     [CustomPropertyDrawer(typeof(EnumToggleButtonsAttribute))]
     public sealed class EnumToggleButtonsDrawer : PropertyDrawer
     {
+        private const float ContentWidthMargin = 40f;
+        private const float RowSpacing = 2f;
+
+        private static readonly Dictionary<Type, EnumButtonLayout> Layouts = new();
+
+        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+        {
+            EnumButtonLayout layout = ResolveLayout(property);
+            if (layout == null)
+                return EditorGUIUtility.singleLineHeight;
+
+            int rows = RowCount(layout, EstimateContentWidth());
+            return rows * EditorGUIUtility.singleLineHeight + (rows - 1) * RowSpacing;
+        }
+
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             if (property.propertyType != SerializedPropertyType.Enum)
@@ -20,85 +37,136 @@ namespace Base.AttributePackage.Editor
                 return;
             }
 
-            Type enumType = fieldInfo.FieldType;
-            if (enumType.IsArray)
-                enumType = enumType.GetElementType();
-
-            if (enumType == null || !enumType.IsEnum)
+            EnumButtonLayout layout = ResolveLayout(property);
+            if (layout == null)
             {
                 EditorGUI.PropertyField(position, property, label);
                 return;
             }
 
-            Rect content = EditorGUI.PrefixLabel(position, label);
+            Rect firstLine = new(position.x, position.y, position.width, EditorGUIUtility.singleLineHeight);
+            Rect content = EditorGUI.PrefixLabel(firstLine, label);
 
             EditorGUI.BeginProperty(position, label, property);
-            if (Attribute.IsDefined(enumType, typeof(FlagsAttribute)))
-                DrawFlags(content, property, enumType);
+
+            if (layout.IsFlags)
+                DrawFlags(content, property, layout);
             else
-                DrawSingle(content, property);
+                DrawSingle(content, property, layout);
 
             EditorGUI.EndProperty();
         }
 
-        private static void DrawSingle(Rect content, SerializedProperty property)
+        private static void DrawSingle(Rect content, SerializedProperty property, EnumButtonLayout layout)
         {
-            int index = GUI.Toolbar(content, property.enumValueIndex, property.enumDisplayNames);
-            if (index != property.enumValueIndex && index >= 0)
-                property.enumValueIndex = index;
+            int selected = property.enumValueIndex;
+
+            for (int i = 0; i < layout.Labels.Length; i++)
+            {
+                bool wasOn = i == selected;
+                bool nowOn = GUI.Toggle(ButtonRect(content, layout, i), wasOn, layout.Labels[i],
+                    ButtonStyle(content, layout, i));
+
+                if (nowOn && !wasOn)
+                    property.enumValueIndex = i;
+            }
         }
 
-        private static void DrawFlags(Rect content, SerializedProperty property, Type enumType)
+        private static void DrawFlags(Rect content, SerializedProperty property, EnumButtonLayout layout)
         {
-            Array values = Enum.GetValues(enumType);
-            string[] names = Enum.GetNames(enumType);
-
-            List<int> bits = new();
-            List<string> labels = new();
-            for (int i = 0; i < values.Length; i++)
-            {
-                int value = Convert.ToInt32(values.GetValue(i));
-                if (value == 0)
-                    continue;
-
-                bits.Add(value);
-                labels.Add(ObjectNames.NicifyVariableName(names[i]));
-            }
-
-            if (bits.Count == 0)
-                return;
-
             int mask = property.intValue;
-            float width = content.width / bits.Count;
 
-            for (int i = 0; i < bits.Count; i++)
+            for (int i = 0; i < layout.Labels.Length; i++)
             {
-                Rect rect = new(content.x + i * width, content.y, width, content.height);
-                GUIStyle style = ButtonStyle(i, bits.Count);
+                int bits = layout.Values[i];
+                bool wasOn = (mask & bits) == bits;
+                bool nowOn = GUI.Toggle(ButtonRect(content, layout, i), wasOn, layout.Labels[i],
+                    ButtonStyle(content, layout, i));
 
-                bool isOn = (mask & bits[i]) == bits[i];
-                bool nowOn = GUI.Toggle(rect, isOn, labels[i], style);
-                if (nowOn != isOn)
+                if (nowOn != wasOn)
                     mask = nowOn
-                        ? mask | bits[i]
-                        : mask & ~bits[i];
+                        ? mask | bits
+                        : mask & ~bits;
             }
 
             property.intValue = mask;
         }
 
-        private static GUIStyle ButtonStyle(int index, int count)
+        private static Rect ButtonRect(Rect content, EnumButtonLayout layout, int index)
         {
-            if (count == 1)
+            int columns = ColumnCount(layout, content.width);
+            float buttonWidth = content.width / columns;
+            float rowHeight = EditorGUIUtility.singleLineHeight;
+
+            int row = index / columns;
+            int column = index % columns;
+
+            return new Rect(content.x + column * buttonWidth, content.y + row * (rowHeight + RowSpacing),
+                buttonWidth, rowHeight);
+        }
+
+        private static GUIStyle ButtonStyle(Rect content, EnumButtonLayout layout, int index)
+        {
+            int columns = ColumnCount(layout, content.width);
+            int row = index / columns;
+            int column = index % columns;
+            int countInRow = Mathf.Min(columns, layout.Labels.Length - row * columns);
+
+            if (countInRow == 1)
                 return EditorStyles.miniButton;
 
-            if (index == 0)
+            if (column == 0)
                 return EditorStyles.miniButtonLeft;
 
-            if (index == count - 1)
+            if (column == countInRow - 1)
                 return EditorStyles.miniButtonRight;
 
             return EditorStyles.miniButtonMid;
         }
+
+        private EnumButtonLayout ResolveLayout(SerializedProperty property)
+        {
+            if (property.propertyType != SerializedPropertyType.Enum)
+                return null;
+
+            Type enumType = GetEnumType();
+            if (enumType == null)
+                return null;
+
+            if (Layouts.TryGetValue(enumType, out EnumButtonLayout cached))
+                return cached;
+
+            EnumButtonLayout layout = EnumButtonLayout.Build(enumType, property);
+            Layouts[enumType] = layout;
+            return layout;
+        }
+
+        private Type GetEnumType()
+        {
+            Type type = fieldInfo?.FieldType;
+            if (type == null)
+                return null;
+
+            if (type.IsArray)
+                type = type.GetElementType();
+            else if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>))
+                type = type.GetGenericArguments()[0];
+
+            return type is { IsEnum: true }
+                ? type
+                : null;
+        }
+
+        private static int ColumnCount(EnumButtonLayout layout, float availableWidth)
+        {
+            int fitting = Mathf.FloorToInt(availableWidth / layout.MinButtonWidth);
+            return Mathf.Clamp(fitting, 1, layout.Labels.Length);
+        }
+
+        private static int RowCount(EnumButtonLayout layout, float availableWidth)
+            => Mathf.CeilToInt(layout.Labels.Length / (float)ColumnCount(layout, availableWidth));
+
+        private static float EstimateContentWidth()
+            => Mathf.Max(1f, EditorGUIUtility.currentViewWidth - EditorGUIUtility.labelWidth - ContentWidthMargin);
     }
 }

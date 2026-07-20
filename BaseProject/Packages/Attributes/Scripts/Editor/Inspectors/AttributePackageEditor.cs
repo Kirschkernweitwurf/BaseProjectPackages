@@ -52,7 +52,7 @@ namespace Base.AttributePackage.Editor
                 SerializedProperty property = properties[index];
                 FieldInfo field = ReflectionCache.GetField(type, property.name);
 
-                if (field?.GetCustomAttribute<TabAttribute>() != null)
+                if (ReflectionCache.GetAttribute<TabAttribute>(field) != null)
                 {
                     activeFoldout = null;
                     activeTitleSection = null;
@@ -60,7 +60,7 @@ namespace Base.AttributePackage.Editor
                     continue;
                 }
 
-                TitleAttribute title = field?.GetCustomAttribute<TitleAttribute>();
+                TitleAttribute title = ReflectionCache.GetAttribute<TitleAttribute>(field);
                 if (title != null)
                 {
                     if (title.Foldout)
@@ -81,7 +81,7 @@ namespace Base.AttributePackage.Editor
                     continue;
                 }
 
-                string foldoutName = field?.GetCustomAttribute<FoldoutAttribute>()?.Name;
+                string foldoutName = ReflectionCache.GetAttribute<FoldoutAttribute>(field)?.Name;
 
                 if (foldoutName != activeFoldout)
                 {

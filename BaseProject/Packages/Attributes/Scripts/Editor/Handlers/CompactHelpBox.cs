@@ -12,7 +12,9 @@ namespace Base.AttributePackage.Editor
         private const string ErrorHex = "#DB4C52";
         private const string ErrorIcon = "console.erroricon.sml";
 
-        private const float Height = 20f;
+        /// <summary>Height of one compact line, for PropertyDrawer height calculations.</summary>
+        public const float Height = 20f;
+
         private const float IconSize = 14f;
         private const string InfoHex = "#5A9BD4";
 
@@ -46,10 +48,17 @@ namespace Base.AttributePackage.Editor
 
         /// <summary>Draws a compact line for the given type with an explicit color.</summary>
         public static void Draw(string message, EInfoBoxType type, Color color)
+            => Draw(EditorGUILayout.GetControlRect(false, Height), message, type, color);
+
+        /// <summary>Draws a compact line into the given rect, for use inside PropertyDrawers.</summary>
+        public static void Draw(Rect rect, string message, EInfoBoxType type)
+            => Draw(rect, message, type, DefaultColor(type));
+
+        /// <summary>Draws a compact line into the given rect with an explicit color.</summary>
+        public static void Draw(Rect rect, string message, EInfoBoxType type, Color color)
         {
             Build();
 
-            Rect rect = EditorGUILayout.GetControlRect(false, Height);
             EditorGUI.DrawRect(rect, new Color(color.r, color.g, color.b, TintAlpha));
 
             Rect content = new(rect.x + Padding, rect.y, rect.width - Padding * 2f, rect.height);
