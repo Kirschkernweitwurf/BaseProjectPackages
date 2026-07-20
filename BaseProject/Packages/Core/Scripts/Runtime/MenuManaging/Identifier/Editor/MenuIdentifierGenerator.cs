@@ -23,7 +23,7 @@ namespace Base.CorePackage.MenuManaging.Identifier.Editor
 
         private static bool _pending;
 
-        [DynamicMenuItem("Tools/Base Packages/Menu/Regenerate Menu Identifiers")]
+        [DynamicMenuItem("Tools/Base Packages/Assets/Menu/Regenerate Menu Identifiers")]
         public static void Regenerate()
         {
             string[] guids = AssetDatabase.FindAssets($"t:{nameof(MenuIdentifier)}");

@@ -14,7 +14,7 @@ namespace Base.ToolPackage.Editor.Identification
     /// </summary>
     public static class IdGenerator
     {
-        [DynamicMenuItem("Tools/Base Packages/Identifier/Generate Unique IDs")]
+        [DynamicMenuItem("Tools/Base Packages/Assets/Identifier/Generate Unique IDs")]
         public static void Generate()
         {
             string[] guids = AssetDatabase.FindAssets("t:ScriptableObject");

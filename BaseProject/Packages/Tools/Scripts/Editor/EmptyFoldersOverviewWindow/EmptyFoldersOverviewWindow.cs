@@ -13,7 +13,7 @@ namespace Base.ToolPackage.Editor.EmptyFoldersOverviewWindow
     /// </summary>
     public sealed class EmptyFoldersOverviewWindow : EditorWindow
     {
-        private const string MenuPath = "Tools/Base Packages/Project Health/Empty Folders Overview";
+        private const string MenuPath = "Tools/Base Packages/Unity Editor/Project Health/Unused/Empty Folders Overview";
         private const float RowHeight = 22f;
         private const float SuccessGap = 8f;
         private const float SuccessIconSize = 48f;

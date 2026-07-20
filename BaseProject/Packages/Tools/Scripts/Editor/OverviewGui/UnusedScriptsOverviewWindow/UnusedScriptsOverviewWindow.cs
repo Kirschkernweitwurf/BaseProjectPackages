@@ -17,7 +17,8 @@ namespace Base.ToolPackage.Editor.OverviewGui.UnusedScriptsOverviewWindow
         private const float DiscardDefaultHeight = 220f;
         private const string DiscardHeightKey = "Base.UnusedScriptsOverview.DiscardHeight";
         private const float DiscardMinHeight = 60f;
-        private const string MenuPath = "Tools/Base Packages/Project Health/Unused Scripts Overview";
+        private const string MenuPath =
+            "Tools/Base Packages/Unity Editor/Project Health/Unused/Unused Scripts Overview";
 
         private readonly List<UnusedScriptEntry> _entries = new();
         private readonly Dictionary<string, bool> _foldouts = new();

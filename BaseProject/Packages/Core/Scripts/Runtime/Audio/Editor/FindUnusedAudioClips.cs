@@ -62,7 +62,7 @@ namespace Base.CorePackage.Audio.Editor
         }
 #endregion
 
-        [DynamicMenuItem("Tools/Base Packages/Audio/Find Unused Audio Clips")]
+        [DynamicMenuItem("Tools/Base Packages/Unity Editor/Project Health/Unused/Unused Audio Clips")]
         public static void ShowWindow()
         {
             FindUnusedAudioClips window = GetWindow<FindUnusedAudioClips>("Unused Audio Clips Finder");

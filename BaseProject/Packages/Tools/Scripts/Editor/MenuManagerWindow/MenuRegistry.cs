@@ -40,7 +40,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
         private float columnPriorityWidth = 72f;
 
         [SerializeField]
-        private float columnStatusWidth = 52f;
+        private float columnStatusWidth = 62f;
 
         [SerializeReference]
         private List<MenuNode> menuItemRoot = new();
@@ -56,9 +56,6 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
 
         [SerializeField]
         private List<MenuGroup> groups = new();
-
-        [NonSerialized]
-        private bool? readOnly;
 
         /// <summary>The shared registry instance, loaded from or created as an asset in the package folder.</summary>
         public static MenuRegistry Instance
@@ -101,16 +98,21 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
         public float ColumnStatusWidth
         {
             get => columnStatusWidth;
-            set => columnStatusWidth = Mathf.Clamp(value, 36f, 400f);
+            set => columnStatusWidth = Mathf.Clamp(value, 44f, 400f);
         }
 
+        [NonSerialized]
+        private bool? readOnly;
+
         /// <summary>Returns the top level node list for the given kind.</summary>
-        public List<MenuNode> RootFor(EMenuEntryKind kind) =>
-            kind == EMenuEntryKind.CreateAsset ? createAssetRoot : menuItemRoot;
+        public List<MenuNode> RootFor(EMenuEntryKind kind) => kind == EMenuEntryKind.CreateAsset
+            ? createAssetRoot
+            : menuItemRoot;
 
         /// <summary>Priority given to the first entry of a kind. Each kind is its own menu and numbers independently.</summary>
-        public int StartFor(EMenuEntryKind kind) =>
-            kind == EMenuEntryKind.CreateAsset ? createAssetStart : menuItemStart;
+        public int StartFor(EMenuEntryKind kind) => kind == EMenuEntryKind.CreateAsset
+            ? createAssetStart
+            : menuItemStart;
 
         /// <summary>Sets the priority given to the first entry of a kind.</summary>
         public void SetStart(EMenuEntryKind kind, int value)
@@ -119,41 +121,6 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
                 createAssetStart = value;
             else
                 menuItemStart = value;
-        }
-
-        /// <summary>Moves legacy data into the tree and normalizes it for the current path model. Runs once.</summary>
-        public void Migrate()
-        {
-            bool hasLegacy = groups.Count > 0 || menuItemGroups.Count > 0 || createAssetGroups.Count > 0;
-
-            if (!hasLegacy && schemaVersion >= CurrentSchema)
-                return;
-
-            if (groups.Count > 0)
-            {
-                foreach (MenuGroup legacy in groups)
-                {
-                    foreach (MenuEntry entry in legacy.Entries)
-                        GetLegacyGroup(entry.Kind, legacy.Name).Entries.Add(entry);
-                }
-
-                groups.Clear();
-            }
-
-            ConvertLegacy(menuItemGroups, menuItemRoot);
-            ConvertLegacy(createAssetGroups, createAssetRoot);
-
-            if (schemaVersion < 2)
-                NormalizeForPaths();
-
-            if (schemaVersion < 4)
-            {
-                menuItemStart = startPriority;
-                createAssetStart = startPriority;
-            }
-
-            schemaVersion = CurrentSchema;
-            Persist();
         }
 
         /// <summary>Writes the asset to disk unless it is read only.</summary>
@@ -244,41 +211,9 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
                 return "Assets";
 
             string folder = Path.GetDirectoryName(scriptPath);
-            return string.IsNullOrEmpty(folder) ? "Assets" : folder.Replace("\\", "/");
-        }
-
-        private bool ComputeReadOnly()
-        {
-            string path = AssetDatabase.GetAssetPath(this);
-
-            if (string.IsNullOrEmpty(path))
-                return false;
-
-            PackageInfo package = PackageInfo.FindForAssetPath(path);
-
-            if (package != null && package.source != PackageSource.Embedded && package.source != PackageSource.Local)
-                return true;
-
-            try
-            {
-                string full = Path.GetFullPath(path);
-
-                if (File.Exists(full) && (File.GetAttributes(full) & FileAttributes.ReadOnly) != 0)
-                    return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-
-            return false;
-        }
-
-        private void NormalizeForPaths()
-        {
-            DissolveLegacyGroup(menuItemRoot);
-            DissolveLegacyGroup(createAssetRoot);
-            StripAssetPrefix(createAssetRoot);
+            return string.IsNullOrEmpty(folder)
+                ? "Assets"
+                : folder.Replace("\\", "/");
         }
 
         private static void DissolveLegacyGroup(List<MenuNode> root)
@@ -317,7 +252,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
                 if (path == MenuPath.AssetRoot)
                     entryNode.Entry.Path = string.Empty;
                 else if (path != null && path.StartsWith(prefix, StringComparison.Ordinal))
-                    entryNode.Entry.Path = path.Substring(prefix.Length);
+                    entryNode.Entry.Path = path[prefix.Length..];
             }
         }
 
@@ -339,17 +274,87 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
             legacy.Clear();
         }
 
-        private MenuGroup GetLegacyGroup(EMenuEntryKind kind, string name)
+        private void Migrate()
         {
-            List<MenuGroup> list = kind == EMenuEntryKind.CreateAsset ? createAssetGroups : menuItemGroups;
+            bool hasLegacy = groups.Count > 0 || menuItemGroups.Count > 0 || createAssetGroups.Count > 0;
+
+            if (!hasLegacy && schemaVersion >= CurrentSchema)
+                return;
+
+            if (groups.Count > 0)
+            {
+                foreach (MenuGroup legacy in groups)
+                {
+                    foreach (MenuEntry entry in legacy.Entries)
+                        GetLegacyGroup(entry.Kind, legacy.Name).Entries.Add(entry);
+                }
+
+                groups.Clear();
+            }
+
+            ConvertLegacy(menuItemGroups, menuItemRoot);
+            ConvertLegacy(createAssetGroups, createAssetRoot);
+
+            if (schemaVersion < 2)
+                NormalizeForPaths();
+
+            if (schemaVersion < 4)
+            {
+                menuItemStart = startPriority;
+                createAssetStart = startPriority;
+            }
+
+            schemaVersion = CurrentSchema;
+            Persist();
+        }
+
+        private bool ComputeReadOnly()
+        {
+            string path = AssetDatabase.GetAssetPath(this);
+
+            if (string.IsNullOrEmpty(path))
+                return false;
+
+            PackageInfo package = PackageInfo.FindForAssetPath(path);
+
+            if (package != null && package.source != PackageSource.Embedded && package.source != PackageSource.Local)
+                return true;
+
+            try
+            {
+                string full = Path.GetFullPath(path);
+
+                if (File.Exists(full) && (File.GetAttributes(full) & FileAttributes.ReadOnly) != 0)
+                    return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+            return false;
+        }
+
+        private void NormalizeForPaths()
+        {
+            DissolveLegacyGroup(menuItemRoot);
+            DissolveLegacyGroup(createAssetRoot);
+            StripAssetPrefix(createAssetRoot);
+        }
+
+        private MenuGroup GetLegacyGroup(EMenuEntryKind kind, string groupName)
+        {
+            List<MenuGroup> list = kind == EMenuEntryKind.CreateAsset
+                ? createAssetGroups
+                : menuItemGroups;
 
             foreach (MenuGroup group in list)
             {
-                if (group.Name == name)
+                if (group.Name == groupName)
                     return group;
             }
 
-            MenuGroup created = new(name);
+            MenuGroup created = new(groupName);
             list.Add(created);
             return created;
         }

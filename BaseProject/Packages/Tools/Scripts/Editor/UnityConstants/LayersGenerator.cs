@@ -15,7 +15,7 @@ namespace Base.ToolPackage.Editor.UnityConstants
     {
         private const int LayerCount = 32;
 
-        [DynamicMenuItem("Tools/Base Packages/Code Generation/Generate Layers")]
+        [DynamicMenuItem("Tools/Base Packages/Code/Generation/Generate Layers")]
         public static void Generate()
         {
             GeneratorUtility.EnsureFolderExists(GeneratorUtility.OutputFolder);

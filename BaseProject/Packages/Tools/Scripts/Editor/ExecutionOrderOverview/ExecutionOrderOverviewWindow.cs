@@ -49,7 +49,7 @@ namespace Base.ToolPackage.Editor.ExecutionOrderOverview
 #endregion
 
         /// <summary>Opens or focuses the window from the Tools menu.</summary>
-        [DynamicMenuItem("Tools/Base Packages/Code Health/Execution Order Overview")]
+        [DynamicMenuItem("Tools/Base Packages/Code/Health/Execution Order Overview")]
         private static void Open()
         {
             ExecutionOrderOverviewWindow window = GetWindow<ExecutionOrderOverviewWindow>("Execution Order");

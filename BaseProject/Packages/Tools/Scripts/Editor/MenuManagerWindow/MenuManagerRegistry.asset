@@ -245,22 +245,15 @@ MonoBehaviour:
         expanded: 1
         merged: 0
         children:
-        - rid: 5339058395782840418
-        - rid: 5339058395782840420
-        - rid: 5339058395782840419
-        - rid: 5339058395782840421
-        - rid: 5339058395782840427
-        - rid: 5339058395782840422
-        - rid: 5339058395782840423
-        - rid: 5339058395782840424
-        - rid: 5339058395782840425
+        - rid: 5339058507518050416
         - rid: 5339058395782840428
+        - rid: 5339058507518050405
     - rid: 5339058395782840416
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
         separator: 1
         name: Update Base Packages
-        expanded: 0
+        expanded: 1
         merged: 0
         children:
         - rid: 5339058395782840463
@@ -268,113 +261,17 @@ MonoBehaviour:
         - rid: 5339058395782840430
         - rid: 5339058395782840431
         - rid: 5339058395782840432
-    - rid: 5339058395782840418
-      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
-      data:
-        separator: 1
-        name: Asset Zoo
-        expanded: 0
-        merged: 0
-        children:
-        - rid: 5339058395782840412
-    - rid: 5339058395782840419
-      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
-      data:
-        separator: 0
-        name: Localization
-        expanded: 0
-        merged: 0
-        children:
-        - rid: 5339058395782840436
-        - rid: 5339058395782840437
-        - rid: 5339058395782840438
-    - rid: 5339058395782840420
-      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
-      data:
-        separator: 0
-        name: Audio
-        expanded: 0
-        merged: 0
-        children:
-        - rid: 5339058395782840439
-    - rid: 5339058395782840421
-      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
-      data:
-        separator: 1
-        name: Identifier
-        expanded: 0
-        merged: 0
-        children:
-        - rid: 5339058395782840440
-        - rid: 5339058395782840441
-    - rid: 5339058395782840422
-      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
-      data:
-        separator: 0
-        name: Menu
-        expanded: 0
-        merged: 0
-        children:
-        - rid: 5339058395782840442
-    - rid: 5339058395782840423
-      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
-      data:
-        separator: 1
-        name: Code Generation
-        expanded: 0
-        merged: 0
-        children:
-        - rid: 5339058395782840462
-        - rid: 5339058395782840444
-        - rid: 5339058395782840445
-    - rid: 5339058395782840424
-      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
-      data:
-        separator: 0
-        name: Code Health
-        expanded: 0
-        merged: 0
-        children:
-        - rid: 5339058395782840446
-        - rid: 5339058395782840447
-        - rid: 5339058395782840448
-        - rid: 5339058395782840449
-    - rid: 5339058395782840425
-      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
-      data:
-        separator: 1
-        name: Project Health
-        expanded: 0
-        merged: 0
-        children:
-        - rid: 5339058395782840453
-        - rid: 5339058395782840454
-        - rid: 5339058420681015388
-        - rid: 5339058420681015389
-        - rid: 5339058395782840450
-        - rid: 5339058395782840451
-        - rid: 5339058395782840452
-        - rid: 5339058420681015390
-        - rid: 5339058420681015391
-    - rid: 5339058395782840427
-      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
-      data:
-        separator: 0
-        name: Logging
-        expanded: 0
-        merged: 0
-        children:
-        - rid: 5339058395782840456
     - rid: 5339058395782840428
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
-        separator: 0
+        separator: 1
         name: Unity Editor
         expanded: 0
         merged: 0
         children:
+        - rid: 5339058507518050403
+        - rid: 5339058507518050404
         - rid: 5339058395782840457
-        - rid: 5339058395782840458
         - rid: 5339058411500208237
         - rid: 5339058419491930200
     - rid: 5339058395782840429
@@ -467,7 +364,7 @@ MonoBehaviour:
         separator: 0
         entry:
           id: MI:Base.CorePackage.Audio.Editor.FindUnusedAudioClips.ShowWindow
-          path: Find Unused Audio Clips
+          path: Unused Audio Clips
           enabled: 1
           kind: 0
           createFileName: 
@@ -617,46 +514,10 @@ MonoBehaviour:
           createFileName: 
           overridePriority: 0
           overrideValue: 0
-    - rid: 5339058395782840453
-      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
-      data:
-        separator: 0
-        entry:
-          id: MI:Base.ToolPackage.Editor.UnusedAssetsOverviewWindow.UnusedAssetsOverviewWindow.Open
-          path: Unused Assets Overview
-          enabled: 1
-          kind: 0
-          createFileName: 
-          overridePriority: 0
-          overrideValue: 0
-    - rid: 5339058395782840454
-      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
-      data:
-        separator: 0
-        entry:
-          id: MI:Base.ToolPackage.Editor.UnusedScriptsOverviewWindow.UnusedScriptsOverviewWindow.Open
-          path: Unused Scripts Overview
-          enabled: 1
-          kind: 0
-          createFileName: 
-          overridePriority: 0
-          overrideValue: 0
-    - rid: 5339058395782840456
-      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
-      data:
-        separator: 0
-        entry:
-          id: MI:Base.UtilityPackage.Logging.CustomLogHandlerBootstrap.Toggle
-          path: Enable Custom Log Handler
-          enabled: 1
-          kind: 0
-          createFileName: 
-          overridePriority: 0
-          overrideValue: 0
     - rid: 5339058395782840457
       type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
-        separator: 0
+        separator: 1
         entry:
           id: MI:Base.MemoryProfiler.Editor.MemoryProfilerWindow.Open
           path: Memory Profiler Automation
@@ -824,8 +685,8 @@ MonoBehaviour:
         expanded: 1
         merged: 0
         children:
-        - rid: 5339058420681015296
         - rid: 5339058420681015301
+        - rid: 5339058420681015296
     - rid: 5339058420681015301
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
@@ -837,30 +698,6 @@ MonoBehaviour:
         - rid: 5339058420681015297
         - rid: 5339058420681015298
         - rid: 5339058420681015299
-    - rid: 5339058420681015388
-      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
-      data:
-        separator: 0
-        entry:
-          id: MI:Base.ToolPackage.Editor.UnusedOverviewWindows.UnusedScriptsOverviewWindow.UnusedScriptsOverviewWindow.Open
-          path: Unused Scripts Overview
-          enabled: 1
-          kind: 0
-          createFileName: 
-          overridePriority: 0
-          overrideValue: 0
-    - rid: 5339058420681015389
-      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
-      data:
-        separator: 0
-        entry:
-          id: MI:Base.ToolPackage.Editor.UnusedOverviewWindows.UnusedAssetsOverviewWindow.UnusedAssetsOverviewWindow.Open
-          path: Unused Assets Overview
-          enabled: 1
-          kind: 0
-          createFileName: 
-          overridePriority: 0
-          overrideValue: 0
     - rid: 5339058420681015390
       type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
@@ -885,3 +722,145 @@ MonoBehaviour:
           createFileName: 
           overridePriority: 0
           overrideValue: 0
+    - rid: 5339058507518050390
+      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 1
+        entry:
+          id: MI:Base.AttributePackage.Editor.Windows.GetComponentAssigner.GetComponentAssignerWindow.Open
+          path: Assign GetComponents
+          enabled: 1
+          kind: 0
+          createFileName: 
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 5339058507518050391
+      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 0
+        entry:
+          id: MI:Base.AttributePackage.Editor.Windows.RequireComponentAudit.RequireComponentAuditWindow.Open
+          path: GetComponent Require Audit
+          enabled: 1
+          kind: 0
+          createFileName: 
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 5339058507518050403
+      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 1
+        name: Project Health
+        expanded: 1
+        merged: 0
+        children:
+        - rid: 5339058507518050411
+        - rid: 5339058395782840450
+    - rid: 5339058507518050404
+      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 1
+        name: References
+        expanded: 1
+        merged: 0
+        children:
+        - rid: 5339058395782840458
+        - rid: 5339058507518050390
+        - rid: 5339058507518050391
+    - rid: 5339058507518050405
+      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 1
+        name: Code
+        expanded: 0
+        merged: 0
+        children:
+        - rid: 5339058507518050406
+        - rid: 5339058507518050407
+    - rid: 5339058507518050406
+      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 1
+        name: Generation
+        expanded: 1
+        merged: 0
+        children:
+        - rid: 5339058395782840462
+        - rid: 5339058395782840444
+        - rid: 5339058395782840445
+    - rid: 5339058507518050407
+      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 1
+        name: Health
+        expanded: 1
+        merged: 0
+        children:
+        - rid: 5339058395782840446
+        - rid: 5339058395782840447
+        - rid: 5339058395782840448
+        - rid: 5339058395782840449
+    - rid: 5339058507518050411
+      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 1
+        name: Unused
+        expanded: 1
+        merged: 0
+        children:
+        - rid: 5339058395782840439
+        - rid: 5339058395782840451
+        - rid: 5339058395782840452
+        - rid: 5339058420681015390
+        - rid: 5339058420681015391
+    - rid: 5339058507518050416
+      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 1
+        name: Assets
+        expanded: 0
+        merged: 0
+        children:
+        - rid: 5339058507518050417
+        - rid: 5339058507518050418
+        - rid: 5339058507518050419
+        - rid: 5339058507518050420
+    - rid: 5339058507518050417
+      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 1
+        name: Asset Zoo
+        expanded: 1
+        merged: 0
+        children:
+        - rid: 5339058395782840412
+    - rid: 5339058507518050418
+      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 1
+        name: Menu
+        expanded: 1
+        merged: 0
+        children:
+        - rid: 5339058395782840442
+    - rid: 5339058507518050419
+      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 1
+        name: Localization
+        expanded: 1
+        merged: 0
+        children:
+        - rid: 5339058395782840436
+        - rid: 5339058395782840437
+        - rid: 5339058395782840438
+    - rid: 5339058507518050420
+      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 1
+        name: Identifier
+        expanded: 1
+        merged: 0
+        children:
+        - rid: 5339058395782840440
+        - rid: 5339058395782840441

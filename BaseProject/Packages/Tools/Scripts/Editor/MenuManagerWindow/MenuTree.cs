@@ -1,14 +1,18 @@
 #if UNITY_EDITOR
 using System;
 using System.Collections.Generic;
+using UnityEditor;
 
 namespace Base.ToolPackage.Editor.MenuManagerWindow
 {
     /// <summary>Pure tree algorithms shared by the package registry and the project overlay.</summary>
     public static class MenuTree
     {
-        /// <summary>Priority distance that makes Unity draw a separator line. Unity draws one when the gap is more than 10.</summary>
-        public const int SeparatorGap = 11;
+        /// <summary>
+        /// Priority distance that makes Unity draw a separator line.
+        /// Unity draws one when the gap is more than 10.
+        /// </summary>
+        private const int SeparatorGap = 11;
 
         /// <summary>Assigns every entry its derived priority.</summary>
         /// <remarks>
@@ -35,7 +39,9 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
                     if (first)
                         first = false;
                     else
-                        slot += boundary || node.Separator ? SeparatorGap : 1;
+                        slot += boundary || node.Separator
+                            ? SeparatorGap
+                            : 1;
 
                     boundary = false;
                     AssignSlot(node, slot);
@@ -46,7 +52,8 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
         }
 
         /// <summary>Marks entries as present or missing and returns true when serialized data changed.</summary>
-        public static bool Mark(List<MenuNode> nodes, IReadOnlyDictionary<string, ResolvedMenu> resolved, HashSet<string> known)
+        public static bool Mark(List<MenuNode> nodes, IReadOnlyDictionary<string, ResolvedMenu> resolved,
+            HashSet<string> known)
         {
             bool changed = false;
 
@@ -162,7 +169,10 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
             return false;
         }
 
-        /// <summary>Rebuilds groups from each entry's default path, shortens every entry to its last segment, and resets asset file names.</summary>
+        /// <summary>
+        /// Rebuilds groups from each entry's default path, shortens every entry to its last segment, and resets asset
+        /// file names.
+        /// </summary>
         public static bool AutoGroup(List<MenuNode> root, IReadOnlyDictionary<string, ResolvedMenu> resolved)
         {
             List<MenuEntryNode> entries = new();
@@ -186,7 +196,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
             if (movable.Count == 0)
                 return false;
 
-            RemoveEntries(root, id => ids.Contains(id));
+            RemoveEntries(root, ids.Contains);
 
             foreach ((MenuEntryNode node, ResolvedMenu match) in movable)
             {
@@ -203,7 +213,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
                     target = FindOrCreateGroup(target, name).Children;
                 }
 
-                node.Entry.Path = segments[segments.Length - 1].Trim();
+                node.Entry.Path = segments[^1].Trim();
 
                 if (match.Kind == EMenuEntryKind.CreateAsset && !string.IsNullOrWhiteSpace(match.DefaultFileName))
                     node.Entry.CreateFileName = match.DefaultFileName;
@@ -283,8 +293,45 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
             return changed;
         }
 
+        /// <summary>Opens the script that declares the entry in the external editor. Returns false when it cannot be found.</summary>
+        public static bool OpenScript(Type declaringType)
+        {
+            if (declaringType == null)
+                return false;
+
+            foreach (string guid in AssetDatabase.FindAssets($"{declaringType.Name} t:MonoScript"))
+            {
+                string path = AssetDatabase.GUIDToAssetPath(guid);
+                MonoScript script = AssetDatabase.LoadAssetAtPath<MonoScript>(path);
+
+                if (script == null || script.GetClass() != declaringType)
+                    continue;
+
+                AssetDatabase.OpenAsset(script);
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>True when the tree holds at least one group with no live entries anywhere beneath it.</summary>
+        public static bool HasEmptyGroup(List<MenuNode> nodes)
+        {
+            foreach (MenuNode node in nodes)
+            {
+                if (node is not MenuGroupNode group)
+                    continue;
+
+                if (group.Children.Count == 0 || HasEmptyGroup(group.Children))
+                    return true;
+            }
+
+            return false;
+        }
+
         /// <summary>Collects entries paired with their full resolved paths across a sequence of roots.</summary>
-        public static void Collect(IReadOnlyList<List<MenuNode>> roots, EMenuEntryKind kind, List<(MenuEntry entry, string path)> result)
+        public static void Collect(IReadOnlyList<List<MenuNode>> roots, EMenuEntryKind kind,
+            List<(MenuEntry entry, string path)> result)
         {
             string prefixRoot = MenuPath.Prefix(kind);
 
@@ -318,7 +365,11 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
                     return group;
             }
 
-            MenuGroupNode created = new(name) { Expanded = true };
+            MenuGroupNode created = new(name)
+            {
+                Expanded = true
+            };
+
             nodes.Add(created);
             return created;
         }
@@ -351,7 +402,9 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
                 if (first)
                     first = false;
                 else
-                    slot += node.Separator ? SeparatorGap : 1;
+                    slot += node.Separator
+                        ? SeparatorGap
+                        : 1;
 
                 AssignSlot(node, slot);
             }
@@ -411,8 +464,8 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
             }
         }
 
-        private static int CompareNodes(MenuNode left, MenuNode right) =>
-            string.Compare(DisplayName(left), DisplayName(right), StringComparison.OrdinalIgnoreCase);
+        private static int CompareNodes(MenuNode left, MenuNode right) => string.Compare(DisplayName(left),
+            DisplayName(right), StringComparison.OrdinalIgnoreCase);
 
         private static string DisplayName(MenuNode node)
         {
@@ -424,7 +477,6 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
 
             return string.Empty;
         }
-
     }
 }
 #endif

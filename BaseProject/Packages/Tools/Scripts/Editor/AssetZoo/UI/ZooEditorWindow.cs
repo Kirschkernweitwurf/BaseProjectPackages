@@ -15,14 +15,16 @@ namespace Base.ToolPackage.Editor.AssetZoo.UI
     public class ZooEditorWindow : EditorWindow
     {
         private const float AuxButtonHeight = 24f;
+
+        private const string DefaultPath = "Tools/Base Packages/Assets/Asset Zoo/Open Zoo Builder";
+        private const string LastConfigKey = "Base.AssetZoo.LastConfigGuid";
         private const float MainButtonHeight = 32f;
         private const float MinWindowHeight = 400f;
         private const float MinWindowWidth = 340f;
-        private const string LastConfigKey = "Base.AssetZoo.LastConfigGuid";
+
+        [SerializeField] private ZooConfig config;
 
         private readonly ZooBuilder _builder = new();
-
-        [SerializeField] private ZooConfig _config;
 
         private Transform _parent;
         private Vector2 _scroll;
@@ -33,7 +35,7 @@ namespace Base.ToolPackage.Editor.AssetZoo.UI
 #region Unity Callbacks
         private void OnEnable()
         {
-            if (_config == null)
+            if (config == null)
                 LoadLastConfig();
         }
 
@@ -43,7 +45,7 @@ namespace Base.ToolPackage.Editor.AssetZoo.UI
             EditorGUILayout.Space(4);
 
             EditorGUI.BeginChangeCheck();
-            _config = (ZooConfig)EditorGUILayout.ObjectField("Config", _config, typeof(ZooConfig), false);
+            config = (ZooConfig)EditorGUILayout.ObjectField("Config", config, typeof(ZooConfig), false);
             _parent = (Transform)EditorGUILayout.ObjectField("Parent (optional)", _parent, typeof(Transform), true);
             if (EditorGUI.EndChangeCheck())
             {
@@ -57,7 +59,7 @@ namespace Base.ToolPackage.Editor.AssetZoo.UI
             bool hasZoo = _builder.HasZoo;
             bool hasParent = _parent != null;
 
-            using (new EditorGUI.DisabledScope(_config == null))
+            using (new EditorGUI.DisabledScope(config == null))
             {
                 if (GUILayout.Button("Auto Generate Categories", GUILayout.Height(MainButtonHeight)))
                     AutoGenerate();
@@ -65,7 +67,7 @@ namespace Base.ToolPackage.Editor.AssetZoo.UI
                 using (new EditorGUILayout.HorizontalScope())
                 {
                     if (GUILayout.Button("Build Zoo", GUILayout.Height(MainButtonHeight)))
-                        _builder.Build(_config, _parent);
+                        _builder.Build(config, _parent);
 
                     using (new EditorGUI.DisabledScope(!hasZoo))
                     {
@@ -89,7 +91,7 @@ namespace Base.ToolPackage.Editor.AssetZoo.UI
 
             EditorGUILayout.Space(6);
 
-            if (_config == null)
+            if (config == null)
             {
                 EditorGUILayout.HelpBox("1. Create a config via Assets > Create > Asset Zoo > Zoo Config.\n"
                     + "2. Drop it in the Config field above.\n"
@@ -100,12 +102,10 @@ namespace Base.ToolPackage.Editor.AssetZoo.UI
             }
 
             if (_hasResult)
-            {
                 EditorGUILayout.HelpBox(_lastResult.Message,
                     _lastResult.Success
                         ? MessageType.Info
                         : MessageType.Warning);
-            }
 
             EditorGUILayout.LabelField("Config", EditorStyles.boldLabel);
             _scroll = EditorGUILayout.BeginScrollView(_scroll);
@@ -122,7 +122,7 @@ namespace Base.ToolPackage.Editor.AssetZoo.UI
         /// <summary>
         /// Opens the zoo builder window without a config.
         /// </summary>
-        [DynamicMenuItem("Tools/Base Packages/Asset Zoo/Open Zoo Builder")]
+        [DynamicMenuItem(DefaultPath)]
         public static void Open() => Open(null);
 
         public static void Open(ZooConfig config)
@@ -133,13 +133,13 @@ namespace Base.ToolPackage.Editor.AssetZoo.UI
             if (config == null)
                 return;
 
-            window._config = config;
+            window.config = config;
             window.SaveLastConfig();
         }
 
         private void AutoGenerate()
         {
-            _lastResult = ZooAutoGenerator.Generate(_config);
+            _lastResult = ZooAutoGenerator.Generate(config);
             _hasResult = true;
         }
 
@@ -153,18 +153,18 @@ namespace Base.ToolPackage.Editor.AssetZoo.UI
             if (string.IsNullOrEmpty(path))
                 return;
 
-            _config = AssetDatabase.LoadAssetAtPath<ZooConfig>(path);
+            config = AssetDatabase.LoadAssetAtPath<ZooConfig>(path);
         }
 
         private void SaveLastConfig()
         {
-            if (_config == null)
+            if (config == null)
             {
                 EditorPrefs.DeleteKey(LastConfigKey);
                 return;
             }
 
-            string path = AssetDatabase.GetAssetPath(_config);
+            string path = AssetDatabase.GetAssetPath(config);
             if (string.IsNullOrEmpty(path))
                 return;
 
@@ -178,11 +178,11 @@ namespace Base.ToolPackage.Editor.AssetZoo.UI
             // it's pointing at a different config than the one currently selected
             if (_cachedConfigEditor != null
                 && _cachedConfigEditor.target != null
-                && _cachedConfigEditor.target == _config)
+                && _cachedConfigEditor.target == config)
                 return;
 
             ClearCachedEditor();
-            _cachedConfigEditor = UnityEditor.Editor.CreateEditor(_config);
+            _cachedConfigEditor = UnityEditor.Editor.CreateEditor(config);
         }
 
         private void ClearCachedEditor()

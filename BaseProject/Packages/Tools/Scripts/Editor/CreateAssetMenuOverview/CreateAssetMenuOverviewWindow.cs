@@ -57,7 +57,7 @@ namespace Base.ToolPackage.Editor.CreateAssetMenuOverview
 #endregion
 
         /// <summary>Opens or focuses the window from the Tools menu.</summary>
-        [DynamicMenuItem("Tools/Base Packages/Code Health/Create Asset Menu Overview")]
+        [DynamicMenuItem("Tools/Base Packages/Code/Health/Create Asset Menu Overview")]
         private static void Open()
         {
             CreateAssetMenuOverviewWindow window = GetWindow<CreateAssetMenuOverviewWindow>("Create Assets");

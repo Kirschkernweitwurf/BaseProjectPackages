@@ -44,7 +44,7 @@ namespace Base.ToolPackage.Editor.OrderManagement
         }
 #endregion
 
-        [DynamicMenuItem("Tools/Base Packages/Code Generation/Order Manager")]
+        [DynamicMenuItem("Tools/Base Packages/Code/Generation/Order Manager")]
         private static void Open()
         {
             OrderManagerWindow window = GetWindow<OrderManagerWindow>();

@@ -15,7 +15,7 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
         private const float ButtonHeight = 26f;
         private const float ButtonWidth = 140f;
         private const float ListSpacing = 4f;
-        private const string MenuPath = "Tools/Base Packages/Unity Editor/Required References";
+        private const string MenuPath = "Tools/Base Packages/Unity Editor/References/Required References";
         private const double MinScanInterval = 0.3;
         private const double SafetyPollInterval = 1.0;
         private const float SearchHeight = 20f;

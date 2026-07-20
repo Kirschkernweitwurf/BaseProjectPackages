@@ -20,7 +20,7 @@ namespace Base.ToolPackage.Editor.Identification
     [FilePath("ProjectSettings/UniqueIdSettings.asset", FilePathAttribute.Location.ProjectFolder)]
     public sealed class UniqueIdSettings : ScriptableSingleton<UniqueIdSettings>
     {
-        private const string MenuPath = "Tools/Base Packages/Identifier/Enable Unique IDs";
+        private const string MenuPath = "Tools/Base Packages/Assets/Identifier/Enable Unique IDs";
 
         [SerializeField] private bool enabled = true;
 

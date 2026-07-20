@@ -205,8 +205,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33909ab9224f460fbeca341e7c89a4f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Systems.Tweening.Components.System.TweenGroup
-  tweenBehaviours:
+  showTweenBehaviours:
   - {fileID: 8198008043747650443}
+  hideTweenBehaviours: []
   playOnStart: 0
   sequenceMode: 0
 --- !u!114 &8198008043747650443
@@ -221,11 +222,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 089309a7a246424dbcc687c18b885455, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Systems.Tweening.Components.UITweens.ImageColorTween
-  <TweenSettings>k__BackingField:
+  useProfile: 0
+  useSettingsAsset: 0
+  settingsAsset: {fileID: 0}
+  tweenSettings:
     <Duration>k__BackingField: 0.2
     <Delay>k__BackingField: 0
     <Easing>k__BackingField: 0
   loopSettings:
     <LoopCount>k__BackingField: 0
     <LoopType>k__BackingField: 0
+  profile: {fileID: 0}
+  startColor: {r: 1, g: 1, b: 1, a: 1}
   targetColor: {r: 0.19607845, g: 0.49803925, b: 0.38431376, a: 1}
+  image: {fileID: 3343333610577250994}
