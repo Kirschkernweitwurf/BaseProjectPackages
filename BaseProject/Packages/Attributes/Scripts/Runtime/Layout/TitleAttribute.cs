@@ -15,7 +15,9 @@ namespace Base.AttributePackage
         /// <summary>Text shown as the bold title.</summary>
         public string Title { get; }
 
-        /// <summary>Optional HTML color for title and underline, for example "#E74C3C". Null uses the default color.</summary>
+        /// <summary>
+        /// Optional HTML color for title and underline, for example "#E74C3C". Null uses the default color.
+        /// </summary>
         public string ColorHex { get; }
 
         /// <summary>Optional preset color. <see cref="EColor.Default"/> uses the default color.</summary>

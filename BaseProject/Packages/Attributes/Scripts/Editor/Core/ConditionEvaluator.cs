@@ -43,21 +43,9 @@ namespace Base.AttributePackage.Editor
 
         /// <summary>Resolves the current value of an enum field or property, or null.</summary>
         public static object ResolveEnum(in MemberContext context, string member)
-        {
-            Type type = context.DeclaringType;
-            object owner = context.DeclaringObject;
-            if (type == null || owner == null)
-                return null;
-
-            FieldInfo field = ReflectionCache.GetField(type, member);
-            if (field != null)
-                return field.GetValue(owner);
-
-            PropertyInfo info = ReflectionCache.GetProperty(type, member);
-            if (info != null && info.CanRead)
-                return info.GetValue(owner, null);
-
-            return null;
-        }
+            => MemberValueResolver.TryResolve(context.DeclaringType, context.DeclaringObject, member,
+                out object value)
+                ? value
+                : null;
     }
 }

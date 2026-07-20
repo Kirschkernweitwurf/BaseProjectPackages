@@ -11,12 +11,14 @@ namespace Base.AttributePackage.Editor
     /// that carry more than one component of the field type.
     /// </summary>
     [CustomPropertyDrawer(typeof(ComponentPickerAttribute))]
-    public class ComponentPickerDrawer : PropertyDrawer
+    public sealed class ComponentPickerDrawer : PropertyDrawer
     {
         private const string ArrayToken = ".Array.data[";
         private const float BadgeWidth = 32f;
         private const float Spacing = 2f;
-        private const string UsageError = "[ComponentPicker] only works on component reference fields.";
+
+        private static readonly string UsageError =
+            $"[{AttributeNames.Display<ComponentPickerAttribute>()}] only works on component reference fields.";
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {

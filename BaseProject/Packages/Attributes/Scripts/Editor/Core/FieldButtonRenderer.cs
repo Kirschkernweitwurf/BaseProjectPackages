@@ -11,6 +11,12 @@ namespace Base.AttributePackage.Editor
     {
         private static GUIStyle _style;
 
+        private static GUIStyle Style => _style ??= new GUIStyle(EditorStyles.miniButton)
+        {
+            padding = new RectOffset(2, 2, 0, 0),
+            fontSize = 10
+        };
+
         /// <summary>Draws a button at a fixed rect. Returns true on click.</summary>
         public static bool DrawAt(Rect rect, GUIContent content) => GUI.Button(rect, content, Style);
 
@@ -21,11 +27,5 @@ namespace Base.AttributePackage.Editor
             Rect button = new(row.xMax - width, row.y, width, row.height);
             return GUI.Button(button, content, Style);
         }
-
-        private static GUIStyle Style => _style ??= new GUIStyle(EditorStyles.miniButton)
-        {
-            padding = new RectOffset(2, 2, 0, 0),
-            fontSize = 10
-        };
     }
 }

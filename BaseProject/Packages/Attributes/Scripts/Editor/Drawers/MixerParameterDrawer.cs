@@ -18,7 +18,7 @@ namespace Base.AttributePackage.Editor
         {
             if (property.propertyType != SerializedPropertyType.String)
             {
-                EditorGUI.LabelField(position, label.text, "Use [MixerParameter] with a string.");
+                EditorGUI.LabelField(position, label.text, AttributeNames.Usage<MixerParameterAttribute>("a string"));
                 return;
             }
 

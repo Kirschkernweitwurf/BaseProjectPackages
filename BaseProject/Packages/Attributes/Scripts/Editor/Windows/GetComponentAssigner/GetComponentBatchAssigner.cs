@@ -153,38 +153,8 @@ namespace Base.AttributePackage.Editor.Windows.GetComponentAssigner
             GetComponentInParentAttribute inParent = field.GetCustomAttribute<GetComponentInParentAttribute>();
 
             return inParent != null
-                ? SearchParents(owner.transform, type, inParent.Name, inParent.IncludeInactive)
+                ? ParentComponentSearch.FindInParents(owner.transform, type, inParent.Name, inParent.IncludeInactive)
                 : null;
-        }
-
-        private static Object SearchParents(Transform start, Type type, string name, bool includeInactive)
-        {
-            for (Transform current = start.parent; current != null; current = current.parent)
-            {
-                if (!includeInactive && !current.gameObject.activeInHierarchy)
-                    continue;
-
-                if (!string.IsNullOrEmpty(name) && current.name != name)
-                    continue;
-
-                Object match = Match(current, type);
-
-                if (match != null)
-                    return match;
-            }
-
-            return null;
-        }
-
-        private static Object Match(Transform current, Type type)
-        {
-            if (type == typeof(Transform))
-                return current;
-
-            if (type == typeof(GameObject))
-                return current.gameObject;
-
-            return current.GetComponent(type);
         }
 
         private static bool IsReferenceField(FieldInfo field) => field.IsDefined(typeof(GetComponentAttribute), false)

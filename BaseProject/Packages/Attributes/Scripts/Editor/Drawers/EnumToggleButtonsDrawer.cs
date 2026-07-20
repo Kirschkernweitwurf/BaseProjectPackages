@@ -16,7 +16,7 @@ namespace Base.AttributePackage.Editor
         {
             if (property.propertyType != SerializedPropertyType.Enum)
             {
-                EditorGUI.LabelField(position, label.text, "Use [EnumToggleButtons] with an enum.");
+                EditorGUI.LabelField(position, label.text, AttributeNames.Usage<EnumToggleButtonsAttribute>("an enum"));
                 return;
             }
 

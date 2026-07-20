@@ -19,6 +19,12 @@ namespace Base.AttributePackage
     [Serializable]
     public struct InputActionMapReference
     {
+        /// <summary>Serialized name of the asset field, for use by the property drawer.</summary>
+        public const string AssetFieldName = nameof(asset);
+
+        /// <summary>Serialized name of the map id field, for use by the property drawer.</summary>
+        public const string MapIdFieldName = nameof(mapId);
+
         [SerializeField] private InputActionAsset asset;
         [SerializeField] private string mapId;
 
@@ -32,9 +38,7 @@ namespace Base.AttributePackage
         /// </summary>
         public string MapId => mapId;
 
-        /// <summary>
-        /// The GUID of the referenced map. Assigned automatically when a map is selected in the inspector.
-        /// </summary>
+        /// <summary>Whether the reference points at an assigned asset and a selected map.</summary>
         public bool IsValid => asset != null && !string.IsNullOrEmpty(mapId);
 
         /// <summary>

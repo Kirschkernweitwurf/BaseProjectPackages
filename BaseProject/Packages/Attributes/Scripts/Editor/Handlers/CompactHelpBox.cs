@@ -73,22 +73,9 @@ namespace Base.AttributePackage.Editor
         }
 
         private static Color Resolve(string hex, EColor preset, Color fallback)
-        {
-            if (!string.IsNullOrEmpty(hex))
-            {
-                string normalized = hex.StartsWith("#")
-                    ? hex
-                    : "#" + hex;
-
-                if (ColorUtility.TryParseHtmlString(normalized, out Color parsed))
-                    return parsed;
-            }
-
-            if (preset != EColor.Default)
-                return preset.ToColor();
-
-            return fallback;
-        }
+            => ColorAttributeUtility.TryResolve(hex, preset, out Color color)
+                ? color
+                : fallback;
 
         private static Color DefaultColor(EInfoBoxType type)
         {

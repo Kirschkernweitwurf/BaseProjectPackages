@@ -44,25 +44,11 @@ namespace Base.AttributePackage.Editor
             Object target = property.serializedObject.targetObject;
             Type type = target.GetType();
 
-            object raw = null;
-            FieldInfo field = ReflectionCache.GetField(type, member);
-            if (field != null)
+            if (!MemberValueResolver.TryResolve(type, target, member, out object raw))
             {
-                raw = field.GetValue(target);
-            }
-            else
-            {
-                PropertyInfo info = ReflectionCache.GetProperty(type, member);
-                if (info != null && info.CanRead)
-                {
-                    raw = info.GetValue(target, null);
-                }
-                else
-                {
-                    MethodInfo method = ReflectionCache.GetMethod(type, member);
-                    if (method != null && method.GetParameters().Length == 0)
-                        raw = method.Invoke(target, null);
-                }
+                MethodInfo method = ReflectionCache.GetMethod(type, member);
+                if (method != null && method.GetParameters().Length == 0)
+                    raw = method.Invoke(target, null);
             }
 
             if (raw is string || !(raw is IEnumerable enumerable))

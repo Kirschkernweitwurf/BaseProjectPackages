@@ -1,7 +1,7 @@
 using System.Reflection;
 using Object = UnityEngine.Object;
 
-namespace Base.AttributePackage.Validation
+namespace Base.AttributePackage
 {
     /// <summary>Fails when a <see cref="RequiredAttribute"/> object reference is null.</summary>
     public sealed class RequiredRule : IValidationRule

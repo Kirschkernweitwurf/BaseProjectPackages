@@ -22,7 +22,8 @@ namespace Base.AttributePackage.Editor
             bool isInt = property.propertyType == SerializedPropertyType.Integer;
             if (!isString && !isInt)
             {
-                EditorGUI.LabelField(position, label.text, "Use [AnimatorParam] with a string or int.");
+                EditorGUI.LabelField(position, label.text,
+                    AttributeNames.Usage<AnimatorParamAttribute>("a string or int"));
                 return;
             }
 

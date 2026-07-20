@@ -19,8 +19,8 @@ namespace Base.AttributePackage.Editor.Windows.RequireComponentAudit
         private const float RowHeight = 22f;
         private const string WindowTitle = "GetComponent Audit";
 
-        private static readonly string GetComponentLabel = Trim(nameof(GetComponentAttribute));
-        private static readonly string RequireComponentLabel = Trim(nameof(RequireComponent));
+        private static readonly string GetComponentLabel = AttributeNames.Display<GetComponentAttribute>();
+        private static readonly string RequireComponentLabel = AttributeNames.Display<RequireComponent>();
 
         [SerializeField] private Vector2 scrollPosition;
 
@@ -144,15 +144,6 @@ namespace Base.AttributePackage.Editor.Windows.RequireComponentAudit
                 OpenScript(declaring);
 
             EditorGUILayout.EndHorizontal();
-        }
-
-        private static string Trim(string attributeName)
-        {
-            const string suffix = "Attribute";
-
-            return attributeName.EndsWith(suffix)
-                ? attributeName[..^suffix.Length]
-                : attributeName;
         }
 
         private void Rescan()

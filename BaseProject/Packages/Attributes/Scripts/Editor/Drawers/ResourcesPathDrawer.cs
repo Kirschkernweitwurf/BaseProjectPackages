@@ -16,7 +16,7 @@ namespace Base.AttributePackage.Editor
         {
             if (property.propertyType != SerializedPropertyType.String)
             {
-                EditorGUI.LabelField(position, label.text, "Use [ResourcesPath] with a string.");
+                EditorGUI.LabelField(position, label.text, AttributeNames.Usage<ResourcesPathAttribute>("a string"));
                 return;
             }
 
