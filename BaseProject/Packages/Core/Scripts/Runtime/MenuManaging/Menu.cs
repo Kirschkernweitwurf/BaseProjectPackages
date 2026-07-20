@@ -51,14 +51,14 @@ namespace Base.CorePackage.MenuManaging
         /// <summary><c>true</c> if the menu is currently open.</summary>
         public bool IsOpen { get; private set; }
 
-        /// <summary><c>true</c> if the menu is currently transitioning between open and closed states.</summary>
-        public bool IsTransitioning { get; private set; }
-
         /// <summary><c>true</c> if the menu has been shut down and is no longer valid.</summary>
         public bool HasShutDown { get; private set; }
 
         /// <summary>The root tween group driving this menu's open and close animation.</summary>
         public TweenGroup ContentRoot => contentRoot;
+
+        /// <summary><c>true</c> if the menu is currently transitioning between open and closed states.</summary>
+        protected bool IsTransitioning { get; private set; }
 
         private readonly List<MenuIdentifier> _childMenuIdentifiers = new();
 
@@ -127,10 +127,7 @@ namespace Base.CorePackage.MenuManaging
             }
 
             if (IsTransitioning)
-            {
-                CustomLogger.LogWarning($"Menu \"{MenuIdentifier}\" is currently transitioning.", this);
                 return;
-            }
 
             IsTransitioning = true;
             IsOpen = true;
@@ -168,10 +165,7 @@ namespace Base.CorePackage.MenuManaging
             }
 
             if (IsTransitioning)
-            {
-                CustomLogger.LogWarning($"Menu \"{MenuIdentifier}\" is currently transitioning.", this);
                 return;
-            }
 
             IsTransitioning = true;
 
