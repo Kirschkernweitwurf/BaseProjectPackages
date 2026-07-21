@@ -8,6 +8,7 @@ using Base.CorePackage.Tracking;
 using Base.CorePackage.Tweening.Components.System;
 using Base.UtilityPackage.Logging;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Base.CorePackage.MenuManaging
 {
@@ -35,8 +36,9 @@ namespace Base.CorePackage.MenuManaging
         [Tooltip("The root TweenGroup for this menu's open/close animations.")]
         [SerializeField] private TweenGroup contentRoot;
 
+        [field: FormerlySerializedAs("<MenuPriority>k__BackingField")]
         [field: Tooltip("The priority of this menu in the stack.")]
-        [field: SerializeField] public EPriority MenuPriority { get; private set; }
+        [field: SerializeField] public EPriority Priority { get; private set; }
 
         [Space]
         [Tooltip("If true, this menu will automatically open on Start (with animation).")]
@@ -139,7 +141,7 @@ namespace Base.CorePackage.MenuManaging
             contentRoot.Show();
 
             RegisterParentMenu(parentMenuIdentifier);
-            ServiceLocator.Get<MenuManager>()?.RegisterOpenMenu(this, (uint)MenuPriority, this);
+            ServiceLocator.Get<MenuManager>()?.RegisterOpenMenu(this, (uint)Priority, this);
 
             OnOpened();
             Opened?.Invoke();

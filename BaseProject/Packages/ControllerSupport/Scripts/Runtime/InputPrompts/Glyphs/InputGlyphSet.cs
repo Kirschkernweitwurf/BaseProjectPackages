@@ -20,6 +20,8 @@ namespace Base.ControllerSupport.InputPrompts.Glyphs
         [Tooltip("Action to glyph mappings for this device.")]
         [SerializeField] private List<InputGlyphEntry> entries = new();
 
+        private Dictionary<Guid, InputGlyphEntry> _lookup;
+
         /// <summary>Tries to resolve the sprite for an action on this device.</summary>
         public bool TryGetSprite(InputActionReference action, out Sprite sprite)
         {
@@ -41,18 +43,25 @@ namespace Base.ControllerSupport.InputPrompts.Glyphs
             if (action == null || action.action == null)
                 return null;
 
-            Guid id = action.action.id;
+            _lookup ??= BuildLookup();
+            return _lookup.GetValueOrDefault(action.action.id);
+        }
+
+        private Dictionary<Guid, InputGlyphEntry> BuildLookup()
+        {
+            Dictionary<Guid, InputGlyphEntry> lookup = new();
 
             foreach (InputGlyphEntry entry in entries)
             {
-                if (entry.Action == null || entry.Action.action == null)
-                    continue;
-
-                if (entry.Action.action.id == id)
-                    return entry;
+                if (entry.Action != null && entry.Action.action != null)
+                    lookup[entry.Action.action.id] = entry;
             }
 
-            return null;
+            return lookup;
         }
+
+#if UNITY_EDITOR
+        private void OnValidate() => _lookup = null;
+#endif
     }
 }

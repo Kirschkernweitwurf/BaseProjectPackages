@@ -266,11 +266,12 @@ MonoBehaviour:
       data:
         separator: 1
         name: Unity Editor
-        expanded: 0
+        expanded: 1
         merged: 0
         children:
         - rid: 5339058507518050403
         - rid: 5339058507518050404
+        - rid: 5339058523541078102
         - rid: 5339058395782840457
         - rid: 5339058411500208237
         - rid: 5339058419491930200
@@ -517,7 +518,7 @@ MonoBehaviour:
     - rid: 5339058395782840457
       type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
-        separator: 1
+        separator: 0
         entry:
           id: MI:Base.MemoryProfiler.Editor.MemoryProfilerWindow.Open
           path: Memory Profiler Automation
@@ -761,7 +762,7 @@ MonoBehaviour:
       data:
         separator: 1
         name: References
-        expanded: 1
+        expanded: 0
         merged: 0
         children:
         - rid: 5339058395782840458
@@ -864,3 +865,15 @@ MonoBehaviour:
         children:
         - rid: 5339058395782840440
         - rid: 5339058395782840441
+    - rid: 5339058523541078102
+      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 1
+        entry:
+          id: MI:Base.ControllerSupport.Editor.NavigationGroupsWindow.Open
+          path: Controller Navigation Groups
+          enabled: 1
+          kind: 0
+          createFileName: 
+          overridePriority: 0
+          overrideValue: 0

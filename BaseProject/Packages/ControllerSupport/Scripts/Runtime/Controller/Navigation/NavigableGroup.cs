@@ -3,10 +3,12 @@ using Base.ControllerSupport.Controller.Focus;
 using Base.CorePackage.Services;
 using Base.CorePackage.Tracking;
 using Base.UtilityPackage.Logging;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace Base.ControllerSupport.Controller.Navigation
 {
@@ -18,6 +20,12 @@ namespace Base.ControllerSupport.Controller.Navigation
     /// </summary>
     public sealed class NavigableGroup : MonoBehaviour
     {
+        /// <summary>Serialized name of the auto activate field, for editor tooling.</summary>
+        public const string AutoActivateFieldName = nameof(autoActivate);
+
+        /// <summary>Serialized name of the priority field, for editor tooling.</summary>
+        public const string PriorityFieldName = nameof(priority);
+
         [Header("Focus")]
 
         [Tooltip("Element selected when this group gains focus and no element is remembered.")]
@@ -40,12 +48,20 @@ namespace Base.ControllerSupport.Controller.Navigation
         /// <summary>Focus priority used by the watchdog to choose between active groups.</summary>
         public EPriority Priority => priority;
 
+        /// <summary>Whether the group activates itself in OnEnable instead of being driven externally.</summary>
+        public bool AutoActivate => autoActivate;
+
         private readonly List<NavigableElement> _elements = new();
+
+#if UNITY_EDITOR
         private readonly List<Selectable> _validationBuffer = new();
+#endif
 
         private bool _isActive;
+        private bool _hasWarnedNoTarget;
 
         private FocusWatchdog _focusWatchdog;
+        private GameObject _lastSeenSelection;
         private GameObject _lastSelected;
 
 #region Unity Callbacks
@@ -61,6 +77,10 @@ namespace Base.ControllerSupport.Controller.Navigation
                 return;
 
             GameObject current = EventSystem.current.currentSelectedGameObject;
+            if (current == _lastSeenSelection)
+                return;
+
+            _lastSeenSelection = current;
 
             if (current != null && current.transform.IsChildOf(transform))
                 _lastSelected = current;
@@ -79,6 +99,7 @@ namespace Base.ControllerSupport.Controller.Navigation
                 ServiceLocator.TryGet(out _focusWatchdog);
 
             _isActive = true;
+            _hasWarnedNoTarget = false;
             _focusWatchdog?.RegisterGroup(this);
         }
 
@@ -101,10 +122,17 @@ namespace Base.ControllerSupport.Controller.Navigation
             Selectable target = ResolveFocusTarget();
             if (target == null)
             {
-                CustomLogger.LogWarning($"Navigable group \"{name}\" has no valid element to focus.", this);
+                // The watchdog retries every frame, so warn only once per activation instead of spamming.
+                if (!_hasWarnedNoTarget)
+                {
+                    _hasWarnedNoTarget = true;
+                    CustomLogger.LogWarning($"Navigable group \"{name}\" has no valid element to focus.", this);
+                }
+
                 return;
             }
 
+            _hasWarnedNoTarget = false;
             EventSystem.current.SetSelectedGameObject(target.gameObject);
             _lastSelected = target.gameObject;
         }

@@ -25,6 +25,9 @@ namespace Base.ControllerSupport.Controller.Integration
 
             if (navigableGroup == null)
                 CustomLogger.LogWarning("MenuNavigationModule has no NavigableGroup assigned.", this);
+            else if (navigableGroup.AutoActivate)
+                CustomLogger.LogWarning("The linked NavigableGroup has Auto Activate enabled, but the menu is "
+                    + "the one activating it. Disable Auto Activate on the group.", this);
         }
 #endregion
 

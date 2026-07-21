@@ -1,18 +1,21 @@
 {
-  "name": "Base.ControllerSupport.Editor",
-  "rootNamespace": "Base.ControllerSupport.Editor",
-  "references": [
-    "GUID:e1378ce9c1febe949aa5b5a4d2c14e2c"
-  ],
-  "includePlatforms": [
-    "Editor"
-  ],
-  "excludePlatforms": [],
-  "allowUnsafeCode": false,
-  "overrideReferences": false,
-  "precompiledReferences": [],
-  "autoReferenced": true,
-  "defineConstraints": [],
-  "versionDefines": [],
-  "noEngineReferences": false
+    "name": "Base.ControllerSupport.Editor",
+    "rootNamespace": "Base.ControllerSupport.Editor",
+    "references": [
+        "GUID:e1378ce9c1febe949aa5b5a4d2c14e2c",
+        "GUID:ef1475c04daed1943a99d3d610d12e02",
+        "GUID:922d81cfb9ff6984da4cb2213b66a375",
+        "GUID:f2d8f8c295391d141aef02e29987cd86"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }

@@ -47,7 +47,7 @@ namespace Base.CorePackage.MenuManaging.Modules
             if (!ServiceLocator.TryGet(out TimeScaleManager timeScaleManager))
                 return;
 
-            timeScaleManager.TimeScaleTracker.Add(timeScale, (uint)OwnerMenu.MenuPriority, this);
+            timeScaleManager.TimeScaleTracker.Add(timeScale, (uint)OwnerMenu.Priority, this);
             _isApplied = true;
         }
 

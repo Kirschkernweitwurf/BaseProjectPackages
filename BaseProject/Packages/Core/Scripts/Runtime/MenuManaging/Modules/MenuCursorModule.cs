@@ -47,7 +47,7 @@ namespace Base.CorePackage.MenuManaging.Modules
             if (!ServiceLocator.TryGet(out CursorManager cursorManager))
                 return;
 
-            cursorManager.CursorTracker.Add(cursorSettings, (uint)OwnerMenu.MenuPriority, this);
+            cursorManager.CursorTracker.Add(cursorSettings, (uint)OwnerMenu.Priority, this);
             _isApplied = true;
         }
 

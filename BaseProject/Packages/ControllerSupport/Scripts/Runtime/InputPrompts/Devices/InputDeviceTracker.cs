@@ -16,8 +16,10 @@ namespace Base.ControllerSupport.InputPrompts.Devices
         /// <summary>Raised whenever the active device family changes.</summary>
         public event Action<EInputDeviceType> OnDeviceChanged;
 
+        /// <summary>The device family that produced the most recent real actuation.</summary>
         public EInputDeviceType CurrentDevice { get; private set; } = EInputDeviceType.Unknown;
 
+        /// <summary>True while the gamepad is the active device family.</summary>
         public bool IsUsingGamepad => CurrentDevice == EInputDeviceType.Gamepad;
 
 #region Unity Callbacks
@@ -49,7 +51,9 @@ namespace Base.ControllerSupport.InputPrompts.Devices
 
             EInputDeviceType deviceType = ResolveDeviceType(device);
 
-            if (deviceType == EInputDeviceType.Unknown)
+            // Events from the already active family cannot change anything, so skip the actuation scan.
+            // This is the hot path: the active device fires events constantly.
+            if (deviceType == EInputDeviceType.Unknown || deviceType == CurrentDevice)
                 return;
 
             // Require at least one control to cross the threshold so resting sticks do not trigger.
