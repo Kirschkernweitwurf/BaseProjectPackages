@@ -40,7 +40,7 @@ namespace Base.ControllerSupport.Controller.Scrolling
 
             Vector2 input = scrollAction.action.ReadValue<Vector2>();
 
-            if (input.magnitude < deadZone)
+            if (input.sqrMagnitude < deadZone * deadZone)
                 return;
 
             Apply(input);

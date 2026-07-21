@@ -52,7 +52,7 @@ namespace Base.CorePackage.MenuManaging.Modules
             if (!inputManager.TryResolveBaseMap(actionMap, out InputActionMap resolvedMap))
                 return;
 
-            inputManager.RegisterInputMap(resolvedMap, this, (uint)OwnerMenu.MenuPriority);
+            inputManager.RegisterInputMap(resolvedMap, this, (uint)OwnerMenu.Priority);
             _isApplied = true;
         }
 
