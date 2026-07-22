@@ -13,7 +13,7 @@ namespace Base.AttributePackage.Editor
 
         protected override string UsageMessage => AttributeNames.Usage<FilePathAttribute>("a string");
 
-        protected override string OpenPanel()
-            => EditorUtility.OpenFilePanel(PanelTitle, Application.dataPath, ((FilePathAttribute)attribute).Extension);
+        protected override string OpenPanel() => EditorUtility.OpenFilePanel(PanelTitle, Application.dataPath,
+            ((FilePathAttribute)attribute).Extension);
     }
 }

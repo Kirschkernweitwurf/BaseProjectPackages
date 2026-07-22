@@ -136,8 +136,10 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
         {
             List<string> result = new();
             foreach (AssemblyReferenceInfo reference in Info.References)
+            {
                 if (reference.IsUnused)
                     result.Add(reference.TargetName);
+            }
 
             return result;
         }

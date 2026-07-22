@@ -11,8 +11,6 @@ namespace Base.SettingsPackage.Core
     /// <typeparam name="T">The value type held by the setting.</typeparam>
     public abstract class Setting<T> : ISetting
     {
-        private static readonly EqualityComparer<T> Comparer = EqualityComparer<T>.Default;
-
         /// <summary>Raised whenever <see cref="Value"/> changes, including on load, revert, and reset.</summary>
         public event Action<T> OnValueChanged;
 
@@ -38,6 +36,8 @@ namespace Base.SettingsPackage.Core
                 OnValueChanged?.Invoke(_value);
             }
         }
+
+        private static readonly EqualityComparer<T> Comparer = EqualityComparer<T>.Default;
 
         private readonly ISettingsStore _store;
 

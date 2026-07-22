@@ -11,9 +11,15 @@ namespace Base.AttributePackage.Editor
     /// </summary>
     public abstract class PathPickerDrawer : PropertyDrawer
     {
-        private const float ButtonWidth = 28f;
         private const string ButtonLabel = "...";
+        private const float ButtonWidth = 28f;
         private const float Spacing = 2f;
+
+        /// <summary>Whether the selected path is stored absolute instead of project relative.</summary>
+        protected abstract bool IsAbsolute { get; }
+
+        /// <summary>Message shown when the attribute sits on a non-string field.</summary>
+        protected abstract string UsageMessage { get; }
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
@@ -50,12 +56,6 @@ namespace Base.AttributePackage.Editor
                 EditorGUIUtility.editingTextField = false;
             };
         }
-
-        /// <summary>Whether the selected path is stored absolute instead of project relative.</summary>
-        protected abstract bool IsAbsolute { get; }
-
-        /// <summary>Message shown when the attribute sits on a non-string field.</summary>
-        protected abstract string UsageMessage { get; }
 
         /// <summary>Opens the system panel and returns the selected path, or empty when cancelled.</summary>
         protected abstract string OpenPanel();

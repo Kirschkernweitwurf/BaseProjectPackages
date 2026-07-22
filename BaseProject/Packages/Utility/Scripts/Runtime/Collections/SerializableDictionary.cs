@@ -14,6 +14,7 @@ namespace Base.UtilityPackage.Collections
     public class SerializableDictionary<TKey, TValue>
         : IEnumerable<KeyValuePair<TKey, TValue>>, ISerializationCallbackReceiver
     {
+        private static readonly EqualityComparer<TKey> KeyComparer = EqualityComparer<TKey>.Default;
         [SerializeField] private List<SerializableDictionaryEntry<TKey, TValue>> entries = new();
 
         /// <summary>
@@ -76,8 +77,6 @@ namespace Base.UtilityPackage.Collections
                 return _dict.Values;
             }
         }
-
-        private static readonly EqualityComparer<TKey> KeyComparer = EqualityComparer<TKey>.Default;
 
         private Dictionary<TKey, TValue> _dict;
 

@@ -96,8 +96,10 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
         private static bool HasUnityNamePrefix(string assemblyName)
         {
             foreach (string prefix in UnityNamePrefixes)
+            {
                 if (assemblyName.StartsWith(prefix, StringComparison.Ordinal))
                     return true;
+            }
 
             return false;
         }

@@ -98,7 +98,7 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
                 }
             };
 
-            Color subtitleColor = new Color(0.5f, 0.5f, 0.5f);
+            Color subtitleColor = new(0.5f, 0.5f, 0.5f);
 
             SuccessSubtitle = new GUIStyle(EditorStyles.label)
             {

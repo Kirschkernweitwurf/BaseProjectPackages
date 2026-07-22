@@ -42,10 +42,10 @@ namespace Base.AttributePackage.Editor
         }
 
         /// <summary>Resolves the current value of an enum field or property, or null.</summary>
-        public static object ResolveEnum(in MemberContext context, string member)
-            => MemberValueResolver.TryResolve(context.DeclaringType, context.DeclaringObject, member,
-                out object value)
-                ? value
-                : null;
+        public static object ResolveEnum(in MemberContext context, string member) => MemberValueResolver.TryResolve(
+            context.DeclaringType, context.DeclaringObject, member,
+            out object value)
+            ? value
+            : null;
     }
 }

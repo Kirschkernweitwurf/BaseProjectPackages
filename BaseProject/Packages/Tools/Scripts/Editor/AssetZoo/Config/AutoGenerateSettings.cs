@@ -14,21 +14,24 @@ namespace Base.ToolPackage.Editor.AssetZoo.Config
     public class AutoGenerateSettings
     {
         /// <summary>
-        /// Depth value that disables the depth limit.
-        /// </summary>
-        public const int UnlimitedDepth = -1;
-
-        /// <summary>
         /// Separator used when none is set.
         /// </summary>
         public const string DefaultSeparator = "_";
+        /// <summary>
+        /// Depth value that disables the depth limit.
+        /// </summary>
+        public const int UnlimitedDepth = -1;
 
         [field: Tooltip("Folder to scan. Subfolders are included up to the search depth.")]
         [field: FolderPath]
         [field: SerializeField] public string SearchFolder { get; private set; } = "Assets";
 
         [field: Tooltip("Name prefixes to scan for. The first word after the prefix becomes the group.")]
-        [field: SerializeField] public List<string> Prefixes { get; private set; } = new() { "P", "SM" };
+        [field: SerializeField] public List<string> Prefixes { get; private set; } = new()
+        {
+            "P",
+            "SM"
+        };
 
         [field: Tooltip("Separator between the name parts.")]
         [field: SerializeField] public string Separator { get; private set; } = DefaultSeparator;

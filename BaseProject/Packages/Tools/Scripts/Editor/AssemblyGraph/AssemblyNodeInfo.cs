@@ -69,8 +69,10 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
             get
             {
                 foreach (AssemblyReferenceInfo reference in References)
+                {
                     if (reference.IsUnused)
                         return true;
+                }
 
                 return false;
             }

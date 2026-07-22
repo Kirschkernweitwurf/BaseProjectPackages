@@ -64,7 +64,7 @@ namespace Base.ScreenShakePackage.Editor
         /// <summary>
         /// Finds the auto-property backing field for the given property name.
         /// </summary>
-        private SerializedProperty FindBackingField(string propertyName) =>
-            serializedObject.FindProperty($"<{propertyName}>k__BackingField");
+        private SerializedProperty FindBackingField(string propertyName)
+            => serializedObject.FindProperty($"<{propertyName}>k__BackingField");
     }
-}
+}

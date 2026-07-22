@@ -49,14 +49,6 @@ namespace Base.CorePackage.Tweening.Core
         [Tooltip("Loop behavior of this tween.")]
         [SerializeField] private LoopSettings loopSettings = new();
 
-        protected T DefaultValue;
-
-        private TweenBase _activeTween;
-        private TweenSettings _resolvedSettings;
-        private LoopSettings _resolvedLoopSettings;
-        private int _currentLoop;
-        private bool _currentReversed;
-
         public bool HasShutDown { get; private set; }
 
         public override TweenBase ActiveTween => _activeTween;
@@ -111,6 +103,14 @@ namespace Base.CorePackage.Tweening.Core
         /// for value types that <see cref="TweenLerpUtility.Resolve{T}"/> does not know.
         /// </summary>
         protected virtual Func<T, T, float, T> LerpFunc => DefaultLerpFunc;
+
+        protected T DefaultValue;
+
+        private TweenBase _activeTween;
+        private TweenSettings _resolvedSettings;
+        private LoopSettings _resolvedLoopSettings;
+        private int _currentLoop;
+        private bool _currentReversed;
 
 #region Unity Callbacks
         protected virtual void Awake() => DefaultValue = GetCurrentValue();

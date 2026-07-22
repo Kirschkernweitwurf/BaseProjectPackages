@@ -158,28 +158,6 @@ namespace Base.UtilityPackage
 #endif
 
         /// <summary>
-        /// Starts <paramref name="coroutine"/> wrapped in a tracker that removes it from the set on completion.
-        /// Stopping the returned handle also stops the wrapped coroutine, since it is iterated inline.
-        /// </summary>
-        /// <param name="coroutine">The coroutine enumerator to run.</param>
-        /// <returns>The <see cref="Coroutine"/> instance started.</returns>
-        private Coroutine StartTracked(IEnumerator coroutine)
-        {
-            Coroutine handle = null;
-            handle = StartCoroutine(Tracked());
-            _coroutines.Add(handle);
-            return handle;
-
-            IEnumerator Tracked()
-            {
-                while (coroutine.MoveNext())
-                    yield return coroutine.Current;
-
-                _coroutines.Remove(handle);
-            }
-        }
-
-        /// <summary>
         /// Runs the specified <paramref name="actionToRun"/> after waiting for the given number of frames.
         /// </summary>
         /// <param name="actionToRun">The action to run after the specified number of frames.</param>
@@ -203,6 +181,28 @@ namespace Base.UtilityPackage
             yield return yieldInstruction;
 
             actionToRun?.Invoke();
+        }
+
+        /// <summary>
+        /// Starts <paramref name="coroutine"/> wrapped in a tracker that removes it from the set on completion.
+        /// Stopping the returned handle also stops the wrapped coroutine, since it is iterated inline.
+        /// </summary>
+        /// <param name="coroutine">The coroutine enumerator to run.</param>
+        /// <returns>The <see cref="Coroutine"/> instance started.</returns>
+        private Coroutine StartTracked(IEnumerator coroutine)
+        {
+            Coroutine handle = null;
+            handle = StartCoroutine(Tracked());
+            _coroutines.Add(handle);
+            return handle;
+
+            IEnumerator Tracked()
+            {
+                while (coroutine.MoveNext())
+                    yield return coroutine.Current;
+
+                _coroutines.Remove(handle);
+            }
         }
     }
 }

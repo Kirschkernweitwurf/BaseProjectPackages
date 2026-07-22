@@ -15,6 +15,7 @@ namespace Base.AttributePackage.Editor
             {
                 EditorGUI.LabelField(position, label.text,
                     AttributeNames.Usage<CurveRangeAttribute>("an AnimationCurve"));
+
                 return;
             }
 

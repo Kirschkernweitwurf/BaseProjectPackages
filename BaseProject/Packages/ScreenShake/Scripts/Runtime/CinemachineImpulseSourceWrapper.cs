@@ -1,7 +1,6 @@
 using Base.UtilityPackage.Logging;
 using Unity.Cinemachine;
 using UnityEngine;
-
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -108,4 +107,4 @@ namespace Base.ScreenShakePackage
         [ContextMenu("Generate Shake")]
         private void GenerateShakeEditor() => GenerateShake();
     }
-}
+}

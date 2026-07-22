@@ -14,8 +14,8 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
     {
         private const string ComponentForgetPath = "CONTEXT/Component/Forget Play Mode Changes";
         private const string ComponentMarkPath = "CONTEXT/Component/Save Play Mode Changes";
-        private const int GameObjectMarkPriority = 20;
         private const string GameObjectMarkPath = "GameObject/Save Play Mode Changes";
+        private const int GameObjectMarkPriority = 20;
 
         static PlayModeCapturer()
         {
@@ -35,6 +35,7 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
                 Debug.LogError(
                     $"Play Mode Saver tracks components, not '{target.name}'. Mark a component on it instead.",
                     target);
+
                 return;
             }
 
@@ -134,9 +135,7 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
             List<PlayModeSavePayload> payloads = new();
 
             foreach (Component component in PlayModeMarks.Components)
-            {
                 payloads.Add(BuildPayload(component));
-            }
 
             PlayModeStateStore store = PlayModeStateStore.instance;
             store.SetPayloads(payloads);

@@ -11,12 +11,12 @@ namespace Base.ControllerSupport.Controller.Navigation
     [RequireComponent(typeof(Selectable))]
     public sealed class NavigableElement : MonoBehaviour
     {
-        private Selectable _selectable;
-
         /// <summary>The sibling selectable this element makes navigable. Resolved lazily for edit mode.</summary>
         public Selectable Selectable => _selectable != null
             ? _selectable
             : _selectable = GetComponent<Selectable>();
+
+        private Selectable _selectable;
 
         /// <summary>True when the element can currently receive focus.</summary>
         public bool IsNavigable() => Selectable != null && Selectable.IsInteractable() && gameObject.activeInHierarchy;

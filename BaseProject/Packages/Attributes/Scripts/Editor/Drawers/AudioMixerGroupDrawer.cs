@@ -19,6 +19,7 @@ namespace Base.AttributePackage.Editor
             {
                 EditorGUI.LabelField(position, label.text,
                     AttributeNames.Usage<AudioMixerGroupAttribute>("an AudioMixerGroup field"));
+
                 return;
             }
 

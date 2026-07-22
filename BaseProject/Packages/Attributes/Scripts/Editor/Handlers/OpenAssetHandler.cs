@@ -11,37 +11,23 @@ namespace Base.AttributePackage.Editor
     /// </summary>
     public sealed class OpenAssetHandler : IInlineFieldWidget, IAfterFieldHandler
     {
+        private const string DefaultLabel = "Open";
         private const float InlineWidth = 46f;
         private const float RowWidth = 60f;
-        private const string DefaultLabel = "Open";
-
-        private static readonly GUIContent Content = new(DefaultLabel, "Open the asset.");
 
         int IInlineFieldWidget.Order => 20;
+
         int IAfterFieldHandler.Order => 92;
 
-        public float GetWidth(in MemberContext context)
-        {
-            OpenAssetAttribute attribute = context.GetAttribute<OpenAssetAttribute>();
-            return attribute is { Inline: true } && IsSupported(context.Property)
-                ? InlineWidth
-                : 0f;
-        }
-
-        public void Draw(Rect rect, in MemberContext context)
-        {
-            Object asset = Resolve(context.Property);
-            using (new EditorGUI.DisabledScope(asset == null))
-            {
-                if (FieldButtonRenderer.DrawAt(rect, Content) && asset != null)
-                    AssetDatabase.OpenAsset(asset);
-            }
-        }
+        private static readonly GUIContent Content = new(DefaultLabel, "Open the asset.");
 
         public void AfterField(in MemberContext context)
         {
             OpenAssetAttribute attribute = context.GetAttribute<OpenAssetAttribute>();
-            if (attribute is not { Inline: false })
+            if (attribute is not
+                {
+                    Inline: false
+                })
                 return;
 
             Object asset = Resolve(context.Property);
@@ -54,9 +40,31 @@ namespace Base.AttributePackage.Editor
             }
         }
 
+        public float GetWidth(in MemberContext context)
+        {
+            OpenAssetAttribute attribute = context.GetAttribute<OpenAssetAttribute>();
+            return attribute is
+                {
+                    Inline: true
+                }
+                && IsSupported(context.Property)
+                    ? InlineWidth
+                    : 0f;
+        }
+
+        public void Draw(Rect rect, in MemberContext context)
+        {
+            Object asset = Resolve(context.Property);
+            using (new EditorGUI.DisabledScope(asset == null))
+            {
+                if (FieldButtonRenderer.DrawAt(rect, Content) && asset != null)
+                    AssetDatabase.OpenAsset(asset);
+            }
+        }
+
         private static bool IsSupported(SerializedProperty property)
             => property.propertyType == SerializedPropertyType.ObjectReference
-               || property.propertyType == SerializedPropertyType.String;
+                || property.propertyType == SerializedPropertyType.String;
 
         private static Object Resolve(SerializedProperty property)
         {

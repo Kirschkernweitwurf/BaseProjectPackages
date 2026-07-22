@@ -21,12 +21,6 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
         [SerializeReference]
         private List<MenuNode> children = new();
 
-        /// <summary>Required by serialization.</summary>
-        public MenuGroupNode() => Separator = true;
-
-        /// <summary>Creates a named group.</summary>
-        public MenuGroupNode(string name) : this() => this.name = name;
-
         /// <summary>Display name of the group.</summary>
         public string Name
         {
@@ -43,6 +37,12 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
 
         /// <summary>Ordered child nodes.</summary>
         public List<MenuNode> Children => children;
+
+        /// <summary>Required by serialization.</summary>
+        public MenuGroupNode() => Separator = true;
+
+        /// <summary>Creates a named group.</summary>
+        public MenuGroupNode(string name) : this() => this.name = name;
 
         /// <summary>Converts the retired merged flag into the separator flag. Runs once during migration.</summary>
         public void MigrateMerged()

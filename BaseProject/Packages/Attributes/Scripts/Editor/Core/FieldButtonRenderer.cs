@@ -9,13 +9,13 @@ namespace Base.AttributePackage.Editor
     /// </summary>
     public static class FieldButtonRenderer
     {
-        private static GUIStyle _style;
-
         private static GUIStyle Style => _style ??= new GUIStyle(EditorStyles.miniButton)
         {
             padding = new RectOffset(2, 2, 0, 0),
             fontSize = 10
         };
+
+        private static GUIStyle _style;
 
         /// <summary>Draws a button at a fixed rect. Returns true on click.</summary>
         public static bool DrawAt(Rect rect, GUIContent content) => GUI.Button(rect, content, Style);

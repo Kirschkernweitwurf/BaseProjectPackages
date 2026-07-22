@@ -1,21 +1,21 @@
 {
-    "name": "Base.AttributePackage.Editor",
-    "rootNamespace": "Base.AttributePackage.Editor",
-    "references": [
-        "GUID:c3837597513e91f44a47d8cd91c34f68",
-        "GUID:75469ad4d38634e559750d17036d5f7c",
-        "GUID:922d81cfb9ff6984da4cb2213b66a375",
-        "GUID:ef1475c04daed1943a99d3d610d12e02"
-    ],
-    "includePlatforms": [
-        "Editor"
-    ],
-    "excludePlatforms": [],
-    "allowUnsafeCode": false,
-    "overrideReferences": false,
-    "precompiledReferences": [],
-    "autoReferenced": true,
-    "defineConstraints": [],
-    "versionDefines": [],
-    "noEngineReferences": false
+  "name": "Base.AttributePackage.Editor",
+  "rootNamespace": "Base.AttributePackage.Editor",
+  "references": [
+    "GUID:c3837597513e91f44a47d8cd91c34f68",
+    "GUID:75469ad4d38634e559750d17036d5f7c",
+    "GUID:922d81cfb9ff6984da4cb2213b66a375",
+    "GUID:ef1475c04daed1943a99d3d610d12e02"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
 }

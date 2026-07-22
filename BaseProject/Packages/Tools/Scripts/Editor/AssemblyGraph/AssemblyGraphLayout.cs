@@ -141,8 +141,10 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
         private static void EnqueueUnvisited(List<string> neighbors, HashSet<string> visited, Queue<string> queue)
         {
             foreach (string neighbor in neighbors)
+            {
                 if (visited.Add(neighbor))
                     queue.Enqueue(neighbor);
+            }
         }
 
         /// <summary>Pulls fully unconnected nodes out of the cluster list.</summary>
@@ -410,8 +412,10 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
             Dictionary<string, int> ranks = new();
 
             foreach (List<string> column in columns)
+            {
                 for (int i = 0; i < column.Count; i++)
                     ranks[column[i]] = i;
+            }
 
             return ranks;
         }
@@ -496,8 +500,10 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
         {
             int unused = 0;
             foreach (AssemblyReferenceInfo reference in info.References)
+            {
                 if (reference.IsUnused)
                     unused++;
+            }
 
             if (unused == 0)
                 return BaseNodeHeight;

@@ -17,4 +17,4 @@ namespace Base.ScreenShakePackage
         private void Awake() => ImpulseSourceWrapper = GetComponent<CinemachineImpulseSourceWrapper>();
 #endregion
     }
-}
+}
