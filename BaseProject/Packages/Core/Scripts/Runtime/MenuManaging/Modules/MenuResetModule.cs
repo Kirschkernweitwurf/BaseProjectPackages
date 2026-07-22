@@ -27,9 +27,6 @@ namespace Base.CorePackage.MenuManaging.Modules
         /// <summary>Recollects the resettable children. Call after adding or removing them at runtime.</summary>
         private void Recache()
         {
-            if (OwnerMenu == null)
-                return;
-
             IMenuResettable[] found = OwnerMenu.GetComponentsInChildren<IMenuResettable>(includeInactive: true);
             List<IMenuResettable> filtered = new(found.Length);
 

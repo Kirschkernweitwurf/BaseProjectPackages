@@ -74,12 +74,6 @@ namespace Base.CorePackage.MenuManaging
 
             if (ServiceLocator.TryGet(out MenuManager menuManager))
                 menuManager.RegisterMenu(this);
-
-            if (MenuIdentifier == null)
-                CustomLogger.LogWarning("Menu has no MenuIdentifier assigned.", this);
-
-            if (contentRoot == null)
-                CustomLogger.LogWarning($"Menu \"{MenuIdentifier}\" has no TweenGroup assigned.", this);
         }
 
         protected virtual void Start()
@@ -247,7 +241,10 @@ namespace Base.CorePackage.MenuManaging
         private void RegisterChildMenu(MenuIdentifier childMenuIdentifierToRegister)
         {
             if (childMenuIdentifierToRegister == null)
+            {
+                CustomLogger.LogWarning($"Cannot register null child menu for \"{MenuIdentifier}\".", this);
                 return;
+            }
 
             if (!IsOpen)
             {

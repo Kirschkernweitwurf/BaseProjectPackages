@@ -47,10 +47,6 @@ namespace Base.CorePackage.Tooltip
 #region Unity Callbacks
         private void Start()
         {
-            // Fallback for instances created before the attribute could auto-assign.
-            if (canvas == null)
-                canvas = GetComponentInParent<Canvas>();
-
             ServiceLocator.Get<TooltipService>()?.SetView(this);
             Hide();
         }
