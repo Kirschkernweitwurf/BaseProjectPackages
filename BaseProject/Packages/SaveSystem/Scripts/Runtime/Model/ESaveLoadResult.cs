@@ -3,7 +3,7 @@ namespace Base.SaveSystemPackage.Model
     /// <summary>
     /// Outcome of a load. One channel for all results.
     /// </summary>
-    public enum ESaveLoadResult
+    public enum ESaveLoadResult : byte
     {
         /// <summary>Loaded and handed back to all savables.</summary>
         Success = 0,

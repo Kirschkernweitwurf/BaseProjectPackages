@@ -34,10 +34,11 @@ namespace Base.SaveSystemPackage.Storage
                 string tmp = path + ".tmp";
                 await File.WriteAllBytesAsync(tmp, bytes, ct);
 
+                // File.Replace swaps atomically, so there is no window where the file is gone.
                 if (File.Exists(path))
-                    File.Delete(path);
-
-                File.Move(tmp, path);
+                    File.Replace(tmp, path, null);
+                else
+                    File.Move(tmp, path);
             }
             finally
             {
@@ -128,17 +129,17 @@ namespace Base.SaveSystemPackage.Storage
                     return Array.Empty<string>();
 
                 List<string> result = new();
-                foreach (string file in Directory.GetFiles(_root, "*", SearchOption.AllDirectories))
+                foreach (string file in Directory.EnumerateFiles(_root, "*", SearchOption.AllDirectories))
                 {
                     ct.ThrowIfCancellationRequested();
 
                     string rel = Path.GetRelativePath(_root, file)
                         .Replace(Path.DirectorySeparatorChar, '/');
 
-                    if (rel.EndsWith(".tmp"))
+                    if (rel.EndsWith(".tmp", StringComparison.Ordinal))
                         continue; // skip half-written temp files
 
-                    if (prefix == null || rel.StartsWith(prefix))
+                    if (prefix == null || rel.StartsWith(prefix, StringComparison.Ordinal))
                         result.Add(rel);
                 }
 

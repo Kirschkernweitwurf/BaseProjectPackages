@@ -1,7 +1,7 @@
 using System;
+using System.IO;
 using System.Security.Cryptography;
 using System.Text;
-using Base.UtilityPackage.Logging;
 
 namespace Base.SaveSystemPackage.Encryption
 {
@@ -25,15 +25,11 @@ namespace Base.SaveSystemPackage.Encryption
         /// or old saves will fail to decrypt.
         /// </param>
         /// <param name="salt">Optional. Pass your own for extra safety.</param>
+        /// <exception cref="ArgumentException">When the passphrase is null or empty.</exception>
         public AesEncryptor(string passphrase, byte[] salt = null)
         {
             if (string.IsNullOrEmpty(passphrase))
-            {
-                CustomLogger.LogWarning(
-                    "Passphrase is null or empty. This is not secure!" + " Please provide a strong passphrase.", null);
-
-                return;
-            }
+                throw new ArgumentException("Passphrase must not be null or empty.", nameof(passphrase));
 
             salt ??= Encoding.UTF8.GetBytes(FallbackSalt);
             using Rfc2898DeriveBytes kdf = new(passphrase, salt, Iterations, HashAlgorithmName.SHA256);
@@ -63,10 +59,7 @@ namespace Base.SaveSystemPackage.Encryption
                 {
                     Length: > IvSize
                 })
-            {
-                CustomLogger.LogError("Data is null or too short to contain an IV. Decryption failed.", null);
-                return Array.Empty<byte>();
-            }
+                throw new InvalidDataException("Data is null or too short to contain an IV.");
 
             using Aes aes = Aes.Create();
             aes.Key = _key;
