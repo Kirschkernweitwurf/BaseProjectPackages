@@ -15,11 +15,9 @@ namespace Base.ScreenShakePackage
     [RequireComponent(typeof(CinemachineImpulseSource))]
     public class CinemachineImpulseSourceWrapper : MonoBehaviour
     {
-        [Required]
-        [SerializeField] private ScreenShakeProfile profile;
+        [Required] [SerializeField] private ScreenShakeProfile profile;
 
-        [GetComponent] [Required]
-        [SerializeField] private CinemachineImpulseSource source;
+        [GetComponent] [Required] [SerializeField] private CinemachineImpulseSource source;
 
 #region Unity Callbacks
         private void Awake() => ApplyProfile(profile);
@@ -43,12 +41,6 @@ namespace Base.ScreenShakePackage
         /// </summary>
         public void GenerateShake(Vector3? position = null, float multiplier = 1f)
         {
-            if (profile == null)
-            {
-                CustomLogger.LogWarning($"Attempted to generate shake with null {nameof(ScreenShakeProfile)}.", this);
-                return;
-            }
-
             float force = profile.ImpactForce * multiplier;
 
             if (position.HasValue)

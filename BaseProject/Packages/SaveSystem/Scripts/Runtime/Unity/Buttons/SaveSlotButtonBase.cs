@@ -17,9 +17,7 @@ namespace Base.SaveSystemPackage.Unity.Buttons
     /// </summary>
     public abstract class SaveSlotButtonBase : MonoBehaviour
     {
-        [GetComponent]
-        [Required]
-        [SerializeField] private Button button;
+        [GetComponent] [Required] [SerializeField] private Button button;
 
         protected ISaveSystem Saves { get; private set; }
 
