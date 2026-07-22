@@ -1,3 +1,4 @@
+using Base.AttributePackage;
 using Base.ToolPackage.MenuManagerWindow;
 using UnityEngine;
 
@@ -14,8 +15,9 @@ namespace Base.CorePackage.Audio
         /// </summary>
         public EAudioType audioType;
 
-        public AudioClip[] clips;
-        public float delay;
+        [NotNullOrEmpty] public AudioClip[] clips;
+
+        [Min(0f)] public float delay;
 
         /// <summary>
         /// Whether to ignore the pause state of the audio listener, like e.g., UI sounds.
@@ -24,7 +26,11 @@ namespace Base.CorePackage.Audio
         public bool loop;
         public bool randomizePitch;
 
-        public float volume = 1;
-        public int maxClipsPlaying = -1;
+        [MinMax(0f, 1f)] public float volume = 1;
+
+        /// <summary>
+        /// Maximum simultaneous clips from this container. Set to -1 for unlimited.
+        /// </summary>
+        [Min(-1)] public int maxClipsPlaying = -1;
     }
 }

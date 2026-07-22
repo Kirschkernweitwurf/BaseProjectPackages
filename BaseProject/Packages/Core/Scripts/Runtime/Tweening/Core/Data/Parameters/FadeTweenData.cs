@@ -1,4 +1,5 @@
 using System;
+using Base.AttributePackage;
 using UnityEngine;
 
 namespace Base.CorePackage.Tweening.Core.Data.Parameters
@@ -10,7 +11,7 @@ namespace Base.CorePackage.Tweening.Core.Data.Parameters
     public struct FadeTweenData
     {
         [field: Tooltip("Target alpha value (0–1).")]
-        [field: SerializeField] public float TargetAlpha { get; private set; }
+        [field: MinMax(0f, 1f)] [field: SerializeField] public float TargetAlpha { get; private set; }
 
         [field: Tooltip("Basic tween parameters.")]
         [field: SerializeField] public TweenData TweenData { get; private set; }

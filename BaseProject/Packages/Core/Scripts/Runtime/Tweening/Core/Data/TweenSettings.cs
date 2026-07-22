@@ -10,10 +10,10 @@ namespace Base.CorePackage.Tweening.Core.Data
     public class TweenSettings
     {
         [field: Tooltip("Duration of the tween in seconds.")]
-        [field: SerializeField] public float Duration { get; private set; } = 0.5f;
+        [field: Min(0f)] [field: SerializeField] public float Duration { get; private set; } = 0.5f;
 
         [field: Tooltip("Delay before the tween starts.")]
-        [field: SerializeField] public float Delay { get; private set; }
+        [field: Min(0f)] [field: SerializeField] public float Delay { get; private set; }
 
         [field: Tooltip("Easing function to use for the tween.")]
         [field: SerializeField] public EEasingType Easing { get; private set; }

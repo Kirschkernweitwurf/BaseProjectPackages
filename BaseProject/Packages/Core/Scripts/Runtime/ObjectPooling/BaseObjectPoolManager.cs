@@ -50,13 +50,11 @@ namespace Base.CorePackage.ObjectPooling
         /// <returns>The pooled instance.</returns>
         public virtual TAsset Get()
         {
-            if (Pool == null)
-            {
-                CustomLogger.LogError("Pool not initialized.", this);
-                return null;
-            }
+            if (Pool != null)
+                return Pool.Get();
 
-            return Pool.Get();
+            CustomLogger.LogError("Pool not initialized.", this);
+            return null;
         }
 
         /// <summary>

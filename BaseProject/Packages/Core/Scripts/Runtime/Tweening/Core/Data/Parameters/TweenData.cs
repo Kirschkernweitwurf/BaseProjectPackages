@@ -10,13 +10,13 @@ namespace Base.CorePackage.Tweening.Core.Data.Parameters
     public struct TweenData
     {
         [field: Tooltip("Tween duration in seconds.")]
-        [field: SerializeField] public float Duration { get; private set; }
+        [field: Min(0f)] [field: SerializeField] public float Duration { get; private set; }
 
         [field: Tooltip("Easing function used for interpolation.")]
         [field: SerializeField] public EEasingType Easing { get; private set; }
 
         [field: Tooltip("Optional delay before the tween starts (seconds).")]
-        [field: SerializeField] public float Delay { get; private set; }
+        [field: Min(0f)] [field: SerializeField] public float Delay { get; private set; }
 
         public TweenData(float duration, EEasingType easing, float delay = 0f)
         {
