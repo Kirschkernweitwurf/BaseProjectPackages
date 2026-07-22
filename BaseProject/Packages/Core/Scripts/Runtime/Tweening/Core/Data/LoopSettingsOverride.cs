@@ -1,5 +1,5 @@
-using Base.AttributePackage;
 using System;
+using Base.AttributePackage;
 using UnityEngine;
 
 namespace Base.CorePackage.Tweening.Core.Data

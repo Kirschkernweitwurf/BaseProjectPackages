@@ -19,10 +19,10 @@ namespace Base.AttributePackage.Editor
         private const float BadgeWidth = 32f;
         private const float Spacing = 2f;
 
-        private static GUIContent _usageErrorContent;
-
         private static readonly string UsageError =
             $"[{AttributeNames.Display<ComponentPickerAttribute>()}] only works on component reference fields.";
+
+        private static GUIContent _usageErrorContent;
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
