@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEditor;
@@ -39,7 +40,7 @@ namespace Base.AttributePackage.Editor
                 return;
             }
 
-            string warning = Evaluate(property, (AnimatorParamAttribute)attribute, out List<string> names);
+            string warning = Evaluate(property, (AnimatorParamAttribute)attribute, out string[] names);
 
             Rect fieldRect = new(position.x, position.y, position.width, EditorGUIUtility.singleLineHeight);
 
@@ -62,13 +63,13 @@ namespace Base.AttributePackage.Editor
         }
 
         private static void DrawDropdown(Rect rect, SerializedProperty property, GUIContent label,
-            List<string> names)
+            string[] names)
         {
             bool isString = property.propertyType == SerializedPropertyType.String;
 
             int current = CurrentIndex(property, names, isString);
-            int selected = EditorGUI.Popup(rect, label.text, current, names.ToArray());
-            if (selected < 0 || selected >= names.Count || selected == current)
+            int selected = EditorGUI.Popup(rect, label.text, current, names);
+            if (selected < 0 || selected >= names.Length || selected == current)
                 return;
 
             if (isString)
@@ -78,7 +79,7 @@ namespace Base.AttributePackage.Editor
         }
 
         private static string Evaluate(SerializedProperty property, AnimatorParamAttribute attribute,
-            out List<string> names)
+            out string[] names)
         {
             names = null;
 
@@ -93,7 +94,7 @@ namespace Base.AttributePackage.Editor
                 return "The assigned Animator has no AnimatorController.";
 
             names = CollectNames(controller, attribute);
-            if (names.Count > 0)
+            if (names.Length > 0)
                 return null;
 
             return attribute.HasFilter
@@ -123,7 +124,7 @@ namespace Base.AttributePackage.Editor
             return runtimeController as AnimatorController;
         }
 
-        private static List<string> CollectNames(AnimatorController controller, AnimatorParamAttribute attribute)
+        private static string[] CollectNames(AnimatorController controller, AnimatorParamAttribute attribute)
         {
             List<string> names = new();
             foreach (AnimatorControllerParameter parameter in controller.parameters)
@@ -132,16 +133,16 @@ namespace Base.AttributePackage.Editor
                     names.Add(parameter.name);
             }
 
-            return names;
+            return names.ToArray();
         }
 
-        private static int CurrentIndex(SerializedProperty property, List<string> names, bool isString)
+        private static int CurrentIndex(SerializedProperty property, string[] names, bool isString)
         {
             if (isString)
-                return names.IndexOf(property.stringValue);
+                return Array.IndexOf(names, property.stringValue);
 
             int hash = property.intValue;
-            for (int i = 0; i < names.Count; i++)
+            for (int i = 0; i < names.Length; i++)
             {
                 if (Animator.StringToHash(names[i]) == hash)
                     return i;

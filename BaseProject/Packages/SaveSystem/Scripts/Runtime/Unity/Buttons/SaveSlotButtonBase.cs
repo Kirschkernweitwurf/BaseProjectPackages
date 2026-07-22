@@ -1,5 +1,6 @@
 using System;
 using System.Threading;
+using Base.AttributePackage;
 using Base.CorePackage.Services;
 using Base.SaveSystemPackage.Slots;
 using Base.SaveSystemPackage.Unity.Composition;
@@ -16,6 +17,10 @@ namespace Base.SaveSystemPackage.Unity.Buttons
     /// </summary>
     public abstract class SaveSlotButtonBase : MonoBehaviour
     {
+        [GetComponent]
+        [Required]
+        [SerializeField] private Button button;
+
         protected ISaveSystem Saves { get; private set; }
 
         protected ISaveSlotProvider Slots { get; private set; }
@@ -23,20 +28,14 @@ namespace Base.SaveSystemPackage.Unity.Buttons
         protected SaveSlotSelection Selection { get; private set; }
 
         private bool _busy;
-        private Button _button;
         private CancellationTokenSource _cts;
 
 #region Unity Callbacks
-        protected virtual void Awake()
-        {
-            if (TryGetComponent(out _button))
-                _button.onClick.AddListener(Trigger);
-        }
+        protected virtual void Awake() => button.onClick.AddListener(Trigger);
 
         protected virtual void OnDestroy()
         {
-            if (_button != null)
-                _button.onClick.RemoveListener(Trigger);
+            button.onClick.RemoveListener(Trigger);
 
             _cts?.Cancel();
             _cts?.Dispose();
@@ -67,7 +66,7 @@ namespace Base.SaveSystemPackage.Unity.Buttons
                 return;
 
             _busy = true;
-            SetInteractable(false);
+            button.interactable = false;
             _cts = new CancellationTokenSource();
             try
             {
@@ -81,7 +80,7 @@ namespace Base.SaveSystemPackage.Unity.Buttons
             finally
             {
                 _busy = false;
-                SetInteractable(true);
+                button.interactable = true;
                 _cts?.Dispose();
                 _cts = null;
             }
@@ -102,12 +101,6 @@ namespace Base.SaveSystemPackage.Unity.Buttons
             Slots = manager.Slots;
             Selection = manager.Selection;
             return Saves != null && Slots != null && Selection != null;
-        }
-
-        private void SetInteractable(bool value)
-        {
-            if (_button != null)
-                _button.interactable = value;
         }
     }
 }

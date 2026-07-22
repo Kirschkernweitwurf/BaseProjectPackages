@@ -1,4 +1,5 @@
 using System.Threading;
+using Base.AttributePackage;
 using Base.CorePackage.Services;
 using Base.SaveSystemPackage.Model;
 using Base.SaveSystemPackage.Slots;
@@ -22,6 +23,7 @@ namespace Base.SaveSystemPackage.Unity.Buttons
         [SerializeField] private bool forceNewSlot;
 
         [Tooltip("Fixed-slot index to save into. Used only by the Fixed model; -1 to use the selection.")]
+        [DisableIf(nameof(forceNewSlot))]
         [SerializeField] private int fixedSlotIndex = -1;
 
         protected override async Awaitable OnClickAsync(CancellationToken ct)

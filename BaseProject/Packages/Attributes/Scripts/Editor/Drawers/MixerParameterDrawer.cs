@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEditor;
@@ -39,7 +40,7 @@ namespace Base.AttributePackage.Editor
                 return;
             }
 
-            string warning = Evaluate(property, (MixerParameterAttribute)attribute, out List<string> names);
+            string warning = Evaluate(property, (MixerParameterAttribute)attribute, out string[] names);
 
             Rect fieldRect = new(position.x, position.y, position.width, EditorGUIUtility.singleLineHeight);
 
@@ -47,9 +48,9 @@ namespace Base.AttributePackage.Editor
 
             if (warning == null)
             {
-                int current = names.IndexOf(property.stringValue);
-                int selected = EditorGUI.Popup(fieldRect, label.text, current, names.ToArray());
-                if (selected >= 0 && selected < names.Count && selected != current)
+                int current = Array.IndexOf(names, property.stringValue);
+                int selected = EditorGUI.Popup(fieldRect, label.text, current, names);
+                if (selected >= 0 && selected < names.Length && selected != current)
                     property.stringValue = names[selected];
             }
             else
@@ -69,7 +70,7 @@ namespace Base.AttributePackage.Editor
         }
 
         private static string Evaluate(SerializedProperty property, MixerParameterAttribute attribute,
-            out List<string> names)
+            out string[] names)
         {
             names = null;
 
@@ -80,7 +81,7 @@ namespace Base.AttributePackage.Editor
                 return $"AudioMixer field '{attribute.MixerField}' is not assigned.";
 
             names = GetExposedParameters(mixer);
-            return names.Count > 0
+            return names.Length > 0
                 ? null
                 : "The assigned AudioMixer has no exposed parameters.";
         }
@@ -97,14 +98,14 @@ namespace Base.AttributePackage.Editor
             return true;
         }
 
-        private static List<string> GetExposedParameters(AudioMixer mixer)
+        private static string[] GetExposedParameters(AudioMixer mixer)
         {
             List<string> names = new();
 
-            SerializedObject serializedMixer = new(mixer);
+            using SerializedObject serializedMixer = new(mixer);
             SerializedProperty exposed = serializedMixer.FindProperty(ExposedParametersProperty);
             if (exposed == null)
-                return names;
+                return Array.Empty<string>();
 
             for (int i = 0; i < exposed.arraySize; i++)
             {
@@ -113,7 +114,7 @@ namespace Base.AttributePackage.Editor
                     names.Add(name.stringValue);
             }
 
-            return names;
+            return names.ToArray();
         }
     }
 }
