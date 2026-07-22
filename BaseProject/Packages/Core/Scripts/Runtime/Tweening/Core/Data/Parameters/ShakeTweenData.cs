@@ -10,7 +10,7 @@ namespace Base.CorePackage.Tweening.Core.Data.Parameters
     public struct ShakeTweenData
     {
         [field: Tooltip("Maximum offset distance per tick.")]
-        [field: SerializeField] public float Strength { get; private set; }
+        [field: Min(0f)] [field: SerializeField] public float Strength { get; private set; }
 
         [field: Tooltip("Basic tween parameters.")]
         [field: SerializeField] public TweenData TweenData { get; private set; }

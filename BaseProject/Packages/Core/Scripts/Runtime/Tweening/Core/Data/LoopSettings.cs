@@ -16,7 +16,7 @@ namespace Base.CorePackage.Tweening.Core.Data
     public class LoopSettings
     {
         [field: Tooltip("Number of additional loops after the initial play. Set to -1 for infinite loops.")]
-        [field: SerializeField] public int LoopCount { get; private set; }
+        [field: Min(-1)] [field: SerializeField] public int LoopCount { get; private set; }
 
         [field: Tooltip("Type of looping behavior.")]
         [field: SerializeField] public ELoopType LoopType { get; private set; }

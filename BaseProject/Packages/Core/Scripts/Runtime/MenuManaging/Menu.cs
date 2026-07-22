@@ -1,3 +1,4 @@
+using Base.AttributePackage;
 using System;
 using System.Collections.Generic;
 using Base.CorePackage.MenuManaging.Identifier;
@@ -31,10 +32,10 @@ namespace Base.CorePackage.MenuManaging
         [field: Header("Menu Settings")]
 
         [Tooltip("The unique identifier asset for this menu.")]
-        [field: SerializeField] public MenuIdentifier MenuIdentifier { get; private set; }
+        [field: Required] [field: SerializeField] public MenuIdentifier MenuIdentifier { get; private set; }
 
         [Tooltip("The root TweenGroup for this menu's open/close animations.")]
-        [SerializeField] private TweenGroup contentRoot;
+        [Required] [SerializeField] private TweenGroup contentRoot;
 
         [field: FormerlySerializedAs("<MenuPriority>k__BackingField")]
         [field: Tooltip("The priority of this menu in the stack.")]

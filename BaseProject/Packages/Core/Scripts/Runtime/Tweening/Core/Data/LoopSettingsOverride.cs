@@ -1,3 +1,4 @@
+using Base.AttributePackage;
 using System;
 using UnityEngine;
 
@@ -13,12 +14,12 @@ namespace Base.CorePackage.Tweening.Core.Data
         [Tooltip("If true, the loop count below replaces the resolved loop count.")]
         [SerializeField] private bool overrideLoopCount;
 
-        [SerializeField] private int loopCount;
+        [ShowIf(nameof(overrideLoopCount))] [Min(-1)] [SerializeField] private int loopCount;
 
         [Tooltip("If true, the loop type below replaces the resolved loop type.")]
         [SerializeField] private bool overrideLoopType;
 
-        [SerializeField] private ELoopType loopType;
+        [ShowIf(nameof(overrideLoopType))] [SerializeField] private ELoopType loopType;
 
         /// <summary>True if at least one field is overridden.</summary>
         public bool HasAnyOverride => overrideLoopCount || overrideLoopType;

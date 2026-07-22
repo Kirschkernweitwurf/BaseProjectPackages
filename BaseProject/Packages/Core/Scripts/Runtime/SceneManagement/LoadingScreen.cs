@@ -26,7 +26,7 @@ namespace Base.CorePackage.SceneManagement
         [SerializeField] private float spinnerRotationSpeed = 180f;
 
         [Tooltip("Optional smooth damping for progress fill updates.")]
-        [SerializeField] private float fillSmoothSpeed = 5f;
+        [Min(0f)] [SerializeField] private float fillSmoothSpeed = 5f;
 
         [Header("Minimum Show Time")]
 
@@ -34,7 +34,7 @@ namespace Base.CorePackage.SceneManagement
         [SerializeField] private bool hasMinimumShowTime = true;
 
         [Tooltip("Minimum time (in seconds) the loading screen must remain visible.")]
-        [SerializeField] private float minimumShowTime = 1.0f;
+        [ShowIf(nameof(hasMinimumShowTime))] [Min(0f)] [SerializeField] private float minimumShowTime = 1.0f;
 
         [Header("Scene Filtering")]
 

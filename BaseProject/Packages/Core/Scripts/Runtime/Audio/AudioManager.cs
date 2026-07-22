@@ -1,3 +1,4 @@
+using Base.AttributePackage;
 using System.Collections;
 using System.Collections.Generic;
 using Base.CorePackage.Audio.Pool;
@@ -17,13 +18,13 @@ namespace Base.CorePackage.Audio
     {
         [Header("Settings")]
 
-        [SerializeField] private float minimumDelay = 0.1f;
-        [SerializeField] private float minPitchInclusive = 0.95f;
-        [SerializeField] private float maxPitchInclusive = 1.05f;
+        [Min(0f)] [SerializeField] private float minimumDelay = 0.1f;
+        [MinMax(0.01f, 3f)] [SerializeField] private float minPitchInclusive = 0.95f;
+        [MinMax(0.01f, 3f)] [SerializeField] private float maxPitchInclusive = 1.05f;
 
         [Header("Dependencies")]
 
-        [SerializeField] private AudioPoolManager audioPoolManager;
+        [Required] [SerializeField] private AudioPoolManager audioPoolManager;
 
         private readonly ActiveSounds _activeSounds = new();
 

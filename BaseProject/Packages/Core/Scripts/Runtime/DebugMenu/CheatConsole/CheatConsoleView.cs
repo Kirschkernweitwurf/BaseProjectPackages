@@ -1,3 +1,4 @@
+using Base.AttributePackage;
 using System.Collections.Generic;
 using System.Linq;
 using Base.CorePackage.MenuManaging;
@@ -17,18 +18,18 @@ namespace Base.CorePackage.DebugMenu.CheatConsole
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         [field: Header("Input")]
 
-        [field: SerializeField] public TMP_InputField InputField { get; private set; }
+        [field: Required] [field: SerializeField] public TMP_InputField InputField { get; private set; }
 
         [Header("Log")]
 
-        [SerializeField] private TMP_Text logText;
-        [SerializeField] private ScrollRect scrollRect;
+        [Required] [SerializeField] private TMP_Text logText;
+        [Required] [SerializeField] private ScrollRect scrollRect;
 
         [Header("Suggestions")]
 
-        [SerializeField] private TMP_Text suggestionPrefab;
-        [SerializeField] private Transform suggestionParent;
-        [SerializeField] private int maxSuggestions = 5;
+        [Required] [SerializeField] private TMP_Text suggestionPrefab;
+        [Required] [SerializeField] private Transform suggestionParent;
+        [Min(1)] [SerializeField] private int maxSuggestions = 5;
 
         [Header("Colors")]
 

@@ -12,7 +12,7 @@ namespace Base.CorePackage.MenuManaging.Modules
     public sealed class MenuTimeScaleModule : MenuModule, IShutdownHandler
     {
         [Tooltip("The time scale applied while the menu is open.")]
-        [SerializeField] private float timeScale;
+        [Min(0f)] [SerializeField] private float timeScale;
 
         public bool HasShutDown { get; private set; }
 

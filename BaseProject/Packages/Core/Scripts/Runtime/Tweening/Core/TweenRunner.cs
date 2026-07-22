@@ -31,7 +31,7 @@ namespace Base.CorePackage.Tweening.Core
         [Header("Delta Time Spike Handling")]
 
         [Tooltip("Max unscaled dt step used for tween progression. Prevents hitch/breakpoint fast-forward.")]
-        [SerializeField] private float maxUnscaledDeltaTime = 0.05f;
+        [Min(0f)] [SerializeField] private float maxUnscaledDeltaTime = 0.05f;
 
         [Tooltip("If true, the first Update after app regains focus/unpauses will not advance tweens.")]
         [SerializeField] private bool skipFirstFrameAfterFocusOrPause = true;

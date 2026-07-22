@@ -1,6 +1,6 @@
+using Base.AttributePackage;
 using System;
 using System.Collections;
-using Base.AttributePackage;
 using Base.CorePackage.Services;
 using TMPro;
 using UnityEngine;
@@ -25,7 +25,7 @@ namespace Base.CorePackage.Tooltip
         [SerializeField] private Vector2 screenOffset = new(15f, 15f);
 
         [Tooltip("Distance in pixels the tooltip keeps away from the screen edge.")]
-        [SerializeField] private float edgeMargin = 8f;
+        [Min(0f)] [SerializeField] private float edgeMargin = 8f;
 
         [Header("References")]
 
@@ -47,6 +47,10 @@ namespace Base.CorePackage.Tooltip
 #region Unity Callbacks
         private void Start()
         {
+            // Fallback for instances created before the attribute could auto-assign.
+            if (canvas == null)
+                canvas = GetComponentInParent<Canvas>();
+
             ServiceLocator.Get<TooltipService>()?.SetView(this);
             Hide();
         }

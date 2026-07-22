@@ -1,3 +1,4 @@
+using Base.AttributePackage;
 using System;
 using UnityEngine;
 
@@ -13,17 +14,17 @@ namespace Base.CorePackage.Tweening.Core.Data
         [Tooltip("If true, the duration below replaces the resolved duration.")]
         [SerializeField] private bool overrideDuration;
 
-        [SerializeField] private float duration = 0.5f;
+        [ShowIf(nameof(overrideDuration))] [Min(0f)] [SerializeField] private float duration = 0.5f;
 
         [Tooltip("If true, the delay below replaces the resolved delay.")]
         [SerializeField] private bool overrideDelay;
 
-        [SerializeField] private float delay;
+        [ShowIf(nameof(overrideDelay))] [Min(0f)] [SerializeField] private float delay;
 
         [Tooltip("If true, the easing below replaces the resolved easing.")]
         [SerializeField] private bool overrideEasing;
 
-        [SerializeField] private EEasingType easing;
+        [ShowIf(nameof(overrideEasing))] [SerializeField] private EEasingType easing;
 
         /// <summary>True if at least one field is overridden.</summary>
         public bool HasAnyOverride => overrideDuration || overrideDelay || overrideEasing;

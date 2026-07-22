@@ -1,11 +1,11 @@
 using System.Linq;
 using Base.AttributePackage;
 using Base.UtilityPackage;
-using UnityEngine;
-using UnityEngine.SceneManagement;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
+using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Base.CorePackage.Services
 {
@@ -18,13 +18,13 @@ namespace Base.CorePackage.Services
         private static bool _persistentLoaded;
         [Header("Prefabs to Load")]
 
-        [SerializeField] private GameObject persistentManagerPrefab;
-        [SerializeField] private GameObject sceneManagerPrefab;
-        [SerializeField] private GameObject gameplayManagerPrefab;
+        [Required] [SerializeField] private GameObject persistentManagerPrefab;
+        [Required] [SerializeField] private GameObject sceneManagerPrefab;
+        [Required] [SerializeField] private GameObject gameplayManagerPrefab;
 
         [Header("Scene Filtering")]
 
-        [SceneName] [SerializeField] private string[] gameplayScenes;
+        [NotNullOrEmpty] [SceneName] [SerializeField] private string[] gameplayScenes;
 
 #region Unity Callbacks
         private void Awake()
