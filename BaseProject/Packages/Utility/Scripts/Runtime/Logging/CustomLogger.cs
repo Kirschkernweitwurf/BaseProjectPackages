@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
 using UnityEngine;
@@ -12,6 +13,10 @@ namespace Base.UtilityPackage.Logging
     /// </remarks>
     public static class CustomLogger
     {
+        // Caller file paths are compile-time constants per call site, so the styled prefix for each
+        // class is built once and reused, avoiding per-log path parsing and color hashing.
+        private static readonly Dictionary<string, string> PrefixCache = new();
+
         /// <summary>
         /// Logs a message to the Unity Console.
         /// </summary>
@@ -19,10 +24,7 @@ namespace Base.UtilityPackage.Logging
         /// <param name="context">Optional Unity object that the log refers to.</param>
         /// <param name="filePath">Automatically filled by compiler to detect the calling class name.</param>
         public static void Log(string message, Object context, [CallerFilePath] string filePath = "")
-        {
-            string className = Path.GetFileNameWithoutExtension(filePath);
-            Debug.Log(FormatMessage(message, className), context);
-        }
+            => Debug.Log(FormatMessage(message, filePath), context);
 
         /// <summary>
         /// Logs a warning message to the Unity Console.
@@ -31,10 +33,7 @@ namespace Base.UtilityPackage.Logging
         /// <param name="context">Optional Unity object that the log refers to.</param>
         /// <param name="filePath">Automatically filled by compiler to detect the calling class name.</param>
         public static void LogWarning(string message, Object context, [CallerFilePath] string filePath = "")
-        {
-            string className = Path.GetFileNameWithoutExtension(filePath);
-            Debug.LogWarning(FormatMessage(message, className), context);
-        }
+            => Debug.LogWarning(FormatMessage(message, filePath), context);
 
         /// <summary>
         /// Logs an error message to the Unity Console.
@@ -43,19 +42,27 @@ namespace Base.UtilityPackage.Logging
         /// <param name="context">Optional Unity object that the log refers to.</param>
         /// <param name="filePath">Automatically filled by compiler to detect the calling class name.</param>
         public static void LogError(string message, Object context, [CallerFilePath] string filePath = "")
-        {
-            string className = Path.GetFileNameWithoutExtension(filePath);
-            Debug.LogError(FormatMessage(message, className), context);
-        }
+            => Debug.LogError(FormatMessage(message, filePath), context);
 
-        private static string FormatMessage(string message, string className)
+        private static string FormatMessage(string message, string filePath)
         {
             string editorMarker = Platform.IsEditorMode()
                 ? LogTextFormatter.EditorMarker
                 : string.Empty;
 
+            return $"{editorMarker}{GetPrefix(filePath)} {message}";
+        }
+
+        private static string GetPrefix(string filePath)
+        {
+            if (PrefixCache.TryGetValue(filePath, out string prefix))
+                return prefix;
+
+            string className = Path.GetFileNameWithoutExtension(filePath);
             string color = CustomLoggingUtils.GetColor(className);
-            return $"{editorMarker}<color={color}><b>[{className}]</b></color> {message}";
+            prefix = $"<color={color}><b>[{className}]</b></color>";
+            PrefixCache[filePath] = prefix;
+            return prefix;
         }
     }
 }

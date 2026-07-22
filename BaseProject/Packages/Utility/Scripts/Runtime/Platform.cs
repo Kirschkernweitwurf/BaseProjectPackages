@@ -28,7 +28,6 @@ namespace Base.UtilityPackage
     /// </summary>
     public static class Platform
     {
-#region Editor
         /// <summary>
         /// <c>true</c> if running inside the Unity Editor.
         /// </summary>
@@ -38,14 +37,6 @@ namespace Base.UtilityPackage
         public static readonly bool IsUnityEditor = false;
 #endif
 
-        /// <summary>
-        /// This method returns <c>true</c> if running in edit mode (not playing) inside the Unity Editor.
-        /// </summary>
-        /// <returns><c>true</c> if running in edit mode; otherwise, <c>false</c>.</returns>
-        public static bool IsEditorMode() => Application.isEditor && !Application.isPlaying;
-#endregion
-
-#region Runtime Platforms
         /// <summary>
         /// <c>true</c> if running on Windows standalone.
         /// </summary>
@@ -99,9 +90,7 @@ namespace Base.UtilityPackage
 #else
         public static readonly bool IsWebGL = false;
 #endif
-#endregion
 
-#region Build Types
         /// <summary>
         /// <c>true</c> if this is a development build.
         /// </summary>
@@ -119,9 +108,7 @@ namespace Base.UtilityPackage
 #else
         public static readonly bool IsScriptDebuggingEnabled = false;
 #endif
-#endregion
 
-#region Helper Properties
         /// <summary>
         /// <c>true</c> if this is any standalone platform (Windows, macOS, Linux).
         /// </summary>
@@ -141,6 +128,11 @@ namespace Base.UtilityPackage
         /// <c>true</c> if this is a development environment (editor or development build).
         /// </summary>
         public static readonly bool IsInDevelopmentEnvironment = IsUnityEditor || IsDevelopmentBuild;
-#endregion
+
+        /// <summary>
+        /// This method returns <c>true</c> if running in edit mode (not playing) inside the Unity Editor.
+        /// </summary>
+        /// <returns><c>true</c> if running in edit mode; otherwise, <c>false</c>.</returns>
+        public static bool IsEditorMode() => Application.isEditor && !Application.isPlaying;
     }
 }

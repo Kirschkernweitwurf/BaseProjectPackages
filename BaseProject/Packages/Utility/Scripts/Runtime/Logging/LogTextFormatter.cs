@@ -7,7 +7,8 @@ namespace Base.UtilityPackage.Logging
     public static class LogTextFormatter
     {
         /// <summary>
-        /// A marker to indicate that a log message was generated in editor mode. Styled in gray and italic for visibility.
+        /// A marker to indicate that a log message was generated in editor mode.
+        /// Styled in gray and italic for visibility.
         /// </summary>
         public const string EditorMarker = "<color=#9E9E9E><i>editor</i></color> ";
 
@@ -21,6 +22,9 @@ namespace Base.UtilityPackage.Logging
         /// </summary>
         public static string Italic(string text) => $"<i>{text}</i>";
 
+        /// <summary>
+        /// Underlines text in Unity Console logs.
+        /// </summary>
         public static string Underline(string text) => $"<u>{text}</u>";
 
         /// <summary>

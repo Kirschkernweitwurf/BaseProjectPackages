@@ -9,7 +9,7 @@ namespace Base.UtilityPackage.Types
     public static class ComponentUtility
     {
         /// <summary>
-        /// Attempts to retrieve a component of identifier T from the given object or its parents.
+        /// Attempts to retrieve a component of type T from the given object or its parents.
         /// Mimics TryGetComponent, but searches the parent hierarchy.
         /// </summary>
         public static bool TryGetComponentInParent<T>(this Object obj, out T component) where T : Component
@@ -25,15 +25,15 @@ namespace Base.UtilityPackage.Types
                     return comp.TryGetComponentInParent(out component);
 
                 default:
-                    CustomLogger.LogWarning($"TryGetComponentInParent failed: Object of identifier {obj.GetType()} "
-                        + "is not a GameObject or Component.", null);
+                    CustomLogger.LogWarning($"{nameof(TryGetComponentInParent)} failed: Object of type "
+                        + $"{obj.GetType().Name} is not a {nameof(GameObject)} or {nameof(Component)}.", null);
 
                     return false;
             }
         }
 
         /// <summary>
-        /// Helper for GameObject
+        /// Attempts to retrieve a component of type T from the given <see cref="GameObject"/> or its parents.
         /// </summary>
         public static bool TryGetComponentInParent<T>(this GameObject go, out T component) where T : Component
         {
@@ -42,7 +42,7 @@ namespace Base.UtilityPackage.Types
         }
 
         /// <summary>
-        /// Helper for Component
+        /// Attempts to retrieve a component of type T from the given <see cref="Component"/>'s object or its parents.
         /// </summary>
         public static bool TryGetComponentInParent<T>(this Component comp, out T component)
         {

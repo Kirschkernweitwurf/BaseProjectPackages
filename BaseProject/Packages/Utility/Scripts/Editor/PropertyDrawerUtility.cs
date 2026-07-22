@@ -1,6 +1,4 @@
-#if UNITY_EDITOR
 using System.Collections.Generic;
-using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -25,21 +23,22 @@ namespace Base.UtilityPackage.Editor
         public static void DrawObjectPopup<T>(Rect position, SerializedProperty property, GUIContent label,
             List<T> options) where T : Object
         {
-            if (options == null || property == null)
+            if (options == null
+                || property == null)
             {
                 EditorGUI.PropertyField(position, property, label);
                 return;
             }
 
-            // Build list with "None" entry first
-            List<string> names = new()
+            // Build names array directly with "None" entry first (avoids intermediate list and LINQ garbage).
+            string[] names = new string[options.Count + 1];
+            names[0] = "None";
+            for (int i = 0; i < options.Count; i++)
             {
-                "None"
-            };
-
-            names.AddRange(options.Select(o => o != null
-                ? o.name
-                : "<NULL>"));
+                names[i + 1] = options[i] != null
+                    ? options[i].name
+                    : "<NULL>";
+            }
 
             Object current = property.objectReferenceValue;
 
@@ -52,14 +51,15 @@ namespace Base.UtilityPackage.Editor
                     index = foundIndex + 1;
             }
 
-            // Popup
-            int newIndex = EditorGUI.Popup(position, label.text, index, names.ToArray());
+            int newIndex = EditorGUI.Popup(position, label.text, index, names);
 
-            // Apply selection
+            // Only write back on an actual change so repaints don't touch the SerializedObject.
+            if (newIndex == index)
+                return;
+
             property.objectReferenceValue = newIndex == 0
                 ? null
                 : options[newIndex - 1];
         }
     }
 }
-#endif
