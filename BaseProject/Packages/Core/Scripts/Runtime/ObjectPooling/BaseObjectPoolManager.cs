@@ -1,3 +1,4 @@
+using Base.AttributePackage;
 using Base.UtilityPackage;
 using Base.UtilityPackage.Logging;
 using UnityEngine;
@@ -18,7 +19,7 @@ namespace Base.CorePackage.ObjectPooling
         [Header("Pooling Settings")]
 
         [Tooltip("Prefab to instantiate when new objects are needed.")]
-        [SerializeField] protected TAsset prefab;
+        [Required] [SerializeField] protected TAsset prefab;
 
         [Tooltip("Optional parent where pooled objects will be instantiated.")]
         [SerializeField] protected Transform poolParent;
@@ -36,12 +37,6 @@ namespace Base.CorePackage.ObjectPooling
         {
             base.Awake();
 
-            if (prefab == null)
-            {
-                CustomLogger.LogError("Prefab reference is null. Cannot initialize pool.", this);
-                return;
-            }
-
             Pool = CreatePoolInstance();
 
             if (prewarmCount > 0)
@@ -55,11 +50,13 @@ namespace Base.CorePackage.ObjectPooling
         /// <returns>The pooled instance.</returns>
         public virtual TAsset Get()
         {
-            if (Pool != null)
-                return Pool.Get();
+            if (Pool == null)
+            {
+                CustomLogger.LogError("Pool not initialized.", this);
+                return null;
+            }
 
-            CustomLogger.LogError("Pool not initialized.", this);
-            return null;
+            return Pool.Get();
         }
 
         /// <summary>

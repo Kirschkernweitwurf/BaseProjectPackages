@@ -12,12 +12,7 @@ namespace Base.CorePackage.MenuManaging.Modules
         private IMenuResettable[] _resettables;
 
 #region Unity Callbacks
-        protected override void Awake()
-        {
-            base.Awake();
-
-            Recache();
-        }
+        private void Awake() => Recache();
 #endregion
 
         protected override void OnMenuClosed()

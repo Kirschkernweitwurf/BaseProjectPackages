@@ -1,3 +1,4 @@
+using Base.AttributePackage;
 using Base.UtilityPackage.Logging;
 using Unity.Cinemachine;
 using UnityEngine;
@@ -11,15 +12,11 @@ namespace Base.ScreenShakePackage
     [RequireComponent(typeof(CinemachineImpulseListener))]
     public class CinemachineImpulseListenerSettingsApplier : MonoBehaviour
     {
-        private CinemachineImpulseListener _listener;
+        [GetComponent] [Required]
+        [SerializeField] private CinemachineImpulseListener listener;
 
 #region Unity Callbacks
-        private void Awake()
-        {
-            _listener = GetComponent<CinemachineImpulseListener>();
-
-            ScreenShakeManager.RegisterListener(ApplyProfile);
-        }
+        private void Awake() => ScreenShakeManager.RegisterListener(ApplyProfile);
 
         private void OnDestroy() => ScreenShakeManager.DeregisterListener(ApplyProfile);
 #endregion
@@ -36,11 +33,11 @@ namespace Base.ScreenShakePackage
                 return;
             }
 
-            CinemachineImpulseListener.ImpulseReaction reaction = _listener.ReactionSettings;
+            CinemachineImpulseListener.ImpulseReaction reaction = listener.ReactionSettings;
             reaction.AmplitudeGain = profile.ListenerAmplitude;
             reaction.FrequencyGain = profile.ListenerFrequency;
             reaction.Duration = profile.ListenerDuration;
-            _listener.ReactionSettings = reaction;
+            listener.ReactionSettings = reaction;
         }
     }
 }

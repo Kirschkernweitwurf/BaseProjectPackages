@@ -1,3 +1,4 @@
+using Base.AttributePackage;
 using Base.ToolPackage.MenuManagerWindow;
 using Unity.Cinemachine;
 using UnityEngine;
@@ -25,6 +26,7 @@ namespace Base.ScreenShakePackage
         [field: SerializeField] public CinemachineImpulseDefinition.ImpulseShapes ImpulseShape { get; private set; }
 
         [field: Tooltip("Custom impulse shape curve defining the shake intensity over time.")]
+        [field: ShowIfEnum(nameof(ImpulseShape), CinemachineImpulseDefinition.ImpulseShapes.Custom)]
         [field: SerializeField] public AnimationCurve CustomImpulseShape { get; private set; } =
             AnimationCurve.EaseInOut(0, 0, 1, 1);
 
