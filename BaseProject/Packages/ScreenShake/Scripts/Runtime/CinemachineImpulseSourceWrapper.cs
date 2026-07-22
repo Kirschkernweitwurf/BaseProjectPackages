@@ -1,7 +1,10 @@
 using Base.UtilityPackage.Logging;
 using Unity.Cinemachine;
-using UnityEditor;
 using UnityEngine;
+
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace Base.ScreenShakePackage
 {
@@ -45,17 +48,8 @@ namespace Base.ScreenShakePackage
         /// </summary>
         public void GenerateShake(Vector3? position = null, float multiplier = 1f)
         {
-            if (profile == null)
-            {
-                CustomLogger.LogWarning($"Attempted to apply null {nameof(ScreenShakeProfile)}.", this);
+            if (!Validate(profile))
                 return;
-            }
-
-            if (_source == null)
-            {
-                CustomLogger.LogWarning("CinemachineImpulseSource component is missing.", this);
-                return;
-            }
 
             float force = profile.ImpactForce * multiplier;
 
@@ -73,22 +67,14 @@ namespace Base.ScreenShakePackage
         /// </summary>
         private void ApplyProfile(ScreenShakeProfile newProfile)
         {
-            if (newProfile == null)
-            {
-                CustomLogger.LogWarning($"Attempted to apply null {nameof(ScreenShakeProfile)}.", this);
+            if (!Validate(newProfile))
                 return;
-            }
-
-            if (_source == null)
-            {
-                CustomLogger.LogWarning("CinemachineImpulseSource component is missing.", this);
-                return;
-            }
 
             CinemachineImpulseDefinition def = _source.ImpulseDefinition;
             def.ImpulseDuration = newProfile.ImpulseDuration;
-            def.CustomImpulseShape = newProfile.CustomImpulseShape;
             def.ImpulseType = newProfile.ImpulseType;
+            def.ImpulseShape = newProfile.ImpulseShape;
+            def.CustomImpulseShape = newProfile.CustomImpulseShape;
             _source.ImpulseDefinition = def;
 
             _source.DefaultVelocity = newProfile.DefaultVelocity;
@@ -99,7 +85,27 @@ namespace Base.ScreenShakePackage
 #endif
         }
 
+        /// <summary>
+        /// Validates that a profile and the impulse source are present, logging a warning if not.
+        /// </summary>
+        private bool Validate(ScreenShakeProfile profileToCheck)
+        {
+            if (profileToCheck == null)
+            {
+                CustomLogger.LogWarning($"Attempted to apply null {nameof(ScreenShakeProfile)}.", this);
+                return false;
+            }
+
+            if (_source == null)
+            {
+                CustomLogger.LogWarning($"{nameof(CinemachineImpulseSource)} component is missing.", this);
+                return false;
+            }
+
+            return true;
+        }
+
         [ContextMenu("Generate Shake")]
         private void GenerateShakeEditor() => GenerateShake();
     }
-}
+}
