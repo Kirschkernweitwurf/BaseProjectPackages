@@ -215,7 +215,3 @@ public sealed class EnemyEditor : AttributePackageEditor
 - Unity only lets one package own the default inspector. If you also pull in Odin, NaughtyAttributes or similar, they'll fight over it and one loses silently. Fine as long as this is your only inspector package.
 - The pipeline reaches into nested `[Serializable]` structs and classes at any depth, so validation, conditional and layout attributes work on their fields too. It stops descending in three cases, handing those to Unity's default drawing: arrays and lists (attributes on fields of list elements are skipped), types that have their own `PropertyDrawer` and Unity or framework types like `Vector3`.
 - A couple of drawers do real work every repaint by nature. `[MixerParameter]` reads the mixer's exposed parameters and `[AnimatorParam]` reads the controller's parameters each time. On a field or two it's nothing; don't stack a dozen of them on one object.
-
-## License
-
-MIT. Do what you want with it.

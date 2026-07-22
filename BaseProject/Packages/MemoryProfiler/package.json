@@ -1,7 +1,7 @@
 {
   "name": "com.baseprojectpackages.memoryprofiler",
   "displayName": "Base Memory Profiler",
-  "description": "Editor tool for automatically taking memory snapshots and comparing them to manage memory usage in the project.",
+  "description": "Automated memory snapshot capture for the Unity editor and development builds. Takes .snap files on a repeating timer or on scene load, plus on demand from an editor window, so you build a timeline of memory usage without capturing by hand. Snapshots open in Unity's Memory Profiler for single-capture inspection or side-by-side comparison to find leaks and track growth. Config lives in Resources so it ships in development builds. Auto-start is compiled out of release builds where capture is unsupported.",
   "version": "1.1.7",
   "unity": "6000.3",
   "author": {

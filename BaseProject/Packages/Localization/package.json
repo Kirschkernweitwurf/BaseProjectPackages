@@ -1,7 +1,7 @@
 {
   "name": "com.baseprojectpackages.localization",
   "displayName": "Base Localization Package",
-  "description": "A collection of utilities and tools to help with localization in Unity projects.",
+  "description": "Editor tooling for syncing Unity String Table Collections with Google Sheets. Adds one-click Pull and Push for single or all collections through menu items and a dedicated sync window, with up-front validation, progress reporting and per-collection success or failure logging.",
   "version": "1.0.7",
   "unity": "6000.3",
   "author": {

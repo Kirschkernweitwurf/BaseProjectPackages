@@ -1,7 +1,7 @@
 {
   "name": "com.baseprojectpackages.tools",
   "displayName": "Base Tools Package",
-  "description": "A collection of tools for any project. This package includes a variety of utilities and scripts that can be used to enhance the development workflow.",
+  "description": "A suite of Unity editor tools and runtime helpers for everyday project work. Includes project health windows (assembly graph, missing scripts, empty folders, execution order plus menu item and create-asset overviews, static reset checker), code generators for layer, tag and order constants, a data driven menu manager, unique ID assignment for ScriptableObjects, an asset zoo scene builder, a component clipboard, lighting profiles, a hierarchy sorter and an auto start scene helper.",
   "version": "1.4.9",
   "unity": "6000.3",
   "author": {

@@ -1,7 +1,7 @@
 {
   "name": "com.baseprojectpackages.utilities",
   "displayName": "Base Utility Package",
-  "description": "A collection of utility scripts for any project. This package includes a variety of helper functions and scripts that can be used to enhance the development workflow.",
+  "description": "General-purpose runtime and editor helpers for Unity projects. Includes serializable dictionaries and a flattened 2D array, a tracked coroutine runner and a generic singleton base, class-tagged rich-text logging, type-safe 2D and UI raycasting, platform and build flags, prefab instantiation helpers plus audio, math, string, component, rotation and time-formatting extensions. Editor helpers cover serialized-property lookups, object-reference popups and serializable defaults. All under the Base.UtilityPackage namespace.",
   "version": "1.2.9",
   "unity": "6000.3",
   "author": {

@@ -1,7 +1,7 @@
 {
   "name": "com.baseprojectpackages.settings",
   "displayName": "Base Settings Package",
-  "description": "A package that contains basic settings to be used in any project based on PlayerPrefs.",
+  "description": "A reusable, store-agnostic settings framework for Unity: typed persistable settings (bool, int, float, string, enum) driven by a registry that handles load, save, revert and reset; drop-in components for audio volume, full screen mode, resolution, quality level, VSync and language; and ready-made UI elements (toggle, slider, dropdown and multiple-choice pickers). Backed by PlayerPrefs out of the box, with a swappable store interface for file, cloud or in-memory persistence.",
   "version": "1.1.0",
   "unity": "6000.3",
   "author": {

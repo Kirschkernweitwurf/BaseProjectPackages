@@ -1,7 +1,7 @@
 {
   "name": "com.baseprojectpackages.ui",
   "displayName": "Base UI Package",
-  "description": "A collection of UI systems and utilities that can be used for any project.",
+  "description": "Reusable Unity UI building blocks: click-driven button components for opening and closing menus, loading scenes and opening links, an awaitable confirmation dialog service and utility components such as camera-facing billboards, a world-space canvas wrapper, an FPS counter and a StreamingAssets-based build version display.",
   "version": "1.2.3",
   "unity": "6000.3",
   "author": {
