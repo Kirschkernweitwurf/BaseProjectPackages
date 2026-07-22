@@ -1,4 +1,3 @@
-using System.Linq;
 using Base.CorePackage.Input;
 using Base.CorePackage.MenuManaging.Identifier;
 using Base.CorePackage.Services;
@@ -220,7 +219,8 @@ namespace Base.CorePackage.MenuManaging
         /// </summary>
         private void CloseAll()
         {
-            foreach (TrackedItem<Menu> trackedItem in _menuPriorityTracker.TrackedItems.ToList())
+            // Iterate over a copy since Close() mutates the tracked list.
+            foreach (TrackedItem<Menu> trackedItem in _menuPriorityTracker.TrackedItems.ToArray())
             {
                 if (trackedItem == null)
                 {
@@ -251,11 +251,19 @@ namespace Base.CorePackage.MenuManaging
                 return;
             }
 
-            _highestPriorityBackMenu = _menuPriorityTracker.TrackedItems
-                .OrderByDescending(x => x.Priority)
-                .ThenByDescending(x => x.Order)
-                .FirstOrDefault(x => x.Item.ListenToOnBackAction)
-                ?.Item;
+            TrackedItem<Menu> best = null;
+            foreach (TrackedItem<Menu> candidate in _menuPriorityTracker.TrackedItems)
+            {
+                if (!candidate.Item.ListenToOnBackAction)
+                    continue;
+
+                if (best == null
+                    || candidate.Priority > best.Priority
+                    || candidate.Priority == best.Priority && candidate.Order > best.Order)
+                    best = candidate;
+            }
+
+            _highestPriorityBackMenu = best?.Item;
         }
 
         /// <summary>

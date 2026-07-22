@@ -37,8 +37,11 @@ namespace Base.CorePackage.Tweening.Core
         [SerializeField] private bool skipFirstFrameAfterFocusOrPause = true;
 
         private readonly List<ITween> _tweens = new();
+        private readonly HashSet<ITween> _activeSet = new();
         private readonly List<ITween> _pendingRemovals = new();
+        private readonly HashSet<ITween> _pendingRemovalSet = new();
         private readonly List<ITween> _pendingAdditions = new();
+        private readonly HashSet<ITween> _pendingAdditionSet = new();
 
         private bool _skipNextUpdate;
         private bool _isUpdating;
@@ -90,13 +93,13 @@ namespace Base.CorePackage.Tweening.Core
 
             if (_isUpdating)
             {
-                if (!_pendingAdditions.Contains(tween) && !_tweens.Contains(tween))
+                if (!_activeSet.Contains(tween) && _pendingAdditionSet.Add(tween))
                     _pendingAdditions.Add(tween);
 
                 return;
             }
 
-            if (_tweens.Contains(tween))
+            if (!_activeSet.Add(tween))
                 return;
 
             _tweens.Add(tween);
@@ -113,13 +116,15 @@ namespace Base.CorePackage.Tweening.Core
 
             if (!_isUpdating)
             {
-                if (_tweens.Remove(tween))
-                    OnTweenDeregistered?.Invoke(tween);
+                if (!_activeSet.Remove(tween))
+                    return;
 
+                _tweens.Remove(tween);
+                OnTweenDeregistered?.Invoke(tween);
                 return;
             }
 
-            if (_tweens.Contains(tween) && !_pendingRemovals.Contains(tween))
+            if (_activeSet.Contains(tween) && _pendingRemovalSet.Add(tween))
                 _pendingRemovals.Add(tween);
         }
 
@@ -134,7 +139,7 @@ namespace Base.CorePackage.Tweening.Core
                 tween.Tick(deltaTime);
                 OnTweenUpdated?.Invoke(tween);
 
-                if (tween.IsCompleted && !_pendingRemovals.Contains(tween))
+                if (tween.IsCompleted && _pendingRemovalSet.Add(tween))
                     _pendingRemovals.Add(tween);
             }
 
@@ -146,11 +151,15 @@ namespace Base.CorePackage.Tweening.Core
                 for (int i = 0; i < _pendingRemovals.Count; i++)
                 {
                     ITween tween = _pendingRemovals[i];
-                    if (_tweens.Remove(tween))
-                        OnTweenDeregistered?.Invoke(tween);
+                    if (!_activeSet.Remove(tween))
+                        continue;
+
+                    _tweens.Remove(tween);
+                    OnTweenDeregistered?.Invoke(tween);
                 }
 
                 _pendingRemovals.Clear();
+                _pendingRemovalSet.Clear();
             }
 
             // Apply additions.
@@ -160,7 +169,7 @@ namespace Base.CorePackage.Tweening.Core
             for (int i = 0; i < _pendingAdditions.Count; i++)
             {
                 ITween tween = _pendingAdditions[i];
-                if (tween == null || _tweens.Contains(tween) || _pendingRemovals.Contains(tween))
+                if (tween == null || !_activeSet.Add(tween))
                     continue;
 
                 _tweens.Add(tween);
@@ -168,6 +177,7 @@ namespace Base.CorePackage.Tweening.Core
             }
 
             _pendingAdditions.Clear();
+            _pendingAdditionSet.Clear();
         }
     }
 }

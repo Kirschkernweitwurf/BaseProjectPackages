@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using Base.UtilityPackage.Logging;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using Object = UnityEngine.Object;
 
 namespace Base.CorePackage.Services
@@ -23,8 +25,7 @@ namespace Base.CorePackage.Services
         public static void Register(Type type, IGameService service)
         {
             if (Services.ContainsKey(type))
-                CustomLogger.LogWarning(
-                    $"Service {type.Name} is already registered. " + "Overwriting with new instance.",
+                CustomLogger.LogWarning($"Service {type.Name} is already registered. Overwriting with new instance.",
                     service as Object);
 
             Services[type] = service;
@@ -35,17 +36,7 @@ namespace Base.CorePackage.Services
         /// </summary>
         /// <param name="service">The service instance to register.</param>
         /// <typeparam name="T">The type of the service being registered.</typeparam>
-        public static void Register<T>(T service) where T : class, IGameService
-        {
-            Type type = typeof(T);
-
-            if (Services.ContainsKey(type))
-                CustomLogger.LogWarning(
-                    $"Service {type.Name} is already registered. " + "Overwriting with new instance.",
-                    service as Object);
-
-            Services[type] = service;
-        }
+        public static void Register<T>(T service) where T : class, IGameService => Register(typeof(T), service);
 
         /// <summary>
         /// Removes a service from the locator using a generic type parameter.
@@ -117,9 +108,7 @@ namespace Base.CorePackage.Services
             foreach (KeyValuePair<Type, IGameService> kvp in Services)
                 CustomLogger.LogError($"Service {kvp.Key.Name} was not deregistered properly.", null);
         }
-#endif
 
-#if UNITY_EDITOR
         [InitializeOnEnterPlayMode]
         private static void ResetStatics() => Services.Clear();
 #endif

@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using Base.UtilityPackage.Logging;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using UnityEngine;
 
 namespace Base.CorePackage.Services.Shutdown

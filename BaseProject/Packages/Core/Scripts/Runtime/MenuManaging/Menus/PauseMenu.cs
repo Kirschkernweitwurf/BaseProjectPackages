@@ -1,5 +1,7 @@
 using System;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 
 namespace Base.CorePackage.MenuManaging.Menus
 {
