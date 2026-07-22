@@ -13,13 +13,6 @@ namespace Base.UtilityPackage.Raycasting
     /// </summary>
     public static class RaycastUtility
     {
-#if UNITY_EDITOR
-        private const float DebugRayLength = 25f;
-        private const float DebugDuration = 1f;
-
-        private static readonly Color DebugRayColor = new(0.1f, 0.8f, 1f, 0.8f);
-#endif
-
         // Reused across calls to avoid per-raycast list allocations. Safe because calls are main-thread only.
         private static readonly List<RaycastResult> UIRaycastResults = new();
 
@@ -33,7 +26,7 @@ namespace Base.UtilityPackage.Raycasting
         /// <returns>True if a hit with the target component was detected; otherwise, false.</returns>
         public static bool TryGetFromMousePosition<T>(out T result)
         {
-            result = default;
+            result = default(T);
 
             Camera cam = Camera.main;
             if (cam == null)
@@ -68,7 +61,7 @@ namespace Base.UtilityPackage.Raycasting
         /// <returns>True if a hit with the target component was detected; otherwise, false.</returns>
         public static bool TryGetFromScreenPoint<T>(Camera camera, Vector3 screenPoint, out T result)
         {
-            result = default;
+            result = default(T);
 
             if (camera == null)
                 return false;
@@ -93,7 +86,7 @@ namespace Base.UtilityPackage.Raycasting
         /// <returns>True if a hit with the target component was detected; otherwise, false.</returns>
         public static bool TryGetUIElement<T>(GraphicRaycaster graphicRaycaster, out T component)
         {
-            component = default;
+            component = default(T);
 
             if (EventSystem.current == null)
             {
@@ -148,6 +141,12 @@ namespace Base.UtilityPackage.Raycasting
 
             Debug.DrawLine(start, end, color, DebugDuration);
         }
+#endif
+#if UNITY_EDITOR
+        private const float DebugRayLength = 25f;
+        private const float DebugDuration = 1f;
+
+        private static readonly Color DebugRayColor = new(0.1f, 0.8f, 1f, 0.8f);
 #endif
     }
 }

@@ -107,7 +107,10 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
 
         private static PlayModeObjectReference BuildReference(string propertyPath, Object value, Transform instanceRoot)
         {
-            PlayModeObjectReference reference = new() { propertyPath = propertyPath };
+            PlayModeObjectReference reference = new()
+            {
+                propertyPath = propertyPath
+            };
 
             if (EditorUtility.IsPersistent(value))
             {
@@ -192,6 +195,7 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
 
             Debug.LogWarning(
                 $"Play Mode Saver cleared '{reference.propertyPath}' because it pointed at a runtime object.", owner);
+
             return null;
         }
 
@@ -207,9 +211,9 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
         {
             if (prefabRoot != null)
             {
-                Debug.LogWarning(
-                    $"Play Mode Saver cleared '{reference.propertyPath}' because a prefab cannot hold a " +
-                    "reference to a scene object.", owner);
+                Debug.LogWarning($"Play Mode Saver cleared '{reference.propertyPath}' because a prefab cannot hold a "
+                    + "reference to a scene object.", owner);
+
                 return null;
             }
 
@@ -220,6 +224,7 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
                 Debug.LogWarning(
                     $"Play Mode Saver cleared '{reference.propertyPath}' because '{reference.scenePath}' is not open.",
                     owner);
+
                 return null;
             }
 

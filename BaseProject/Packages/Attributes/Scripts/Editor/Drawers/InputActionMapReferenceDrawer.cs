@@ -34,7 +34,10 @@ namespace Base.AttributePackage.Editor
             {
                 using (new EditorGUI.DisabledScope(true))
                 {
-                    EditorGUI.Popup(mapRect, 0, new[] { MissingAssetLabel });
+                    EditorGUI.Popup(mapRect, 0, new[]
+                    {
+                        MissingAssetLabel
+                    });
                 }
 
                 EditorGUI.EndProperty();

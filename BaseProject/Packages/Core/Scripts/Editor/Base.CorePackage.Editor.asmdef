@@ -1,20 +1,20 @@
 {
-    "name": "Base.CorePackage.Editor",
-    "rootNamespace": "Base.CorePackage.Editor",
-    "references": [
-        "GUID:f2d8f8c295391d141aef02e29987cd86",
-        "GUID:94639facfcc1e284b907f050384eaaf0",
-        "GUID:c3837597513e91f44a47d8cd91c34f68"
-    ],
-    "includePlatforms": [
-        "Editor"
-    ],
-    "excludePlatforms": [],
-    "allowUnsafeCode": false,
-    "overrideReferences": false,
-    "precompiledReferences": [],
-    "autoReferenced": true,
-    "defineConstraints": [],
-    "versionDefines": [],
-    "noEngineReferences": false
+  "name": "Base.CorePackage.Editor",
+  "rootNamespace": "Base.CorePackage.Editor",
+  "references": [
+    "GUID:f2d8f8c295391d141aef02e29987cd86",
+    "GUID:94639facfcc1e284b907f050384eaaf0",
+    "GUID:c3837597513e91f44a47d8cd91c34f68"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
 }

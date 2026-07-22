@@ -21,9 +21,6 @@ namespace Base.AttributePackage.Editor
         private static string[] _displayNames;
         private static string[] _sceneNames;
 
-        [InitializeOnLoadMethod]
-        private static void Install() => EditorBuildSettings.sceneListChanged += Invalidate;
-
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
             if (!IsSupported(property))
@@ -68,6 +65,9 @@ namespace Base.AttributePackage.Editor
 
             CompactHelpBox.Draw(warningRect, warning, EInfoBoxType.Warning);
         }
+
+        [InitializeOnLoadMethod]
+        private static void Install() => EditorBuildSettings.sceneListChanged += Invalidate;
 
         private static void DrawStringDropdown(Rect rect, SerializedProperty property, GUIContent label)
         {

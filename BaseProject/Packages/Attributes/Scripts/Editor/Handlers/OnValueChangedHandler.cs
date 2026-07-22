@@ -11,15 +11,8 @@ namespace Base.AttributePackage.Editor
     public sealed class OnValueChangedHandler : IBeforeFieldHandler, IAfterFieldHandler
     {
         int IBeforeFieldHandler.Order => 1000;
+
         int IAfterFieldHandler.Order => -100;
-
-        public void BeforeField(in MemberContext context)
-        {
-            if (context.GetAttribute<OnValueChangedAttribute>() == null)
-                return;
-
-            EditorGUI.BeginChangeCheck();
-        }
 
         public void AfterField(in MemberContext context)
         {
@@ -35,6 +28,14 @@ namespace Base.AttributePackage.Editor
             context.Editor.Repaint();
         }
 
+        public void BeforeField(in MemberContext context)
+        {
+            if (context.GetAttribute<OnValueChangedAttribute>() == null)
+                return;
+
+            EditorGUI.BeginChangeCheck();
+        }
+
         private static void Invoke(in MemberContext context, string methodName)
         {
             MethodInfo method = ReflectionCache.GetMethod(context.DeclaringType, methodName);
@@ -47,7 +48,10 @@ namespace Base.AttributePackage.Editor
             if (parameters.Length == 0)
                 arguments = null;
             else if (parameters.Length == 1)
-                arguments = new[] { context.Field?.GetValue(context.DeclaringObject) };
+                arguments = new[]
+                {
+                    context.Field?.GetValue(context.DeclaringObject)
+                };
             else
                 return;
 

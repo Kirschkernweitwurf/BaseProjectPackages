@@ -14,6 +14,15 @@ namespace Base.MemoryProfiler.Editor
     {
         public int callbackOrder => 0;
 
+        public void OnPostprocessBuild(BuildReport report)
+        {
+            MemoryProfilerConfigSo config = Resources.Load<MemoryProfilerConfigSo>(MemoryProfilerConfigSo.ResourcePath);
+            if (config == null)
+                return;
+
+            WriteBakedPath(config, string.Empty);
+        }
+
         public void OnPreprocessBuild(BuildReport report)
         {
             if (!EditorUserBuildSettings.development)
@@ -24,15 +33,6 @@ namespace Base.MemoryProfiler.Editor
                 return;
 
             WriteBakedPath(config, MemoryProfilerRunner.ResolveStorageDirectory(config));
-        }
-
-        public void OnPostprocessBuild(BuildReport report)
-        {
-            MemoryProfilerConfigSo config = Resources.Load<MemoryProfilerConfigSo>(MemoryProfilerConfigSo.ResourcePath);
-            if (config == null)
-                return;
-
-            WriteBakedPath(config, string.Empty);
         }
 
         private static void WriteBakedPath(MemoryProfilerConfigSo config, string value)

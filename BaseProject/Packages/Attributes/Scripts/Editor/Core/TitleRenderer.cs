@@ -10,13 +10,8 @@ namespace Base.AttributePackage.Editor
     /// </summary>
     public static class TitleRenderer
     {
-        private const string KeySeparator = ".";
         private const string FoldoutKeyPrefix = "TITLE";
-
-        private static readonly Color DefaultLine = new(0.5f, 0.5f, 0.5f, 0.5f);
-
-        private static GUIStyle _labelStyle;
-        private static GUIStyle _foldoutStyle;
+        private const string KeySeparator = ".";
 
         private static GUIStyle LabelStyle => _labelStyle ??= new GUIStyle(EditorStyles.boldLabel);
 
@@ -24,6 +19,11 @@ namespace Base.AttributePackage.Editor
         {
             fontStyle = FontStyle.Bold
         };
+
+        private static readonly Color DefaultLine = new(0.5f, 0.5f, 0.5f, 0.5f);
+
+        private static GUIStyle _labelStyle;
+        private static GUIStyle _foldoutStyle;
 
         /// <summary>Draws a plain bold title with an underline.</summary>
         public static void DrawPlain(TitleAttribute attribute)
@@ -88,6 +88,5 @@ namespace Base.AttributePackage.Editor
                 ? color
                 : DefaultLine);
         }
-
     }
 }

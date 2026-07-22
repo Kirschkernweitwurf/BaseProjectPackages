@@ -22,6 +22,12 @@ namespace Base.ControllerSupport.InputPrompts.Glyphs
 
         private Dictionary<Guid, InputGlyphEntry> _lookup;
 
+#region Unity Callbacks
+#if UNITY_EDITOR
+        private void OnValidate() => _lookup = null;
+#endif
+#endregion
+
         /// <summary>Tries to resolve the sprite for an action on this device.</summary>
         public bool TryGetSprite(InputActionReference action, out Sprite sprite)
         {
@@ -59,9 +65,5 @@ namespace Base.ControllerSupport.InputPrompts.Glyphs
 
             return lookup;
         }
-
-#if UNITY_EDITOR
-        private void OnValidate() => _lookup = null;
-#endif
     }
 }

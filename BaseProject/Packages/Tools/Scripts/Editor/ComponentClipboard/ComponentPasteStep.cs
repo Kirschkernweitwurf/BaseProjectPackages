@@ -11,24 +11,22 @@ namespace Base.ToolPackage.Editor.ComponentClipboard
     /// </summary>
     public class ComponentPasteStep
     {
-        private readonly ComponentClipboardEntry _entry;
-        private readonly Type _type;
-        private readonly List<Component> _targets;
-
         /// <summary>Clipboard entry this step pastes.</summary>
-        public ComponentClipboardEntry Entry => _entry;
+        public ComponentClipboardEntry Entry { get; }
 
         /// <summary>Resolved component type, null when the type no longer exists.</summary>
-        public Type Type => _type;
+        public Type Type { get; }
 
         /// <summary>Components that get overwritten. Empty means a new component is added.</summary>
         public IReadOnlyList<Component> Targets => _targets;
 
         /// <summary>Returns true when the entry type could be resolved.</summary>
-        public bool IsValid => _type != null;
+        public bool IsValid => Type != null;
 
         /// <summary>Returns true when this step overwrites instead of adding.</summary>
         public bool IsOverwrite => _targets.Count > 0;
+
+        private readonly List<Component> _targets;
 
         /// <summary>Creates a step.</summary>
         /// <param name="entry">Clipboard entry to paste.</param>
@@ -36,8 +34,8 @@ namespace Base.ToolPackage.Editor.ComponentClipboard
         /// <param name="targets">Components to overwrite, empty to add a new component.</param>
         public ComponentPasteStep(ComponentClipboardEntry entry, Type type, List<Component> targets)
         {
-            _entry = entry;
-            _type = type;
+            Entry = entry;
+            Type = type;
             _targets = targets ?? new List<Component>();
         }
     }

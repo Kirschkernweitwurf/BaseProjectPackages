@@ -124,6 +124,18 @@ namespace Base.AttributePackage.Editor
             return EditorStyles.miniButtonMid;
         }
 
+        private static int ColumnCount(EnumButtonLayout layout, float availableWidth)
+        {
+            int fitting = Mathf.FloorToInt(availableWidth / layout.MinButtonWidth);
+            return Mathf.Clamp(fitting, 1, layout.Labels.Length);
+        }
+
+        private static int RowCount(EnumButtonLayout layout, float availableWidth)
+            => Mathf.CeilToInt(layout.Labels.Length / (float)ColumnCount(layout, availableWidth));
+
+        private static float EstimateContentWidth() => Mathf.Max(1f,
+            EditorGUIUtility.currentViewWidth - EditorGUIUtility.labelWidth - ContentWidthMargin);
+
         private EnumButtonLayout ResolveLayout(SerializedProperty property)
         {
             if (property.propertyType != SerializedPropertyType.Enum)
@@ -152,21 +164,12 @@ namespace Base.AttributePackage.Editor
             else if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>))
                 type = type.GetGenericArguments()[0];
 
-            return type is { IsEnum: true }
+            return type is
+            {
+                IsEnum: true
+            }
                 ? type
                 : null;
         }
-
-        private static int ColumnCount(EnumButtonLayout layout, float availableWidth)
-        {
-            int fitting = Mathf.FloorToInt(availableWidth / layout.MinButtonWidth);
-            return Mathf.Clamp(fitting, 1, layout.Labels.Length);
-        }
-
-        private static int RowCount(EnumButtonLayout layout, float availableWidth)
-            => Mathf.CeilToInt(layout.Labels.Length / (float)ColumnCount(layout, availableWidth));
-
-        private static float EstimateContentWidth()
-            => Mathf.Max(1f, EditorGUIUtility.currentViewWidth - EditorGUIUtility.labelWidth - ContentWidthMargin);
     }
 }

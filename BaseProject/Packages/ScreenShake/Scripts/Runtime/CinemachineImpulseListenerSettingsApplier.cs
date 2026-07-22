@@ -43,4 +43,4 @@ namespace Base.ScreenShakePackage
             _listener.ReactionSettings = reaction;
         }
     }
-}
+}

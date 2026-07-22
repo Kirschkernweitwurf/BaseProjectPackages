@@ -11,10 +11,6 @@ namespace Base.AttributePackage.Editor
     [CustomPropertyDrawer(typeof(ProgressBarAttribute))]
     public sealed class ProgressBarDrawer : PropertyDrawer
     {
-        private static readonly Color DefaultColor = new(0.26f, 0.59f, 0.98f);
-
-        private static GUIStyle _valueStyle;
-
         private static GUIStyle ValueStyle
         {
             get
@@ -32,12 +28,17 @@ namespace Base.AttributePackage.Editor
             }
         }
 
+        private static readonly Color DefaultColor = new(0.26f, 0.59f, 0.98f);
+
+        private static GUIStyle _valueStyle;
+
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             if (!IsNumber(property))
             {
                 EditorGUI.LabelField(position, label.text,
                     AttributeNames.Usage<ProgressBarAttribute>("an int or float"));
+
                 return;
             }
 

@@ -62,7 +62,7 @@ namespace Base.SaveSystemPackage.Savable
             for (int i = 0; i < order.Length; i++)
                 order[i] = i;
 
-            Array.Sort(order, (a, b) =>
+            Array.Sort(order, comparison: (a, b) =>
             {
                 int byPriority = ((byte)snapshot[b].Priority).CompareTo((byte)snapshot[a].Priority);
                 return byPriority != 0

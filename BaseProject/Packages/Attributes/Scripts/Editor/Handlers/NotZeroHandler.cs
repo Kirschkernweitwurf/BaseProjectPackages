@@ -13,9 +13,9 @@ namespace Base.AttributePackage.Editor
     {
         private const string KeySeparator = ".";
 
-        private static readonly Dictionary<string, float> Previous = new();
-
         public int Order => 10;
+
+        private static readonly Dictionary<string, float> Previous = new();
 
         public void AfterField(in MemberContext context)
         {

@@ -10,7 +10,7 @@ namespace Base.CorePackage.Tweening.Core.Data.Profiles
     public abstract class TweenValueProfileSo<T> : TweenProfileSo
     {
         [field: Tooltip("Value the tween starts from. Ignored by 'To' tweens, which always start "
-                        + "at the value captured on Awake.")]
+            + "at the value captured on Awake.")]
         [field: SerializeField] public T StartValue { get; private set; }
 
         [field: Tooltip("Value the tween moves to.")]

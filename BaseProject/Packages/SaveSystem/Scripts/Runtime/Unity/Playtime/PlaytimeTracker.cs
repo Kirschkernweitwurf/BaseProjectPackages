@@ -36,8 +36,7 @@ namespace Base.SaveSystemPackage.Unity.Playtime
         /// <summary>
         /// Seeds the tracker with the play time from a loaded save. Call after loading a slot.
         /// </summary>
-        public void Initialize(double previousTotalSeconds)
-            => _accumulated = previousTotalSeconds;
+        public void Initialize(double previousTotalSeconds) => _accumulated = previousTotalSeconds;
 
         /// <summary>
         /// Call when gameplay resumes after a pause. Started automatically on scene start.

@@ -16,9 +16,9 @@ namespace Base.AttributePackage.Editor
         private const string KeySeparator = ".";
         private const double RetryInterval = 0.5;
 
-        private static readonly Dictionary<string, double> NextAttempt = new();
-
         public int Order => 5;
+
+        private static readonly Dictionary<string, double> NextAttempt = new();
 
         public void AfterField(in MemberContext context)
         {

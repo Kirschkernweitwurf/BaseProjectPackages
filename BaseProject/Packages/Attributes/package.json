@@ -2,7 +2,7 @@
   "name": "com.baseprojectpackages.attributes",
   "displayName": "Base Attribute Package",
   "description": "A collection of attributes for use in any project.",
-  "version": "1.3.3",
+  "version": "1.3.4",
   "unity": "6000.3",
   "author": {
     "name": "Jonathan Alber"

@@ -44,6 +44,7 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
             {
                 Debug.LogWarning(
                     $"Play Mode Saver needs '{payload.scenePath}' open to restore '{payload.displayName}'.");
+
                 return false;
             }
 
@@ -52,9 +53,9 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
 
             if (owner == null)
             {
-                Debug.LogWarning(
-                    $"Play Mode Saver could not find '{payload.sceneNamePath}' in '{payload.scenePath}'. " +
-                    "If it was spawned at runtime, switch this entry to Prefab Asset.");
+                Debug.LogWarning($"Play Mode Saver could not find '{payload.sceneNamePath}' in '{payload.scenePath}'. "
+                    + "If it was spawned at runtime, switch this entry to Prefab Asset.");
+
                 return false;
             }
 
@@ -65,6 +66,7 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
             {
                 Debug.LogWarning(
                     $"Play Mode Saver could not find '{payload.componentTypeName}' on '{payload.sceneNamePath}'.");
+
                 return false;
             }
 
@@ -109,8 +111,7 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
 
                 if (target == null)
                 {
-                    Debug.LogWarning(
-                        $"Play Mode Saver could not find '{payload.componentTypeName}' in '{assetPath}'.");
+                    Debug.LogWarning($"Play Mode Saver could not find '{payload.componentTypeName}' in '{assetPath}'.");
                     return false;
                 }
 

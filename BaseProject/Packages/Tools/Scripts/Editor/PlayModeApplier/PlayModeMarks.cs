@@ -11,10 +11,10 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
     /// </summary>
     public static class PlayModeMarks
     {
-        private static readonly List<Component> _marked = new();
-
         /// <summary>Components marked during the current play session.</summary>
         public static IReadOnlyList<Component> Components => _marked;
+
+        private static readonly List<Component> _marked = new();
 
         /// <summary>Marks a component. Marking the same component twice is a no-op.</summary>
         public static void Add(Component component)

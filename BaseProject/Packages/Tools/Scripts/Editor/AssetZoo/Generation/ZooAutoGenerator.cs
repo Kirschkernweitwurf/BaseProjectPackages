@@ -20,15 +20,15 @@ namespace Base.ToolPackage.Editor.AssetZoo.Generation
     {
         private const string AssetFilter = "t:Prefab t:Model";
         private const string AssetsRoot = "Assets";
-        private const string UndoLabel = "Auto Generate Zoo";
+        private const int GroupIndex = 1;
+        private const int HashFactor = 31;
+        private const int HashSeed = 17;
+        private const int HueSteps = 360;
         private const float LabelSaturation = 0.5f;
         private const float LabelValue = 1f;
-        private const int GroupIndex = 1;
-        private const int HueSteps = 360;
-        private const int HashSeed = 17;
-        private const int HashFactor = 31;
         private const int MinNameParts = 2;
         private const int NameStartIndex = 2;
+        private const string UndoLabel = "Auto Generate Zoo";
 
         /// <summary>
         /// Scans the folder in <see cref="ZooConfig.Generation"/> and writes the resulting
@@ -96,7 +96,10 @@ namespace Base.ToolPackage.Editor.AssetZoo.Generation
             IReadOnlyList<string> prefixes, StringComparison comparison, int maxDepth)
         {
             Dictionary<string, List<ScannedAsset>> groups = new(StringComparer.OrdinalIgnoreCase);
-            string[] guids = AssetDatabase.FindAssets(AssetFilter, new[] { folder });
+            string[] guids = AssetDatabase.FindAssets(AssetFilter, new[]
+            {
+                folder
+            });
 
             foreach (string guid in guids)
             {
@@ -129,12 +132,12 @@ namespace Base.ToolPackage.Editor.AssetZoo.Generation
         {
             int added = 0;
 
-            foreach (string group in groups.Keys.OrderBy(name => name, StringComparer.OrdinalIgnoreCase))
+            foreach (string group in groups.Keys.OrderBy(keySelector: name => name, StringComparer.OrdinalIgnoreCase))
             {
                 // Sort by the name behind the group first, so variants of the same asset
                 // (P_Garden_Rock_01, SM_Garden_Rock_01) end up next to each other.
                 List<GameObject> sorted = groups[group]
-                    .OrderBy(asset => asset.SortKey, StringComparer.OrdinalIgnoreCase)
+                    .OrderBy(keySelector: asset => asset.SortKey, StringComparer.OrdinalIgnoreCase)
                     .ThenBy(asset => asset.PrefixOrder)
                     .Select(asset => asset.Asset)
                     .ToList();
@@ -254,7 +257,9 @@ namespace Base.ToolPackage.Editor.AssetZoo.Generation
         private readonly struct ScannedAsset
         {
             public GameObject Asset { get; }
+
             public string SortKey { get; }
+
             public int PrefixOrder { get; }
 
             public ScannedAsset(GameObject asset, string sortKey, int prefixOrder)

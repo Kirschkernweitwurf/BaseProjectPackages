@@ -11,20 +11,20 @@ namespace Base.MemoryProfiler.Editor
     public class MemoryProfilerWindow : EditorWindow
     {
         private const string AssetsFolder = "Assets";
+        private const string ConfigFolder = ResourcesRoot + "/" + MemoryProfilerConfigSo.ResourceSubFolder;
         private const string MenuPath = "Tools/Base Packages/Unity Editor/Memory Profiler Automation";
         private const float MinIntervalSeconds = 1f;
         private const string ResourcesFolderName = "Resources";
         private const string ResourcesRoot = AssetsFolder + "/" + ResourcesFolderName;
-        private const string ConfigFolder = ResourcesRoot + "/" + MemoryProfilerConfigSo.ResourceSubFolder;
         private const string WindowTitle = "Auto Memory Profiler";
 
         private static readonly GUIContent EnabledLabel = new("Enabled");
-        private static readonly GUIContent OnIntervalLabel = new("Capture On Interval");
-        private static readonly GUIContent IntervalLabel = new("Interval (seconds)");
-        private static readonly GUIContent OnSceneLoadLabel = new("Capture On Scene Load");
-        private static readonly GUIContent StoragePathLabel = new("Snapshot Storage Path");
-        private static readonly GUIContent PrefixLabel = new("File Name Prefix");
         private static readonly GUIContent FlagsLabel = new("Capture Flags");
+        private static readonly GUIContent IntervalLabel = new("Interval (seconds)");
+        private static readonly GUIContent OnIntervalLabel = new("Capture On Interval");
+        private static readonly GUIContent OnSceneLoadLabel = new("Capture On Scene Load");
+        private static readonly GUIContent PrefixLabel = new("File Name Prefix");
+        private static readonly GUIContent StoragePathLabel = new("Snapshot Storage Path");
 
         private SerializedObject _serializedConfig;
         private SerializedProperty _isEnabled;

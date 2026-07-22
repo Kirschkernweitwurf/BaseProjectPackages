@@ -11,26 +11,25 @@ namespace Base.MemoryProfiler
     [DynamicCreateAssetMenu("Scriptable Objects/Base/Memory Profiler/New Memory Profiler Config", ConfigName)]
     public class MemoryProfilerConfigSo : ScriptableObject
     {
-        /// <summary>Asset file name (without extension).</summary>
-        public const string ConfigName = "MPC_MemoryProfilerConfig";
-
-        /// <summary>Default storage path, matching the Memory Profiler preference default.</summary>
-        public const string DefaultStoragePath = "./MemoryCaptures";
-
-        /// <summary>Subfolder inside Resources that holds the config asset.</summary>
-        public const string ResourceSubFolder = "MemoryProfilerConfig";
-
-        /// <summary>Path used by Resources.Load, relative to a Resources folder.</summary>
-        public const string ResourcePath = ResourceSubFolder + "/" + ConfigName;
-
         // Serialized field names for editor tooling (SerializedObject.FindProperty).
         public const string BakedStoragePathField = nameof(bakedStoragePath);
         public const string CaptureFlagsField = nameof(captureFlags);
         public const string CaptureOnIntervalField = nameof(captureOnInterval);
         public const string CaptureOnSceneLoadField = nameof(captureOnSceneLoad);
+        /// <summary>Asset file name (without extension).</summary>
+        public const string ConfigName = "MPC_MemoryProfilerConfig";
+
+        /// <summary>Default storage path, matching the Memory Profiler preference default.</summary>
+        public const string DefaultStoragePath = "./MemoryCaptures";
         public const string FileNamePrefixField = nameof(fileNamePrefix);
         public const string IntervalSecondsField = nameof(intervalSeconds);
         public const string IsEnabledField = nameof(isEnabled);
+
+        /// <summary>Path used by Resources.Load, relative to a Resources folder.</summary>
+        public const string ResourcePath = ResourceSubFolder + "/" + ConfigName;
+
+        /// <summary>Subfolder inside Resources that holds the config asset.</summary>
+        public const string ResourceSubFolder = "MemoryProfilerConfig";
         public const string SnapshotStoragePathField = nameof(snapshotStoragePath);
 
         private const CaptureFlags DefaultCaptureFlags = CaptureFlags.ManagedObjects

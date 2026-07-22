@@ -14,15 +14,19 @@ namespace Base.AttributePackage.Editor
         private const double NotifyFade = 0.4;
         private const float RowWidth = 52f;
 
+        int IInlineFieldWidget.Order => 10;
+
+        int IAfterFieldHandler.Order => 90;
+
         private static readonly GUIContent Content = new("Copy", "Copy the value to the clipboard.");
         private static readonly GUIContent Notice = new("Copied");
 
-        int IInlineFieldWidget.Order => 10;
-        int IAfterFieldHandler.Order => 90;
-
         public void AfterField(in MemberContext context)
         {
-            if (context.GetAttribute<CopyButtonAttribute>() is not { Inline: false })
+            if (context.GetAttribute<CopyButtonAttribute>() is not
+                {
+                    Inline: false
+                })
                 return;
 
             SerializedProperty property = context.Property;
@@ -39,9 +43,13 @@ namespace Base.AttributePackage.Editor
         public float GetWidth(in MemberContext context)
         {
             CopyButtonAttribute attribute = context.GetAttribute<CopyButtonAttribute>();
-            return attribute is { Inline: true } && IsSupported(context.Property)
-                ? InlineWidth
-                : 0f;
+            return attribute is
+                {
+                    Inline: true
+                }
+                && IsSupported(context.Property)
+                    ? InlineWidth
+                    : 0f;
         }
 
         public void Draw(Rect rect, in MemberContext context)

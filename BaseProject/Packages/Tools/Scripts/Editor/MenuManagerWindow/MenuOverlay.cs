@@ -31,8 +31,9 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
         }
 
         /// <summary>Returns the top level node list for the given kind.</summary>
-        public List<MenuNode> RootFor(EMenuEntryKind kind) =>
-            kind == EMenuEntryKind.CreateAsset ? createAssetRoot : menuItemRoot;
+        public List<MenuNode> RootFor(EMenuEntryKind kind) => kind == EMenuEntryKind.CreateAsset
+            ? createAssetRoot
+            : menuItemRoot;
 
         /// <summary>Rebuilds separator flags from retired data. Runs once.</summary>
         public void Migrate()
