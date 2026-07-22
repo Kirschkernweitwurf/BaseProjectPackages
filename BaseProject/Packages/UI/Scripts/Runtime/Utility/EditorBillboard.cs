@@ -1,4 +1,6 @@
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using UnityEngine;
 
 namespace Base.UIPackage.Utility
@@ -20,9 +22,9 @@ namespace Base.UIPackage.Utility
             if (!Application.isPlaying)
                 return;
 
-            Camera cam = Camera.main != null
-                ? Camera.main
-                : Camera.current;
+            Camera cam = Camera.main;
+            if (cam == null)
+                cam = Camera.current;
 
             FaceCameraIfMoved(cam);
         }
@@ -33,9 +35,9 @@ namespace Base.UIPackage.Utility
             if (cam == null)
                 return;
 
-            Transform camT = cam.transform;
-            Vector3 pos = camT.position;
-            Quaternion rot = camT.rotation;
+            Transform camTransform = cam.transform;
+            Vector3 pos = camTransform.position;
+            Quaternion rot = camTransform.rotation;
 
             if (_hasCachedCamera && pos == _lastCameraPos && rot == _lastCameraRot)
                 return;
@@ -44,7 +46,7 @@ namespace Base.UIPackage.Utility
             _lastCameraRot = rot;
             _hasCachedCamera = true;
 
-            transform.forward = camT.forward;
+            transform.forward = camTransform.forward;
         }
 
 #if UNITY_EDITOR

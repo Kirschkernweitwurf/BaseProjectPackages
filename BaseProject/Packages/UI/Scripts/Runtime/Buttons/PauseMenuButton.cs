@@ -1,3 +1,4 @@
+using Base.AttributePackage;
 using Base.CorePackage.MenuManaging;
 using Base.CorePackage.MenuManaging.Identifier;
 using Base.CorePackage.MenuManaging.Menus;
@@ -13,21 +14,20 @@ namespace Base.UIPackage.Buttons
     {
         [Header("Identifier")]
 
-        [SerializeField] private MenuIdentifier pauseMenuIdentifier;
+        [Required] [SerializeField] private MenuIdentifier pauseMenuIdentifier;
 
         [Header("Icons")]
 
-        [SerializeField] private Sprite pauseIcon;
-        [SerializeField] private Sprite playIcon;
+        [Required] [SerializeField] private Sprite pauseIcon;
+        [Required] [SerializeField] private Sprite playIcon;
 
 #region Unity Callbacks
         private void Start()
         {
-            if (!ServiceLocator.TryGet(out MenuManager menuManager))
-                return;
-
-            SetButtonIcon(menuManager.IsMenuOpen(pauseMenuIdentifier));
             PauseMenu.OnPauseStateChanged += SetButtonIcon;
+
+            if (ServiceLocator.TryGet(out MenuManager menuManager))
+                SetButtonIcon(menuManager.IsMenuOpen(pauseMenuIdentifier));
         }
 
         protected override void OnDestroy()

@@ -1,3 +1,4 @@
+using Base.AttributePackage;
 using Base.UtilityPackage.Logging;
 using UnityEngine;
 
@@ -8,7 +9,7 @@ namespace Base.UIPackage.Buttons
     /// </summary>
     public class OpenLinkOnClick : CustomButton
     {
-        [SerializeField] private string url = "https://example.com";
+        [NotNullOrEmpty] [SerializeField] private string url = "https://example.com";
 
         protected override void OnClick()
         {

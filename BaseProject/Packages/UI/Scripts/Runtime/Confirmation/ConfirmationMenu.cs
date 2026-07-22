@@ -1,4 +1,5 @@
 using System;
+using Base.AttributePackage;
 using Base.CorePackage.MenuManaging;
 using TMPro;
 using UnityEngine;
@@ -12,13 +13,13 @@ namespace Base.UIPackage.Confirmation
     public sealed class ConfirmationMenu : Menu
     {
         [Space]
-        [SerializeField] private Button confirmButton;
-        [SerializeField] private Button cancelButton;
+        [Required] [SerializeField] private Button confirmButton;
+        [Required] [SerializeField] private Button cancelButton;
 
         [Space]
-        [SerializeField] private TMP_Text messageText;
-        [SerializeField] private TMP_Text confirmButtonText;
-        [SerializeField] private TMP_Text cancelButtonText;
+        [Required] [SerializeField] private TMP_Text messageText;
+        [Required] [SerializeField] private TMP_Text confirmButtonText;
+        [Required] [SerializeField] private TMP_Text cancelButtonText;
 
         [Space]
         [SerializeField] private string defaultConfirmText = "Confirm";
@@ -32,16 +33,16 @@ namespace Base.UIPackage.Confirmation
         {
             base.Awake();
 
-            confirmButton.onClick.AddListener(() => _onConfirm?.Invoke());
-            cancelButton.onClick.AddListener(() => _onCancel?.Invoke());
+            confirmButton.onClick.AddListener(HandleConfirm);
+            cancelButton.onClick.AddListener(HandleCancel);
         }
 
         protected override void OnDestroy()
         {
             base.OnDestroy();
 
-            confirmButton.onClick.RemoveAllListeners();
-            cancelButton.onClick.RemoveAllListeners();
+            confirmButton.onClick.RemoveListener(HandleConfirm);
+            cancelButton.onClick.RemoveListener(HandleCancel);
         }
 #endregion
 
@@ -81,5 +82,9 @@ namespace Base.UIPackage.Confirmation
 
             Close();
         }
+
+        private void HandleConfirm() => _onConfirm?.Invoke();
+
+        private void HandleCancel() => _onCancel?.Invoke();
     }
 }
