@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Base.AttributePackage;
 using Base.ControllerSupport.InputPrompts.Devices;
 using Base.CorePackage.Services;
 using UnityEngine;
@@ -18,6 +19,7 @@ namespace Base.ControllerSupport.InputPrompts.Glyphs
         public event Action OnActiveDeviceChanged;
 
         [Tooltip("One glyph set per supported device family.")]
+        [NotNullOrEmpty]
         [SerializeField] private List<InputGlyphSet> glyphSets = new();
 
         private InputDeviceTracker _deviceTracker;
