@@ -1,11 +1,14 @@
 {
-    "name": "Base.Localization",
-    "rootNamespace": "Base.Localization",
+    "name": "Base.LocalizationPackage",
+    "rootNamespace": "Base.LocalizationPackage",
     "references": [
         "GUID:2e77701fe0ceda44fb763f03ee704c37",
-        "GUID:ef1475c04daed1943a99d3d610d12e02"
+        "GUID:ef1475c04daed1943a99d3d610d12e02",
+        "GUID:922d81cfb9ff6984da4cb2213b66a375"
     ],
-    "includePlatforms": [],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,

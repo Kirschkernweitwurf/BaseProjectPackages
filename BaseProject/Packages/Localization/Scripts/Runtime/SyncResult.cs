@@ -1,5 +1,4 @@
-#if UNITY_EDITOR
-namespace Base.Localization
+namespace Base.LocalizationPackage
 {
     /// <summary>
     /// Result of a sync operation, indicating success or failure and an optional message.
@@ -25,7 +24,7 @@ namespace Base.Localization
         /// <summary>
         /// Creates a successful <see cref="SyncResult"/> with no message.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>A <see cref="SyncResult"/> indicating success and containing no message.</returns>
         public static SyncResult Ok() => new(true, null);
 
         /// <summary>
@@ -36,4 +35,3 @@ namespace Base.Localization
         public static SyncResult Fail(string message) => new(false, message);
     }
 }
-#endif

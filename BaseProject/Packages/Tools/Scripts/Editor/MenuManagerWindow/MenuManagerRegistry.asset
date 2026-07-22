@@ -639,7 +639,7 @@ MonoBehaviour:
           path: New TweenSettings
           enabled: 1
           kind: 1
-          createFileName: TPC_TweenSettings
+          createFileName: TS_TweenSettings
           overridePriority: 0
           overrideValue: 0
     - rid: 5339058420681015297
@@ -651,7 +651,7 @@ MonoBehaviour:
           path: New FloatTweenProfile
           enabled: 1
           kind: 1
-          createFileName: TPC_FloatTweenProfile
+          createFileName: TPF_FloatTweenProfile
           overridePriority: 0
           overrideValue: 0
     - rid: 5339058420681015298
@@ -663,7 +663,7 @@ MonoBehaviour:
           path: New Vector3TweenProfile
           enabled: 1
           kind: 1
-          createFileName: TPC_Vector3TweenProfile
+          createFileName: TPV_Vector3TweenProfile
           overridePriority: 0
           overrideValue: 0
     - rid: 5339058420681015299
@@ -855,6 +855,9 @@ MonoBehaviour:
         - rid: 5339058395782840436
         - rid: 5339058395782840437
         - rid: 5339058395782840438
+        - rid: 5339058547197477194
+        - rid: 5339058547197477195
+        - rid: 5339058547197477196
     - rid: 5339058507518050420
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
@@ -872,6 +875,42 @@ MonoBehaviour:
         entry:
           id: MI:Base.ControllerSupport.Editor.NavigationGroupsWindow.Open
           path: Controller Navigation Groups
+          enabled: 1
+          kind: 0
+          createFileName: 
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 5339058547197477194
+      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 0
+        entry:
+          id: MI:Base.LocalizationPackage.LocalizationMenu.PullAll
+          path: Pull All String Tables
+          enabled: 1
+          kind: 0
+          createFileName: 
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 5339058547197477195
+      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 0
+        entry:
+          id: MI:Base.LocalizationPackage.LocalizationMenu.PushAll
+          path: Push All String Tables
+          enabled: 1
+          kind: 0
+          createFileName: 
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 5339058547197477196
+      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 0
+        entry:
+          id: MI:Base.LocalizationPackage.LocalizationMenu.OpenWindow
+          path: Open Sync Window
           enabled: 1
           kind: 0
           createFileName: 

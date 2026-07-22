@@ -1,5 +1,4 @@
-#if UNITY_EDITOR
-namespace Base.Localization
+namespace Base.LocalizationPackage
 {
     /// <summary>
     /// The direction to sync String Table Collections with Google Sheets.
@@ -10,4 +9,3 @@ namespace Base.Localization
         Push = 1
     }
 }
-#endif
