@@ -16,6 +16,8 @@ namespace Base.AttributePackage.Editor
         private const string KeySeparator = ".";
         private const string TabKeyPrefix = "TAB";
 
+        private static readonly Dictionary<string, string[]> TabBars = new();
+
         /// <summary>
         /// Draws the tab group starting at the given index and returns the index of the first member
         /// after the group.
@@ -49,7 +51,7 @@ namespace Base.AttributePackage.Editor
                 index++;
             }
 
-            string selectedTab = DrawTabBar(type, group, tabOrder);
+            string selectedTab = DrawTabBar(type, group, ResolveTabBar(type, group, tabOrder));
 
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
             for (int i = 0; i < members.Count; i++)
@@ -63,16 +65,27 @@ namespace Base.AttributePackage.Editor
             return index;
         }
 
-        private static string DrawTabBar(Type type, string group, List<string> tabOrder)
+        private static string DrawTabBar(Type type, string group, string[] tabOrder)
         {
             string key = type.FullName + KeySeparator + TabKeyPrefix + KeySeparator + group;
-            int stored = Mathf.Clamp(EditorPrefs.GetInt(key, 0), 0, tabOrder.Count - 1);
+            int stored = Mathf.Clamp(EditorPrefs.GetInt(key, 0), 0, tabOrder.Length - 1);
 
-            int selected = GUILayout.Toolbar(stored, tabOrder.ToArray());
+            int selected = GUILayout.Toolbar(stored, tabOrder);
             if (selected != stored)
                 EditorPrefs.SetInt(key, selected);
 
             return tabOrder[selected];
+        }
+
+        private static string[] ResolveTabBar(Type type, string group, List<string> tabOrder)
+        {
+            string key = type.FullName + KeySeparator + group;
+            if (TabBars.TryGetValue(key, out string[] cached) && cached.Length == tabOrder.Count)
+                return cached;
+
+            string[] result = tabOrder.ToArray();
+            TabBars[key] = result;
+            return result;
         }
     }
 }

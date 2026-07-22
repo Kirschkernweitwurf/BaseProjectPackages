@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -21,6 +22,9 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
         private const float RowIndent = 22f;
         private const float SuccessGap = 8f;
         private const float SuccessIconSize = 48f;
+
+        private static readonly GUIContent BadgeScratch = new();
+        private static GUIContent _successContent;
 
         /// <summary>Draws every group filtered by search. Returns the clicked owner, or null.</summary>
         public static Object DrawGroups(List<RequiredReferenceGroup> groups,
@@ -57,7 +61,8 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
             EditorGUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();
 
-            GUILayout.Label(new GUIContent(RequiredReferenceStyles.SuccessTexture),
+            _successContent ??= new GUIContent(RequiredReferenceStyles.SuccessTexture);
+            GUILayout.Label(_successContent,
                 GUILayout.Width(SuccessIconSize),
                 GUILayout.Height(SuccessIconSize));
 
@@ -115,8 +120,9 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
         {
             string text = count.ToString();
 
+            BadgeScratch.text = text;
             float width =
-                styles.Badge.CalcSize(new GUIContent(text)).x + BadgePadding * 2f;
+                styles.Badge.CalcSize(BadgeScratch).x + BadgePadding * 2f;
 
             Rect badge = new(header.xMax - width - LeftPadding,
                 header.y + BadgeInset,
@@ -178,16 +184,15 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
                 return true;
             }
 
-            search = search.ToLowerInvariant();
-
-            if (group.Owner != null && group.Owner.name.ToLowerInvariant().Contains(search))
+            if (group.Owner != null
+                && group.Owner.name.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0)
             {
                 visible = group.Entries;
                 return true;
             }
 
             visible = group.Entries.FindAll(entry =>
-                entry.DisplayName.ToLowerInvariant().Contains(search));
+                entry.DisplayName.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0);
 
             return visible.Count > 0;
         }

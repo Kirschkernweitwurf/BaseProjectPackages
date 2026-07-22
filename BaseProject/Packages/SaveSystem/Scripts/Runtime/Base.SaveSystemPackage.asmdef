@@ -1,0 +1,19 @@
+{
+    "name": "Base.SaveSystemPackage",
+    "rootNamespace": "Base.SaveSystemPackage",
+    "references": [
+        "GUID:922d81cfb9ff6984da4cb2213b66a375",
+        "GUID:f2d8f8c295391d141aef02e29987cd86",
+        "GUID:ef1475c04daed1943a99d3d610d12e02",
+        "GUID:c3837597513e91f44a47d8cd91c34f68"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -15,6 +15,8 @@ namespace Base.AttributePackage.Editor
     {
         private const float Padding = 2f;
 
+        private static readonly GUIContent ScratchContent = new();
+
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             PrefixAttribute prefix = ReflectionCache.GetAttribute<PrefixAttribute>(fieldInfo);
@@ -50,7 +52,7 @@ namespace Base.AttributePackage.Editor
             if (prefix == null)
                 return valueRect;
 
-            float width = EditorStyles.miniLabel.CalcSize(new GUIContent(prefix.Text)).x;
+            float width = EditorStyles.miniLabel.CalcSize(Scratch(prefix.Text)).x;
             Rect prefixRect = new(valueRect.x, valueRect.y, width, valueRect.height);
             DrawLabel(prefixRect, prefix.Text);
 
@@ -67,10 +69,17 @@ namespace Base.AttributePackage.Editor
                 return valueRect;
             }
 
-            float width = EditorStyles.miniLabel.CalcSize(new GUIContent(suffix.Text)).x + Padding;
+            float width = EditorStyles.miniLabel.CalcSize(Scratch(suffix.Text)).x + Padding;
             valueRect.width -= width;
             suffixRect = new Rect(valueRect.xMax + Padding, valueRect.y, width - Padding, valueRect.height);
             return valueRect;
+        }
+
+
+        private static GUIContent Scratch(string text)
+        {
+            ScratchContent.text = text;
+            return ScratchContent;
         }
 
         private static void DrawLabel(Rect rect, string text)

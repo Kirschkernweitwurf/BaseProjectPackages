@@ -7,10 +7,9 @@ using Base.SaveSystemPackage.Serialization;
 using Base.SaveSystemPackage.Slots;
 using Base.SaveSystemPackage.Storage;
 using Base.SaveSystemPackage.System;
-using Base.SaveSystemPackage.Unity.Composition;
 using UnityEngine;
 
-namespace Base.SaveSystemPackage
+namespace Base.SaveSystemPackage.Unity.Composition
 {
     /// <summary>
     /// Builds a ready-to-use save system. The caller does NOT decide which storage to use; the
