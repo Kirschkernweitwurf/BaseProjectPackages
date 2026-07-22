@@ -1,3 +1,4 @@
+using Base.AttributePackage;
 using Base.ToolPackage.Identification;
 using UnityEngine;
 using UnityEngine.Localization;
@@ -15,7 +16,7 @@ namespace Base.SettingsPackage.Components
         [Header("Language")]
 
         [Tooltip("Locales exposed to the player, in the order they appear in the menu.")]
-        [SerializeField] private Locale[] availableLocales;
+        [SerializeField] [NotNullOrEmpty] private Locale[] availableLocales;
 
         [SerializeField] private int defaultIndex;
 

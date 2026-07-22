@@ -21,7 +21,8 @@ namespace Base.SettingsPackage.Components
         [SerializeField] [Required] private AudioMixer audioMixer;
 
         [Tooltip("Name of the exposed AudioMixer parameter. Also used as the setting's registry key.")]
-        [SerializeField] private string mixerParameter = "MasterVolume";
+        [SerializeField] [NotNullOrEmpty] [MixerParameter(nameof(audioMixer))]
+        private string mixerParameter = "MasterVolume";
 
         [SerializeField] [Range(0f, 1f)] private float defaultVolume = 0.7f;
 
