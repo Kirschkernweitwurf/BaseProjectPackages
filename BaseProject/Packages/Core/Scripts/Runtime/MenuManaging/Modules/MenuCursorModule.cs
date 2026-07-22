@@ -19,12 +19,7 @@ namespace Base.CorePackage.MenuManaging.Modules
         private bool _isApplied;
 
 #region Unity Callbacks
-        protected override void Awake()
-        {
-            base.Awake();
-
-            ShutdownManager.Register(this);
-        }
+        private void Awake() => ShutdownManager.Register(this);
 
         private void OnDestroy() => Shutdown();
 #endregion

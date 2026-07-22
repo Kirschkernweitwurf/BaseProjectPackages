@@ -1,4 +1,4 @@
-using Base.UtilityPackage.Logging;
+using Base.AttributePackage;
 using UnityEngine;
 
 namespace Base.CorePackage.MenuManaging.Modules
@@ -11,37 +11,20 @@ namespace Base.CorePackage.MenuManaging.Modules
     [RequireComponent(typeof(Menu))]
     public abstract class MenuModule : MonoBehaviour
     {
-        protected Menu OwnerMenu { get; private set; }
+        [Tooltip("The menu this module extends. Auto-assigned from the same GameObject when empty.")]
+        [GetComponent] [Required] [SerializeField] private Menu ownerMenu;
+
+        protected Menu OwnerMenu => ownerMenu;
 
 #region Unity Callbacks
-        protected virtual void Awake()
-        {
-            OwnerMenu = GetComponent<Menu>();
-
-            if (OwnerMenu == null)
-                CustomLogger.LogWarning("Requires a sibling Menu component.", this);
-        }
-
         protected virtual void OnEnable()
         {
-            if (OwnerMenu == null)
-            {
-                CustomLogger.LogWarning("Owning Menu was null on enable.", this);
-                return;
-            }
-
             OwnerMenu.Opened += HandleMenuOpened;
             OwnerMenu.Closed += HandleMenuClosed;
         }
 
         protected virtual void OnDisable()
         {
-            if (OwnerMenu == null)
-            {
-                CustomLogger.LogWarning("Owning Menu was null on disable.", this);
-                return;
-            }
-
             OwnerMenu.Opened -= HandleMenuOpened;
             OwnerMenu.Closed -= HandleMenuClosed;
         }

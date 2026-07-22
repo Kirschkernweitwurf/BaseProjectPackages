@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Base.AttributePackage;
 using Base.CorePackage.Services;
 using TMPro;
 using UnityEngine;
@@ -29,22 +30,23 @@ namespace Base.CorePackage.Tooltip
         [Header("References")]
 
         [Tooltip("Content GameObject that contains the tooltip visuals.")]
-        [SerializeField] private GameObject content;
+        [Required] [SerializeField] private GameObject content;
 
         [Tooltip("Text element to display the tooltip message.")]
-        [SerializeField] private TextMeshProUGUI textElement;
+        [Required] [SerializeField] private TextMeshProUGUI textElement;
 
         [Tooltip("RectTransform of the tooltip for positioning (the Content rect).")]
-        [SerializeField] private RectTransform tooltipRect;
+        [Required] [SerializeField] private RectTransform tooltipRect;
 
-        private Canvas canvas;
+        [Tooltip("Canvas the tooltip lives under. Auto-assigned from the parents when empty.")]
+        [GetComponentInParent] [SerializeField] private Canvas canvas;
+
         private Coroutine _followRoutine;
         private Func<Vector2> _getScreenPosition;
 
 #region Unity Callbacks
         private void Start()
         {
-            canvas = GetComponentInParent<Canvas>();
             ServiceLocator.Get<TooltipService>()?.SetView(this);
             Hide();
         }

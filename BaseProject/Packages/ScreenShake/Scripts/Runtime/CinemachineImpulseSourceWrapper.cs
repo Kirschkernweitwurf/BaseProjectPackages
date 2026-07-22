@@ -1,3 +1,4 @@
+using Base.AttributePackage;
 using Base.UtilityPackage.Logging;
 using Unity.Cinemachine;
 using UnityEngine;
@@ -14,24 +15,19 @@ namespace Base.ScreenShakePackage
     [RequireComponent(typeof(CinemachineImpulseSource))]
     public class CinemachineImpulseSourceWrapper : MonoBehaviour
     {
+        [Required]
         [SerializeField] private ScreenShakeProfile profile;
 
-        private CinemachineImpulseSource _source;
+        [GetComponent] [Required]
+        [SerializeField] private CinemachineImpulseSource source;
 
 #region Unity Callbacks
-        private void Awake()
-        {
-            _source = GetComponent<CinemachineImpulseSource>();
-            ApplyProfile(profile);
-        }
+        private void Awake() => ApplyProfile(profile);
 
 #if UNITY_EDITOR
         private void OnValidate()
         {
-            if (_source == null)
-                _source = GetComponent<CinemachineImpulseSource>();
-
-            if (profile != null && _source != null)
+            if (profile != null && source != null)
                 ApplyProfile(profile);
         }
 #endif
@@ -47,15 +43,18 @@ namespace Base.ScreenShakePackage
         /// </summary>
         public void GenerateShake(Vector3? position = null, float multiplier = 1f)
         {
-            if (!Validate(profile))
+            if (profile == null)
+            {
+                CustomLogger.LogWarning($"Attempted to generate shake with null {nameof(ScreenShakeProfile)}.", this);
                 return;
+            }
 
             float force = profile.ImpactForce * multiplier;
 
             if (position.HasValue)
-                _source.GenerateImpulseAt(position.Value, profile.DefaultVelocity * force);
+                source.GenerateImpulseAt(position.Value, profile.DefaultVelocity * force);
             else
-                _source.GenerateImpulseWithForce(force);
+                source.GenerateImpulseWithForce(force);
 
             ScreenShakeManager.NotifyShake(profile);
         }
@@ -66,42 +65,25 @@ namespace Base.ScreenShakePackage
         /// </summary>
         private void ApplyProfile(ScreenShakeProfile newProfile)
         {
-            if (!Validate(newProfile))
+            if (newProfile == null)
+            {
+                CustomLogger.LogWarning($"Attempted to apply null {nameof(ScreenShakeProfile)}.", this);
                 return;
+            }
 
-            CinemachineImpulseDefinition def = _source.ImpulseDefinition;
+            CinemachineImpulseDefinition def = source.ImpulseDefinition;
             def.ImpulseDuration = newProfile.ImpulseDuration;
             def.ImpulseType = newProfile.ImpulseType;
             def.ImpulseShape = newProfile.ImpulseShape;
             def.CustomImpulseShape = newProfile.CustomImpulseShape;
-            _source.ImpulseDefinition = def;
+            source.ImpulseDefinition = def;
 
-            _source.DefaultVelocity = newProfile.DefaultVelocity;
+            source.DefaultVelocity = newProfile.DefaultVelocity;
 
 #if UNITY_EDITOR
             if (!Application.isPlaying)
-                EditorUtility.SetDirty(_source);
+                EditorUtility.SetDirty(source);
 #endif
-        }
-
-        /// <summary>
-        /// Validates that a profile and the impulse source are present, logging a warning if not.
-        /// </summary>
-        private bool Validate(ScreenShakeProfile profileToCheck)
-        {
-            if (profileToCheck == null)
-            {
-                CustomLogger.LogWarning($"Attempted to apply null {nameof(ScreenShakeProfile)}.", this);
-                return false;
-            }
-
-            if (_source == null)
-            {
-                CustomLogger.LogWarning($"{nameof(CinemachineImpulseSource)} component is missing.", this);
-                return false;
-            }
-
-            return true;
         }
 
         [ContextMenu("Generate Shake")]
