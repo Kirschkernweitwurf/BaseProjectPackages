@@ -1,3 +1,4 @@
+using Base.AttributePackage;
 using UnityEngine;
 
 namespace Base.ToolPackage.LightingProfileApplier
@@ -7,16 +8,14 @@ namespace Base.ToolPackage.LightingProfileApplier
     /// </summary>
     public class LightingProfileApplier : MonoBehaviour
     {
-        [SerializeField] private LightingProfile profile;
+        [Required] [SerializeField] private LightingProfile profile;
         [SerializeField] private Light sun;
 
 #region Unity Callbacks
         private void Awake()
         {
-            if (profile == null)
-                throw new MissingReferenceException($"{typeof(LightingProfile)} is not assigned on {name}.");
-
             profile.Apply();
+
             if (sun != null)
                 RenderSettings.sun = sun;
         }

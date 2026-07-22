@@ -1,3 +1,4 @@
+using Base.AttributePackage;
 using Base.ToolPackage.MenuManagerWindow;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -12,19 +13,46 @@ namespace Base.ToolPackage.LightingProfileApplier
     {
         [SerializeField] private Material skybox;
         [SerializeField] private AmbientMode ambientMode = AmbientMode.Skybox;
+
+        [ShowIfEnum(nameof(ambientMode), AmbientMode.Flat, AmbientMode.Trilight)]
         [SerializeField] private Color ambientSkyColor = Color.gray;
+
+        [ShowIfEnum(nameof(ambientMode), AmbientMode.Trilight)]
         [SerializeField] private Color ambientEquatorColor = Color.gray;
+
+        [ShowIfEnum(nameof(ambientMode), AmbientMode.Trilight)]
         [SerializeField] private Color ambientGroundColor = Color.gray;
+
+        [ShowIfEnum(nameof(ambientMode), AmbientMode.Skybox)]
         [SerializeField] private float ambientIntensity = 1f;
+
         [SerializeField] private Color subtractiveShadowColor = Color.gray;
         [SerializeField] private bool fog;
+
+        [ShowIf(nameof(fog))]
         [SerializeField] private FogMode fogMode = FogMode.ExponentialSquared;
+
+        [ShowIf(nameof(fog))]
         [SerializeField] private Color fogColor = Color.gray;
+
+        [ShowIf(nameof(fog))]
+        [ShowIfEnum(nameof(fogMode), FogMode.Exponential, FogMode.ExponentialSquared)]
         [SerializeField] private float fogDensity = 0.01f;
+
+        [ShowIf(nameof(fog))]
+        [ShowIfEnum(nameof(fogMode), FogMode.Linear)]
         [SerializeField] private float fogStartDistance;
+
+        [ShowIf(nameof(fog))]
+        [ShowIfEnum(nameof(fogMode), FogMode.Linear)]
         [SerializeField] private float fogEndDistance = 300f;
+
         [SerializeField] private DefaultReflectionMode reflectionMode = DefaultReflectionMode.Skybox;
+
+        [ShowIfEnum(nameof(reflectionMode), DefaultReflectionMode.Skybox)]
         [SerializeField] private int reflectionResolution = 128;
+
+        [ShowIfEnum(nameof(reflectionMode), DefaultReflectionMode.Custom)]
         [SerializeField] private Texture customReflection;
         [SerializeField] private float reflectionIntensity = 1f;
         [SerializeField] private int reflectionBounces = 1;
