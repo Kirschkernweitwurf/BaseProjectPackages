@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using Base.SaveSystemPackage.Encryption;
 using Base.SaveSystemPackage.Model;
@@ -22,6 +21,8 @@ namespace Base.SaveSystemPackage.System
     /// complete. A crash mid-save therefore never looks like a finished save.
     /// Writes are serialized through a gate so two saves cannot interleave; <see cref="FlushAsync"/>
     /// waits for the current one.
+    /// State is collected and applied on the main thread; encode/decrypt work runs on a background
+    /// thread so large saves do not hitch the frame.
     /// </summary>
     public sealed class SaveSystem : ISaveSystem
     {
@@ -33,7 +34,7 @@ namespace Base.SaveSystemPackage.System
         private readonly ISaveCodec _codec;
         private readonly ISaveStorage _storage;
         private readonly ISavableRegistry _registry;
-        private readonly IReadOnlyList<ISaveMigration> _migrations;
+        private readonly Dictionary<int, ISaveMigration> _migrations = new();
         private readonly SemaphoreSlim _writeGate = new(1, 1);
 
         public SaveSystem(ISaveStorage storage, ISaveCodec codec, ISavableRegistry registry, int saveVersion = 1,
@@ -43,9 +44,15 @@ namespace Base.SaveSystemPackage.System
             _codec = codec ?? throw new ArgumentNullException(nameof(codec));
             _registry = registry ?? throw new ArgumentNullException(nameof(registry));
             _saveVersion = saveVersion;
-            _migrations = (migrations ?? Array.Empty<ISaveMigration>())
-                .OrderBy(m => m.FromVersion)
-                .ToList();
+
+            if (migrations == null)
+                return;
+
+            foreach (ISaveMigration migration in migrations)
+            {
+                if (migration != null)
+                    _migrations[migration.FromVersion] = migration;
+            }
         }
 
         public async Awaitable SaveAsync(SaveRequest request, CancellationToken ct = default)
@@ -63,9 +70,13 @@ namespace Base.SaveSystemPackage.System
                     blob.Add(s.PersistentKey.Value, s.Serialize() ?? string.Empty);
 
                 SaveMetadata meta = BuildMetadata(await LoadMetadataAsync(request.SlotId, ct), request);
+                SaveMetadataDto metaDto = SaveMetadataDto.From(meta);
 
+                // Encode (serialize + encrypt) off the main thread; it is pure CPU work.
+                await Awaitable.BackgroundThreadAsync();
                 byte[] dataBytes = _codec.Encode(blob);
-                byte[] metaBytes = _codec.Encode(SaveMetadataDto.From(meta));
+                byte[] metaBytes = _codec.Encode(metaDto);
+                await Awaitable.MainThreadAsync();
 
                 await _storage.WriteAsync(DataKey(request.SlotId), dataBytes, ct);
 
@@ -99,8 +110,12 @@ namespace Base.SaveSystemPackage.System
                 return ESaveLoadResult.Corrupt;
             }
 
-            SaveMetadataDto metaDto;
-            SaveBlob blob;
+            // Decode (decrypt + deserialize) off the main thread; it is pure CPU work.
+            SaveMetadataDto metaDto = null;
+            SaveBlob blob = null;
+            Exception decodeError = null;
+
+            await Awaitable.BackgroundThreadAsync();
             try
             {
                 metaDto = _codec.Decode<SaveMetadataDto>(metaBytes);
@@ -108,7 +123,14 @@ namespace Base.SaveSystemPackage.System
             }
             catch (Exception e)
             {
-                CustomLogger.LogWarning($"Failed to decode slot '{slotId}': {e.Message}", null);
+                decodeError = e;
+            }
+
+            await Awaitable.MainThreadAsync();
+
+            if (decodeError != null)
+            {
+                CustomLogger.LogWarning($"Failed to decode slot '{slotId}': {decodeError.Message}", null);
                 return ESaveLoadResult.Corrupt;
             }
 
@@ -177,7 +199,7 @@ namespace Base.SaveSystemPackage.System
             List<SaveMetadata> result = new();
             foreach (string key in keys)
             {
-                if (!key.EndsWith(MetaSuffix))
+                if (!key.EndsWith(MetaSuffix, StringComparison.Ordinal))
                     continue;
 
                 byte[] bytes = await _storage.ReadAsync(key, ct);
@@ -243,8 +265,7 @@ namespace Base.SaveSystemPackage.System
             {
                 for (int v = fromVersion; v < _saveVersion; v++)
                 {
-                    ISaveMigration step = _migrations.FirstOrDefault(m => m.FromVersion == v);
-                    if (step == null)
+                    if (!_migrations.TryGetValue(v, out ISaveMigration step))
                     {
                         CustomLogger.LogError(
                             $"No migration from version {v} for slot '{slotId}'." + " Cannot upgrade save.", null);

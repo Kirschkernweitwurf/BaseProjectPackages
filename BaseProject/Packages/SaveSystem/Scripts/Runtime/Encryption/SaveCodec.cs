@@ -84,6 +84,11 @@ namespace Base.SaveSystemPackage.Encryption
                 || bytes[2] != Magic[2])
                 throw new InvalidDataException("Not a valid save file (bad header).");
 
+            byte formatVersion = bytes[3];
+            if (formatVersion != FormatVersion)
+                throw new InvalidDataException(
+                    $"Save header format version {formatVersion} is not supported (expected {FormatVersion}).");
+
             ESaveEncryption mode = (ESaveEncryption)bytes[4];
 
             if (!_readEncryptors.TryGetValue(mode, out ISaveEncryptor encryptor))

@@ -7,11 +7,8 @@ namespace Base.SaveSystemPackage.Unity.Playtime
     /// Tracks total play time correctly across sessions.
     /// <example>
     /// <code>
-    ///   var meta = await saves.LoadMetadataAsync(slot);
-    ///   _playtime = new PlaytimeTracker(meta?.totalPlaySeconds ?? 0);
-    ///   _playtime.Start();
-    ///   ...
-    ///   await saves.SaveAsync(slot, data, screenshot, _playtime.TotalSeconds);
+    ///   SaveMetadata meta = await saves.LoadMetadataAsync(slotId);
+    ///   playtimeTracker.Initialize(meta?.TotalPlayTime.TotalSeconds ?? 0);
     /// </code>
     /// </example>
     /// </summary>
@@ -28,19 +25,31 @@ namespace Base.SaveSystemPackage.Unity.Playtime
         private float _sessionStart;
         private bool _running;
 
-        public PlaytimeTracker(double previousTotalSeconds = 0) => _accumulated = previousTotalSeconds;
-
 #region Unity Callbacks
         private void Awake() => ServiceLocator.Register<IPlaytimeProvider>(this);
 
-        public void Start()
-        {
-            _sessionStart = Time.realtimeSinceStartup;
-            _running = true;
-        }
+        private void Start() => Resume();
 
         private void OnDestroy() => ServiceLocator.Deregister<IPlaytimeProvider>();
 #endregion
+
+        /// <summary>
+        /// Seeds the tracker with the play time from a loaded save. Call after loading a slot.
+        /// </summary>
+        public void Initialize(double previousTotalSeconds)
+            => _accumulated = previousTotalSeconds;
+
+        /// <summary>
+        /// Call when gameplay resumes after a pause. Started automatically on scene start.
+        /// </summary>
+        public void Resume()
+        {
+            if (_running)
+                return;
+
+            _sessionStart = Time.realtimeSinceStartup;
+            _running = true;
+        }
 
         /// <summary>
         /// Call when the game is paused or the player returns to a menu.
