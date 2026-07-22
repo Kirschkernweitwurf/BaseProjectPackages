@@ -1,7 +1,6 @@
-#if UNITY_EDITOR
 using Base.ToolPackage.MenuManagerWindow;
 
-namespace Base.Localization
+namespace Base.LocalizationPackage
 {
     /// <summary>
     /// Adds menu items to the Unity Editor for syncing String Table
@@ -21,4 +20,3 @@ namespace Base.Localization
         private static void OpenWindow() => LocalizationSyncWindow.Open();
     }
 }
-#endif

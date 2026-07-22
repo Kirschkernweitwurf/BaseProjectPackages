@@ -1,23 +1,35 @@
-#if UNITY_EDITOR
 using System.Collections.Generic;
-using System.Linq;
+using Base.UtilityPackage.Logging;
 using UnityEditor;
 using UnityEditor.Localization;
 using UnityEditor.Localization.Plugins.Google;
 using UnityEditor.Localization.Reporting;
-using UnityEngine;
 
-namespace Base.Localization
+namespace Base.LocalizationPackage
 {
     /// <summary>
     /// Syncs String Table Collections with Google Sheets based on the Google Sheets extension settings.
     /// </summary>
     public static class GoogleSheetsSync
     {
-        public static IReadOnlyList<StringTableCollection> Collections => LocalizationEditorSettings
-            .GetStringTableCollections()
-            .Where(c => c.Extensions.Any(e => e is GoogleSheetsExtension))
-            .ToList();
+        /// <summary>
+        /// Collects all String Table Collections that have a <see cref="GoogleSheetsExtension"/>.
+        /// Scans the Asset Database, so cache the result instead of calling this repeatedly.
+        /// </summary>
+        /// <returns>All String Table Collections with a <see cref="GoogleSheetsExtension"/>.</returns>
+        public static List<StringTableCollection> GetCollections()
+        {
+            List<StringTableCollection> result = new();
+
+            foreach (StringTableCollection collection in LocalizationEditorSettings.GetStringTableCollections())
+            {
+                if (HasGoogleSheetsExtension(collection))
+                    if (HasGoogleSheetsExtension(collection))
+                        result.Add(collection);
+            }
+
+            return result;
+        }
 
         /// <summary>
         /// Syncs a String Table Collection with Google Sheets based on the Google Sheets extension settings.
@@ -30,12 +42,18 @@ namespace Base.Localization
         /// <returns>A <see cref="SyncResult"/> indicating success or failure and an error message if failed.</returns>
         public static SyncResult Sync(StringTableCollection collection, ESyncDirection direction)
         {
-            List<GoogleSheetsExtension> extensions =
-                collection.Extensions.OfType<GoogleSheetsExtension>().ToList();
+            List<GoogleSheetsExtension> extensions = new();
+
+            foreach (CollectionExtension extension in collection.Extensions)
+            {
+                if (extension is GoogleSheetsExtension googleSheetsExtension)
+                    extensions.Add(googleSheetsExtension);
+            }
 
             if (extensions.Count == 0)
                 return SyncResult.Fail("No Google Sheets extension.");
 
+            // Validate every extension up front so a misconfigured one cannot leave the collection half synced.
             foreach (GoogleSheetsExtension extension in extensions)
             {
                 if (extension.SheetsServiceProvider == null)
@@ -43,7 +61,10 @@ namespace Base.Localization
 
                 if (string.IsNullOrEmpty(extension.SpreadsheetId))
                     return SyncResult.Fail("No Spreadsheet Id set.");
+            }
 
+            foreach (GoogleSheetsExtension extension in extensions)
+            {
                 GoogleSheets google = new(extension.SheetsServiceProvider)
                 {
                     SpreadSheetId = extension.SpreadsheetId
@@ -73,7 +94,7 @@ namespace Base.Localization
         /// </param>
         public static void SyncAll(ESyncDirection direction)
         {
-            IReadOnlyList<StringTableCollection> collections = Collections;
+            List<StringTableCollection> collections = GetCollections();
 
             if (collections.Count == 0)
             {
@@ -89,6 +110,10 @@ namespace Base.Localization
                     "Push", "Cancel"))
                 return;
 
+            string title = direction == ESyncDirection.Pull
+                ? "Pull from Google Sheets"
+                : "Push to Google Sheets";
+
             int succeeded = 0;
             List<string> failed = new();
 
@@ -97,8 +122,7 @@ namespace Base.Localization
                 for (int i = 0; i < collections.Count; i++)
                 {
                     StringTableCollection collection = collections[i];
-                    EditorUtility.DisplayProgressBar($"{direction} from Google Sheets",
-                        collection.TableCollectionName,
+                    EditorUtility.DisplayProgressBar(title, collection.TableCollectionName,
                         (float)i / collections.Count);
 
                     SyncResult result = Sync(collection, direction);
@@ -117,17 +141,27 @@ namespace Base.Localization
             Log(direction, succeeded, failed);
         }
 
-        private static void Log(ESyncDirection direction, int succeeded, List<string> failed)
+        private static bool HasGoogleSheetsExtension(StringTableCollection collection)
+        {
+            foreach (CollectionExtension extension in collection.Extensions)
+            {
+                if (extension is GoogleSheetsExtension)
+                    return true;
+            }
+
+            return false;
+        }
+
+        private static void Log(ESyncDirection direction, int succeeded, IReadOnlyList<string> failed)
         {
             if (failed.Count == 0)
             {
-                Debug.Log($"[Localization] {direction} done for {succeeded} collection(s).");
+                CustomLogger.Log($"{direction} done for {succeeded} collection(s).", null);
                 return;
             }
 
-            Debug.LogWarning($"[Localization] {direction} done for {succeeded} collection(s). "
-                + $"Skipped {failed.Count}:\n - {string.Join("\n - ", failed)}");
+            CustomLogger.LogWarning($"{direction} done for {succeeded} collection(s). "
+                + $"Skipped {failed.Count}:\n - {string.Join("\n - ", failed)}", null);
         }
     }
 }
-#endif

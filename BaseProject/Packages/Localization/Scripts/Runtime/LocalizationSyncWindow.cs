@@ -1,17 +1,24 @@
-#if UNITY_EDITOR
+using System;
 using System.Collections.Generic;
+using Base.UtilityPackage.Logging;
 using UnityEditor;
 using UnityEditor.Localization;
 using UnityEngine;
 
-namespace Base.Localization
+namespace Base.LocalizationPackage
 {
     /// <summary>
     /// A custom Unity Editor window for syncing String Table Collections with Google Sheets.
     /// </summary>
-    public class LocalizationSyncWindow : EditorWindow
+    public sealed class LocalizationSyncWindow : EditorWindow
     {
-        private IReadOnlyList<StringTableCollection> _collections = new List<StringTableCollection>();
+        private const float MinWindowHeight = 220f;
+        private const float MinWindowWidth = 380f;
+        private const float RefreshButtonWidth = 70f;
+        private const float SyncAllButtonHeight = 26f;
+        private const float SyncButtonWidth = 60f;
+
+        private IReadOnlyList<StringTableCollection> _collections = Array.Empty<StringTableCollection>();
         private Vector2 _scroll;
 
 #region Unity Callbacks
@@ -22,7 +29,7 @@ namespace Base.Localization
             using (new EditorGUILayout.HorizontalScope())
             {
                 EditorGUILayout.LabelField("String Table Collections", EditorStyles.boldLabel);
-                if (GUILayout.Button("Refresh", GUILayout.Width(70)))
+                if (GUILayout.Button("Refresh", GUILayout.Width(RefreshButtonWidth)))
                     Refresh();
             }
 
@@ -34,10 +41,10 @@ namespace Base.Localization
 
             using (new EditorGUILayout.HorizontalScope())
             {
-                if (GUILayout.Button("Pull All", GUILayout.Height(26)))
+                if (GUILayout.Button("Pull All", GUILayout.Height(SyncAllButtonHeight)))
                     GoogleSheetsSync.SyncAll(ESyncDirection.Pull);
 
-                if (GUILayout.Button("Push All", GUILayout.Height(26)))
+                if (GUILayout.Button("Push All", GUILayout.Height(SyncAllButtonHeight)))
                     GoogleSheetsSync.SyncAll(ESyncDirection.Push);
             }
 
@@ -49,10 +56,10 @@ namespace Base.Localization
                 using (new EditorGUILayout.HorizontalScope("box"))
                 {
                     EditorGUILayout.LabelField(collection.TableCollectionName);
-                    if (GUILayout.Button("Pull", GUILayout.Width(60)))
+                    if (GUILayout.Button("Pull", GUILayout.Width(SyncButtonWidth)))
                         Run(collection, ESyncDirection.Pull);
 
-                    if (GUILayout.Button("Push", GUILayout.Width(60)))
+                    if (GUILayout.Button("Push", GUILayout.Width(SyncButtonWidth)))
                         Run(collection, ESyncDirection.Push);
                 }
             }
@@ -62,12 +69,12 @@ namespace Base.Localization
 #endregion
 
         /// <summary>
-        /// Opens the Localization Sync window. Tools &gt; Base Packages &gt; Localization &gt; Open Sync Window.
+        /// Opens the Localization Sync window. Also reachable via the menu items in <see cref="LocalizationMenu"/>.
         /// </summary>
         public static void Open()
         {
             LocalizationSyncWindow window = GetWindow<LocalizationSyncWindow>("Localization Sync");
-            window.minSize = new Vector2(380, 220);
+            window.minSize = new Vector2(MinWindowWidth, MinWindowHeight);
             window.Refresh();
             window.Show();
         }
@@ -78,16 +85,15 @@ namespace Base.Localization
             if (result.Success)
             {
                 AssetDatabase.SaveAssets();
-                Debug.Log($"[Localization] {direction} '{collection.TableCollectionName}' done.");
+                CustomLogger.Log($"{direction} '{collection.TableCollectionName}' done.", null);
             }
             else
             {
-                Debug.LogWarning(
-                    $"[Localization] {direction} '{collection.TableCollectionName}' skipped: {result.Message}");
+                CustomLogger.LogWarning($"{direction} '{collection.TableCollectionName}' skipped: {result.Message}",
+                    null);
             }
         }
 
-        private void Refresh() => _collections = GoogleSheetsSync.Collections;
+        private void Refresh() => _collections = GoogleSheetsSync.GetCollections();
     }
 }
-#endif

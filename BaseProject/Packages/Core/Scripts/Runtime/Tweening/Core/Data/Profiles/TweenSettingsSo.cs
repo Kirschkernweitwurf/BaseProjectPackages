@@ -7,7 +7,7 @@ namespace Base.CorePackage.Tweening.Core.Data.Profiles
     /// Shared timing and looping asset. Assign it to any number of tweens or profiles to tune
     /// them all from a single place, for example "UI Snappy" or "Card Flip".
     /// </summary>
-    [DynamicCreateAssetMenu("Scriptable Objects/Base/Tweening/New TweenSettings", "TPC_TweenSettings")]
+    [DynamicCreateAssetMenu("Scriptable Objects/Base/Tweening/New TweenSettings", "TS_TweenSettings")]
     public sealed class TweenSettingsSo : ScriptableObject
     {
         [field: Tooltip("Duration, delay and easing shared by every user of this asset.")]
