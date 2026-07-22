@@ -22,6 +22,8 @@ namespace Base.SettingsPackage.GUI
 
         private FloatSetting _setting;
         private Slider _slider;
+        private int _displayedValue = int.MinValue;
+        private bool _isPushingValue;
 
 #region Unity Callbacks
         private void Awake() => _slider = GetComponent<Slider>();
@@ -60,10 +62,19 @@ namespace Base.SettingsPackage.GUI
         private void OnSliderChanged(float value)
         {
             UpdatePercentageText(value);
+
+            _isPushingValue = true;
             _setting.Value = Mathf.Clamp01(value / _slider.maxValue);
+            _isPushingValue = false;
         }
 
-        private void OnSettingChanged(float normalised) => ApplyToSlider(normalised);
+        private void OnSettingChanged(float normalised)
+        {
+            if (_isPushingValue)
+                return;
+
+            ApplyToSlider(normalised);
+        }
 
         private void ApplyToSlider(float normalised)
         {
@@ -74,8 +85,15 @@ namespace Base.SettingsPackage.GUI
 
         private void UpdatePercentageText(float value)
         {
-            if (percentageText != null)
-                percentageText.text = Mathf.RoundToInt(value).ToString();
+            if (percentageText == null)
+                return;
+
+            int rounded = Mathf.RoundToInt(value);
+            if (rounded == _displayedValue)
+                return;
+
+            _displayedValue = rounded;
+            percentageText.text = rounded.ToString();
         }
 
         private void Decrease() => StepBy(-buttonStep);

@@ -1,3 +1,4 @@
+using Base.AttributePackage;
 using Base.SettingsPackage.Core;
 using TMPro;
 using UnityEngine;
@@ -12,7 +13,7 @@ namespace Base.SettingsPackage.GUI
     {
         [Header("Toggle")]
 
-        [SerializeField] private TMP_Text stateText;
+        [SerializeField] [Required] private TMP_Text stateText;
         [SerializeField] private LocalizedString onLabel;
         [SerializeField] private LocalizedString offLabel;
 

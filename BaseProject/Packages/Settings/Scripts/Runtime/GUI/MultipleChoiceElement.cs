@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Base.AttributePackage;
 using Base.CorePackage.ObjectPooling;
 using Base.UtilityPackage;
 using TMPro;
@@ -15,11 +16,11 @@ namespace Base.SettingsPackage.GUI
     {
         [Header("Multiple Choice")]
 
-        [SerializeField] private Button leftButton;
-        [SerializeField] private Button rightButton;
-        [SerializeField] private TMP_Text valueText;
-        [SerializeField] private SelectionIndicatorButton selectionIndicatorPrefab;
-        [SerializeField] private Transform selectionIndicatorParent;
+        [SerializeField] [Required] private Button leftButton;
+        [SerializeField] [Required] private Button rightButton;
+        [SerializeField] [Required] private TMP_Text valueText;
+        [SerializeField] [Required] private SelectionIndicatorButton selectionIndicatorPrefab;
+        [SerializeField] [Required] private Transform selectionIndicatorParent;
 
         /// <summary>Every selectable option, in display order.</summary>
         [SerializeField] protected List<string> options = new();

@@ -1,4 +1,5 @@
 using System;
+using Base.AttributePackage;
 using Base.CorePackage.Tweening.Components.System;
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,8 +15,8 @@ namespace Base.SettingsPackage.GUI
     {
         [Header("Dependencies")]
 
-        [SerializeField] private TweenGroup tweenGroup;
-        [SerializeField] private Button button;
+        [SerializeField] [Required] private TweenGroup tweenGroup;
+        [SerializeField] [GetComponent] private Button button;
 
         private Action _onClick;
 

@@ -20,9 +20,8 @@ namespace Base.SettingsPackage.Components
         [SerializeField] private int defaultIndex;
 
         /// <summary>The locale currently selected by the player.</summary>
-        public Locale CurrentLocale => availableLocales[Mathf.Clamp(TypedSetting?
-                .Value
-            ?? defaultIndex, 0, availableLocales.Length - 1)];
+        public Locale CurrentLocale
+            => availableLocales[Mathf.Clamp(TypedSetting?.Value ?? defaultIndex, 0, availableLocales.Length - 1)];
 
         /// <inheritdoc/>
         public override PersistentKey Key => new("Language");
