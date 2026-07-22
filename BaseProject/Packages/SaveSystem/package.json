@@ -1,7 +1,7 @@
 {
   "name": "com.baseprojectpackages.save",
   "displayName": "Base Save System",
-  "description": "A package that contains the core functionality for saving and loading data in Unity.",
+  "description": "Async, slot-based save and load for Unity 6. Objects own their own data through ISavable and register at runtime, so gameplay code never touches files. Ships with fixed, appending and named slot models, optional AES encryption with plain-JSON editor saves, versioned migrations, crash-safe writes, rich metadata with screenshot thumbnails and play-time tracking plus ready-made save/load/delete/select UI buttons. Storage is a swappable layer for console save APIs.",
   "version": "1.1.8",
   "unity": "6000.3",
   "author": {
