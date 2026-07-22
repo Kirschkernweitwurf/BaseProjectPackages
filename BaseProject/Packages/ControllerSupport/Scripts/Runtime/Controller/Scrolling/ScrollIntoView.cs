@@ -1,3 +1,4 @@
+using Base.AttributePackage;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -12,6 +13,7 @@ namespace Base.ControllerSupport.Controller.Scrolling
     public sealed class ScrollIntoView : MonoBehaviour
     {
         [Tooltip("Padding in pixels kept between the selected element and the viewport edge.")]
+        [Suffix("px")]
         [SerializeField] private float padding = 16f;
 
         private readonly Vector3[] _worldCorners = new Vector3[4];

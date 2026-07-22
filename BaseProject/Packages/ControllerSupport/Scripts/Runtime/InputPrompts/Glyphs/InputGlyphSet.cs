@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Base.AttributePackage;
 using Base.ControllerSupport.InputPrompts.Devices;
 using Base.ToolPackage.MenuManagerWindow;
 using UnityEngine;
@@ -18,6 +19,7 @@ namespace Base.ControllerSupport.InputPrompts.Glyphs
         [field: SerializeField] public EInputDeviceType DeviceType { get; private set; }
 
         [Tooltip("Action to glyph mappings for this device.")]
+        [NotNullOrEmpty]
         [SerializeField] private List<InputGlyphEntry> entries = new();
 
         private Dictionary<Guid, InputGlyphEntry> _lookup;

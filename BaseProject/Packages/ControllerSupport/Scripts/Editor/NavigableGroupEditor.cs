@@ -1,4 +1,5 @@
 #if UNITY_EDITOR
+using Base.AttributePackage.Editor;
 using Base.ControllerSupport.Controller.Navigation;
 using UnityEditor;
 using UnityEngine;
@@ -7,16 +8,17 @@ namespace Base.ControllerSupport.Editor
 {
     /// <summary>
     /// Adds "Rebuild" and "Rebuild Scene" buttons to the <see cref="NavigableGroup"/> inspector so
-    /// designers can rewire navigation without hunting through the context menu. The full overview
-    /// lives in the <see cref="NavigationGroupsWindow"/>.
+    /// designers can rewire navigation without hunting through the context menu. Derives from
+    /// <see cref="AttributePackageEditor"/> so the attribute package renders the group's fields. The
+    /// full overview lives in the <see cref="NavigationGroupsWindow"/>.
     /// </summary>
     [CustomEditor(typeof(NavigableGroup))]
-    public sealed class NavigableGroupEditor : UnityEditor.Editor
+    public sealed class NavigableGroupEditor : AttributePackageEditor
     {
         /// <inheritdoc/>
         public override void OnInspectorGUI()
         {
-            DrawDefaultInspector();
+            base.OnInspectorGUI();
 
             EditorGUILayout.Space();
 

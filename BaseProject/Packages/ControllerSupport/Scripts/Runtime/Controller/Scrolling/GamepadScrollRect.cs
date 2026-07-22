@@ -1,3 +1,4 @@
+using Base.AttributePackage;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -15,12 +16,14 @@ namespace Base.ControllerSupport.Controller.Scrolling
         private const float DefaultDeadZone = 0.15f;
 
         [Tooltip("Vector2 action that drives scrolling, e.g. the right stick.")]
+        [Required]
         [SerializeField] private InputActionReference scrollAction;
 
         [Tooltip("Scroll speed in normalized units per second.")]
         [SerializeField] private float scrollSpeed = 1f;
 
         [Tooltip("Stick magnitude below this value is ignored.")]
+        [MinMax(0f, 1f)]
         [SerializeField] private float deadZone = DefaultDeadZone;
 
         [Tooltip("If true, the vertical axis is inverted.")]

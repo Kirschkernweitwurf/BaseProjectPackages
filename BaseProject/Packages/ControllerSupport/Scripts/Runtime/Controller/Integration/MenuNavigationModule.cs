@@ -1,3 +1,4 @@
+using Base.AttributePackage;
 using Base.ControllerSupport.Controller.Navigation;
 using Base.CorePackage.MenuManaging.Modules;
 using Base.UtilityPackage.Logging;
@@ -16,6 +17,8 @@ namespace Base.ControllerSupport.Controller.Integration
     public sealed class MenuNavigationModule : MenuModule
     {
         [Tooltip("Group activated while the owning menu is open.")]
+        [Required]
+        [Child]
         [SerializeField] private NavigableGroup navigableGroup;
 
 #region Unity Callbacks

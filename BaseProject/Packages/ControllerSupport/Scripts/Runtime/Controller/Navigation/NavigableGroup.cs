@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Base.AttributePackage;
 using Base.ControllerSupport.Controller.Focus;
 using Base.CorePackage.Services;
 using Base.CorePackage.Tracking;
@@ -26,9 +27,9 @@ namespace Base.ControllerSupport.Controller.Navigation
         /// <summary>Serialized name of the priority field, for editor tooling.</summary>
         public const string PriorityFieldName = nameof(priority);
 
-        [Header("Focus")]
-
+        [Title("Focus")]
         [Tooltip("Element selected when this group gains focus and no element is remembered.")]
+        [Required]
         [SerializeField] private NavigableElement defaultElement;
 
         [Tooltip("Higher priority groups win focus restoration when several are active at once.")]
@@ -40,8 +41,7 @@ namespace Base.ControllerSupport.Controller.Navigation
         [Tooltip("If true, focus returns to the element used last instead of the default.")]
         [SerializeField] private bool rememberLastSelected = true;
 
-        [Header("Wiring")]
-
+        [Title("Wiring")]
         [Tooltip("If true, navigation loops around the edges of the group.")]
         [SerializeField] private bool wrap;
 
