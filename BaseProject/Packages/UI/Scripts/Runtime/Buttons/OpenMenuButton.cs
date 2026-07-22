@@ -1,3 +1,4 @@
+using Base.AttributePackage;
 using Base.CorePackage.MenuManaging;
 using Base.CorePackage.MenuManaging.Identifier;
 using Base.CorePackage.Services;
@@ -10,7 +11,8 @@ namespace Base.UIPackage.Buttons
     /// </summary>
     public class OpenMenuButton : CustomButton
     {
-        [SerializeField] private MenuIdentifier menuToOpen;
+        [Required] [SerializeField] private MenuIdentifier menuToOpen;
+        [Tooltip("Optional. The menu that stays registered as parent of the opened menu.")]
         [SerializeField] private MenuIdentifier parentMenuIdentifier;
 
         protected override void OnClick()

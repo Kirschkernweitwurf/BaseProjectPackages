@@ -9,11 +9,11 @@ using UnityEngine;
 namespace Base.UIPackage.Confirmation
 {
     /// <summary>
-    /// Closes the game or stops the editor when clicked.
+    /// Loads the given scene after the player confirms the prompt.
     /// </summary>
     public class ConfirmedLoadSceneButton : BaseConfirmationButton
     {
-        [SceneName] [SerializeField] private string sceneNameToLoad;
+        [SceneName] [NotNullOrEmpty] [SerializeField] private string sceneNameToLoad;
 
         protected override void OnClick() => ShowConfirmationBox();
 

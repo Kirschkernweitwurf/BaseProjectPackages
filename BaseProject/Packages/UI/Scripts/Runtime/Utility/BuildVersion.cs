@@ -1,5 +1,5 @@
 using System.IO;
-using System.Linq;
+using Base.AttributePackage;
 using Base.UtilityPackage;
 using TMPro;
 using UnityEngine;
@@ -12,16 +12,18 @@ namespace Base.UIPackage.Utility
     /// </summary>
     public class BuildVersion : MonoBehaviour
     {
+        private const int VersionInfoLineCount = 3;
+
         private static readonly string PathVersionFile = Application.streamingAssetsPath + "/version.txt";
 
         [SerializeField] private bool hideOnRelease;
-        [SerializeField] private TMP_Text versionText;
+        [Required] [SerializeField] private TMP_Text versionText;
 
 #region Unity Callbacks
         private void Start()
         {
             if (hideOnRelease && Platform.IsRelease)
-                versionText?.gameObject.SetActive(false);
+                versionText.gameObject.SetActive(false);
             else
                 DisplayVersionInfo();
         }
@@ -49,12 +51,20 @@ namespace Base.UIPackage.Utility
         }
 #endif
 
+        /// <summary>
+        /// Reads the version file and always returns an array with <see cref="VersionInfoLineCount"/> entries,
+        /// even if the file is missing or has fewer lines.
+        /// </summary>
         private static string[] ReadVersionInfo()
         {
-            string[] versionInfo = new string[3];
+            string[] versionInfo = new string[VersionInfoLineCount];
 
-            if (File.Exists(PathVersionFile))
-                versionInfo = File.ReadAllLines(PathVersionFile);
+            if (!File.Exists(PathVersionFile))
+                return versionInfo;
+
+            string[] lines = File.ReadAllLines(PathVersionFile);
+            for (int i = 0; i < versionInfo.Length && i < lines.Length; i++)
+                versionInfo[i] = lines[i];
 
             return versionInfo;
         }
@@ -63,11 +73,9 @@ namespace Base.UIPackage.Utility
         {
             string[] versionInfo = ReadVersionInfo();
 
-            // ReSharper disable once ConvertIfStatementToConditionalTernaryExpression
-            if (versionInfo.All(string.IsNullOrEmpty))
-                versionText.text = string.Empty;
-            else
-                versionText.text = $"{versionInfo.ElementAtOrDefault(1)} [{versionInfo.ElementAtOrDefault(2)}]";
+            versionText.text = string.IsNullOrEmpty(versionInfo[1]) && string.IsNullOrEmpty(versionInfo[2])
+                ? string.Empty
+                : $"{versionInfo[1]} [{versionInfo[2]}]";
         }
     }
 }

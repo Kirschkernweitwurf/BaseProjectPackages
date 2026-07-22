@@ -16,20 +16,22 @@ namespace Base.UIPackage.Utility
             + "If unchecked, the billboard will always face the camera directly.")]
         [SerializeField] private bool lockYAxis;
 
-        private Camera _targetCamera;
+        private Transform _cameraTransform;
 
 #region Unity Callbacks
         private void Start()
         {
-            if (Camera.main == null)
+            Camera mainCamera = Camera.main;
+            if (mainCamera == null)
             {
-                CustomLogger.LogWarning(
-                    "No main camera found for Billboard. " + "Please assign a camera with the 'MainCamera' tag.", this);
+                CustomLogger.LogWarning("No main camera found for Billboard. "
+                    + "Please assign a camera with the 'MainCamera' tag.", this);
 
+                enabled = false;
                 return;
             }
 
-            _targetCamera = Camera.main;
+            _cameraTransform = mainCamera.transform;
         }
 
         private void LateUpdate()
@@ -37,15 +39,16 @@ namespace Base.UIPackage.Utility
             if (lockYAxis)
             {
                 // Only turn horizontally
-                Vector3 dir = transform.position - _targetCamera.transform.position;
-                dir.y = 0f;
-                if (dir.sqrMagnitude > 0.001f)
-                    transform.rotation = Quaternion.LookRotation(dir);
+                Vector3 direction = transform.position - _cameraTransform.position;
+                direction.y = 0f;
+
+                if (direction.sqrMagnitude > 0.001f)
+                    transform.rotation = Quaternion.LookRotation(direction);
             }
             else
             {
                 // Canvas always parallel to camera
-                transform.forward = _targetCamera.transform.forward;
+                transform.forward = _cameraTransform.forward;
             }
         }
 #endregion

@@ -1,4 +1,5 @@
 using System;
+using Base.AttributePackage;
 using Base.CorePackage.Services;
 using Base.UIPackage.Buttons;
 using Base.UtilityPackage.Logging;
@@ -11,9 +12,11 @@ namespace Base.UIPackage.Confirmation
     /// </summary>
     public abstract class BaseConfirmationButton : CustomButton
     {
-        [TextArea] [SerializeField] private string warningText;
+        [TextArea] [NotNullOrEmpty] [SerializeField] private string warningText;
 
+        [Tooltip("Optional. Empty uses the default text of the confirmation menu.")]
         [SerializeField] private string confirmText;
+        [Tooltip("Optional. Empty uses the default text of the confirmation menu.")]
         [SerializeField] private string cancelText;
 
         /// <summary>
@@ -35,7 +38,7 @@ namespace Base.UIPackage.Confirmation
             }
             catch (Exception e)
             {
-                CustomLogger.LogError("An error occurred while requesting confirmation: " + e.Message, this);
+                CustomLogger.LogError($"An error occurred while requesting confirmation: {e}", this);
             }
         }
 

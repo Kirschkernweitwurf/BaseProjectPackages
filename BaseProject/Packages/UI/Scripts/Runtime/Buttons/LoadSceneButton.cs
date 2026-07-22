@@ -12,7 +12,7 @@ namespace Base.UIPackage.Buttons
     /// </summary>
     public class LoadSceneButton : CustomButton
     {
-        [SceneName] [SerializeField] private string sceneNameToLoad;
+        [SceneName] [NotNullOrEmpty] [SerializeField] private string sceneNameToLoad;
 
         protected override async void OnClick()
         {

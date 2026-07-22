@@ -1,3 +1,4 @@
+using Base.AttributePackage;
 using UnityEngine;
 
 namespace Base.UIPackage.Utility
@@ -8,14 +9,10 @@ namespace Base.UIPackage.Utility
     [RequireComponent(typeof(Canvas))]
     public class WorldCanvasWrapper : MonoBehaviour
     {
-        private Canvas _canvas;
+        [GetComponent] [SerializeField] private Canvas canvas;
 
 #region Unity Callbacks
-        private void Awake()
-        {
-            _canvas = GetComponent<Canvas>();
-            _canvas.worldCamera = Camera.main;
-        }
+        private void Awake() => canvas.worldCamera = Camera.main;
 #endregion
     }
 }

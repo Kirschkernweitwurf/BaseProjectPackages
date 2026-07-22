@@ -1,4 +1,4 @@
-using System.Globalization;
+using Base.AttributePackage;
 using Base.UtilityPackage;
 using TMPro;
 using UnityEngine;
@@ -10,10 +10,14 @@ namespace Base.UIPackage.Utility
     /// </summary>
     public class FpsCounter : MonoBehaviour
     {
+        private const float UpdateInterval = 0.5f;
+
         [SerializeField] private bool showInReleaseBuilds;
-        [SerializeField] private TMP_Text fpsText;
+        [Required] [SerializeField] private TMP_Text fpsText;
 
         private float _deltaTime;
+        private float _timer;
+        private int _lastFps = -1;
 
 #region Unity Callbacks
         private void Awake()
@@ -25,8 +29,19 @@ namespace Base.UIPackage.Utility
         private void Update()
         {
             _deltaTime += (Time.unscaledDeltaTime - _deltaTime) * 0.1f;
-            float fps = 1.0f / _deltaTime;
-            fpsText.text = Mathf.Ceil(fps).ToString(CultureInfo.InvariantCulture) + " FPS";
+
+            _timer += Time.unscaledDeltaTime;
+            if (_timer < UpdateInterval)
+                return;
+
+            _timer = 0f;
+
+            int fps = Mathf.CeilToInt(1f / _deltaTime);
+            if (fps == _lastFps)
+                return;
+
+            _lastFps = fps;
+            fpsText.text = $"{fps} FPS";
         }
 #endregion
     }
