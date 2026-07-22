@@ -1,4 +1,3 @@
-#if UNITY_EDITOR
 using System.IO;
 using Base.ToolPackage.MenuManagerWindow;
 using UnityEditor;
@@ -11,64 +10,78 @@ namespace Base.MemoryProfiler.Editor
     /// </summary>
     public class MemoryProfilerWindow : EditorWindow
     {
+        private const string AssetsFolder = "Assets";
         private const string MenuPath = "Tools/Base Packages/Unity Editor/Memory Profiler Automation";
         private const float MinIntervalSeconds = 1f;
-        private const string ResourcesFolder = "Assets/Resources/MemoryProfilerConfig";
+        private const string ResourcesFolderName = "Resources";
+        private const string ResourcesRoot = AssetsFolder + "/" + ResourcesFolderName;
+        private const string ConfigFolder = ResourcesRoot + "/" + MemoryProfilerConfigSo.ResourceSubFolder;
         private const string WindowTitle = "Auto Memory Profiler";
 
-        private SerializedObject serializedConfig;
+        private static readonly GUIContent EnabledLabel = new("Enabled");
+        private static readonly GUIContent OnIntervalLabel = new("Capture On Interval");
+        private static readonly GUIContent IntervalLabel = new("Interval (seconds)");
+        private static readonly GUIContent OnSceneLoadLabel = new("Capture On Scene Load");
+        private static readonly GUIContent StoragePathLabel = new("Snapshot Storage Path");
+        private static readonly GUIContent PrefixLabel = new("File Name Prefix");
+        private static readonly GUIContent FlagsLabel = new("Capture Flags");
+
+        private SerializedObject _serializedConfig;
+        private SerializedProperty _isEnabled;
+        private SerializedProperty _captureOnInterval;
+        private SerializedProperty _intervalSeconds;
+        private SerializedProperty _captureOnSceneLoad;
+        private SerializedProperty _snapshotStoragePath;
+        private SerializedProperty _fileNamePrefix;
+        private SerializedProperty _captureFlags;
 
 #region Unity Callbacks
         private void OnEnable() => RefreshConfigReference();
 
         private void OnGUI()
         {
-            if (serializedConfig == null || serializedConfig.targetObject == null)
+            if (_serializedConfig == null || _serializedConfig.targetObject == null)
             {
                 DrawMissingConfig();
                 return;
             }
 
-            serializedConfig.Update();
-
-            SerializedProperty enabled = serializedConfig.FindProperty("isEnabled");
-            SerializedProperty onInterval = serializedConfig.FindProperty("captureOnInterval");
-            SerializedProperty interval = serializedConfig.FindProperty("intervalSeconds");
-            SerializedProperty onSceneLoad = serializedConfig.FindProperty("captureOnSceneLoad");
-            SerializedProperty storagePath = serializedConfig.FindProperty("snapshotStoragePath");
-            SerializedProperty prefix = serializedConfig.FindProperty("fileNamePrefix");
-            SerializedProperty flags = serializedConfig.FindProperty("captureFlags");
+            _serializedConfig.Update();
 
             EditorGUILayout.LabelField("Automation", EditorStyles.boldLabel);
-            EditorGUILayout.PropertyField(enabled, new GUIContent("Enabled"));
+            EditorGUILayout.PropertyField(_isEnabled, EnabledLabel);
 
-            using (new EditorGUI.DisabledScope(!enabled.boolValue))
+            using (new EditorGUI.DisabledScope(!_isEnabled.boolValue))
             {
-                EditorGUILayout.PropertyField(onInterval, new GUIContent("Capture On Interval"));
+                EditorGUILayout.PropertyField(_captureOnInterval, OnIntervalLabel);
 
-                using (new EditorGUI.DisabledScope(!onInterval.boolValue))
-                    EditorGUILayout.PropertyField(interval, new GUIContent("Interval (seconds)"));
+                using (new EditorGUI.DisabledScope(!_captureOnInterval.boolValue))
+                    EditorGUILayout.PropertyField(_intervalSeconds, IntervalLabel);
 
-                EditorGUILayout.PropertyField(onSceneLoad, new GUIContent("Capture On Scene Load"));
+                EditorGUILayout.PropertyField(_captureOnSceneLoad, OnSceneLoadLabel);
             }
 
             EditorGUILayout.Space();
             EditorGUILayout.LabelField("Output", EditorStyles.boldLabel);
-            EditorGUILayout.PropertyField(storagePath, new GUIContent("Snapshot Storage Path"));
-            EditorGUILayout.PropertyField(prefix, new GUIContent("File Name Prefix"));
-            EditorGUILayout.PropertyField(flags, new GUIContent("Capture Flags"));
+            EditorGUILayout.PropertyField(_snapshotStoragePath, StoragePathLabel);
+            EditorGUILayout.PropertyField(_fileNamePrefix, PrefixLabel);
+            EditorGUILayout.PropertyField(_captureFlags, FlagsLabel);
 
-            if (interval.floatValue < MinIntervalSeconds)
-                interval.floatValue = MinIntervalSeconds;
+            if (_intervalSeconds.floatValue < MinIntervalSeconds)
+                _intervalSeconds.floatValue = MinIntervalSeconds;
 
-            serializedConfig.ApplyModifiedProperties();
+            _serializedConfig.ApplyModifiedProperties();
 
             EditorGUILayout.Space();
             DrawActions();
             DrawStatus();
         }
 
-        private void OnInspectorUpdate() => Repaint();
+        private void OnInspectorUpdate()
+        {
+            if (EditorApplication.isPlaying)
+                Repaint();
+        }
 #endregion
 
         [DynamicMenuItem(MenuPath)]
@@ -126,14 +139,14 @@ namespace Base.MemoryProfiler.Editor
 
         private void CreateConfig()
         {
-            if (!AssetDatabase.IsValidFolder(ResourcesFolder))
-            {
-                AssetDatabase.CreateFolder("Assets", "Resources");
-                AssetDatabase.CreateFolder("Assets/Resources", "MemoryProfilerConfig");
-            }
+            if (!AssetDatabase.IsValidFolder(ResourcesRoot))
+                AssetDatabase.CreateFolder(AssetsFolder, ResourcesFolderName);
+
+            if (!AssetDatabase.IsValidFolder(ConfigFolder))
+                AssetDatabase.CreateFolder(ResourcesRoot, MemoryProfilerConfigSo.ResourceSubFolder);
 
             MemoryProfilerConfigSo asset = CreateInstance<MemoryProfilerConfigSo>();
-            string path = $"{ResourcesFolder}/{MemoryProfilerConfigSo.ConfigName}.asset";
+            string path = $"{ConfigFolder}/{MemoryProfilerConfigSo.ConfigName}.asset";
             AssetDatabase.CreateAsset(asset, path);
             AssetDatabase.SaveAssets();
             RefreshConfigReference();
@@ -142,10 +155,21 @@ namespace Base.MemoryProfiler.Editor
         private void RefreshConfigReference()
         {
             MemoryProfilerConfigSo asset = Resources.Load<MemoryProfilerConfigSo>(MemoryProfilerConfigSo.ResourcePath);
-            serializedConfig = asset != null
-                ? new SerializedObject(asset)
-                : null;
+
+            if (asset == null)
+            {
+                _serializedConfig = null;
+                return;
+            }
+
+            _serializedConfig = new SerializedObject(asset);
+            _isEnabled = _serializedConfig.FindProperty(MemoryProfilerConfigSo.IsEnabledField);
+            _captureOnInterval = _serializedConfig.FindProperty(MemoryProfilerConfigSo.CaptureOnIntervalField);
+            _intervalSeconds = _serializedConfig.FindProperty(MemoryProfilerConfigSo.IntervalSecondsField);
+            _captureOnSceneLoad = _serializedConfig.FindProperty(MemoryProfilerConfigSo.CaptureOnSceneLoadField);
+            _snapshotStoragePath = _serializedConfig.FindProperty(MemoryProfilerConfigSo.SnapshotStoragePathField);
+            _fileNamePrefix = _serializedConfig.FindProperty(MemoryProfilerConfigSo.FileNamePrefixField);
+            _captureFlags = _serializedConfig.FindProperty(MemoryProfilerConfigSo.CaptureFlagsField);
         }
     }
 }
-#endif

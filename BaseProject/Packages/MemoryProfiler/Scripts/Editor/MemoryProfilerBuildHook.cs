@@ -1,4 +1,3 @@
-﻿#if UNITY_EDITOR
 using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
@@ -11,20 +10,9 @@ namespace Base.MemoryProfiler.Editor
     /// resolves a project-relative path like "./MemoryCaptures" to the editor project folder.
     /// The baked value is cleared after the build to keep the committed asset machine independent.
     /// </summary>
-    public class MemoryProfilerBuildHook : IPreprocessBuildWithReport, IPostprocessBuildWithReport
+    internal sealed class MemoryProfilerBuildHook : IPreprocessBuildWithReport, IPostprocessBuildWithReport
     {
-        private const string BakedStoragePathField = "bakedStoragePath";
-
         public int callbackOrder => 0;
-
-        public void OnPostprocessBuild(BuildReport report)
-        {
-            MemoryProfilerConfigSo config = Resources.Load<MemoryProfilerConfigSo>(MemoryProfilerConfigSo.ResourcePath);
-            if (config == null)
-                return;
-
-            WriteBakedPath(config, string.Empty);
-        }
 
         public void OnPreprocessBuild(BuildReport report)
         {
@@ -38,13 +26,21 @@ namespace Base.MemoryProfiler.Editor
             WriteBakedPath(config, MemoryProfilerRunner.ResolveStorageDirectory(config));
         }
 
+        public void OnPostprocessBuild(BuildReport report)
+        {
+            MemoryProfilerConfigSo config = Resources.Load<MemoryProfilerConfigSo>(MemoryProfilerConfigSo.ResourcePath);
+            if (config == null)
+                return;
+
+            WriteBakedPath(config, string.Empty);
+        }
+
         private static void WriteBakedPath(MemoryProfilerConfigSo config, string value)
         {
             SerializedObject serialized = new(config);
-            serialized.FindProperty(BakedStoragePathField).stringValue = value;
+            serialized.FindProperty(MemoryProfilerConfigSo.BakedStoragePathField).stringValue = value;
             serialized.ApplyModifiedPropertiesWithoutUndo();
-            AssetDatabase.SaveAssets();
+            AssetDatabase.SaveAssetIfDirty(config);
         }
     }
 }
-#endif

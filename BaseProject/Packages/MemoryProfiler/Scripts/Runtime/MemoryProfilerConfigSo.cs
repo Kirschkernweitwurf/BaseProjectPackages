@@ -17,16 +17,27 @@ namespace Base.MemoryProfiler
         /// <summary>Default storage path, matching the Memory Profiler preference default.</summary>
         public const string DefaultStoragePath = "./MemoryCaptures";
 
+        /// <summary>Subfolder inside Resources that holds the config asset.</summary>
+        public const string ResourceSubFolder = "MemoryProfilerConfig";
+
         /// <summary>Path used by Resources.Load, relative to a Resources folder.</summary>
         public const string ResourcePath = ResourceSubFolder + "/" + ConfigName;
+
+        // Serialized field names for editor tooling (SerializedObject.FindProperty).
+        public const string BakedStoragePathField = nameof(bakedStoragePath);
+        public const string CaptureFlagsField = nameof(captureFlags);
+        public const string CaptureOnIntervalField = nameof(captureOnInterval);
+        public const string CaptureOnSceneLoadField = nameof(captureOnSceneLoad);
+        public const string FileNamePrefixField = nameof(fileNamePrefix);
+        public const string IntervalSecondsField = nameof(intervalSeconds);
+        public const string IsEnabledField = nameof(isEnabled);
+        public const string SnapshotStoragePathField = nameof(snapshotStoragePath);
 
         private const CaptureFlags DefaultCaptureFlags = CaptureFlags.ManagedObjects
             | CaptureFlags.NativeObjects
             | CaptureFlags.NativeAllocations
             | CaptureFlags.NativeAllocationSites
             | CaptureFlags.NativeStackTraces;
-
-        private const string ResourceSubFolder = "MemoryProfilerConfig";
 
         [SerializeField] [Tooltip("Master switch for all automated captures.")]
         private bool isEnabled;
