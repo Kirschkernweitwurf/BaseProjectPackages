@@ -1,3 +1,4 @@
+using Base.AttributePackage.Editor;
 using Base.ToolPackage.LightingProfileApplier;
 using UnityEditor;
 using UnityEngine;
@@ -5,14 +6,16 @@ using UnityEngine;
 namespace Base.ToolPackage.Editor.LightingProfileApplier
 {
     /// <summary>
-    /// Adds capture and preview buttons to the lighting profile inspector.
+    /// Adds capture and preview buttons to the lighting profile inspector. Derives from
+    /// <see cref="AttributePackageEditor"/> so the attribute handler pipeline (ShowIf and friends)
+    /// stays active for the profile fields.
     /// </summary>
     [CustomEditor(typeof(LightingProfile))]
-    public class LightingProfileEditor : UnityEditor.Editor
+    public class LightingProfileEditor : AttributePackageEditor
     {
         public override void OnInspectorGUI()
         {
-            DrawDefaultInspector();
+            base.OnInspectorGUI();
             EditorGUILayout.Space();
 
             LightingProfile profile = (LightingProfile)target;
