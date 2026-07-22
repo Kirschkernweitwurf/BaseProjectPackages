@@ -1,23 +1,23 @@
 {
-    "name": "Base.ToolPackage.Editor",
-    "rootNamespace": "Base.ToolPackage.Editor",
-    "references": [
-        "GUID:922d81cfb9ff6984da4cb2213b66a375",
-        "GUID:f12f20722d8f4234b8dfcce9e344fb31",
-        "GUID:23e24c01ae3d7b347a00cb4924eb02c5",
-        "GUID:ef1475c04daed1943a99d3d610d12e02",
-        "GUID:c3837597513e91f44a47d8cd91c34f68",
-        "GUID:94639facfcc1e284b907f050384eaaf0"
-    ],
-    "includePlatforms": [
-        "Editor"
-    ],
-    "excludePlatforms": [],
-    "allowUnsafeCode": false,
-    "overrideReferences": false,
-    "precompiledReferences": [],
-    "autoReferenced": true,
-    "defineConstraints": [],
-    "versionDefines": [],
-    "noEngineReferences": false
+  "name": "Base.ToolPackage.Editor",
+  "rootNamespace": "Base.ToolPackage.Editor",
+  "references": [
+    "GUID:922d81cfb9ff6984da4cb2213b66a375",
+    "GUID:f12f20722d8f4234b8dfcce9e344fb31",
+    "GUID:23e24c01ae3d7b347a00cb4924eb02c5",
+    "GUID:ef1475c04daed1943a99d3d610d12e02",
+    "GUID:c3837597513e91f44a47d8cd91c34f68",
+    "GUID:94639facfcc1e284b907f050384eaaf0"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
 }
