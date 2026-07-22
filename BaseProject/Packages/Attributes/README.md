@@ -13,7 +13,7 @@ public class Enemy : MonoBehaviour
     [Title("Stats", EColor.Red)]
     [Required] public Rigidbody body;
     [MinMax(0, 100)] public int health = 100;
-    [Positive] public float speed = 5f;
+    [Suffix("m/s")] public float speed = 5f;
 
     [ProgressBar(nameof(health), EColor.Green)] public float damageTaken;
 
@@ -29,7 +29,7 @@ public class Enemy : MonoBehaviour
 
 Needs Unity 2021.3 or newer (it leans on `TypeCache` and the standard IMGUI drawer API).
 
-Either add it through the Package Manager with *Add package from git URL* or just drop the folder into your project. There are two assemblies: one for the attributes (runtime), one for the drawing (editor only). Nothing editor gets pulled into a build.
+Either add it through the Package Manager with *Add package from git URL* or just drop the folder into your project. There are two assemblies: one for the attributes (runtime) and one for the drawing (editor only). Nothing editor gets pulled into a build.
 
 ## Colors
 
@@ -44,14 +44,17 @@ Anything that takes a color accepts either a hex string or a preset from the `EC
 
 ```csharp
 [Title("Section")]                       // bold header with an underline
+[Title("Section", Foldout = true)]       // header that collapses everything under it
 [HorizontalLine]                         // just a separator, [HorizontalLine(EColor.Blue, 2f)] for thickness
 [InfoBox("Careful.", EInfoBoxType.Warning)]
 [Indent] / [Indent(2)]                   // nudge a field to the right
 [Foldout("Advanced")]                    // group consecutive fields under a collapsible header
 [Tab("Combat")] / [Tab("Left", "Group")] // consecutive fields become a tab bar
+[Prefix("$")] / [Suffix("m/s")]          // small label before or after the field
+[GUIColor(EColor.Red)]                   // tint the field background, [GUIColor("#E74C3C")] for hex
 ```
 
-Title, HorizontalLine and InfoBox sit above a field the way `[Header]` does. Unlike `[Header]` they also show up above lists and arrays, which was half the reason to write them.
+Title, HorizontalLine and InfoBox sit above a field the way `[Header]` does. Unlike `[Header]` they also show up above lists and arrays, which was half the reason to write them. `[InfoBox]` can move below the field with `EInfoBoxPosition.Below`.
 
 Two read-only display helpers for things that aren't serialized:
 
@@ -62,7 +65,7 @@ Two read-only display helpers for things that aren't serialized:
 
 ## Conditional visibility
 
-All of these take a member name via `nameof`. The reference can be a bool field, a bool property, or a parameterless method returning bool.
+All of these take a member name via `nameof`. The reference can be a bool field, a bool property or a parameterless method returning bool.
 
 ```csharp
 [ShowIf(nameof(_enabled))]      // hide unless true
@@ -78,6 +81,8 @@ All of these take a member name via `nameof`. The reference can be a bool field,
 [ReadOnlyInEditMode]    // locked while stopped
 ```
 
+There are play-mode variants of show, hide, enable and disable too: `[ShowInPlayMode]`, `[HideInPlayMode]`, `[EnableInPlayMode]` and `[DisableInPlayMode]`.
+
 ## Validation
 
 These flag problems in the inspector or quietly correct the value. They stack, so `[Required] [AssetOnly]` on the same field is fine.
@@ -86,8 +91,10 @@ These flag problems in the inspector or quietly correct the value. They stack, s
 [Required] public Transform target;              // red box when null
 [NotNullOrEmpty] public string id;               // works on strings and on lists/arrays
 [MinMax(0, 100)] public int amount;              // clamps on entry, no slider
-[Positive] public float radius;                  // clamps negatives to zero
+[Max(100)] public int cap;                       // upper bound only, clamps on entry
+[NotZero] public float divisor;                  // pushes the value off zero
 [PowerOfTwo] public int textureSize = 256;       // snaps to nearest power of two
+[MaxLength(16)] public string code;              // trims text past the limit
 [AssetOnly] public GameObject prefab;            // rejects scene objects
 [SceneObjectOnly] public Transform anchor;       // rejects project assets
 [ValidateInput(nameof(IsEven), "Must be even.")] public int value;
@@ -95,16 +102,18 @@ These flag problems in the inspector or quietly correct the value. They stack, s
 private bool IsEven(int v) => v % 2 == 0;        // also works with no parameter
 ```
 
-`[MinMax]` really does reset the value: type 500 with a max of 100 and it snaps back to 100 when you commit.
+`[MinMax]` and `[Max]` really do reset the value: type 500 with a max of 100 and it snaps back to 100 when you commit. Both also clamp component-wise on `Vector2`, `Vector3`, `Vector2Int` and `Vector3Int`.
 
 ## Auto-assignment
 
 Fill a reference from the hierarchy so you stop dragging things by hand. They only fill when the field is empty, so you can still override manually.
 
 ```csharp
-[FindComponent] public Rigidbody body;           // GetComponent on the same object
+[GetComponent] public Rigidbody body;            // GetComponent on the same object
+[GetComponentInParent] public Canvas canvas;     // searches strictly upward
+[GetComponentInParent("Root")] public Transform root;  // named ancestor
 [Child] public Renderer renderer;                // GetComponentInChildren
-[Child("Muzzle")] public Transform muzzle;        // named descendant
+[Child("Muzzle")] public Transform muzzle;       // named descendant
 ```
 
 ## Pickers and references
@@ -120,6 +129,8 @@ Fill a reference from the hierarchy so you stop dragging things by hand. They on
 [ResourcesPath(typeof(GameObject))] public string prefabPath;
 [ShowAssetPreview] public Texture2D icon;        // thumbnail under the field, [ShowAssetPreview(96)] for size
 [Tag] public string tag;                         // tag dropdown, [Tag(true)] to forbid new tags
+[ComponentPicker] public Collider hit;           // drop a GameObject, it picks the matching component
+[OpenAsset] public TextAsset config;             // button that opens the asset in its editor
 ```
 
 Animator and audio, which resolve their options from a sibling field:
@@ -127,8 +138,7 @@ Animator and audio, which resolve their options from a sibling field:
 ```csharp
 public Animator animator;
 [AnimatorParam(nameof(animator))] public string param;       // stores the name
-[AnimatorParam(nameof(animator))] public int paramHash;      // stores the hash
-[AnimatorHash("Attack")] public int attackHash;              // read-only, filled from the name
+[AnimatorParam(nameof(animator))] public int paramHash;      // on an int it stores the hash instead
 
 public AudioMixer mixer;
 [MixerParameter(nameof(mixer))] public string exposedParam;  // exposed mixer parameters
@@ -143,17 +153,31 @@ public AudioMixer mixer;
 private void Nuke() { }
 
 [InlineButton(nameof(Randomize), "Roll")] public int rolled;     // button next to the field
+[ClearButton] public string note;                                // inline button that empties the field
+[CopyButton] public string id;                                   // inline button that copies the value
 
+[Dropdown(nameof(Options))] public string choice;                // options from a member
 [ProgressBar(100f, EColor.Green)] public float health;           // drag to set the value
 [ProgressBar(nameof(maxMana), EColor.Blue)] public float mana;   // dynamic max from a member
 [ProgressBar(100f, EColor.Orange, readOnly: true)] public float shown;
 
+[MinMaxSlider(0, 100)] public Vector2 range;                     // one slider with two handles
+[Percentage] public float ratio;                                 // shows 0..1 as a percent, [Percentage(true)] for a slider
 [CurveRange(0, 0, 1, 1, EColor.Cyan)] public AnimationCurve curve;
 [EnumFlags] public MyFlags flags;                                // mask field for [Flags] enums
 [EnumToggleButtons] public MyEnum mode;                          // enum as a row of buttons
+
+private string[] Options => new[] { "a", "b", "c" };
 ```
 
 Buttons and the read-only native members render at the bottom of the inspector, after your fields.
+
+There is also a change callback:
+
+```csharp
+[OnValueChanged(nameof(OnHealthChanged))] public int health;
+private void OnHealthChanged() { }               // fires when the field is edited in the inspector
+```
 
 ## How it works, briefly
 
@@ -163,12 +187,33 @@ There are three ways a thing gets drawn:
 - **Property drawers** (tag, curve, enum buttons, pickers, progress bar, inline button) replace how a single field renders.
 - The **inspector itself** only does grouping (foldouts, tabs) and hands each field to the pipeline.
 
-Handlers are discovered with `TypeCache`, so adding a new one is genuinely just dropping in a file. Pick the interface that matches when it should run (`IBeforeFieldHandler`, `IVisibilityHandler`, `IEnableHandler`, `IAfterFieldHandler`) or write a normal `PropertyDrawer` if you're replacing the field. No registration step.
+Handlers are discovered with `TypeCache`, so adding a new one is genuinely just dropping in a file. Pick the interface that matches when it should run (`IBeforeFieldHandler`, `IVisibilityHandler`, `IEnableHandler`, `IAfterFieldHandler` or `IInlineFieldWidget`) or write a normal `PropertyDrawer` if you're replacing the field. No registration step.
+
+## Custom editors
+
+The package draws every `MonoBehaviour` and `ScriptableObject` through a `[CustomEditor]` on the base types. The moment you write your own `[CustomEditor]` for a specific type, Unity picks the more specific one and the package's inspector drops out, so all the attribute drawing goes with it.
+
+Whenever you need a custom editor, derive it from `AttributePackageEditor` instead of `UnityEditor.Editor` and call `base.OnInspectorGUI()` for the attribute-driven part. This is required for every custom editor you write if you want the attributes to keep working.
+
+```csharp
+using Base.AttributePackage.Editor;
+using UnityEditor;
+
+[CustomEditor(typeof(Enemy))]
+public sealed class EnemyEditor : AttributePackageEditor
+{
+    public override void OnInspectorGUI()
+    {
+        base.OnInspectorGUI();   // draws the tagged fields, buttons and native members
+        // your extra inspector GUI here
+    }
+}
+```
 
 ## Things worth knowing
 
 - Unity only lets one package own the default inspector. If you also pull in Odin, NaughtyAttributes or similar, they'll fight over it and one loses silently. Fine as long as this is your only inspector package.
-- The pipeline attributes (validation, conditional, layout) apply to the top-level fields of a component. They don't reach inside a nested `[Serializable]` struct. The pure property drawers (tag, curve, enum, progress bar, and so on) still work in there because Unity draws those recursively.
+- The pipeline reaches into nested `[Serializable]` structs and classes at any depth, so validation, conditional and layout attributes work on their fields too. It stops descending in three cases, handing those to Unity's default drawing: arrays and lists (attributes on fields of list elements are skipped), types that have their own `PropertyDrawer` and Unity or framework types like `Vector3`.
 - A couple of drawers do real work every repaint by nature. `[MixerParameter]` reads the mixer's exposed parameters and `[AnimatorParam]` reads the controller's parameters each time. On a field or two it's nothing; don't stack a dozen of them on one object.
 
 ## License

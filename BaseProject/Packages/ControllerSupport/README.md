@@ -17,7 +17,7 @@ Full gamepad support for uGUI menus: reliable navigation wiring, focus that neve
 
 ### NavigableElement
 
-Marker component for a `Selectable` that should be part of gamepad navigation. Only marked selectables get wired. Anything without it is treated as a gap and fixed automatically during a rebuild (a `NavigableElement` is added and the fix is logged).
+Marker component for a `Selectable` that should be part of gamepad navigation. Only marked selectables get wired. Anything without it is treated as a gap and fixed on demand during a rebuild (a `NavigableElement` is added and the fix is logged).
 
 ### NavigableGroup
 
@@ -31,7 +31,7 @@ A self-contained navigation context. Put it on a menu root and it collects all `
 | Remember Last Selected | Focus returns to the last used element instead of the default |
 | Wrap | Navigation loops around the edges of the group |
 
-Rebuild via the inspector buttons, the context menu or `Rebuild()` in code.
+Rebuild via the inspector buttons, the Navigation Groups window or `Rebuild()` in code.
 
 ### FocusWatchdog
 
@@ -51,7 +51,7 @@ The single seam between the menu layer and this package. Attach it to a menu and
 ## Input Prompts
 
 - **InputDeviceTracker**: service that tracks the active device family (`MouseKeyboard` or `Gamepad`) based on real actuation, ignoring noise like resting sticks. Raises `OnDeviceChanged`.
-- **InputGlyphSet**: ScriptableObject mapping input actions to glyphs for one device family. Create via the asset menu, one set per device.
+- **InputGlyphSet**: ScriptableObject mapping input actions to glyphs for one device family. Create it from the asset menu (`Scriptable Objects/Base/Input/New Glyph Set`), one set per device.
 - **InputGlyphProvider**: service that resolves the right glyph for the active device. `TryGetSprite` for images, `GetTmpSpriteTag` for inline TextMeshPro tags. Raises `OnActiveDeviceChanged` so labels can refresh.
 
 ## Quick Start
@@ -65,10 +65,10 @@ The single seam between the menu layer and this package. Attach it to a menu and
 
 ## Editor Tooling
 
-Rebuilds only ever run when you trigger them, so wiring never changes silently:
+Rebuilds only ever run when you trigger them, so wiring never changes silently.
 
-- **Navigation Groups window** (`Tools > Base Packages > Controller Support > Navigation Groups`): lists every group in the loaded scenes with its scene, priority and element count. Jump to any group, rebuild it individually, rebuild every group in the loaded scenes rebuild the entire project. The project rebuild walks all scenes and prefabs, rewires their groups and saves the results.
-- **Inspector**: Rebuild and Rebuild Scene buttons on every `NavigableGroup`
+- **Navigation Groups window** (`Tools > Base Packages > Unity Editor > Controller Navigation Groups`): lists every group in the loaded scenes with its scene, priority and element count. Per row you can go to a group, rebuild it or fix a missing element. The toolbar rebuilds every group in the loaded scenes or the whole project. The project rebuild opens every scene, rewires all groups and saves the scenes, and rebuilds any prefabs that contain groups too.
+- **Inspector**: Rebuild and Rebuild Scene buttons on every `NavigableGroup`.
 
 ## Dependencies
 
