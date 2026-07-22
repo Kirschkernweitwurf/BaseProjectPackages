@@ -1,4 +1,3 @@
-#if UNITY_EDITOR
 using Base.UtilityPackage.Logging;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -7,6 +6,7 @@ namespace Base.ToolPackage.Editor.AutoStartScene
 {
     /// <summary>
     /// Automatically sets a specified scene to load when entering Play mode in the Unity Editor.
+    /// Defaults to the first enabled scene in Build Settings when no scene is explicitly set.
     /// The previous scene is restored when exiting Play mode.
     /// Settings are stored using EditorPrefs.
     /// </summary>
@@ -20,7 +20,7 @@ namespace Base.ToolPackage.Editor.AutoStartScene
 
         /// <summary>
         /// Sets the scene to be loaded when entering Play mode.
-        /// If null is passed, the auto start scene feature is disabled.
+        /// If null is passed, the setting is cleared and the first build scene is used as fallback.
         /// </summary>
         public static void SetStartScene(SceneAsset scene)
         {
@@ -35,16 +35,22 @@ namespace Base.ToolPackage.Editor.AutoStartScene
         }
 
         /// <summary>
-        /// Gets the currently set start scene.
-        /// Returns null if no scene is set.
+        /// Gets the currently set start scene, falling back to the first enabled build scene.
+        /// Returns null if neither is available.
         /// </summary>
         public static SceneAsset GetStartScene()
         {
-            string path = EditorPrefs.GetString(SceneKey, string.Empty);
+            string path = ResolveScenePath();
             return string.IsNullOrEmpty(path)
                 ? null
                 : AssetDatabase.LoadAssetAtPath<SceneAsset>(path);
         }
+
+        /// <summary>
+        /// Checks whether an explicit start scene has been set by the user.
+        /// </summary>
+        public static bool HasExplicitStartScene()
+            => !string.IsNullOrEmpty(EditorPrefs.GetString(SceneKey, string.Empty));
 
         /// <summary>
         /// Enables or disables the auto start scene feature.
@@ -59,13 +65,32 @@ namespace Base.ToolPackage.Editor.AutoStartScene
         }
 
         /// <summary>
-        /// Checks if the auto start scene feature is enabled.
+        /// Checks if the auto start scene feature is enabled. Enabled by default.
         /// </summary>
         public static bool IsEnabled() => EditorPrefs.GetBool(EnabledKey, true);
 
         /// <summary>
+        /// Resolves the effective start scene path: the explicitly set scene if present,
+        /// otherwise the first enabled scene in Build Settings.
+        /// </summary>
+        private static string ResolveScenePath()
+        {
+            string path = EditorPrefs.GetString(SceneKey, string.Empty);
+            if (!string.IsNullOrEmpty(path))
+                return path;
+
+            foreach (EditorBuildSettingsScene buildScene in EditorBuildSettings.scenes)
+            {
+                if (buildScene.enabled)
+                    return buildScene.path;
+            }
+
+            return string.Empty;
+        }
+
+        /// <summary>
         /// Called when Unity's play mode state changes.
-        /// If enabled, it assigns the chosen start scene to load automatically when Play starts.
+        /// If enabled, it assigns the resolved start scene to load automatically when Play starts.
         /// If disabled, it clears any previously assigned start scene.
         /// </summary>
         private static void OnPlayModeChanged(PlayModeStateChange state)
@@ -79,7 +104,7 @@ namespace Base.ToolPackage.Editor.AutoStartScene
                 return;
             }
 
-            string scenePath = EditorPrefs.GetString(SceneKey, string.Empty);
+            string scenePath = ResolveScenePath();
             if (string.IsNullOrEmpty(scenePath))
             {
                 EditorSceneManager.playModeStartScene = null;
@@ -94,4 +119,3 @@ namespace Base.ToolPackage.Editor.AutoStartScene
         }
     }
 }
-#endif

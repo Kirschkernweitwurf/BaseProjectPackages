@@ -1,4 +1,3 @@
-#if UNITY_EDITOR
 using UnityEditor;
 using UnityEngine;
 
@@ -44,14 +43,18 @@ namespace Base.ToolPackage.Editor.AutoStartScene
 
             GUILayout.Space(4);
 
-            if (_startScene)
+            if (_startScene == null)
+                EditorGUILayout.HelpBox("No start scene available."
+                    + " Add a scene to Build Settings or set one manually.", MessageType.Warning);
+            else if (AutoStartSceneSettings.HasExplicitStartScene())
                 EditorGUILayout.HelpBox($"Current Start Scene: {AssetDatabase.GetAssetPath(_startScene)}",
                     MessageType.Info);
             else
-                EditorGUILayout.HelpBox("No start scene set.", MessageType.Warning);
+                EditorGUILayout.HelpBox(
+                    $"Using first build scene as default: {AssetDatabase.GetAssetPath(_startScene)}",
+                    MessageType.Info);
 
             EditorGUI.EndDisabledGroup();
         }
     }
 }
-#endif
