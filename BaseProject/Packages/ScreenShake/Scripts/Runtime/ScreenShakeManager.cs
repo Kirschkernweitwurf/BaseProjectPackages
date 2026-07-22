@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
-using Base.UtilityPackage.Logging;
+
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 
 namespace Base.ScreenShakePackage
 {
@@ -18,6 +20,9 @@ namespace Base.ScreenShakePackage
         /// <param name="callback">The listener callback to register.</param>
         public static void RegisterListener(Action<ScreenShakeProfile> callback)
         {
+            if (callback == null)
+                throw new ArgumentNullException(nameof(callback));
+
             if (!Listeners.Contains(callback))
                 Listeners.Add(callback);
         }
@@ -34,16 +39,8 @@ namespace Base.ScreenShakePackage
         /// <param name="profile">The screen shake profile to notify listeners with.</param>
         public static void NotifyShake(ScreenShakeProfile profile)
         {
-            foreach (Action<ScreenShakeProfile> listener in Listeners)
-            {
-                if (listener == null)
-                {
-                    CustomLogger.LogWarning($"Null listener found for {profile}", null);
-                    continue;
-                }
-
-                listener.Invoke(profile);
-            }
+            for (int i = Listeners.Count - 1; i >= 0; i--)
+                Listeners[i].Invoke(profile);
         }
 
 #if UNITY_EDITOR
@@ -51,4 +48,4 @@ namespace Base.ScreenShakePackage
         private static void ResetStatics() => Listeners.Clear();
 #endif
     }
-}
+}

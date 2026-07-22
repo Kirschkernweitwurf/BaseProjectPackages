@@ -32,16 +32,15 @@ namespace Base.ScreenShakePackage
         {
             if (profile == null)
             {
-                CustomLogger.LogWarning("Attempted to apply null ScreenShakeProfile.", this);
+                CustomLogger.LogWarning($"Attempted to apply null {nameof(ScreenShakeProfile)}.", this);
                 return;
             }
 
-            _listener.ReactionSettings = new CinemachineImpulseListener.ImpulseReaction
-            {
-                AmplitudeGain = profile.ListenerAmplitude,
-                FrequencyGain = profile.ListenerFrequency,
-                Duration = profile.ListenerDuration
-            };
+            CinemachineImpulseListener.ImpulseReaction reaction = _listener.ReactionSettings;
+            reaction.AmplitudeGain = profile.ListenerAmplitude;
+            reaction.FrequencyGain = profile.ListenerFrequency;
+            reaction.Duration = profile.ListenerDuration;
+            _listener.ReactionSettings = reaction;
         }
     }
-}
+}
