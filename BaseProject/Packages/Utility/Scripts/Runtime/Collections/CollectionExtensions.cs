@@ -36,18 +36,17 @@ namespace Base.UtilityPackage.Collections
         {
             if (array == null)
             {
-                CustomLogger.LogWarning("GetRandomElement called on a null array.", null);
-                return default(T);
+                CustomLogger.LogWarning($"{nameof(GetRandomElement)} called on a null array.", null);
+                return default;
             }
 
             if (array.Length == 0)
             {
-                CustomLogger.LogWarning("GetRandomElement called on an empty array.", null);
-                return default(T);
+                CustomLogger.LogWarning($"{nameof(GetRandomElement)} called on an empty array.", null);
+                return default;
             }
 
-            int index = Random.Range(0, array.Length);
-            return array[index];
+            return array[Random.Range(0, array.Length)];
         }
 
         /// <summary>
@@ -57,18 +56,17 @@ namespace Base.UtilityPackage.Collections
         {
             if (list == null)
             {
-                CustomLogger.LogWarning("GetRandomElement called on a null list.", null);
-                return default(T);
+                CustomLogger.LogWarning($"{nameof(GetRandomElement)} called on a null list.", null);
+                return default;
             }
 
             if (list.Count == 0)
             {
-                CustomLogger.LogWarning("GetRandomElement called on an empty list.", null);
-                return default(T);
+                CustomLogger.LogWarning($"{nameof(GetRandomElement)} called on an empty list.", null);
+                return default;
             }
 
-            int index = Random.Range(0, list.Count);
-            return list[index];
+            return list[Random.Range(0, list.Count)];
         }
     }
 }

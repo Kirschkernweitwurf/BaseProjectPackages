@@ -11,7 +11,8 @@ namespace Base.UtilityPackage.Collections
     /// <typeparam name="TKey">The type of the dictionary keys.</typeparam>
     /// <typeparam name="TValue">The type of the dictionary values.</typeparam>
     [Serializable]
-    public class SerializableDictionary<TKey, TValue> : IEnumerable<KeyValuePair<TKey, TValue>>
+    public class SerializableDictionary<TKey, TValue>
+        : IEnumerable<KeyValuePair<TKey, TValue>>, ISerializationCallbackReceiver
     {
         [SerializeField] private List<SerializableDictionaryEntry<TKey, TValue>> entries = new();
 
@@ -41,12 +42,14 @@ namespace Base.UtilityPackage.Collections
             }
             set
             {
+                EnsureDictionary();
+
                 if (TryGetEntryIndex(key, out int index))
                     entries[index] = new SerializableDictionaryEntry<TKey, TValue>(key, value);
                 else
                     entries.Add(new SerializableDictionaryEntry<TKey, TValue>(key, value));
 
-                SetDirty();
+                _dict[key] = value;
             }
         }
 
@@ -74,9 +77,9 @@ namespace Base.UtilityPackage.Collections
             }
         }
 
-        private Dictionary<TKey, TValue> _dict;
+        private static readonly EqualityComparer<TKey> KeyComparer = EqualityComparer<TKey>.Default;
 
-        private bool _isDirty = true;
+        private Dictionary<TKey, TValue> _dict;
 
         /// <summary>
         /// Returns an enumerator that iterates through the dictionary.
@@ -89,15 +92,25 @@ namespace Base.UtilityPackage.Collections
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
+        void ISerializationCallbackReceiver.OnBeforeSerialize() { }
+
+        /// <summary>
+        /// Discards the runtime dictionary after Unity deserializes the entries (e.g. inspector edits),
+        /// so the next access rebuilds it from the fresh serialized data.
+        /// </summary>
+        void ISerializationCallbackReceiver.OnAfterDeserialize() => _dict = null;
+
         /// <summary>
         /// Adds a new key-value pair to the dictionary.
         /// </summary>
         /// <param name="key">The key to add.</param>
         /// <param name="value">The value associated with the key.</param>
+        /// <exception cref="ArgumentException">Thrown if the key already exists.</exception>
         public void Add(TKey key, TValue value)
         {
+            EnsureDictionary();
+            _dict.Add(key, value); // Throws on duplicate keys, matching Dictionary semantics.
             entries.Add(new SerializableDictionaryEntry<TKey, TValue>(key, value));
-            SetDirty();
         }
 
         /// <summary>
@@ -107,24 +120,21 @@ namespace Base.UtilityPackage.Collections
         /// <returns>True if the entry was removed; otherwise, false.</returns>
         public bool Remove(TKey key)
         {
-            for (int i = 0; i < entries.Count; i++)
-            {
-                if (!EqualityComparer<TKey>.Default.Equals(entries[i].key, key))
-                    continue;
+            if (!TryGetEntryIndex(key, out int index))
+                return false;
 
-                entries.RemoveAt(i);
-                SetDirty();
-                return true;
-            }
-
-            return false;
+            entries.RemoveAt(index);
+            _dict?.Remove(key);
+            return true;
         }
 
         /// <summary>
         /// Attempts to get the value associated with the specified key.
         /// </summary>
         /// <param name="key">The key of the value to get.</param>
-        /// <param name="value">When this method returns, contains the value if found; otherwise, the default value.</param>
+        /// <param name="value">
+        /// When this method returns, contains the value if found; otherwise, the default value.
+        /// </param>
         /// <returns>True if the key exists; otherwise, false.</returns>
         public bool TryGetValue(TKey key, out TValue value)
         {
@@ -149,34 +159,34 @@ namespace Base.UtilityPackage.Collections
         public void Clear()
         {
             entries.Clear();
-            SetDirty();
+            _dict?.Clear();
         }
 
         /// <summary>
-        /// Ensures the runtime dictionary is initialized and synchronized with the serialized entries.
+        /// Builds the runtime dictionary from the serialized entries if it does not exist yet.
+        /// Mutations keep both stores in sync afterwards, so no rebuild is needed per access.
         /// </summary>
         private void EnsureDictionary()
         {
-            if (!_isDirty && _dict != null)
+            if (_dict != null)
                 return;
 
-            _dict = new Dictionary<TKey, TValue>();
+            _dict = new Dictionary<TKey, TValue>(entries.Count);
             foreach (SerializableDictionaryEntry<TKey, TValue> entry in entries)
             {
-                if (entry.key == null || _dict.ContainsKey(entry.key))
+                if (entry.key == null
+                    || _dict.ContainsKey(entry.key))
                     continue;
 
                 _dict[entry.key] = entry.value;
             }
-
-            _isDirty = false;
         }
 
         private bool TryGetEntryIndex(TKey key, out int index)
         {
             for (int i = 0; i < entries.Count; i++)
             {
-                if (!EqualityComparer<TKey>.Default.Equals(entries[i].key, key))
+                if (!KeyComparer.Equals(entries[i].key, key))
                     continue;
 
                 index = i;
@@ -186,7 +196,5 @@ namespace Base.UtilityPackage.Collections
             index = -1;
             return false;
         }
-
-        private void SetDirty() => _isDirty = true;
     }
 }

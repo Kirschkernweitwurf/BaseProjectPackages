@@ -13,7 +13,7 @@ namespace Base.UtilityPackage
     /// </summary>
     public class CoroutineRunner : CustomSingleton<CoroutineRunner>
     {
-        private readonly List<Coroutine> _coroutines = new();
+        private readonly HashSet<Coroutine> _coroutines = new();
 
 #region Unity Callbacks
         /// <summary>
@@ -27,34 +27,28 @@ namespace Base.UtilityPackage
 #endregion
 
         /// <summary>
-        /// Starts a coroutine and adds it to the list of tracked coroutines.
+        /// Starts a coroutine and adds it to the set of tracked coroutines.
         /// </summary>
         /// <param name="coroutine">The coroutine enumerator to run.</param>
         /// <returns>The <see cref="Coroutine"/> instance started.</returns>
-        public Coroutine RunCoroutine(IEnumerator coroutine)
-        {
-            Coroutine newCoroutine = StartCoroutine(coroutine);
-            _coroutines.Add(newCoroutine);
-            return newCoroutine;
-        }
+        public Coroutine RunCoroutine(IEnumerator coroutine) => StartTracked(coroutine);
 
         /// <summary>
         /// Starts a coroutine and invokes a callback when it completes.
         /// </summary>
         /// <param name="coroutine">The coroutine enumerator to run.</param>
         /// <param name="onComplete">The callback to invoke once the coroutine finishes.</param>
-        /// <returns>An enumerator suitable for yielding in another coroutine.</returns>
+        /// <returns>The <see cref="Coroutine"/> instance started.</returns>
         public Coroutine RunCoroutine(IEnumerator coroutine, Action onComplete)
         {
-            Coroutine newCoroutine = StartCoroutine(RunCoroutineWithCallback(coroutine, onComplete));
-            _coroutines.Add(newCoroutine);
-            return newCoroutine;
+            return StartTracked(RunWithCallback());
 
-            IEnumerator RunCoroutineWithCallback(IEnumerator coro, Action callback)
+            IEnumerator RunWithCallback()
             {
-                yield return StartCoroutineInternal(coro);
+                while (coroutine.MoveNext())
+                    yield return coroutine.Current;
 
-                callback?.Invoke();
+                onComplete?.Invoke();
             }
         }
 
@@ -65,14 +59,14 @@ namespace Base.UtilityPackage
         /// <returns>The <see cref="Coroutine"/> instance started.</returns>
         public Coroutine RunCoroutineNextFrame(IEnumerator coroutine)
         {
-            Coroutine newCoroutine = StartCoroutine(DelayedStart());
-            _coroutines.Add(newCoroutine);
-            return newCoroutine;
+            return StartTracked(DelayedStart());
 
             IEnumerator DelayedStart()
             {
                 yield return null; // Wait one frame
-                yield return StartCoroutineInternal(coroutine);
+
+                while (coroutine.MoveNext())
+                    yield return coroutine.Current;
             }
         }
 
@@ -81,19 +75,16 @@ namespace Base.UtilityPackage
         /// </summary>
         /// <param name="actionToRun">The action to execute the next frame.</param>
         /// <returns>The <see cref="Coroutine"/> instance started.</returns>
-        public Coroutine RunNextFrame(Action actionToRun)
-        {
-            Coroutine newCoroutine = StartCoroutine(RunActionDelayed(actionToRun, new WaitForSeconds(0)));
-            _coroutines.Add(newCoroutine);
-            return newCoroutine;
-        }
+        public Coroutine RunNextFrame(Action actionToRun) => StartTracked(RunAfterFramesCoroutine(actionToRun, 1));
 
         /// <summary>
         /// Runs the specified <paramref name="actionToRun"/> after a certain number of frames.
         /// </summary>
         /// <param name="actionToRun">The action to execute after waiting.</param>
         /// <param name="frameCount">The number of frames to wait. Must be non-negative.</param>
-        /// <returns>The <see cref="Coroutine"/> instance started.</returns>
+        /// <returns>
+        /// The <see cref="Coroutine"/> instance started, or <c>null</c> if the action ran immediately.
+        /// </returns>
         public Coroutine RunAfterFrames(Action actionToRun, int frameCount)
         {
             if (frameCount < 0)
@@ -108,9 +99,7 @@ namespace Base.UtilityPackage
                 return null;
             }
 
-            Coroutine newCoroutine = StartCoroutine(RunAfterFramesCoroutine(actionToRun, frameCount));
-            _coroutines.Add(newCoroutine);
-            return newCoroutine;
+            return StartTracked(RunAfterFramesCoroutine(actionToRun, frameCount));
         }
 
         /// <summary>
@@ -118,9 +107,11 @@ namespace Base.UtilityPackage
         /// </summary>
         /// <param name="actionToRun">The action to execute after the delay.</param>
         /// <param name="seconds">The number of seconds to wait before execution. Must be non-negative.</param>
-        /// <returns>The <see cref="Coroutine"/> instance started.</returns>
+        /// <returns>
+        /// The <see cref="Coroutine"/> instance started, or <c>null</c> if the action ran immediately.
+        /// </returns>
         /// <remarks>
-        /// If <paramref name="seconds"/> is less than or equal to zero, the action will execute on the next frame.
+        /// If <paramref name="seconds"/> is less than or equal to zero, the action will execute immediately.
         /// </remarks>
         public Coroutine RunAfterSeconds(Action actionToRun, float seconds)
         {
@@ -136,26 +127,24 @@ namespace Base.UtilityPackage
                 return null;
             }
 
-            Coroutine newCoroutine = StartCoroutine(RunActionDelayed(actionToRun, new WaitForSeconds(seconds)));
-            _coroutines.Add(newCoroutine);
-            return newCoroutine;
+            return StartTracked(RunActionDelayed(actionToRun, new WaitForSeconds(seconds)));
         }
 
         /// <summary>
-        /// Stops a specific running coroutine and removes it from the tracked list.
+        /// Stops a specific running coroutine and removes it from the tracked set.
         /// </summary>
         /// <param name="coroutine">The coroutine instance to stop.</param>
         public void StopRunningCoroutine(Coroutine coroutine)
         {
-            if (!_coroutines.Contains(coroutine))
+            if (coroutine == null
+                || !_coroutines.Remove(coroutine))
                 return;
 
             StopCoroutine(coroutine);
-            _coroutines.Remove(coroutine);
         }
 
         /// <summary>
-        /// Stops all currently running coroutines and clears the tracked list.
+        /// Stops all currently running coroutines and clears the tracked set.
         /// </summary>
         public void StopAllRunningCoroutines()
         {
@@ -167,6 +156,28 @@ namespace Base.UtilityPackage
         [InitializeOnEnterPlayMode]
         private static void ResetStatics() => Instance = null;
 #endif
+
+        /// <summary>
+        /// Starts <paramref name="coroutine"/> wrapped in a tracker that removes it from the set on completion.
+        /// Stopping the returned handle also stops the wrapped coroutine, since it is iterated inline.
+        /// </summary>
+        /// <param name="coroutine">The coroutine enumerator to run.</param>
+        /// <returns>The <see cref="Coroutine"/> instance started.</returns>
+        private Coroutine StartTracked(IEnumerator coroutine)
+        {
+            Coroutine handle = null;
+            handle = StartCoroutine(Tracked());
+            _coroutines.Add(handle);
+            return handle;
+
+            IEnumerator Tracked()
+            {
+                while (coroutine.MoveNext())
+                    yield return coroutine.Current;
+
+                _coroutines.Remove(handle);
+            }
+        }
 
         /// <summary>
         /// Runs the specified <paramref name="actionToRun"/> after waiting for the given number of frames.
@@ -192,18 +203,6 @@ namespace Base.UtilityPackage
             yield return yieldInstruction;
 
             actionToRun?.Invoke();
-        }
-
-        /// <summary>
-        /// Starts a coroutine internally and tracks it, returning its enumerator.
-        /// </summary>
-        /// <param name="coroutine">The coroutine enumerator to run.</param>
-        /// <returns>An enumerator yielding until the coroutine completes.</returns>
-        private IEnumerator StartCoroutineInternal(IEnumerator coroutine)
-        {
-            Coroutine subCoroutine = StartCoroutine(coroutine);
-            _coroutines.Add(subCoroutine);
-            yield return subCoroutine;
         }
     }
 }

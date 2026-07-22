@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -37,18 +38,21 @@ namespace Base.UtilityPackage.Collections
 
         public FlattenedArray(int width, int height)
         {
+            if (width < 0
+                || height < 0)
+                throw new ArgumentOutOfRangeException($"{nameof(width)}/{nameof(height)} must be non-negative.");
+
             Width = width;
             Height = height;
             _data = new T[width * height];
         }
 
-        public IEnumerator<T> GetEnumerator()
-        {
-            foreach (T t in _data)
-                yield return t;
-        }
+        /// <summary>
+        /// Returns the underlying array's enumerator, avoiding a custom iterator state machine.
+        /// </summary>
+        public IEnumerator<T> GetEnumerator() => ((IEnumerable<T>)_data).GetEnumerator();
 
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => _data.GetEnumerator();
 
         /// <summary>
         /// Set the value at (x, y).

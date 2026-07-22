@@ -13,6 +13,16 @@ namespace Base.UtilityPackage.Raycasting
     /// </summary>
     public static class RaycastUtility
     {
+#if UNITY_EDITOR
+        private const float DebugRayLength = 25f;
+        private const float DebugDuration = 1f;
+
+        private static readonly Color DebugRayColor = new(0.1f, 0.8f, 1f, 0.8f);
+#endif
+
+        // Reused across calls to avoid per-raycast list allocations. Safe because calls are main-thread only.
+        private static readonly List<RaycastResult> UIRaycastResults = new();
+
         /// <summary>
         /// Attempts to raycast from the main camera at the current mouse position to find a component of type
         /// <typeparamref name="T"/>.
@@ -23,7 +33,7 @@ namespace Base.UtilityPackage.Raycasting
         /// <returns>True if a hit with the target component was detected; otherwise, false.</returns>
         public static bool TryGetFromMousePosition<T>(out T result)
         {
-            result = default(T);
+            result = default;
 
             Camera cam = Camera.main;
             if (cam == null)
@@ -47,7 +57,8 @@ namespace Base.UtilityPackage.Raycasting
         }
 
         /// <summary>
-        /// Performs a raycast using the provided camera and screen point to find a component of type <typeparamref name="T"/>.
+        /// Performs a raycast using the provided camera and screen point to find a component of type
+        /// <typeparamref name="T"/>.
         /// Works for 2D gameplay oriented in the XY plane (Z is depth).
         /// </summary>
         /// <typeparam name="T">The component type to look for.</typeparam>
@@ -57,7 +68,7 @@ namespace Base.UtilityPackage.Raycasting
         /// <returns>True if a hit with the target component was detected; otherwise, false.</returns>
         public static bool TryGetFromScreenPoint<T>(Camera camera, Vector3 screenPoint, out T result)
         {
-            result = default(T);
+            result = default;
 
             if (camera == null)
                 return false;
@@ -79,10 +90,10 @@ namespace Base.UtilityPackage.Raycasting
         /// <param name="graphicRaycaster">The graphic raycaster associated with the target canvas.</param>
         /// <param name="component">The found component if any.</param>
         /// <typeparam name="T">The component type to look for.</typeparam>
-        /// <returns></returns>
+        /// <returns>True if a hit with the target component was detected; otherwise, false.</returns>
         public static bool TryGetUIElement<T>(GraphicRaycaster graphicRaycaster, out T component)
         {
-            component = default(T);
+            component = default;
 
             if (EventSystem.current == null)
             {
@@ -108,10 +119,10 @@ namespace Base.UtilityPackage.Raycasting
                 position = pos.Value
             };
 
-            List<RaycastResult> results = new();
-            graphicRaycaster.Raycast(pointer, results);
+            UIRaycastResults.Clear();
+            graphicRaycaster.Raycast(pointer, UIRaycastResults);
 
-            foreach (RaycastResult result in results)
+            foreach (RaycastResult result in UIRaycastResults)
             {
                 if (result.gameObject.TryGetComponent(out component))
                     return true;
@@ -137,12 +148,6 @@ namespace Base.UtilityPackage.Raycasting
 
             Debug.DrawLine(start, end, color, DebugDuration);
         }
-#endif
-#if UNITY_EDITOR
-        private const float DebugRayLength = 25f;
-        private const float DebugDuration = 1f;
-
-        private static readonly Color DebugRayColor = new(0.1f, 0.8f, 1f, 0.8f);
 #endif
     }
 }

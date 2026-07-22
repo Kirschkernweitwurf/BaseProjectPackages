@@ -26,7 +26,7 @@ namespace Base.UtilityPackage
             else if (Instance != this)
             {
                 CustomLogger.LogWarning(
-                    $"Duplicate instance of {typeof(T)} detected. " + $"Destroying {gameObject.name}.", this);
+                    $"Duplicate instance of {typeof(T).Name} detected. Destroying {gameObject.name}.", this);
 
                 Destroy(gameObject);
             }

@@ -8,7 +8,8 @@ namespace Base.UtilityPackage
     public static class TimeFormattingExtensions
     {
         /// <summary>
-        /// Converts a time duration in seconds to a formatted string in "X hours and Y minutes and Z seconds" format.
+        /// Converts a time duration in seconds to a formatted string,
+        /// e.g. "2 hours, 5 minutes and 30 seconds", "5 minutes and 30 seconds" or "30 seconds".
         /// </summary>
         public static string ToMinutesSecondsText(this float seconds)
         {

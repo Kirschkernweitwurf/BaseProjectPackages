@@ -1,4 +1,3 @@
-#if UNITY_EDITOR
 using UnityEditor;
 
 namespace Base.UtilityPackage.Editor
@@ -34,4 +33,3 @@ namespace Base.UtilityPackage.Editor
             => parent.FindPropertyRelative(niceName) ?? parent.FindPropertyRelative($"<{niceName}>k__BackingField");
     }
 }
-#endif
