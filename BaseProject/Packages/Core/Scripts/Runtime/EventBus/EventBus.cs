@@ -11,6 +11,7 @@ namespace Base.CorePackage.EventBus
     public sealed class EventBus : GameServiceBehaviour, IEventBus
     {
         private readonly Dictionary<Type, Delegate> _handlers = new();
+        private readonly Dictionary<Type, Delegate[]> _invocationListCache = new();
 
         /// <inheritdoc/>
         public IDisposable Subscribe<TEvent>(Action<TEvent> handler) where TEvent : IEvent
@@ -22,6 +23,8 @@ namespace Base.CorePackage.EventBus
             _handlers[type] = _handlers.TryGetValue(type, out Delegate existing)
                 ? Delegate.Combine(existing, handler)
                 : handler;
+
+            _invocationListCache.Remove(type);
 
             return new Subscription<TEvent>(this, handler);
         }
@@ -41,18 +44,29 @@ namespace Base.CorePackage.EventBus
                 _handlers.Remove(type);
             else
                 _handlers[type] = remaining;
+
+            _invocationListCache.Remove(type);
         }
 
         /// <inheritdoc/>
         public void Publish<TEvent>(TEvent @event) where TEvent : IEvent
         {
-            if (!_handlers.TryGetValue(typeof(TEvent), out Delegate del))
+            Type type = typeof(TEvent);
+            if (!_handlers.TryGetValue(type, out Delegate del))
                 return;
 
             if (del is not Action<TEvent> typed)
                 return;
 
-            foreach (Delegate invocation in typed.GetInvocationList())
+            // Invocation lists are cached to avoid the per-publish array allocation
+            // of GetInvocationList. The cache is invalidated on (un)subscribe.
+            if (!_invocationListCache.TryGetValue(type, out Delegate[] invocations))
+            {
+                invocations = typed.GetInvocationList();
+                _invocationListCache[type] = invocations;
+            }
+
+            foreach (Delegate invocation in invocations)
             {
                 try
                 {
@@ -66,6 +80,10 @@ namespace Base.CorePackage.EventBus
         }
 
         /// <inheritdoc/>
-        public void Clear() => _handlers.Clear();
+        public void Clear()
+        {
+            _handlers.Clear();
+            _invocationListCache.Clear();
+        }
     }
 }

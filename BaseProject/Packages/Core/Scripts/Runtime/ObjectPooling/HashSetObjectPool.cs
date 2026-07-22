@@ -72,12 +72,21 @@ namespace Base.CorePackage.ObjectPooling
         {
             element = null;
 
-            foreach (T instance in AvailableObjects)
+            // Take any available instance. The enumerator is disposed before the
+            // set is mutated, so this stays safe on all runtimes.
+            T available = null;
+            using (HashSet<T>.Enumerator enumerator = AvailableObjects.GetEnumerator())
             {
-                AvailableObjects.Remove(instance);
-                ActivateObject(instance);
-                element = instance;
-                ActiveObjects.Add(instance);
+                if (enumerator.MoveNext())
+                    available = enumerator.Current;
+            }
+
+            if (available != null)
+            {
+                AvailableObjects.Remove(available);
+                ActivateObject(available);
+                ActiveObjects.Add(available);
+                element = available;
                 return true;
             }
 

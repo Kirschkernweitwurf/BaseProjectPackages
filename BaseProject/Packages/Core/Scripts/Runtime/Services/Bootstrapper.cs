@@ -1,7 +1,9 @@
 using System.Linq;
 using Base.AttributePackage;
 using Base.UtilityPackage;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using UnityEngine;
 using UnityEngine.SceneManagement;
 

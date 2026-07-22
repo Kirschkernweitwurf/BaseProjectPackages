@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using Base.UtilityPackage.Logging;
+using UnityEngine;
 
 // ReSharper disable MemberCanBePrivate.Global
 namespace Base.CorePackage.Timers
@@ -20,16 +21,16 @@ namespace Base.CorePackage.Timers
         public float Remaining { get; private set; }
 
         /// <summary>Progress from 0 (start) to 1 (complete), useful for UI bars.</summary>
-        public float Progress => 1f - Remaining / duration;
+        public float Progress => 1f - Remaining / Mathf.Max(_duration, Mathf.Epsilon);
 
         /// <summary>True while the timer is actively counting down.</summary>
-        public bool IsRunning => isRunning && !isPaused;
+        public bool IsRunning => _isRunning && !_isPaused;
 
-        private readonly float duration;
-        private readonly bool loop;
+        private readonly float _duration;
+        private readonly bool _loop;
 
-        private bool isPaused;
-        private bool isRunning;
+        private bool _isPaused;
+        private bool _isRunning;
 
         /// <summary>Creates a timer. Duration is in seconds.</summary>
         public Timer(float duration, bool loop = false)
@@ -37,9 +38,9 @@ namespace Base.CorePackage.Timers
             if (duration <= 0f)
                 CustomLogger.LogError($"Timer duration must be positive, got {duration}.", null);
 
-            this.duration = duration;
-            this.loop = loop;
-            Remaining = duration;
+            _duration = duration;
+            _loop = loop;
+            Remaining = _duration;
         }
 
         /// <summary>Creates, starts and returns a one-shot countdown in a single call.</summary>
@@ -54,22 +55,22 @@ namespace Base.CorePackage.Timers
         /// <summary>Starts or restarts the timer from its full duration.</summary>
         public void Start()
         {
-            Remaining = duration;
-            isRunning = true;
-            isPaused = false;
+            Remaining = _duration;
+            _isRunning = true;
+            _isPaused = false;
             TimerManager.Register(this);
         }
 
         /// <summary>Pauses without losing the remaining time.</summary>
-        public void Pause() => isPaused = true;
+        public void Pause() => _isPaused = true;
 
         /// <summary>Resumes after a pause.</summary>
-        public void Resume() => isPaused = false;
+        public void Resume() => _isPaused = false;
 
         /// <summary>Stops the timer and removes it from updates.</summary>
         public void Stop()
         {
-            isRunning = false;
+            _isRunning = false;
             TimerManager.Unregister(this);
         }
 
@@ -86,9 +87,9 @@ namespace Base.CorePackage.Timers
 
             Completed?.Invoke();
 
-            if (loop)
+            if (_loop)
             {
-                Remaining = duration;
+                Remaining = _duration;
                 return;
             }
 

@@ -1,6 +1,8 @@
-using System.Linq;
+using System;
 using Base.UtilityPackage.Logging;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using UnityEngine;
 
 namespace Base.CorePackage.MenuManaging.Identifier
@@ -45,7 +47,8 @@ namespace Base.CorePackage.MenuManaging.Identifier
                 CustomLogger.LogError($"Found {found.Length} MenuIdentifierRegistry assets, expected one. "
                     + $"Using '{found[0].name}'. Regenerate to remove the duplicates.", null);
 
-            return found.OrderBy(r => r.name).First();
+            Array.Sort(found, (a, b) => string.CompareOrdinal(a.name, b.name));
+            return found[0];
         }
 
 #if UNITY_EDITOR
