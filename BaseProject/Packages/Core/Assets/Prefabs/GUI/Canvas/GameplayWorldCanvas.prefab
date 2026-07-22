@@ -73,6 +73,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d868c2b60834c06a1a0e33060205907, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Utility.WorldCanvasWrapper
+  canvas: {fileID: 2315079838879505273}
 --- !u!114 &2559556078655032481
 MonoBehaviour:
   m_ObjectHideFlags: 0

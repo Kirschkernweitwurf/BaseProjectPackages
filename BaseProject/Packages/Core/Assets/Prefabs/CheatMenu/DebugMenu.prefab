@@ -257,7 +257,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Base.CorePackage::Base.CorePackage.DebugMenu.DebugMenuController
   <MenuIdentifier>k__BackingField: {fileID: 11400000, guid: 157045a34b4e09b43a5c37e39eb596be, type: 2}
   contentRoot: {fileID: 6426981997113573929}
-  <MenuPriority>k__BackingField: 0
+  <Priority>k__BackingField: 0
   openOnStart: 0
   <ListenToOnBackAction>k__BackingField: 1
   blockingMenus: []
@@ -279,6 +279,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de80dac21bce03b44b7bfe607d545afc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Base.SystemsCorePackage::Base.SystemsCorePackage.MenuManaging.Modules.MenuTimeScaleModule
+  ownerMenu: {fileID: 6743931182019539472}
   timeScale: 0
 --- !u!114 &6539091414616982896
 MonoBehaviour:
@@ -292,6 +293,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36ea4f7a7d15fec429f559715176c660, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Base.SystemsCorePackage::Base.SystemsCorePackage.MenuManaging.Modules.MenuInputMapModule
+  ownerMenu: {fileID: 6743931182019539472}
   actionMap:
     asset: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
     mapId: f601a137-d433-4ef7-866f-f1f14b7c7503
@@ -307,6 +309,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4000db9090364983b744fad045602e23, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Base.CorePackage::Base.CorePackage.MenuManaging.Modules.MenuResetModule
+  ownerMenu: {fileID: 6743931182019539472}
 --- !u!1001 &1674577741787277623
 PrefabInstance:
   m_ObjectHideFlags: 0
