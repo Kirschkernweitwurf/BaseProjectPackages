@@ -1,3 +1,4 @@
+using Base.AttributePackage;
 using Base.SettingsPackage.Display;
 using Base.ToolPackage.Identification;
 using UnityEngine;
@@ -14,7 +15,7 @@ namespace Base.SettingsPackage.Components
         [Header("Full Screen Mode")]
 
         [Tooltip("Modes exposed to the player, in the order they appear in the menu.")]
-        [SerializeField]
+        [SerializeField] [NotNullOrEmpty]
         private FullScreenMode[] availableModes =
         {
             FullScreenMode.ExclusiveFullScreen,

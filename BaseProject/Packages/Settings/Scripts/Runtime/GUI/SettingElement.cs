@@ -1,4 +1,5 @@
 using System;
+using Base.AttributePackage;
 using Base.CorePackage.Services;
 using Base.SettingsPackage.Core;
 using Base.ToolPackage.Identification;
@@ -20,7 +21,7 @@ namespace Base.SettingsPackage.GUI
 
         [Header("Setting Element")]
 
-        [SerializeField] private string settingKey;
+        [SerializeField] [NotNullOrEmpty] private string settingKey;
         [SerializeField] private LocalizedString title;
         [SerializeField] private LocalizedString description;
 
