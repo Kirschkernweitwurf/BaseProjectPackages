@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Base.AttributePackage;
 using Base.CorePackage.MenuManaging;
 using Base.CorePackage.Services.Shutdown;
 using Base.CorePackage.Tweening.Core;
@@ -29,9 +30,11 @@ namespace Base.CorePackage.Tweening.Components.System
         public event Action OnKilled;
 
         [FormerlySerializedAs("tweenBehaviours")]
+        [ComponentPicker]
         [Tooltip("The list of behaviours that should be played when showing the object.")]
         [SerializeField] private List<TweenBehaviourBase> showTweenBehaviours = new();
 
+        [ComponentPicker]
         [Tooltip("The list of behaviours that should be played when hiding the object.")]
         [SerializeField] private List<TweenBehaviourBase> hideTweenBehaviours = new();
 

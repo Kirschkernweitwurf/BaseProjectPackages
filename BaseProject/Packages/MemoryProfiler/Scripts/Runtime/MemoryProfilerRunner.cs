@@ -3,9 +3,12 @@ using System.IO;
 using Base.CorePackage.SceneManagement;
 using Base.CorePackage.Timers;
 using Base.UtilityPackage.Logging;
-using UnityEditor;
 using UnityEngine;
 using UnityMemoryProfiler = Unity.Profiling.Memory.MemoryProfiler;
+
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace Base.MemoryProfiler
 {
@@ -30,7 +33,8 @@ namespace Base.MemoryProfiler
         /// <summary>Takes a snapshot immediately. Works in the editor and in development builds.</summary>
         public static void CaptureNow()
         {
-            _config ??= Resources.Load<MemoryProfilerConfigSo>(MemoryProfilerConfigSo.ResourcePath);
+            if (_config == null)
+                _config = Resources.Load<MemoryProfilerConfigSo>(MemoryProfilerConfigSo.ResourcePath);
 
             if (_config == null)
             {
@@ -56,10 +60,13 @@ namespace Base.MemoryProfiler
             return ResolveAbsolute(config.SnapshotStoragePath, root);
         }
 
-
 #if UNITY_EDITOR
         [InitializeOnEnterPlayMode]
-        private static void ResetStatics() => LastSnapshotPath = string.Empty;
+        private static void ResetStatics()
+        {
+            LastSnapshotPath = null;
+            _config = null;
+        }
 #endif
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
