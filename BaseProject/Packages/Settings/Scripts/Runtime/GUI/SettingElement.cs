@@ -35,7 +35,7 @@ namespace Base.SettingsPackage.GUI
             if (EventSystem.current == null)
             {
                 CustomLogger.LogWarning(
-                    $"No {nameof(EventSystem)} found in scene;" + $" {name} cannot respond to reset events", this);
+                    $"No {nameof(EventSystem)} found in scene; {name} cannot respond to reset events", this);
 
                 return;
             }
@@ -76,7 +76,8 @@ namespace Base.SettingsPackage.GUI
 
         private void HandleResetSelected()
         {
-            if (EventSystem.current.currentSelectedGameObject == gameObject)
+            if (EventSystem.current != null
+                && EventSystem.current.currentSelectedGameObject == gameObject)
                 ResetSetting();
         }
     }

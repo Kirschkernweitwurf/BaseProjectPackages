@@ -1,3 +1,4 @@
+using Base.AttributePackage;
 using Base.ToolPackage.Identification;
 using Base.UtilityPackage.Types;
 using UnityEngine;
@@ -17,7 +18,7 @@ namespace Base.SettingsPackage.Components
 
         [Header("Audio Volume")]
 
-        [SerializeField] private AudioMixer audioMixer;
+        [SerializeField] [Required] private AudioMixer audioMixer;
 
         [Tooltip("Name of the exposed AudioMixer parameter. Also used as the setting's registry key.")]
         [SerializeField] private string mixerParameter = "MasterVolume";

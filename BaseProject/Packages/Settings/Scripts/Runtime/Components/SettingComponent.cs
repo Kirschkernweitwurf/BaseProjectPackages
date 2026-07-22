@@ -1,6 +1,7 @@
 using Base.CorePackage.Services;
 using Base.SettingsPackage.Core;
 using Base.ToolPackage.Identification;
+using Base.UtilityPackage.Logging;
 using UnityEngine;
 
 namespace Base.SettingsPackage.Components
@@ -24,7 +25,12 @@ namespace Base.SettingsPackage.Components
         protected virtual void Awake()
         {
             if (!ServiceLocator.TryGet(out SettingsContext context) || context.Registry == null)
+            {
+                CustomLogger.LogWarning(
+                    $"No {nameof(SettingsContext)} with a registry available; {name} will not register", this);
+
                 return;
+            }
 
             RegisterAndSubscribe(context);
         }

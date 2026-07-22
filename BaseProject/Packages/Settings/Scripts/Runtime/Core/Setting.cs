@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Base.ToolPackage.Identification;
 
 namespace Base.SettingsPackage.Core
@@ -10,6 +11,8 @@ namespace Base.SettingsPackage.Core
     /// <typeparam name="T">The value type held by the setting.</typeparam>
     public abstract class Setting<T> : ISetting
     {
+        private static readonly EqualityComparer<T> Comparer = EqualityComparer<T>.Default;
+
         /// <summary>Raised whenever <see cref="Value"/> changes, including on load, revert, and reset.</summary>
         public event Action<T> OnValueChanged;
 
@@ -19,12 +22,18 @@ namespace Base.SettingsPackage.Core
         /// <summary>The value applied when nothing has been persisted yet or after a reset.</summary>
         public T DefaultValue { get; }
 
-        /// <summary>The current value. Assigning it raises <see cref="OnValueChanged"/>.</summary>
+        /// <summary>
+        /// The current value. Assigning it raises <see cref="OnValueChanged"/>.
+        /// Assigning an equal value is a no-op, so appliers never re-run for unchanged values.
+        /// </summary>
         public T Value
         {
             get => _value;
             set
             {
+                if (Comparer.Equals(_value, value))
+                    return;
+
                 _value = value;
                 OnValueChanged?.Invoke(_value);
             }
@@ -56,6 +65,9 @@ namespace Base.SettingsPackage.Core
         /// <inheritdoc/>
         public void Save()
         {
+            if (Comparer.Equals(_value, _savedValue))
+                return;
+
             Write(_store, _value);
             _savedValue = _value;
         }

@@ -9,21 +9,22 @@ namespace Base.SettingsPackage.Display
     /// </summary>
     public static class ResolutionProvider
     {
-        private const string ResolutionFormat = "{0}x{1}";
+        private const char Separator = 'x';
 
         /// <summary>Returns the distinct available resolutions as labels, ordered from highest to lowest.</summary>
         public static IReadOnlyList<string> GetAvailableResolutions()
         {
-            List<string> resolutions = new();
+            Resolution[] available = Screen.resolutions;
+            List<string> resolutions = new(available.Length);
+            HashSet<string> seen = new(available.Length);
 
-            foreach (Resolution resolution in Screen.resolutions)
+            for (int i = available.Length - 1; i >= 0; i--)
             {
-                string label = Format(resolution.width, resolution.height);
-                if (!resolutions.Contains(label))
+                string label = Format(available[i].width, available[i].height);
+                if (seen.Add(label))
                     resolutions.Add(label);
             }
 
-            resolutions.Reverse();
             return resolutions;
         }
 
@@ -41,13 +42,13 @@ namespace Base.SettingsPackage.Display
             if (string.IsNullOrWhiteSpace(label))
                 return false;
 
-            string[] parts = label.Split('x');
+            string[] parts = label.Split(Separator);
             return parts.Length == 2
                 && int.TryParse(parts[0].Trim(), out width)
                 && int.TryParse(parts[1].Trim(), out height);
         }
 
         /// <summary>Formats a width and height into the canonical resolution label.</summary>
-        public static string Format(int width, int height) => string.Format(ResolutionFormat, width, height);
+        public static string Format(int width, int height) => $"{width}{Separator}{height}";
     }
 }

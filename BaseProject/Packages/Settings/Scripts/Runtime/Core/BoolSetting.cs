@@ -10,16 +10,14 @@ namespace Base.SettingsPackage.Core
             : base(store, key, defaultValue) { }
 
         /// <inheritdoc/>
-        protected override bool Read(ISettingsStore store, bool fallback) => store.Has(Key.Value)
-            ? store.GetInt(Key.Value, fallback
-                ? 1
-                : 0)
-            != 0
-            : fallback;
+        protected override bool Read(ISettingsStore store, bool fallback)
+            => store.GetInt(Key.Value, ToInt(fallback)) != 0;
 
         /// <inheritdoc/>
-        protected override void Write(ISettingsStore store, bool value) => store.SetInt(Key.Value, value
+        protected override void Write(ISettingsStore store, bool value) => store.SetInt(Key.Value, ToInt(value));
+
+        private static int ToInt(bool value) => value
             ? 1
-            : 0);
+            : 0;
     }
 }
