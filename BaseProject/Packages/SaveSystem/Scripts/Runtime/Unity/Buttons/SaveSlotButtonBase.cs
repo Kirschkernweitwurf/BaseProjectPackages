@@ -15,6 +15,7 @@ namespace Base.SaveSystemPackage.Unity.Buttons
     /// Subclasses implement the specific action. Slot identity is read from the runtime
     /// <see cref="SaveSlotSelection"/>, not from an authored asset.
     /// </summary>
+    [RequireComponent(typeof(Button))]
     public abstract class SaveSlotButtonBase : MonoBehaviour
     {
         [GetComponent] [Required] [SerializeField] private Button button;
