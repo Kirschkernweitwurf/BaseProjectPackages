@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Base.AttributePackage;
 using Base.ControllerSupport.InputPrompts.Devices;
 using Base.CorePackage.Services;
+using Base.UtilityPackage.Logging;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -43,40 +44,91 @@ namespace Base.ControllerSupport.InputPrompts.Glyphs
 #endregion
 
         /// <summary>Tries to resolve the glyph sprite for an action on the active device.</summary>
-        public bool TryGetSprite(InputActionReference action, out Sprite sprite)
+        public bool TryGetSprite(InputActionReference actionReference, out Sprite sprite)
         {
             sprite = null;
-            InputGlyphSet set = ResolveActiveSet();
-            return set != null && set.TryGetSprite(action, out sprite);
+
+            if (actionReference == null)
+            {
+                CustomLogger.LogWarning("Can't get sprite for null action.", this);
+                return false;
+            }
+
+            if (!TryResolveActiveSet(out InputGlyphSet set))
+            {
+                CustomLogger.LogWarning($"Can't get sprite. No active {nameof(InputGlyphSet)} found for device "
+                    + $"{_deviceTracker.CurrentDevice} in {nameof(InputGlyphProvider)}.", this);
+
+                return false;
+            }
+
+            if (!set.TryGetSprite(actionReference, out sprite))
+            {
+                CustomLogger.LogWarning($"No sprite found for action {actionReference.action?.name} in "
+                    + $"{nameof(InputGlyphSet)} for device {_deviceTracker.CurrentDevice}.", this);
+
+                return false;
+            }
+
+            return true;
         }
 
         /// <summary>
         /// Returns a TextMeshPro sprite tag for an action, e.g. <c>&lt;sprite name="ButtonSouth"&gt;</c>.
         /// Returns an empty string when no glyph is mapped.
         /// </summary>
-        public string GetTmpSpriteTag(InputActionReference action)
+        public bool TryGetTmpSpriteTag(InputActionReference actionReference, out string spriteTag)
         {
-            InputGlyphSet set = ResolveActiveSet();
+            spriteTag = string.Empty;
 
-            if (set == null || !set.TryGetTmpSpriteName(action, out string spriteName))
-                return string.Empty;
+            if (actionReference == null)
+            {
+                CustomLogger.LogWarning("Can't get sprite tag for null action.", this);
+                return false;
+            }
 
-            return $"<sprite name=\"{spriteName}\">";
+            if (!TryResolveActiveSet(out InputGlyphSet set))
+            {
+                CustomLogger.LogWarning($"Can't get TMP sprite tag. No active {nameof(InputGlyphSet)} found for device "
+                    + $"{_deviceTracker.CurrentDevice} in {nameof(InputGlyphProvider)}.", this);
+
+                return false;
+            }
+
+            if (!set.TryGetTmpSpriteName(actionReference, out string spriteName))
+            {
+                CustomLogger.LogWarning($"No TMP sprite name found for action {actionReference.action?.name} in "
+                    + $"{nameof(InputGlyphSet)} for device {_deviceTracker.CurrentDevice}.", this);
+
+                return false;
+            }
+
+            spriteTag = CreateTmpSpriteTag(spriteName);
+            return true;
         }
 
-        private InputGlyphSet ResolveActiveSet()
+        private static string CreateTmpSpriteTag(string spriteName) => $"<sprite name=\"{spriteName}\">";
+
+        private bool TryResolveActiveSet(out InputGlyphSet inputGlyphSet)
         {
-            EInputDeviceType device = _deviceTracker != null
-                ? _deviceTracker.CurrentDevice
-                : EInputDeviceType.MouseKeyboard;
+            inputGlyphSet = null;
+            EInputDeviceType device = _deviceTracker.CurrentDevice;
 
             foreach (InputGlyphSet set in glyphSets)
             {
-                if (set != null && set.DeviceType == device)
+                if (set == null)
+                {
+                    CustomLogger.LogWarning($"Null {nameof(InputGlyphSet)} found in {nameof(InputGlyphProvider)}.",
+                        this);
+
+                    continue;
+                }
+
+                if (set.DeviceType == device)
                     return set;
             }
 
-            return null;
+            return false;
         }
 
         private void HandleDeviceChanged(EInputDeviceType deviceType) => OnActiveDeviceChanged?.Invoke();

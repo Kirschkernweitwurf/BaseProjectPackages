@@ -1,11 +1,15 @@
 using System.Collections.Generic;
+using Base.CorePackage.CameraUtility;
+using Base.CorePackage.Services;
 using Base.UtilityPackage.Logging;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
-namespace Base.UtilityPackage.Raycasting
+// ReSharper disable UnusedMember.Global
+
+namespace Base.CorePackage.Raycasting
 {
     /// <summary>
     /// Provides generic, type-safe ray-casting functionality for 2D gameplay.
@@ -28,8 +32,10 @@ namespace Base.UtilityPackage.Raycasting
         {
             result = default(T);
 
-            Camera cam = Camera.main;
-            if (cam == null)
+            if (!ServiceLocator.TryGet(out CameraProvider mainCameraProvider))
+                return false;
+
+            if (!mainCameraProvider.TryGetMain(out Camera cam))
                 return false;
 
             Vector2? pos = Mouse.current?.position.ReadValue();

@@ -1,4 +1,5 @@
 using System;
+using Base.AttributePackage;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -12,9 +13,12 @@ namespace Base.ControllerSupport.InputPrompts.Glyphs
     public sealed class InputGlyphEntry
     {
         [field: Tooltip("The action this glyph represents.")]
+        [field: Required]
         [field: SerializeField] public InputActionReference Action { get; private set; }
 
         [field: Tooltip("Sprite shown for this action on the matching device.")]
+        [field: Required]
+        [field: ShowAssetPreview]
         [field: SerializeField] public Sprite Sprite { get; private set; }
 
         [field: Tooltip("TextMeshPro sprite name used for inline <sprite> tags. Optional.")]

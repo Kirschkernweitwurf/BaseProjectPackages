@@ -29,7 +29,8 @@ namespace Base.ControllerSupport.Controller.Navigation
 
         [Title("Focus")]
         [Tooltip("Element selected when this group gains focus and no element is remembered.")]
-        [Required] [SerializeField] private NavigableElement defaultElement;
+        [Required]
+        [SerializeField] private NavigableElement defaultElement;
 
         [Tooltip("Higher priority groups win focus restoration when several are active at once.")]
         [SerializeField] private EPriority priority;

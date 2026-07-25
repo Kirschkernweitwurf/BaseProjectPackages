@@ -1,4 +1,6 @@
 using Base.AttributePackage;
+using Base.CorePackage.CameraUtility;
+using Base.CorePackage.Services;
 using UnityEngine;
 
 namespace Base.UIPackage.Utility
@@ -12,7 +14,13 @@ namespace Base.UIPackage.Utility
         [GetComponent] [SerializeField] private Canvas canvas;
 
 #region Unity Callbacks
-        private void Awake() => canvas.worldCamera = Camera.main;
+        private void Awake()
+        {
+            if (!ServiceLocator.TryGet(out CameraProvider mainCameraProvider))
+                return;
+
+            canvas.worldCamera = mainCameraProvider.Main;
+        }
 #endregion
     }
 }

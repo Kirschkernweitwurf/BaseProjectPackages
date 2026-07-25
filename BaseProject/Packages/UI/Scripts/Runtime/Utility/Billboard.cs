@@ -1,4 +1,5 @@
-using Base.UtilityPackage.Logging;
+using Base.CorePackage.CameraUtility;
+using Base.CorePackage.Services;
 using UnityEngine;
 
 namespace Base.UIPackage.Utility
@@ -16,30 +17,20 @@ namespace Base.UIPackage.Utility
             + "If unchecked, the billboard will always face the camera directly.")]
         [SerializeField] private bool lockYAxis;
 
-        private Transform _cameraTransform;
+        private CameraProvider _cameraProvider;
 
 #region Unity Callbacks
-        private void Start()
-        {
-            Camera mainCamera = Camera.main;
-            if (mainCamera == null)
-            {
-                CustomLogger.LogWarning("No main camera found for Billboard. "
-                    + "Please assign a camera with the 'MainCamera' tag.", this);
-
-                enabled = false;
-                return;
-            }
-
-            _cameraTransform = mainCamera.transform;
-        }
+        private void Awake() => ServiceLocator.TryGet(out _cameraProvider);
 
         private void LateUpdate()
         {
+            if (!_cameraProvider.TryGetMainTransform(out Transform cameraTransform))
+                return;
+
             if (lockYAxis)
             {
                 // Only turn horizontally
-                Vector3 direction = transform.position - _cameraTransform.position;
+                Vector3 direction = transform.position - cameraTransform.position;
                 direction.y = 0f;
 
                 if (direction.sqrMagnitude > 0.001f)
@@ -48,7 +39,7 @@ namespace Base.UIPackage.Utility
             else
             {
                 // Canvas always parallel to camera
-                transform.forward = _cameraTransform.forward;
+                transform.forward = cameraTransform.forward;
             }
         }
 #endregion

@@ -1,3 +1,5 @@
+using Base.CorePackage.CameraUtility;
+using Base.CorePackage.Services;
 using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -15,18 +17,23 @@ namespace Base.UIPackage.Utility
         private Vector3 _lastCameraPos;
         private Quaternion _lastCameraRot;
         private bool _hasCachedCamera;
+        private CameraProvider _cameraProvider;
 
 #region Unity Callbacks
+        private void Awake() => ServiceLocator.TryGet(out _cameraProvider);
+
         private void LateUpdate()
         {
             if (!Application.isPlaying)
                 return;
 
-            Camera cam = Camera.main;
-            if (cam == null)
-                cam = Camera.current;
+            if (_cameraProvider == null)
+                return;
 
-            FaceCameraIfMoved(cam);
+            if (!_cameraProvider.TryGetMain(out Camera mainCamera))
+                return;
+
+            FaceCameraIfMoved(mainCamera);
         }
 #endregion
 

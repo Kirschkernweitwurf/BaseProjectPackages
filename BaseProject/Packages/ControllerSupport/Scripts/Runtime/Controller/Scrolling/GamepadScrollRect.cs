@@ -1,5 +1,4 @@
 using Base.AttributePackage;
-using Base.UtilityPackage.Logging;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -17,9 +16,11 @@ namespace Base.ControllerSupport.Controller.Scrolling
         private const float DefaultDeadZone = 0.15f;
 
         [Tooltip("Vector2 action that drives scrolling, e.g. the right stick.")]
-        [Required] [SerializeField] private InputActionReference scrollAction;
+        [Required]
+        [SerializeField] private InputActionReference scrollAction;
 
         [Tooltip("Scroll speed in normalized units per second.")]
+        [Min(0)]
         [SerializeField] private float scrollSpeed = 1f;
 
         [Tooltip("Stick magnitude below this value is ignored.")]
@@ -34,18 +35,7 @@ namespace Base.ControllerSupport.Controller.Scrolling
 #region Unity Callbacks
         private void Awake() => _scrollRect = GetComponent<ScrollRect>();
 
-        private void OnEnable()
-        {
-            if (scrollAction.action == null)
-            {
-                CustomLogger.LogWarning("Scroll action is not assigned "
-                    + $"in {nameof(GamepadScrollRect)} on {name}.", this);
-
-                return;
-            }
-
-            scrollAction.action.Enable();
-        }
+        private void OnEnable() => scrollAction.action.Enable();
 
         private void Update()
         {
@@ -57,7 +47,7 @@ namespace Base.ControllerSupport.Controller.Scrolling
             Apply(input);
         }
 
-        private void OnDisable() => scrollAction?.action?.Disable();
+        private void OnDisable() => scrollAction.action.Disable();
 #endregion
 
         private void Apply(Vector2 input)

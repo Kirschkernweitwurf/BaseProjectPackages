@@ -1,4 +1,5 @@
 using Base.AttributePackage;
+using Base.UtilityPackage.Logging;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -14,6 +15,7 @@ namespace Base.ControllerSupport.Controller.Scrolling
     {
         [Tooltip("Padding in pixels kept between the selected element and the viewport edge.")]
         [Suffix("px")]
+        [Min(0)]
         [SerializeField] private float padding = 16f;
 
         private readonly Vector3[] _worldCorners = new Vector3[4];
@@ -22,15 +24,17 @@ namespace Base.ControllerSupport.Controller.Scrolling
         private GameObject _lastSelected;
 
 #region Unity Callbacks
-        private void Awake() => _scrollRect = GetComponent<ScrollRect>();
+        private void Awake()
+        {
+            _scrollRect = GetComponent<ScrollRect>();
+
+            if (_scrollRect.content == null)
+                CustomLogger.LogWarning("ScrollRect has no content assigned.", this);
+        }
 
         private void LateUpdate()
         {
-            if (EventSystem.current == null || _scrollRect.content == null)
-                return;
-
             GameObject current = EventSystem.current.currentSelectedGameObject;
-
             if (current == null || current == _lastSelected)
                 return;
 
@@ -45,7 +49,10 @@ namespace Base.ControllerSupport.Controller.Scrolling
         private void EnsureVisible(RectTransform target)
         {
             if (target == null)
+            {
+                CustomLogger.LogWarning("Target is null.", this);
                 return;
+            }
 
             RectTransform viewport = _scrollRect.viewport != null
                 ? _scrollRect.viewport

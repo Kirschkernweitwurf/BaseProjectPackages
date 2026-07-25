@@ -15,11 +15,16 @@ namespace Base.ControllerSupport.Controller.Navigation
     /// </summary>
     public static class NavigationValidator
     {
-        /// <summary>Adds a NavigableElement to every selectable in the root that is missing one.</summary>
+        /// <summary>
+        /// Adds a <see cref="NavigableElement"/> to every selectable in the root that is missing one.
+        /// </summary>
         public static void Validate(Transform root, List<Selectable> buffer)
         {
             if (root == null)
+            {
+                CustomLogger.LogWarning("Validation called with null root, skipping.", root);
                 return;
+            }
 
             buffer.Clear();
             root.GetComponentsInChildren(true, buffer);

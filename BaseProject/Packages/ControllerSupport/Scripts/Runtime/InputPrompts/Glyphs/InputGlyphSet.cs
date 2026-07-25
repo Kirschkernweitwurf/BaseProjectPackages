@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Base.AttributePackage;
 using Base.ControllerSupport.InputPrompts.Devices;
 using Base.ToolPackage.MenuManagerWindow;
+using Base.UtilityPackage.Logging;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -16,6 +17,7 @@ namespace Base.ControllerSupport.InputPrompts.Glyphs
     public sealed class InputGlyphSet : ScriptableObject
     {
         [field: Tooltip("The device family these glyphs represent.")]
+        [field: EnumToggleButtons]
         [field: SerializeField] public EInputDeviceType DeviceType { get; private set; }
 
         [Tooltip("Action to glyph mappings for this device.")]
@@ -25,15 +27,25 @@ namespace Base.ControllerSupport.InputPrompts.Glyphs
         private Dictionary<Guid, InputGlyphEntry> _lookup;
 
 #region Unity Callbacks
-#if UNITY_EDITOR
         private void OnValidate() => _lookup = null;
-#endif
 #endregion
 
         /// <summary>Tries to resolve the sprite for an action on this device.</summary>
         public bool TryGetSprite(InputActionReference action, out Sprite sprite)
         {
-            InputGlyphEntry entry = Find(action);
+            sprite = null;
+
+            if (action == null || action.action == null)
+            {
+                CustomLogger.LogWarning($"Action reference is null or has no action assigned. DeviceType={DeviceType}",
+                    this);
+
+                return false;
+            }
+
+            if (!TryFind(action, out InputGlyphEntry entry))
+                return false;
+
             sprite = entry?.Sprite;
             return sprite != null;
         }
@@ -41,28 +53,63 @@ namespace Base.ControllerSupport.InputPrompts.Glyphs
         /// <summary>Tries to resolve the TextMeshPro sprite name for an action on this device.</summary>
         public bool TryGetTmpSpriteName(InputActionReference action, out string spriteName)
         {
-            InputGlyphEntry entry = Find(action);
-            spriteName = entry?.TmpSpriteName;
-            return !string.IsNullOrEmpty(spriteName);
+            spriteName = string.Empty;
+
+            if (!TryFind(action, out InputGlyphEntry entry))
+                return false;
+
+            spriteName = entry.TmpSpriteName;
+            if (string.IsNullOrEmpty(spriteName))
+            {
+                CustomLogger.LogWarning($"No TMP sprite name found for action '{action.action.name}'"
+                    + $" (id={action.action.id}) in device type {DeviceType}.", this);
+
+                return false;
+            }
+
+            return true;
         }
 
-        private InputGlyphEntry Find(InputActionReference action)
+        private bool TryFind(InputActionReference action, out InputGlyphEntry entry)
         {
-            if (action == null || action.action == null)
-                return null;
-
             _lookup ??= BuildLookup();
-            return _lookup.GetValueOrDefault(action.action.id);
+            entry = _lookup.GetValueOrDefault(action.action.id);
+            if (entry == null)
+            {
+                CustomLogger.LogWarning($"No glyph entry found for action '{action.action.name}'"
+                    + $" (id={action.action.id}) in device type {DeviceType}.", this);
+
+                return false;
+            }
+
+            return true;
         }
 
         private Dictionary<Guid, InputGlyphEntry> BuildLookup()
         {
             Dictionary<Guid, InputGlyphEntry> lookup = new();
 
-            foreach (InputGlyphEntry entry in entries)
+            for (int i = 0; i < entries.Count; i++)
             {
-                if (entry.Action != null && entry.Action.action != null)
-                    lookup[entry.Action.action.id] = entry;
+                InputGlyphEntry entry = entries[i];
+                if (entry == null)
+                {
+                    CustomLogger.LogWarning(
+                        $"Null entry found in glyph set '{name}' (DeviceType={DeviceType}) at index {i}.", this);
+
+                    continue;
+                }
+
+                if (entry.Action == null || entry.Action.action == null)
+                {
+                    CustomLogger.LogWarning(
+                        $"Glyph entry at index {i} in glyph set '{name}' (DeviceType={DeviceType}) has no action assigned.",
+                        this);
+
+                    continue;
+                }
+
+                lookup[entry.Action.action.id] = entry;
             }
 
             return lookup;
