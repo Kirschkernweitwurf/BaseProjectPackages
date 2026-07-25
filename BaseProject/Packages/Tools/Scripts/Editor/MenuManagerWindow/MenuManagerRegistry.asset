@@ -50,7 +50,6 @@ MonoBehaviour:
         - rid: 5339058393820954650
         - rid: 5339058393820954652
         - rid: 5339058393820954654
-        - rid: 5339058393820954751
         - rid: 5339058393820954656
         - rid: 5339058393820954651
         - rid: 5339058393820954750
@@ -161,18 +160,6 @@ MonoBehaviour:
           createFileName: IGS_GlyphSet
           overridePriority: 0
           overrideValue: 0
-    - rid: 5339058393820954663
-      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
-      data:
-        separator: 0
-        entry:
-          id: CA:Base.ScreenShakePackage.ScreenShakeProfile
-          path: New Profile
-          enabled: 1
-          kind: 1
-          createFileName: SSP_ScreenShakeProfile
-          overridePriority: 0
-          overrideValue: 0
     - rid: 5339058393820954664
       type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
@@ -194,15 +181,6 @@ MonoBehaviour:
         merged: 1
         children:
         - rid: 5339058393820954661
-    - rid: 5339058393820954751
-      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
-      data:
-        separator: 0
-        name: Screen-Shake
-        expanded: 0
-        merged: 1
-        children:
-        - rid: 5339058393820954663
     - rid: 5339058395782840407
       type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
@@ -323,42 +301,6 @@ MonoBehaviour:
           createFileName: 
           overridePriority: 0
           overrideValue: 0
-    - rid: 5339058395782840436
-      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
-      data:
-        separator: 0
-        entry:
-          id: MI:Base.Localization.LocalizationMenu.OpenWindow
-          path: Open Sync Window
-          enabled: 1
-          kind: 0
-          createFileName: 
-          overridePriority: 0
-          overrideValue: 0
-    - rid: 5339058395782840437
-      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
-      data:
-        separator: 1
-        entry:
-          id: MI:Base.Localization.LocalizationMenu.PullAll
-          path: Pull All String Tables
-          enabled: 1
-          kind: 0
-          createFileName: 
-          overridePriority: 0
-          overrideValue: 0
-    - rid: 5339058395782840438
-      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
-      data:
-        separator: 0
-        entry:
-          id: MI:Base.Localization.LocalizationMenu.PushAll
-          path: Push All String Tables
-          enabled: 1
-          kind: 0
-          createFileName: 
-          overridePriority: 0
-          overrideValue: 0
     - rid: 5339058395782840439
       type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindow, asm: Base.ToolPackage.Editor}
       data:
@@ -377,7 +319,7 @@ MonoBehaviour:
         separator: 0
         entry:
           id: MI:Base.ToolPackage.Editor.Identification.UniqueIdSettings.Toggle
-          path: Enable Unique IDs
+          path: Enable Unique ID Validation
           enabled: 1
           kind: 0
           createFileName: 
@@ -773,7 +715,7 @@ MonoBehaviour:
       data:
         separator: 1
         name: Code
-        expanded: 0
+        expanded: 1
         merged: 0
         children:
         - rid: 5339058507518050406
@@ -852,9 +794,6 @@ MonoBehaviour:
         expanded: 1
         merged: 0
         children:
-        - rid: 5339058395782840436
-        - rid: 5339058395782840437
-        - rid: 5339058395782840438
         - rid: 5339058547197477194
         - rid: 5339058547197477195
         - rid: 5339058547197477196

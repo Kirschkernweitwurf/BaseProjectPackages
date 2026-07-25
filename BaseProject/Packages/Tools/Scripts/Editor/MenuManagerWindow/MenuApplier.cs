@@ -15,16 +15,9 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
 
         private static readonly List<string> RegisteredPaths = new();
 
-        private static int waitTicks;
+        private static int _waitTicks;
 
         static MenuApplier() => Schedule();
-
-        /// <summary>Queues a registration pass for once the editor has finished loading.</summary>
-        public static void Schedule()
-        {
-            waitTicks = 0;
-            EditorApplication.delayCall += ApplyWhenReady;
-        }
 
         /// <summary>Rescans, syncs both stores, and re-registers every enabled entry of both kinds.</summary>
         public static void Apply(bool log)
@@ -47,17 +40,30 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
             count += Register(MenuComposite.ResolvedEntries(EMenuEntryKind.CreateAsset), resolved, usedPaths, usedIds,
                 log);
 
-            if (log)
-                CustomLogger.Log($"Menu Manager: registered {count} menu entr(y/ies).", null);
+            if (!log)
+                return;
+
+            string entryPlural = count == 1
+                ? "entry"
+                : "entries";
+
+            CustomLogger.Log($"Menu Manager: registered {count} menu {entryPlural}.", null);
+        }
+
+        /// <summary>Queues a registration pass for once the editor has finished loading.</summary>
+        private static void Schedule()
+        {
+            _waitTicks = 0;
+            EditorApplication.delayCall += ApplyWhenReady;
         }
 
         private static void ApplyWhenReady()
         {
             bool busy = EditorApplication.isCompiling || EditorApplication.isUpdating;
 
-            if (busy && waitTicks < MaxWaitTicks)
+            if (busy && _waitTicks < MaxWaitTicks)
             {
-                waitTicks++;
+                _waitTicks++;
                 EditorApplication.delayCall += ApplyWhenReady;
                 return;
             }

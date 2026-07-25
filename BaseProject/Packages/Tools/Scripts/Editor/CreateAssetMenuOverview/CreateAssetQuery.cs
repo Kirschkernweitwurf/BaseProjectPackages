@@ -2,27 +2,31 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Base.ToolPackage.Editor.MenuOverview;
 
 namespace Base.ToolPackage.Editor.CreateAssetMenuOverview
 {
     /// <summary>
-    /// Pure filtering and sorting for CreateAssetMenu entries. The input collection is never
+    /// Pure filtering and sorting for asset creation entries. The input collection is never
     /// modified; a new ordered list is always returned.
     /// </summary>
     public static class CreateAssetQuery
     {
         /// <summary>
-        /// Optionally restricts to a single top-level menu, hides package and built-in types
-        /// and applies a name/type search term, then sorts by order with the menu name as a
-        /// tie-breaker.
+        /// Optionally restricts to a single top-level menu and a single definition, hides
+        /// package and built-in types and applies a name/type search term, then sorts by order
+        /// with the menu name as a tie-breaker.
         /// </summary>
         public static IReadOnlyList<CreateAssetEntry> Apply(IReadOnlyList<CreateAssetEntry> entries,
-            string search, string root, bool includeExternal, bool ascending)
+            string search, string root, EMenuDefinition? definition, bool includeExternal, bool ascending)
         {
             IEnumerable<CreateAssetEntry> query = entries;
 
             if (!string.IsNullOrEmpty(root))
                 query = query.Where(entry => entry.Root == root);
+
+            if (definition.HasValue)
+                query = query.Where(entry => entry.Definition == definition.Value);
 
             if (!includeExternal)
                 query = query.Where(entry => entry.Origin == ECreateAssetOrigin.Project);

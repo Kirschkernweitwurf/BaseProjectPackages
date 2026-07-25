@@ -20,7 +20,13 @@ namespace Base.UIPackage.Utility
         private CameraProvider _cameraProvider;
 
 #region Unity Callbacks
-        private void Awake() => ServiceLocator.TryGet(out _cameraProvider);
+        private void Awake()
+        {
+            if (!Application.isPlaying)
+                return;
+
+            ServiceLocator.TryGet(out _cameraProvider);
+        }
 
         private void LateUpdate()
         {

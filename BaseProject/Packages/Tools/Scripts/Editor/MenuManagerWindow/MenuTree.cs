@@ -293,6 +293,29 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
             return changed;
         }
 
+        /// <summary>Expands every group on the way to the entry. Returns false when it is not in this tree.</summary>
+        public static bool Expand(List<MenuNode> nodes, string entryId)
+        {
+            foreach (MenuNode node in nodes)
+            {
+                if (node is MenuEntryNode entryNode
+                    && entryNode.Entry != null
+                    && entryNode.Entry.Id == entryId)
+                    return true;
+
+                if (node is not MenuGroupNode group)
+                    continue;
+
+                if (!Expand(group.Children, entryId))
+                    continue;
+
+                group.Expanded = true;
+                return true;
+            }
+
+            return false;
+        }
+
         /// <summary>Opens the script that declares the entry in the external editor. Returns false when it cannot be found.</summary>
         public static bool OpenScript(Type declaringType)
         {

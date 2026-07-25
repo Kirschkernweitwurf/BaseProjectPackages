@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Base.ToolPackage.Editor.MenuOverview;
 
 namespace Base.ToolPackage.Editor.MenuItemOverview
 {
@@ -12,17 +13,21 @@ namespace Base.ToolPackage.Editor.MenuItemOverview
     public static class MenuItemQuery
     {
         /// <summary>
-        /// Optionally restricts to a single top-level menu, hides package and built-in
-        /// items, hides validation functions and applies a path/member search term, then
-        /// sorts by priority with the menu path as a tie-breaker.
+        /// Optionally restricts to a single top-level menu and a single definition, hides
+        /// package and built-in items, hides validation functions and applies a path/member
+        /// search term, then sorts by priority with the menu path as a tie-breaker.
         /// </summary>
         public static IReadOnlyList<MenuItemEntry> Apply(IReadOnlyList<MenuItemEntry> entries,
-            string search, string root, bool includeExternal, bool hideValidation, bool ascending)
+            string search, string root, EMenuDefinition? definition, bool includeExternal, bool hideValidation,
+            bool ascending)
         {
             IEnumerable<MenuItemEntry> query = entries;
 
             if (!string.IsNullOrEmpty(root))
                 query = query.Where(entry => entry.Root == root);
+
+            if (definition.HasValue)
+                query = query.Where(entry => entry.Definition == definition.Value);
 
             if (!includeExternal)
                 query = query.Where(entry => entry.Origin == EMenuItemOrigin.Project);

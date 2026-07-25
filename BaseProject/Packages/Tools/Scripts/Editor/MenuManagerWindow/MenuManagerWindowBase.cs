@@ -13,6 +13,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
         protected const int MenuPriority = 0;
         private const float DividerHeight = 8f;
         private const float DragThreshold = 4f;
+        private const double FocusSeconds = 4d;
         private const float FoldWidth = 14f;
         private const float GripWidth = 18f;
         private const float HeaderHeight = 24f;
@@ -65,6 +66,10 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
         private string hoverPreview = string.Empty;
         private int activeSplitter = -1;
 
+        private string focusId;
+        private double focusUntil;
+        private bool focusScrollPending;
+
         private bool stylesReady;
         private GUIStyle titleStyle;
         private GUIStyle gripStyle;
@@ -104,6 +109,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
                 Repaint();
 
             HandleUndoCommands(current);
+            ExpireFocus();
             hoverPreview = string.Empty;
 
             DrawToolbar();
@@ -127,6 +133,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
             DrawFooter();
 
             ResolveDrag(current);
+            ScrollToFocus(current);
 
             EditorGUILayout.EndScrollView();
 
@@ -141,6 +148,36 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
             Repaint();
         }
 #endregion
+
+        /// <summary>
+        /// Highlights the entry with the given id, expands every group above it and scrolls it
+        /// into view. Used by the overview windows to link straight to a single entry.
+        /// </summary>
+        public void FocusEntry(string entryId)
+        {
+            if (string.IsNullOrEmpty(entryId))
+                return;
+
+            if (registry == null)
+                registry = MenuRegistry.Instance;
+
+            if (overlay == null)
+                overlay = MenuOverlay.instance;
+
+            focusId = entryId;
+            focusUntil = EditorApplication.timeSinceStartup + FocusSeconds;
+            focusScrollPending = true;
+
+            // A hit in the shipped tree is invisible while that section is folded away.
+            if (MenuTree.Expand(registry.RootFor(Kind), entryId))
+                overlay.ShippedCollapsed = false;
+            else
+                MenuTree.Expand(overlay.RootFor(Kind), entryId);
+
+            Persist();
+            Focus();
+            Repaint();
+        }
 
         private static List<MenuNode> CloneNodes(List<MenuNode> nodes)
         {
@@ -212,6 +249,8 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
             : new Color(0f, 0f, 0f, 0.14f);
 
         private static Color SelectionColor() => new(0.23f, 0.55f, 0.95f, 0.15f);
+
+        private static Color FocusColor() => new(0.95f, 0.75f, 0.2f, 0.22f);
 
         private static Color AccentColor() => new(0.23f, 0.55f, 0.95f, 0.9f);
 
@@ -339,6 +378,43 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
         {
             registry.Persist();
             overlay.Persist();
+        }
+
+        private bool IsFocused(MenuEntry entry) => focusId != null
+            && entry != null
+            && entry.Id == focusId;
+
+        private void ExpireFocus()
+        {
+            if (focusId == null)
+                return;
+
+            if (EditorApplication.timeSinceStartup > focusUntil)
+            {
+                focusId = null;
+                focusScrollPending = false;
+            }
+
+            Repaint(); // Keep the highlight animating down to its own expiry.
+        }
+
+        private void ScrollToFocus(Event current)
+        {
+            if (!focusScrollPending
+                || focusId == null
+                || current.type != EventType.Repaint)
+                return;
+
+            foreach (Row row in rows)
+            {
+                if (!IsFocused(row.Entry))
+                    continue;
+
+                scroll.y = Mathf.Max(0f, row.Rect.y - position.height * 0.35f);
+                focusScrollPending = false;
+                Repaint();
+                return;
+            }
         }
 
         private void DrawToolbar()
@@ -778,6 +854,9 @@ namespace Base.ToolPackage.Editor.MenuManagerWindow
 
             if (current.type == EventType.Repaint && isSource)
                 EditorGUI.DrawRect(full, SelectionColor());
+
+            if (current.type == EventType.Repaint && IsFocused(entry))
+                EditorGUI.DrawRect(full, FocusColor());
 
             if (current.type == EventType.Repaint && !dragActive && full.Contains(current.mousePosition))
                 hoverPreview = row.FullPath;

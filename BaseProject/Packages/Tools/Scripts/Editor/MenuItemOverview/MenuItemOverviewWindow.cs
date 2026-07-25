@@ -1,6 +1,8 @@
 #if UNITY_EDITOR
 using System;
 using System.Collections.Generic;
+using Base.ToolPackage.Editor.MenuManagerWindow;
+using Base.ToolPackage.Editor.MenuOverview;
 using Base.ToolPackage.MenuManagerWindow;
 using UnityEditor;
 using UnityEngine;
@@ -8,31 +10,50 @@ using UnityEngine;
 namespace Base.ToolPackage.Editor.MenuItemOverview
 {
     /// <summary>
-    /// Editor window that lists every <see cref="MenuItem"/> in the project, its packages
-    /// and Unity itself, sorted by menu priority. Clicking a project or package item opens
-    /// its script at the priority argument. Only the rows currently visible in the scroll
-    /// view are drawn, so the window stays responsive with a large number of results.
+    /// Editor window that lists every menu item known to the editor, no matter whether it comes
+    /// from a <see cref="MenuItem"/> attribute or from the menu manager. Clicking a path opens
+    /// the defining script, and dynamic entries link straight to the menu item manager. Only the
+    /// rows currently visible in the scroll view are drawn, so the window stays responsive with
+    /// a large number of results.
     /// </summary>
     public sealed class MenuItemOverviewWindow : EditorWindow
     {
         private const string AllRootsLabel = "All";
         private const string DefaultRoot = "Tools";
-        private const float RowHeight = 22f;
+        private const float FooterHeight = 20f;
+
+        private static readonly GUIContent DisabledContent = new("off", "Switched off in the menu item manager");
+        private static readonly GUIContent ManageContent = new("Manage", "Arrange this entry in the menu item manager");
+        private static readonly GUIContent ManagerContent = new("Manager", "Open the menu item manager");
+        private static readonly GUIContent MissingContent = new("!", "The code behind this entry no longer exists");
+        private static readonly GUIContent RefreshContent = new("Refresh", "Scan the project again");
+        private static readonly GUIContent ValidationContent = new("v", "Validation function");
+
+        private static readonly string[] DefinitionLabels =
+        {
+            "All kinds",
+            "Dynamic",
+            "Static"
+        };
 
         private readonly List<MenuItemEntry> _all = new();
         private readonly List<MenuItemEntry> _filtered = new();
 
-        private IMenuItemSource _source;
-        private GUIStyle _priorityStyle;
-        private GUIStyle _countStyle;
-        private GUIStyle _badgeStyle;
-        private GUIStyle _validationStyle;
+        private readonly IMenuItemSource[] _sources =
+        {
+            new ReflectionMenuItemSource(),
+            new DynamicMenuItemSource()
+        };
+
         private string[] _roots =
         {
             AllRootsLabel
         };
         private string _root = DefaultRoot;
         private string _search = string.Empty;
+        private int _definition;
+        private int _dynamicCount;
+        private int _staticCount;
         private bool _includeExternal = true;
         private bool _hideValidation;
         private bool _ascending = true;
@@ -42,20 +63,22 @@ namespace Base.ToolPackage.Editor.MenuItemOverview
 #region Unity Callbacks
         private void OnEnable()
         {
-            _source = new ReflectionMenuItemSource();
+            wantsMouseMove = true;
             _needsRebuild = true;
         }
 
         private void OnGUI()
         {
-            EnsureStyles();
-
             if (_needsRebuild)
                 Rebuild();
+
+            if (Event.current.type == EventType.MouseMove)
+                Repaint();
 
             DrawToolbar();
             DrawHeader();
             DrawList();
+            DrawFooter();
         }
 #endregion
 
@@ -64,7 +87,7 @@ namespace Base.ToolPackage.Editor.MenuItemOverview
         private static void Open()
         {
             MenuItemOverviewWindow window = GetWindow<MenuItemOverviewWindow>("Menu Items");
-            window.minSize = new Vector2(640f, 320f);
+            window.minSize = new Vector2(760f, 320f);
             window.Show();
         }
 
@@ -85,53 +108,74 @@ namespace Base.ToolPackage.Editor.MenuItemOverview
             _ => null
         };
 
+        private static string Tooltip(MenuItemEntry entry) => entry.Script != null
+            ? $"{entry.MenuPath}\n{entry.AssetPath}"
+            : entry.MenuPath;
+
         private static void DrawPath(Rect rect, MenuItemEntry entry)
         {
+            GUIContent content = MenuOverviewGui.PathContent(entry.MenuPath, Tooltip(entry));
+
             if (entry.Script == null)
             {
-                GUI.Label(rect, new GUIContent(entry.MenuPath, entry.MenuPath), EditorStyles.label);
+                GUI.Label(rect, content, MenuOverviewGui.PathStyle);
                 return;
             }
 
-            EditorGUIUtility.AddCursorRect(rect, MouseCursor.Link);
-            if (GUI.Button(rect, new GUIContent(entry.MenuPath, entry.AssetPath), EditorStyles.label))
+            if (MenuOverviewGui.DrawLink(rect, content, MenuOverviewGui.PathStyle))
                 OpenEntry(entry);
         }
 
-        private void EnsureStyles()
+        private static void DrawState(Rect rect, MenuItemEntry entry)
         {
-            if (_priorityStyle != null)
+            if (entry.State == EMenuEntryState.Missing)
+            {
+                GUI.Label(rect, MissingContent, MenuOverviewGui.AlertStyle);
                 return;
+            }
 
-            _priorityStyle = new GUIStyle(EditorStyles.boldLabel)
+            if (entry.State == EMenuEntryState.Disabled)
             {
-                alignment = TextAnchor.MiddleRight
-            };
+                GUI.Label(rect, DisabledContent, MenuOverviewGui.StateStyle);
+                return;
+            }
 
-            _countStyle = new GUIStyle(EditorStyles.miniLabel)
-            {
-                alignment = TextAnchor.MiddleRight,
-                fixedHeight = 0f
-            };
-
-            _badgeStyle = new GUIStyle(EditorStyles.miniLabel)
-            {
-                alignment = TextAnchor.MiddleRight
-            };
-
-            _validationStyle = new GUIStyle(EditorStyles.miniLabel)
-            {
-                alignment = TextAnchor.MiddleCenter
-            };
+            if (entry.IsValidation)
+                GUI.Label(rect, ValidationContent, MenuOverviewGui.StateStyle);
         }
+
+        private EMenuDefinition? SelectedDefinition() => _definition switch
+        {
+            1 => EMenuDefinition.Dynamic,
+            2 => EMenuDefinition.Static,
+            _ => null
+        };
 
         private void Rebuild()
         {
             _all.Clear();
-            _all.AddRange(_source.Collect());
+
+            foreach (IMenuItemSource source in _sources)
+                _all.AddRange(source.Collect());
+
+            CountDefinitions();
             BuildRoots();
             RunQuery();
             _needsRebuild = false;
+        }
+
+        private void CountDefinitions()
+        {
+            _dynamicCount = 0;
+            _staticCount = 0;
+
+            foreach (MenuItemEntry entry in _all)
+            {
+                if (entry.IsDynamic)
+                    _dynamicCount++;
+                else
+                    _staticCount++;
+            }
         }
 
         private void BuildRoots()
@@ -159,7 +203,8 @@ namespace Base.ToolPackage.Editor.MenuItemOverview
                 : _root;
 
             _filtered.Clear();
-            _filtered.AddRange(MenuItemQuery.Apply(_all, _search, root, _includeExternal, _hideValidation, _ascending));
+            _filtered.AddRange(MenuItemQuery.Apply(_all, _search, root, SelectedDefinition(), _includeExternal,
+                _hideValidation, _ascending));
         }
 
         private void DrawToolbar()
@@ -168,91 +213,130 @@ namespace Base.ToolPackage.Editor.MenuItemOverview
             {
                 EditorGUI.BeginChangeCheck();
 
-                _search = GUILayout.TextField(_search, EditorStyles.toolbarSearchField, GUILayout.MinWidth(160f));
+                _search = GUILayout.TextField(_search, EditorStyles.toolbarSearchField, GUILayout.MinWidth(140f));
 
                 int current = Mathf.Max(0, Array.IndexOf(_roots, _root));
-                int selected = EditorGUILayout.Popup(current, _roots, EditorStyles.toolbarPopup, GUILayout.Width(140f));
+                int selected = EditorGUILayout.Popup(current, _roots, EditorStyles.toolbarPopup, GUILayout.Width(130f));
                 _root = _roots[selected];
 
-                _includeExternal = GUILayout.Toggle(_includeExternal, "Include external", EditorStyles.toolbarButton);
-                _hideValidation = GUILayout.Toggle(_hideValidation, "Hide validation", EditorStyles.toolbarButton);
+                _definition = EditorGUILayout.Popup(_definition, DefinitionLabels, EditorStyles.toolbarPopup,
+                    GUILayout.Width(90f));
+
+                _includeExternal = GUILayout.Toggle(_includeExternal, "External", EditorStyles.toolbarButton,
+                    GUILayout.Width(64f));
+
+                _hideValidation = GUILayout.Toggle(_hideValidation, "Hide validation", EditorStyles.toolbarButton,
+                    GUILayout.Width(96f));
 
                 string label = _ascending
                     ? "Priority \u2191"
                     : "Priority \u2193";
 
-                if (GUILayout.Button(label, EditorStyles.toolbarButton, GUILayout.Width(82f)))
+                if (GUILayout.Button(label, EditorStyles.toolbarButton, GUILayout.Width(78f)))
                     _ascending = !_ascending;
 
                 if (EditorGUI.EndChangeCheck())
                     RunQuery();
 
                 GUILayout.FlexibleSpace();
-                GUILayout.Label($"{_filtered.Count} items", _countStyle, GUILayout.ExpandHeight(true));
 
-                if (GUILayout.Button("Refresh", EditorStyles.toolbarButton, GUILayout.Width(64f)))
+                GUILayout.Label($"{_filtered.Count} of {_all.Count}", MenuOverviewGui.CountStyle,
+                    GUILayout.ExpandHeight(true));
+
+                if (GUILayout.Button(ManagerContent, EditorStyles.toolbarButton, GUILayout.Width(70f)))
+                    MenuItemManagerWindow.OpenWindow();
+
+                if (GUILayout.Button(RefreshContent, EditorStyles.toolbarButton, GUILayout.Width(60f)))
                     _needsRebuild = true;
             }
         }
 
         private void DrawHeader()
         {
-            Rect row = GUILayoutUtility.GetRect(0f, RowHeight, GUILayout.ExpandWidth(true));
-            EditorGUI.DrawRect(row, new Color(0f, 0f, 0f, 0.12f));
+            Rect row = GUILayoutUtility.GetRect(0f, MenuOverviewGui.RowHeight, GUILayout.ExpandWidth(true));
+            MenuOverviewGui.DrawHeader(row);
 
             MenuItemColumnLayout columns = new(row);
             GUIStyle style = EditorStyles.miniBoldLabel;
             GUI.Label(columns.Priority, "Priority", style);
+            GUI.Label(columns.Kind, new GUIContent("Kind", "Dynamic entries are managed, static ones are compiled in"),
+                style);
+
             GUI.Label(columns.Path, "Menu Path", style);
             GUI.Label(columns.Member, "Member", style);
-            GUI.Label(columns.Validation, new GUIContent("Validation", "Validation function"), style);
+            GUI.Label(columns.State, new GUIContent("St.", "Validation, disabled and missing markers"), style);
         }
 
         private void DrawList()
         {
             if (_filtered.Count == 0)
             {
-                EditorGUILayout.HelpBox("No menu items found.", MessageType.Info);
+                EditorGUILayout.HelpBox("No menu items match the current filters.", MessageType.Info);
+                GUILayout.FlexibleSpace();
                 return;
             }
 
             _scroll = EditorGUILayout.BeginScrollView(_scroll);
 
-            float totalHeight = _filtered.Count * RowHeight;
+            float totalHeight = _filtered.Count * MenuOverviewGui.RowHeight;
             Rect content = GUILayoutUtility.GetRect(0f, totalHeight, GUILayout.ExpandWidth(true));
 
-            int firstVisible = Mathf.Max(0, Mathf.FloorToInt(_scroll.y / RowHeight) - 1);
-            int visibleCount = Mathf.CeilToInt(position.height / RowHeight) + 2;
+            int firstVisible = Mathf.Max(0, Mathf.FloorToInt(_scroll.y / MenuOverviewGui.RowHeight) - 1);
+            int visibleCount = Mathf.CeilToInt(position.height / MenuOverviewGui.RowHeight) + 2;
             int lastVisible = Mathf.Min(_filtered.Count, firstVisible + visibleCount);
+            Vector2 mouse = Event.current.mousePosition;
 
             for (int i = firstVisible; i < lastVisible; i++)
             {
-                Rect row = new(content.x, content.y + i * RowHeight, content.width, RowHeight);
-                DrawRow(row, i);
+                Rect row = new(content.x, content.y + i * MenuOverviewGui.RowHeight, content.width,
+                    MenuOverviewGui.RowHeight);
+
+                DrawRow(row, i, mouse);
             }
 
             EditorGUILayout.EndScrollView();
         }
 
-        private void DrawRow(Rect row, int index)
+        private void DrawRow(Rect row, int index, Vector2 mouse)
         {
             MenuItemEntry entry = _filtered[index];
-
-            if (index % 2 == 0)
-                EditorGUI.DrawRect(row, new Color(0f, 0f, 0f, 0.06f));
+            MenuOverviewGui.DrawRow(row, index, row.Contains(mouse), MenuOverviewGui.AccentFor(entry.Definition));
 
             MenuItemColumnLayout columns = new(row);
 
-            GUI.Label(columns.Priority, entry.Priority.ToString(), _priorityStyle);
-            DrawPath(columns.Path, entry);
-            GUI.Label(columns.Member, entry.Member, EditorStyles.miniLabel);
+            GUI.Label(columns.Priority, entry.PriorityLabel, MenuOverviewGui.NumberStyle);
+            MenuOverviewGui.DrawChip(columns.Kind, MenuOverviewGui.ChipContent(entry.Definition),
+                MenuOverviewGui.ChipColor(entry.Definition, entry.State));
 
-            if (entry.IsValidation)
-                GUI.Label(columns.Validation, new GUIContent("v", "Validation function"), _validationStyle);
+            DrawPath(columns.Path, entry);
+            GUI.Label(columns.Member, new GUIContent(entry.Member, entry.DeclaringType?.FullName),
+                MenuOverviewGui.DetailStyle);
+
+            DrawState(columns.State, entry);
 
             GUIContent badge = OriginBadge(entry.Origin);
             if (badge != null)
-                GUI.Label(columns.Badge, badge, _badgeStyle);
+                GUI.Label(columns.Badge, badge, MenuOverviewGui.BadgeStyle);
+
+            if (!entry.IsDynamic)
+                return;
+
+            if (GUI.Button(columns.Manage, ManageContent, EditorStyles.miniButton))
+                MenuItemManagerWindow.OpenAt(entry.EntryId);
+        }
+
+        private void DrawFooter()
+        {
+            Rect row = GUILayoutUtility.GetRect(0f, FooterHeight, GUILayout.ExpandWidth(true));
+            MenuOverviewGui.DrawFooter(row);
+
+            Rect label = new(row.x + MenuOverviewGui.Padding, row.y, row.width - MenuOverviewGui.Padding * 2f,
+                row.height);
+
+            GUI.Label(label, "Click a path to open its script. Dynamic entries are arranged in the manager.",
+                MenuOverviewGui.HintStyle);
+
+            GUI.Label(label, $"{_dynamicCount} dynamic  |  {_staticCount} static", MenuOverviewGui.CountStyle);
         }
     }
 }
