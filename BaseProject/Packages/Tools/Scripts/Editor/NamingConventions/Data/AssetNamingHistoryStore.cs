@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using UnityEngine;
 
@@ -14,7 +15,9 @@ namespace Base.ToolPackage.Editor.NamingConventions.Data
     {
         private const string FilePath = "ProjectSettings/AssetNamingHistory.json";
         private const int MaxEntries = 200;
-        private const string TimeFormat = "yyyy-MM-dd HH:mm";
+
+        // The general short pattern follows the user's locale, e.g. 27.08.2026 14:30 or 8/27/2026 2:30 PM.
+        private const string TimeFormat = "g";
 
         private static List<AssetNamingHistoryEntry> _entries;
 
@@ -38,7 +41,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Data
                 oldName = oldName,
                 newName = newName,
                 assetPath = assetPath ?? string.Empty,
-                time = DateTime.Now.ToString(TimeFormat)
+                time = DateTime.Now.ToString(TimeFormat, CultureInfo.CurrentCulture)
             });
 
             if (entries.Count > MaxEntries)

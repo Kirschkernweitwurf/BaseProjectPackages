@@ -16,33 +16,41 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
     /// Lists every asset that breaks the project naming conventions and renames it on the spot.
     /// The rules live in an <see cref="AssetNamingRuleSet"/> asset, so they are versioned with the
     /// project, they can be read from the assets that already exist with a single button, and they
-    /// stay editable in the rule table afterwards. Rules, Dismissed, History and Scan Results are
-    /// collapsible sections, each with its own accent color, and every applied rename lands in the
-    /// clearable History.
+    /// stay editable in the rule table afterwards. Rules, Dismissed, Scan Results and History are
+    /// collapsible sections, each with its own accent color. The result columns can be resized by
+    /// dragging the dividers in the column header, and the rule table scrolls horizontally, so the
+    /// window works at small sizes too.
     /// </summary>
     public sealed class AssetNamingWindow : EditorWindow
     {
         private const float ButtonWidth = 58f;
+        private const float DefaultNameWidth = 200f;
+        private const float DefaultReasonWidth = 155f;
+        private const float DefaultRuleWidth = 95f;
         private const float DetectWidth = 84f;
         private const float DismissWidth = 56f;
+        private const float DividerGrip = 5f;
         private const float FieldInset = 2f;
         private const float GoToWidth = 46f;
-        private const float MinimumHeight = 420f;
-        private const float MinimumWidth = 900f;
-        private const float NameWidth = 200f;
-        private const float ReasonWidth = 155f;
+        private const float MinColumnWidth = 50f;
+        private const float MinimumHeight = 320f;
+        private const float MinimumWidth = 520f;
+        private const string NameColumnKey = "Base.AssetNaming.NameColumn";
+        private const string ReasonColumnKey = "Base.AssetNaming.ReasonColumn";
         private const float RenameAllWidth = 76f;
+        private const string RenamedToLabel = " was renamed to ";
         private const float RenameWidth = 60f;
         private const float RestoreWidth = 60f;
-        private const string RenameArrow = " -> ";
-        private const float RuleWidth = 95f;
-        private const float SearchWidth = 160f;
+        private const string RuleColumnKey = "Base.AssetNaming.RuleColumn";
+        private const float SearchWidth = 140f;
         private const float SectionGap = 6f;
         private const float SmallIconSize = 16f;
-        private const float SuggestionMinWidth = 180f;
         private const string SuggestionControlPrefix = "AssetNamingSuggestion";
+        private const float SuggestionMinWidth = 120f;
         private const float TimeWidth = 110f;
         private const string WindowTitle = "Asset Naming";
+
+        private static readonly Color DividerColor = new(0f, 0f, 0f, 0.3f);
 
         private static readonly GUIContent ClearHistoryContent = new("Clear", "Drop the whole rename history");
 
@@ -88,6 +96,9 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
         private List<string> _dismissedPaths;
         private string _pendingRestoreGuid = string.Empty;
         private string _search = string.Empty;
+        private float _nameColumnWidth;
+        private float _ruleColumnWidth;
+        private float _reasonColumnWidth;
         private int _pendingRuleRemoval = AssetNamingRuleGui.NoIndex;
         private int _pendingFragmentRemoval = AssetNamingRuleGui.NoIndex;
         private bool _isAddRulePending;
@@ -96,6 +107,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
         private bool _isClearHistoryPending;
         private bool _isRenameAllPending;
         private bool _needsScan;
+        private Vector2 _rulesScroll;
         private Vector2 _scroll;
 
 #region Unity Callbacks
@@ -103,6 +115,9 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
         {
             titleContent = new GUIContent(WindowTitle);
             _ruleSet = AssetNamingRuleSet.Load();
+            _nameColumnWidth = EditorPrefs.GetFloat(NameColumnKey, DefaultNameWidth);
+            _ruleColumnWidth = EditorPrefs.GetFloat(RuleColumnKey, DefaultRuleWidth);
+            _reasonColumnWidth = EditorPrefs.GetFloat(ReasonColumnKey, DefaultReasonWidth);
         }
 
         private void OnGUI()
@@ -121,10 +136,9 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
             EditorGUIUtility.SetIconSize(new Vector2(SmallIconSize, SmallIconSize));
 
             DrawRulesSection();
-            EditorGUILayout.Space(SectionGap);
             DrawDismissedSection();
-            DrawHistorySection();
             DrawResultsSection();
+            DrawHistorySection();
 
             EditorGUIUtility.SetIconSize(Vector2.zero);
             ApplyPending();
@@ -204,7 +218,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
                 + "the project, then press Auto-Detect to read the conventions the assets already follow.",
                 MessageType.Info);
 
-            if (GUILayout.Button(CreateContent, GUILayout.Width(NameWidth)))
+            if (GUILayout.Button(CreateContent, GUILayout.Width(DefaultNameWidth)))
                 _ruleSet = AssetNamingRuleSet.Create();
         }
 
@@ -218,6 +232,10 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
 
             using (new EditorGUILayout.VerticalScope(EditorStyles.helpBox))
             {
+                // The rule table has fixed column widths, so it scrolls horizontally instead of
+                // forcing a wide window.
+                _rulesScroll = EditorGUILayout.BeginScrollView(_rulesScroll, GUILayout.ExpandHeight(false));
+
                 showFragments = AssetNamingRuleGui.DrawOptions(_ruleSet, showFragments,
                     out bool isAddFragmentRequested, out int fragmentRemovalIndex);
 
@@ -236,6 +254,8 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
 
                 if (AssetNamingRuleGui.DrawAddButton())
                     _isAddRulePending = true;
+
+                EditorGUILayout.EndScrollView();
             }
         }
 
@@ -293,10 +313,11 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
             float padding = AssetNamingGui.Padding;
             float cursor = row.x + padding;
 
-            Rect nameRect = new(cursor, row.y, NameWidth, row.height);
-            cursor += NameWidth + padding;
+            Rect nameRect = new(cursor, row.y, _nameColumnWidth, row.height);
+            cursor += _nameColumnWidth + padding;
 
-            float pathWidth = row.xMax - cursor - GoToWidth - RestoreWidth - padding * 3f;
+            float pathWidth = Mathf.Max(MinColumnWidth,
+                row.xMax - cursor - GoToWidth - RestoreWidth - padding * 3f);
             Rect pathRect = new(cursor, row.y, pathWidth, row.height);
             cursor += pathWidth + padding;
 
@@ -315,60 +336,6 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
 
             if (GUI.Button(restoreRect, RestoreContent, EditorStyles.miniButton))
                 _pendingRestoreGuid = AssetDatabase.AssetPathToGUID(path);
-        }
-
-        private void DrawHistorySection()
-        {
-            if (AssetNamingHistoryStore.Count == 0)
-                return;
-
-            IReadOnlyList<AssetNamingHistoryEntry> entries = AssetNamingHistoryStore.Entries;
-
-            showHistory = AssetNamingGui.DrawSectionHeader(showHistory, "History", entries.Count,
-                AssetNamingGui.HistoryAccent);
-
-            if (!showHistory)
-                return;
-
-            float height = entries.Count * AssetNamingGui.RowHeight;
-            Rect area = GUILayoutUtility.GetRect(0f, height, GUILayout.ExpandWidth(true));
-
-            for (int index = 0; index < entries.Count; index++)
-            {
-                Rect row = new(area.x, area.y + index * AssetNamingGui.RowHeight, area.width,
-                    AssetNamingGui.RowHeight);
-                DrawHistoryRow(row, index, entries[index]);
-            }
-
-            if (GUILayout.Button(ClearHistoryContent, GUILayout.Width(ButtonWidth)))
-                _isClearHistoryPending = true;
-
-            EditorGUILayout.Space(SectionGap);
-        }
-
-        private void DrawHistoryRow(Rect row, int index, AssetNamingHistoryEntry entry)
-        {
-            AssetNamingGui.DrawRowBackground(row, index);
-
-            float padding = AssetNamingGui.Padding;
-            float cursor = row.x + padding;
-
-            float renameWidth = row.xMax - cursor - TimeWidth - GoToWidth - padding * 3f;
-            Rect renameRect = new(cursor, row.y, renameWidth, row.height);
-            cursor += renameWidth + padding;
-
-            Rect timeRect = new(cursor, row.y, TimeWidth, row.height);
-            cursor += TimeWidth + padding;
-
-            Rect goToRect = new(cursor, row.y + FieldInset, GoToWidth, row.height - FieldInset * 2f);
-
-            GUIContent rename = new(entry.oldName + RenameArrow + entry.newName, entry.assetPath);
-
-            GUI.Label(renameRect, rename, AssetNamingGui.NameStyle);
-            GUI.Label(timeRect, entry.time, AssetNamingGui.DetailStyle);
-
-            if (GUI.Button(goToRect, GoToContent, EditorStyles.miniButton))
-                PingAsset(entry.assetPath);
         }
 
         private void DrawResultsSection()
@@ -400,7 +367,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
 
             DrawColumnHeader();
 
-            _scroll = EditorGUILayout.BeginScrollView(_scroll);
+            _scroll = EditorGUILayout.BeginScrollView(_scroll, GUILayout.ExpandHeight(true));
 
             float height = _filtered.Count * AssetNamingGui.RowHeight;
             Rect area = GUILayoutUtility.GetRect(0f, height, GUILayout.ExpandWidth(true));
@@ -409,7 +376,11 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
             EditorGUILayout.EndScrollView();
         }
 
-        /// <summary>Draws the column titles above the list, aligned with the row layout.</summary>
+        /// <summary>
+        /// Draws the column titles above the list, aligned with the row layout. The dividers
+        /// between the titles can be dragged to resize the columns, and the widths are remembered
+        /// across sessions.
+        /// </summary>
         private void DrawColumnHeader()
         {
             Rect rect = GUILayoutUtility.GetRect(0f, AssetNamingGui.RowHeight, GUILayout.ExpandWidth(true));
@@ -417,20 +388,62 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
             float padding = AssetNamingGui.Padding;
             float cursor = rect.x + padding;
 
-            GUI.Label(new Rect(cursor, rect.y, NameWidth, rect.height), new GUIContent("Asset",
+            GUI.Label(new Rect(cursor, rect.y, _nameColumnWidth, rect.height), new GUIContent("Asset",
                 "Current file name. Press Go To to find it in the Project view."), style);
-            cursor += NameWidth + padding;
+            cursor += _nameColumnWidth + padding;
+            HandleColumnDivider(rect, cursor - padding * 0.5f, ref _nameColumnWidth, NameColumnKey);
 
-            GUI.Label(new Rect(cursor, rect.y, RuleWidth, rect.height), RuleHeader, style);
-            cursor += RuleWidth + padding;
+            GUI.Label(new Rect(cursor, rect.y, _ruleColumnWidth, rect.height), RuleHeader, style);
+            cursor += _ruleColumnWidth + padding;
+            HandleColumnDivider(rect, cursor - padding * 0.5f, ref _ruleColumnWidth, RuleColumnKey);
 
-            GUI.Label(new Rect(cursor, rect.y, ReasonWidth, rect.height), ReasonHeader, style);
-            cursor += ReasonWidth + padding;
+            GUI.Label(new Rect(cursor, rect.y, _reasonColumnWidth, rect.height), ReasonHeader, style);
+            cursor += _reasonColumnWidth + padding;
+            HandleColumnDivider(rect, cursor - padding * 0.5f, ref _reasonColumnWidth, ReasonColumnKey);
 
-            GUI.Label(new Rect(cursor, rect.y, NameWidth, rect.height), NewNameHeader, style);
+            GUI.Label(new Rect(cursor, rect.y, _nameColumnWidth, rect.height), NewNameHeader, style);
 
             if (Event.current.type == EventType.Repaint)
-                EditorGUI.DrawRect(new Rect(rect.x, rect.yMax - 1f, rect.width, 1f), new Color(0f, 0f, 0f, 0.3f));
+                EditorGUI.DrawRect(new Rect(rect.x, rect.yMax - 1f, rect.width, 1f), DividerColor);
+        }
+
+        /// <summary>Drag handle between two columns that resizes the column left of it.</summary>
+        private void HandleColumnDivider(Rect headerRect, float x, ref float width, string prefsKey)
+        {
+            Rect handle = new(x - DividerGrip * 0.5f, headerRect.y, DividerGrip, headerRect.height);
+            int controlId = GUIUtility.GetControlID(FocusType.Passive);
+            EventType type = Event.current.GetTypeForControl(controlId);
+
+            EditorGUIUtility.AddCursorRect(handle, MouseCursor.ResizeHorizontal);
+
+            if (type == EventType.MouseDown
+                && handle.Contains(Event.current.mousePosition))
+            {
+                GUIUtility.hotControl = controlId;
+                Event.current.Use();
+                return;
+            }
+
+            if (type == EventType.MouseDrag
+                && GUIUtility.hotControl == controlId)
+            {
+                width = Mathf.Max(MinColumnWidth, width + Event.current.delta.x);
+                Event.current.Use();
+                Repaint();
+                return;
+            }
+
+            if (type == EventType.MouseUp
+                && GUIUtility.hotControl == controlId)
+            {
+                GUIUtility.hotControl = 0;
+                EditorPrefs.SetFloat(prefsKey, width);
+                Event.current.Use();
+                return;
+            }
+
+            if (type == EventType.Repaint)
+                EditorGUI.DrawRect(new Rect(x, headerRect.y + 3f, 1f, headerRect.height - 6f), DividerColor);
         }
 
         /// <summary>Draws only the rows inside the scroll view, so long lists stay responsive.</summary>
@@ -457,14 +470,14 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
             float padding = AssetNamingGui.Padding;
             float cursor = row.x + padding;
 
-            Rect nameRect = new(cursor, row.y, NameWidth, row.height);
-            cursor += NameWidth + padding;
+            Rect nameRect = new(cursor, row.y, _nameColumnWidth, row.height);
+            cursor += _nameColumnWidth + padding;
 
-            Rect ruleRect = new(cursor, row.y, RuleWidth, row.height);
-            cursor += RuleWidth + padding;
+            Rect ruleRect = new(cursor, row.y, _ruleColumnWidth, row.height);
+            cursor += _ruleColumnWidth + padding;
 
-            Rect reasonRect = new(cursor, row.y, ReasonWidth, row.height);
-            cursor += ReasonWidth + padding;
+            Rect reasonRect = new(cursor, row.y, _reasonColumnWidth, row.height);
+            cursor += _reasonColumnWidth + padding;
 
             float buttonsWidth = GoToWidth + RenameWidth + DismissWidth + padding * 3f;
             float suggestionWidth = Mathf.Max(SuggestionMinWidth, row.xMax - cursor - buttonsWidth - padding);
@@ -500,6 +513,59 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
                 return;
 
             _pendingRename = violation;
+        }
+
+        private void DrawHistorySection()
+        {
+            if (AssetNamingHistoryStore.Count == 0)
+                return;
+
+            IReadOnlyList<AssetNamingHistoryEntry> entries = AssetNamingHistoryStore.Entries;
+
+            showHistory = AssetNamingGui.DrawSectionHeader(showHistory, "History", entries.Count,
+                AssetNamingGui.HistoryAccent);
+
+            if (!showHistory)
+                return;
+
+            float height = entries.Count * AssetNamingGui.RowHeight;
+            Rect area = GUILayoutUtility.GetRect(0f, height, GUILayout.ExpandWidth(true));
+
+            for (int index = 0; index < entries.Count; index++)
+            {
+                Rect row = new(area.x, area.y + index * AssetNamingGui.RowHeight, area.width,
+                    AssetNamingGui.RowHeight);
+                DrawHistoryRow(row, index, entries[index]);
+            }
+
+            if (GUILayout.Button(ClearHistoryContent, GUILayout.Width(ButtonWidth)))
+                _isClearHistoryPending = true;
+        }
+
+        private void DrawHistoryRow(Rect row, int index, AssetNamingHistoryEntry entry)
+        {
+            AssetNamingGui.DrawRowBackground(row, index);
+
+            float padding = AssetNamingGui.Padding;
+            float cursor = row.x + padding;
+
+            float renameWidth = Mathf.Max(MinColumnWidth,
+                row.xMax - cursor - TimeWidth - GoToWidth - padding * 3f);
+            Rect renameRect = new(cursor, row.y, renameWidth, row.height);
+            cursor += renameWidth + padding;
+
+            Rect timeRect = new(cursor, row.y, TimeWidth, row.height);
+            cursor += TimeWidth + padding;
+
+            Rect goToRect = new(cursor, row.y + FieldInset, GoToWidth, row.height - FieldInset * 2f);
+
+            GUIContent rename = new(entry.oldName + RenamedToLabel + entry.newName, entry.assetPath);
+
+            GUI.Label(renameRect, rename, AssetNamingGui.NameStyle);
+            GUI.Label(timeRect, entry.time, AssetNamingGui.DetailStyle);
+
+            if (GUI.Button(goToRect, GoToContent, EditorStyles.miniButton))
+                PingAsset(entry.assetPath);
         }
 
         private List<string> BuildDismissedPaths()
