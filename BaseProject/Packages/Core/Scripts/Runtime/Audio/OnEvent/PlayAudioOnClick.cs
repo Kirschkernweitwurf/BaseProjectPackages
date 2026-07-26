@@ -1,27 +1,24 @@
+using Base.AttributePackage;
 using Base.CorePackage.Services;
-using Base.UtilityPackage.Logging;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace Base.CorePackage.Audio.OnEvent
 {
     /// <summary>
-    /// Plays an AudioContainer sound when the UI element is clicked.
+    /// Plays an <see cref="AudioContainer"/> sound when the UI element is clicked.
     /// </summary>
     public class PlayAudioOnClick : MonoBehaviour, IPointerClickHandler
     {
+        [Required]
         [SerializeField] private AudioContainer clickSound;
 
-        public void OnPointerClick(PointerEventData eventData)
-        {
-            if (clickSound == null)
-            {
-                CustomLogger.LogWarning("No click sound set for " + gameObject.name, this);
-                return;
-            }
+        private AudioManager _audioManager;
 
-            if (ServiceLocator.TryGet(out AudioManager audioManager))
-                audioManager.PlaySound(clickSound);
-        }
+#region Unity Callbacks
+        private void Start() => ServiceLocator.TryGet(out _audioManager);
+#endregion
+
+        public void OnPointerClick(PointerEventData eventData) => _audioManager.PlaySound(clickSound);
     }
 }

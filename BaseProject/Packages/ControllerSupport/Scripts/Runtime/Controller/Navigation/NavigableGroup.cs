@@ -123,11 +123,11 @@ namespace Base.ControllerSupport.Controller.Navigation
             if (target == null)
             {
                 // The watchdog retries every frame, so warn only once per activation instead of spamming.
-                if (!_hasWarnedNoTarget)
-                {
-                    _hasWarnedNoTarget = true;
-                    CustomLogger.LogWarning($"Navigable group \"{name}\" has no valid element to focus.", this);
-                }
+                if (_hasWarnedNoTarget)
+                    return;
+
+                _hasWarnedNoTarget = true;
+                CustomLogger.LogWarning($"Navigable group \"{name}\" has no valid element to focus.", this);
 
                 return;
             }
@@ -164,13 +164,14 @@ namespace Base.ControllerSupport.Controller.Navigation
 
         private Selectable ResolveFocusTarget()
         {
-            if (rememberLastSelected && _lastSelected != null && _lastSelected.activeInHierarchy)
-            {
-                Selectable remembered = _lastSelected.GetComponent<Selectable>();
+            if (!rememberLastSelected || _lastSelected == null || !_lastSelected.activeInHierarchy)
+                return defaultElement.IsNavigable()
+                    ? defaultElement.Selectable
+                    : null;
 
-                if (remembered != null && remembered.IsInteractable())
-                    return remembered;
-            }
+            Selectable remembered = _lastSelected.GetComponent<Selectable>();
+            if (remembered != null && remembered.IsInteractable())
+                return remembered;
 
             return defaultElement.IsNavigable()
                 ? defaultElement.Selectable

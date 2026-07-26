@@ -1,71 +1,90 @@
+using System.Collections.Generic;
 using Base.CorePackage.ObjectPooling;
+using Base.UtilityPackage.Logging;
 using UnityEngine;
+using UnityEngine.Pool;
 
 namespace Base.CorePackage.Audio.Pool
 {
     /// <summary>
-    /// Manages object pooling for AudioSources to optimize performance.
+    /// Pools the <see cref="AudioSource"/>s of exactly one <see cref="EAudioType"/>.
     /// </summary>
-    public class AudioPool
+    internal class AudioPool
     {
         private readonly HashSetObjectPool<AudioSource> _pool;
+        private readonly EAudioType _audioType;
 
         /// <summary>
-        /// Creates a new AudioPool with the specified prefab, parent, default size and maximum size.
+        /// Creates a pool for one audio type and prewarms it.
         /// </summary>
-        /// <param name="prefab"></param>
-        /// <param name="parent"></param>
-        /// <param name="defaultSize"></param>
-        public AudioPool(AudioSource prefab, Transform parent, int defaultSize)
+        /// <param name="audioType">The type this pool serves. Used for logging only.</param>
+        /// <param name="prefab">The AudioSource prefab to instantiate.</param>
+        /// <param name="parent">The transform new instances are parented to.</param>
+        /// <param name="prewarmCount">How many instances to create up front.</param>
+        public AudioPool(EAudioType audioType, AudioSource prefab, Transform parent, int prewarmCount)
         {
-            // HashSetObjectPool grows on demand and is not capped, so maxSize is not enforced.
-            _pool = new HashSetObjectPool<AudioSource>(prefab, parent, ResetSource);
+            _audioType = audioType;
+            _pool = new HashSetObjectPool<AudioSource>(prefab, parent, StopSource);
 
-            Prewarm(defaultSize);
+            Prewarm(prewarmCount);
         }
 
         /// <summary>
         /// Retrieves an AudioSource from the pool.
         /// </summary>
-        /// <returns>Available AudioSource</returns>
-        public AudioSource GetSource() => _pool.Get();
+        /// <returns>An available AudioSource.</returns>
+        public AudioSource Get() => _pool.Get();
 
         /// <summary>
         /// Returns an AudioSource to the pool.
         /// </summary>
         /// <param name="source">The AudioSource to release.</param>
-        public void ReleaseSource(AudioSource source)
+        public void Release(AudioSource source)
+        {
+            if (source == null)
+            {
+                CustomLogger.LogWarning($"Tried releasing a null {nameof(AudioSource)} into the {_audioType} pool.",
+                    null);
+                return;
+            }
+
+            _pool.Release(source);
+        }
+
+        /// <summary>
+        /// Releases every active instance back into the pool.
+        /// </summary>
+        public void ReleaseAll() => _pool.ReleaseAll();
+
+        /// <summary>
+        /// Stops an AudioSource before it goes back into the pool.
+        /// </summary>
+        /// <param name="source">The source being released.</param>
+        private static void StopSource(AudioSource source)
         {
             if (source != null)
-                _pool.Release(source);
+                source.Stop();
         }
 
         /// <summary>
-        /// Clears the pool by releasing all active instances back to it.
-        /// </summary>
-        public void ClearPool() => _pool.ReleaseAll();
-
-        /// <summary>
-        /// Resets an AudioSource before it is returned to the pool.
-        /// </summary>
-        /// <param name="src"></param>
-        private static void ResetSource(AudioSource src)
-        {
-            if (src != null)
-                src.Stop();
-        }
-
-        /// <summary>
-        /// Prewarms the pool by creating and immediately releasing instances.
+        /// Prewarms the pool. All instances are taken first and released afterward, because releasing each
+        /// one right away would just hand the same single instance back on the next take.
         /// </summary>
         /// <param name="count">Number of instances to prewarm.</param>
         private void Prewarm(int count)
         {
-            for (int i = 0; i < count; i++)
-            {
-                AudioSource instance = _pool.Get();
+            if (count <= 0)
+                return;
+
+            List<AudioSource> instances = ListPool<AudioSource>.Get();
+
+            while (instances.Count < count)
+                instances.Add(_pool.Get());
+
+            foreach (AudioSource instance in instances)
                 _pool.Release(instance);
-            }
+
+            ListPool<AudioSource>.Release(instances);
         }
     }
 }

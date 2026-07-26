@@ -1,36 +1,81 @@
 using Base.AttributePackage;
 using Base.ToolPackage.MenuManagerWindow;
 using UnityEngine;
+using UnityEngine.Serialization;
+using Random = UnityEngine.Random;
 
 namespace Base.CorePackage.Audio
 {
     /// <summary>
-    /// ScriptableObject container for audio clips and their properties.
+    /// ScriptableObject container for audio clips and their playback properties.
     /// </summary>
     [DynamicCreateAssetMenu("Scriptable Objects/Base/Audio/New Audio Container", "AUC_AudioContainer")]
     public class AudioContainer : ScriptableObject
     {
+        [field: Header("Routing")]
+
+        [field: Tooltip("Category of this container. Decides which mixer group the sound is routed to and which"
+            + " pool the audio source is taken from.")]
+        [field: FormerlySerializedAs("audioType")]
+        [field: SerializeField] public EAudioType AudioType { get; private set; }
+
+        [field: Header("Clips")]
+
+        [field: Tooltip("Clips this container can play. One is picked at random on every play, so adding several"
+            + " variations keeps repeated sounds from sounding identical.")]
+        [field: NotNullOrEmpty]
+        [field: FormerlySerializedAs("clips")]
+        [field: SerializeField] public AudioClip[] Clips { get; private set; }
+
+        [field: Tooltip("Seconds to wait before playback starts. Leave at 0 to play immediately.")]
+        [field: Min(0f)]
+        [field: FormerlySerializedAs("delay")]
+        [field: SerializeField] public float Delay { get; private set; }
+
+        [field: Header("Playback")]
+
+        [field: Tooltip("Volume multiplier for this container. 1 = full volume, 0 = silent.")]
+        [field: MinMax(0f, 1f)]
+        [field: FormerlySerializedAs("volume")]
+        [field: SerializeField] public float Volume { get; private set; } = 1f;
+
+        [field: Tooltip("Whether the clip restarts forever until it is stopped or faded out explicitly.")]
+        [field: FormerlySerializedAs("loop")]
+        [field: SerializeField] public bool Loop { get; private set; }
+
+        [field: Tooltip("Whether playback continues while the audio listener is paused. Enable this for sounds"
+            + " that have to stay audible during a pause, like UI clicks.")]
+        [field: FormerlySerializedAs("ignorePause")]
+        [field: SerializeField] public bool IgnorePause { get; private set; }
+
+        [field: Tooltip("Whether to slightly randomize the pitch of the audio source every time it is played."
+            + " This can help make repeated sounds feel less repetitive.")]
+        [field: FormerlySerializedAs("randomizePitch")]
+        [field: SerializeField] public bool RandomizePitch { get; private set; }
+
+        [field: Tooltip("Maximum number of clips from this container playing at the same time. The oldest source"
+            + " is released when the limit is reached. Set to -1 for unlimited.")]
+        [field: Min(-1)]
+        [field: FormerlySerializedAs("maxClipsPlaying")]
+        [field: SerializeField] public int MaxClipsPlaying { get; private set; } = -1;
+
         /// <summary>
-        /// What type of audio this container is for. Relevant for assigning to the correct audio mixer group.
+        /// Whether this container is allowed to have any number of clips playing at the same time.
         /// </summary>
-        public EAudioType audioType;
-
-        [NotNullOrEmpty] public AudioClip[] clips;
-
-        [Min(0f)] public float delay;
+        public bool HasUnlimitedClips => MaxClipsPlaying < 0;
 
         /// <summary>
-        /// Whether to ignore the pause state of the audio listener, like e.g., UI sounds.
+        /// Picks one of the assigned clips at random. An empty slot in the array is reported by the caller
+        /// instead of being skipped here, so the wrong data gets fixed instead of hidden.
         /// </summary>
-        public bool ignorePause;
-        public bool loop;
-        public bool randomizePitch;
+        /// <returns>A clip to play, or null if the container has none assigned.</returns>
+        public AudioClip GetRandomClip()
+        {
+            if (Clips == null
+                || Clips.Length == 0)
+                return null;
 
-        [MinMax(0f, 1f)] public float volume = 1;
-
-        /// <summary>
-        /// Maximum simultaneous clips from this container. Set to -1 for unlimited.
-        /// </summary>
-        [Min(-1)] public int maxClipsPlaying = -1;
+            return Clips[Random.Range(0, Clips.Length)];
+        }
     }
 }

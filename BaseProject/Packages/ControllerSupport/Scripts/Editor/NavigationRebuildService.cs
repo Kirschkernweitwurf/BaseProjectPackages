@@ -1,4 +1,3 @@
-#if UNITY_EDITOR
 using System.Collections.Generic;
 using Base.ControllerSupport.Controller.Navigation;
 using Base.UtilityPackage.Logging;
@@ -31,17 +30,17 @@ namespace Base.ControllerSupport.Editor
 
         /// <summary>
         /// Rebuilds navigation in every scene and prefab of the project and saves the results. Opens
-        /// each scene one by one and restores the current scene setup afterwards. Returns false when
-        /// the user cancelled over unsaved changes.
+        /// each scene one by one and restores the current scene setup afterward. Returns false when
+        /// the user canceled over unsaved changes.
         /// </summary>
-        public static bool RebuildProject()
+        public static void RebuildProject()
         {
             if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
-                return false;
+                return;
 
             SceneSetup[] setup = EditorSceneManager.GetSceneManagerSetup();
-            int sceneGroups = 0;
-            int prefabGroups = 0;
+            int sceneGroups;
+            int prefabGroups;
 
             try
             {
@@ -58,8 +57,6 @@ namespace Base.ControllerSupport.Editor
 
             CustomLogger.Log($"Project rebuild done: {sceneGroups} group(s) across all scenes, "
                 + $"{prefabGroups} group(s) across all prefabs.", null);
-
-            return true;
         }
 
         private static int RebuildAllScenes()
@@ -141,4 +138,3 @@ namespace Base.ControllerSupport.Editor
         }
     }
 }
-#endif

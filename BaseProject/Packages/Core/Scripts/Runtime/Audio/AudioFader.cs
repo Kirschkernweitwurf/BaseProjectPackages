@@ -15,10 +15,14 @@ namespace Base.CorePackage.Audio
         /// <param name="source">The AudioSource to tween.</param>
         /// <param name="targetVolume">The volume to reach.</param>
         /// <param name="duration">Time in seconds to reach the target volume.</param>
-        public static IEnumerator To(AudioSource source, float targetVolume, float duration)
+        /// <param name="ignoreTimeScale">If true, the fade keeps running while the game is paused.</param>
+        public static IEnumerator To(AudioSource source, float targetVolume, float duration,
+            bool ignoreTimeScale = false)
         {
             if (source == null)
                 yield break;
+
+            targetVolume = Mathf.Clamp01(targetVolume);
 
             if (duration <= 0f)
             {
@@ -29,9 +33,13 @@ namespace Base.CorePackage.Audio
             float startVolume = source.volume;
             float elapsed = 0f;
 
-            while (source != null && elapsed < duration)
+            while (source != null
+                   && elapsed < duration)
             {
-                elapsed += Time.deltaTime;
+                elapsed += ignoreTimeScale
+                    ? Time.unscaledDeltaTime
+                    : Time.deltaTime;
+
                 source.volume = Mathf.Lerp(startVolume, targetVolume, elapsed / duration);
                 yield return null;
             }

@@ -1,4 +1,3 @@
-#if UNITY_EDITOR
 using Base.AttributePackage.Editor;
 using Base.ControllerSupport.Controller.Navigation;
 using UnityEditor;
@@ -33,4 +32,3 @@ namespace Base.ControllerSupport.Editor
         }
     }
 }
-#endif

@@ -1,4 +1,3 @@
-#if UNITY_EDITOR
 using System.Collections.Generic;
 using Base.ControllerSupport.Controller.Navigation;
 using Base.ToolPackage.MenuManagerWindow;
@@ -391,4 +390,3 @@ namespace Base.ControllerSupport.Editor
         }
     }
 }
-#endif

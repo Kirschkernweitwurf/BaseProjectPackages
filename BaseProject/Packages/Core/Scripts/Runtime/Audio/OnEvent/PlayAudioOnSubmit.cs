@@ -1,27 +1,24 @@
+using Base.AttributePackage;
 using Base.CorePackage.Services;
-using Base.UtilityPackage.Logging;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace Base.CorePackage.Audio.OnEvent
 {
     /// <summary>
-    /// Plays an AudioContainer sound when the UI element is activated (click, keyboard or gamepad).
+    /// Plays an <see cref="AudioContainer"/> sound when the UI element is submitted (e.g., when a button is pressed).
     /// </summary>
     public class PlayAudioOnSubmit : MonoBehaviour, ISubmitHandler
     {
+        [Required]
         [SerializeField] private AudioContainer submitSound;
 
-        public void OnSubmit(BaseEventData eventData)
-        {
-            if (submitSound == null)
-            {
-                CustomLogger.LogWarning("No submit sound set for " + gameObject.name, this);
-                return;
-            }
+        private AudioManager _audioManager;
 
-            if (ServiceLocator.TryGet(out AudioManager audioManager))
-                audioManager.PlaySound(submitSound);
-        }
+#region Unity Callbacks
+        private void Start() => ServiceLocator.TryGet(out _audioManager);
+#endregion
+
+        public void OnSubmit(BaseEventData eventData) => _audioManager.PlaySound(submitSound);
     }
 }

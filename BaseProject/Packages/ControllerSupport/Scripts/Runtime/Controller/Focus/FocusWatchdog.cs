@@ -14,7 +14,7 @@ namespace Base.ControllerSupport.Controller.Focus
     /// <see cref="NavigableGroup"/>, so the UI never goes dead for a gamepad user. Registering a group
     /// also promotes focus immediately when a higher priority group appears. With an
     /// <see cref="InputDeviceTracker"/> available, restoration only runs while the gamepad is the
-    /// active device, so mouse users can deselect freely. Without one it always runs.
+    /// active device, so mouse users can deselect freely. Without one, it always runs.
     /// </summary>
     public sealed class FocusWatchdog : GameServiceBehaviour
     {
@@ -32,17 +32,19 @@ namespace Base.ControllerSupport.Controller.Focus
 
         private void LateUpdate()
         {
-            if (_groups.Count == 0 || !ShouldGuardFocus())
+            if (_groups.Count == 0)
+                return;
+
+            if (!ShouldGuardFocus())
                 return;
 
             if (EventSystem.current == null)
             {
-                // LateUpdate retries every frame, so warn only once instead of flooding the log.
-                if (!_hasWarnedMissingEventSystem)
-                {
-                    _hasWarnedMissingEventSystem = true;
-                    CustomLogger.LogWarning("No EventSystem exists in the scene, cannot operate.", this);
-                }
+                if (_hasWarnedMissingEventSystem)
+                    return;
+
+                _hasWarnedMissingEventSystem = true;
+                CustomLogger.LogWarning("No EventSystem exists in the scene, cannot operate.", this);
 
                 return;
             }
@@ -87,7 +89,10 @@ namespace Base.ControllerSupport.Controller.Focus
 
         private void PromoteToActiveGroup()
         {
-            if (EventSystem.current == null || !ShouldGuardFocus())
+            if (EventSystem.current == null)
+                return;
+
+            if (!ShouldGuardFocus())
                 return;
 
             if (!TryResolveActiveGroup(out NavigableGroup target))
