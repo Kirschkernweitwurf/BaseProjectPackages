@@ -12,15 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc579a69e9b14742b5e1db6bb7cd1efd, type: 3}
   m_Name: AUC_Hover
   m_EditorClassIdentifier: Assembly-CSharp::Systems.Audio.AudioContainer
-  audioType: 3
-  clips:
+  <AudioType>k__BackingField: 3
+  <Clips>k__BackingField:
   - {fileID: 8300000, guid: 242aa3b125100ea438a316ac69bfcf70, type: 3}
   - {fileID: 8300000, guid: 98b420bdba3cc8449bcee308f2362314, type: 3}
   - {fileID: 8300000, guid: e1cb6e6babd7d3d4c9e651df9467e107, type: 3}
   - {fileID: 8300000, guid: 301a37f8e22585d42bb6af008cbd1910, type: 3}
-  delay: 0
-  ignorePause: 1
-  loop: 0
-  randomizePitch: 0
-  volume: 0.55
-  maxClipsPlaying: 3
+  <Delay>k__BackingField: 0
+  <Volume>k__BackingField: 0.55
+  <Loop>k__BackingField: 0
+  <IgnorePause>k__BackingField: 1
+  <RandomizePitch>k__BackingField: 0
+  <MaxClipsPlaying>k__BackingField: 3

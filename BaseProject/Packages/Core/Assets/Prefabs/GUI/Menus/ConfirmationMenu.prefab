@@ -493,7 +493,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UI.Confirmation.ConfirmationMenu
   <MenuIdentifier>k__BackingField: {fileID: 11400000, guid: 81b7c51842751014892be8d0fdc17df7, type: 2}
   contentRoot: {fileID: 1573373169881045054}
-  <MenuPriority>k__BackingField: 0
+  <Priority>k__BackingField: 0
   openOnStart: 0
   <ListenToOnBackAction>k__BackingField: 1
   blockingMenus: []

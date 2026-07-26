@@ -7,7 +7,6 @@ using Base.CorePackage.Tweening.Core;
 using Base.CorePackage.Tweening.Core.Data;
 using Base.UtilityPackage.Logging;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Base.CorePackage.Tweening.Components.System
 {
@@ -29,7 +28,6 @@ namespace Base.CorePackage.Tweening.Components.System
         /// </summary>
         public event Action OnKilled;
 
-        [FormerlySerializedAs("tweenBehaviours")]
         [ComponentPicker]
         [Tooltip("The list of behaviours that should be played when showing the object.")]
         [SerializeField] private List<TweenBehaviourBase> showTweenBehaviours = new();

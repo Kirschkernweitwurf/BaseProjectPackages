@@ -9,7 +9,6 @@ using Base.CorePackage.Tracking;
 using Base.CorePackage.Tweening.Components.System;
 using Base.UtilityPackage.Logging;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Base.CorePackage.MenuManaging
 {
@@ -37,7 +36,6 @@ namespace Base.CorePackage.MenuManaging
         [Tooltip("The root TweenGroup for this menu's open/close animations.")]
         [Required] [SerializeField] private TweenGroup contentRoot;
 
-        [field: FormerlySerializedAs("<MenuPriority>k__BackingField")]
         [field: Tooltip("The priority of this menu in the stack.")]
         [field: SerializeField] public EPriority Priority { get; private set; }
 

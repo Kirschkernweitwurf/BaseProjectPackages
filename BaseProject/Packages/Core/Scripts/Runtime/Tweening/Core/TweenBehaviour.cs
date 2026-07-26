@@ -4,7 +4,6 @@ using Base.CorePackage.Tweening.Core.Data;
 using Base.CorePackage.Tweening.Core.Data.Profiles;
 using Base.UtilityPackage.Logging;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Object = UnityEngine.Object;
 
 namespace Base.CorePackage.Tweening.Core
@@ -25,16 +24,16 @@ namespace Base.CorePackage.Tweening.Core
     /// </remarks>
     public abstract class TweenBehaviour<T> : TweenBehaviourBase, IShutdownHandler
     {
+        /// <summary>
+        /// Loop count that means the tween keeps looping until it is stopped from the outside.
+        /// </summary>
+        private const int InfiniteLoops = -1;
+
         /// <inheritdoc/>
         public override event Action OnFinished;
 
         /// <inheritdoc/>
         public override event Action OnKilled;
-
-        /// <summary>
-        /// Loop count that means the tween keeps looping until it is stopped from the outside.
-        /// </summary>
-        private const int InfiniteLoops = -1;
 
         private static readonly Func<T, T, float, T> DefaultLerpFunc = TweenLerpUtility.Resolve<T>();
 
@@ -49,18 +48,11 @@ namespace Base.CorePackage.Tweening.Core
         [Tooltip("The shared timing asset, used while the toggle above is on.")]
         [SerializeField] private TweenSettingsSo settingsAsset;
 
-        [FormerlySerializedAs("<TweenSettings>k__BackingField")]
         [Tooltip("Duration, delay and easing of this tween.")]
         [SerializeField] private TweenSettings tweenSettings = new();
 
         [Tooltip("Loop behavior of this tween.")]
         [SerializeField] private LoopSettings loopSettings = new();
-
-        private TweenBase _activeTween;
-        private TweenSettings _resolvedSettings;
-        private LoopSettings _resolvedLoopSettings;
-        private int _currentLoop;
-        private bool _currentReversed;
 
         public bool HasShutDown { get; private set; }
 
@@ -119,6 +111,12 @@ namespace Base.CorePackage.Tweening.Core
         /// for value types that <see cref="TweenLerpUtility.Resolve{T}"/> does not know.
         /// </summary>
         protected virtual Func<T, T, float, T> LerpFunc => DefaultLerpFunc;
+
+        private TweenBase _activeTween;
+        private TweenSettings _resolvedSettings;
+        private LoopSettings _resolvedLoopSettings;
+        private int _currentLoop;
+        private bool _currentReversed;
 
 #region Unity Callbacks
         protected virtual void Awake() => DefaultValue = GetCurrentValue();

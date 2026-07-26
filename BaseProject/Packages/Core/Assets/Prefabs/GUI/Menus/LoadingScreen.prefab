@@ -194,6 +194,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SceneManagement.LoadingScreen
   <MenuIdentifier>k__BackingField: {fileID: 11400000, guid: 97259c6fd298b3c4594bb8441595f230, type: 2}
   contentRoot: {fileID: 4353909002388602563}
+  <Priority>k__BackingField: 0
   openOnStart: 0
   <ListenToOnBackAction>k__BackingField: 0
   blockingMenus: []

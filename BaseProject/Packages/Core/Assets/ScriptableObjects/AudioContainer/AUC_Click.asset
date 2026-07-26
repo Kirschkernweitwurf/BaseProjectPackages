@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc579a69e9b14742b5e1db6bb7cd1efd, type: 3}
   m_Name: AUC_Click
   m_EditorClassIdentifier: Assembly-CSharp::Systems.Audio.AudioContainer
-  audioType: 3
-  clips:
+  <AudioType>k__BackingField: 3
+  <Clips>k__BackingField:
   - {fileID: 8300000, guid: 9da9a9c521ebf4c4a9c9e5feb003c2b5, type: 3}
-  delay: 0
-  ignorePause: 1
-  loop: 0
-  randomizePitch: 1
-  volume: 1
-  maxClipsPlaying: 3
+  <Delay>k__BackingField: 0
+  <Volume>k__BackingField: 1
+  <Loop>k__BackingField: 0
+  <IgnorePause>k__BackingField: 1
+  <RandomizePitch>k__BackingField: 1
+  <MaxClipsPlaying>k__BackingField: 3

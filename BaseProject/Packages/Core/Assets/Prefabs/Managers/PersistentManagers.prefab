@@ -182,6 +182,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Systems.Audio.Pool.AudioPoolManager
   poolParent: {fileID: 7303525858899019892}
+  prewarmCount: 4
   isClearingPoolAfterSceneLoad: 0
   audioSource2DPrefab: {fileID: 4764855750743717142, guid: 93c940c885cfd374faecdabbeba67249, type: 3}
   audioSource3DPrefab: {fileID: 4764855750743717142, guid: 672543f5ec2fec74f8d7e87e0019243d, type: 3}

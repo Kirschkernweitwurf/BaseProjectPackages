@@ -269,7 +269,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Base.CorePackage::Base.CorePackage.DebugMenu.LogConsole.LogConsoleView
   <MenuIdentifier>k__BackingField: {fileID: 11400000, guid: 66536e2b7a5b14349b601fa32d75834f, type: 2}
   contentRoot: {fileID: 3277375166199916956}
-  <MenuPriority>k__BackingField: 0
+  <Priority>k__BackingField: 0
   openOnStart: 0
   <ListenToOnBackAction>k__BackingField: 0
   blockingMenus: []

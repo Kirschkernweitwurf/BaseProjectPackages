@@ -1,7 +1,6 @@
 using Base.AttributePackage;
 using Base.ToolPackage.MenuManagerWindow;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 namespace Base.CorePackage.Audio
@@ -16,7 +15,6 @@ namespace Base.CorePackage.Audio
 
         [field: Tooltip("Category of this container. Decides which mixer group the sound is routed to and which"
             + " pool the audio source is taken from.")]
-        [field: FormerlySerializedAs("audioType")]
         [field: SerializeField] public EAudioType AudioType { get; private set; }
 
         [field: Header("Clips")]
@@ -24,39 +22,32 @@ namespace Base.CorePackage.Audio
         [field: Tooltip("Clips this container can play. One is picked at random on every play, so adding several"
             + " variations keeps repeated sounds from sounding identical.")]
         [field: NotNullOrEmpty]
-        [field: FormerlySerializedAs("clips")]
         [field: SerializeField] public AudioClip[] Clips { get; private set; }
 
         [field: Tooltip("Seconds to wait before playback starts. Leave at 0 to play immediately.")]
         [field: Min(0f)]
-        [field: FormerlySerializedAs("delay")]
         [field: SerializeField] public float Delay { get; private set; }
 
         [field: Header("Playback")]
 
         [field: Tooltip("Volume multiplier for this container. 1 = full volume, 0 = silent.")]
         [field: MinMax(0f, 1f)]
-        [field: FormerlySerializedAs("volume")]
         [field: SerializeField] public float Volume { get; private set; } = 1f;
 
         [field: Tooltip("Whether the clip restarts forever until it is stopped or faded out explicitly.")]
-        [field: FormerlySerializedAs("loop")]
         [field: SerializeField] public bool Loop { get; private set; }
 
         [field: Tooltip("Whether playback continues while the audio listener is paused. Enable this for sounds"
             + " that have to stay audible during a pause, like UI clicks.")]
-        [field: FormerlySerializedAs("ignorePause")]
         [field: SerializeField] public bool IgnorePause { get; private set; }
 
         [field: Tooltip("Whether to slightly randomize the pitch of the audio source every time it is played."
             + " This can help make repeated sounds feel less repetitive.")]
-        [field: FormerlySerializedAs("randomizePitch")]
         [field: SerializeField] public bool RandomizePitch { get; private set; }
 
         [field: Tooltip("Maximum number of clips from this container playing at the same time. The oldest source"
             + " is released when the limit is reached. Set to -1 for unlimited.")]
         [field: Min(-1)]
-        [field: FormerlySerializedAs("maxClipsPlaying")]
         [field: SerializeField] public int MaxClipsPlaying { get; private set; } = -1;
 
         /// <summary>

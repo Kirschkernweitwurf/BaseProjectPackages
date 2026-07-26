@@ -51,12 +51,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Systems.Tooltip.TooltipView
   screenOffset: {x: 0, y: 0}
-  defaultPivot: {x: 0, y: 0}
   edgeMargin: 25
-  canvas: {fileID: 0}
   content: {fileID: 290121975174119658}
   textElement: {fileID: 4152432554049568635}
   tooltipRect: {fileID: 4601529372714353896}
+  canvas: {fileID: 0}
 --- !u!114 &4710271392961075978
 MonoBehaviour:
   m_ObjectHideFlags: 0
