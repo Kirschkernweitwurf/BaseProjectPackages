@@ -1,3 +1,4 @@
+using System.Linq;
 using Base.CorePackage.Input;
 using Base.CorePackage.MenuManaging.Identifier;
 using Base.CorePackage.Services;
@@ -21,6 +22,7 @@ namespace Base.CorePackage.MenuManaging
             + " (e.g. the Pause menu). Leave empty to disable this fallback.")]
         [SerializeField] private MenuIdentifier defaultBackMenu;
 
+        /// <summary><c>true</c> if the manager has been shut down and is no longer valid.</summary>
         public bool HasShutDown { get; private set; }
 
         private readonly PriorityTracker<Menu> _menuPriorityTracker = new();
@@ -53,11 +55,17 @@ namespace Base.CorePackage.MenuManaging
         }
 #endregion
 
+        /// <summary>
+        /// Drops all subscriptions. Runs automatically when the manager is destroyed.
+        /// </summary>
         public void Shutdown()
         {
-            ShutdownManager.Deregister(this);
+            if (HasShutDown)
+                return;
 
             HasShutDown = true;
+
+            ShutdownManager.Deregister(this);
 
             _menuPriorityTracker.OnCurrentActiveItemChanged -= OnCurrentActiveItemChanged;
 
@@ -222,26 +230,18 @@ namespace Base.CorePackage.MenuManaging
             // Iterate over a copy since Close() mutates the tracked list.
             foreach (TrackedItem<Menu> trackedItem in _menuPriorityTracker.TrackedItems.ToArray())
             {
-                if (trackedItem == null)
-                {
-                    CustomLogger.LogWarning("Cannot close menu: trackedItem is null.", this);
-                    return;
-                }
-
-                if (trackedItem.Item == null)
-                {
-                    CustomLogger.LogWarning("Cannot close menu: trackedItem's item is null.", this);
+                if (trackedItem == null
+                    || trackedItem.Item == null
+                    || !trackedItem.Item.IsOpen)
                     continue;
-                }
 
-                if (trackedItem.Item.IsOpen)
-                    trackedItem.Item.Close();
+                trackedItem.Item.Close();
             }
         }
 
         /// <summary>
         /// Called when the current active menu changes in the priority tracker.
-        /// Updates the highest priority menu and back menu accordingly.
+        /// Updates the menu that receives the back action accordingly.
         /// </summary>
         private void OnCurrentActiveItemChanged(TrackedItem<Menu> trackedItem)
         {
@@ -252,9 +252,12 @@ namespace Base.CorePackage.MenuManaging
             }
 
             TrackedItem<Menu> best = null;
+
             foreach (TrackedItem<Menu> candidate in _menuPriorityTracker.TrackedItems)
             {
-                if (!candidate.Item.ListenToOnBackAction)
+                if (candidate == null
+                    || candidate.Item == null
+                    || !candidate.Item.ListenToOnBackAction)
                     continue;
 
                 if (best == null
@@ -269,20 +272,23 @@ namespace Base.CorePackage.MenuManaging
         /// <summary>
         /// Handles the back action input.
         /// </summary>
-        private void OnBackActionPerformed(InputAction.CallbackContext obj)
+        private void OnBackActionPerformed(InputAction.CallbackContext context)
         {
-            if (_highestPriorityBackMenu == null)
+            if (_highestPriorityBackMenu != null)
             {
-                // If no menu is available to handle the back action, open the configured default back menu
-                if (defaultBackMenu != null
-                    && _menuTracker.TryGet(defaultBackMenu, out Menu fallbackMenu)
-                    && !fallbackMenu.IsOpen)
-                    fallbackMenu.Open();
-
+                _highestPriorityBackMenu.Back();
                 return;
             }
 
-            _highestPriorityBackMenu?.Back();
+            // Nothing is listening, so fall back to the configured default back menu.
+            if (defaultBackMenu == null)
+                return;
+
+            if (!_menuTracker.TryGet(defaultBackMenu, out Menu fallbackMenu))
+                return;
+
+            if (!fallbackMenu.IsOpen)
+                fallbackMenu.Open();
         }
     }
 }

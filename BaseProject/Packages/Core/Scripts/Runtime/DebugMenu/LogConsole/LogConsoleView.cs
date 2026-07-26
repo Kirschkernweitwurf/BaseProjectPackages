@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using Base.AttributePackage;
 using Base.CorePackage.MenuManaging;
 using Base.UtilityPackage.Logging;
 using TMPro;
@@ -18,11 +19,11 @@ namespace Base.CorePackage.DebugMenu.LogConsole
     public sealed class LogConsoleView : Menu
     {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
+        private const string DefaultColor = "#FFFFFF";
+        private const string ErrorColor = "#FF4040";
         private const int MaxLines = 200;
         private const string TimestampFormat = "HH:mm:ss";
-        private const string DefaultColor = "#FFFFFF";
         private const string WarningColor = "#FF9933";
-        private const string ErrorColor = "#FF4040";
 
         private static readonly Queue<string> BufferedLines = new();
 
@@ -30,27 +31,14 @@ namespace Base.CorePackage.DebugMenu.LogConsole
 
         [Header("Log")]
 
-        [SerializeField] private TMP_Text logText;
-        [SerializeField] private ScrollRect scrollRect;
-        [SerializeField] private Button clearButton;
+        [Required] [SerializeField] private TMP_Text logText;
+        [Required] [SerializeField] private ScrollRect scrollRect;
+        [Required] [SerializeField] private Button clearButton;
 
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-        private static void InitializeCapture()
-        {
-            BufferedLines.Clear();
-            Application.logMessageReceived -= Capture;
-            Application.logMessageReceived += Capture;
-        }
-
+#region Unity Callbacks
         protected override void Awake()
         {
             base.Awake();
-
-            if (logText == null)
-                CustomLogger.LogError("Log text reference is missing.", this);
-
-            if (scrollRect == null)
-                CustomLogger.LogError("Scroll rect reference is missing.", this);
 
             LinesChanged += OnLinesChanged;
             clearButton.onClick.AddListener(ClearLog);
@@ -63,12 +51,22 @@ namespace Base.CorePackage.DebugMenu.LogConsole
 
             base.OnDestroy();
         }
+#endregion
 
         protected override void OnOpened()
         {
             base.OnOpened();
 
             Redraw();
+        }
+
+        // Capturing has to start before any menu exists, otherwise early logs would be lost.
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        private static void InitializeCapture()
+        {
+            BufferedLines.Clear();
+            Application.logMessageReceived -= Capture;
+            Application.logMessageReceived += Capture;
         }
 
         private static void Capture(string message, string stackTrace, LogType type)
@@ -93,6 +91,7 @@ namespace Base.CorePackage.DebugMenu.LogConsole
         private void ClearLog()
         {
             BufferedLines.Clear();
+
             logText.text = string.Empty;
             scrollRect.verticalNormalizedPosition = 1f;
         }
@@ -105,9 +104,6 @@ namespace Base.CorePackage.DebugMenu.LogConsole
 
         private void Redraw()
         {
-            if (logText == null || scrollRect == null)
-                return;
-
             logText.text = string.Join("\n", BufferedLines);
 
             Canvas.ForceUpdateCanvases();

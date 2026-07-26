@@ -45,6 +45,7 @@ namespace Base.CorePackage.Audio.Pool
             {
                 CustomLogger.LogWarning($"Tried releasing a null {nameof(AudioSource)} into the {_audioType} pool.",
                     null);
+
                 return;
             }
 

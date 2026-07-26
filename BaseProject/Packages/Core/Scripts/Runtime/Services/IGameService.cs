@@ -14,8 +14,9 @@ namespace Base.CorePackage.Services
 
         /// <summary>
         /// Called when the service is being destroyed or deregistered.
-        /// The default implementation automatically deregisters the service.
+        /// The default implementation passes the instance along, so an old service dying after a scene reload
+        /// cannot remove the replacement that already registered itself.
         /// </summary>
-        void Deregister() => ServiceLocator.Deregister(GetType());
+        void Deregister() => ServiceLocator.Deregister(GetType(), this);
     }
 }

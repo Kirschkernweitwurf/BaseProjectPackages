@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Object = UnityEngine.Object;
 
 namespace Base.CorePackage.MenuManaging.Modules
 {
@@ -17,14 +18,20 @@ namespace Base.CorePackage.MenuManaging.Modules
 
         protected override void OnMenuClosed()
         {
-            if (_resettables == null)
-                return;
-
             foreach (IMenuResettable resettable in _resettables)
-                resettable?.ResetState();
+            {
+                // Children can be destroyed while the menu lives on, so skip anything that is gone.
+                if (resettable is Object unityObject && unityObject == null)
+                    continue;
+
+                resettable.ResetState();
+            }
         }
 
-        /// <summary>Recollects the resettable children. Call after adding or removing them at runtime.</summary>
+        /// <summary>
+        /// Collects the resettable children once. They are cached because a menu can close often and
+        /// the hierarchy does not change between closes.
+        /// </summary>
         private void Recache()
         {
             IMenuResettable[] found = OwnerMenu.GetComponentsInChildren<IMenuResettable>(includeInactive: true);

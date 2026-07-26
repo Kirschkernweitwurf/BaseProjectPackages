@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace Base.CorePackage.MenuManaging.Identifier
@@ -17,19 +18,25 @@ namespace Base.CorePackage.MenuManaging.Identifier
         /// <summary>
         /// Tries to find a registered identifier by its asset name.
         /// </summary>
+        /// <param name="identifierName">The asset name to look for.</param>
+        /// <param name="identifier">The matching identifier if one was found; otherwise, null.</param>
+        /// <returns><c>true</c> if the identifier was found; otherwise, <c>false</c>.</returns>
         public bool TryGet(string identifierName, out MenuIdentifier identifier)
         {
-            if (entries != null)
-                foreach (MenuIdentifier entry in entries)
-                {
-                    if (entry == null || entry.name != identifierName)
-                        continue;
-
-                    identifier = entry;
-                    return true;
-                }
-
             identifier = null;
+
+            if (entries == null)
+                return false;
+
+            foreach (MenuIdentifier entry in entries)
+            {
+                if (entry == null || entry.name != identifierName)
+                    continue;
+
+                identifier = entry;
+                return true;
+            }
+
             return false;
         }
 
@@ -37,25 +44,26 @@ namespace Base.CorePackage.MenuManaging.Identifier
         /// <summary>
         /// Editor-only: replaces all registered entries. Called by the generator.
         /// </summary>
+        /// <param name="newEntries">The entries to store.</param>
         public void SetEntries(MenuIdentifier[] newEntries) => entries = newEntries;
 
         /// <summary>
         /// Editor-only: returns true if the current entries match the given set in the same order.
         /// Lets the generator skip writing the asset when nothing actually changed.
         /// </summary>
+        /// <param name="candidate">The entries to compare against.</param>
+        /// <returns><c>true</c> if both sets are equal; otherwise, <c>false</c>.</returns>
         public bool EntriesEqual(MenuIdentifier[] candidate)
         {
-            int currentCount = entries?.Length ?? 0;
-            int candidateCount = candidate?.Length ?? 0;
-            if (currentCount != candidateCount)
+            MenuIdentifier[] current = entries ?? Array.Empty<MenuIdentifier>();
+            MenuIdentifier[] other = candidate ?? Array.Empty<MenuIdentifier>();
+
+            if (current.Length != other.Length)
                 return false;
 
-            for (int i = 0; i < currentCount; i++)
+            for (int i = 0; i < current.Length; i++)
             {
-                if (entries == null || candidate == null)
-                    return false;
-
-                if (entries[i] != candidate[i])
+                if (current[i] != other[i])
                     return false;
             }
 

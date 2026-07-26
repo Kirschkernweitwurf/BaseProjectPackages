@@ -3,6 +3,7 @@ using System.Reflection;
 using Base.AttributePackage;
 using Base.AttributePackage.Editor;
 using Base.CorePackage.Tweening.Core.Data;
+using Base.CorePackage.Tweening.Core.Data.Profiles;
 using UnityEditor;
 
 namespace Base.CorePackage.Editor.Tweening
@@ -14,18 +15,23 @@ namespace Base.CorePackage.Editor.Tweening
     /// attributes like <see cref="GetComponentAttribute"/> and <see cref="TweenValueAttribute"/> keep
     /// working here. Reference fields are always drawn last, separated by a space.
     /// </summary>
+    /// <remarks>
+    /// Layout fields are recognized by what they are, not by what they are called: the asset and
+    /// settings fields by their type, the two toggles by <see cref="TweenProfileToggleAttribute"/> and
+    /// <see cref="TweenSettingsToggleAttribute"/>. Renaming a serialized field therefore cannot break
+    /// this layout.
+    /// </remarks>
     internal static class TweenInspectorLayout
     {
-        private const string LoopSettingsField = "loopSettings";
         private const string MissingAssetWarning = "No asset assigned. The fields below are used instead.";
-        private const string ProfileField = "profile";
         private const string ProfileInfo = "Values, timing and loop behavior come from this profile.";
-        private const string ScriptField = "m_Script";
-        private const string SettingsAssetField = "settingsAsset";
         private const string SettingsAssetInfo = "Timing and loop behavior come from this asset.";
-        private const string TweenSettingsField = "tweenSettings";
-        private const string UseProfileField = "useProfile";
-        private const string UseSettingsAssetField = "useSettingsAsset";
+
+        /// <summary>
+        /// Unity's built-in script reference. Not one of our own members, so there is nothing to
+        /// derive this name from.
+        /// </summary>
+        private const string ScriptField = "m_Script";
 
         /// <summary>
         /// Draws the full inspector for the given tween component or tween profile.
@@ -34,21 +40,23 @@ namespace Base.CorePackage.Editor.Tweening
         public static void Draw(AttributePackageEditor editor)
         {
             SerializedObject serializedObject = editor.serializedObject;
+            Type type = serializedObject.targetObject.GetType();
+
             serializedObject.Update();
 
             DrawScript(serializedObject);
 
-            bool usesProfile = DrawToggle(serializedObject, UseProfileField);
+            bool usesProfile = DrawToggle(FindByRole(serializedObject, type, IsProfileToggle));
 
             if (usesProfile)
-                DrawAsset(serializedObject, ProfileField, ProfileInfo);
+                DrawAsset(FindByRole(serializedObject, type, IsProfileAsset), ProfileInfo);
 
-            DrawValueFields(editor, usesProfile);
+            DrawValueFields(editor, type, usesProfile);
 
             if (!usesProfile)
-                DrawTiming(serializedObject);
+                DrawTiming(serializedObject, type);
 
-            DrawReferenceFields(editor);
+            DrawReferenceFields(editor, type);
 
             serializedObject.ApplyModifiedProperties();
         }
@@ -67,10 +75,8 @@ namespace Base.CorePackage.Editor.Tweening
             EditorGUILayout.Space();
         }
 
-        private static bool DrawToggle(SerializedObject serializedObject, string toggleName)
+        private static bool DrawToggle(SerializedProperty toggle)
         {
-            SerializedProperty toggle = serializedObject.FindProperty(toggleName);
-
             if (toggle == null)
                 return false;
 
@@ -80,9 +86,10 @@ namespace Base.CorePackage.Editor.Tweening
                 && toggle.boolValue;
         }
 
-        private static void DrawAsset(SerializedObject serializedObject, string assetName, string info)
+        private static void DrawAsset(SerializedProperty asset, string info)
         {
-            SerializedProperty asset = serializedObject.FindProperty(assetName);
+            if (asset == null)
+                return;
 
             EditorGUI.indentLevel++;
             EditorGUILayout.PropertyField(asset);
@@ -101,35 +108,32 @@ namespace Base.CorePackage.Editor.Tweening
             EditorGUILayout.HelpBox(info, MessageType.None);
         }
 
-        private static void DrawValueFields(AttributePackageEditor editor, bool usesProfile)
+        private static void DrawValueFields(AttributePackageEditor editor, Type type, bool usesProfile)
         {
-            SerializedObject serializedObject = editor.serializedObject;
-            Type type = serializedObject.targetObject.GetType();
-            SerializedProperty property = serializedObject.GetIterator();
+            SerializedProperty property = editor.serializedObject.GetIterator();
             bool enterChildren = true;
 
             while (property.NextVisible(enterChildren))
             {
                 enterChildren = false;
 
-                if (IsLayoutField(property.name))
+                if (IsLayoutField(type, property.name))
                     continue;
 
                 if (IsReferenceField(type, property.name))
                     continue;
 
-                if (usesProfile && IsProfileValue(type, property.name))
+                if (usesProfile
+                    && IsProfileValue(type, property.name))
                     continue;
 
                 DrawMember(editor, property, type);
             }
         }
 
-        private static void DrawReferenceFields(AttributePackageEditor editor)
+        private static void DrawReferenceFields(AttributePackageEditor editor, Type type)
         {
-            SerializedObject serializedObject = editor.serializedObject;
-            Type type = serializedObject.targetObject.GetType();
-            SerializedProperty property = serializedObject.GetIterator();
+            SerializedProperty property = editor.serializedObject.GetIterator();
             bool enterChildren = true;
             bool drewSpace = false;
 
@@ -150,22 +154,33 @@ namespace Base.CorePackage.Editor.Tweening
             }
         }
 
-        private static void DrawTiming(SerializedObject serializedObject)
+        private static void DrawTiming(SerializedObject serializedObject, Type type)
         {
-            if (serializedObject.FindProperty(SettingsAssetField) == null)
+            SerializedProperty settingsAsset = FindByRole(serializedObject, type, IsSettingsAsset);
+
+            // Profiles and components both reach this point, but only they carry a settings asset.
+            if (settingsAsset == null)
                 return;
 
             EditorGUILayout.Space();
 
-            if (DrawToggle(serializedObject, UseSettingsAssetField))
+            if (DrawToggle(FindByRole(serializedObject, type, IsSettingsToggle)))
             {
-                DrawAsset(serializedObject, SettingsAssetField, SettingsAssetInfo);
+                DrawAsset(settingsAsset, SettingsAssetInfo);
 
                 return;
             }
 
-            EditorGUILayout.PropertyField(serializedObject.FindProperty(TweenSettingsField), true);
-            EditorGUILayout.PropertyField(serializedObject.FindProperty(LoopSettingsField), true);
+            DrawExpanded(FindByRole(serializedObject, type, IsSettings));
+            DrawExpanded(FindByRole(serializedObject, type, IsLoopSettings));
+        }
+
+        private static void DrawExpanded(SerializedProperty property)
+        {
+            if (property == null)
+                return;
+
+            EditorGUILayout.PropertyField(property, true);
         }
 
         private static void DrawMember(AttributePackageEditor editor, SerializedProperty property, Type type)
@@ -174,13 +189,61 @@ namespace Base.CorePackage.Editor.Tweening
             MemberRenderer.Draw(property.Copy(), field, editor);
         }
 
-        private static bool IsLayoutField(string propertyName) => propertyName == LoopSettingsField
-            || propertyName == ProfileField
-            || propertyName == ScriptField
-            || propertyName == SettingsAssetField
-            || propertyName == TweenSettingsField
-            || propertyName == UseProfileField
-            || propertyName == UseSettingsAssetField;
+        /// <summary>
+        /// Returns the first serialized property whose backing field matches the given role, or
+        /// <c>null</c> when the inspected object has no such field.
+        /// </summary>
+        private static SerializedProperty FindByRole(SerializedObject serializedObject, Type type,
+            Func<FieldInfo, bool> hasRole)
+        {
+            SerializedProperty property = serializedObject.GetIterator();
+            bool enterChildren = true;
+
+            while (property.NextVisible(enterChildren))
+            {
+                enterChildren = false;
+
+                FieldInfo field = ReflectionCache.GetField(type, property.name);
+
+                if (field != null
+                    && hasRole(field))
+                    return property.Copy();
+            }
+
+            return null;
+        }
+
+        private static bool IsLayoutField(Type type, string propertyName)
+        {
+            if (propertyName == ScriptField)
+                return true;
+
+            FieldInfo field = ReflectionCache.GetField(type, propertyName);
+
+            if (field == null)
+                return false;
+
+            return IsProfileToggle(field)
+                || IsProfileAsset(field)
+                || IsSettingsToggle(field)
+                || IsSettingsAsset(field)
+                || IsSettings(field)
+                || IsLoopSettings(field);
+        }
+
+        private static bool IsProfileToggle(FieldInfo field)
+            => field.IsDefined(typeof(TweenProfileToggleAttribute), false);
+
+        private static bool IsSettingsToggle(FieldInfo field)
+            => field.IsDefined(typeof(TweenSettingsToggleAttribute), false);
+
+        private static bool IsProfileAsset(FieldInfo field) => typeof(TweenProfileSo).IsAssignableFrom(field.FieldType);
+
+        private static bool IsSettingsAsset(FieldInfo field) => field.FieldType == typeof(TweenSettingsSo);
+
+        private static bool IsSettings(FieldInfo field) => field.FieldType == typeof(TweenSettings);
+
+        private static bool IsLoopSettings(FieldInfo field) => field.FieldType == typeof(LoopSettings);
 
         private static bool IsReferenceField(Type type, string propertyName)
         {

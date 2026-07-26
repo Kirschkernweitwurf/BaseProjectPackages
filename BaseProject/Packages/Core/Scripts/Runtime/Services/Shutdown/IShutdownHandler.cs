@@ -8,6 +8,10 @@ namespace Base.CorePackage.Services.Shutdown
     /// </summary>
     public interface IShutdownHandler
     {
+        /// <summary>
+        /// Whether <see cref="Shutdown"/> already ran. Guards against running the cleanup twice when
+        /// the handler is also torn down through <c>OnDestroy</c>.
+        /// </summary>
         bool HasShutDown { get; }
 
         /// <summary>

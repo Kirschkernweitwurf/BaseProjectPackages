@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Base.UtilityPackage;
 using Base.UtilityPackage.Logging;
 using UnityEngine;
 #if UNITY_EDITOR
@@ -35,19 +36,17 @@ namespace Base.CorePackage.Services.Shutdown
         {
             base.OnDestroy();
 
-            CustomLogger.Log("Destroyed.", this);
-
             Application.quitting -= ExecuteShutdown;
         }
 #endregion
 
         /// <summary>
-        /// Adds a handler to the shutdown list if it implements <see cref="IShutdownHandler"/>.
+        /// Adds a handler to the shutdown list.
         /// </summary>
         /// <param name="handler">The handler to register.</param>
         public static void Register(IShutdownHandler handler)
         {
-            if (handler == null)
+            if (!UnityObjectUtility.IsAlive(handler))
             {
                 CustomLogger.LogWarning("Attempted to register a null shutdown handler.", null);
                 return;
@@ -87,21 +86,24 @@ namespace Base.CorePackage.Services.Shutdown
             if (_isShuttingDown)
                 return;
 
-            CustomLogger.Log("Executing shutdown procedures for all registered handlers.", null);
-
             _isShuttingDown = true;
 
+            CustomLogger.Log("Executing shutdown procedures for all registered handlers.", null);
+
+            // Snapshot first, since handlers deregister themselves from inside Shutdown.
+            IShutdownHandler[] handlers = ShutdownHandlers.ToArray();
+            ShutdownHandlers.Clear();
+
             // Reverse order for dependency safety
-            for (int i = ShutdownHandlers.Count - 1; i >= 0; i--)
+            for (int i = handlers.Length - 1; i >= 0; i--)
             {
-                IShutdownHandler handler = ShutdownHandlers[i];
-                if (handler == null || handler.HasShutDown)
+                IShutdownHandler handler = handlers[i];
+                if (!UnityObjectUtility.IsAlive(handler)
+                    || handler.HasShutDown)
                     continue;
 
                 handler.Shutdown();
             }
-
-            ShutdownHandlers.Clear();
         }
     }
 }

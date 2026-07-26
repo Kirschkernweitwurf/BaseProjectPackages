@@ -14,19 +14,20 @@ namespace Base.CorePackage.MenuManaging.Modules
         [Tooltip("The menu this module extends. Auto-assigned from the same GameObject when empty.")]
         [GetComponent] [Required] [SerializeField] private Menu ownerMenu;
 
+        /// <summary>The menu this module extends.</summary>
         protected Menu OwnerMenu => ownerMenu;
 
 #region Unity Callbacks
         protected virtual void OnEnable()
         {
-            OwnerMenu.Opened += HandleMenuOpened;
-            OwnerMenu.Closed += HandleMenuClosed;
+            OwnerMenu.Opened += OnMenuOpened;
+            OwnerMenu.Closed += OnMenuClosed;
         }
 
         protected virtual void OnDisable()
         {
-            OwnerMenu.Opened -= HandleMenuOpened;
-            OwnerMenu.Closed -= HandleMenuClosed;
+            OwnerMenu.Opened -= OnMenuOpened;
+            OwnerMenu.Closed -= OnMenuClosed;
         }
 #endregion
 
@@ -35,9 +36,5 @@ namespace Base.CorePackage.MenuManaging.Modules
 
         /// <summary>Called once the owning menu has fully closed.</summary>
         protected virtual void OnMenuClosed() { }
-
-        private void HandleMenuOpened() => OnMenuOpened();
-
-        private void HandleMenuClosed() => OnMenuClosed();
     }
 }

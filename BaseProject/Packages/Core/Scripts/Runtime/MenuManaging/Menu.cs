@@ -95,14 +95,20 @@ namespace Base.CorePackage.MenuManaging
         }
 #endregion
 
+        /// <summary>
+        /// Drops all registrations and clears the events. Runs automatically when the menu is destroyed.
+        /// </summary>
         public virtual void Shutdown()
         {
+            if (HasShutDown)
+                return;
+
+            HasShutDown = true;
+
             ShutdownManager.Deregister(this);
 
             if (ServiceLocator.TryGet(out MenuManager menuManager))
                 menuManager.DeregisterMenu(this);
-
-            HasShutDown = true;
 
             if (IsOpen)
                 CleanupMenuState();
@@ -115,6 +121,9 @@ namespace Base.CorePackage.MenuManaging
         /// <summary>
         /// Opens the menu (always animated).
         /// </summary>
+        /// <param name="parentMenuIdentifier">
+        /// The menu this one is opened from, if any. The parent closes this menu when it closes itself.
+        /// </param>
         public void Open(MenuIdentifier parentMenuIdentifier = null)
         {
             if (IsOpen)
@@ -136,7 +145,9 @@ namespace Base.CorePackage.MenuManaging
             contentRoot.Show();
 
             RegisterParentMenu(parentMenuIdentifier);
-            ServiceLocator.Get<MenuManager>()?.RegisterOpenMenu(this, (uint)Priority, this);
+
+            if (ServiceLocator.TryGet(out MenuManager menuManager))
+                menuManager.RegisterOpenMenu(this, (uint)Priority, this);
 
             OnOpened();
             Opened?.Invoke();
@@ -153,6 +164,10 @@ namespace Base.CorePackage.MenuManaging
         /// <summary>
         /// Closes the menu (always animated).
         /// </summary>
+        /// <param name="closingMenuIdentifier">
+        /// The menu that triggered this close, if any. Used to skip detaching from a parent that is
+        /// closing this menu itself.
+        /// </param>
         public void Close(MenuIdentifier closingMenuIdentifier = null)
         {
             if (!IsOpen)
@@ -188,6 +203,9 @@ namespace Base.CorePackage.MenuManaging
             }
         }
 
+        /// <summary>
+        /// Closes the menu in response to a back request.
+        /// </summary>
         public void Back()
         {
             Close();
@@ -195,10 +213,15 @@ namespace Base.CorePackage.MenuManaging
             BackRequested?.Invoke();
         }
 
+        /// <summary>Runs right after the menu opened, before <see cref="Opened"/> is raised.</summary>
         protected virtual void OnOpened() { }
 
+        /// <summary>Runs once the close animation finished, before <see cref="Closed"/> is raised.</summary>
         protected virtual void OnClosed() { }
 
+        /// <summary>
+        /// Runs after a back request closed the menu, before <see cref="BackRequested"/> is raised.
+        /// </summary>
         protected virtual void OnBack() { }
 
         private void RegisterParentMenu(MenuIdentifier parentMenuIdentifier)
@@ -221,21 +244,24 @@ namespace Base.CorePackage.MenuManaging
 
         private void CleanupMenuState(MenuIdentifier closingMenuIdentifier = null)
         {
-            MenuManager menuManager = ServiceLocator.Get<MenuManager>();
+            bool hasMenuManager = ServiceLocator.TryGet(out MenuManager menuManager);
 
-            // Close child menus first
-            foreach (MenuIdentifier childMenuIdentifier in _childMenuIdentifiers)
-                menuManager?.CloseMenu(childMenuIdentifier, MenuIdentifier);
+            // Close child menus first, they cannot outlive their parent.
+            if (hasMenuManager)
+                foreach (MenuIdentifier childMenuIdentifier in _childMenuIdentifiers)
+                    menuManager.CloseMenu(childMenuIdentifier, MenuIdentifier);
 
             _childMenuIdentifiers.Clear();
 
-            // Only detach from parent if not closed by it
-            if (_parentMenu != null && _parentMenu.MenuIdentifier != closingMenuIdentifier)
+            // Only detach from the parent if it is not the one closing this menu.
+            if (_parentMenu != null
+                && _parentMenu.MenuIdentifier != closingMenuIdentifier)
                 _parentMenu._childMenuIdentifiers.Remove(MenuIdentifier);
 
             _parentMenu = null;
 
-            menuManager?.DeregisterOpenMenu(this);
+            if (hasMenuManager)
+                menuManager.DeregisterOpenMenu(this);
         }
 
         private void RegisterChildMenu(MenuIdentifier childMenuIdentifierToRegister)

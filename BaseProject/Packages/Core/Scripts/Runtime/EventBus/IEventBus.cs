@@ -18,7 +18,10 @@ namespace Base.CorePackage.EventBus
         /// <typeparam name="TEvent">The event type to listen for.</typeparam>
         /// <param name="handler">The callback invoked on every <see cref="Publish{TEvent}"/>.</param>
         /// <returns>A disposable token that unsubscribes the handler when disposed.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when <paramref name="handler"/> is <c>null</c>.</exception>
+        /// <remarks>
+        /// A <c>null</c> handler is logged as an error and returns an empty token, so callers can always
+        /// dispose the result without a null check.
+        /// </remarks>
         IDisposable Subscribe<TEvent>(Action<TEvent> handler) where TEvent : IEvent;
 
         /// <summary>
@@ -26,7 +29,12 @@ namespace Base.CorePackage.EventBus
         /// Has no effect if the handler was never subscribed.
         /// </summary>
         /// <typeparam name="TEvent">The event type the handler was registered for.</typeparam>
-        /// <param name="handler">The exact delegate instance previously passed to <see cref="Subscribe{TEvent}"/>.</param>
+        /// <param name="handler">
+        /// The exact delegate instance previously passed to <see cref="Subscribe{TEvent}"/>.
+        /// </param>
+        /// <remarks>
+        /// A <c>null</c> handler is logged as an error and ignored.
+        /// </remarks>
         void Unsubscribe<TEvent>(Action<TEvent> handler) where TEvent : IEvent;
 
         /// <summary>

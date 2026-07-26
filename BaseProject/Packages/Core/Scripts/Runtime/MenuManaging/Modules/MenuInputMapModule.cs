@@ -1,7 +1,6 @@
 using Base.AttributePackage;
 using Base.CorePackage.Input;
 using Base.CorePackage.Services;
-using Base.CorePackage.Services.Shutdown;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -11,55 +10,30 @@ namespace Base.CorePackage.MenuManaging.Modules
     /// Overrides the active input action map while the owning menu is open, scoped by the menu's
     /// priority. Restores the previous map on close or when destroyed.
     /// </summary>
-    public sealed class MenuInputMapModule : MenuModule, IShutdownHandler
+    public sealed class MenuInputMapModule : ScopedMenuModule
     {
         [Tooltip("The action map activated while the menu is open.")]
         [SerializeField] private InputActionMapReference actionMap;
 
-        public bool HasShutDown { get; private set; }
-
-        private bool _isApplied;
-
-#region Unity Callbacks
-        private void Awake() => ShutdownManager.Register(this);
-
-        private void OnDestroy() => Shutdown();
-#endregion
-
-        public void Shutdown()
+        protected override bool TryApply()
         {
-            if (HasShutDown)
-                return;
-
-            HasShutDown = true;
-            Release();
-            ShutdownManager.Deregister(this);
-        }
-
-        protected override void OnMenuOpened()
-        {
-            if (_isApplied || !actionMap.IsValid)
-                return;
+            if (!actionMap.IsValid)
+                return false;
 
             if (!ServiceLocator.TryGet(out InputManager inputManager))
-                return;
+                return false;
 
             if (!inputManager.TryResolveBaseMap(actionMap, out InputActionMap resolvedMap))
-                return;
+                return false;
 
             inputManager.RegisterInputMap(resolvedMap, this, (uint)OwnerMenu.Priority);
-            _isApplied = true;
+            return true;
         }
 
-        protected override void OnMenuClosed() => Release();
-
-        private void Release()
+        protected override void Release()
         {
-            if (!_isApplied)
-                return;
-
-            ServiceLocator.Get<InputManager>()?.DeregisterInputMap(this);
-            _isApplied = false;
+            if (ServiceLocator.TryGet(out InputManager inputManager))
+                inputManager.DeregisterInputMap(this);
         }
     }
 }

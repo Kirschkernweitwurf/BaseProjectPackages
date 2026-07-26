@@ -1,15 +1,22 @@
 namespace Base.CorePackage.Tracking
 {
     /// <summary>
-    /// Internal class to track an item along with its priority and insertion order.
+    /// A single tracked item together with its priority and insertion order.
+    /// Created and owned by <see cref="PriorityTracker{T}"/>.
     /// </summary>
-    public class TrackedItem<T>
+    /// <typeparam name="T">The type of the tracked item.</typeparam>
+    public sealed class TrackedItem<T>
     {
-        public readonly T Item;
-        public readonly uint Priority;
-        public readonly ulong Order;
+        /// <summary>The tracked item itself.</summary>
+        public T Item { get; }
 
-        public TrackedItem(T item, uint priority, ulong order)
+        /// <summary>The priority of the item. Higher values win.</summary>
+        public uint Priority { get; }
+
+        /// <summary>The insertion order, used as a tiebreaker between equal priorities.</summary>
+        public ulong Order { get; }
+
+        internal TrackedItem(T item, uint priority, ulong order)
         {
             Item = item;
             Priority = priority;

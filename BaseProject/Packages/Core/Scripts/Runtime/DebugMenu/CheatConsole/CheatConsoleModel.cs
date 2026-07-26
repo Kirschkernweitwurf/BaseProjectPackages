@@ -13,13 +13,18 @@ namespace Base.CorePackage.DebugMenu.CheatConsole
     /// </summary>
     public sealed class CheatConsoleModel
     {
+        private const string ExecutedFormat = "Executed '{0}'.";
+        private const string NoCommandMessage = "No command entered.";
+        private const string UnknownCommandFormat = "Unknown command: {0}";
+        private const string UsageFormat = "Usage: {0}({1})";
+
         /// <summary>
         /// Gets a read-only view of the registered commands.
         /// </summary>
         public IReadOnlyDictionary<string, CheatCommandInfo> Commands => _commands;
 
-        private readonly List<string> _history;
         private readonly Dictionary<string, CheatCommandInfo> _commands;
+        private readonly List<string> _history;
 
         private int _historyIndex;
 
@@ -29,15 +34,15 @@ namespace Base.CorePackage.DebugMenu.CheatConsole
         /// <param name="commands">The initial set of cheat commands.</param>
         public CheatConsoleModel(IEnumerable<CheatCommandInfo> commands)
         {
-            if (commands == null)
-            {
-                CustomLogger.LogError("CheatConsoleModel initialization failed: commands collection is null.", null);
-                return;
-            }
-
             _commands = new Dictionary<string, CheatCommandInfo>(StringComparer.OrdinalIgnoreCase);
             _history = new List<string>();
             _historyIndex = -1;
+
+            if (commands == null)
+            {
+                CustomLogger.LogError("Cheat command collection is null. No commands were registered.", null);
+                return;
+            }
 
             foreach (CheatCommandInfo command in commands)
                 RegisterCommand(command);
@@ -51,43 +56,36 @@ namespace Base.CorePackage.DebugMenu.CheatConsole
         public CheatConsoleResult Execute(string input)
         {
             if (string.IsNullOrWhiteSpace(input))
-                return new CheatConsoleResult("No command entered.",
-                    CheatConsoleMessageType.Warning);
+                return new CheatConsoleResult(NoCommandMessage, ECheatConsoleMessageType.Warning);
 
             string trimmed = input.Trim();
             AddToHistory(trimmed);
 
             string[] tokens = SplitArguments(trimmed);
             if (tokens.Length == 0)
-                return new CheatConsoleResult("No command entered.",
-                    CheatConsoleMessageType.Warning);
+                return new CheatConsoleResult(NoCommandMessage, ECheatConsoleMessageType.Warning);
 
             string commandName = tokens[0];
-            string[] arguments = new string[tokens.Length - 1];
-            for (int i = 1; i < tokens.Length; i++)
-                arguments[i - 1] = tokens[i];
+            string[] arguments = tokens[1..];
 
             if (!_commands.TryGetValue(commandName, out CheatCommandInfo commandInfo))
-                return new CheatConsoleResult("Unknown command: " + commandName,
-                    CheatConsoleMessageType.Error);
+                return new CheatConsoleResult(string.Format(UnknownCommandFormat, commandName),
+                    ECheatConsoleMessageType.Error);
 
             try
             {
-                string executionMessage = InvokeCommand(commandInfo, arguments);
-                return new CheatConsoleResult(executionMessage, CheatConsoleMessageType.Info);
+                return new CheatConsoleResult(InvokeCommand(commandInfo, arguments), ECheatConsoleMessageType.Info);
             }
             catch (TargetParameterCountException exception)
             {
-                string usage = exception.Message;
-                string message = $"Command '{commandInfo.Attribute.Command}' called with incorrect number of "
-                    + $"arguments. Try to use it like this:\n{usage}";
+                string message = $"Command '{commandInfo.Attribute.Command}' was called with the wrong number "
+                    + $"of arguments. Try to use it like this:\n{exception.Message}";
 
-                return new CheatConsoleResult(message, CheatConsoleMessageType.Warning);
+                return new CheatConsoleResult(message, ECheatConsoleMessageType.Warning);
             }
             catch (Exception exception)
             {
-                string message = "Command failed: " + exception.Message;
-                return new CheatConsoleResult(message, CheatConsoleMessageType.Error);
+                return new CheatConsoleResult("Command failed: " + exception.Message, ECheatConsoleMessageType.Error);
             }
         }
 
@@ -133,6 +131,8 @@ namespace Base.CorePackage.DebugMenu.CheatConsole
         /// <summary>
         /// Gets a list of command suggestions based on the current input.
         /// </summary>
+        /// <param name="currentInput">The text currently typed into the console.</param>
+        /// <returns>All commands starting with the input, without the input itself.</returns>
         public List<string> GetSuggestions(string currentInput)
         {
             List<string> results = new();
@@ -162,13 +162,19 @@ namespace Base.CorePackage.DebugMenu.CheatConsole
         {
             if (string.IsNullOrWhiteSpace(name))
             {
-                CustomLogger.LogError("Cannot register command with null or empty name.", null);
+                CustomLogger.LogError("Cannot register a command without a name.", null);
+                return;
+            }
+
+            if (action == null)
+            {
+                CustomLogger.LogError($"Cannot register command '{name}' without an action.", null);
                 return;
             }
 
             if (_commands.ContainsKey(name))
             {
-                CustomLogger.LogWarning("Command '" + name + "' is already registered.", null);
+                CustomLogger.LogWarning($"Command '{name}' is already registered.", null);
                 return;
             }
 
@@ -177,49 +183,32 @@ namespace Base.CorePackage.DebugMenu.CheatConsole
                 Description = description
             };
 
-            MethodInfo invokeMethod = action.Method;
-            object target = action.Target;
-
-            _commands.Add(name, new CheatCommandInfo(attribute, invokeMethod, target));
+            _commands.Add(name, new CheatCommandInfo(attribute, action.Method, action.Target));
         }
 
         private static string InvokeCommand(CheatCommandInfo commandInfo, string[] arguments)
         {
             ParameterInfo[] parameters = commandInfo.Method.GetParameters();
 
-            if (parameters.Length == 0)
-            {
-                object result = commandInfo.Method.Invoke(commandInfo.Target, null);
-                if (result == null)
-                    return "Executed '" + commandInfo.Attribute.Command + "'.";
-
-                return result.ToString();
-            }
-
             if (parameters.Length != arguments.Length)
             {
+                string parameterList = string.Join(", ", parameters.Select(parameter => parameter.Name));
+
                 string usage = commandInfo.Attribute.Usage
-                    ?? $"Usage: {commandInfo.Attribute.Command}"
-                    + $"({string.Join(", ", parameters.Select(p => p.Name))})";
+                    ?? string.Format(UsageFormat, commandInfo.Attribute.Command, parameterList);
 
                 throw new TargetParameterCountException(usage);
             }
 
             object[] convertedArguments = new object[parameters.Length];
-
             for (int i = 0; i < parameters.Length; i++)
-            {
-                ParameterInfo parameter = parameters[i];
-                string argumentString = arguments[i];
+                convertedArguments[i] = ConvertArgument(arguments[i], parameters[i].ParameterType);
 
-                convertedArguments[i] = ConvertArgument(argumentString, parameter.ParameterType);
-            }
+            object result = commandInfo.Method.Invoke(commandInfo.Target, convertedArguments);
 
-            object invocationResult = commandInfo.Method.Invoke(commandInfo.Target, convertedArguments);
-            if (invocationResult == null)
-                return "Executed '" + commandInfo.Attribute.Command + "'.";
-
-            return invocationResult.ToString();
+            return result == null
+                ? string.Format(ExecutedFormat, commandInfo.Attribute.Command)
+                : result.ToString();
         }
 
         private static object ConvertArgument(string argument, Type targetType)
@@ -247,29 +236,23 @@ namespace Base.CorePackage.DebugMenu.CheatConsole
 
             for (int i = 0; i < input.Length; i++)
             {
-                char c = input[i];
+                char character = input[i];
 
-                if (c == '"')
+                if (character == '"')
                 {
                     inQuotes = !inQuotes;
                 }
-                else if (char.IsWhiteSpace(c) && !inQuotes)
+                else if (char.IsWhiteSpace(character) && !inQuotes)
                 {
                     if (i > startIndex)
-                    {
-                        string token = input.Substring(startIndex, i - startIndex);
-                        result.Add(Unquote(token));
-                    }
+                        result.Add(Unquote(input[startIndex..i]));
 
                     startIndex = i + 1;
                 }
             }
 
             if (input.Length > startIndex)
-            {
-                string token = input.Substring(startIndex);
-                result.Add(Unquote(token));
-            }
+                result.Add(Unquote(input[startIndex..]));
 
             return result.ToArray();
         }
@@ -277,29 +260,29 @@ namespace Base.CorePackage.DebugMenu.CheatConsole
         private static string Unquote(string token)
         {
             string trimmed = token.Trim();
-            if (trimmed.Length >= 2 && trimmed[0] == '"' && trimmed[^1] == '"')
-                return trimmed.Substring(1, trimmed.Length - 2);
 
-            return trimmed;
+            return trimmed.Length >= 2 && trimmed[0] == '"' && trimmed[^1] == '"'
+                ? trimmed[1..^1]
+                : trimmed;
         }
 
         private void RegisterCommand(CheatCommandInfo commandInfo)
         {
             if (commandInfo == null)
             {
-                CustomLogger.LogError("Cannot register null cheat command.", null);
+                CustomLogger.LogError("Cannot register a null cheat command.", null);
                 return;
             }
 
             string command = commandInfo.Attribute.Command;
             if (string.IsNullOrWhiteSpace(command))
             {
-                CustomLogger.LogError("Cheat command has null or empty command name.", null);
+                CustomLogger.LogError("Cheat command has no command name.", null);
                 return;
             }
 
             if (!_commands.TryAdd(command, commandInfo))
-                CustomLogger.LogWarning("Cheat command '" + command + "' is already registered.", null);
+                CustomLogger.LogWarning($"Cheat command '{command}' is already registered.", null);
         }
 
         private void AddToHistory(string input)

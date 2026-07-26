@@ -565,7 +565,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Systems.CheatConsole.CheatConsoleView
   <MenuIdentifier>k__BackingField: {fileID: 11400000, guid: e5ce9f8bb7b86df45a5bd5e1c62a4565, type: 2}
   contentRoot: {fileID: 7373085267952663516}
-  <MenuPriority>k__BackingField: 0
+  <Priority>k__BackingField: 0
   openOnStart: 0
   <ListenToOnBackAction>k__BackingField: 0
   blockingMenus: []
@@ -591,6 +591,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4edc8f5ad2824cea89e1fc4878768d22, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Systems.CheatConsole.CheatConsoleController
+  view: {fileID: 6426796371714755357}
 --- !u!1 &5296705676567229368
 GameObject:
   m_ObjectHideFlags: 0

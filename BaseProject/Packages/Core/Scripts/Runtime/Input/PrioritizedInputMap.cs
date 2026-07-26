@@ -1,11 +1,13 @@
 using Base.CorePackage.Tracking;
 using UnityEngine.InputSystem;
 
+// ReSharper disable UnusedMember.Global
+
 namespace Base.CorePackage.Input
 {
     /// <summary>
-    /// Bundles an <see cref="InputActionMap"/> with its <see cref="EPriority"/>.
-    /// Used to register a map with the <see cref="InputManager"/> in one call.
+    /// Bundles an <see cref="InputActionMap"/> with its <see cref="EPriority"/>, so it can be registered with the
+    /// <see cref="InputManager"/> in one call.
     /// </summary>
     public readonly struct PrioritizedInputMap
     {
@@ -15,10 +17,15 @@ namespace Base.CorePackage.Input
         public InputActionMap Map { get; }
 
         /// <summary>
-        /// The priority of the input action map. Higher priority maps will take precedence over lower priority ones.
+        /// The priority of the map. Higher priorities take precedence over lower ones.
         /// </summary>
         public EPriority Priority { get; }
 
+        /// <summary>
+        /// Creates a new bundle of a map and its priority.
+        /// </summary>
+        /// <param name="map">The input action map to register.</param>
+        /// <param name="priority">The priority of the map.</param>
         public PrioritizedInputMap(InputActionMap map, EPriority priority)
         {
             Map = map;

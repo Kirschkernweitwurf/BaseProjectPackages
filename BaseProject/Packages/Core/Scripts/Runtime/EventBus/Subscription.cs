@@ -12,10 +12,17 @@ namespace Base.CorePackage.EventBus
     /// </remarks>
     public sealed class Subscription<TEvent> : IDisposable where TEvent : IEvent
     {
+        // Stored as the concrete type on purpose: Unity's overloaded == only applies to UnityEngine.Object
+        // references, so a destroyed bus is recognized as null here.
         private EventBus _bus;
         private Action<TEvent> _handler;
 
-        public Subscription(EventBus bus, Action<TEvent> handler)
+        /// <summary>
+        /// Creates a token that removes <paramref name="handler"/> from <paramref name="bus"/> on dispose.
+        /// </summary>
+        /// <param name="bus">The bus the handler is registered with.</param>
+        /// <param name="handler">The handler to remove, or <c>null</c> for an empty token that does nothing.</param>
+        internal Subscription(EventBus bus, Action<TEvent> handler)
         {
             _bus = bus;
             _handler = handler;
@@ -30,10 +37,13 @@ namespace Base.CorePackage.EventBus
         /// </remarks>
         public void Dispose()
         {
-            if (_bus == null)
+            if (_handler == null)
                 return;
 
-            _bus.Unsubscribe(_handler);
+            // A destroyed bus already dropped all its handlers, so only the local references are cleared.
+            if (_bus != null)
+                _bus.Unsubscribe(_handler);
+
             _bus = null;
             _handler = null;
         }

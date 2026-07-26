@@ -1,5 +1,5 @@
+using System;
 using System.Reflection;
-using Base.UtilityPackage.Logging;
 
 namespace Base.CorePackage.DebugMenu.CheatConsole
 {
@@ -33,20 +33,8 @@ namespace Base.CorePackage.DebugMenu.CheatConsole
         /// </param>
         public CheatCommandInfo(CheatCommandAttribute attribute, MethodInfo method, object target)
         {
-            if (method == null)
-            {
-                CustomLogger.LogError("Cheat command method cannot be null.", null);
-                return;
-            }
-
-            if (attribute == null)
-            {
-                CustomLogger.LogError("Cheat command attribute cannot be null.", null);
-                return;
-            }
-
-            Attribute = attribute;
-            Method = method;
+            Attribute = attribute ?? throw new ArgumentNullException(nameof(attribute));
+            Method = method ?? throw new ArgumentNullException(nameof(method));
             Target = target;
         }
     }

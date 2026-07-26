@@ -31,11 +31,18 @@ namespace Base.CorePackage.Tweening.Core
         /// <inheritdoc/>
         public override event Action OnKilled;
 
+        /// <summary>
+        /// Loop count that means the tween keeps looping until it is stopped from the outside.
+        /// </summary>
+        private const int InfiniteLoops = -1;
+
         private static readonly Func<T, T, float, T> DefaultLerpFunc = TweenLerpUtility.Resolve<T>();
 
+        [TweenProfileToggle]
         [Tooltip("If true, a profile asset drives the values, the timing and the loop behavior.")]
         [SerializeField] private bool useProfile;
 
+        [TweenSettingsToggle]
         [Tooltip("If true, a shared settings asset drives the timing and the loop behavior.")]
         [SerializeField] private bool useSettingsAsset;
 
@@ -48,6 +55,12 @@ namespace Base.CorePackage.Tweening.Core
 
         [Tooltip("Loop behavior of this tween.")]
         [SerializeField] private LoopSettings loopSettings = new();
+
+        private TweenBase _activeTween;
+        private TweenSettings _resolvedSettings;
+        private LoopSettings _resolvedLoopSettings;
+        private int _currentLoop;
+        private bool _currentReversed;
 
         public bool HasShutDown { get; private set; }
 
@@ -65,6 +78,9 @@ namespace Base.CorePackage.Tweening.Core
         public LoopSettings LoopSettings => Application.isPlaying
             ? _resolvedLoopSettings ??= ResolveLoopSettings()
             : ResolveLoopSettings();
+
+        /// <summary>The value captured on Awake, used as the fallback start value and on reset.</summary>
+        protected T DefaultValue { get; private set; }
 
         /// <summary>
         /// The profile driving this tween, or <c>null</c> while the profile toggle is off.
@@ -104,14 +120,6 @@ namespace Base.CorePackage.Tweening.Core
         /// </summary>
         protected virtual Func<T, T, float, T> LerpFunc => DefaultLerpFunc;
 
-        protected T DefaultValue;
-
-        private TweenBase _activeTween;
-        private TweenSettings _resolvedSettings;
-        private LoopSettings _resolvedLoopSettings;
-        private int _currentLoop;
-        private bool _currentReversed;
-
 #region Unity Callbacks
         protected virtual void Awake() => DefaultValue = GetCurrentValue();
 
@@ -139,8 +147,7 @@ namespace Base.CorePackage.Tweening.Core
             _currentLoop = 0;
             _currentReversed = isReversed;
 
-            TweenBase first = CreateTween(isReversed);
-            StartTween(first);
+            StartTween(CreateTween(isReversed));
         }
 
         public override void Stop(bool complete = false)
@@ -230,8 +237,8 @@ namespace Base.CorePackage.Tweening.Core
 
             if (lerpFunc == null)
             {
-                CustomLogger.LogError(
-                    $"No interpolation function for '{typeof(T).Name}'. Override LerpFunc or CreateTween.", this);
+                CustomLogger.LogError($"No interpolation function for '{typeof(T).Name}'. "
+                    + $"Override {nameof(LerpFunc)} or {nameof(CreateTween)}.", this);
 
                 return null;
             }
@@ -264,7 +271,8 @@ namespace Base.CorePackage.Tweening.Core
             if (Profile != null)
                 return Profile.Settings.Copy();
 
-            if (useSettingsAsset && settingsAsset != null)
+            if (useSettingsAsset
+                && settingsAsset != null)
                 return settingsAsset.Settings.Copy();
 
             return tweenSettings.Copy();
@@ -275,21 +283,21 @@ namespace Base.CorePackage.Tweening.Core
             if (Profile != null)
                 return Profile.Loop.Copy();
 
-            if (useSettingsAsset && settingsAsset != null)
+            if (useSettingsAsset
+                && settingsAsset != null)
                 return settingsAsset.Loop.Copy();
 
             return loopSettings.Copy();
         }
 
         /// <summary>
-        /// Centralized start for a tween instance (subscribes and starts).
+        /// Centralized start for a tween instance. Subscribes to it and starts it.
         /// </summary>
         private void StartTween(TweenBase tween)
         {
             if (tween == null)
             {
-                OnFinished?.Invoke();
-                OnKilled?.Invoke();
+                Finish();
                 return;
             }
 
@@ -299,8 +307,8 @@ namespace Base.CorePackage.Tweening.Core
         }
 
         /// <summary>
-        /// Called when the currently active tween instance completes naturally.
-        /// This method handles loop logic and only fires OnFinished when the behavior is truly done.
+        /// Called when the currently active tween instance completes naturally. Handles the loop
+        /// logic and only fires <see cref="OnFinished"/> when the behavior is truly done.
         /// </summary>
         private void HandleTweenComplete(TweenBase completedTween)
         {
@@ -308,12 +316,14 @@ namespace Base.CorePackage.Tweening.Core
             _activeTween = null;
 
             LoopSettings loops = LoopSettings;
-            bool hasLoopBudget = loops.LoopCount == -1 || _currentLoop < loops.LoopCount;
 
-            if (loops.LoopType == ELoopType.None || !hasLoopBudget)
+            bool hasLoopBudget = loops.LoopCount == InfiniteLoops
+                || _currentLoop < loops.LoopCount;
+
+            if (loops.LoopType == ELoopType.None
+                || !hasLoopBudget)
             {
-                OnFinished?.Invoke();
-                OnKilled?.Invoke();
+                Finish();
                 return;
             }
 
@@ -325,16 +335,29 @@ namespace Base.CorePackage.Tweening.Core
                     ApplyValue(DefaultValue);
                     StartTween(CreateTween(_currentReversed));
                     break;
-
                 case ELoopType.PingPong:
                     _currentReversed = !_currentReversed;
                     StartTween(CreateTween(_currentReversed));
                     break;
-
                 case ELoopType.Continue:
                     StartTween(CreateTween(_currentReversed));
                     break;
+                default:
+                    CustomLogger.LogWarning($"Unhandled {nameof(ELoopType)} '{loops.LoopType}'. Finishing instead.",
+                        this);
+
+                    Finish();
+                    break;
             }
+        }
+
+        /// <summary>
+        /// Fires the end-of-playback events in their documented order.
+        /// </summary>
+        private void Finish()
+        {
+            OnFinished?.Invoke();
+            OnKilled?.Invoke();
         }
     }
 }

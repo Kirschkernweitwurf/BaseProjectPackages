@@ -15,6 +15,11 @@ namespace Base.CorePackage.MenuManaging.Identifier
     {
         private static MenuIdentifierRegistry _registry;
 
+        /// <summary>
+        /// Resolves the identifier asset with the given name.
+        /// </summary>
+        /// <param name="identifierName">The asset name of the identifier.</param>
+        /// <returns>The identifier, or <c>null</c> if it is not registered.</returns>
         public static MenuIdentifier Load(string identifierName)
         {
             if (_registry == null)
@@ -22,8 +27,8 @@ namespace Base.CorePackage.MenuManaging.Identifier
 
             if (_registry == null)
             {
-                CustomLogger.LogError("No MenuIdentifierRegistry found under any Resources folder. "
-                    + "Run Tools > Base Packages > Menu > Regenerate Menu Identifiers.", null);
+                CustomLogger.LogError($"No {nameof(MenuIdentifierRegistry)} found under any Resources folder. "
+                    + "Regenerate the menu identifiers from the Base Packages tools menu.", null);
 
                 return null;
             }
@@ -44,10 +49,10 @@ namespace Base.CorePackage.MenuManaging.Identifier
                 return null;
 
             if (found.Length > 1)
-                CustomLogger.LogError($"Found {found.Length} MenuIdentifierRegistry assets, expected one. "
-                    + $"Using '{found[0].name}'. Regenerate to remove the duplicates.", null);
+                CustomLogger.LogError($"Found {found.Length} {nameof(MenuIdentifierRegistry)} assets, "
+                    + $"expected one. Using \"{found[0].name}\". Regenerate to remove the duplicates.", null);
 
-            Array.Sort(found, comparison: (a, b) => string.CompareOrdinal(a.name, b.name));
+            Array.Sort(found, comparison: (first, second) => string.CompareOrdinal(first.name, second.name));
             return found[0];
         }
 

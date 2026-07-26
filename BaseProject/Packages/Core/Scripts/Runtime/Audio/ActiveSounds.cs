@@ -83,10 +83,9 @@ namespace Base.CorePackage.Audio
         /// Counts how many live sources are playing for a container.
         /// </summary>
         /// <param name="container">The container to count sources for.</param>
-        public int CountOf(AudioContainer container)
-            => TryGetSources(container, out IReadOnlyList<AudioSource> sources)
-                ? sources.Count
-                : 0;
+        public int CountOf(AudioContainer container) => TryGetSources(container, out IReadOnlyList<AudioSource> sources)
+            ? sources.Count
+            : 0;
 
         /// <summary>
         /// Gets the oldest live source playing for a container, or null if none is.

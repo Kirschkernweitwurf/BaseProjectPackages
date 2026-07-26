@@ -1,11 +1,12 @@
 using Base.CorePackage.Services;
 using Base.CorePackage.Tracking;
+using Base.UtilityPackage.Logging;
 
 namespace Base.CorePackage.Tooltip
 {
     /// <summary>
-    /// Manages Tooltips shown on screen, ensuring the highest priority tooltip is displayed.
-    /// Uses a <see cref="PriorityTracker{T}"/> to handle multiple tooltip requests.
+    /// Shows the highest priority tooltip that is currently requested.
+    /// Backed by a <see cref="PriorityTracker{T}"/>, so overlapping requests resolve by priority.
     /// </summary>
     public class TooltipService : GameServiceBehaviour
     {
@@ -14,6 +15,13 @@ namespace Base.CorePackage.Tooltip
         private TooltipView _view;
 
 #region Unity Callbacks
+        protected override void Awake()
+        {
+            base.Awake();
+
+            _tracker.OnCurrentActiveItemChanged += OnTooltipChanged;
+        }
+
         protected override void OnDestroy()
         {
             base.OnDestroy();
@@ -23,41 +31,44 @@ namespace Base.CorePackage.Tooltip
 #endregion
 
         /// <summary>
-        /// Sets the view responsible for displaying tooltips.
+        /// Registers the view that draws the tooltips. Called by the <see cref="TooltipView"/> itself.
         /// </summary>
-        /// <param name="view"></param>
+        /// <param name="view">The view to draw with.</param>
         public void SetView(TooltipView view)
         {
+            if (view == null)
+            {
+                CustomLogger.LogError($"{nameof(SetView)} was called with a null view.", this);
+                return;
+            }
+
             _view = view;
-            _tracker.OnCurrentActiveItemChanged += OnTooltipChanged;
         }
 
         /// <summary>
-        /// Adds a tooltip with the specified priority and caller.
-        /// If a tooltip from the same caller already exists, it will be updated.
+        /// Adds a tooltip request. A caller can only hold one request at a time.
         /// </summary>
-        /// <param name="data">The tooltip data to display></param>
-        /// <param name="priority">The priority of the tooltip (higher values take precedence)</param>
-        /// <param name="caller">The object requesting the tooltip (used for tracking/removal)</param>
+        /// <param name="data">The tooltip to display.</param>
+        /// <param name="priority">Higher values win over lower ones.</param>
+        /// <param name="caller">The object requesting the tooltip, used for tracking and removal.</param>
         public void AddTooltip(TooltipData data, uint priority, object caller) => _tracker.Add(data, priority, caller);
 
         /// <summary>
-        /// Removes the tooltip associated with the specified caller.
-        /// If the caller has no associated tooltip, this does nothing.
+        /// Removes the request of the given caller.
         /// </summary>
-        /// <param name="caller">The object that requested the tooltip</param>
+        /// <param name="caller">The object that requested the tooltip.</param>
         public void RemoveTooltip(object caller) => _tracker.Remove(caller);
 
         /// <summary>
-        /// Checks if there is a tooltip currently registered from the specified caller.
+        /// Checks whether a caller currently holds a tooltip request.
         /// </summary>
-        /// <param name="caller">The object to check for an associated tooltip</param>
-        /// <returns><c>true</c> if a tooltip from the caller exists; otherwise, <c>false</c></returns>
+        /// <param name="caller">The object to check.</param>
+        /// <returns><c>true</c> when a request from that caller exists; otherwise <c>false</c>.</returns>
         public bool HasTooltipFromCaller(object caller) => _tracker.HasCaller(caller);
 
         /// <summary>
-        /// Called when the currently active tooltip changes.
-        /// Updates the view to show or hide the tooltip as needed.
+        /// Pushes the new top request into the view. Stays silent while no view is registered,
+        /// which is the normal state before the tooltip canvas loads and after it is unloaded.
         /// </summary>
         private void OnTooltipChanged(TrackedItem<TooltipData> item)
         {

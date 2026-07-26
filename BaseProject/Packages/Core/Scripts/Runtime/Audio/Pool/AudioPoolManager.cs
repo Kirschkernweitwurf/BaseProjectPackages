@@ -4,6 +4,7 @@ using Base.AttributePackage;
 using Base.UtilityPackage.Logging;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+
 // ReSharper disable MemberCanBePrivate.Global
 
 // ReSharper disable UnusedMember.Global
@@ -15,7 +16,10 @@ namespace Base.CorePackage.Audio.Pool
     /// </summary>
     public class AudioPoolManager : MonoBehaviour
     {
-        private readonly Dictionary<EAudioType, AudioPool> _pools = new();
+        /// <summary>
+        /// Raised after pools were cleared, so listeners can drop their references to the released sources.
+        /// </summary>
+        public event Action PoolsCleared;
 
         [Header("Setup")]
 
@@ -36,17 +40,14 @@ namespace Base.CorePackage.Audio.Pool
         [Required] [SerializeField] private AudioSource audioSourceUiPrefab;
 
         /// <summary>
-        /// Raised after pools were cleared, so listeners can drop their references to the released sources.
-        /// </summary>
-        public event Action PoolsCleared;
-
-        /// <summary>
         /// The transform pooled sources are parented to. The field is optional, so this falls back to
         /// the manager itself instead of leaving instances loose in the scene root.
         /// </summary>
         private Transform PoolParent => poolParent != null
             ? poolParent
             : transform;
+
+        private readonly Dictionary<EAudioType, AudioPool> _pools = new();
 
 #region Unity Callbacks
         private void Awake()
@@ -65,10 +66,9 @@ namespace Base.CorePackage.Audio.Pool
         /// </summary>
         /// <param name="type">The audio type to retrieve a source for.</param>
         /// <returns>A pooled source, or null if the type has no pool.</returns>
-        public AudioSource GetAudioSource(EAudioType type)
-            => _pools.TryGetValue(type, out AudioPool pool)
-                ? pool.Get()
-                : null;
+        public AudioSource GetAudioSource(EAudioType type) => _pools.TryGetValue(type, out AudioPool pool)
+            ? pool.Get()
+            : null;
 
         /// <summary>
         /// Returns an audio source to the pool for the given type.

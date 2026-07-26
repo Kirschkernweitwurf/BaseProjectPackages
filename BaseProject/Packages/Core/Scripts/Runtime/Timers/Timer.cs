@@ -2,16 +2,21 @@ using System;
 using Base.UtilityPackage.Logging;
 using UnityEngine;
 
+// ReSharper disable UnusedMember.Global
 // ReSharper disable MemberCanBePrivate.Global
+
 namespace Base.CorePackage.Timers
 {
     /// <summary>
     /// A reusable countdown timer driven by <see cref="TimerManager"/>.
     /// Supports looping, pausing, progress reporting, and completion callbacks.
     /// </summary>
-    public class Timer
+    public sealed class Timer
     {
-        /// <summary>Raised once when the timer reaches zero.</summary>
+        /// <summary>Shortest allowed duration, so progress never divides by zero.</summary>
+        private const float MinimumDuration = 0.0001f;
+
+        /// <summary>Raised when the timer reaches zero, on every pass when looping.</summary>
         public event Action Completed;
 
         /// <summary>Raised every frame the timer runs, passing the remaining seconds.</summary>
@@ -21,7 +26,7 @@ namespace Base.CorePackage.Timers
         public float Remaining { get; private set; }
 
         /// <summary>Progress from 0 (start) to 1 (complete), useful for UI bars.</summary>
-        public float Progress => 1f - Remaining / Mathf.Max(_duration, Mathf.Epsilon);
+        public float Progress => Mathf.Clamp01(1f - Remaining / _duration);
 
         /// <summary>True while the timer is actively counting down.</summary>
         public bool IsRunning => _isRunning && !_isPaused;
@@ -35,10 +40,10 @@ namespace Base.CorePackage.Timers
         /// <summary>Creates a timer. Duration is in seconds.</summary>
         public Timer(float duration, bool loop = false)
         {
-            if (duration <= 0f)
-                CustomLogger.LogError($"Timer duration must be positive, got {duration}.", null);
+            if (duration < MinimumDuration)
+                CustomLogger.LogError($"{nameof(duration)} must be positive, got {duration}.", null);
 
-            _duration = duration;
+            _duration = Mathf.Max(duration, MinimumDuration);
             _loop = loop;
             Remaining = _duration;
         }
@@ -46,9 +51,13 @@ namespace Base.CorePackage.Timers
         /// <summary>Creates, starts and returns a one-shot countdown in a single call.</summary>
         public static Timer Countdown(float seconds, Action onComplete)
         {
+            if (onComplete == null)
+                CustomLogger.LogWarning($"{nameof(onComplete)} is null, the countdown does nothing.", null);
+
             Timer timer = new(seconds);
             timer.Completed += onComplete;
             timer.Start();
+
             return timer;
         }
 
@@ -71,6 +80,7 @@ namespace Base.CorePackage.Timers
         public void Stop()
         {
             _isRunning = false;
+            _isPaused = false;
             TimerManager.Unregister(this);
         }
 
@@ -85,15 +95,19 @@ namespace Base.CorePackage.Timers
             if (Remaining > 0f)
                 return;
 
-            Completed?.Invoke();
-
             if (_loop)
             {
-                Remaining = _duration;
+                // Carry the overshoot into the next pass so long-running loops do not drift.
+                Remaining += _duration;
+                Completed?.Invoke();
                 return;
             }
 
+            Remaining = 0f;
+
+            // Stop before the callback, so a listener may restart the timer from inside it.
             Stop();
+            Completed?.Invoke();
         }
     }
 }

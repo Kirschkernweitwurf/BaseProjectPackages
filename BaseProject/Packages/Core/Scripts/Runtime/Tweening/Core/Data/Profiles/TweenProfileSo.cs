@@ -12,6 +12,7 @@ namespace Base.CorePackage.Tweening.Core.Data.Profiles
     /// </remarks>
     public abstract class TweenProfileSo : ScriptableObject
     {
+        [TweenSettingsToggle]
         [Tooltip("If true, a shared settings asset drives the timing and the loop behavior.")]
         [SerializeField] private bool useSettingsAsset;
 

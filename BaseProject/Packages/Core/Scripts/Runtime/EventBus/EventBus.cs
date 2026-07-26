@@ -1,25 +1,44 @@
 using System;
 using System.Collections.Generic;
 using Base.CorePackage.Services;
-using UnityEngine;
+using Base.UtilityPackage.Logging;
 
 namespace Base.CorePackage.EventBus
 {
     /// <summary>
     /// Default <see cref="IEventBus"/> implementation backed by multicast delegates.
     /// </summary>
+    /// <remarks>
+    /// Registers itself with the service locator through <see cref="GameServiceBehaviour"/> and drops every
+    /// handler on destroy, so no subscription survives a scene unload.
+    /// </remarks>
     public sealed class EventBus : GameServiceBehaviour, IEventBus
     {
         private readonly Dictionary<Type, Delegate> _handlers = new();
         private readonly Dictionary<Type, Delegate[]> _invocationListCache = new();
 
+#region Unity Callbacks
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+
+            Clear();
+        }
+#endregion
+
         /// <inheritdoc/>
         public IDisposable Subscribe<TEvent>(Action<TEvent> handler) where TEvent : IEvent
         {
-            if (handler == null)
-                throw new ArgumentNullException(nameof(handler));
-
             Type type = typeof(TEvent);
+
+            if (handler == null)
+            {
+                CustomLogger.LogError($"Cannot subscribe a null handler for {type.Name}.", this);
+
+                // An empty token keeps using blocks and Dispose calls on the caller side safe.
+                return new Subscription<TEvent>(this, null);
+            }
+
             _handlers[type] = _handlers.TryGetValue(type, out Delegate existing)
                 ? Delegate.Combine(existing, handler)
                 : handler;
@@ -32,10 +51,14 @@ namespace Base.CorePackage.EventBus
         /// <inheritdoc/>
         public void Unsubscribe<TEvent>(Action<TEvent> handler) where TEvent : IEvent
         {
-            if (handler == null)
-                return;
-
             Type type = typeof(TEvent);
+
+            if (handler == null)
+            {
+                CustomLogger.LogError($"Cannot unsubscribe a null handler for {type.Name}.", this);
+                return;
+            }
+
             if (!_handlers.TryGetValue(type, out Delegate existing))
                 return;
 
@@ -52,29 +75,27 @@ namespace Base.CorePackage.EventBus
         public void Publish<TEvent>(TEvent @event) where TEvent : IEvent
         {
             Type type = typeof(TEvent);
-            if (!_handlers.TryGetValue(type, out Delegate del))
+            if (!_handlers.TryGetValue(type, out Delegate combined))
                 return;
 
-            if (del is not Action<TEvent> typed)
-                return;
-
-            // Invocation lists are cached to avoid the per-publish array allocation
-            // of GetInvocationList. The cache is invalidated on (un)subscribe.
+            // GetInvocationList allocates a new array on every call, so the result is cached here.
+            // Subscribe, Unsubscribe and Clear invalidate that cache.
             if (!_invocationListCache.TryGetValue(type, out Delegate[] invocations))
             {
-                invocations = typed.GetInvocationList();
+                invocations = combined.GetInvocationList();
                 _invocationListCache[type] = invocations;
             }
 
+            // Iterating the local array keeps this dispatch intact while handlers (un)subscribe.
             foreach (Delegate invocation in invocations)
             {
                 try
                 {
                     ((Action<TEvent>)invocation).Invoke(@event);
                 }
-                catch (Exception e)
+                catch (Exception exception)
                 {
-                    Debug.LogException(e);
+                    CustomLogger.LogError($"A handler for {type.Name} threw an exception: {exception}", this);
                 }
             }
         }

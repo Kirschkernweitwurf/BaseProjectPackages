@@ -5,14 +5,18 @@ using UnityEngine;
 namespace Base.CorePackage.PriorityTrackers
 {
     /// <summary>
-    /// Manages the cursor state based on priority requests, using a PriorityTracker instance.
+    /// Applies the highest-priority <see cref="CursorRequest"/> to the hardware cursor.
+    /// Falls back to the serialized default while no request is active.
     /// </summary>
     public class CursorManager : GameServiceBehaviour
     {
-        [Tooltip("Default cursor settings to use when no requests are active.")]
+        [Tooltip("Cursor settings used when no request is active.")]
         [SerializeField] private CursorRequest defaultCursorSettings = new();
 
-        public readonly PriorityTracker<CursorRequest> CursorTracker = new();
+        /// <summary>
+        /// Resolves competing cursor requests by priority.
+        /// </summary>
+        public PriorityTracker<CursorRequest> CursorTracker { get; } = new();
 
 #region Unity Callbacks
         protected override void Awake()
@@ -27,25 +31,17 @@ namespace Base.CorePackage.PriorityTrackers
         {
             base.OnDestroy();
 
-            if (CursorTracker != null)
-                CursorTracker.OnCurrentActiveItemChanged -= HandleCursorChange;
+            CursorTracker.OnCurrentActiveItemChanged -= HandleCursorChange;
         }
 #endregion
 
-        /// <summary>
-        /// Requests a cursor state change with the given priority.
-        /// </summary>
-        /// <param name="request">The cursor request.</param>
         private static void ApplyCursorState(CursorRequest request)
         {
             Cursor.visible = request.IsCursorVisible;
             Cursor.lockState = request.LockMode;
         }
 
-        /// <summary>
-        /// Adds a cursor request with the specified priority on behalf of the caller.
-        /// </summary>
-        /// <param name="trackedItem">The cursor request to track.</param>
+        // A null item means nothing is requesting a cursor state, so the serialized default takes over.
         private void HandleCursorChange(TrackedItem<CursorRequest> trackedItem)
         {
             if (trackedItem == null)

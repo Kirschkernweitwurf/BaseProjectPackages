@@ -3,7 +3,6 @@ using System.Linq;
 using Base.AttributePackage;
 using Base.CorePackage.MenuManaging;
 using Base.CorePackage.ObjectPooling;
-using Base.UtilityPackage.Logging;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,6 +15,12 @@ namespace Base.CorePackage.DebugMenu.CheatConsole
     public sealed class CheatConsoleView : Menu
     {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
+        private const string CommandPrefix = "> ";
+        private const string ErrorPrefix = "[Error] ";
+        private const string WarningPrefix = "[Warning] ";
+
+        private readonly List<TMP_Text> _activeSuggestions = new();
+
         [field: Header("Input")]
 
         [field: Required] [field: SerializeField] public TMP_InputField InputField { get; private set; }
@@ -38,19 +43,35 @@ namespace Base.CorePackage.DebugMenu.CheatConsole
         [SerializeField] private Color errorColor = Color.red;
         [SerializeField] private Color commandColor = new(0.5f, 1f, 0.5f);
 
-        private readonly List<TMP_Text> _activeSuggestions = new();
         private HashSetObjectPool<TMP_Text> _suggestionPool;
 
+#region Unity Callbacks
         protected override void Awake()
         {
             base.Awake();
 
             _suggestionPool = new HashSetObjectPool<TMP_Text>(suggestionPrefab, suggestionParent, ResetSuggestion);
         }
+#endregion
+
+        protected override void OnOpened()
+        {
+            base.OnOpened();
+
+            FocusInput();
+        }
+
+        protected override void OnClosed()
+        {
+            base.OnClosed();
+
+            SetInputText(string.Empty);
+        }
 
         /// <summary>
         /// Sets the text of the input field.
         /// </summary>
+        /// <param name="text">The text to show in the input field.</param>
         public void SetInputText(string text)
         {
             InputField.text = text;
@@ -60,12 +81,15 @@ namespace Base.CorePackage.DebugMenu.CheatConsole
         /// <summary>
         /// Gets the current text of the input field.
         /// </summary>
+        /// <returns>The text currently typed into the input field.</returns>
         public string GetInputText() => InputField.text;
 
         /// <summary>
         /// Appends a message line to the console log.
         /// </summary>
-        public void AppendLog(string message, CheatConsoleMessageType messageType)
+        /// <param name="message">The message to append.</param>
+        /// <param name="messageType">The severity the message is colored and prefixed with.</param>
+        public void AppendLog(string message, ECheatConsoleMessageType messageType)
         {
             string prefix = GetPrefix(messageType);
             string colored = $"<color=#{ColorUtility.ToHtmlStringRGB(GetColor(messageType))}>{prefix}{message}</color>";
@@ -91,10 +115,11 @@ namespace Base.CorePackage.DebugMenu.CheatConsole
         /// <summary>
         /// Shows a list of suggestion texts below the input field.
         /// </summary>
+        /// <param name="suggestions">The suggestions to show, capped by the configured maximum.</param>
         public void ShowSuggestions(List<string> suggestions)
         {
-            foreach (TMP_Text s in _activeSuggestions)
-                _suggestionPool.Release(s);
+            foreach (TMP_Text suggestion in _activeSuggestions)
+                _suggestionPool.Release(suggestion);
 
             _activeSuggestions.Clear();
 
@@ -113,56 +138,45 @@ namespace Base.CorePackage.DebugMenu.CheatConsole
         }
 
         /// <summary>
-        /// Gets the current suggestion texts.
+        /// Gets the currently shown suggestion texts.
         /// </summary>
-        public List<string> GetCurrentSuggestions() => _activeSuggestions.Select(s => s.text).ToList();
+        /// <returns>The text of every visible suggestion.</returns>
+        public List<string> GetCurrentSuggestions()
+            => _activeSuggestions.Select(suggestion => suggestion.text).ToList();
 
+        /// <summary>
+        /// Clears the console log and scrolls back to the top.
+        /// </summary>
         public void ClearLog()
         {
             logText.text = string.Empty;
             scrollRect.verticalNormalizedPosition = 1f;
         }
 
-        protected override void OnOpened()
+        private static string GetPrefix(ECheatConsoleMessageType messageType) => messageType switch
         {
-            base.OnOpened();
-
-            FocusInput();
-        }
-
-        protected override void OnClosed()
-        {
-            base.OnClosed();
-
-            SetInputText(string.Empty);
-        }
-
-        private static string GetPrefix(CheatConsoleMessageType type) => type switch
-        {
-            CheatConsoleMessageType.Error => "[Error] ",
-            CheatConsoleMessageType.Warning => "[Warning] ",
-            CheatConsoleMessageType.Command => "> ",
+            ECheatConsoleMessageType.Error => ErrorPrefix,
+            ECheatConsoleMessageType.Warning => WarningPrefix,
+            ECheatConsoleMessageType.Command => CommandPrefix,
             _ => string.Empty
         };
 
         private void ResetSuggestion(TMP_Text text)
         {
+            // Pooled items are destroyed with the scene, so a missing one is a normal shutdown state.
             if (text == null)
-            {
-                CustomLogger.LogWarning("Suggestion text is null. Cannot reset.", this);
                 return;
-            }
 
             text.text = string.Empty;
             text.gameObject.SetActive(false);
             text.transform.SetParent(suggestionParent, false);
         }
 
-        private Color GetColor(CheatConsoleMessageType type) => type switch
+        private Color GetColor(ECheatConsoleMessageType messageType) => messageType switch
         {
-            CheatConsoleMessageType.Error => errorColor,
-            CheatConsoleMessageType.Warning => warningColor,
-            CheatConsoleMessageType.Command => commandColor,
+            ECheatConsoleMessageType.Error => errorColor,
+            ECheatConsoleMessageType.Warning => warningColor,
+            ECheatConsoleMessageType.Command => commandColor,
             _ => infoColor
         };
 #endif

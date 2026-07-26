@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.UtilityPackage.Types
+namespace Base.UtilityPackage
 {
     /// <summary>
     /// Provides utility functions for audio-related mathematical operations.

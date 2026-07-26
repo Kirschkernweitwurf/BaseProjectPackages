@@ -1,6 +1,5 @@
 using Base.CorePackage.PriorityTrackers;
 using Base.CorePackage.Services;
-using Base.CorePackage.Services.Shutdown;
 using UnityEngine;
 
 namespace Base.CorePackage.MenuManaging.Modules
@@ -9,52 +8,24 @@ namespace Base.CorePackage.MenuManaging.Modules
     /// Applies custom cursor settings while the owning menu is open, scoped by the menu's priority.
     /// Removes them again on close or when destroyed.
     /// </summary>
-    public sealed class MenuCursorModule : MenuModule, IShutdownHandler
+    public sealed class MenuCursorModule : ScopedMenuModule
     {
         [Tooltip("The cursor settings applied while the menu is open.")]
         [SerializeField] private CursorRequest cursorSettings = new();
 
-        public bool HasShutDown { get; private set; }
-
-        private bool _isApplied;
-
-#region Unity Callbacks
-        private void Awake() => ShutdownManager.Register(this);
-
-        private void OnDestroy() => Shutdown();
-#endregion
-
-        public void Shutdown()
+        protected override bool TryApply()
         {
-            if (HasShutDown)
-                return;
-
-            HasShutDown = true;
-            Release();
-            ShutdownManager.Deregister(this);
-        }
-
-        protected override void OnMenuOpened()
-        {
-            if (_isApplied)
-                return;
-
             if (!ServiceLocator.TryGet(out CursorManager cursorManager))
-                return;
+                return false;
 
             cursorManager.CursorTracker.Add(cursorSettings, (uint)OwnerMenu.Priority, this);
-            _isApplied = true;
+            return true;
         }
 
-        protected override void OnMenuClosed() => Release();
-
-        private void Release()
+        protected override void Release()
         {
-            if (!_isApplied)
-                return;
-
-            ServiceLocator.Get<CursorManager>()?.CursorTracker.Remove(this);
-            _isApplied = false;
+            if (ServiceLocator.TryGet(out CursorManager cursorManager))
+                cursorManager.CursorTracker.Remove(this);
         }
     }
 }

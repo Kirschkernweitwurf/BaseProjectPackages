@@ -1,4 +1,3 @@
-using System.Linq;
 using Base.AttributePackage;
 using Base.UtilityPackage;
 using UnityEngine;
@@ -10,7 +9,8 @@ using UnityEditor;
 namespace Base.CorePackage.Services
 {
     /// <summary>
-    /// Bootstrapper class to initialize persistent and scene-specific managers.
+    /// Instantiates the manager prefabs a scene needs: persistent managers once per session, scene managers
+    /// for every scene, and gameplay managers only while one of the configured gameplay scenes is loaded.
     /// </summary>
     [DefaultExecutionOrder(-99)]
     public class Bootstrapper : MonoBehaviour
@@ -29,29 +29,11 @@ namespace Base.CorePackage.Services
 #region Unity Callbacks
         private void Awake()
         {
-            // Load persistent managers only once
-            if (!_persistentLoaded)
-            {
-                InstantiationUtility.CleanInstantiate(persistentManagerPrefab, dontDestroy: true);
-                _persistentLoaded = true;
-            }
+            LoadPersistentManagers();
 
-            // Load scene managers for every scene
             InstantiationUtility.CleanInstantiate(sceneManagerPrefab, transform);
 
-            // Load gameplay managers for gameplay scenes only
-            bool isGameplaySceneLoaded = false;
-            for (int i = 0; i < SceneManager.sceneCount; i++)
-            {
-                Scene scene = SceneManager.GetSceneAt(i);
-                if (!gameplayScenes.Contains(scene.name))
-                    continue;
-
-                isGameplaySceneLoaded = true;
-                break;
-            }
-
-            if (isGameplaySceneLoaded)
+            if (IsGameplaySceneLoaded())
                 InstantiationUtility.CleanInstantiate(gameplayManagerPrefab, transform);
         }
 #endregion
@@ -60,5 +42,37 @@ namespace Base.CorePackage.Services
         [InitializeOnEnterPlayMode]
         private static void ResetStatics() => _persistentLoaded = false;
 #endif
+
+        /// <summary>
+        /// Instantiates the persistent managers once per play session and keeps them across scene loads.
+        /// </summary>
+        private void LoadPersistentManagers()
+        {
+            if (_persistentLoaded)
+                return;
+
+            InstantiationUtility.CleanInstantiate(persistentManagerPrefab, dontDestroy: true);
+            _persistentLoaded = true;
+        }
+
+        /// <summary>
+        /// Checks whether any of the configured gameplay scenes is currently loaded.
+        /// </summary>
+        /// <returns><c>true</c> if a gameplay scene is loaded; otherwise, <c>false</c>.</returns>
+        private bool IsGameplaySceneLoaded()
+        {
+            for (int i = 0; i < SceneManager.sceneCount; i++)
+            {
+                string loadedScene = SceneManager.GetSceneAt(i).name;
+
+                foreach (string gameplayScene in gameplayScenes)
+                {
+                    if (gameplayScene == loadedScene)
+                        return true;
+                }
+            }
+
+            return false;
+        }
     }
 }

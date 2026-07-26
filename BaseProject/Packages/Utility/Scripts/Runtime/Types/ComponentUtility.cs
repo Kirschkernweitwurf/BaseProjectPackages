@@ -1,7 +1,7 @@
 using Base.UtilityPackage.Logging;
 using UnityEngine;
 
-namespace Base.UtilityPackage.Types
+namespace Base.UtilityPackage
 {
     /// <summary>
     /// Utility class for working with Unity components.

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using Base.AttributePackage;
 using Base.CorePackage.MenuManaging;
@@ -15,17 +16,17 @@ namespace Base.CorePackage.SceneManagement
         [Header("Loading Screen References")]
 
         [Tooltip("The image used to display load progress via fill amount.")]
-        [SerializeField] private Image progressImage;
+        [Required] [SerializeField] private Image progressImage;
 
         [Tooltip("The RectTransform that will spin while loading.")]
-        [SerializeField] private RectTransform spinner;
+        [Required] [SerializeField] private RectTransform spinner;
 
         [Header("Animation Settings")]
 
         [Tooltip("Rotation speed for the spinner, in degrees per second.")]
         [SerializeField] private float spinnerRotationSpeed = 180f;
 
-        [Tooltip("Optional smooth damping for progress fill updates.")]
+        [Tooltip("Smoothing speed for progress fill updates.")]
         [Min(0f)] [SerializeField] private float fillSmoothSpeed = 5f;
 
         [Header("Minimum Show Time")]
@@ -34,14 +35,13 @@ namespace Base.CorePackage.SceneManagement
         [SerializeField] private bool hasMinimumShowTime = true;
 
         [Tooltip("Minimum time (in seconds) the loading screen must remain visible.")]
-        [ShowIf(nameof(hasMinimumShowTime))] [Min(0f)] [SerializeField] private float minimumShowTime = 1.0f;
+        [ShowIf(nameof(hasMinimumShowTime))] [Min(0f)] [SerializeField] private float minimumShowTime = 1f;
 
         [Header("Scene Filtering")]
 
-        [Tooltip("If non-empty, the loading screen will only show for these scenes.")]
+        [Tooltip("If empty, the loading screen shows for every scene.")]
         [SceneName] [SerializeField] private string[] scenesToShowFor;
 
-        private Coroutine _loadingRoutine;
         private Coroutine _closeRoutine;
 
         private float _targetFillAmount;
@@ -55,11 +55,28 @@ namespace Base.CorePackage.SceneManagement
             SceneLoadEvents.OnSceneLoadCompleted += HandleLoadCompleted;
         }
 
+        // Unscaled time throughout, the loading screen has to keep animating while the game is paused.
+        private void Update()
+        {
+            if (!IsOpen)
+                return;
+
+            _shownTime += Time.unscaledDeltaTime;
+
+            progressImage.fillAmount = Mathf.Lerp(progressImage.fillAmount, _targetFillAmount,
+                Time.unscaledDeltaTime * fillSmoothSpeed);
+
+            spinner.Rotate(0f, 0f, -spinnerRotationSpeed * Time.unscaledDeltaTime, Space.Self);
+        }
+
         private void OnDisable()
         {
             SceneLoadEvents.OnSceneLoadStarted -= HandleLoadStarted;
             SceneLoadEvents.OnSceneLoadProgress -= HandleLoadProgress;
             SceneLoadEvents.OnSceneLoadCompleted -= HandleLoadCompleted;
+
+            // Unity already stopped the coroutine on disable, so only the stale handle is left to drop.
+            _closeRoutine = null;
         }
 #endregion
 
@@ -68,18 +85,13 @@ namespace Base.CorePackage.SceneManagement
             if (!ShouldShowForScene(sceneName))
                 return;
 
-            _shownTime = 0f;
-            _targetFillAmount = 0f;
-
-            if (progressImage != null)
-                progressImage.fillAmount = 0f;
-
-            Open();
-
-            StopLoadingRoutine();
             StopCloseRoutine();
 
-            _loadingRoutine = StartCoroutine(LoadingRoutine());
+            _shownTime = 0f;
+            _targetFillAmount = 0f;
+            progressImage.fillAmount = 0f;
+
+            OpenIfClosed();
         }
 
         private void HandleLoadProgress(string sceneName, float progress)
@@ -97,35 +109,13 @@ namespace Base.CorePackage.SceneManagement
 
             _targetFillAmount = 1f;
 
-            if (hasMinimumShowTime)
+            if (!hasMinimumShowTime)
             {
-                _closeRoutine = StartCoroutine(WaitAndClose());
-            }
-            else
-            {
-                StopLoadingRoutine();
-                Close();
-            }
-        }
-
-        private IEnumerator LoadingRoutine()
-        {
-            while (true)
-            {
-                _shownTime += Time.deltaTime;
-
-                if (progressImage != null)
-                    progressImage.fillAmount = Mathf.Lerp(progressImage.fillAmount,
-                        _targetFillAmount,
-                        Time.deltaTime * fillSmoothSpeed);
-
-                if (spinner != null)
-                    spinner.Rotate(0f, 0f, -spinnerRotationSpeed * Time.unscaledDeltaTime, Space.Self);
-
-                yield return null;
+                CloseIfOpen();
+                return;
             }
 
-            // ReSharper disable once IteratorNeverReturns
+            _closeRoutine = StartCoroutine(WaitAndClose());
         }
 
         private IEnumerator WaitAndClose()
@@ -135,32 +125,24 @@ namespace Base.CorePackage.SceneManagement
             if (remainingTime > 0f)
                 yield return new WaitForSecondsRealtime(remainingTime);
 
-            StopLoadingRoutine();
             _closeRoutine = null;
-            Close();
+            CloseIfOpen();
         }
 
-        private bool ShouldShowForScene(string sceneName)
+        private bool ShouldShowForScene(string sceneName) => scenesToShowFor.Length == 0
+            || Array.IndexOf(scenesToShowFor, sceneName) >= 0;
+
+        // The base class warns when opening or closing twice, so only switch state when it actually changes.
+        private void OpenIfClosed()
         {
-            if (scenesToShowFor == null || scenesToShowFor.Length == 0)
-                return true;
-
-            foreach (string scene in scenesToShowFor)
-            {
-                if (scene.Equals(sceneName))
-                    return true;
-            }
-
-            return false;
+            if (!IsOpen)
+                Open();
         }
 
-        private void StopLoadingRoutine()
+        private void CloseIfOpen()
         {
-            if (_loadingRoutine == null)
-                return;
-
-            StopCoroutine(_loadingRoutine);
-            _loadingRoutine = null;
+            if (IsOpen)
+                Close();
         }
 
         private void StopCloseRoutine()

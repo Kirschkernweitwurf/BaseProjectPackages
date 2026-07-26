@@ -1,4 +1,4 @@
-namespace Base.UtilityPackage.Types
+namespace Base.UtilityPackage
 {
     /// <summary>
     /// This class contains extension methods for the Type class.

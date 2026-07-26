@@ -22,18 +22,7 @@ MonoBehaviour:
   menuItemRoot:
   - rid: 5339058638460813453
   createAssetRoot:
-  - rid: 5339058638460813441
-  - rid: 5339058638460813442
-  - rid: 5339058638460813443
-  - rid: 5339058638460813444
-  - rid: 5339058638460813445
-  - rid: 5339058638460813446
-  - rid: 5339058638460813447
-  - rid: 5339058638460813448
-  - rid: 5339058638460813449
-  - rid: 5339058638460813450
-  - rid: 5339058638460813451
-  - rid: 5339058638460813452
+  - rid: 5339058638460813481
   menuItemGroups: []
   createAssetGroups: []
   groups: []
@@ -442,7 +431,7 @@ MonoBehaviour:
         separator: 0
         entry:
           id: CA:Base.ToolPackage.Editor.AssetZoo.Config.ZooConfig
-          path: Scriptable Objects/Base/Asset Zoo/New Config
+          path: New Config
           enabled: 1
           kind: 1
           createFileName: ZC_ZooConfig
@@ -454,7 +443,7 @@ MonoBehaviour:
         separator: 0
         entry:
           id: CA:Base.ToolPackage.Identification.UniqueIdScriptableObject
-          path: Scriptable Objects/Base/UniqueId/New ScriptableObject
+          path: New ScriptableObject
           enabled: 1
           kind: 1
           createFileName: UID_UniqueIdScriptableObject
@@ -466,7 +455,7 @@ MonoBehaviour:
         separator: 0
         entry:
           id: CA:Base.ToolPackage.LightingProfileApplier.LightingProfile
-          path: Scriptable Objects/Base/Lighting Profile/New Profile
+          path: New Profile
           enabled: 1
           kind: 1
           createFileName: LP_LightingProfile
@@ -478,7 +467,7 @@ MonoBehaviour:
         separator: 0
         entry:
           id: CA:Base.MemoryProfiler.MemoryProfilerConfigSo
-          path: Scriptable Objects/Base/Memory Profiler/New Memory Profiler Config
+          path: New Memory Profiler Config
           enabled: 1
           kind: 1
           createFileName: MPC_MemoryProfilerConfig
@@ -490,7 +479,7 @@ MonoBehaviour:
         separator: 0
         entry:
           id: CA:Base.CorePackage.Audio.AudioContainer
-          path: Scriptable Objects/Base/Audio/New Audio Container
+          path: New Audio Container
           enabled: 1
           kind: 1
           createFileName: AUC_AudioContainer
@@ -502,7 +491,7 @@ MonoBehaviour:
         separator: 0
         entry:
           id: CA:Base.CorePackage.Tweening.Core.Data.Profiles.Vector3TweenProfileSo
-          path: Scriptable Objects/Base/Tweening/Profiles/New Vector3TweenProfile
+          path: New Vector3TweenProfile
           enabled: 1
           kind: 1
           createFileName: TPV_Vector3TweenProfile
@@ -514,7 +503,7 @@ MonoBehaviour:
         separator: 0
         entry:
           id: CA:Base.CorePackage.Tweening.Core.Data.Profiles.ColorTweenProfileSo
-          path: Scriptable Objects/Base/Tweening/Profiles/New ColorTweenProfile
+          path: New ColorTweenProfile
           enabled: 1
           kind: 1
           createFileName: TPC_ColorTweenProfile
@@ -526,7 +515,7 @@ MonoBehaviour:
         separator: 0
         entry:
           id: CA:Base.CorePackage.Tweening.Core.Data.Profiles.TweenSettingsSo
-          path: Scriptable Objects/Base/Tweening/New TweenSettings
+          path: New TweenSettings
           enabled: 1
           kind: 1
           createFileName: TS_TweenSettings
@@ -538,7 +527,7 @@ MonoBehaviour:
         separator: 0
         entry:
           id: CA:Base.CorePackage.MenuManaging.Identifier.MenuIdentifier
-          path: Scriptable Objects/Base/Menus/New Menu Identifier
+          path: New Menu Identifier
           enabled: 1
           kind: 1
           createFileName: MID_MenuIdentifier
@@ -550,7 +539,7 @@ MonoBehaviour:
         separator: 0
         entry:
           id: CA:Base.CorePackage.Tweening.Core.Data.Profiles.FloatTweenProfileSo
-          path: Scriptable Objects/Base/Tweening/Profiles/New FloatTweenProfile
+          path: New FloatTweenProfile
           enabled: 1
           kind: 1
           createFileName: TPF_FloatTweenProfile
@@ -562,7 +551,7 @@ MonoBehaviour:
         separator: 0
         entry:
           id: CA:Base.ControllerSupport.InputPrompts.Glyphs.InputGlyphSet
-          path: Scriptable Objects/Base/Input/New Glyph Set
+          path: New Glyph Set
           enabled: 1
           kind: 1
           createFileName: IGS_GlyphSet
@@ -574,7 +563,7 @@ MonoBehaviour:
         separator: 0
         entry:
           id: CA:RequiredSo
-          path: Scriptable Objects/New RequiredSo
+          path: New RequiredSo
           enabled: 1
           kind: 1
           createFileName: RSO_RequiredSo
@@ -765,3 +754,113 @@ MonoBehaviour:
         - rid: 5339058638460813415
         - rid: 5339058638460813414
         - rid: 5339058638460813422
+    - rid: 5339058638460813481
+      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 1
+        name: Scriptable Objects
+        expanded: 1
+        merged: 0
+        children:
+        - rid: 5339058638460813482
+        - rid: 5339058638460813452
+    - rid: 5339058638460813482
+      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 1
+        name: Base
+        expanded: 1
+        merged: 0
+        children:
+        - rid: 5339058638460813483
+        - rid: 5339058638460813484
+        - rid: 5339058638460813485
+        - rid: 5339058638460813486
+        - rid: 5339058638460813487
+        - rid: 5339058638460813488
+        - rid: 5339058638460813489
+        - rid: 5339058638460813490
+    - rid: 5339058638460813483
+      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 1
+        name: Asset Zoo
+        expanded: 1
+        merged: 0
+        children:
+        - rid: 5339058638460813441
+    - rid: 5339058638460813484
+      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 1
+        name: UniqueId
+        expanded: 1
+        merged: 0
+        children:
+        - rid: 5339058638460813442
+    - rid: 5339058638460813485
+      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 1
+        name: Lighting Profile
+        expanded: 1
+        merged: 0
+        children:
+        - rid: 5339058638460813443
+    - rid: 5339058638460813486
+      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 1
+        name: Memory Profiler
+        expanded: 1
+        merged: 0
+        children:
+        - rid: 5339058638460813444
+    - rid: 5339058638460813487
+      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 1
+        name: Audio
+        expanded: 1
+        merged: 0
+        children:
+        - rid: 5339058638460813445
+    - rid: 5339058638460813488
+      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 1
+        name: Tweening
+        expanded: 1
+        merged: 0
+        children:
+        - rid: 5339058638460813491
+        - rid: 5339058638460813448
+    - rid: 5339058638460813489
+      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 1
+        name: Menus
+        expanded: 1
+        merged: 0
+        children:
+        - rid: 5339058638460813449
+    - rid: 5339058638460813490
+      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 1
+        name: Input
+        expanded: 1
+        merged: 0
+        children:
+        - rid: 5339058638460813451
+    - rid: 5339058638460813491
+      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 1
+        name: Profiles
+        expanded: 1
+        merged: 0
+        children:
+        - rid: 5339058638460813446
+        - rid: 5339058638460813447
+        - rid: 5339058638460813450

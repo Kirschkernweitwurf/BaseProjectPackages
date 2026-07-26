@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Base.AttributePackage;
 using Base.CorePackage.DebugMenu.CheatConsole.Cheats;
 using Base.CorePackage.Input;
 using Base.CorePackage.Services;
@@ -17,16 +18,19 @@ namespace Base.CorePackage.DebugMenu.CheatConsole
     public sealed class CheatConsoleController : MonoBehaviour
     {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-        private CheatConsoleView _view;
+        private const string ReloadedFormat = "[Scene] Cheat commands reloaded ({0} found).";
+
+        [GetComponent] [SerializeField] private CheatConsoleView view;
+
         private CheatConsoleModel _model;
 
+#region Unity Callbacks
         private void Awake()
         {
-            _view = GetComponent<CheatConsoleView>();
-            _model = new CheatConsoleModel(CheatCommandProvider.DiscoverAllCommands());
-            BuiltinCheatCommands.Register(_model, _view);
+            RebuildCommands();
+
             SceneManager.sceneLoaded += OnSceneLoaded;
-            _view.InputField.onValueChanged.AddListener(OnInputChanged);
+            view.InputField.onValueChanged.AddListener(OnInputChanged);
         }
 
         private void OnEnable()
@@ -54,81 +58,78 @@ namespace Base.CorePackage.DebugMenu.CheatConsole
         private void OnDestroy()
         {
             SceneManager.sceneLoaded -= OnSceneLoaded;
-            _view.InputField.onValueChanged.RemoveListener(OnInputChanged);
+            view.InputField.onValueChanged.RemoveListener(OnInputChanged);
         }
+#endregion
 
+        // A new scene brings new MonoBehaviours, so instance commands have to be discovered again.
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            List<CheatCommandInfo> discovered = CheatCommandProvider.DiscoverAllCommands();
-            _model = new CheatConsoleModel(discovered);
-            BuiltinCheatCommands.Register(_model, _view);
-            _view.AppendLog($"[Scene] Cheat commands reloaded ({_model.Commands.Count} found).",
-                CheatConsoleMessageType.Info);
+            RebuildCommands();
+
+            view.AppendLog(string.Format(ReloadedFormat, _model.Commands.Count), ECheatConsoleMessageType.Info);
         }
 
-        private void OnExecuteCommand(InputAction.CallbackContext context)
+        private void RebuildCommands()
         {
-            string input = _view.GetInputText();
+            _model = new CheatConsoleModel(CheatCommandProvider.DiscoverAllCommands());
+            BuiltinCheatCommands.Register(_model, view);
+        }
+
+        private void OnExecuteCommand(InputAction.CallbackContext _)
+        {
+            string input = view.GetInputText();
             if (string.IsNullOrWhiteSpace(input))
                 return;
 
-            _view.AppendLog(input, CheatConsoleMessageType.Command);
+            view.AppendLog(input, ECheatConsoleMessageType.Command);
 
             CheatConsoleResult result = _model.Execute(input);
-            _view.AppendLog(result.Message, result.MessageType);
+            view.AppendLog(result.Message, result.MessageType);
 
-            _view.SetInputText(string.Empty);
-            _view.FocusInput();
+            view.SetInputText(string.Empty);
+            view.FocusInput();
         }
 
-        private void OnAutoComplete(InputAction.CallbackContext context)
+        private void OnAutoComplete(InputAction.CallbackContext _)
         {
-            string current = _view.GetInputText();
-            List<string> suggestions = _view.GetCurrentSuggestions();
-            if (suggestions == null || suggestions.Count == 0)
+            string current = view.GetInputText();
+
+            List<string> suggestions = view.GetCurrentSuggestions();
+            if (suggestions.Count == 0)
                 suggestions = _model.GetSuggestions(current);
 
             string completed = current;
-            if (suggestions.Count > 0)
-            {
-                string first = suggestions[0];
-                if (!string.Equals(current, first, StringComparison.OrdinalIgnoreCase))
-                    completed = first;
-            }
+            if (suggestions.Count > 0
+                && !string.Equals(current, suggestions[0], StringComparison.OrdinalIgnoreCase))
+                completed = suggestions[0];
 
-            _view.SetInputText(completed);
-            _view.FocusInput();
-            _view.ShowSuggestions(_model.GetSuggestions(completed));
+            view.SetInputText(completed);
+            view.FocusInput();
+            view.ShowSuggestions(_model.GetSuggestions(completed));
         }
 
-        private void OnPreviousCommand(InputAction.CallbackContext context)
+        private void OnPreviousCommand(InputAction.CallbackContext _)
         {
             string previous = _model.GetPreviousHistory();
             if (previous == null)
                 return;
 
-            _view.SetInputText(previous);
-            _view.FocusInput();
+            view.SetInputText(previous);
+            view.FocusInput();
         }
 
-        private void OnNextCommand(InputAction.CallbackContext context)
+        private void OnNextCommand(InputAction.CallbackContext _)
         {
             string next = _model.GetNextHistory();
             if (next == null)
                 return;
 
-            _view.SetInputText(next);
-            _view.FocusInput();
+            view.SetInputText(next);
+            view.FocusInput();
         }
 
-        private void OnInputChanged(string newText)
-        {
-            if (string.IsNullOrWhiteSpace(newText))
-                _view.ShowSuggestions(new List<string>());
-
-            List<string> suggestions = _model.GetSuggestions(newText);
-            _view.ShowSuggestions(suggestions);
-        }
+        private void OnInputChanged(string newText) => view.ShowSuggestions(_model.GetSuggestions(newText));
 #endif
     }
 }

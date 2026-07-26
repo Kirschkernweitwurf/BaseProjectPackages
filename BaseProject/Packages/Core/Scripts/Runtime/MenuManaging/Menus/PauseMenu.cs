@@ -3,6 +3,8 @@ using System;
 using UnityEditor;
 #endif
 
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+
 namespace Base.CorePackage.MenuManaging.Menus
 {
     /// <summary>

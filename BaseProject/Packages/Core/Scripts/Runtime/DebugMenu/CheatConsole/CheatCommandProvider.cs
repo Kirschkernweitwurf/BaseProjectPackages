@@ -18,35 +18,33 @@ namespace Base.CorePackage.DebugMenu.CheatConsole
         private static List<CheatCommandInfo> _cachedStaticCommands;
 
         /// <summary>
-        /// Discovers all cheat commands available in the current context.
-        /// This includes static methods marked with <see cref="CheatCommandAttribute"/> in the executing assembly,
-        /// as well as instance methods on all active and inactive MonoBehaviours in the scene.
+        /// Discovers all cheat commands available in the current context. This includes static methods marked
+        /// with <see cref="CheatCommandAttribute"/> in the executing assembly, as well as instance methods on
+        /// all active and inactive MonoBehaviours in the scene.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Every cheat command that can currently be executed.</returns>
         public static List<CheatCommandInfo> DiscoverAllCommands()
         {
             List<CheatCommandInfo> result = new();
+
             try
             {
-                if (_cachedStaticCommands == null)
+                // Static commands never change while the domain is loaded, so they are only scanned once.
+                _cachedStaticCommands ??= CheatCommandRegistry.CreateFromStaticMethods(new[]
                 {
-                    Assembly executingAssembly = Assembly.GetExecutingAssembly();
-                    _cachedStaticCommands = CheatCommandRegistry.CreateFromStaticMethods(new[]
-                    {
-                        executingAssembly
-                    });
-                }
+                    Assembly.GetExecutingAssembly()
+                });
 
                 result.AddRange(_cachedStaticCommands);
 
-                MonoBehaviour[] behaviours = Object.FindObjectsByType(typeof(MonoBehaviour),
-                    FindObjectsInactive.Include, FindObjectsSortMode.None) as MonoBehaviour[];
+                MonoBehaviour[] behaviours = Object.FindObjectsByType<MonoBehaviour>(FindObjectsInactive.Include,
+                    FindObjectsSortMode.None);
 
                 result.AddRange(CheatCommandRegistry.CreateFromTargets(behaviours));
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                CustomLogger.LogWarning($"Failed to discover cheat commands: {ex}", null);
+                CustomLogger.LogWarning($"Failed to discover cheat commands: {exception}", null);
             }
 
             return result;

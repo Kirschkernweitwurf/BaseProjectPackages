@@ -1,8 +1,8 @@
+using Base.AttributePackage;
 using Base.CorePackage.Input;
 using Base.CorePackage.MenuManaging;
 using Base.CorePackage.Services;
 using Base.CorePackage.Tweening.Components.System;
-using Base.UtilityPackage.Logging;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -19,59 +19,47 @@ namespace Base.CorePackage.DebugMenu
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         [Header("Consoles")]
 
-        [SerializeField] private Button cheatConsoleButton;
-        [SerializeField] private TweenGroup cheatConsoleTweenGroup;
-        [SerializeField] private Button logConsoleButton;
-        [SerializeField] private TweenGroup logConsoleTweenGroup;
-        [SerializeField] private Menu cheatConsole;
-        [SerializeField] private Menu logConsole;
+        [Required] [SerializeField] private Button cheatConsoleButton;
+        [Required] [SerializeField] private TweenGroup cheatConsoleTweenGroup;
+        [Required] [SerializeField] private Button logConsoleButton;
+        [Required] [SerializeField] private TweenGroup logConsoleTweenGroup;
+        [Required] [SerializeField] private Menu cheatConsole;
+        [Required] [SerializeField] private Menu logConsole;
 
         private Menu _activeConsole;
 
-        protected override void Awake()
-        {
-            base.Awake();
-
-            if (cheatConsoleButton == null)
-                CustomLogger.LogError("Cheat console button reference is missing.", this);
-
-            if (logConsoleButton == null)
-                CustomLogger.LogError("Log console button reference is missing.", this);
-
-            if (cheatConsole == null)
-                CustomLogger.LogError("Cheat console reference is missing.", this);
-
-            if (logConsole == null)
-                CustomLogger.LogError("Log console reference is missing.", this);
-        }
-
+#region Unity Callbacks
         private void OnEnable()
         {
+            cheatConsoleButton.onClick.AddListener(ShowCheatConsole);
+            logConsoleButton.onClick.AddListener(ShowLogConsole);
+
+            // The buttons stay usable even without input, so they are hooked up before the service lookup.
             if (!ServiceLocator.TryGet(out InputManager inputManager))
                 return;
 
             inputManager.BaseInputActions.Permanent.ToggleCheatConsole.performed += OnToggleConsole;
-
-            cheatConsoleButton.onClick.AddListener(ShowCheatConsole);
-            logConsoleButton.onClick.AddListener(ShowLogConsole);
         }
 
         private void OnDisable()
         {
-            if (ServiceLocator.TryGet(out InputManager inputManager))
-                inputManager.BaseInputActions.Permanent.ToggleCheatConsole.performed -= OnToggleConsole;
-
             cheatConsoleButton.onClick.RemoveListener(ShowCheatConsole);
             logConsoleButton.onClick.RemoveListener(ShowLogConsole);
+
+            if (ServiceLocator.TryGet(out InputManager inputManager))
+                inputManager.BaseInputActions.Permanent.ToggleCheatConsole.performed -= OnToggleConsole;
         }
+#endregion
 
         protected override void OnOpened()
         {
             base.OnOpened();
 
-            ShowConsole(_activeConsole == null
+            Menu console = _activeConsole == null
                 ? cheatConsole
-                : _activeConsole);
+                : _activeConsole;
+
+            ShowConsole(console);
         }
 
         private void ShowCheatConsole() => ShowConsole(cheatConsole);
@@ -84,23 +72,23 @@ namespace Base.CorePackage.DebugMenu
                 return;
 
             _activeConsole = target;
+            bool isCheatConsole = target == cheatConsole;
 
-            Menu other = target == cheatConsole
+            Menu other = isCheatConsole
                 ? logConsole
                 : cheatConsole;
 
             if (other.IsOpen)
                 other.Close();
 
-            if (!target.IsOpen)
-                target.Open(MenuIdentifier);
+            target.Open(MenuIdentifier);
 
-            if (target == cheatConsole)
+            if (isCheatConsole)
             {
                 cheatConsoleTweenGroup.Show();
                 logConsoleTweenGroup.Hide();
             }
-            else if (target == logConsole)
+            else
             {
                 logConsoleTweenGroup.Show();
                 cheatConsoleTweenGroup.Hide();

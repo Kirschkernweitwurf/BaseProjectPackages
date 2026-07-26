@@ -1,7 +1,9 @@
 using Base.AttributePackage;
 using Base.UtilityPackage;
-using Base.UtilityPackage.Logging;
 using UnityEngine;
+
+// ReSharper disable UnusedMember.Global
+// ReSharper disable MemberCanBePrivate.Global
 
 namespace Base.CorePackage.ObjectPooling
 {
@@ -10,7 +12,7 @@ namespace Base.CorePackage.ObjectPooling
     /// Provides lifecycle control and easy access to pooled Unity objects.
     /// </summary>
     /// <typeparam name="TAsset">The Unity object type to pool.</typeparam>
-    /// <typeparam name="TPool">The type of the pool manager.</typeparam>
+    /// <typeparam name="TPool">The concrete pool manager type.</typeparam>
     [DefaultExecutionOrder(-1)]
     public abstract class BaseObjectPoolManager<TAsset, TPool> : CustomSingleton<TPool>
         where TAsset : Object
@@ -24,11 +26,11 @@ namespace Base.CorePackage.ObjectPooling
         [Tooltip("Optional parent where pooled objects will be instantiated.")]
         [SerializeField] protected Transform poolParent;
 
-        [Tooltip("Optional number of instances to prewarm on startup.")]
-        [SerializeField] private int prewarmCount;
+        [Tooltip("Number of instances to create on startup.")]
+        [Min(0)] [SerializeField] private int prewarmCount;
 
         /// <summary>
-        /// The object pool instance. This is where pooled objects are managed.
+        /// The pool holding the instances.
         /// </summary>
         public HashSetObjectPool<TAsset> Pool { get; private set; }
 
@@ -38,75 +40,64 @@ namespace Base.CorePackage.ObjectPooling
             base.Awake();
 
             Pool = CreatePoolInstance();
-
-            if (prewarmCount > 0)
-                Prewarm(prewarmCount);
+            Prewarm();
         }
 #endregion
 
         /// <summary>
-        /// Gets an instance from the pool.
+        /// Takes an instance from the pool.
         /// </summary>
         /// <returns>The pooled instance.</returns>
-        public virtual TAsset Get()
-        {
-            if (Pool != null)
-                return Pool.Get();
-
-            CustomLogger.LogError("Pool not initialized.", this);
-            return null;
-        }
+        public virtual TAsset Get() => Pool.Get();
 
         /// <summary>
-        /// Releases an instance back to the pool.
+        /// Releases an instance back into the pool.
         /// </summary>
         /// <param name="instance">The instance to release.</param>
-        public virtual void Release(TAsset instance)
-        {
-            if (Pool == null)
-            {
-                CustomLogger.LogError("Pool not initialized.", this);
-                return;
-            }
-
-            Pool.Release(instance);
-        }
+        public virtual void Release(TAsset instance) => Pool.Release(instance);
 
         /// <summary>
         /// Creates the pool instance. Override to customize pool behavior.
         /// </summary>
-        /// <returns>The created pool instance.</returns>
+        /// <returns>The created pool.</returns>
         protected virtual HashSetObjectPool<TAsset> CreatePoolInstance() => new(prefab, poolParent, ResetInstance);
 
         /// <summary>
-        /// Resets the instance before returning it to the pool.
+        /// Resets an instance before it goes back into the pool.
         /// </summary>
         /// <param name="instance">The instance to reset.</param>
         protected virtual void ResetInstance(TAsset instance)
         {
-            Transform t = GetTransform(instance);
-            t?.SetParent(poolParent, false);
+            Transform instanceTransform = GetTransform(instance);
+
+            if (instanceTransform == null)
+                return;
+
+            instanceTransform.SetParent(poolParent, false);
         }
 
-        /// <summary>
-        /// Gets the Transform component from a Unity Object if possible.
-        /// </summary>
-        /// <param name="obj">The Unity Object.</param>
-        /// <returns>The Transform component or null.</returns>
-        private static Transform GetTransform(Object obj) => obj switch
+        private static Transform GetTransform(Object target) => target switch
         {
-            GameObject go => go.transform,
-            Component comp => comp.transform,
+            GameObject gameObject => gameObject.transform,
+            Component component => component.transform,
             _ => null
         };
 
-        private void Prewarm(int count)
+        /// <summary>
+        /// Prewarms the pool. All instances are taken first and released afterward, because releasing
+        /// each one right away would just hand the same single instance back on the next take.
+        /// </summary>
+        private void Prewarm()
         {
-            for (int i = 0; i < count; i++)
-            {
-                TAsset instance = Pool.Get();
-                Pool.Release(instance);
-            }
+            if (prewarmCount <= 0)
+                return;
+
+            TAsset[] instances = new TAsset[prewarmCount];
+
+            for (int i = 0; i < prewarmCount; i++)
+                instances[i] = Pool.Get();
+
+            Pool.Release(instances);
         }
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 
 namespace Base.CorePackage.SceneManagement
 {
@@ -29,5 +30,15 @@ namespace Base.CorePackage.SceneManagement
 
         internal static void InvokeSceneLoadCompleted(string sceneName, bool success)
             => OnSceneLoadCompleted?.Invoke(sceneName, success);
+
+        // With domain reload disabled, handlers from the previous play session survive and would fire
+        // into destroyed objects, so clear them before the first scene loads.
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ResetEvents()
+        {
+            OnSceneLoadStarted = null;
+            OnSceneLoadProgress = null;
+            OnSceneLoadCompleted = null;
+        }
     }
 }

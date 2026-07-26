@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using Base.CorePackage.CameraUtility;
 using Base.CorePackage.Services;
 using Base.UtilityPackage.Logging;
@@ -6,6 +7,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using Debug = UnityEngine.Debug;
 
 // ReSharper disable UnusedMember.Global
 
@@ -13,10 +15,16 @@ namespace Base.CorePackage.Raycasting
 {
     /// <summary>
     /// Provides generic, type-safe ray-casting functionality for 2D gameplay.
-    /// Supports editor-only gizmo debugging.
+    /// Supports editor-only debug ray drawing.
     /// </summary>
     public static class RaycastUtility
     {
+        private const float DebugDuration = 1f;
+        private const float DebugRayLength = 25f;
+
+        private static readonly Color DebugHitColor = Color.green;
+        private static readonly Color DebugMissColor = new(0.1f, 0.8f, 1f, 0.8f);
+
         // Reused across calls to avoid per-raycast list allocations. Safe because calls are main-thread only.
         private static readonly List<RaycastResult> UIRaycastResults = new();
 
@@ -32,27 +40,16 @@ namespace Base.CorePackage.Raycasting
         {
             result = default(T);
 
-            if (!ServiceLocator.TryGet(out CameraProvider mainCameraProvider))
+            if (!ServiceLocator.TryGet(out CameraProvider cameraProvider))
                 return false;
 
-            if (!mainCameraProvider.TryGetMain(out Camera cam))
+            if (!cameraProvider.TryGetMain(out Camera mainCamera))
                 return false;
 
-            Vector2? pos = Mouse.current?.position.ReadValue();
-            if (pos == null)
-            {
-                CustomLogger.LogWarning("Could not perform raycast from mouse position: Mouse position is null.", null);
+            if (!TryGetMousePosition(out Vector2 mousePosition))
                 return false;
-            }
 
-            Ray ray = cam.ScreenPointToRay(pos.Value);
-            RaycastHit2D hit = Physics2D.GetRayIntersection(ray, Mathf.Infinity);
-
-#if UNITY_EDITOR
-            DrawDebugRay(ray, hit);
-#endif
-
-            return hit && hit.collider.TryGetComponent(out result);
+            return TryGetFromRay(mainCamera.ScreenPointToRay(mousePosition), out result);
         }
 
         /// <summary>
@@ -70,16 +67,12 @@ namespace Base.CorePackage.Raycasting
             result = default(T);
 
             if (camera == null)
+            {
+                CustomLogger.LogWarning($"Could not raycast from screen point: {nameof(camera)} is null.", null);
                 return false;
+            }
 
-            Ray ray = camera.ScreenPointToRay(screenPoint);
-            RaycastHit2D hit = Physics2D.GetRayIntersection(ray, Mathf.Infinity);
-
-#if UNITY_EDITOR
-            DrawDebugRay(ray, hit);
-#endif
-
-            return hit && hit.collider.TryGetComponent(out result);
+            return TryGetFromRay(camera.ScreenPointToRay(screenPoint), out result);
         }
 
         /// <summary>
@@ -96,26 +89,22 @@ namespace Base.CorePackage.Raycasting
 
             if (EventSystem.current == null)
             {
-                CustomLogger.LogWarning("Could not raycast for UI element: EventSystem is null.", null);
+                CustomLogger.LogWarning($"Could not raycast for UI element: {nameof(EventSystem)} is null.", null);
                 return false;
             }
 
             if (graphicRaycaster == null)
             {
-                CustomLogger.LogWarning("Could not raycast for UI element: GraphicRaycaster is null.", null);
+                CustomLogger.LogWarning($"Could not raycast for UI element: {nameof(graphicRaycaster)} is null.", null);
                 return false;
             }
 
-            Vector2? pos = Mouse.current?.position.ReadValue();
-            if (pos == null)
-            {
-                CustomLogger.LogWarning("Could not raycast for UI element: Mouse position is null.", null);
+            if (!TryGetMousePosition(out Vector2 mousePosition))
                 return false;
-            }
 
             PointerEventData pointer = new(EventSystem.current)
             {
-                position = pos.Value
+                position = mousePosition
             };
 
             UIRaycastResults.Clear();
@@ -130,29 +119,52 @@ namespace Base.CorePackage.Raycasting
             return false;
         }
 
-#if UNITY_EDITOR
         /// <summary>
-        /// Draws debug gizmos for raycast visualization in the Scene view.
+        /// Central place for reading the pointer, so a missing device is reported once instead of per call site.
         /// </summary>
+        private static bool TryGetMousePosition(out Vector2 position)
+        {
+            position = default(Vector2);
+
+            Mouse mouse = Mouse.current;
+            if (mouse == null)
+            {
+                CustomLogger.LogWarning($"Could not perform raycast: no {nameof(Mouse)} device is present.", null);
+                return false;
+            }
+
+            position = mouse.position.ReadValue();
+            return true;
+        }
+
+        /// <summary>
+        /// Shared cast path, so every entry point behaves and debug-draws identically.
+        /// </summary>
+        private static bool TryGetFromRay<T>(Ray ray, out T result)
+        {
+            result = default(T);
+
+            RaycastHit2D hit = Physics2D.GetRayIntersection(ray, Mathf.Infinity);
+            DrawDebugRay(ray, hit);
+
+            return hit && hit.collider.TryGetComponent(out result);
+        }
+
+        /// <summary>
+        /// Editor-only visualization so casts can be followed in the Scene view.
+        /// </summary>
+        [Conditional("UNITY_EDITOR")]
         private static void DrawDebugRay(Ray ray, RaycastHit2D hit)
         {
-            Vector3 start = ray.origin;
             Vector3 end = hit
                 ? hit.point
                 : ray.origin + ray.direction * DebugRayLength;
 
             Color color = hit
-                ? Color.green
-                : DebugRayColor;
+                ? DebugHitColor
+                : DebugMissColor;
 
-            Debug.DrawLine(start, end, color, DebugDuration);
+            Debug.DrawLine(ray.origin, end, color, DebugDuration);
         }
-#endif
-#if UNITY_EDITOR
-        private const float DebugRayLength = 25f;
-        private const float DebugDuration = 1f;
-
-        private static readonly Color DebugRayColor = new(0.1f, 0.8f, 1f, 0.8f);
-#endif
     }
 }

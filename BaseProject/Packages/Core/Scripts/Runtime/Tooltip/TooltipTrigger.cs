@@ -1,3 +1,4 @@
+using Base.AttributePackage;
 using Base.CorePackage.Services;
 using Base.CorePackage.Tracking;
 using Base.UtilityPackage.Logging;
@@ -8,90 +9,98 @@ using UnityEngine.InputSystem;
 namespace Base.CorePackage.Tooltip
 {
     /// <summary>
-    /// The purpose of this class is to show a tooltip when hovering a GameObject with this component.
-    /// It uses the <see cref="TooltipService"/> to manage the display of the tooltip based on priority.
+    /// Shows a tooltip while the pointer hovers this GameObject.
+    /// Requests go through the <see cref="TooltipService"/>, so overlapping triggers resolve by priority.
     /// </summary>
     [DisallowMultipleComponent]
     public class TooltipTrigger : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
-        [TextArea]
+        [Tooltip("Text shown while this GameObject is hovered.")]
+        [NotNullOrEmpty] [TextArea]
         [SerializeField] private string tooltipText;
 
-        [Tooltip("Higher = more important (used when overlapping tooltips).")]
+        [Tooltip("Higher wins when several tooltips are requested at the same time.")]
         [SerializeField] private EPriority priority;
 
         private TooltipService _service;
 
 #region Unity Callbacks
-        private void Awake() => ServiceLocator.TryGet(out _service);
-
-        private void OnDisable()
+        private void Awake()
         {
-            if (_service == null)
-                return;
-
-            if (_service.HasTooltipFromCaller(this))
-                _service.RemoveTooltip(this);
+            // TryGet logs on its own. Disabling keeps a missing service from repeating that error on every hover.
+            if (!ServiceLocator.TryGet(out _service))
+                enabled = false;
         }
+
+        private void OnDisable() => HideTooltip();
 #endregion
 
-        public void OnPointerEnter(PointerEventData eventData)
+        /// <inheritdoc/>
+        public void OnPointerEnter(PointerEventData eventData) => ShowTooltip();
+
+        /// <inheritdoc/>
+        public void OnPointerExit(PointerEventData eventData) => HideTooltip();
+
+        /// <summary>
+        /// Replaces the tooltip text and refreshes the tooltip when it is currently visible.
+        /// </summary>
+        /// <param name="newText">The new text. Must not be empty.</param>
+        public void SetText(string newText)
+        {
+            if (string.IsNullOrEmpty(newText))
+            {
+                CustomLogger.LogError($"{nameof(SetText)} was called with empty text.", this);
+                return;
+            }
+
+            tooltipText = newText;
+
+            if (!HasActiveTooltip())
+                return;
+
+            HideTooltip();
+            ShowTooltip();
+        }
+
+        /// <summary>
+        /// Requests the tooltip. Returns quietly when the service is already gone, which happens on teardown.
+        /// </summary>
+        private void ShowTooltip()
         {
             if (_service == null)
                 return;
 
             if (string.IsNullOrEmpty(tooltipText))
             {
-                CustomLogger.LogWarning(
-                    $"{nameof(TooltipTrigger)} on GameObject '{gameObject.name}' " + "has empty tooltip text.", this);
+                CustomLogger.LogWarning($"{nameof(TooltipTrigger)} on '{gameObject.name}' has no tooltip text.", this);
 
                 return;
             }
 
             if (Mouse.current == null)
             {
-                CustomLogger.LogWarning("Cannot show tooltip: Mouse input is not available.", this);
+                CustomLogger.LogWarning("Cannot show the tooltip, no mouse is available.", this);
                 return;
             }
 
             TooltipData data = new(tooltipText, getScreenPosition: () => Mouse.current.position.ReadValue());
-
             _service.AddTooltip(data, (uint)priority, this);
-        }
-
-        public void OnPointerExit(PointerEventData eventData)
-        {
-            if (_service == null)
-                return;
-
-            if (_service.HasTooltipFromCaller(this))
-                _service.RemoveTooltip(this);
         }
 
         /// <summary>
-        /// Updates the tooltip text displayed by this trigger.
+        /// Drops the request again. Silent when there is nothing to remove, so a double release does not spam.
         /// </summary>
-        public void SetText(string newText)
+        private void HideTooltip()
         {
-            if (_service == null)
+            if (!HasActiveTooltip())
                 return;
-
-            tooltipText = newText;
-
-            // If the tooltip is currently visible, refresh it
-            if (!_service.HasTooltipFromCaller(this))
-                return;
-
-            if (Mouse.current == null)
-            {
-                CustomLogger.LogWarning("Cannot refresh tooltip: Mouse input is not available.", this);
-                return;
-            }
 
             _service.RemoveTooltip(this);
-
-            TooltipData data = new(tooltipText, getScreenPosition: () => Mouse.current.position.ReadValue());
-            _service.AddTooltip(data, (uint)priority, this);
         }
+
+        /// <summary>
+        /// Checks whether this trigger currently holds a request in the service.
+        /// </summary>
+        private bool HasActiveTooltip() => _service != null && _service.HasTooltipFromCaller(this);
     }
 }
