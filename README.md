@@ -22,7 +22,7 @@ Or install individual packages manually via the Unity Package Manager using a Gi
 https://github.com/Kirschkernweitwurf/BaseProjectPackages.git?path=BaseProject/Packages/<PackageName>
 ```
 
-Replace `<PackageName>` with one of: `Tools`, `Attributes`, `Systems`, `UI`, `Utility`, `ScreenShake`.
+Replace `<PackageName>` with one of: `Tools`, `Attributes`, `Systems`, `UI`, `Utility`.
 
 ## Why?
 
