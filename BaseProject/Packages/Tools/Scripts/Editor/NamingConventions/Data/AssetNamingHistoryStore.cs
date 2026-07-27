@@ -19,15 +19,15 @@ namespace Base.ToolPackage.Editor.NamingConventions.Data
         // The general short pattern follows the local culture, e.g. 27.08.2026 14:30.
         private const string TimeFormat = "g";
 
+        private static List<AssetNamingHistoryEntry> _entries;
+
         /// <summary>Number of remembered actions.</summary>
         public static int Count => Entries.Count;
 
         /// <summary>Remembered actions, newest first.</summary>
         public static IReadOnlyList<AssetNamingHistoryEntry> Entries => _entries ??= Load();
 
-        private static List<AssetNamingHistoryEntry> _entries;
-
-        /// <summary>Remembers one rename that was applied.</summary>
+        /// <summary>Remembers one applied rename.</summary>
         public static void AddRename(string oldName, string newName, string assetPath)
             => Add(EAssetNamingAction.Renamed, oldName, newName, assetPath);
 
@@ -38,6 +38,16 @@ namespace Base.ToolPackage.Editor.NamingConventions.Data
         /// <summary>Remembers that an asset was brought back into the scan.</summary>
         public static void AddRestore(string name, string assetPath)
             => Add(EAssetNamingAction.Restored, name, string.Empty, assetPath);
+
+        /// <summary>Forgets a single entry, used after it was undone.</summary>
+        public static void Remove(AssetNamingHistoryEntry entry)
+        {
+            if (entry == null)
+                return;
+
+            if (((List<AssetNamingHistoryEntry>)Entries).Remove(entry))
+                Save();
+        }
 
         /// <summary>Drops the whole history.</summary>
         public static void Clear()

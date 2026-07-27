@@ -18,8 +18,10 @@ namespace Base.ToolPackage.Editor.NamingConventions.Scanning
         private static readonly Regex LowerSnakePattern = new("^[a-z0-9]+(_[a-z0-9]+)*$", RegexOptions.Compiled);
         private static readonly Regex PascalPattern = new("^[A-Z][A-Za-z0-9]*$", RegexOptions.Compiled);
 
+        // A segment is a pascal case word or a plain number, so a variant like "Counter_01_MS"
+        // stays valid instead of being reported with a fix that changes nothing.
         private static readonly Regex PascalSnakePattern =
-            new("^[A-Z][A-Za-z0-9]*(_[A-Z][A-Za-z0-9]*)*$", RegexOptions.Compiled);
+            new("^([A-Z][A-Za-z0-9]*|[0-9]+)(_([A-Z][A-Za-z0-9]*|[0-9]+))*$", RegexOptions.Compiled);
 
         private static readonly Regex UpperSnakePattern = new("^[A-Z0-9]+(_[A-Z0-9]+)*$", RegexOptions.Compiled);
 
@@ -74,10 +76,10 @@ namespace Base.ToolPackage.Editor.NamingConventions.Scanning
 
             return style switch
             {
-                ENamingStyle.PascalCase => JoinCased(words, false),
-                ENamingStyle.CamelCase => JoinCased(words, true),
-                ENamingStyle.UpperSnakeCase => JoinSnake(words, true),
-                ENamingStyle.LowerSnakeCase => JoinSnake(words, false),
+                ENamingStyle.PascalCase => JoinCased(words, lowerFirst: false),
+                ENamingStyle.CamelCase => JoinCased(words, lowerFirst: true),
+                ENamingStyle.UpperSnakeCase => JoinSnake(words, upper: true),
+                ENamingStyle.LowerSnakeCase => JoinSnake(words, upper: false),
                 _ => name
             };
         }
@@ -100,7 +102,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Scanning
                 if (builder.Length > 0)
                     builder.Append(Underscore);
 
-                builder.Append(JoinCased(words, false));
+                builder.Append(JoinCased(words, lowerFirst: false));
             }
 
             return builder.Length == 0

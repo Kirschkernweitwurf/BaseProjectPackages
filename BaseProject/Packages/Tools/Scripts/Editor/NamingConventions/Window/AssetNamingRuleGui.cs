@@ -8,11 +8,11 @@ using UnityEngine;
 namespace Base.ToolPackage.Editor.NamingConventions.Window
 {
     /// <summary>
-    /// Draws the editable options and rule table of the asset naming window. The table is laid out
-    /// by explicit rectangles through <see cref="AssetNamingColumnLayout"/>, so the header and
-    /// every row line up exactly and each column can be resized by dragging its divider. Prefix
-    /// and suffix lists are edited as comma separated text through delayed fields, so typing never
-    /// fights with the value being rebuilt on every repaint.
+    /// Draws the editable options and rule table of the asset naming window. Both tables are laid
+    /// out by explicit rectangles through <see cref="AssetNamingColumnLayout"/>, so the header and
+    /// every row line up exactly and each column can be resized by dragging its divider. List
+    /// columns are edited as comma separated text through delayed fields, so typing never fights
+    /// with the value being rebuilt on every repaint.
     /// </summary>
     public static class AssetNamingRuleGui
     {
@@ -23,12 +23,12 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
         private const string CustomTypeLabel = "Custom";
         private const float FragmentGap = 1f;
         private const int MaxEnumerationDigits = 6;
-        private const string PrefsKey = "Base.AssetNaming.RuleColumn";
+        private const string PrefsKey = "Base.AssetNaming.RuleColumns";
         private const float RemoveWidth = 20f;
         private const string Separator = ", ";
 
         private static readonly AssetNamingColumnLayout Columns = new(PrefsKey,
-            26f, 90f, 100f, 130f, 90f, 130f, 80f, 80f, 90f, 46f);
+            26f, 90f, 100f, 130f, 90f, 130f, 80f, 80f, 30f, 80f, 85f, 46f);
 
         private static readonly GUIContent[] Headers =
         {
@@ -40,8 +40,14 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
             new("Path Contains", "Only check assets whose path contains this text. "
                 + "Empty checks everywhere. Example: \"/Art/\""),
             new("Casing", "How the name must be cased. Example: \"PascalCase\""),
-            new("Prefixes", "The name must start with one of these, comma separated. Example: \"P_, SM_\""),
-            new("Suffixes", "The name must end with one of these, comma separated. Example: \"_Data, _Config\""),
+            new("Prefixes", "The name must start with one of these, comma separated. The first one is "
+                + "used when a fix is suggested. Example: \"P_, SM_\""),
+            new("Suffixes", "The name may end with one of these, comma separated. The first one is "
+                + "used when a fix is suggested. Example: \"_D, _N, _R\""),
+            new("Opt", "If on, a suffix is allowed but not demanded. Turn it off when every asset of "
+                + "this kind has to carry one."),
+            new("Strip", "Text that has to go, comma separated. Dropped from the front or the back "
+                + "before the name is checked. Example: \"Icon_, _Old\""),
             new("Pattern", "Advanced. A regular expression the whole name must match. Only needed for "
                 + "shapes the other columns cannot express, like a word count or a length limit. "
                 + "If set, nothing else is checked. "
@@ -58,10 +64,10 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
         private static readonly GUIContent PackagesContent = new("Scan packages",
             "Also check assets in the Packages folder");
 
+        private static readonly GUIContent RemoveContent = new("x", "Remove this entry");
+
         private static readonly GUIContent ScriptsContent = new("Scan scripts",
             "Also check .cs files. Careful: renaming a script breaks its class name.");
-
-        private static readonly GUIContent RemoveContent = new("x", "Remove this entry");
 
         private static readonly string[] TypeValues = BuildTypeValues();
         private static readonly string[] TypeLabels = BuildTypeLabels();
@@ -81,7 +87,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
             ruleSet.IncludePackages = EditorGUILayout.ToggleLeft(PackagesContent, ruleSet.IncludePackages);
             ruleSet.IncludeScripts = EditorGUILayout.ToggleLeft(ScriptsContent, ruleSet.IncludeScripts);
 
-            EditorGUILayout.Space(2f);
+            EditorGUILayout.Space(FragmentGap);
 
             GUIContent fragmentsLabel = new($"Ignored Path Fragments ({ruleSet.IgnoredPathFragments.Count})",
                 "Assets whose path contains one of these are skipped by every rule. "
@@ -91,16 +97,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
 
             if (isFragmentsExpanded)
             {
-                EditorGUILayout.Space(FragmentGap);
-
-                for (int index = 0; index < ruleSet.IgnoredPathFragments.Count; index++)
-                {
-                    if (DrawFragment(ruleSet, index))
-                        fragmentRemovalIndex = index;
-
-                    EditorGUILayout.Space(FragmentGap);
-                }
-
+                fragmentRemovalIndex = DrawFragments(ruleSet);
                 isFragmentAddRequested = GUILayout.Button(AddFragmentContent, GUILayout.Width(110f));
             }
 
@@ -186,17 +183,43 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
             return labels;
         }
 
-        private static bool DrawFragment(AssetNamingRuleSet ruleSet, int index)
+        /// <summary>
+        /// Draws the ignore list as a striped table like the rules, and returns the index the user
+        /// asked to remove.
+        /// </summary>
+        private static int DrawFragments(AssetNamingRuleSet ruleSet)
         {
-            using (new EditorGUILayout.HorizontalScope())
+            int removalIndex = NoIndex;
+            int count = ruleSet.IgnoredPathFragments.Count;
+            Rect area = GUILayoutUtility.GetRect(0f, count * AssetNamingGui.RowHeight, GUILayout.ExpandWidth(true));
+
+            for (int index = 0; index < count; index++)
             {
-                string edited = EditorGUILayout.DelayedTextField(ruleSet.IgnoredPathFragments[index]);
+                Rect row = new(area.x, area.y + index * AssetNamingGui.RowHeight, area.width,
+                    AssetNamingGui.RowHeight);
 
-                if (edited != ruleSet.IgnoredPathFragments[index])
-                    ruleSet.SetIgnoredFragmentAt(index, edited);
+                AssetNamingGui.DrawRowBackground(row, index);
 
-                return GUILayout.Button(RemoveContent, EditorStyles.miniButton, GUILayout.Width(RemoveWidth));
+                if (DrawFragment(ruleSet, row, index))
+                    removalIndex = index;
             }
+
+            return removalIndex;
+        }
+
+        private static bool DrawFragment(AssetNamingRuleSet ruleSet, Rect row, int index)
+        {
+            float padding = AssetNamingGui.Padding;
+            float width = Mathf.Max(padding, row.width - RemoveWidth - padding * 3f);
+            Rect fieldRect = new(row.x + padding, row.y + 2f, width, row.height - 4f);
+            Rect removeRect = new(fieldRect.xMax + padding, row.y + 2f, RemoveWidth, row.height - 4f);
+
+            string edited = EditorGUI.DelayedTextField(fieldRect, ruleSet.IgnoredPathFragments[index]);
+
+            if (edited != ruleSet.IgnoredPathFragments[index])
+                ruleSet.SetIgnoredFragmentAt(index, edited);
+
+            return GUI.Button(removeRect, RemoveContent, EditorStyles.miniButton);
         }
 
         /// <summary>Draws one rule row and returns true when the user asked to remove it.</summary>
@@ -220,9 +243,13 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
                 DrawList(Columns.Field(row, 6), naming.Prefixes);
                 DrawList(Columns.Field(row, 7), naming.Suffixes);
 
-                naming.Pattern = EditorGUI.DelayedTextField(Columns.Field(row, 8), naming.Pattern);
+                naming.SuffixOptional = EditorGUI.Toggle(Columns.Field(row, 8), naming.SuffixOptional);
 
-                int digits = EditorGUI.DelayedIntField(Columns.Field(row, 9), rule.EnumerationDigits);
+                DrawList(Columns.Field(row, 9), naming.Stripped);
+
+                naming.Pattern = EditorGUI.DelayedTextField(Columns.Field(row, 10), naming.Pattern);
+
+                int digits = EditorGUI.DelayedIntField(Columns.Field(row, 11), rule.EnumerationDigits);
                 rule.EnumerationDigits = Mathf.Clamp(digits, 0, MaxEnumerationDigits);
             }
 

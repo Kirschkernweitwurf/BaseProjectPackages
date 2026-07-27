@@ -6,19 +6,19 @@ using UnityEditor;
 
 namespace Base.ToolPackage.Editor.NamingConventions.Scanning
 {
-    /// <summary>Checks names against a rule and builds the replacement name for a fix.</summary>
+    /// <summary>
+    /// Checks names against a rule and builds the replacement name for a fix. A required suffix
+    /// can be handed in for assets whose sub type is known, for example a normal map that has to
+    /// end in _N.
+    /// </summary>
     public static class NamingRuleEvaluator
     {
         private const string Wildcard = "*";
 
-        private static readonly char[] ForbiddenSeparators =
-        {
-            ' ',
-            '-'
-        };
+        private static readonly char[] ForbiddenSeparators = { ' ', '-' };
 
         /// <summary>True when the name satisfies the rule or is on its ignore list.</summary>
-        public static bool IsValid(NamingRule rule, string name)
+        public static bool IsValid(NamingRule rule, string name, string requiredSuffix)
         {
             if (IsIgnored(rule, name))
                 return true;
@@ -29,17 +29,20 @@ namespace Base.ToolPackage.Editor.NamingConventions.Scanning
             if (HasForbiddenSeparator(name))
                 return false;
 
-            if (!HasAffix(rule.Prefixes, name, true))
+            if (FindStripped(rule, name).Length > 0)
                 return false;
 
-            if (!HasAffix(rule.Suffixes, name, false))
+            if (!HasAffix(rule.Prefixes, name, isPrefix: true))
                 return false;
 
-            return NameStyleUtility.Matches(Core(rule, name), rule.Style);
+            if (!HasSuffix(rule, name, requiredSuffix))
+                return false;
+
+            return NameStyleUtility.Matches(Core(rule, name, requiredSuffix), rule.Style);
         }
 
         /// <summary>Short explanation of why the name was rejected.</summary>
-        public static string Reason(NamingRule rule, string name)
+        public static string Reason(NamingRule rule, string name, string requiredSuffix)
         {
             if (!string.IsNullOrEmpty(rule.Pattern))
                 return $"Does not match the pattern {rule.Pattern}";
@@ -47,10 +50,19 @@ namespace Base.ToolPackage.Editor.NamingConventions.Scanning
             if (HasForbiddenSeparator(name))
                 return "Contains a space or dash";
 
-            if (!HasAffix(rule.Prefixes, name, true))
+            string stripped = FindStripped(rule, name);
+
+            if (stripped.Length > 0)
+                return $"Should not contain {stripped}";
+
+            if (!HasAffix(rule.Prefixes, name, isPrefix: true))
                 return $"Missing prefix {string.Join(" or ", rule.Prefixes)}";
 
-            if (!HasAffix(rule.Suffixes, name, false))
+            if (requiredSuffix.Length > 0
+                && !name.EndsWith(requiredSuffix, StringComparison.Ordinal))
+                return $"Should end with {requiredSuffix}";
+
+            if (!HasSuffix(rule, name, requiredSuffix))
                 return $"Missing suffix {string.Join(" or ", rule.Suffixes)}";
 
             return $"Expected {ObjectNames.NicifyVariableName(rule.Style.ToString())}";
@@ -61,28 +73,23 @@ namespace Base.ToolPackage.Editor.NamingConventions.Scanning
         /// name already carries is kept when the rule allows it, so "SM_Kitchen01" with the
         /// prefixes P_, S_ and SM_ suggests "SM_Kitchen_01" instead of switching to P_.
         /// </summary>
-        public static string Suggest(NamingRule rule, string name)
+        public static string Suggest(NamingRule rule, string name, string requiredSuffix)
         {
-            string core = NameStyleUtility.Convert(Core(rule, name), rule.Style);
+            string core = NameStyleUtility.Convert(Core(rule, name, requiredSuffix), rule.Style);
 
             if (core.Length == 0)
                 return name;
 
-            string prefix = FindMatchedAffix(rule.Prefixes, name, true);
+            string prefix = FindMatchedAffix(rule.Prefixes, name, isPrefix: true);
 
             if (prefix.Length == 0)
                 prefix = rule.PrimaryPrefix;
 
-            string suffix = FindMatchedAffix(rule.Suffixes, name, false);
-
-            if (suffix.Length == 0)
-                suffix = rule.PrimarySuffix;
-
-            return prefix + core + suffix;
+            return prefix + core + SuggestSuffix(rule, name, requiredSuffix);
         }
 
         /// <summary>True when the rule skips this name.</summary>
-        private static bool IsIgnored(NamingRule rule, string name)
+        public static bool IsIgnored(NamingRule rule, string name)
         {
             foreach (string entry in rule.IgnoredNames)
             {
@@ -91,6 +98,53 @@ namespace Base.ToolPackage.Editor.NamingConventions.Scanning
             }
 
             return false;
+        }
+
+        /// <summary>The first entry of the strip list the name carries, at either end.</summary>
+        private static string FindStripped(NamingRule rule, string name)
+        {
+            foreach (string entry in rule.Stripped)
+            {
+                if (string.IsNullOrWhiteSpace(entry))
+                    continue;
+
+                if (name.StartsWith(entry, StringComparison.Ordinal)
+                    || name.EndsWith(entry, StringComparison.Ordinal))
+                    return entry;
+            }
+
+            return string.Empty;
+        }
+
+        private static string SuggestSuffix(NamingRule rule, string name, string requiredSuffix)
+        {
+            if (requiredSuffix.Length > 0)
+                return requiredSuffix;
+
+            string matched = FindMatchedAffix(rule.Suffixes, name, isPrefix: false);
+
+            if (matched.Length > 0)
+                return matched;
+
+            // An optional suffix is only added when the name already had one, so assets without a
+            // sub type keep their plain name instead of being pushed into the first entry.
+            return rule.SuffixOptional
+                ? string.Empty
+                : rule.PrimarySuffix;
+        }
+
+        private static bool HasSuffix(NamingRule rule, string name, string requiredSuffix)
+        {
+            if (requiredSuffix.Length > 0)
+                return name.EndsWith(requiredSuffix, StringComparison.Ordinal);
+
+            if (rule.Suffixes.Count == 0)
+                return true;
+
+            if (FindMatchedAffix(rule.Suffixes, name, isPrefix: false).Length > 0)
+                return true;
+
+            return rule.SuffixOptional;
         }
 
         /// <summary>Spaces and dashes are never allowed in an asset name.</summary>
@@ -123,12 +177,37 @@ namespace Base.ToolPackage.Editor.NamingConventions.Scanning
             return Regex.IsMatch(name, expression);
         }
 
-        private static string Core(NamingRule rule, string name)
+        private static string Core(NamingRule rule, string name, string requiredSuffix)
         {
-            string core = Strip(rule.Prefixes, name, true);
-            core = Strip(rule.Suffixes, core, false);
+            string core = StripAll(rule, name);
+
+            core = Strip(rule.Prefixes, core, isPrefix: true);
+            core = Strip(rule.Suffixes, core, isPrefix: false);
+
+            if (requiredSuffix.Length > 0
+                && core.EndsWith(requiredSuffix, StringComparison.Ordinal))
+                core = core[..^requiredSuffix.Length];
 
             return core.Trim('_');
+        }
+
+        /// <summary>Removes every entry of the strip list, from the front and from the back.</summary>
+        private static string StripAll(NamingRule rule, string name)
+        {
+            string core = name;
+            string found = FindStripped(rule, core);
+
+            while (found.Length > 0
+                && core.Length > found.Length)
+            {
+                core = core.StartsWith(found, StringComparison.Ordinal)
+                    ? core[found.Length..]
+                    : core[..^found.Length];
+
+                found = FindStripped(rule, core);
+            }
+
+            return core;
         }
 
         private static string Strip(List<string> affixes, string name, bool isPrefix)

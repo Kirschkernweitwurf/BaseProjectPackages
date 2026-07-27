@@ -12,7 +12,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Data
     /// The asset naming conventions of a project. Stored as a plain asset next to the code rule
     /// set, so the conventions are versioned with the project and every machine scans against the
     /// same rules. New sets start empty because asset prefixes differ from project to project, the
-    /// auto-detection fills them from the assets that already exist.
+    /// auto detection fills them from the assets that already exist.
     /// </summary>
     [DynamicCreateAssetMenu("Scriptable Objects/Base/Naming Conventions/New Asset Rule Set", "ANRS_AssetNamingRuleSet")]
     public sealed class AssetNamingRuleSet : ScriptableObject
@@ -28,7 +28,8 @@ namespace Base.ToolPackage.Editor.NamingConventions.Data
             "/Plugins/",
             "/ThirdParty/",
             "/Generated/",
-            "/TextMesh Pro/"
+            "/TextMesh Pro/",
+            "/AddressableAssetsData/"
         };
 
         [Tooltip("One rule per asset group. The first rule that applies to an asset wins.")]
@@ -81,7 +82,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Data
             return null;
         }
 
-        /// <summary>Creates an empty rule set asset that is ready for the auto-detection.</summary>
+        /// <summary>Creates an empty rule set asset that is ready for the auto detection.</summary>
         public static AssetNamingRuleSet Create()
         {
             Directory.CreateDirectory(DefaultFolder);

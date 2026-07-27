@@ -18,13 +18,13 @@ namespace Base.ToolPackage.Editor.NamingConventions.Scanning
     public static class AssetConventionDetector
     {
         private const float DominanceThreshold = 0.6f;
-        private const float MinimumPrefixShare = 0.2f;
         private const int MinimumSamples = 5;
+        private const int MinimumSuffixTokens = 2;
+        private const float MinimumPrefixShare = 0.2f;
 
         // Suffix conventions are usually uniform, so a rarer token is more likely to be a category
         // like "_Lamp" than a real suffix. The higher bar keeps those out of the rule.
         private const float MinimumSuffixShare = 0.35f;
-        private const int MinimumSuffixTokens = 2;
         private const char TokenSeparator = '_';
 
         /// <summary>Returns one rule per asset kind that shows a clear convention.</summary>
@@ -48,9 +48,64 @@ namespace Base.ToolPackage.Editor.NamingConventions.Scanning
                 rules.Add(BuildRule(group.Key, group.Value));
             }
 
+            ApplyCreateMenuPrefixes(rules);
             rules.Sort((first, second) => string.Compare(first.Label, second.Label, StringComparison.Ordinal));
 
             return rules;
+        }
+
+        /// <summary>Type names of every asset kind that currently takes part in a scan.</summary>
+        public static HashSet<string> CollectPresentTypeNames(AssetNamingRuleSet ruleSet)
+        {
+            HashSet<string> names = new();
+
+            if (ruleSet == null)
+                return names;
+
+            foreach (string path in AssetNamingScanner.CollectAssetPaths(ruleSet))
+            {
+                Type assetType = AssetDatabase.GetMainAssetTypeAtPath(path);
+
+                if (assetType == null)
+                    continue;
+
+                names.Add(AssetKindResolver.ResolveRuleTypeName(path, assetType));
+            }
+
+            return names;
+        }
+
+        /// <summary>
+        /// Adds the prefixes the asset creation entries already declare. A type created as
+        /// "ANRS_AssetNamingRuleSet" states its prefix in code, which beats guessing it from the
+        /// handful of assets that happen to exist.
+        /// </summary>
+        private static void ApplyCreateMenuPrefixes(List<AssetNamingRule> rules)
+        {
+            foreach (KeyValuePair<Type, string> pair in CreateAssetMenuScanner.CollectPrefixes())
+            {
+                AssetNamingRule rule = FindRule(rules, pair.Key.FullName);
+
+                if (rule == null)
+                {
+                    rule = new AssetNamingRule(pair.Key.Name, pair.Key.FullName, ENamingStyle.PascalSnakeCase);
+                    rules.Add(rule);
+                }
+
+                if (!rule.Naming.Prefixes.Contains(pair.Value))
+                    rule.Naming.Prefixes.Add(pair.Value);
+            }
+        }
+
+        private static AssetNamingRule FindRule(List<AssetNamingRule> rules, string typeName)
+        {
+            foreach (AssetNamingRule rule in rules)
+            {
+                if (rule.TypeName == typeName)
+                    return rule;
+            }
+
+            return null;
         }
 
         private static Dictionary<string, List<string>> GroupNamesByKind(AssetNamingRuleSet ruleSet)
@@ -81,8 +136,8 @@ namespace Base.ToolPackage.Editor.NamingConventions.Scanning
         private static AssetNamingRule BuildRule(string typeName, List<string> names)
         {
             List<string> cores = SplitEnumerations(names, out int enumerationDigits);
-            List<string> prefixes = CollectTokens(cores, true, MinimumPrefixShare);
-            List<string> suffixes = CollectTokens(cores, false, MinimumSuffixShare);
+            List<string> prefixes = CollectTokens(cores, fromStart: true, MinimumPrefixShare);
+            List<string> suffixes = CollectTokens(cores, fromStart: false, MinimumSuffixShare);
 
             AssetNamingRule rule = new(LabelOf(typeName), typeName,
                 FindDominantStyle(cores, prefixes, suffixes));

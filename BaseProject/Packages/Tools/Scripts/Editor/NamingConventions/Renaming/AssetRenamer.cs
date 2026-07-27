@@ -7,7 +7,7 @@ using UnityEditor;
 namespace Base.ToolPackage.Editor.NamingConventions.Renaming
 {
     /// <summary>
-    /// Applies the suggested file names to the asset database and records every rename that was applied in
+    /// Applies the suggested file names to the asset database and records every applied rename in
     /// the <see cref="AssetNamingHistoryStore"/>. Renaming an asset keeps its GUID, so references
     /// survive, which is why assets can be fixed without touching any code.
     /// </summary>
@@ -44,6 +44,29 @@ namespace Base.ToolPackage.Editor.NamingConventions.Renaming
             AssetNamingHistoryStore.AddRename(violation.CurrentName, violation.Suggestion, BuildNewPath(violation));
 
             return true;
+        }
+
+        /// <summary>
+        /// Renames one asset directly, used to take a rename back from the history. Nothing is
+        /// written to the history, because undoing an entry removes it instead of adding another.
+        /// </summary>
+        public static bool RenameTo(string assetPath, string newName)
+        {
+            if (string.IsNullOrEmpty(assetPath)
+                || string.IsNullOrWhiteSpace(newName))
+            {
+                CustomLogger.LogWarning("Cannot rename without a path and a name.", null);
+                return false;
+            }
+
+            string error = AssetDatabase.RenameAsset(assetPath, newName);
+
+            if (string.IsNullOrEmpty(error))
+                return true;
+
+            CustomLogger.LogError($"Renaming {assetPath} failed: {error}", null);
+
+            return false;
         }
 
         /// <summary>Renames every entry of the list and returns how many assets were renamed.</summary>

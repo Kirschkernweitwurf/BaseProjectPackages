@@ -74,7 +74,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Scanning
         private static bool IsScannable(AssetNamingRuleSet ruleSet, string path)
         {
             bool isInProject = path.StartsWith(AssetsRoot, StringComparison.Ordinal)
-                || ruleSet.IncludePackages && path.StartsWith(PackagesRoot, StringComparison.Ordinal);
+                || (ruleSet.IncludePackages && path.StartsWith(PackagesRoot, StringComparison.Ordinal));
 
             if (!isInProject)
                 return false;
@@ -104,14 +104,31 @@ namespace Base.ToolPackage.Editor.NamingConventions.Scanning
                 if (!rule.AppliesTo(assetPath, assetKind, assetType))
                     continue;
 
-                if (AssetNameEvaluator.IsValid(rule, fileName))
+                string requiredSuffix = AssetSuffixResolver.Resolve(assetPath, rule.Naming);
+
+                if (AssetNameEvaluator.IsValid(rule, fileName, requiredSuffix))
                     return null;
 
-                return new AssetNamingViolation(assetPath, AssetDatabase.AssetPathToGUID(assetPath), fileName,
-                    rule.Label, AssetNameEvaluator.Reason(rule, fileName), AssetNameEvaluator.Suggest(rule, fileName));
+                return Build(rule, assetPath, fileName, requiredSuffix);
             }
 
             return null;
+        }
+
+        private static AssetNamingViolation Build(AssetNamingRule rule, string assetPath, string fileName,
+            string requiredSuffix)
+        {
+            string suggestion = AssetNameEvaluator.Suggest(rule, fileName, requiredSuffix);
+
+            // A violation the tool cannot improve is noise, so a suggestion equal to the current
+            // name means the rule and the name simply disagree in a way nothing can fix.
+            if (suggestion == fileName)
+                return null;
+
+            suggestion = AssetNameUniquifier.MakeUnique(assetPath, suggestion, rule.EnumerationDigits);
+
+            return new AssetNamingViolation(assetPath, AssetDatabase.AssetPathToGUID(assetPath), fileName,
+                rule.Label, AssetNameEvaluator.Reason(rule, fileName, requiredSuffix), suggestion);
         }
     }
 }
