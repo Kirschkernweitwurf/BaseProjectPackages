@@ -6,12 +6,10 @@ using Base.ToolPackage.Editor.NamingConventions.Data;
 namespace Base.ToolPackage.Editor.NamingConventions.Scanning
 {
     /// <summary>
-    /// Checks asset file names against a rule. A trailing number is split off first, with or
-    /// without an underscore, then the remaining name goes through the shared
-    /// <see cref="NamingRuleEvaluator"/>. So "P_Street_Lamp01" validates its casing on
-    /// "P_Street_Lamp" and the suggestion becomes "P_StreetLamp_01", normalized underscore
-    /// included. A required suffix from the asset importer, for example _N for a normal map, is
-    /// passed straight through.
+    /// Checks asset file names against a rule. The suffix is split off first, then the number, so
+    /// a name always reads Prefix_Base_Number_Suffix and "T_PhoneScreen_N_2" is fixed to
+    /// "T_PhoneScreen_02_N". The rest of the name goes through the shared
+    /// <see cref="NamingRuleEvaluator"/>.
     /// </summary>
     public static class AssetNameEvaluator
     {
@@ -25,7 +23,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Scanning
         /// <summary>True when the file name satisfies the rule.</summary>
         public static bool IsValid(AssetNamingRule rule, string fileName, string requiredSuffix)
         {
-            string core = SplitEnumeration(fileName, requiredSuffix, out string number, out string tail);
+            string core = Split(rule, fileName, requiredSuffix, out string number, out string tail);
 
             if (!HasValidEnumerationLength(rule, number))
                 return false;
@@ -42,7 +40,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Scanning
         /// <summary>Short explanation of why the file name was rejected.</summary>
         public static string Reason(AssetNamingRule rule, string fileName, string requiredSuffix)
         {
-            string core = SplitEnumeration(fileName, requiredSuffix, out string number, out string tail);
+            string core = Split(rule, fileName, requiredSuffix, out string number, out string tail);
 
             if (!HasValidEnumerationLength(rule, number))
                 return $"Number should have {rule.EnumerationDigits} digits";
@@ -57,15 +55,15 @@ namespace Base.ToolPackage.Editor.NamingConventions.Scanning
         /// <summary>File name that would satisfy the rule, derived from the current one.</summary>
         public static string Suggest(AssetNamingRule rule, string fileName, string requiredSuffix)
         {
-            string core = SplitEnumeration(fileName, requiredSuffix, out string number, out string tail);
+            string core = Split(rule, fileName, requiredSuffix, out string number, out string tail);
+            string body = NamingRuleEvaluator.Suggest(rule.Naming, core + tail, requiredSuffix);
 
             if (number.Length == 0)
-                return NamingRuleEvaluator.Suggest(rule.Naming, core + tail, requiredSuffix);
+                return body;
 
-            // The number keeps its place in front of the suffix, so "T_Rock1_N" becomes
-            // "T_Rock_01_N" instead of losing its sub type marker.
-            string body = NamingRuleEvaluator.Suggest(rule.Naming, core + tail, requiredSuffix);
-            string suffix = FindTrailingSuffix(body, tail, requiredSuffix);
+            // The number belongs in front of the suffix, so the name reads
+            // Prefix_Base_Number_Suffix like the convention asks for.
+            string suffix = FindSuffix(rule, body, requiredSuffix);
 
             return body[..^suffix.Length] + EnumerationSeparator + FormatNumber(rule, number) + suffix;
         }
@@ -95,42 +93,48 @@ namespace Base.ToolPackage.Editor.NamingConventions.Scanning
         }
 
         /// <summary>
-        /// Splits the number off the name. When a suffix is required the name is cut in front of
-        /// it first, so "T_Rock_01_N" is read as the core "T_Rock", the number "01" and the tail
-        /// "_N".
+        /// Cuts the name into the part before the number, the number itself and the suffix behind
+        /// it. So "T_Rock_01_N" reads as the core "T_Rock", the number "01" and the tail "_N".
         /// </summary>
-        private static string SplitEnumeration(string fileName, string requiredSuffix, out string number,
+        private static string Split(AssetNamingRule rule, string fileName, string requiredSuffix, out string number,
             out string tail)
         {
             number = string.Empty;
-            tail = string.Empty;
+            tail = FindSuffix(rule, fileName, requiredSuffix);
 
-            string head = fileName;
-
-            if (requiredSuffix.Length > 0
-                && fileName.EndsWith(requiredSuffix, StringComparison.Ordinal))
-            {
-                head = fileName[..^requiredSuffix.Length];
-                tail = requiredSuffix;
-            }
+            string head = tail.Length > 0
+                ? fileName[..^tail.Length]
+                : fileName;
 
             return TrySplitEnumeration(head, out string core, out number)
                 ? core
                 : head;
         }
 
-        private static string FindTrailingSuffix(string body, string tail, string requiredSuffix)
+        /// <summary>Longest suffix the name carries, from the rule or from the asset importer.</summary>
+        private static string FindSuffix(AssetNamingRule rule, string name, string requiredSuffix)
         {
-            if (tail.Length > 0
-                && body.EndsWith(tail, StringComparison.Ordinal))
-                return tail;
+            string longest = string.Empty;
 
             if (requiredSuffix.Length > 0
-                && body.EndsWith(requiredSuffix, StringComparison.Ordinal))
-                return requiredSuffix;
+                && EndsWithSuffix(name, requiredSuffix))
+                longest = requiredSuffix;
 
-            return string.Empty;
+            foreach (string suffix in rule.Naming.Suffixes)
+            {
+                if (suffix.Length <= longest.Length)
+                    continue;
+
+                if (EndsWithSuffix(name, suffix))
+                    longest = suffix;
+            }
+
+            return longest;
         }
+
+        private static bool EndsWithSuffix(string name, string suffix) => suffix.Length > 0
+            && name.Length > suffix.Length
+            && name.EndsWith(suffix, StringComparison.Ordinal);
 
         private static bool HasValidEnumerationLength(AssetNamingRule rule, string number)
         {

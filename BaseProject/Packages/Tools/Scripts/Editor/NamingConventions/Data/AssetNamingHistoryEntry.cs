@@ -15,8 +15,11 @@ namespace Base.ToolPackage.Editor.NamingConventions.Data
         /// <summary>File name after a rename, without the extension. Empty for other actions.</summary>
         public string newName;
 
-        /// <summary>Project relative path of the asset after the action.</summary>
+        /// <summary>Project relative path of the asset when the action happened.</summary>
         public string assetPath;
+
+        /// <summary>GUID of the asset. Survives later renames, unlike the path.</summary>
+        public string guid;
 
         /// <summary>When it happened, already formatted in the local culture.</summary>
         public string time;

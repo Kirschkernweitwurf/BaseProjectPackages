@@ -41,7 +41,8 @@ namespace Base.ToolPackage.Editor.NamingConventions.Renaming
                 return false;
             }
 
-            AssetNamingHistoryStore.AddRename(violation.CurrentName, violation.Suggestion, BuildNewPath(violation));
+            AssetNamingHistoryStore.AddRename(violation.CurrentName, violation.Suggestion, BuildNewPath(violation),
+                violation.Guid);
 
             return true;
         }

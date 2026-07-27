@@ -28,16 +28,16 @@ namespace Base.ToolPackage.Editor.NamingConventions.Data
         public static IReadOnlyList<AssetNamingHistoryEntry> Entries => _entries ??= Load();
 
         /// <summary>Remembers one applied rename.</summary>
-        public static void AddRename(string oldName, string newName, string assetPath)
-            => Add(EAssetNamingAction.Renamed, oldName, newName, assetPath);
+        public static void AddRename(string oldName, string newName, string assetPath, string guid)
+            => Add(EAssetNamingAction.Renamed, oldName, newName, assetPath, guid);
 
         /// <summary>Remembers that an asset was taken out of the scan.</summary>
-        public static void AddDismiss(string name, string assetPath)
-            => Add(EAssetNamingAction.Dismissed, name, string.Empty, assetPath);
+        public static void AddDismiss(string name, string assetPath, string guid)
+            => Add(EAssetNamingAction.Dismissed, name, string.Empty, assetPath, guid);
 
         /// <summary>Remembers that an asset was brought back into the scan.</summary>
-        public static void AddRestore(string name, string assetPath)
-            => Add(EAssetNamingAction.Restored, name, string.Empty, assetPath);
+        public static void AddRestore(string name, string assetPath, string guid)
+            => Add(EAssetNamingAction.Restored, name, string.Empty, assetPath, guid);
 
         /// <summary>Forgets a single entry, used after it was undone.</summary>
         public static void Remove(AssetNamingHistoryEntry entry)
@@ -59,7 +59,8 @@ namespace Base.ToolPackage.Editor.NamingConventions.Data
             Save();
         }
 
-        private static void Add(EAssetNamingAction action, string oldName, string newName, string assetPath)
+        private static void Add(EAssetNamingAction action, string oldName, string newName, string assetPath,
+            string guid)
         {
             if (string.IsNullOrEmpty(oldName))
                 return;
@@ -72,6 +73,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Data
                 oldName = oldName,
                 newName = newName ?? string.Empty,
                 assetPath = assetPath ?? string.Empty,
+                guid = guid ?? string.Empty,
                 time = DateTime.Now.ToString(TimeFormat, CultureInfo.CurrentCulture)
             });
 

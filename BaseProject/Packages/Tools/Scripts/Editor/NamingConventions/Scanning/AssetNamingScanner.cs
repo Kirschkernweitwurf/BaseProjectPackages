@@ -125,10 +125,15 @@ namespace Base.ToolPackage.Editor.NamingConventions.Scanning
             if (suggestion == fileName)
                 return null;
 
-            suggestion = AssetNameUniquifier.MakeUnique(assetPath, suggestion, rule.EnumerationDigits);
+            string unique = AssetNameUniquifier.MakeUnique(assetPath, suggestion, rule.EnumerationDigits);
+            string reason = AssetNameEvaluator.Reason(rule, fileName, requiredSuffix);
+
+            // A bumped number looks arbitrary next to assets that keep theirs, so the row says why.
+            if (unique != suggestion)
+                reason += ", " + suggestion + " is taken";
 
             return new AssetNamingViolation(assetPath, AssetDatabase.AssetPathToGUID(assetPath), fileName,
-                rule.Label, AssetNameEvaluator.Reason(rule, fileName, requiredSuffix), suggestion);
+                rule.Label, reason, unique);
         }
     }
 }

@@ -565,14 +565,14 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
             Rect undoRect = ButtonRect(row, timeRect.xMax + padding, UndoWidth);
             Rect goToRect = ButtonRect(row, undoRect.xMax + padding, GoToWidth);
 
-            GUI.Label(textRect, new GUIContent(DescribeAction(entry), entry.assetPath), AssetNamingGui.NameStyle);
+            GUI.Label(textRect, new GUIContent(DescribeAction(entry), PathOf(entry)), AssetNamingGui.NameStyle);
             GUI.Label(timeRect, entry.time, AssetNamingGui.DetailStyle);
 
             if (GUI.Button(undoRect, UndoContent, EditorStyles.miniButton))
                 _pendingUndo = entry;
 
             if (GUI.Button(goToRect, GoToContent, EditorStyles.miniButton))
-                PingAsset(entry.assetPath);
+                PingAsset(PathOf(entry));
         }
 
         /// <summary>
@@ -844,7 +844,8 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
             if (_pendingDismiss != null)
             {
                 AssetNamingDismissStore.Dismiss(_pendingDismiss.Guid);
-                AssetNamingHistoryStore.AddDismiss(_pendingDismiss.CurrentName, _pendingDismiss.AssetPath);
+                AssetNamingHistoryStore.AddDismiss(_pendingDismiss.CurrentName, _pendingDismiss.AssetPath,
+                    _pendingDismiss.Guid);
                 _pendingDismiss = null;
                 RefreshDismissed();
                 return true;
@@ -855,7 +856,8 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
                 string path = AssetDatabase.GUIDToAssetPath(_pendingRestoreGuid);
 
                 AssetNamingDismissStore.Restore(_pendingRestoreGuid);
-                AssetNamingHistoryStore.AddRestore(Path.GetFileNameWithoutExtension(path), path);
+                AssetNamingHistoryStore.AddRestore(Path.GetFileNameWithoutExtension(path), path,
+                    _pendingRestoreGuid);
                 _pendingRestoreGuid = string.Empty;
                 RefreshDismissed();
                 return true;
@@ -907,16 +909,16 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
 
         private bool Revert(AssetNamingHistoryEntry entry)
         {
-            if (entry.action == EAssetNamingAction.Renamed)
-                return AssetRenamer.RenameTo(entry.assetPath, entry.oldName);
-
-            string guid = AssetDatabase.AssetPathToGUID(entry.assetPath);
+            string guid = GuidOf(entry);
 
             if (string.IsNullOrEmpty(guid))
             {
-                CustomLogger.LogWarning($"Cannot undo, {entry.assetPath} is gone.", _ruleSet);
+                CustomLogger.LogWarning($"Cannot undo, {entry.oldName} is gone.", _ruleSet);
                 return false;
             }
+
+            if (entry.action == EAssetNamingAction.Renamed)
+                return AssetRenamer.RenameTo(AssetDatabase.GUIDToAssetPath(guid), entry.oldName);
 
             if (entry.action == EAssetNamingAction.Dismissed)
                 AssetNamingDismissStore.Restore(guid);
@@ -924,6 +926,28 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
                 AssetNamingDismissStore.Dismiss(guid);
 
             return true;
+        }
+
+        /// <summary>
+        /// GUID behind a history entry. Older entries only stored a path, and a path goes stale as
+        /// soon as the asset is renamed again, which is why the GUID is the one that counts.
+        /// </summary>
+        private static string GuidOf(AssetNamingHistoryEntry entry)
+        {
+            if (!string.IsNullOrEmpty(entry.guid))
+                return entry.guid;
+
+            return AssetDatabase.AssetPathToGUID(entry.assetPath);
+        }
+
+        /// <summary>Current path of a history entry, resolved through its GUID.</summary>
+        private static string PathOf(AssetNamingHistoryEntry entry)
+        {
+            string path = AssetDatabase.GUIDToAssetPath(GuidOf(entry));
+
+            return string.IsNullOrEmpty(path)
+                ? entry.assetPath
+                : path;
         }
 
         private void RefreshDismissed()

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Base.ToolPackage.Editor.MenuManagerWindows;
 using Base.ToolPackage.MenuManagerWindow;
 using UnityEditor;
 using UnityEngine;
@@ -10,24 +11,39 @@ namespace Base.ToolPackage.Editor.NamingConventions.Scanning
     /// <summary>
     /// Reads the default file names of the asset creation entries. A type created as
     /// "ANRS_AssetNamingRuleSet" already declares its prefix there, so the convention detection
-    /// does not have to guess it from the assets that happen to exist.
+    /// does not have to guess it from the assets that happen to exist. The menu manager registry
+    /// wins over the attribute in code, because that is where the file name is actually edited.
     /// </summary>
     public static class CreateAssetMenuScanner
     {
+        private const string IdPrefix = "CA:";
         private const char PrefixSeparator = '_';
 
         /// <summary>Prefix per scriptable object type, taken from its creation entry.</summary>
         public static Dictionary<Type, string> CollectPrefixes()
         {
+            Dictionary<string, Type> types = new();
             Dictionary<Type, string> prefixes = new();
 
-            CollectDynamic(prefixes);
-            CollectStatic(prefixes);
+            CollectDynamic(types, prefixes);
+            CollectStatic(types, prefixes);
+            ApplyRegistry(types, prefixes);
 
             return prefixes;
         }
 
-        private static void CollectDynamic(Dictionary<Type, string> prefixes)
+        /// <summary>Full type names of every scriptable object that has a creation entry.</summary>
+        public static HashSet<string> CollectTypeNames()
+        {
+            HashSet<string> names = new();
+
+            foreach (KeyValuePair<Type, string> pair in CollectPrefixes())
+                names.Add(pair.Key.FullName);
+
+            return names;
+        }
+
+        private static void CollectDynamic(Dictionary<string, Type> types, Dictionary<Type, string> prefixes)
         {
             foreach (Type type in TypeCache.GetTypesWithAttribute<DynamicCreateAssetMenuAttribute>())
             {
@@ -37,11 +53,11 @@ namespace Base.ToolPackage.Editor.NamingConventions.Scanning
                 if (attribute == null)
                     continue;
 
-                Add(prefixes, type, attribute.FileName);
+                Add(types, prefixes, type, attribute.FileName);
             }
         }
 
-        private static void CollectStatic(Dictionary<Type, string> prefixes)
+        private static void CollectStatic(Dictionary<string, Type> types, Dictionary<Type, string> prefixes)
         {
             foreach (Type type in TypeCache.GetTypesWithAttribute<CreateAssetMenuAttribute>())
             {
@@ -50,14 +66,72 @@ namespace Base.ToolPackage.Editor.NamingConventions.Scanning
                 if (attribute == null)
                     continue;
 
-                Add(prefixes, type, attribute.fileName);
+                Add(types, prefixes, type, attribute.fileName);
             }
         }
 
-        private static void Add(Dictionary<Type, string> prefixes, Type type, string fileName)
+        /// <summary>Overrides the prefixes with the file names stored in the menu manager.</summary>
+        private static void ApplyRegistry(Dictionary<string, Type> types, Dictionary<Type, string> prefixes)
         {
-            if (type.IsAbstract)
+            foreach (List<MenuNode> root in MenuComposite.RootsFor(EMenuEntryKind.CreateAsset))
+                ApplyNodes(root, types, prefixes);
+        }
+
+        private static void ApplyNodes(List<MenuNode> nodes, Dictionary<string, Type> types,
+            Dictionary<Type, string> prefixes)
+        {
+            foreach (MenuNode node in nodes)
+            {
+                if (node is MenuGroupNode group)
+                {
+                    ApplyNodes(group.Children, types, prefixes);
+                    continue;
+                }
+
+                if (node is not MenuEntryNode entryNode
+                    || entryNode.Entry == null)
+                    continue;
+
+                ApplyEntry(entryNode.Entry, types, prefixes);
+            }
+        }
+
+        private static void ApplyEntry(MenuEntry entry, Dictionary<string, Type> types,
+            Dictionary<Type, string> prefixes)
+        {
+            if (entry.Kind != EMenuEntryKind.CreateAsset)
                 return;
+
+            string prefix = PrefixOf(entry.CreateFileName);
+
+            if (prefix.Length == 0)
+                return;
+
+            if (!types.TryGetValue(TypeNameOf(entry.Id), out Type type))
+                return;
+
+            prefixes[type] = prefix;
+        }
+
+        /// <summary>Type behind a create asset entry id, which is the full name after "CA:".</summary>
+        private static string TypeNameOf(string entryId)
+        {
+            if (string.IsNullOrEmpty(entryId))
+                return string.Empty;
+
+            return entryId.StartsWith(IdPrefix, StringComparison.Ordinal)
+                ? entryId[IdPrefix.Length..]
+                : entryId;
+        }
+
+        private static void Add(Dictionary<string, Type> types, Dictionary<Type, string> prefixes, Type type,
+            string fileName)
+        {
+            if (type.IsAbstract
+                || type.FullName == null)
+                return;
+
+            types[type.FullName] = type;
 
             string prefix = PrefixOf(fileName);
 

@@ -21,6 +21,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Data
         private const string DefaultAssetName = "ANRS_AssetNamingRuleSet.asset";
         private const string DefaultFolder = "Assets/Editor/NamingConventions";
         private const string FolderSeparator = "/";
+        private const int DefaultsVersion = 2;
         private const string ScriptExtension = ".cs";
 
         private static readonly string[] DefaultIgnoredPaths =
@@ -29,6 +30,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Data
             "/ThirdParty/",
             "/Generated/",
             "/TextMesh Pro/",
+            "/Fonts & Materials/",
             "/AddressableAssetsData/"
         };
 
@@ -41,8 +43,11 @@ namespace Base.ToolPackage.Editor.NamingConventions.Data
         [Tooltip("If true, scripts are scanned too. Renaming a script breaks its class name.")]
         [SerializeField] private bool includeScripts;
 
-        [Tooltip("Assets whose path contains one of these fragments are skipped, for example TMP.")]
+        [Tooltip("Assets whose path contains one of these fragments are skipped, for example /Fonts & Materials/.")]
         [SerializeField] private List<string> ignoredPathFragments = new();
+
+        [Tooltip("Set of defaults this asset was last filled with. Raised when new ones ship.")]
+        [SerializeField] private int defaultsVersion;
 
         /// <summary>Rules applied while scanning.</summary>
         public IReadOnlyList<AssetNamingRule> Rules => rules;
@@ -100,14 +105,32 @@ namespace Base.ToolPackage.Editor.NamingConventions.Data
             return instance;
         }
 
-        /// <summary>Fills the ignore list on first use.</summary>
+        /// <summary>
+        /// Fills the ignore list on first use and tops it up when the tool ships new defaults.
+        /// Only missing entries are added, so a fragment deleted on purpose stays gone until the
+        /// next set of defaults arrives.
+        /// </summary>
         public void EnsureDefaults()
         {
-            if (ignoredPathFragments.Count > 0)
+            if (defaultsVersion >= DefaultsVersion)
                 return;
 
-            ignoredPathFragments.AddRange(DefaultIgnoredPaths);
+            bool isChanged = false;
+
+            foreach (string fragment in DefaultIgnoredPaths)
+            {
+                if (ignoredPathFragments.Contains(fragment))
+                    continue;
+
+                ignoredPathFragments.Add(fragment);
+                isChanged = true;
+            }
+
+            defaultsVersion = DefaultsVersion;
             Persist();
+
+            if (isChanged)
+                CustomLogger.Log("Added the new default path fragments to the asset naming rules.", this);
         }
 
         /// <summary>Appends a rule to the end of the list.</summary>

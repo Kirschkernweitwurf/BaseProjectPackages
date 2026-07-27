@@ -34,7 +34,8 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
         {
             new("On", "Turn the rule off without deleting it"),
             new("Rule", "Name of the rule. Only shown in this window. Example: \"Prefab\""),
-            new("Asset Type", "What kind of asset this rule checks. Example: \"Prefab\""),
+            new("Asset Type", "What kind of asset this rule checks. Sprite, NormalMap and the other "
+                + "texture kinds come from the importer, Texture2D means every texture. Example: \"Sprite\""),
             new("Type Name", "The value behind the popup. Pick Custom to type your own. "
                 + "Empty means every asset. Example: \"UnityEngine.Texture2D\""),
             new("Path Contains", "Only check assets whose path contains this text. "
@@ -147,6 +148,11 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
             string.Empty,
             AssetKindResolver.PrefabKind,
             AssetKindResolver.ModelKind,
+            AssetKindResolver.SpriteKind,
+            AssetKindResolver.NormalMapKind,
+            AssetKindResolver.LightmapKind,
+            AssetKindResolver.CursorKind,
+            AssetKindResolver.CookieKind,
             typeof(Texture2D).FullName,
             typeof(Sprite).FullName,
             typeof(Material).FullName,

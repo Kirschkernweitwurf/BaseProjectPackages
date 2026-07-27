@@ -49,15 +49,20 @@ namespace Base.ToolPackage.Editor.NamingConventions.Scanning
             }
 
             ApplyCreateMenuPrefixes(rules);
-            rules.Sort((first, second) => string.Compare(first.Label, second.Label, StringComparison.Ordinal));
+            rules.Sort(CompareRules);
 
             return rules;
         }
 
-        /// <summary>Type names of every asset kind that currently takes part in a scan.</summary>
+        /// <summary>
+        /// Type names a rule can legitimately exist for: every asset kind found in a scan, plus
+        /// every type that has an asset creation entry. A scriptable object without a single asset
+        /// yet still deserves its rule, otherwise the detection would delete it right after
+        /// creating it.
+        /// </summary>
         public static HashSet<string> CollectPresentTypeNames(AssetNamingRuleSet ruleSet)
         {
-            HashSet<string> names = new();
+            HashSet<string> names = CreateAssetMenuScanner.CollectTypeNames();
 
             if (ruleSet == null)
                 return names;
@@ -106,6 +111,23 @@ namespace Base.ToolPackage.Editor.NamingConventions.Scanning
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// Orders the rules so the ones for an imported kind come first. Rules are checked in
+        /// order, so a Sprite rule has to sit above the Texture2D rule that would swallow it.
+        /// </summary>
+        private static int CompareRules(AssetNamingRule first, AssetNamingRule second)
+        {
+            bool isFirstImported = AssetKindResolver.IsImportedKind(first.TypeName);
+            bool isSecondImported = AssetKindResolver.IsImportedKind(second.TypeName);
+
+            if (isFirstImported != isSecondImported)
+                return isFirstImported
+                    ? -1
+                    : 1;
+
+            return string.Compare(first.Label, second.Label, StringComparison.Ordinal);
         }
 
         private static Dictionary<string, List<string>> GroupNamesByKind(AssetNamingRuleSet ruleSet)
