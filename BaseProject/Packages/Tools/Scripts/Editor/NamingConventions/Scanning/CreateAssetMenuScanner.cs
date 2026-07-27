@@ -32,17 +32,6 @@ namespace Base.ToolPackage.Editor.NamingConventions.Scanning
             return prefixes;
         }
 
-        /// <summary>Full type names of every scriptable object that has a creation entry.</summary>
-        public static HashSet<string> CollectTypeNames()
-        {
-            HashSet<string> names = new();
-
-            foreach (KeyValuePair<Type, string> pair in CollectPrefixes())
-                names.Add(pair.Key.FullName);
-
-            return names;
-        }
-
         private static void CollectDynamic(Dictionary<string, Type> types, Dictionary<Type, string> prefixes)
         {
             foreach (Type type in TypeCache.GetTypesWithAttribute<DynamicCreateAssetMenuAttribute>())

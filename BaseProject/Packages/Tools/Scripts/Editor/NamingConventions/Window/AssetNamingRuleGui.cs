@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Base.ToolPackage.Editor.NamingConventions.Data;
 using Base.ToolPackage.Editor.NamingConventions.Scanning;
@@ -21,6 +22,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
 
         private const string AnyTypeLabel = "Any Asset";
         private const string CustomTypeLabel = "Custom";
+        private const float EditedMarkerWidth = 2f;
         private const float FragmentGap = 1f;
         private const int MaxEnumerationDigits = 6;
         private const string PrefsKey = "Base.AssetNaming.RuleColumns";
@@ -33,7 +35,9 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
         private static readonly GUIContent[] Headers =
         {
             new("On", "Turn the rule off without deleting it"),
-            new("Rule", "Name of the rule. Only shown in this window. Example: \"Prefab\""),
+            new("Rule", "Name of the rule. Only shown in this window. A blue bar on the left means the "
+                + "rule was created or changed by hand, so auto-detect leaves those fields alone. "
+                + "Example: \"Prefab\""),
             new("Asset Type", "What kind of asset this rule checks. Sprite, NormalMap and the other "
                 + "texture kinds come from the importer, Texture2D means every texture. Example: \"Sprite\""),
             new("Type Name", "The value behind the popup. Pick Custom to type your own. "
@@ -129,6 +133,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
                 Rect row = new(area.x, area.y + index * AssetNamingGui.RowHeight, width, AssetNamingGui.RowHeight);
 
                 AssetNamingGui.DrawRowBackground(row, index);
+                DrawEditedMarker(row, ruleSet.Rules[index]);
 
                 if (DrawRule(row, ruleSet.Rules[index]))
                     removalIndex = index;
@@ -231,32 +236,61 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
         /// <summary>Draws one rule row and returns true when the user asked to remove it.</summary>
         private static bool DrawRule(Rect row, AssetNamingRule rule)
         {
-            rule.Enabled = EditorGUI.Toggle(Columns.Field(row, 0), rule.Enabled);
+            bool enabled = EditorGUI.Toggle(Columns.Field(row, 0), rule.Enabled);
+
+            if (enabled != rule.Enabled)
+            {
+                rule.Enabled = enabled;
+                rule.MarkEdited(EAssetNamingField.Enabled);
+            }
 
             using (new EditorGUI.DisabledScope(!rule.Enabled))
             {
                 NamingRule naming = rule.Naming;
 
-                rule.Label = EditorGUI.DelayedTextField(Columns.Field(row, 1), rule.Label);
+                DrawText(Columns.Field(row, 1), rule, EAssetNamingField.Label, rule.Label,
+                    value => rule.Label = value);
 
                 DrawTypePopup(Columns.Field(row, 2), rule);
 
-                rule.TypeName = EditorGUI.DelayedTextField(Columns.Field(row, 3), rule.TypeName);
-                rule.PathFilter = EditorGUI.DelayedTextField(Columns.Field(row, 4), rule.PathFilter);
-                naming.Style = (ENamingStyle)EditorGUI.Popup(Columns.Field(row, 5), (int)naming.Style,
+                DrawText(Columns.Field(row, 3), rule, EAssetNamingField.TypeName, rule.TypeName,
+                    value => rule.TypeName = value);
+                DrawText(Columns.Field(row, 4), rule, EAssetNamingField.PathFilter, rule.PathFilter,
+                    value => rule.PathFilter = value);
+
+                ENamingStyle style = (ENamingStyle)EditorGUI.Popup(Columns.Field(row, 5), (int)naming.Style,
                     AssetNamingGui.StyleLabels);
 
-                DrawList(Columns.Field(row, 6), naming.Prefixes);
-                DrawList(Columns.Field(row, 7), naming.Suffixes);
+                if (style != naming.Style)
+                {
+                    naming.Style = style;
+                    rule.MarkEdited(EAssetNamingField.Style);
+                }
 
-                naming.SuffixOptional = EditorGUI.Toggle(Columns.Field(row, 8), naming.SuffixOptional);
+                DrawList(Columns.Field(row, 6), rule, EAssetNamingField.Prefixes, naming.Prefixes);
+                DrawList(Columns.Field(row, 7), rule, EAssetNamingField.Suffixes, naming.Suffixes);
 
-                DrawList(Columns.Field(row, 9), naming.Stripped);
+                bool optional = EditorGUI.Toggle(Columns.Field(row, 8), naming.SuffixOptional);
 
-                naming.Pattern = EditorGUI.DelayedTextField(Columns.Field(row, 10), naming.Pattern);
+                if (optional != naming.SuffixOptional)
+                {
+                    naming.SuffixOptional = optional;
+                    rule.MarkEdited(EAssetNamingField.SuffixOptional);
+                }
 
-                int digits = EditorGUI.DelayedIntField(Columns.Field(row, 11), rule.EnumerationDigits);
-                rule.EnumerationDigits = Mathf.Clamp(digits, 0, MaxEnumerationDigits);
+                DrawList(Columns.Field(row, 9), rule, EAssetNamingField.Stripped, naming.Stripped);
+
+                DrawText(Columns.Field(row, 10), rule, EAssetNamingField.Pattern, naming.Pattern,
+                    value => naming.Pattern = value);
+
+                int digits = Mathf.Clamp(EditorGUI.DelayedIntField(Columns.Field(row, 11), rule.EnumerationDigits),
+                    0, MaxEnumerationDigits);
+
+                if (digits != rule.EnumerationDigits)
+                {
+                    rule.EnumerationDigits = digits;
+                    rule.MarkEdited(EAssetNamingField.Digits);
+                }
             }
 
             // The remove button sits right behind its row instead of at the window edge, so it
@@ -265,6 +299,19 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
                 AssetNamingGui.RowHeight - 6f);
 
             return GUI.Button(removeRect, RemoveContent, EditorStyles.miniButton);
+        }
+
+        /// <summary>Marks the rule with a bar on the left when it carries changes made by hand.</summary>
+        private static void DrawEditedMarker(Rect row, AssetNamingRule rule)
+        {
+            if (!rule.HasUserEdits)
+                return;
+
+            if (Event.current.type != EventType.Repaint)
+                return;
+
+            EditorGUI.DrawRect(new Rect(row.x, row.y + 2f, EditedMarkerWidth, row.height - 4f),
+                AssetNamingGui.RulesAccent);
         }
 
         private static void DrawTypePopup(Rect rect, AssetNamingRule rule)
@@ -280,6 +327,20 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
                 return;
 
             rule.TypeName = TypeValues[selected];
+            rule.MarkEdited(EAssetNamingField.TypeName);
+        }
+
+        /// <summary>Draws a delayed text field that records the edit when the value changes.</summary>
+        private static void DrawText(Rect rect, AssetNamingRule rule, EAssetNamingField field, string current,
+            Action<string> apply)
+        {
+            string edited = EditorGUI.DelayedTextField(rect, current);
+
+            if (edited == current)
+                return;
+
+            apply(edited);
+            rule.MarkEdited(field);
         }
 
         private static int IndexOfType(string typeName)
@@ -293,7 +354,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
             return TypeLabels.Length - 1;
         }
 
-        private static void DrawList(Rect rect, List<string> entries)
+        private static void DrawList(Rect rect, AssetNamingRule rule, EAssetNamingField field, List<string> entries)
         {
             string joined = string.Join(Separator, entries);
             string edited = EditorGUI.DelayedTextField(rect, joined);
@@ -301,6 +362,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
             if (edited == joined)
                 return;
 
+            rule.MarkEdited(field);
             entries.Clear();
 
             foreach (string entry in edited.Split(','))

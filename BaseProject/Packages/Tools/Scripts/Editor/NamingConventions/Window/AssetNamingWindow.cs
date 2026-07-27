@@ -704,85 +704,36 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
         }
 
         /// <summary>
-        /// Adds rules for asset kinds that have none yet and drops rules whose kind no longer
-        /// shows up in a scan. Rules that are in use are never touched, because they were edited
-        /// by hand for a reason.
+        /// Folds a detection run into the rule set. Rules and single fields that were created or
+        /// changed by hand stay untouched, everything else is refreshed or dropped, so running the
+        /// detection twice is safe.
         /// </summary>
         private void DetectConventions()
         {
             List<AssetNamingRule> detected = AssetConventionDetector.Detect(_ruleSet);
-            List<AssetNamingRule> added = CollectNewRules(detected);
-            List<int> stale = CollectStaleRules();
+            AssetRuleMergeResult preview = AssetRuleMerger.Preview(_ruleSet, detected);
 
-            if (added.Count == 0
-                && stale.Count == 0)
+            if (preview.IsEmpty)
             {
-                CustomLogger.Log("The rules already cover every asset kind in the project.", _ruleSet);
+                CustomLogger.Log("The rules already match what the project does.", _ruleSet);
                 return;
             }
 
-            if (!ConfirmDetection(added.Count, stale.Count))
+            if (!ConfirmDetection(preview))
                 return;
 
-            // Removed back to front, so the earlier indices stay valid.
-            for (int index = stale.Count - 1; index >= 0; index--)
-                _ruleSet.RemoveRuleAt(stale[index]);
-
-            foreach (AssetNamingRule rule in added)
-                _ruleSet.AddRule(rule);
+            AssetRuleMergeResult result = AssetRuleMerger.Merge(_ruleSet, detected);
 
             _ruleSet.Persist();
+            CustomLogger.Log($"Auto-detect: {result}.", _ruleSet);
             showRules = true;
             _needsScan = true;
         }
 
-        private List<AssetNamingRule> CollectNewRules(List<AssetNamingRule> detected)
+        private bool ConfirmDetection(AssetRuleMergeResult preview)
         {
-            HashSet<string> covered = new();
-
-            foreach (AssetNamingRule rule in _ruleSet.Rules)
-                covered.Add(rule.TypeName);
-
-            List<AssetNamingRule> added = new();
-
-            foreach (AssetNamingRule rule in detected)
-            {
-                if (!covered.Add(rule.TypeName))
-                    continue;
-
-                added.Add(rule);
-            }
-
-            return added;
-        }
-
-        /// <summary>
-        /// Indices of rules whose asset kind is no longer scanned at all, usually because its
-        /// folder was added to the ignore list.
-        /// </summary>
-        private List<int> CollectStaleRules()
-        {
-            HashSet<string> present = AssetConventionDetector.CollectPresentTypeNames(_ruleSet);
-            List<int> stale = new();
-
-            for (int index = 0; index < _ruleSet.Rules.Count; index++)
-            {
-                string typeName = _ruleSet.Rules[index].TypeName;
-
-                if (typeName.Length == 0
-                    || present.Contains(typeName))
-                    continue;
-
-                stale.Add(index);
-            }
-
-            return stale;
-        }
-
-        private bool ConfirmDetection(int addedCount, int staleCount)
-        {
-            string message = $"Add {addedCount} new rule(s) and remove {staleCount} rule(s) whose assets are "
-                + "no longer scanned? Rules you already have are kept as they are.";
+            string message = $"Add {preview.Added} rule(s), refresh {preview.Updated} and remove "
+                + $"{preview.Removed}. Rules and fields you changed by hand are kept as they are.";
 
             return EditorUtility.DisplayDialog(WindowTitle, message, "Apply", "Cancel");
         }
@@ -807,7 +758,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
             if (_isAddRulePending)
             {
                 _isAddRulePending = false;
-                _ruleSet.AddRule(new AssetNamingRule());
+                _ruleSet.AddRule(new AssetNamingRule { UserCreated = true });
                 _ruleSet.Persist();
                 return true;
             }

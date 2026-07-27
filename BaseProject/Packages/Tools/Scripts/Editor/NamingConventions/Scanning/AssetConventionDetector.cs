@@ -55,32 +55,6 @@ namespace Base.ToolPackage.Editor.NamingConventions.Scanning
         }
 
         /// <summary>
-        /// Type names a rule can legitimately exist for: every asset kind found in a scan, plus
-        /// every type that has an asset creation entry. A scriptable object without a single asset
-        /// yet still deserves its rule, otherwise the detection would delete it right after
-        /// creating it.
-        /// </summary>
-        public static HashSet<string> CollectPresentTypeNames(AssetNamingRuleSet ruleSet)
-        {
-            HashSet<string> names = CreateAssetMenuScanner.CollectTypeNames();
-
-            if (ruleSet == null)
-                return names;
-
-            foreach (string path in AssetNamingScanner.CollectAssetPaths(ruleSet))
-            {
-                Type assetType = AssetDatabase.GetMainAssetTypeAtPath(path);
-
-                if (assetType == null)
-                    continue;
-
-                names.Add(AssetKindResolver.ResolveRuleTypeName(path, assetType));
-            }
-
-            return names;
-        }
-
-        /// <summary>
         /// Adds the prefixes the asset creation entries already declare. A type created as
         /// "ANRS_AssetNamingRuleSet" states its prefix in code, which beats guessing it from the
         /// handful of assets that happen to exist.
