@@ -43,8 +43,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
             dropped |= MenuTree.PruneNulls(createAssetRoot);
 
             if (dropped)
-                CustomLogger.LogWarning(
-                    $"Menu Manager: dropped unreadable entries from {nameof(MenuOverlay)}. "
+                CustomLogger.LogWarning($"Menu Manager: dropped unreadable entries from {nameof(MenuOverlay)}. "
                     + "They are rediscovered on the next scan.", null);
 
             if (schemaVersion >= CurrentSchema)

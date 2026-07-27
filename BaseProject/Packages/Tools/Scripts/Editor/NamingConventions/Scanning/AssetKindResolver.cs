@@ -3,7 +3,7 @@ using System;
 namespace Base.ToolPackage.Editor.NamingConventions.Scanning
 {
     /// <summary>
-    /// Resolves the kind of an asset. Prefabs and model files both load as GameObject, so their
+    /// Resolves the kind of asset. Prefabs and model files both load as GameObject, so their
     /// kind comes from the file extension instead. This is what lets a rule target prefabs with a
     /// P_ prefix without also hitting imported models.
     /// </summary>

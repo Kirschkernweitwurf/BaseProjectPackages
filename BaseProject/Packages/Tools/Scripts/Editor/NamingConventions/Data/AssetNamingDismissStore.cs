@@ -15,12 +15,9 @@ namespace Base.ToolPackage.Editor.NamingConventions.Data
     {
         private const string FilePath = "ProjectSettings/AssetNamingDismissed.json";
 
-        private static HashSet<string> _guids;
-
-        /// <summary>Number of dismissed assets.</summary>
-        public static int Count => Guids.Count;
-
         private static HashSet<string> Guids => _guids ??= Load();
+
+        private static HashSet<string> _guids;
 
         /// <summary>True when the asset was dismissed.</summary>
         public static bool IsDismissed(string guid) => !string.IsNullOrEmpty(guid) && Guids.Contains(guid);

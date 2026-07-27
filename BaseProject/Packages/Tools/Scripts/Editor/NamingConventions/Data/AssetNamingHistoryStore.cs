@@ -7,8 +7,8 @@ using UnityEngine;
 namespace Base.ToolPackage.Editor.NamingConventions.Data
 {
     /// <summary>
-    /// Remembers every rename the tool applied. Stored in a per-project file under
-    /// ProjectSettings, so the history survives restarts and can be committed for the team.
+    /// Remembers every rename, dismiss and restore the tool applied. Stored in a per-project file
+    /// under ProjectSettings, so the history survives restarts and can be committed for the team.
     /// Newest entries come first, and the list is capped so the file cannot grow forever.
     /// </summary>
     public static class AssetNamingHistoryStore
@@ -16,39 +16,28 @@ namespace Base.ToolPackage.Editor.NamingConventions.Data
         private const string FilePath = "ProjectSettings/AssetNamingHistory.json";
         private const int MaxEntries = 200;
 
-        // The general short pattern follows the user's locale, e.g. 27.08.2026 14:30 or 8/27/2026 2:30 PM.
+        // The general short pattern follows the local culture, e.g. 27.08.2026 14:30.
         private const string TimeFormat = "g";
+
+        /// <summary>Number of remembered actions.</summary>
+        public static int Count => Entries.Count;
+
+        /// <summary>Remembered actions, newest first.</summary>
+        public static IReadOnlyList<AssetNamingHistoryEntry> Entries => _entries ??= Load();
 
         private static List<AssetNamingHistoryEntry> _entries;
 
-        /// <summary>Number of remembered renames.</summary>
-        public static int Count => Entries.Count;
+        /// <summary>Remembers one rename that was applied.</summary>
+        public static void AddRename(string oldName, string newName, string assetPath)
+            => Add(EAssetNamingAction.Renamed, oldName, newName, assetPath);
 
-        /// <summary>Remembered renames, newest first.</summary>
-        public static IReadOnlyList<AssetNamingHistoryEntry> Entries => _entries ??= Load();
+        /// <summary>Remembers that an asset was taken out of the scan.</summary>
+        public static void AddDismiss(string name, string assetPath)
+            => Add(EAssetNamingAction.Dismissed, name, string.Empty, assetPath);
 
-        /// <summary>Remembers one applied rename.</summary>
-        public static void Add(string oldName, string newName, string assetPath)
-        {
-            if (string.IsNullOrEmpty(oldName)
-                || string.IsNullOrEmpty(newName))
-                return;
-
-            List<AssetNamingHistoryEntry> entries = (List<AssetNamingHistoryEntry>)Entries;
-
-            entries.Insert(0, new AssetNamingHistoryEntry
-            {
-                oldName = oldName,
-                newName = newName,
-                assetPath = assetPath ?? string.Empty,
-                time = DateTime.Now.ToString(TimeFormat, CultureInfo.CurrentCulture)
-            });
-
-            if (entries.Count > MaxEntries)
-                entries.RemoveRange(MaxEntries, entries.Count - MaxEntries);
-
-            Save();
-        }
+        /// <summary>Remembers that an asset was brought back into the scan.</summary>
+        public static void AddRestore(string name, string assetPath)
+            => Add(EAssetNamingAction.Restored, name, string.Empty, assetPath);
 
         /// <summary>Drops the whole history.</summary>
         public static void Clear()
@@ -57,6 +46,28 @@ namespace Base.ToolPackage.Editor.NamingConventions.Data
                 return;
 
             ((List<AssetNamingHistoryEntry>)Entries).Clear();
+            Save();
+        }
+
+        private static void Add(EAssetNamingAction action, string oldName, string newName, string assetPath)
+        {
+            if (string.IsNullOrEmpty(oldName))
+                return;
+
+            List<AssetNamingHistoryEntry> entries = (List<AssetNamingHistoryEntry>)Entries;
+
+            entries.Insert(0, new AssetNamingHistoryEntry
+            {
+                action = action,
+                oldName = oldName,
+                newName = newName ?? string.Empty,
+                assetPath = assetPath ?? string.Empty,
+                time = DateTime.Now.ToString(TimeFormat, CultureInfo.CurrentCulture)
+            });
+
+            if (entries.Count > MaxEntries)
+                entries.RemoveRange(MaxEntries, entries.Count - MaxEntries);
+
             Save();
         }
 

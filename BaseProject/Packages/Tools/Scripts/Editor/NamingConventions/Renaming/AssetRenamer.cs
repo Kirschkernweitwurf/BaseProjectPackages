@@ -7,7 +7,7 @@ using UnityEditor;
 namespace Base.ToolPackage.Editor.NamingConventions.Renaming
 {
     /// <summary>
-    /// Applies the suggested file names to the asset database and records every applied rename in
+    /// Applies the suggested file names to the asset database and records every rename that was applied in
     /// the <see cref="AssetNamingHistoryStore"/>. Renaming an asset keeps its GUID, so references
     /// survive, which is why assets can be fixed without touching any code.
     /// </summary>
@@ -41,8 +41,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Renaming
                 return false;
             }
 
-            AssetNamingHistoryStore.Add(violation.CurrentName, violation.Suggestion,
-                BuildNewPath(violation));
+            AssetNamingHistoryStore.AddRename(violation.CurrentName, violation.Suggestion, BuildNewPath(violation));
 
             return true;
         }

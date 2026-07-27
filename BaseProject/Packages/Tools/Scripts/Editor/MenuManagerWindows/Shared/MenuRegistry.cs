@@ -281,8 +281,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
             dropped |= MenuTree.PruneNulls(createAssetRoot);
 
             if (dropped)
-                CustomLogger.LogWarning(
-                    $"Menu Manager: dropped unreadable entries from {nameof(MenuRegistry)}. "
+                CustomLogger.LogWarning($"Menu Manager: dropped unreadable entries from {nameof(MenuRegistry)}. "
                     + "They are rediscovered on the next scan.", this);
 
             bool hasLegacy = groups.Count > 0 || menuItemGroups.Count > 0 || createAssetGroups.Count > 0;

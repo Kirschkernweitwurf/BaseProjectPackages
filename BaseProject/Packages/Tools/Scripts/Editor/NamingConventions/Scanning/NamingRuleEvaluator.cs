@@ -11,6 +11,12 @@ namespace Base.ToolPackage.Editor.NamingConventions.Scanning
     {
         private const string Wildcard = "*";
 
+        private static readonly char[] ForbiddenSeparators =
+        {
+            ' ',
+            '-'
+        };
+
         /// <summary>True when the name satisfies the rule or is on its ignore list.</summary>
         public static bool IsValid(NamingRule rule, string name)
         {
@@ -20,10 +26,13 @@ namespace Base.ToolPackage.Editor.NamingConventions.Scanning
             if (!string.IsNullOrEmpty(rule.Pattern))
                 return IsPatternMatch(rule.Pattern, name);
 
-            if (!HasAffix(rule.Prefixes, name, isPrefix: true))
+            if (HasForbiddenSeparator(name))
                 return false;
 
-            if (!HasAffix(rule.Suffixes, name, isPrefix: false))
+            if (!HasAffix(rule.Prefixes, name, true))
+                return false;
+
+            if (!HasAffix(rule.Suffixes, name, false))
                 return false;
 
             return NameStyleUtility.Matches(Core(rule, name), rule.Style);
@@ -35,10 +44,13 @@ namespace Base.ToolPackage.Editor.NamingConventions.Scanning
             if (!string.IsNullOrEmpty(rule.Pattern))
                 return $"Does not match the pattern {rule.Pattern}";
 
-            if (!HasAffix(rule.Prefixes, name, isPrefix: true))
+            if (HasForbiddenSeparator(name))
+                return "Contains a space or dash";
+
+            if (!HasAffix(rule.Prefixes, name, true))
                 return $"Missing prefix {string.Join(" or ", rule.Prefixes)}";
 
-            if (!HasAffix(rule.Suffixes, name, isPrefix: false))
+            if (!HasAffix(rule.Suffixes, name, false))
                 return $"Missing suffix {string.Join(" or ", rule.Suffixes)}";
 
             return $"Expected {ObjectNames.NicifyVariableName(rule.Style.ToString())}";
@@ -56,12 +68,12 @@ namespace Base.ToolPackage.Editor.NamingConventions.Scanning
             if (core.Length == 0)
                 return name;
 
-            string prefix = FindMatchedAffix(rule.Prefixes, name, isPrefix: true);
+            string prefix = FindMatchedAffix(rule.Prefixes, name, true);
 
             if (prefix.Length == 0)
                 prefix = rule.PrimaryPrefix;
 
-            string suffix = FindMatchedAffix(rule.Suffixes, name, isPrefix: false);
+            string suffix = FindMatchedAffix(rule.Suffixes, name, false);
 
             if (suffix.Length == 0)
                 suffix = rule.PrimarySuffix;
@@ -70,7 +82,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Scanning
         }
 
         /// <summary>True when the rule skips this name.</summary>
-        public static bool IsIgnored(NamingRule rule, string name)
+        private static bool IsIgnored(NamingRule rule, string name)
         {
             foreach (string entry in rule.IgnoredNames)
             {
@@ -80,6 +92,9 @@ namespace Base.ToolPackage.Editor.NamingConventions.Scanning
 
             return false;
         }
+
+        /// <summary>Spaces and dashes are never allowed in an asset name.</summary>
+        private static bool HasForbiddenSeparator(string name) => name.IndexOfAny(ForbiddenSeparators) >= 0;
 
         private static bool IsPatternMatch(string pattern, string name)
         {
@@ -110,8 +125,8 @@ namespace Base.ToolPackage.Editor.NamingConventions.Scanning
 
         private static string Core(NamingRule rule, string name)
         {
-            string core = Strip(rule.Prefixes, name, isPrefix: true);
-            core = Strip(rule.Suffixes, core, isPrefix: false);
+            string core = Strip(rule.Prefixes, name, true);
+            core = Strip(rule.Suffixes, core, false);
 
             return core.Trim('_');
         }

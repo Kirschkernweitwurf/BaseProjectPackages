@@ -89,11 +89,9 @@ namespace Base.ToolPackage.Editor.NamingConventions.Scanning
         }
 
         private static string SplitEnumeration(string fileName, out string number)
-        {
-            return TrySplitEnumeration(fileName, out string core, out number)
+            => TrySplitEnumeration(fileName, out string core, out number)
                 ? core
                 : fileName;
-        }
 
         private static bool HasValidEnumerationLength(AssetNamingRule rule, string number)
         {

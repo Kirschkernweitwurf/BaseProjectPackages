@@ -74,7 +74,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Scanning
         private static bool IsScannable(AssetNamingRuleSet ruleSet, string path)
         {
             bool isInProject = path.StartsWith(AssetsRoot, StringComparison.Ordinal)
-                || (ruleSet.IncludePackages && path.StartsWith(PackagesRoot, StringComparison.Ordinal));
+                || ruleSet.IncludePackages && path.StartsWith(PackagesRoot, StringComparison.Ordinal);
 
             if (!isInProject)
                 return false;

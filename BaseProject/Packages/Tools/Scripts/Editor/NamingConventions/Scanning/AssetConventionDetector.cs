@@ -18,9 +18,13 @@ namespace Base.ToolPackage.Editor.NamingConventions.Scanning
     public static class AssetConventionDetector
     {
         private const float DominanceThreshold = 0.6f;
+        private const float MinimumPrefixShare = 0.2f;
         private const int MinimumSamples = 5;
+
+        // Suffix conventions are usually uniform, so a rarer token is more likely to be a category
+        // like "_Lamp" than a real suffix. The higher bar keeps those out of the rule.
+        private const float MinimumSuffixShare = 0.35f;
         private const int MinimumSuffixTokens = 2;
-        private const float MinimumTokenShare = 0.2f;
         private const char TokenSeparator = '_';
 
         /// <summary>Returns one rule per asset kind that shows a clear convention.</summary>
@@ -77,17 +81,15 @@ namespace Base.ToolPackage.Editor.NamingConventions.Scanning
         private static AssetNamingRule BuildRule(string typeName, List<string> names)
         {
             List<string> cores = SplitEnumerations(names, out int enumerationDigits);
-            List<string> prefixes = CollectTokens(cores, fromStart: true);
-            List<string> suffixes = CollectTokens(cores, fromStart: false);
+            List<string> prefixes = CollectTokens(cores, true, MinimumPrefixShare);
+            List<string> suffixes = CollectTokens(cores, false, MinimumSuffixShare);
 
             AssetNamingRule rule = new(LabelOf(typeName), typeName,
-                FindDominantStyle(cores, prefixes, suffixes))
-            {
-                EnumerationDigits = enumerationDigits
-            };
+                FindDominantStyle(cores, prefixes, suffixes));
 
             rule.Naming.Prefixes.AddRange(prefixes);
             rule.Naming.Suffixes.AddRange(suffixes);
+            rule.EnumerationDigits = enumerationDigits;
 
             return rule;
         }
@@ -152,7 +154,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Scanning
         /// group uses, most common first. Returns an empty list when the tokens together do not
         /// cover enough of the group to count as a convention.
         /// </summary>
-        private static List<string> CollectTokens(List<string> names, bool fromStart)
+        private static List<string> CollectTokens(List<string> names, bool fromStart, float minimumShare)
         {
             Dictionary<string, int> counts = new();
 
@@ -175,7 +177,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Scanning
 
             foreach (KeyValuePair<string, int> pair in ordered)
             {
-                if (pair.Value < names.Count * MinimumTokenShare)
+                if (pair.Value < names.Count * minimumShare)
                     break;
 
                 kept.Add(pair.Key);
@@ -252,6 +254,8 @@ namespace Base.ToolPackage.Editor.NamingConventions.Scanning
                 counts[style] = current + 1;
             }
 
+            MergePascalStyles(counts);
+
             ENamingStyle best = ENamingStyle.Any;
             int bestCount = 0;
 
@@ -267,6 +271,20 @@ namespace Base.ToolPackage.Editor.NamingConventions.Scanning
             return bestCount >= samples * DominanceThreshold
                 ? best
                 : ENamingStyle.Any;
+        }
+
+        /// <summary>
+        /// Pascal case is a special case of the mixed snake style, so a group that uses both gets
+        /// the wider one instead of reporting half of its names as violations.
+        /// </summary>
+        private static void MergePascalStyles(Dictionary<ENamingStyle, int> counts)
+        {
+            if (!counts.TryGetValue(ENamingStyle.PascalSnakeCase, out int pascalSnake))
+                return;
+
+            counts.TryGetValue(ENamingStyle.PascalCase, out int pascal);
+            counts[ENamingStyle.PascalSnakeCase] = pascalSnake + pascal;
+            counts.Remove(ENamingStyle.PascalCase);
         }
 
         private static string StripAffixes(string name, List<string> prefixes, List<string> suffixes)

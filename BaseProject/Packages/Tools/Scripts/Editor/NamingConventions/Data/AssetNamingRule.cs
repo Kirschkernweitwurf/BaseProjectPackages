@@ -12,9 +12,6 @@ namespace Base.ToolPackage.Editor.NamingConventions.Data
     [Serializable]
     public sealed class AssetNamingRule
     {
-        private const string AnyTypeLabel = "Any Asset";
-        private const char TypeSeparator = '.';
-
         [Tooltip("Shown in the rule table and in the scan results.")]
         [field: SerializeField] public string Label { get; set; } = "New Rule";
 
@@ -35,22 +32,6 @@ namespace Base.ToolPackage.Editor.NamingConventions.Data
         [Tooltip("Length of the number at the end of a name: 2 means _01, 3 means _001. "
             + "0 allows any length. Numbers are always recognized and kept.")]
         [field: SerializeField] public int EnumerationDigits { get; set; }
-
-        /// <summary>Short type label for the rule table and the scan results.</summary>
-        public string TypeLabel
-        {
-            get
-            {
-                if (string.IsNullOrEmpty(TypeName))
-                    return AnyTypeLabel;
-
-                int separator = TypeName.LastIndexOf(TypeSeparator);
-
-                return separator < 0
-                    ? TypeName
-                    : TypeName[(separator + 1)..];
-            }
-        }
 
         /// <summary>Creates an empty rule. Needed by the serializer.</summary>
         public AssetNamingRule() { }

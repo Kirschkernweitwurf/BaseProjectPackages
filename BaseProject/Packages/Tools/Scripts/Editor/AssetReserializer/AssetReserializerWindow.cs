@@ -38,11 +38,6 @@ namespace Base.ToolPackage.Editor.AssetReserializer
         [Tooltip("Include ScriptableObject assets in the run.")]
         [SerializeField] private bool includeScriptableObjects = true;
 
-        private SerializedObject _serialized;
-        private SerializedProperty _foldersProperty;
-        private Vector2 _scroll;
-        private string _result = string.Empty;
-
         /// <summary>The asset kinds currently ticked in the window.</summary>
         private EReserializeAssetKinds Kinds
         {
@@ -62,6 +57,11 @@ namespace Base.ToolPackage.Editor.AssetReserializer
                 return kinds;
             }
         }
+
+        private SerializedObject _serialized;
+        private SerializedProperty _foldersProperty;
+        private Vector2 _scroll;
+        private string _result = string.Empty;
 
 #region Unity Callbacks
         private void OnEnable()

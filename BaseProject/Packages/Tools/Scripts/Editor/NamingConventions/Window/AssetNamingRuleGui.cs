@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Base.ToolPackage.Editor.NamingConventions.Data;
 using Base.ToolPackage.Editor.NamingConventions.Scanning;
@@ -9,10 +8,11 @@ using UnityEngine;
 namespace Base.ToolPackage.Editor.NamingConventions.Window
 {
     /// <summary>
-    /// Draws the editable options and rule table of the asset naming window. Prefix and suffix
-    /// lists are edited as comma separated text through delayed fields, so typing never fights
-    /// with the value being rebuilt on every repaint. Everything the auto detection writes stays
-    /// editable here, and every column carries a short tooltip with an example.
+    /// Draws the editable options and rule table of the asset naming window. The table is laid out
+    /// by explicit rectangles through <see cref="AssetNamingColumnLayout"/>, so the header and
+    /// every row line up exactly and each column can be resized by dragging its divider. Prefix
+    /// and suffix lists are edited as comma separated text through delayed fields, so typing never
+    /// fights with the value being rebuilt on every repaint.
     /// </summary>
     public static class AssetNamingRuleGui
     {
@@ -21,60 +21,47 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
 
         private const string AnyTypeLabel = "Any Asset";
         private const string CustomTypeLabel = "Custom";
-        private const float DigitsWidth = 42f;
-        private const float EnabledWidth = 18f;
-        private const float FilterWidth = 85f;
-        private const float FragmentButtonWidth = 110f;
-        private const float LabelWidth = 90f;
-        private const float ListWidth = 80f;
+        private const float FragmentGap = 1f;
         private const int MaxEnumerationDigits = 6;
-        private const float PatternWidth = 85f;
+        private const string PrefsKey = "Base.AssetNaming.RuleColumn";
         private const float RemoveWidth = 20f;
         private const string Separator = ", ";
-        private const float StyleWidth = 95f;
-        private const float TypeNameWidth = 130f;
-        private const float TypeWidth = 100f;
+
+        private static readonly AssetNamingColumnLayout Columns = new(PrefsKey,
+            26f, 90f, 100f, 130f, 90f, 130f, 80f, 80f, 90f, 46f);
+
+        private static readonly GUIContent[] Headers =
+        {
+            new("On", "Turn the rule off without deleting it"),
+            new("Rule", "Name of the rule. Only shown in this window. Example: \"Prefab\""),
+            new("Asset Type", "What kind of asset this rule checks. Example: \"Prefab\""),
+            new("Type Name", "The value behind the popup. Pick Custom to type your own. "
+                + "Empty means every asset. Example: \"UnityEngine.Texture2D\""),
+            new("Path Contains", "Only check assets whose path contains this text. "
+                + "Empty checks everywhere. Example: \"/Art/\""),
+            new("Casing", "How the name must be cased. Example: \"PascalCase\""),
+            new("Prefixes", "The name must start with one of these, comma separated. Example: \"P_, SM_\""),
+            new("Suffixes", "The name must end with one of these, comma separated. Example: \"_Data, _Config\""),
+            new("Pattern", "Advanced. A regular expression the whole name must match. Only needed for "
+                + "shapes the other columns cannot express, like a word count or a length limit. "
+                + "If set, nothing else is checked. "
+                + "Example: \"^[A-Z][a-z]+_[A-Z][a-z]+$\" allows exactly two words, so Kitchen_Lamp "
+                + "passes but Kitchen_Lamp_Small does not"),
+            new("Digits", "Length of the number at the end. 0 allows any length. Example: \"2\" means _01")
+        };
 
         private static readonly GUIContent AddFragmentContent = new("Add Fragment",
-            "Add another path text to skip. Example: TMP");
+            "Add another path text to skip. Example: \"/TextMesh Pro/\"");
 
         private static readonly GUIContent AddRuleContent = new("Add Rule", "Add an empty rule to the table");
-
-        private static readonly GUIContent CasingHeader = new("Casing",
-            "How the name must be cased. Example: PascalCase");
-
-        private static readonly GUIContent DigitsHeader = new("Digits",
-            "Length of the number at the end. 0 allows any length. Example: 2 means _01");
 
         private static readonly GUIContent PackagesContent = new("Scan packages",
             "Also check assets in the Packages folder");
 
-        private static readonly GUIContent PathHeader = new("Path Contains",
-            "Only check assets whose path contains this text. Empty checks everywhere. Example: /Art/");
-
-        private static readonly GUIContent PatternHeader = new("Pattern",
-            "Optional regular expression. If set, nothing else is checked. Example: ^UI_[A-Z].*");
-
-        private static readonly GUIContent PrefixesHeader = new("Prefixes",
-            "The name must start with one of these, comma separated. Example: P_, SM_");
-
-        private static readonly GUIContent RemoveContent = new("x", "Remove this entry");
-
-        private static readonly GUIContent RuleHeader = new("Rule",
-            "Name of the rule. Only shown in this window. Example: Prefabs");
-
         private static readonly GUIContent ScriptsContent = new("Scan scripts",
             "Also check .cs files. Careful: renaming a script breaks its class name.");
 
-        private static readonly GUIContent SuffixesHeader = new("Suffixes",
-            "The name must end with one of these, comma separated. Example: _Data");
-
-        private static readonly GUIContent TypeHeader = new("Asset Type",
-            "What kind of asset this rule checks. Example: Prefab");
-
-        private static readonly GUIContent TypeNameHeader = new("Type Name",
-            "The value behind the popup. Pick Custom to type your own. Empty means every asset. "
-            + "Example: UnityEngine.Texture2D");
+        private static readonly GUIContent RemoveContent = new("x", "Remove this entry");
 
         private static readonly string[] TypeValues = BuildTypeValues();
         private static readonly string[] TypeLabels = BuildTypeLabels();
@@ -96,18 +83,25 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
 
             EditorGUILayout.Space(2f);
 
-            isFragmentsExpanded = EditorGUILayout.Foldout(isFragmentsExpanded,
-                $"Ignored Path Fragments ({ruleSet.IgnoredPathFragments.Count})", true);
+            GUIContent fragmentsLabel = new($"Ignored Path Fragments ({ruleSet.IgnoredPathFragments.Count})",
+                "Assets whose path contains one of these are skipped by every rule. "
+                + "Example: \"/TextMesh Pro/\"");
+
+            isFragmentsExpanded = EditorGUILayout.Foldout(isFragmentsExpanded, fragmentsLabel, true);
 
             if (isFragmentsExpanded)
             {
+                EditorGUILayout.Space(FragmentGap);
+
                 for (int index = 0; index < ruleSet.IgnoredPathFragments.Count; index++)
                 {
                     if (DrawFragment(ruleSet, index))
                         fragmentRemovalIndex = index;
+
+                    EditorGUILayout.Space(FragmentGap);
                 }
 
-                isFragmentAddRequested = GUILayout.Button(AddFragmentContent, GUILayout.Width(FragmentButtonWidth));
+                isFragmentAddRequested = GUILayout.Button(AddFragmentContent, GUILayout.Width(110f));
             }
 
             if (EditorGUI.EndChangeCheck())
@@ -120,13 +114,25 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
         public static int DrawRules(AssetNamingRuleSet ruleSet)
         {
             int removalIndex = NoIndex;
+            float width = Columns.TotalWidth + RemoveWidth + AssetNamingGui.Padding;
+
+            Rect header = GUILayoutUtility.GetRect(width, AssetNamingGui.RowHeight, GUILayout.MinWidth(width));
+
+            AssetNamingGui.DrawHeaderBackground(header);
+            Columns.DrawHeader(header, Headers);
 
             EditorGUI.BeginChangeCheck();
-            DrawHeader();
+
+            Rect area = GUILayoutUtility.GetRect(width, ruleSet.Rules.Count * AssetNamingGui.RowHeight,
+                GUILayout.MinWidth(width));
 
             for (int index = 0; index < ruleSet.Rules.Count; index++)
             {
-                if (DrawRule(ruleSet.Rules[index]))
+                Rect row = new(area.x, area.y + index * AssetNamingGui.RowHeight, width, AssetNamingGui.RowHeight);
+
+                AssetNamingGui.DrawRowBackground(row, index);
+
+                if (DrawRule(row, ruleSet.Rules[index]))
                     removalIndex = index;
             }
 
@@ -137,7 +143,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
         }
 
         /// <summary>True when the user asked for another rule.</summary>
-        public static bool DrawAddButton() => GUILayout.Button(AddRuleContent, GUILayout.Width(FragmentButtonWidth));
+        public static bool DrawAddButton() => GUILayout.Button(AddRuleContent, GUILayout.Width(110f));
 
         private static string[] BuildTypeValues() => new[]
         {
@@ -193,64 +199,45 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
             }
         }
 
-        private static void DrawHeader()
-        {
-            using (new EditorGUILayout.HorizontalScope())
-            {
-                GUIStyle style = EditorStyles.miniBoldLabel;
-
-                GUILayout.Space(EnabledWidth + 4f);
-                GUILayout.Label(RuleHeader, style, GUILayout.Width(LabelWidth));
-                GUILayout.Label(TypeHeader, style, GUILayout.Width(TypeWidth));
-                GUILayout.Label(TypeNameHeader, style, GUILayout.Width(TypeNameWidth));
-                GUILayout.Label(PathHeader, style, GUILayout.Width(FilterWidth));
-                GUILayout.Label(CasingHeader, style, GUILayout.Width(StyleWidth));
-                GUILayout.Label(PrefixesHeader, style, GUILayout.Width(ListWidth));
-                GUILayout.Label(SuffixesHeader, style, GUILayout.Width(ListWidth));
-                GUILayout.Label(PatternHeader, style, GUILayout.Width(PatternWidth));
-                GUILayout.Label(DigitsHeader, style, GUILayout.Width(DigitsWidth));
-            }
-        }
-
         /// <summary>Draws one rule row and returns true when the user asked to remove it.</summary>
-        private static bool DrawRule(AssetNamingRule rule)
+        private static bool DrawRule(Rect row, AssetNamingRule rule)
         {
-            using (new EditorGUILayout.HorizontalScope())
+            rule.Enabled = EditorGUI.Toggle(Columns.Field(row, 0), rule.Enabled);
+
+            using (new EditorGUI.DisabledScope(!rule.Enabled))
             {
-                rule.Enabled = EditorGUILayout.Toggle(rule.Enabled, GUILayout.Width(EnabledWidth));
+                NamingRule naming = rule.Naming;
 
-                using (new EditorGUI.DisabledScope(!rule.Enabled))
-                {
-                    rule.Label = EditorGUILayout.DelayedTextField(rule.Label, GUILayout.Width(LabelWidth));
+                rule.Label = EditorGUI.DelayedTextField(Columns.Field(row, 1), rule.Label);
 
-                    DrawTypePopup(rule);
+                DrawTypePopup(Columns.Field(row, 2), rule);
 
-                    rule.TypeName = EditorGUILayout.DelayedTextField(rule.TypeName, GUILayout.Width(TypeNameWidth));
-                    rule.PathFilter = EditorGUILayout.DelayedTextField(rule.PathFilter, GUILayout.Width(FilterWidth));
+                rule.TypeName = EditorGUI.DelayedTextField(Columns.Field(row, 3), rule.TypeName);
+                rule.PathFilter = EditorGUI.DelayedTextField(Columns.Field(row, 4), rule.PathFilter);
+                naming.Style = (ENamingStyle)EditorGUI.Popup(Columns.Field(row, 5), (int)naming.Style,
+                    AssetNamingGui.StyleLabels);
 
-                    NamingRule naming = rule.Naming;
+                DrawList(Columns.Field(row, 6), naming.Prefixes);
+                DrawList(Columns.Field(row, 7), naming.Suffixes);
 
-                    naming.Style = (ENamingStyle)EditorGUILayout.EnumPopup(naming.Style, GUILayout.Width(StyleWidth));
+                naming.Pattern = EditorGUI.DelayedTextField(Columns.Field(row, 8), naming.Pattern);
 
-                    DrawList(naming.Prefixes, ListWidth);
-                    DrawList(naming.Suffixes, ListWidth);
-
-                    naming.Pattern = EditorGUILayout.DelayedTextField(naming.Pattern, GUILayout.Width(PatternWidth));
-
-                    int digits = EditorGUILayout.DelayedIntField(rule.EnumerationDigits, GUILayout.Width(DigitsWidth));
-                    rule.EnumerationDigits = Mathf.Clamp(digits, 0, MaxEnumerationDigits);
-                }
-
-                // The remove button sits right after its row instead of at the window edge, so it
-                // visually belongs to the rule it deletes.
-                return GUILayout.Button(RemoveContent, EditorStyles.miniButton, GUILayout.Width(RemoveWidth));
+                int digits = EditorGUI.DelayedIntField(Columns.Field(row, 9), rule.EnumerationDigits);
+                rule.EnumerationDigits = Mathf.Clamp(digits, 0, MaxEnumerationDigits);
             }
+
+            // The remove button sits right behind its row instead of at the window edge, so it
+            // visually belongs to the rule it deletes.
+            Rect removeRect = new(row.x + Columns.TotalWidth, row.y + 3f, RemoveWidth,
+                AssetNamingGui.RowHeight - 6f);
+
+            return GUI.Button(removeRect, RemoveContent, EditorStyles.miniButton);
         }
 
-        private static void DrawTypePopup(AssetNamingRule rule)
+        private static void DrawTypePopup(Rect rect, AssetNamingRule rule)
         {
             int current = IndexOfType(rule.TypeName);
-            int selected = EditorGUILayout.Popup(current, TypeLabels, GUILayout.Width(TypeWidth));
+            int selected = EditorGUI.Popup(rect, current, TypeLabels);
 
             if (selected == current)
                 return;
@@ -273,10 +260,10 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
             return TypeLabels.Length - 1;
         }
 
-        private static void DrawList(List<string> entries, float width)
+        private static void DrawList(Rect rect, List<string> entries)
         {
             string joined = string.Join(Separator, entries);
-            string edited = EditorGUILayout.DelayedTextField(joined, GUILayout.Width(width));
+            string edited = EditorGUI.DelayedTextField(rect, joined);
 
             if (edited == joined)
                 return;
