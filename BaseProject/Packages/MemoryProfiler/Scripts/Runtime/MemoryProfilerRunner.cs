@@ -21,14 +21,14 @@ namespace Base.MemoryProfiler
         private const string SnapshotExtension = ".snap";
         private const string TimestampFormat = "yyyy-MM-dd_HH-mm-ss";
 
+        private static MemoryProfilerConfigSo _config;
+        private static Timer _intervalTimer;
+
         /// <summary>Path of the most recent snapshot, or null if none was taken.</summary>
         public static string LastSnapshotPath { get; private set; }
 
         /// <summary>True while automated captures are armed.</summary>
         public static bool IsActive { get; private set; }
-
-        private static MemoryProfilerConfigSo _config;
-        private static Timer _intervalTimer;
 
         /// <summary>Takes a snapshot immediately. Works in the editor and in development builds.</summary>
         public static void CaptureNow()
@@ -38,11 +38,11 @@ namespace Base.MemoryProfiler
 
             if (_config == null)
             {
-                CustomLogger.LogError("Memory profiler config not found in a Resources folder.", null);
+                CustomLogger.LogError($"No {nameof(MemoryProfilerConfigSo)} found in a Resources folder.", null);
                 return;
             }
 
-            Capture(_config);
+            Capture();
         }
 
         /// <summary>
@@ -50,14 +50,22 @@ namespace Base.MemoryProfiler
         /// resolve against the project root, absolute paths are returned unchanged. Builds use
         /// the path baked at build time so the project root stays correct off the editor machine.
         /// </summary>
+        /// <param name="config">Config holding the storage path.</param>
+        /// <returns>Absolute path of the folder snapshots are written to.</returns>
         public static string ResolveStorageDirectory(MemoryProfilerConfigSo config)
         {
+            if (config == null)
+            {
+                CustomLogger.LogError($"{nameof(config)} is null, falling back to the default storage path.", null);
+                return ResolveAbsolute(MemoryProfilerConfigSo.DefaultStoragePath);
+            }
+
 #if !UNITY_EDITOR
             if (!string.IsNullOrEmpty(config.BakedStoragePath))
                 return config.BakedStoragePath;
 #endif
-            string root = Directory.GetParent(Application.dataPath)?.FullName ?? Application.dataPath;
-            return ResolveAbsolute(config.SnapshotStoragePath, root);
+
+            return ResolveAbsolute(config.SnapshotStoragePath);
         }
 
 #if UNITY_EDITOR
@@ -109,13 +117,7 @@ namespace Base.MemoryProfiler
 
         private static void StartIntervalTimer(float intervalSeconds)
         {
-            if (intervalSeconds <= 0f)
-            {
-                CustomLogger.LogError($"Memory profiling interval must be positive, got {intervalSeconds}.", null);
-                return;
-            }
-
-            _intervalTimer = new Timer(intervalSeconds, true);
+            _intervalTimer = new Timer(intervalSeconds, loop: true);
             _intervalTimer.Completed += CaptureNow;
             _intervalTimer.Start();
         }
@@ -128,16 +130,16 @@ namespace Base.MemoryProfiler
             CaptureNow();
         }
 
-        private static void Capture(MemoryProfilerConfigSo activeConfig)
+        private static void Capture()
         {
-            string directory = ResolveStorageDirectory(activeConfig);
+            string directory = ResolveStorageDirectory(_config);
             Directory.CreateDirectory(directory);
 
             string timestamp = DateTime.Now.ToString(TimestampFormat);
-            string fileName = $"{activeConfig.FileNamePrefix}_{timestamp}{SnapshotExtension}";
+            string fileName = $"{_config.FileNamePrefix}_{timestamp}{SnapshotExtension}";
             string path = Path.Combine(directory, fileName);
 
-            UnityMemoryProfiler.TakeSnapshot(path, OnSnapshotFinished, activeConfig.SnapshotFlags);
+            UnityMemoryProfiler.TakeSnapshot(path, OnSnapshotFinished, _config.SnapshotFlags);
         }
 
         private static void OnSnapshotFinished(string path, bool success)
@@ -152,13 +154,15 @@ namespace Base.MemoryProfiler
             CustomLogger.Log($"Memory snapshot saved: {path}", null);
         }
 
-        private static string ResolveAbsolute(string storagePath, string root)
+        private static string ResolveAbsolute(string storagePath)
         {
             if (string.IsNullOrEmpty(storagePath))
                 storagePath = MemoryProfilerConfigSo.DefaultStoragePath;
 
             if (Path.IsPathRooted(storagePath))
                 return storagePath;
+
+            string root = Directory.GetParent(Application.dataPath)?.FullName ?? Application.dataPath;
 
             return Path.GetFullPath(Path.Combine(root, storagePath));
         }

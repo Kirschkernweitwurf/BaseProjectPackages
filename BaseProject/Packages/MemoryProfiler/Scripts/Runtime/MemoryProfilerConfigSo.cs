@@ -9,27 +9,45 @@ namespace Base.MemoryProfiler
     /// Loaded from a Resources folder so it ships in development builds.
     /// </summary>
     [DynamicCreateAssetMenu("Scriptable Objects/Base/Memory Profiler/New Memory Profiler Config", ConfigName)]
-    public class MemoryProfilerConfigSo : ScriptableObject
+    public sealed class MemoryProfilerConfigSo : ScriptableObject
     {
-        // Serialized field names for editor tooling (SerializedObject.FindProperty).
+        /// <summary>Serialized name of the baked storage path field, for editor tooling.</summary>
         public const string BakedStoragePathField = nameof(bakedStoragePath);
+
+        /// <summary>Serialized name of the capture flags field, for editor tooling.</summary>
         public const string CaptureFlagsField = nameof(captureFlags);
+
+        /// <summary>Serialized name of the interval capture toggle, for editor tooling.</summary>
         public const string CaptureOnIntervalField = nameof(captureOnInterval);
+
+        /// <summary>Serialized name of the scene load capture toggle, for editor tooling.</summary>
         public const string CaptureOnSceneLoadField = nameof(captureOnSceneLoad);
+
         /// <summary>Asset file name (without extension).</summary>
         public const string ConfigName = "MPC_MemoryProfilerConfig";
 
         /// <summary>Default storage path, matching the Memory Profiler preference default.</summary>
         public const string DefaultStoragePath = "./MemoryCaptures";
+
+        /// <summary>Serialized name of the file name prefix field, for editor tooling.</summary>
         public const string FileNamePrefixField = nameof(fileNamePrefix);
+
+        /// <summary>Serialized name of the interval field, for editor tooling.</summary>
         public const string IntervalSecondsField = nameof(intervalSeconds);
+
+        /// <summary>Serialized name of the master switch, for editor tooling.</summary>
         public const string IsEnabledField = nameof(isEnabled);
+
+        /// <summary>Shortest allowed interval between two automated captures, in seconds.</summary>
+        public const float MinIntervalSeconds = 1f;
 
         /// <summary>Path used by Resources.Load, relative to a Resources folder.</summary>
         public const string ResourcePath = ResourceSubFolder + "/" + ConfigName;
 
         /// <summary>Subfolder inside Resources that holds the config asset.</summary>
         public const string ResourceSubFolder = "MemoryProfilerConfig";
+
+        /// <summary>Serialized name of the storage path field, for editor tooling.</summary>
         public const string SnapshotStoragePathField = nameof(snapshotStoragePath);
 
         private const CaptureFlags DefaultCaptureFlags = CaptureFlags.ManagedObjects
@@ -37,6 +55,9 @@ namespace Base.MemoryProfiler
             | CaptureFlags.NativeAllocations
             | CaptureFlags.NativeAllocationSites
             | CaptureFlags.NativeStackTraces;
+
+        private const string DefaultFileNamePrefix = "Snapshot";
+        private const float DefaultIntervalSeconds = 30f;
 
         [SerializeField] [Tooltip("Master switch for all automated captures.")]
         private bool isEnabled;
@@ -48,7 +69,7 @@ namespace Base.MemoryProfiler
         private bool captureOnSceneLoad = true;
 
         [SerializeField] [Tooltip("Seconds between interval captures.")]
-        private float intervalSeconds = 30f;
+        private float intervalSeconds = DefaultIntervalSeconds;
 
         [SerializeField] [Tooltip("Mirror of the Memory Profiler 'Memory Snapshot Storage Path' "
             + "(Preferences > Analysis > Memory Profiler). Paths starting with ./ or ../ resolve "
@@ -57,7 +78,7 @@ namespace Base.MemoryProfiler
         private string snapshotStoragePath = DefaultStoragePath;
 
         [SerializeField] [Tooltip("Prefix used for every snapshot file name.")]
-        private string fileNamePrefix = "Snapshot";
+        private string fileNamePrefix = DefaultFileNamePrefix;
 
         [SerializeField] [Tooltip("Which memory categories to include in each snapshot.")]
         private CaptureFlags captureFlags = DefaultCaptureFlags;
@@ -74,7 +95,7 @@ namespace Base.MemoryProfiler
         /// <summary>Capture every time a scene finishes loading.</summary>
         public bool CaptureOnSceneLoad => captureOnSceneLoad;
 
-        /// <summary>Seconds between interval captures.</summary>
+        /// <summary>Seconds between interval captures, never below <see cref="MinIntervalSeconds"/>.</summary>
         public float IntervalSeconds => intervalSeconds;
 
         /// <summary>
@@ -94,5 +115,10 @@ namespace Base.MemoryProfiler
         /// to the editor project folder. Empty in the editor and in committed assets.
         /// </summary>
         public string BakedStoragePath => bakedStoragePath;
+
+#region Unity Callbacks
+        // Clamped here so every editing path shares one rule, instead of each window doing its own.
+        private void OnValidate() => intervalSeconds = Mathf.Max(intervalSeconds, MinIntervalSeconds);
+#endregion
     }
 }

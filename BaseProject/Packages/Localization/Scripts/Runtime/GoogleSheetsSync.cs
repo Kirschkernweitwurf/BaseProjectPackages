@@ -13,6 +13,24 @@ namespace Base.LocalizationPackage
     public static class GoogleSheetsSync
     {
         /// <summary>
+        /// Shown when no String Table Collection with a <see cref="GoogleSheetsExtension"/> exists.
+        /// </summary>
+        internal const string NoCollectionsMessage = "No collection with a Google Sheets extension found.";
+
+        private const string CancelButton = "Cancel";
+        private const string ConfirmPushMessage =
+            "This overwrites the sheets with local data for {0} collection(s). Continue?";
+        private const string DialogTitle = "Localization";
+        private const string MissingCollectionMessage = "No collection.";
+        private const string MissingExtensionMessage = "No Google Sheets extension.";
+        private const string MissingProviderMessage = "No Sheets Service Provider set.";
+        private const string MissingSpreadsheetIdMessage = "No Spreadsheet Id set.";
+        private const string OkButton = "OK";
+        private const string PullTitle = "Pull from Google Sheets";
+        private const string PushButton = "Push";
+        private const string PushTitle = "Push to Google Sheets";
+
+        /// <summary>
         /// Collects all String Table Collections that have a <see cref="GoogleSheetsExtension"/>.
         /// Scans the Asset Database, so cache the result instead of calling this repeatedly.
         /// </summary>
@@ -24,12 +42,19 @@ namespace Base.LocalizationPackage
             foreach (StringTableCollection collection in LocalizationEditorSettings.GetStringTableCollections())
             {
                 if (HasGoogleSheetsExtension(collection))
-                    if (HasGoogleSheetsExtension(collection))
-                        result.Add(collection);
+                    result.Add(collection);
             }
 
             return result;
         }
+
+        /// <summary>
+        /// Asks the user to confirm a push, which overwrites the sheet data.
+        /// </summary>
+        /// <param name="collectionCount">The number of collections that would be pushed.</param>
+        /// <returns><c>true</c> if the user confirmed the push, otherwise <c>false</c>.</returns>
+        public static bool IsPushConfirmed(int collectionCount) => EditorUtility.DisplayDialog(PushTitle,
+            string.Format(ConfirmPushMessage, collectionCount), PushButton, CancelButton);
 
         /// <summary>
         /// Syncs a String Table Collection with Google Sheets based on the Google Sheets extension settings.
@@ -42,26 +67,28 @@ namespace Base.LocalizationPackage
         /// <returns>A <see cref="SyncResult"/> indicating success or failure and an error message if failed.</returns>
         public static SyncResult Sync(StringTableCollection collection, ESyncDirection direction)
         {
-            List<GoogleSheetsExtension> extensions = new();
-
-            foreach (CollectionExtension extension in collection.Extensions)
+            if (collection == null)
             {
-                if (extension is GoogleSheetsExtension googleSheetsExtension)
-                    extensions.Add(googleSheetsExtension);
+                CustomLogger.LogError($"{nameof(collection)} is null.", context: null);
+                return SyncResult.Fail(MissingCollectionMessage);
             }
 
+            List<GoogleSheetsExtension> extensions = GetExtensions(collection);
+
             if (extensions.Count == 0)
-                return SyncResult.Fail("No Google Sheets extension.");
+                return SyncResult.Fail(MissingExtensionMessage);
 
             // Validate every extension up front so a misconfigured one cannot leave the collection half synced.
             foreach (GoogleSheetsExtension extension in extensions)
             {
                 if (extension.SheetsServiceProvider == null)
-                    return SyncResult.Fail("No Sheets Service Provider set.");
+                    return SyncResult.Fail(MissingProviderMessage);
 
                 if (string.IsNullOrEmpty(extension.SpreadsheetId))
-                    return SyncResult.Fail("No Spreadsheet Id set.");
+                    return SyncResult.Fail(MissingSpreadsheetIdMessage);
             }
+
+            ProgressBarReporter reporter = new();
 
             foreach (GoogleSheetsExtension extension in extensions)
             {
@@ -70,13 +97,12 @@ namespace Base.LocalizationPackage
                     SpreadSheetId = extension.SpreadsheetId
                 };
 
-                ProgressBarReporter reporter = new();
-
                 if (direction == ESyncDirection.Pull)
                     google.PullIntoStringTableCollection(extension.SheetId, collection, extension.Columns,
-                        extension.RemoveMissingPulledKeys, reporter, true);
+                        removeMissingEntries: extension.RemoveMissingPulledKeys, reporter: reporter, createUndo: true);
                 else
-                    google.PushStringTableCollection(extension.SheetId, collection, extension.Columns, reporter);
+                    google.PushStringTableCollection(extension.SheetId, collection, extension.Columns,
+                        reporter: reporter);
             }
 
             if (direction == ESyncDirection.Pull)
@@ -98,21 +124,17 @@ namespace Base.LocalizationPackage
 
             if (collections.Count == 0)
             {
-                EditorUtility.DisplayDialog("Localization",
-                    "No collection with a Google Sheets extension found.", "OK");
-
+                EditorUtility.DisplayDialog(DialogTitle, NoCollectionsMessage, OkButton);
                 return;
             }
 
             if (direction == ESyncDirection.Push
-                && !EditorUtility.DisplayDialog("Push to Google Sheets",
-                    $"This overwrites the sheets with local data for {collections.Count} collection(s). Continue?",
-                    "Push", "Cancel"))
+                && !IsPushConfirmed(collections.Count))
                 return;
 
             string title = direction == ESyncDirection.Pull
-                ? "Pull from Google Sheets"
-                : "Push to Google Sheets";
+                ? PullTitle
+                : PushTitle;
 
             int succeeded = 0;
             List<string> failed = new();
@@ -126,6 +148,7 @@ namespace Base.LocalizationPackage
                         (float)i / collections.Count);
 
                     SyncResult result = Sync(collection, direction);
+
                     if (result.Success)
                         succeeded++;
                     else
@@ -152,16 +175,29 @@ namespace Base.LocalizationPackage
             return false;
         }
 
+        private static List<GoogleSheetsExtension> GetExtensions(StringTableCollection collection)
+        {
+            List<GoogleSheetsExtension> result = new();
+
+            foreach (CollectionExtension extension in collection.Extensions)
+            {
+                if (extension is GoogleSheetsExtension googleSheetsExtension)
+                    result.Add(googleSheetsExtension);
+            }
+
+            return result;
+        }
+
         private static void Log(ESyncDirection direction, int succeeded, IReadOnlyList<string> failed)
         {
             if (failed.Count == 0)
             {
-                CustomLogger.Log($"{direction} done for {succeeded} collection(s).", null);
+                CustomLogger.Log($"{direction} done for {succeeded} collection(s).", context: null);
                 return;
             }
 
             CustomLogger.LogWarning($"{direction} done for {succeeded} collection(s). "
-                + $"Skipped {failed.Count}:\n - {string.Join("\n - ", failed)}", null);
+                + $"Skipped {failed.Count}:\n - {string.Join("\n - ", failed)}", context: null);
         }
     }
 }

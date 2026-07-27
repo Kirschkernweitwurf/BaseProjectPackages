@@ -12,28 +12,36 @@ namespace Base.MemoryProfiler.Editor
     /// </summary>
     internal sealed class MemoryProfilerBuildHook : IPreprocessBuildWithReport, IPostprocessBuildWithReport
     {
+        /// <summary>Order of this hook among all build callbacks.</summary>
         public int callbackOrder => 0;
 
+        /// <summary>Bakes the resolved snapshot folder into the config before a development build.</summary>
+        /// <param name="report">Build report supplied by Unity.</param>
+        public void OnPreprocessBuild(BuildReport report)
+        {
+            if (!EditorUserBuildSettings.development)
+                return;
+
+            MemoryProfilerConfigSo config = LoadConfig();
+            if (config == null)
+                return;
+
+            WriteBakedPath(config, MemoryProfilerRunner.ResolveStorageDirectory(config));
+        }
+
+        /// <summary>Clears the baked path again, so the committed asset stays machine independent.</summary>
+        /// <param name="report">Build report supplied by Unity.</param>
         public void OnPostprocessBuild(BuildReport report)
         {
-            MemoryProfilerConfigSo config = Resources.Load<MemoryProfilerConfigSo>(MemoryProfilerConfigSo.ResourcePath);
+            MemoryProfilerConfigSo config = LoadConfig();
             if (config == null)
                 return;
 
             WriteBakedPath(config, string.Empty);
         }
 
-        public void OnPreprocessBuild(BuildReport report)
-        {
-            if (!EditorUserBuildSettings.development)
-                return;
-
-            MemoryProfilerConfigSo config = Resources.Load<MemoryProfilerConfigSo>(MemoryProfilerConfigSo.ResourcePath);
-            if (config == null)
-                return;
-
-            WriteBakedPath(config, MemoryProfilerRunner.ResolveStorageDirectory(config));
-        }
+        private static MemoryProfilerConfigSo LoadConfig()
+            => Resources.Load<MemoryProfilerConfigSo>(MemoryProfilerConfigSo.ResourcePath);
 
         private static void WriteBakedPath(MemoryProfilerConfigSo config, string value)
         {

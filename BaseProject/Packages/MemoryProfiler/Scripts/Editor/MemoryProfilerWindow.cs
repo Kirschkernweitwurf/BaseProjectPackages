@@ -8,12 +8,11 @@ namespace Base.MemoryProfiler.Editor
     /// <summary>
     /// Editor window to edit the runtime config and trigger manual captures.
     /// </summary>
-    public class MemoryProfilerWindow : EditorWindow
+    public sealed class MemoryProfilerWindow : EditorWindow
     {
         private const string AssetsFolder = "Assets";
         private const string ConfigFolder = ResourcesRoot + "/" + MemoryProfilerConfigSo.ResourceSubFolder;
         private const string MenuPath = "Tools/Base Packages/Unity Editor/Memory Profiler Automation";
-        private const float MinIntervalSeconds = 1f;
         private const string ResourcesFolderName = "Resources";
         private const string ResourcesRoot = AssetsFolder + "/" + ResourcesFolderName;
         private const string WindowTitle = "Auto Memory Profiler";
@@ -25,6 +24,7 @@ namespace Base.MemoryProfiler.Editor
         private static readonly GUIContent OnSceneLoadLabel = new("Capture On Scene Load");
         private static readonly GUIContent PrefixLabel = new("File Name Prefix");
         private static readonly GUIContent StoragePathLabel = new("Snapshot Storage Path");
+        private static readonly Vector2 MinWindowSize = new(360f, 260f);
 
         private SerializedObject _serializedConfig;
         private SerializedProperty _isEnabled;
@@ -36,11 +36,16 @@ namespace Base.MemoryProfiler.Editor
         private SerializedProperty _captureFlags;
 
 #region Unity Callbacks
-        private void OnEnable() => RefreshConfigReference();
+        private void OnEnable()
+        {
+            titleContent = new GUIContent(WindowTitle);
+            RefreshConfigReference();
+        }
 
         private void OnGUI()
         {
-            if (_serializedConfig == null || _serializedConfig.targetObject == null)
+            if (_serializedConfig == null
+                || _serializedConfig.targetObject == null)
             {
                 DrawMissingConfig();
                 return;
@@ -48,27 +53,8 @@ namespace Base.MemoryProfiler.Editor
 
             _serializedConfig.Update();
 
-            EditorGUILayout.LabelField("Automation", EditorStyles.boldLabel);
-            EditorGUILayout.PropertyField(_isEnabled, EnabledLabel);
-
-            using (new EditorGUI.DisabledScope(!_isEnabled.boolValue))
-            {
-                EditorGUILayout.PropertyField(_captureOnInterval, OnIntervalLabel);
-
-                using (new EditorGUI.DisabledScope(!_captureOnInterval.boolValue))
-                    EditorGUILayout.PropertyField(_intervalSeconds, IntervalLabel);
-
-                EditorGUILayout.PropertyField(_captureOnSceneLoad, OnSceneLoadLabel);
-            }
-
-            EditorGUILayout.Space();
-            EditorGUILayout.LabelField("Output", EditorStyles.boldLabel);
-            EditorGUILayout.PropertyField(_snapshotStoragePath, StoragePathLabel);
-            EditorGUILayout.PropertyField(_fileNamePrefix, PrefixLabel);
-            EditorGUILayout.PropertyField(_captureFlags, FlagsLabel);
-
-            if (_intervalSeconds.floatValue < MinIntervalSeconds)
-                _intervalSeconds.floatValue = MinIntervalSeconds;
+            DrawAutomation();
+            DrawOutput();
 
             _serializedConfig.ApplyModifiedProperties();
 
@@ -88,7 +74,8 @@ namespace Base.MemoryProfiler.Editor
         private static void Open()
         {
             MemoryProfilerWindow window = GetWindow<MemoryProfilerWindow>();
-            window.titleContent = new GUIContent(WindowTitle);
+
+            window.minSize = MinWindowSize;
             window.Show();
         }
 
@@ -127,6 +114,31 @@ namespace Base.MemoryProfiler.Editor
             EditorGUILayout.LabelField("Last Snapshot", string.IsNullOrEmpty(lastPath)
                 ? "None"
                 : Path.GetFileName(lastPath));
+        }
+
+        private void DrawAutomation()
+        {
+            EditorGUILayout.LabelField("Automation", EditorStyles.boldLabel);
+            EditorGUILayout.PropertyField(_isEnabled, EnabledLabel);
+
+            using (new EditorGUI.DisabledScope(!_isEnabled.boolValue))
+            {
+                EditorGUILayout.PropertyField(_captureOnInterval, OnIntervalLabel);
+
+                using (new EditorGUI.DisabledScope(!_captureOnInterval.boolValue))
+                    EditorGUILayout.PropertyField(_intervalSeconds, IntervalLabel);
+
+                EditorGUILayout.PropertyField(_captureOnSceneLoad, OnSceneLoadLabel);
+            }
+        }
+
+        private void DrawOutput()
+        {
+            EditorGUILayout.Space();
+            EditorGUILayout.LabelField("Output", EditorStyles.boldLabel);
+            EditorGUILayout.PropertyField(_snapshotStoragePath, StoragePathLabel);
+            EditorGUILayout.PropertyField(_fileNamePrefix, PrefixLabel);
+            EditorGUILayout.PropertyField(_captureFlags, FlagsLabel);
         }
 
         private void DrawMissingConfig()
