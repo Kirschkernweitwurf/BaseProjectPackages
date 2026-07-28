@@ -4,7 +4,7 @@ using Base.ToolPackage.Identification;
 namespace Base.SettingsPackage.Components
 {
     /// <summary>Typed base for components backed by a <see cref="FloatSetting"/>.</summary>
-    public abstract class FloatSettingComponent : SettingComponent<float, FloatSetting>
+    public abstract class FloatSettingComponent : TypedSettingComponent<float, FloatSetting>
     {
         /// <inheritdoc/>
         protected sealed override FloatSetting CreateSetting(ISettingsStore store, PersistentKey key,

@@ -11,13 +11,13 @@ namespace Base.SettingsPackage.Core
     /// </summary>
     public sealed class SettingsRegistry
     {
-        /// <summary>All registered settings, in registration order.</summary>
-        public IReadOnlyCollection<ISetting> Settings => _orderedSettings;
-
         private readonly Dictionary<PersistentKey, ISetting> _settingsByKey = new();
         private readonly List<ISetting> _orderedSettings = new();
         private readonly ISettingsStore _store;
         private readonly Object _context;
+
+        /// <summary>All registered settings, in registration order.</summary>
+        public IReadOnlyCollection<ISetting> Settings => _orderedSettings;
 
         /// <summary>Creates a registry over a store. The optional context is used as the logging context.</summary>
         public SettingsRegistry(ISettingsStore store, Object context = null)
@@ -38,10 +38,10 @@ namespace Base.SettingsPackage.Core
                 return null;
             }
 
-            if (_settingsByKey.TryGetValue(setting.Key, out ISetting value))
+            if (_settingsByKey.TryGetValue(setting.Key, out ISetting existing))
             {
                 CustomLogger.LogError($"A setting with key '{setting.Key}' is already registered.", _context);
-                return (TSetting)value;
+                return existing as TSetting;
             }
 
             _settingsByKey.Add(setting.Key, setting);

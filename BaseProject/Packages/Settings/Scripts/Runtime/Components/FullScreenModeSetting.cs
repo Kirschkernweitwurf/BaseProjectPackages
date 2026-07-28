@@ -27,19 +27,27 @@ namespace Base.SettingsPackage.Components
 
         /// <summary>The mode currently selected by the player.</summary>
         public FullScreenMode CurrentMode
-            => availableModes[Mathf.Clamp(TypedSetting?.Value ?? defaultIndex, 0, availableModes.Length - 1)];
+        {
+            get
+            {
+                int index = TypedSetting == null
+                    ? defaultIndex
+                    : TypedSetting.Value;
+
+                return availableModes[ClampIndex(index)];
+            }
+        }
 
         /// <inheritdoc/>
         public override PersistentKey Key => new("FullScreen");
 
         /// <inheritdoc/>
-        protected override int DefaultValue => Mathf.Clamp(defaultIndex, 0, availableModes.Length - 1);
+        protected override int DefaultValue => ClampIndex(defaultIndex);
 
         /// <inheritdoc/>
         protected override void Apply(int index)
-        {
-            int safeIndex = Mathf.Clamp(index, 0, availableModes.Length - 1);
-            DisplaySettings.SetFullScreenMode(availableModes[safeIndex]);
-        }
+            => DisplaySettings.SetFullScreenMode(availableModes[ClampIndex(index)]);
+
+        private int ClampIndex(int index) => Mathf.Clamp(index, 0, availableModes.Length - 1);
     }
 }

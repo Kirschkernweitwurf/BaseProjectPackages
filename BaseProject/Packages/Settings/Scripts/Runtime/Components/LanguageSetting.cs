@@ -22,19 +22,27 @@ namespace Base.SettingsPackage.Components
 
         /// <summary>The locale currently selected by the player.</summary>
         public Locale CurrentLocale
-            => availableLocales[Mathf.Clamp(TypedSetting?.Value ?? defaultIndex, 0, availableLocales.Length - 1)];
+        {
+            get
+            {
+                int index = TypedSetting == null
+                    ? defaultIndex
+                    : TypedSetting.Value;
+
+                return availableLocales[ClampIndex(index)];
+            }
+        }
 
         /// <inheritdoc/>
         public override PersistentKey Key => new("Language");
 
         /// <inheritdoc/>
-        protected override int DefaultValue => Mathf.Clamp(defaultIndex, 0, availableLocales.Length - 1);
+        protected override int DefaultValue => ClampIndex(defaultIndex);
 
         /// <inheritdoc/>
         protected override void Apply(int index)
-        {
-            int safeIndex = Mathf.Clamp(index, 0, availableLocales.Length - 1);
-            LocalizationSettings.SelectedLocale = availableLocales[safeIndex];
-        }
+            => LocalizationSettings.SelectedLocale = availableLocales[ClampIndex(index)];
+
+        private int ClampIndex(int index) => Mathf.Clamp(index, 0, availableLocales.Length - 1);
     }
 }

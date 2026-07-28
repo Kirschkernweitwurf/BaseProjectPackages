@@ -14,6 +14,13 @@ namespace Base.SettingsPackage.Core
         /// <summary>Raised whenever <see cref="Value"/> changes, including on load, revert, and reset.</summary>
         public event Action<T> OnValueChanged;
 
+        private static readonly EqualityComparer<T> Comparer = EqualityComparer<T>.Default;
+
+        private readonly ISettingsStore _store;
+
+        private T _value;
+        private T _savedValue;
+
         /// <inheritdoc/>
         public PersistentKey Key { get; }
 
@@ -36,13 +43,6 @@ namespace Base.SettingsPackage.Core
                 OnValueChanged?.Invoke(_value);
             }
         }
-
-        private static readonly EqualityComparer<T> Comparer = EqualityComparer<T>.Default;
-
-        private readonly ISettingsStore _store;
-
-        private T _value;
-        private T _savedValue;
 
         /// <summary>Creates a setting bound to a store with the given key and default value.</summary>
         protected Setting(ISettingsStore store, PersistentKey key, T defaultValue)
@@ -78,7 +78,9 @@ namespace Base.SettingsPackage.Core
         /// <inheritdoc/>
         public void ResetToDefault() => Value = DefaultValue;
 
-        /// <summary>Reads the persisted value from the store, or returns <paramref name="fallback"/> when absent.</summary>
+        /// <summary>
+        /// Reads the persisted value from the store, or returns <paramref name="fallback"/> when absent.
+        /// </summary>
         protected abstract T Read(ISettingsStore store, T fallback);
 
         /// <summary>Writes the value to the store without flushing it to permanent storage.</summary>

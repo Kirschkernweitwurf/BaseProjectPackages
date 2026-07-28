@@ -11,9 +11,12 @@ namespace Base.SettingsPackage.Components
     /// </summary>
     public sealed class VSyncSetting : IntSettingComponent
     {
+        private const int MaxVSyncCount = 4;
+        private const int MinVSyncCount = 0;
+
         [Header("VSync")]
 
-        [SerializeField] [Range(0, 4)] private int defaultVSyncCount = 1;
+        [SerializeField] [Range(MinVSyncCount, MaxVSyncCount)] private int defaultVSyncCount = 1;
 
         /// <inheritdoc/>
         public override PersistentKey Key => new("VSync");

@@ -19,12 +19,14 @@ exist by placing components in a scene or by registering settings directly.
   base, the concrete `BoolSetting`, `IntSetting`, `FloatSetting`, `StringSetting` and
   `EnumSetting<TEnum>`, the `ISettingsStore` abstraction with its `PlayerPrefsSettingsStore`
   default, the `SettingsRegistry` and the `SettingsContext` that owns them in a scene.
-- **Components** holds `SettingComponent` and its typed bases, plus ready-to-use components
-  for audio volume, full screen mode, resolution, quality level, VSync and language.
+- **Components** holds `SettingComponent`, the generic `TypedSettingComponent<TValue, TSetting>`
+  and its per-type bases, plus ready-to-use components for audio volume, full screen mode,
+  resolution, quality level, VSync and language.
 - **Display** holds `DisplaySettings` (thin wrappers over Unity's display APIs) and
   `ResolutionProvider` (turns available resolutions into stable labels).
-- **GUI** holds `SettingElement` and the concrete widgets: toggle, slider, dropdown and the
-  multiple-choice pickers, along with the flavor-text display and the shared event hub.
+- **UI** holds `SettingElement`, the generic `TypedSettingElement<TValue, TSetting>` and the
+  concrete widgets: toggle, slider, dropdown and the multiple-choice pickers, along with the
+  flavor-text display and the shared event hub.
 
 ## How it fits together
 
@@ -39,23 +41,24 @@ one setting must be applied before another, for example full screen mode before 
 
 The `SettingsContext` is a `GameServiceBehaviour` that creates the store and registry and
 exposes them through the `ServiceLocator`. It saves on destroy and offers `Save`, `Revert`,
-`ResetToDefaults` and `Reload`. Give it a low execution order so it exists before any
-setting component runs.
+`ResetToDefaults` and `Reload`. It runs at execution order -98, so it exists before any
+setting component wakes.
 
 Each `SettingComponent` resolves the context in `Awake`, creates its typed setting, registers
-it and subscribes its applier. The applier is the only place that touches the thing the
-setting controls, so the value model stays free of Unity APIs. Concrete components inherit
-from the typed base that matches their value type, never from `SettingComponent` directly.
+it and subscribes its applier. A component that finds no context disables itself instead of
+failing again on every call. The applier is the only place that touches the thing the setting
+controls, so the value model stays free of Unity APIs. Concrete components inherit from the
+per-type base that matches their value type, never from `SettingComponent` directly.
 
-The `SettingElement` widgets are the other half. Each one binds to a setting by key through
-the registry, pushes user input into the setting and updates itself when the setting changes
-elsewhere. They broadcast their localized title and description while focused and reset the
-focused setting when `SettingsEvents.RaiseResetSelected` is called.
+The `SettingElement` widgets are the other half. `TypedSettingElement<TValue, TSetting>`
+resolves the setting from the registry, keeps the subscription alive and tears it down on
+destroy; concrete widgets only implement `OnBound` and `OnSettingChanged`. They broadcast
+their localized title and description while focused and reset the focused setting when
+`SettingsEvents.RaiseResetSelected` is called.
 
 ## Getting started
 
-1. Add a `SettingsContext` to your scene. Give it a low execution order so it wakes before
-   the setting components.
+1. Add a `SettingsContext` to your scene.
 2. Add setting components for what you want to persist, for example `AudioVolumeSetting`,
    `FullScreenModeSetting`, `ResolutionSetting`, `QualityLevelSetting`, `VSyncSetting` and
    `LanguageSetting`. Order components in the scene so dependent settings apply in the right
@@ -80,8 +83,8 @@ context.Reload();
 ### Adding a new setting type
 
 Subclass `Setting<T>` and implement `Read` and `Write` against the store. For a component,
-subclass the matching typed base (`FloatSettingComponent`, `IntSettingComponent` and so on),
-supply the key and default and implement `Apply`.
+subclass the matching per-type base (`FloatSettingComponent`, `IntSettingComponent` and so
+on), supply the key and default and implement `Apply`.
 
 ```csharp
 public sealed class MouseSensitivitySetting : FloatSettingComponent
@@ -95,10 +98,23 @@ public sealed class MouseSensitivitySetting : FloatSettingComponent
 }
 ```
 
+### Adding a new UI element
+
+Subclass `TypedSettingElement<TValue, TSetting>` and implement `OnBound` (show the current
+value and subscribe your control) and `OnSettingChanged` (push a new value into the control).
+The base resolves the setting, unsubscribes on destroy and implements the reset request.
+
 ### Swapping the store
 
-Implement `ISettingsStore` and hand it to the registry instead of `PlayerPrefsSettingsStore`.
+Implement `ISettingsStore` and return it from `SettingsContext.CreateStore` in a subclass.
 Writes should buffer until `Flush`, which is what keeps revert behavior correct.
+
+```csharp
+public sealed class FileSettingsContext : SettingsContext
+{
+    protected override ISettingsStore CreateStore() => new FileSettingsStore();
+}
+```
 
 ## Included components
 
@@ -123,6 +139,24 @@ Writes should buffer until `Flush`, which is what keeps revert behavior correct.
   options with left and right buttons and a row of selection indicators.
 - `ResolutionChoiceElement` is a string picker that fills its options from the available
   display resolutions at bind time.
+- `SettingFlavorText` shows the title and description of the focused element.
+
+## Migrating from 1.x
+
+Version 2.0.0 renames a few public types and one namespace. A project-wide find and replace
+covers all of it:
+
+| 1.x | 2.0 |
+| --- | --- |
+| `Base.SettingsPackage.GUI` | `Base.SettingsPackage.UI` |
+| `SettingComponent<TValue, TSetting>` | `TypedSettingComponent<TValue, TSetting>` |
+| `MultipleChoiceElement` | `MultipleChoiceElement<TValue, TSetting>` |
+| `SettingFlavourText` | `SettingFlavorText` |
+| `SettingElement.OnHoverFlavourChanged` | `SettingElement.OnHoverFlavorChanged` |
+
+Custom UI elements now derive from `TypedSettingElement<TValue, TSetting>` and replace their
+`Bind` and `ResetSetting` overrides with `OnBound` and `OnSettingChanged`. Scene and prefab
+references survive the rename because the script GUIDs are unchanged.
 
 ## Dependencies
 

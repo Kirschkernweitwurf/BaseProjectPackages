@@ -10,16 +10,18 @@ namespace Base.SettingsPackage.Components
     /// </summary>
     public sealed class QualityLevelSetting : IntSettingComponent
     {
+        private const int UseCurrentLevel = -1;
+
         [Header("Quality")]
 
-        [Tooltip("Index into Unity's quality levels. Leave at -1 to use whatever Unity has set on first run.")]
-        [SerializeField] private int defaultQualityLevel = -1;
+        [Tooltip("Index into Unity's quality levels. Leave negative to use whatever Unity has set on first run.")]
+        [SerializeField] private int defaultQualityLevel = UseCurrentLevel;
 
         /// <inheritdoc/>
         public override PersistentKey Key => new("Quality");
 
         /// <inheritdoc/>
-        protected override int DefaultValue => defaultQualityLevel < 0
+        protected override int DefaultValue => defaultQualityLevel <= UseCurrentLevel
             ? QualitySettings.GetQualityLevel()
             : defaultQualityLevel;
 
