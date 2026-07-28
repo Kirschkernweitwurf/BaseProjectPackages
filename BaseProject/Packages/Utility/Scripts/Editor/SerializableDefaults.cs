@@ -12,7 +12,7 @@ namespace Base.UtilityPackage.Editor
     /// <remarks>
     /// Why this is needed: when Unity adds a new element to a serialized list, it
     /// zero-initializes the element's backing fields instead of calling your C#
-    /// constructor. C# property/field initializers like <c>= Color.Cyan</c> are
+    /// constructor. C# property/field initializers like <c>= Color.cyan</c> are
     /// compiled into the constructor, so they're skipped and the inspector shows
     /// zero-valued defaults (e.g. <c>Color.clear</c> instead of <c>Color.cyan</c>).
     /// This class detects that case after deserialization and applies the defaults

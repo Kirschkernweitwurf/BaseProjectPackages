@@ -17,7 +17,7 @@ namespace Base.UtilityPackage
         /// </summary>
         /// <param name="seconds">The duration in seconds. Negative values are treated as zero.</param>
         /// <returns>The formatted duration.</returns>
-        public static string ToDurationText(this float seconds)
+        public static string ToMinutesSecondsText(this float seconds)
         {
             TimeSpan duration = TimeSpan.FromSeconds(Math.Round(Math.Max(seconds, 0f)));
             int hours = (int)duration.TotalHours;

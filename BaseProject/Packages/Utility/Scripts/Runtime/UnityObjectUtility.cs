@@ -20,12 +20,8 @@ namespace Base.UtilityPackage
         /// <returns>
         /// <c>true</c> if the reference is set and the object was not destroyed; otherwise, <c>false</c>.
         /// </returns>
-        public static bool IsAlive(object instance)
-        {
-            if (instance is Object unityObject)
-                return unityObject != null;
-
-            return instance != null;
-        }
+        public static bool IsAlive(object instance) => instance is Object unityObject
+            ? unityObject != null
+            : instance != null;
     }
 }

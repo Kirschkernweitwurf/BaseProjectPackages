@@ -6,6 +6,7 @@ editor-only assembly (`Base.UtilityPackage.Editor`).
 
 - **Unity:** 6000.3
 - **Dependencies:** none
+- **Author:** Jonathan Alber
 
 ## Installation
 
