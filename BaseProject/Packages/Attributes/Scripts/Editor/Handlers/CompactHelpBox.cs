@@ -9,14 +9,14 @@ namespace Base.AttributePackage.Editor
     /// </summary>
     public static class CompactHelpBox
     {
-        /// <summary>Height of one compact line, for PropertyDrawer height calculations.</summary>
-        public const float Height = 20f;
         private const string ErrorHex = "#DB4C52";
         private const string ErrorIcon = "console.erroricon.sml";
 
+        /// <summary>Height of one compact line, for PropertyDrawer height calculations.</summary>
+        public const float Height = 20f;
+
         private const float IconSize = 14f;
         private const string InfoHex = "#5A9BD4";
-
         private const string InfoIcon = "console.infoicon.sml";
         private const string NeutralHex = "#7F7F7F";
         private const float Padding = 4f;

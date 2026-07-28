@@ -7,56 +7,38 @@ namespace Base.AttributePackage.Editor
     /// Clears a <see cref="ClearButtonAttribute"/> field. Object references reset to none and strings to
     /// empty. Disabled while already empty. Inline by default, or on its own row when inline is false.
     /// </summary>
-    public sealed class ClearButtonHandler : IInlineFieldWidget, IAfterFieldHandler
+    public sealed class ClearButtonHandler : FieldButtonHandler
     {
-        private const float Width = 22f;
-
-        int IInlineFieldWidget.Order => 30;
-
-        int IAfterFieldHandler.Order => 91;
+        private const int AfterFieldOrder = 91;
+        private const float ButtonWidth = 22f;
+        private const int WidgetOrder = 30;
 
         private static readonly GUIContent Content = new("\u2715", "Clear the value.");
 
-        public void AfterField(in MemberContext context)
-        {
-            if (context.GetAttribute<ClearButtonAttribute>() is not
-                {
-                    Inline: false
-                })
-                return;
+        protected override int InlineOrder => WidgetOrder;
 
-            SerializedProperty property = context.Property;
-            if (!IsClearable(property))
-                return;
+        protected override int RowOrder => AfterFieldOrder;
 
-            using (new EditorGUI.DisabledScope(!HasValue(property)))
-            {
-                if (FieldButtonRenderer.DrawRight(Content, Width))
-                    Clear(property);
-            }
-        }
+        protected override float InlineWidth => ButtonWidth;
 
-        public float GetWidth(in MemberContext context)
+        protected override float RowWidth => ButtonWidth;
+
+        protected override bool TryGetPlacement(in MemberContext context, out bool inline)
         {
             ClearButtonAttribute attribute = context.GetAttribute<ClearButtonAttribute>();
-            return attribute is
-                {
-                    Inline: true
-                }
-                && IsClearable(context.Property)
-                    ? Width
-                    : 0f;
+            inline = attribute != null && attribute.Inline;
+            return attribute != null;
         }
 
-        public void Draw(Rect rect, in MemberContext context)
-        {
-            SerializedProperty property = context.Property;
-            using (new EditorGUI.DisabledScope(!HasValue(property)))
-            {
-                if (FieldButtonRenderer.DrawAt(rect, Content))
-                    Clear(property);
-            }
-        }
+        protected override bool IsSupported(SerializedProperty property)
+            => property.propertyType == SerializedPropertyType.ObjectReference
+                || property.propertyType == SerializedPropertyType.String;
+
+        protected override bool IsEnabled(in MemberContext context) => HasValue(context.Property);
+
+        protected override GUIContent GetContent(in MemberContext context) => Content;
+
+        protected override void Execute(in MemberContext context) => Clear(context.Property);
 
         private static void Clear(SerializedProperty property)
         {
@@ -65,10 +47,6 @@ namespace Base.AttributePackage.Editor
             else if (property.propertyType == SerializedPropertyType.String)
                 property.stringValue = string.Empty;
         }
-
-        private static bool IsClearable(SerializedProperty property)
-            => property.propertyType == SerializedPropertyType.ObjectReference
-                || property.propertyType == SerializedPropertyType.String;
 
         private static bool HasValue(SerializedProperty property)
         {

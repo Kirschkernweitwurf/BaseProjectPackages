@@ -13,12 +13,11 @@ namespace Base.AttributePackage.Editor
     /// </summary>
     public sealed class ChildHandler : IAfterFieldHandler
     {
-        private const string KeySeparator = ".";
         private const double RetryInterval = 0.5;
 
-        public int Order => 5;
-
         private static readonly Dictionary<string, double> NextAttempt = new();
+
+        public int Order => 5;
 
         public void AfterField(in MemberContext context)
         {
@@ -42,12 +41,8 @@ namespace Base.AttributePackage.Editor
             if (type == null)
                 return;
 
-            string key = context.Target.GetInstanceID() + KeySeparator + context.Property.propertyPath;
-            double now = EditorApplication.timeSinceStartup;
-            if (NextAttempt.TryGetValue(key, out double next) && now < next)
+            if (!ShouldAttempt(context))
                 return;
-
-            NextAttempt[key] = now + RetryInterval;
 
             Object found;
             if (!string.IsNullOrEmpty(attribute.Name))
@@ -59,6 +54,18 @@ namespace Base.AttributePackage.Editor
 
             if (found != null)
                 context.Property.objectReferenceValue = found;
+        }
+
+        private static bool ShouldAttempt(in MemberContext context)
+        {
+            string key = StateKey.For(context.Target.GetInstanceID(), context.Property.propertyPath);
+            double now = EditorApplication.timeSinceStartup;
+
+            if (NextAttempt.TryGetValue(key, out double next) && now < next)
+                return false;
+
+            NextAttempt[key] = now + RetryInterval;
+            return true;
         }
 
         private static Object FindNamed(Transform root, string name, Type type, bool includeInactive)

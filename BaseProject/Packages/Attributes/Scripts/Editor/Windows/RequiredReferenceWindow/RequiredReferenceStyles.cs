@@ -16,24 +16,34 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
         private const int TitleFontSize = 15;
 
         /// <summary>Accent used for problems.</summary>
-        public static Color Accent => new(0.86f, 0.30f, 0.32f);
+        public static readonly Color Accent = new(0.86f, 0.30f, 0.32f);
 
         /// <summary>Accent used for the all-good state.</summary>
-        public static Color Success => new(0.36f, 0.76f, 0.46f);
+        public static readonly Color Success = new(0.36f, 0.76f, 0.46f);
+
+        private static readonly Color DarkHeader = new(1f, 1f, 1f, 0.05f);
+
+        private static readonly Color LightHeader = new(0f, 0f, 0f, 0.05f);
+
+        private static readonly Color SubtitleColor = new(0.5f, 0.5f, 0.5f);
+
+        private static Texture _errorTexture;
+        private static Texture _objectTexture;
+        private static Texture _successTexture;
 
         /// <summary>Subtle background behind a group header.</summary>
         public static Color Header => EditorGUIUtility.isProSkin
-            ? new Color(1f, 1f, 1f, 0.05f)
-            : new Color(0f, 0f, 0f, 0.05f);
+            ? DarkHeader
+            : LightHeader;
 
         /// <summary>Red alert icon shown per missing reference.</summary>
-        public static Texture ErrorTexture => EditorGUIUtility.IconContent(AlertIcon).image;
+        public static Texture ErrorTexture => Resolve(ref _errorTexture, AlertIcon);
 
         /// <summary>Green success icon shown in the empty state.</summary>
-        public static Texture SuccessTexture => EditorGUIUtility.IconContent(SuccessIcon).image;
+        public static Texture SuccessTexture => Resolve(ref _successTexture, SuccessIcon);
 
         /// <summary>Default object icon for a group header.</summary>
-        public static Texture ObjectTexture => EditorGUIUtility.IconContent(ObjectIcon).image;
+        public static Texture ObjectTexture => Resolve(ref _objectTexture, ObjectIcon);
 
         /// <summary>Bold label for the object name in a group header.</summary>
         public GUIStyle Name { get; private set; }
@@ -98,21 +108,28 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
                 }
             };
 
-            Color subtitleColor = new(0.5f, 0.5f, 0.5f);
-
             SuccessSubtitle = new GUIStyle(EditorStyles.label)
             {
                 alignment = TextAnchor.MiddleCenter,
                 wordWrap = true,
                 normal =
                 {
-                    textColor = subtitleColor
+                    textColor = SubtitleColor
                 },
                 hover =
                 {
-                    textColor = subtitleColor
+                    textColor = SubtitleColor
                 }
             };
+        }
+
+        // Icons are only available inside a GUI callback, so they are resolved on first use.
+        private static Texture Resolve(ref Texture cached, string iconName)
+        {
+            if (cached == null)
+                cached = EditorGUIUtility.IconContent(iconName).image;
+
+            return cached;
         }
     }
 }

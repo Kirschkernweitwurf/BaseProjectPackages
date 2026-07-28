@@ -10,10 +10,10 @@ namespace Base.AttributePackage
     /// </summary>
     public static class ValidationRules
     {
+        private static IValidationRule[] _rules; // reset-ignore
+
         /// <summary>All discovered rules.</summary>
         public static IReadOnlyList<IValidationRule> All => _rules ??= Discover();
-
-        private static IValidationRule[] _rules; // reset-ignore
 
         private static IValidationRule[] Discover()
         {
@@ -21,7 +21,7 @@ namespace Base.AttributePackage
 
             foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
             {
-                if (IsFrameworkAssembly(assembly.GetName().Name))
+                if (FrameworkAssemblies.Contains(assembly.GetName().Name))
                     continue;
 
                 foreach (Type type in SafeGetTypes(assembly))
@@ -53,11 +53,5 @@ namespace Base.AttributePackage
                 return exception.Types;
             }
         }
-
-        private static bool IsFrameworkAssembly(string name) => name.StartsWith("Unity")
-            || name.StartsWith("System")
-            || name.StartsWith("Mono.")
-            || name.StartsWith("netstandard")
-            || name == "mscorlib";
     }
 }

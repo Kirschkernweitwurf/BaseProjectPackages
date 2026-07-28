@@ -12,16 +12,18 @@ namespace Base.AttributePackage.Editor
     [CustomPropertyDrawer(typeof(PercentageAttribute))]
     public sealed class PercentageDrawer : PropertyDrawer
     {
+        private const float FullPercent = 100f;
         private const float Gap = 2f;
+        private const string SignText = "%";
         private const float SignWidth = 16f;
         private const float ValueWidth = 50f;
+
+        private static GUIStyle _signStyle;
 
         private static GUIStyle SignStyle => _signStyle ??= new GUIStyle(EditorStyles.label)
         {
             alignment = TextAnchor.MiddleLeft
         };
-
-        private static GUIStyle _signStyle;
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
@@ -44,21 +46,21 @@ namespace Base.AttributePackage.Editor
             Rect controlRect = new(position.x, position.y, controlWidth, position.height);
             Rect signRect = new(controlRect.xMax + Gap, position.y, SignWidth, position.height);
 
-            float percent = Mathf.Clamp01(property.floatValue) * 100f;
+            float percent = Mathf.Clamp01(property.floatValue) * FullPercent;
 
             // The label is passed to the field on purpose: hovering it gives the drag to scrub cursor.
             float edited = percentage.Slider
-                ? EditorGUI.Slider(controlRect, label, percent, 0f, 100f)
+                ? EditorGUI.Slider(controlRect, label, percent, 0f, FullPercent)
                 : EditorGUI.FloatField(controlRect, label, percent);
 
             // Draw the sign at indent level zero, otherwise it is shifted right and clipped in foldouts.
             int indent = EditorGUI.indentLevel;
             EditorGUI.indentLevel = 0;
-            EditorGUI.LabelField(signRect, "%", SignStyle);
+            EditorGUI.LabelField(signRect, SignText, SignStyle);
             EditorGUI.indentLevel = indent;
 
             if (EditorGUI.EndChangeCheck())
-                property.floatValue = Mathf.Clamp01(edited / 100f);
+                property.floatValue = Mathf.Clamp01(edited / FullPercent);
 
             EditorGUI.EndProperty();
         }

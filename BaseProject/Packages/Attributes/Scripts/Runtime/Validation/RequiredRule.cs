@@ -6,6 +6,7 @@ namespace Base.AttributePackage
     /// <summary>Fails when a <see cref="RequiredAttribute"/> object reference is null.</summary>
     public sealed class RequiredRule : IValidationRule
     {
+        /// <inheritdoc/>
         public bool IsViolated(FieldInfo field, object instance, out string reason)
         {
             reason = null;
@@ -20,7 +21,7 @@ namespace Base.AttributePackage
             if (field.GetValue(instance) as Object != null)
                 return false;
 
-            reason = attribute.Message ?? "is required";
+            reason = attribute.Message ?? RequiredAttribute.DefaultReason;
             return true;
         }
     }

@@ -27,7 +27,7 @@ public class Enemy : MonoBehaviour
 
 ## Installing
 
-Needs Unity 2021.3 or newer (it leans on `TypeCache` and the standard IMGUI drawer API).
+Needs Unity 6000.3 or newer, the version the package manifest targets (it leans on `TypeCache` and the standard IMGUI drawer API).
 
 Either add it through the Package Manager with *Add package from git URL* or just drop the folder into your project. There are two assemblies: one for the attributes (runtime) and one for the drawing (editor only). Nothing editor gets pulled into a build.
 

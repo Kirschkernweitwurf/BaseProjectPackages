@@ -14,7 +14,10 @@ namespace Base.AttributePackage.Editor
     /// </summary>
     public static class NativeMemberRenderer
     {
+        private const string NullText = "null";
+
         private static readonly Dictionary<Type, FieldInfo[]> Fields = new();
+
         private static readonly Dictionary<Type, PropertyInfo[]> Properties = new();
 
         /// <summary>Draws all native members for the edited object.</summary>
@@ -83,7 +86,7 @@ namespace Base.AttributePackage.Editor
                 switch (value)
                 {
                     case null:
-                        EditorGUILayout.TextField(label, "null");
+                        EditorGUILayout.TextField(label, NullText);
                         break;
                     case int intValue:
                         EditorGUILayout.IntField(label, intValue);

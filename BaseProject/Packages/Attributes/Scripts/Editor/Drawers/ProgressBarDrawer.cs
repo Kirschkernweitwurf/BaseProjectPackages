@@ -11,6 +11,17 @@ namespace Base.AttributePackage.Editor
     [CustomPropertyDrawer(typeof(ProgressBarAttribute))]
     public sealed class ProgressBarDrawer : PropertyDrawer
     {
+        private const float FallbackMax = 1f;
+        private const string FractionFormat = "0.#";
+        private const int LeftMouseButton = 0;
+        private const string WholeFormat = "0";
+
+        private static readonly Color BackgroundColor = new(0f, 0f, 0f, 0.25f);
+
+        private static readonly Color DefaultColor = new(0.26f, 0.59f, 0.98f);
+
+        private static GUIStyle _valueStyle;
+
         private static GUIStyle ValueStyle
         {
             get
@@ -28,10 +39,6 @@ namespace Base.AttributePackage.Editor
             }
         }
 
-        private static readonly Color DefaultColor = new(0.26f, 0.59f, 0.98f);
-
-        private static GUIStyle _valueStyle;
-
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             if (!IsNumber(property))
@@ -45,7 +52,7 @@ namespace Base.AttributePackage.Editor
             ProgressBarAttribute bar = (ProgressBarAttribute)attribute;
             float max = ResolveMax(property, bar);
             if (max <= 0f)
-                max = 1f;
+                max = FallbackMax;
 
             EditorGUI.BeginProperty(position, label, property);
 
@@ -60,7 +67,7 @@ namespace Base.AttributePackage.Editor
                 ? DefaultColor
                 : bar.PresetColor.ToColor();
 
-            EditorGUI.DrawRect(barRect, new Color(0f, 0f, 0f, 0.25f));
+            EditorGUI.DrawRect(barRect, BackgroundColor);
             EditorGUI.DrawRect(new Rect(barRect.x, barRect.y, barRect.width * fill, barRect.height), color);
 
             EditorGUI.LabelField(barRect, Format(value) + " / " + Format(max), ValueStyle);
@@ -74,7 +81,7 @@ namespace Base.AttributePackage.Editor
             int controlId = GUIUtility.GetControlID(FocusType.Passive);
 
             bool grab = current.type == EventType.MouseDown
-                && current.button == 0
+                && current.button == LeftMouseButton
                 && rect.Contains(current.mousePosition);
 
             bool dragging = GUIUtility.hotControl == controlId
@@ -112,7 +119,7 @@ namespace Base.AttributePackage.Editor
 
             return bar.Max > 0f
                 ? bar.Max
-                : 1f;
+                : FallbackMax;
         }
 
         private static bool IsNumber(SerializedProperty property)
@@ -134,7 +141,7 @@ namespace Base.AttributePackage.Editor
         }
 
         private static string Format(float value) => Mathf.Approximately(value, Mathf.Round(value))
-            ? value.ToString("0")
-            : value.ToString("0.#");
+            ? value.ToString(WholeFormat)
+            : value.ToString(FractionFormat);
     }
 }

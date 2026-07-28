@@ -11,27 +11,28 @@ namespace Base.AttributePackage.Editor
     public static class TitleRenderer
     {
         private const string FoldoutKeyPrefix = "TITLE";
-        private const string KeySeparator = ".";
+        private const float LineHeight = 1f;
+        private const float SpaceAbove = 6f;
+        private const float SpaceBelow = 2f;
+        private const float UnderlineRowHeight = 3f;
 
-        private static GUIStyle LabelStyle => _labelStyle ??= new GUIStyle(EditorStyles.boldLabel);
+        private static readonly Color DefaultLine = new(0.5f, 0.5f, 0.5f, 0.5f);
+
+        private static GUIStyle _foldoutStyle;
+        private static GUIStyle _labelStyle;
 
         private static GUIStyle FoldoutStyle => _foldoutStyle ??= new GUIStyle(EditorStyles.foldout)
         {
             fontStyle = FontStyle.Bold
         };
 
-        private static readonly Color DefaultLine = new(0.5f, 0.5f, 0.5f, 0.5f);
-
-        private static GUIStyle _labelStyle;
-        private static GUIStyle _foldoutStyle;
+        private static GUIStyle LabelStyle => _labelStyle ??= new GUIStyle(EditorStyles.boldLabel);
 
         /// <summary>Draws a plain bold title with an underline.</summary>
         public static void DrawPlain(TitleAttribute attribute)
         {
-            bool hasColor =
-                ColorAttributeUtility.TryResolve(attribute.ColorHex, attribute.PresetColor, out Color color);
-
-            GUILayout.Space(6f);
+            bool hasColor = TryResolveColor(attribute, out Color color);
+            GUILayout.Space(SpaceAbove);
 
             LabelStyle.normal.textColor = hasColor
                 ? color
@@ -39,7 +40,6 @@ namespace Base.AttributePackage.Editor
 
             EditorGUILayout.LabelField(attribute.Title, LabelStyle);
             DrawUnderline(hasColor, color);
-            GUILayout.Space(2f);
         }
 
         /// <summary>
@@ -48,14 +48,11 @@ namespace Base.AttributePackage.Editor
         /// </summary>
         public static bool DrawCollapsible(Type ownerType, TitleAttribute attribute)
         {
-            bool hasColor =
-                ColorAttributeUtility.TryResolve(attribute.ColorHex, attribute.PresetColor, out Color color);
+            bool hasColor = TryResolveColor(attribute, out Color color);
+            GUILayout.Space(SpaceAbove);
 
-            GUILayout.Space(6f);
-
-            string key = ownerType.FullName + KeySeparator + FoldoutKeyPrefix + KeySeparator + attribute.Title;
+            string key = StateKey.For(ownerType, FoldoutKeyPrefix, attribute.Title);
             bool stored = EditorPrefs.GetBool(key, attribute.DefaultExpanded);
-            bool expanded = stored;
 
             Color previous = FoldoutStyle.normal.textColor;
             if (hasColor)
@@ -64,7 +61,7 @@ namespace Base.AttributePackage.Editor
                 FoldoutStyle.onNormal.textColor = color;
             }
 
-            expanded = EditorGUILayout.Foldout(expanded, attribute.Title, true, FoldoutStyle);
+            bool expanded = EditorGUILayout.Foldout(stored, attribute.Title, true, FoldoutStyle);
 
             if (hasColor)
             {
@@ -76,17 +73,22 @@ namespace Base.AttributePackage.Editor
                 EditorPrefs.SetBool(key, expanded);
 
             DrawUnderline(hasColor, color);
-            GUILayout.Space(2f);
             return expanded;
         }
 
+        private static bool TryResolveColor(TitleAttribute attribute, out Color color)
+            => ColorAttributeUtility.TryResolve(attribute.ColorHex, attribute.PresetColor, out color);
+
         private static void DrawUnderline(bool hasColor, Color color)
         {
-            Rect lineRect = EditorGUILayout.GetControlRect(false, 3f);
-            lineRect.height = 1f;
+            Rect lineRect = EditorGUILayout.GetControlRect(false, UnderlineRowHeight);
+            lineRect.height = LineHeight;
+
             EditorGUI.DrawRect(lineRect, hasColor
                 ? color
                 : DefaultLine);
+
+            GUILayout.Space(SpaceBelow);
         }
     }
 }

@@ -10,6 +10,7 @@ namespace Base.AttributePackage
         // Reused across calls. The scanner runs one rule at a time, so no state survives a check.
         private static readonly List<string> Groups = new();
 
+        /// <inheritdoc/>
         public bool IsViolated(FieldInfo field, object instance, out string reason)
         {
             reason = null;

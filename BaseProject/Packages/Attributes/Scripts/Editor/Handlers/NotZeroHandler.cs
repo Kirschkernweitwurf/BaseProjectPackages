@@ -11,11 +11,9 @@ namespace Base.AttributePackage.Editor
     /// </summary>
     public sealed class NotZeroHandler : IAfterFieldHandler
     {
-        private const string KeySeparator = ".";
+        private static readonly Dictionary<string, float> Previous = new();
 
         public int Order => 10;
-
-        private static readonly Dictionary<string, float> Previous = new();
 
         public void AfterField(in MemberContext context)
         {
@@ -28,7 +26,8 @@ namespace Base.AttributePackage.Editor
             if (Mathf.Approximately(step, 0f))
                 step = 1f;
 
-            string path = property.propertyPath;
+            // The memory is per field and per instance, so two objects never share a remembered sign.
+            string path = StateKey.For(context.Target.GetInstanceID(), property.propertyPath);
 
             switch (property.propertyType)
             {
@@ -43,39 +42,37 @@ namespace Base.AttributePackage.Editor
 
                 case SerializedPropertyType.Vector2:
                     Vector2 vector2 = property.vector2Value;
-                    vector2.x = Resolve(Key(path, 0), vector2.x, step);
-                    vector2.y = Resolve(Key(path, 1), vector2.y, step);
+                    vector2.x = Resolve(StateKey.For(path, 0), vector2.x, step);
+                    vector2.y = Resolve(StateKey.For(path, 1), vector2.y, step);
                     property.vector2Value = vector2;
                     break;
 
                 case SerializedPropertyType.Vector3:
                     Vector3 vector3 = property.vector3Value;
-                    vector3.x = Resolve(Key(path, 0), vector3.x, step);
-                    vector3.y = Resolve(Key(path, 1), vector3.y, step);
-                    vector3.z = Resolve(Key(path, 2), vector3.z, step);
+                    vector3.x = Resolve(StateKey.For(path, 0), vector3.x, step);
+                    vector3.y = Resolve(StateKey.For(path, 1), vector3.y, step);
+                    vector3.z = Resolve(StateKey.For(path, 2), vector3.z, step);
                     property.vector3Value = vector3;
                     break;
 
                 case SerializedPropertyType.Vector2Int:
                     int step2Int = Mathf.Max(1, Mathf.RoundToInt(step));
                     Vector2Int vector2Int = property.vector2IntValue;
-                    vector2Int.x = Mathf.RoundToInt(Resolve(Key(path, 0), vector2Int.x, step2Int));
-                    vector2Int.y = Mathf.RoundToInt(Resolve(Key(path, 1), vector2Int.y, step2Int));
+                    vector2Int.x = Mathf.RoundToInt(Resolve(StateKey.For(path, 0), vector2Int.x, step2Int));
+                    vector2Int.y = Mathf.RoundToInt(Resolve(StateKey.For(path, 1), vector2Int.y, step2Int));
                     property.vector2IntValue = vector2Int;
                     break;
 
                 case SerializedPropertyType.Vector3Int:
                     int step3Int = Mathf.Max(1, Mathf.RoundToInt(step));
                     Vector3Int vector3Int = property.vector3IntValue;
-                    vector3Int.x = Mathf.RoundToInt(Resolve(Key(path, 0), vector3Int.x, step3Int));
-                    vector3Int.y = Mathf.RoundToInt(Resolve(Key(path, 1), vector3Int.y, step3Int));
-                    vector3Int.z = Mathf.RoundToInt(Resolve(Key(path, 2), vector3Int.z, step3Int));
+                    vector3Int.x = Mathf.RoundToInt(Resolve(StateKey.For(path, 0), vector3Int.x, step3Int));
+                    vector3Int.y = Mathf.RoundToInt(Resolve(StateKey.For(path, 1), vector3Int.y, step3Int));
+                    vector3Int.z = Mathf.RoundToInt(Resolve(StateKey.For(path, 2), vector3Int.z, step3Int));
                     property.vector3IntValue = vector3Int;
                     break;
             }
         }
-
-        private static string Key(string path, int component) => path + KeySeparator + component;
 
         private static float Resolve(string key, float value, float step)
         {

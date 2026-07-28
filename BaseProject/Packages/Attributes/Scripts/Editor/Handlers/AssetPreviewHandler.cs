@@ -7,6 +7,9 @@ namespace Base.AttributePackage.Editor
     /// <summary>Draws a thumbnail for <see cref="ShowAssetPreviewAttribute"/> references.</summary>
     public sealed class AssetPreviewHandler : IAfterFieldHandler
     {
+        private const int MaximumSize = 512;
+        private const int MinimumSize = 16;
+
         public int Order => 100;
 
         public void AfterField(in MemberContext context)
@@ -31,7 +34,7 @@ namespace Base.AttributePackage.Editor
                 return;
             }
 
-            int size = Mathf.Clamp(attribute.Size, 16, 512);
+            int size = Mathf.Clamp(attribute.Size, MinimumSize, MaximumSize);
             GUILayout.Label(texture, GUILayout.Width(size), GUILayout.Height(size));
         }
     }

@@ -18,12 +18,12 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
         private const float IconSize = 15f;
         private const float LabelGap = 5f;
         private const float LeftPadding = 8f;
+        private const string MissingOwnerName = "<missing object>";
         private const float RowHeight = 20f;
         private const float RowIndent = 22f;
         private const float SuccessGap = 8f;
         private const float SuccessIconSize = 48f;
 
-        private static readonly GUIContent BadgeScratch = new();
         private static GUIContent _successContent;
 
         /// <summary>Draws every group filtered by search. Returns the clicked owner, or null.</summary>
@@ -42,10 +42,16 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
 
                 anyShown = true;
 
-                clicked = DrawHeader(group, visible.Count, styles) ?? clicked;
+                Object header = DrawHeader(group, visible.Count, styles);
+                if (header != null)
+                    clicked = header;
 
                 foreach (RequiredReferenceEntry entry in visible)
-                    clicked = DrawRow(group.Owner, entry.DisplayName, styles) ?? clicked;
+                {
+                    Object row = DrawRow(group.Owner, entry.DisplayName, styles);
+                    if (row != null)
+                        clicked = row;
+                }
 
                 GUILayout.Space(GroupSpacing);
             }
@@ -98,7 +104,7 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
 
             string name = group.Owner != null
                 ? group.Owner.name
-                : "<missing object>";
+                : MissingOwnerName;
 
             Rect labelRect = new(iconRect.xMax + LabelGap,
                 rect.y,
@@ -119,10 +125,7 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
             RequiredReferenceStyles styles)
         {
             string text = count.ToString();
-
-            BadgeScratch.text = text;
-            float width =
-                styles.Badge.CalcSize(BadgeScratch).x + BadgePadding * 2f;
+            float width = styles.Badge.CalcSize(ScratchContent.For(text)).x + BadgePadding * 2f;
 
             Rect badge = new(header.xMax - width - LeftPadding,
                 header.y + BadgeInset,

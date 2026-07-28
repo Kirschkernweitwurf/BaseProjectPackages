@@ -13,8 +13,11 @@ namespace Base.AttributePackage.Editor
             if (attribute == null)
                 return;
 
-            if (IsNullOrEmpty(context.Property))
-                CompactHelpBox.Error(attribute.Message ?? context.DisplayName + " must not be empty");
+            if (!IsNullOrEmpty(context.Property))
+                return;
+
+            CompactHelpBox.Error(attribute.Message
+                ?? context.DisplayName + " " + NotNullOrEmptyAttribute.DefaultReason);
         }
 
         private static bool IsNullOrEmpty(SerializedProperty property)

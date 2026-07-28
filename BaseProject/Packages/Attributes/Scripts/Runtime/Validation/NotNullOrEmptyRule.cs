@@ -8,6 +8,7 @@ namespace Base.AttributePackage
     /// <summary>Fails when a <see cref="NotNullOrEmptyAttribute"/> value is null or empty.</summary>
     public sealed class NotNullOrEmptyRule : IValidationRule
     {
+        /// <inheritdoc/>
         public bool IsViolated(FieldInfo field, object instance, out string reason)
         {
             reason = null;
@@ -19,7 +20,7 @@ namespace Base.AttributePackage
             if (!IsEmpty(field.FieldType, field.GetValue(instance)))
                 return false;
 
-            reason = attribute.Message ?? "must not be empty";
+            reason = attribute.Message ?? NotNullOrEmptyAttribute.DefaultReason;
             return true;
         }
 

@@ -14,6 +14,8 @@ namespace Base.AttributePackage.Editor
     [CustomPropertyDrawer(typeof(DropdownAttribute))]
     public sealed class DropdownDrawer : PropertyDrawer
     {
+        private const string NullLabel = "null";
+
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             DropdownAttribute dropdown = (DropdownAttribute)attribute;
@@ -27,7 +29,7 @@ namespace Base.AttributePackage.Editor
 
             string[] labels = new string[values.Count];
             for (int i = 0; i < values.Count; i++)
-                labels[i] = values[i]?.ToString() ?? "null";
+                labels[i] = values[i]?.ToString() ?? NullLabel;
 
             int current = CurrentIndex(property, values);
 
@@ -51,7 +53,7 @@ namespace Base.AttributePackage.Editor
                     raw = method.Invoke(target, null);
             }
 
-            if (raw is string || !(raw is IEnumerable enumerable))
+            if (raw is string || raw is not IEnumerable enumerable)
                 return null;
 
             List<object> list = new();

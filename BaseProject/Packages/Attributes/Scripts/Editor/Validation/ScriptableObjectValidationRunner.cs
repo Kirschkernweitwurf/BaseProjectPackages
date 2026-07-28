@@ -12,8 +12,6 @@ namespace Base.AttributePackage.Editor
     [InitializeOnLoad]
     public static class ScriptableObjectValidationRunner
     {
-        private const string AssetFilter = "t:ScriptableObject";
-
         static ScriptableObjectValidationRunner()
         {
             EditorApplication.playModeStateChanged -= OnPlayModeChanged;
@@ -30,13 +28,8 @@ namespace Base.AttributePackage.Editor
         {
             List<ReferenceIssue> buffer = new();
 
-            foreach (string guid in AssetDatabase.FindAssets(AssetFilter))
+            foreach (ScriptableObject asset in ScriptableObjectAssets.LoadAll())
             {
-                string path = AssetDatabase.GUIDToAssetPath(guid);
-                ScriptableObject asset = AssetDatabase.LoadAssetAtPath<ScriptableObject>(path);
-                if (asset == null)
-                    continue;
-
                 buffer.Clear();
                 ReferenceValidationScanner.Collect(asset, buffer);
 

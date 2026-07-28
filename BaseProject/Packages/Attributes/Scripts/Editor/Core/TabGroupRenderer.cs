@@ -13,10 +13,7 @@ namespace Base.AttributePackage.Editor
     /// </summary>
     public static class TabGroupRenderer
     {
-        private const string KeySeparator = ".";
         private const string TabKeyPrefix = "TAB";
-
-        private static readonly Dictionary<string, string[]> TabBars = new();
 
         /// <summary>
         /// Draws the tab group starting at the given index and returns the index of the first member
@@ -34,26 +31,12 @@ namespace Base.AttributePackage.Editor
             List<string> memberTabs = new();
             List<string> tabOrder = new();
 
-            int index = startIndex;
-            while (index < properties.Count)
-            {
-                FieldInfo field = ReflectionCache.GetField(type, properties[index].name);
-                TabAttribute tab = ReflectionCache.GetAttribute<TabAttribute>(field);
-                if (tab == null || tab.Group != group)
-                    break;
+            int index = Collect(properties, startIndex, type, group, members, fields, memberTabs, tabOrder);
 
-                members.Add(properties[index]);
-                fields.Add(field);
-                memberTabs.Add(tab.Name);
-                if (!tabOrder.Contains(tab.Name))
-                    tabOrder.Add(tab.Name);
-
-                index++;
-            }
-
-            string selectedTab = DrawTabBar(type, group, ResolveTabBar(type, group, tabOrder));
+            string selectedTab = DrawTabBar(type, group, tabOrder.ToArray());
 
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+
             for (int i = 0; i < members.Count; i++)
             {
                 if (memberTabs[i] == selectedTab)
@@ -65,9 +48,34 @@ namespace Base.AttributePackage.Editor
             return index;
         }
 
+        private static int Collect(List<SerializedProperty> properties, int startIndex, Type type, string group,
+            List<SerializedProperty> members, List<FieldInfo> fields, List<string> memberTabs, List<string> tabOrder)
+        {
+            int index = startIndex;
+
+            while (index < properties.Count)
+            {
+                FieldInfo field = ReflectionCache.GetField(type, properties[index].name);
+                TabAttribute tab = ReflectionCache.GetAttribute<TabAttribute>(field);
+                if (tab == null || tab.Group != group)
+                    break;
+
+                members.Add(properties[index]);
+                fields.Add(field);
+                memberTabs.Add(tab.Name);
+
+                if (!tabOrder.Contains(tab.Name))
+                    tabOrder.Add(tab.Name);
+
+                index++;
+            }
+
+            return index;
+        }
+
         private static string DrawTabBar(Type type, string group, string[] tabOrder)
         {
-            string key = type.FullName + KeySeparator + TabKeyPrefix + KeySeparator + group;
+            string key = StateKey.For(type, TabKeyPrefix, group);
             int stored = Mathf.Clamp(EditorPrefs.GetInt(key, 0), 0, tabOrder.Length - 1);
 
             int selected = GUILayout.Toolbar(stored, tabOrder);
@@ -75,17 +83,6 @@ namespace Base.AttributePackage.Editor
                 EditorPrefs.SetInt(key, selected);
 
             return tabOrder[selected];
-        }
-
-        private static string[] ResolveTabBar(Type type, string group, List<string> tabOrder)
-        {
-            string key = type.FullName + KeySeparator + group;
-            if (TabBars.TryGetValue(key, out string[] cached) && cached.Length == tabOrder.Count)
-                return cached;
-
-            string[] result = tabOrder.ToArray();
-            TabBars[key] = result;
-            return result;
         }
     }
 }

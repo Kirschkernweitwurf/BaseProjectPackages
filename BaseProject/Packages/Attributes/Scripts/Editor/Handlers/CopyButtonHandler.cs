@@ -8,64 +8,43 @@ namespace Base.AttributePackage.Editor
     /// confirmation. The button is disabled while the value is empty. Inline by default, or on its own
     /// row when the attribute sets inline to false.
     /// </summary>
-    public sealed class CopyButtonHandler : IInlineFieldWidget, IAfterFieldHandler
+    public sealed class CopyButtonHandler : FieldButtonHandler
     {
-        private const float InlineWidth = 46f;
+        private const int AfterFieldOrder = 90;
+        private const float InlineButtonWidth = 46f;
         private const double NotifyFade = 0.4;
-        private const float RowWidth = 52f;
-
-        int IInlineFieldWidget.Order => 10;
-
-        int IAfterFieldHandler.Order => 90;
+        private const float RowButtonWidth = 52f;
+        private const int WidgetOrder = 10;
 
         private static readonly GUIContent Content = new("Copy", "Copy the value to the clipboard.");
+
         private static readonly GUIContent Notice = new("Copied");
 
-        public void AfterField(in MemberContext context)
-        {
-            if (context.GetAttribute<CopyButtonAttribute>() is not
-                {
-                    Inline: false
-                })
-                return;
+        protected override int InlineOrder => WidgetOrder;
 
-            SerializedProperty property = context.Property;
-            if (!IsSupported(property))
-                return;
+        protected override int RowOrder => AfterFieldOrder;
 
-            using (new EditorGUI.DisabledScope(IsEmpty(property)))
-            {
-                if (FieldButtonRenderer.DrawRight(Content, RowWidth))
-                    Copy(property);
-            }
-        }
+        protected override float InlineWidth => InlineButtonWidth;
 
-        public float GetWidth(in MemberContext context)
+        protected override float RowWidth => RowButtonWidth;
+
+        protected override bool TryGetPlacement(in MemberContext context, out bool inline)
         {
             CopyButtonAttribute attribute = context.GetAttribute<CopyButtonAttribute>();
-            return attribute is
-                {
-                    Inline: true
-                }
-                && IsSupported(context.Property)
-                    ? InlineWidth
-                    : 0f;
-        }
-
-        public void Draw(Rect rect, in MemberContext context)
-        {
-            SerializedProperty property = context.Property;
-            using (new EditorGUI.DisabledScope(IsEmpty(property)))
-            {
-                if (FieldButtonRenderer.DrawAt(rect, Content))
-                    Copy(property);
-            }
+            inline = attribute != null && attribute.Inline;
+            return attribute != null;
         }
 
         // A string reports isArray = true in Unity because it is a char array, so we must not filter on
         // isArray. Real arrays and lists are Generic, so excluding Generic is enough.
-        private static bool IsSupported(SerializedProperty property)
+        protected override bool IsSupported(SerializedProperty property)
             => property.propertyType != SerializedPropertyType.Generic;
+
+        protected override bool IsEnabled(in MemberContext context) => !IsEmpty(context.Property);
+
+        protected override GUIContent GetContent(in MemberContext context) => Content;
+
+        protected override void Execute(in MemberContext context) => Copy(context.Property);
 
         private static bool IsEmpty(SerializedProperty property)
         {
@@ -86,7 +65,10 @@ namespace Base.AttributePackage.Editor
                 ? EditorWindow.focusedWindow
                 : EditorWindow.mouseOverWindow;
 
-            window?.ShowNotification(Notice, NotifyFade);
+            if (window == null)
+                return;
+
+            window.ShowNotification(Notice, NotifyFade);
         }
     }
 }

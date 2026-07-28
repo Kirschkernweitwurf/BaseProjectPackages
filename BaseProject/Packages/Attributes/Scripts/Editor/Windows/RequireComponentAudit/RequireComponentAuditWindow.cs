@@ -16,10 +16,15 @@ namespace Base.AttributePackage.Editor.Windows.RequireComponentAudit
     public sealed class RequireComponentAuditWindow : EditorWindow
     {
         private const string MenuPath = "Tools/Base Packages/Unity Editor/References/GetComponent Require Audit";
+        private const float MinimumHeight = 200f;
+        private const float MinimumWidth = 360f;
+        private const float OpenButtonWidth = 60f;
+        private const float RescanButtonWidth = 80f;
         private const float RowHeight = 22f;
         private const string WindowTitle = "GetComponent Audit";
 
         private static readonly string GetComponentLabel = AttributeNames.Display<GetComponentAttribute>();
+
         private static readonly string RequireComponentLabel = AttributeNames.Display<RequireComponent>();
 
         [SerializeField] private Vector2 scrollPosition;
@@ -62,7 +67,7 @@ namespace Base.AttributePackage.Editor.Windows.RequireComponentAudit
         {
             RequireComponentAuditWindow window = GetWindow<RequireComponentAuditWindow>();
 
-            window.minSize = new Vector2(360f, 200f);
+            window.minSize = new Vector2(MinimumWidth, MinimumHeight);
             window.Show();
         }
 
@@ -140,7 +145,7 @@ namespace Base.AttributePackage.Editor.Windows.RequireComponentAudit
             EditorGUILayout.LabelField(
                 $"{declaring.Name}.{field.Name}  needs  [{RequireComponentLabel}(typeof({fieldType.Name}))]");
 
-            if (GUILayout.Button("Open", GUILayout.Width(60f)))
+            if (GUILayout.Button("Open", GUILayout.Width(OpenButtonWidth)))
                 OpenScript(declaring);
 
             EditorGUILayout.EndHorizontal();
@@ -163,7 +168,7 @@ namespace Base.AttributePackage.Editor.Windows.RequireComponentAudit
         {
             EditorGUILayout.BeginHorizontal(EditorStyles.toolbar);
 
-            if (GUILayout.Button("Rescan", EditorStyles.toolbarButton, GUILayout.Width(80f)))
+            if (GUILayout.Button("Rescan", EditorStyles.toolbarButton, GUILayout.Width(RescanButtonWidth)))
                 Rescan();
 
             GUILayout.FlexibleSpace();

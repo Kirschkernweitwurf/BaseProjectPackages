@@ -1,5 +1,7 @@
 using System;
 using System.Reflection;
+using UnityEditor;
+using Object = UnityEngine.Object;
 
 namespace Base.AttributePackage.Editor
 {
@@ -32,6 +34,28 @@ namespace Base.AttributePackage.Editor
                 return false;
 
             value = property.GetValue(owner, null);
+            return true;
+        }
+
+        /// <summary>
+        /// Tries to read a field of the given type from the object that owns the property. Returns false
+        /// when no field of that name and type exists, which is a setup mistake rather than a missing
+        /// value. A found but unassigned field returns true with a null value.
+        /// </summary>
+        public static bool TryResolveSibling<T>(SerializedProperty property, string fieldName, out T value)
+            where T : class
+        {
+            value = null;
+
+            Object target = property.serializedObject.targetObject;
+            if (target == null || string.IsNullOrEmpty(fieldName))
+                return false;
+
+            FieldInfo field = ReflectionCache.GetField(target.GetType(), fieldName);
+            if (field == null || field.FieldType != typeof(T))
+                return false;
+
+            value = field.GetValue(target) as T;
             return true;
         }
     }

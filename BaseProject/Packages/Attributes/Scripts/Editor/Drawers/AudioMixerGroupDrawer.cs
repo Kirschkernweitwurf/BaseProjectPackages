@@ -1,8 +1,6 @@
-using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Audio;
-using Object = UnityEngine.Object;
 
 namespace Base.AttributePackage.Editor
 {
@@ -25,28 +23,17 @@ namespace Base.AttributePackage.Editor
 
             AudioMixerGroupAttribute attribute = (AudioMixerGroupAttribute)this.attribute;
             AudioMixer mixer = ResolveMixer(property, attribute.MixerField);
-            if (mixer == null)
-            {
-                EditorGUI.PropertyField(position, property, label);
-                return;
-            }
+            AudioMixerGroup[] groups = mixer == null
+                ? null
+                : mixer.FindMatchingGroups(string.Empty);
 
-            AudioMixerGroup[] groups = mixer.FindMatchingGroups(string.Empty);
             if (groups == null || groups.Length == 0)
             {
                 EditorGUI.PropertyField(position, property, label);
                 return;
             }
 
-            AudioMixerGroup currentGroup = property.objectReferenceValue as AudioMixerGroup;
-            string[] names = new string[groups.Length];
-            int current = -1;
-            for (int i = 0; i < groups.Length; i++)
-            {
-                names[i] = groups[i].name;
-                if (groups[i] == currentGroup)
-                    current = i;
-            }
+            string[] names = CollectNames(groups, property, out int current);
 
             EditorGUI.BeginProperty(position, label, property);
             int selected = EditorGUI.Popup(position, label.text, current, names);
@@ -56,15 +43,27 @@ namespace Base.AttributePackage.Editor
             EditorGUI.EndProperty();
         }
 
+        private static string[] CollectNames(AudioMixerGroup[] groups, SerializedProperty property, out int current)
+        {
+            AudioMixerGroup currentGroup = property.objectReferenceValue as AudioMixerGroup;
+            string[] names = new string[groups.Length];
+            current = -1;
+
+            for (int i = 0; i < groups.Length; i++)
+            {
+                names[i] = groups[i].name;
+                if (groups[i] == currentGroup)
+                    current = i;
+            }
+
+            return names;
+        }
+
         private static AudioMixer ResolveMixer(SerializedProperty property, string mixerField)
         {
-            if (!string.IsNullOrEmpty(mixerField))
-            {
-                Object target = property.serializedObject.targetObject;
-                FieldInfo field = ReflectionCache.GetField(target.GetType(), mixerField);
-                if (field?.GetValue(target) is AudioMixer fromField)
-                    return fromField;
-            }
+            if (MemberValueResolver.TryResolveSibling(property, mixerField, out AudioMixer fromField)
+                && fromField != null)
+                return fromField;
 
             AudioMixerGroup currentGroup = property.objectReferenceValue as AudioMixerGroup;
             return currentGroup != null

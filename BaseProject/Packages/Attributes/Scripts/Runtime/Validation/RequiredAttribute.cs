@@ -9,6 +9,9 @@ namespace Base.AttributePackage
     [AttributeUsage(AttributeTargets.Field)]
     public sealed class RequiredAttribute : PropertyAttribute
     {
+        /// <summary>Reason text used when no custom message is set. Shared by the rule and the drawer.</summary>
+        public const string DefaultReason = "is required";
+
         /// <summary>Optional custom message. Null uses a default message.</summary>
         public string Message { get; }
 

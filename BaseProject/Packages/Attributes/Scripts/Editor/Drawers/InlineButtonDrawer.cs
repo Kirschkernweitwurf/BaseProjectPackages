@@ -11,10 +11,9 @@ namespace Base.AttributePackage.Editor
     [CustomPropertyDrawer(typeof(InlineButtonAttribute))]
     public sealed class InlineButtonDrawer : PropertyDrawer
     {
+        private const float LabelPadding = 10f;
         private const float MaxButtonWidth = 140f;
         private const float Spacing = 2f;
-
-        private static readonly GUIContent ScratchContent = new();
 
         private string _buttonLabel;
         private float _buttonWidth = -1f;
@@ -28,24 +27,18 @@ namespace Base.AttributePackage.Editor
                 : inline.Label;
 
             if (_buttonWidth < 0f)
-                _buttonWidth = Mathf.Min(MaxButtonWidth, GUI.skin.button.CalcSize(Scratch(_buttonLabel)).x + 10f);
+            {
+                float textWidth = GUI.skin.button.CalcSize(ScratchContent.For(_buttonLabel)).x;
+                _buttonWidth = Mathf.Min(MaxButtonWidth, textWidth + LabelPadding);
+            }
 
-            string buttonLabel = _buttonLabel;
-            float buttonWidth = _buttonWidth;
-
-            Rect fieldRect = new(position.x, position.y, position.width - buttonWidth - Spacing, position.height);
-            Rect buttonRect = new(fieldRect.xMax + Spacing, position.y, buttonWidth, position.height);
+            Rect fieldRect = new(position.x, position.y, position.width - _buttonWidth - Spacing, position.height);
+            Rect buttonRect = new(fieldRect.xMax + Spacing, position.y, _buttonWidth, position.height);
 
             EditorGUI.PropertyField(fieldRect, property, label, true);
 
-            if (GUI.Button(buttonRect, buttonLabel))
+            if (GUI.Button(buttonRect, _buttonLabel))
                 Invoke(property, inline.Method);
-        }
-
-        private static GUIContent Scratch(string text)
-        {
-            ScratchContent.text = text;
-            return ScratchContent;
         }
 
         private static void Invoke(SerializedProperty property, string methodName)

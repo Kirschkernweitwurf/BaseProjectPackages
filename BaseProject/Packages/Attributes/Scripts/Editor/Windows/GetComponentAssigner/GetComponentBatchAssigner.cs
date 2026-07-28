@@ -16,6 +16,7 @@ namespace Base.AttributePackage.Editor.Windows.GetComponentAssigner
     /// </summary>
     internal static class GetComponentBatchAssigner
     {
+        private const string PrefabFilter = "t:Prefab";
         private const string ProgressTitle = "Assigning GetComponent references";
 
         public static int Run(bool includePrefabs, bool includeScenes)
@@ -41,7 +42,7 @@ namespace Base.AttributePackage.Editor.Windows.GetComponentAssigner
 
         private static int RunPrefabs()
         {
-            string[] guids = AssetDatabase.FindAssets("t:Prefab");
+            string[] guids = AssetDatabase.FindAssets(PrefabFilter);
             int assigned = 0;
 
             for (int i = 0; i < guids.Length; i++)

@@ -17,10 +17,11 @@ namespace Base.AttributePackage.Editor
     {
         private const string ArrayToken = ".Array.data[";
         private const float BadgeWidth = 32f;
+        private const string MissingIndexText = "#?";
         private const float Spacing = 2f;
 
         private static readonly string UsageError =
-            $"[{AttributeNames.Display<ComponentPickerAttribute>()}] only works on component reference fields.";
+            AttributeNames.Usage<ComponentPickerAttribute>("a component reference field");
 
         private static GUIContent _usageErrorContent;
 
@@ -174,7 +175,7 @@ namespace Base.AttributePackage.Editor
                 : Array.IndexOf(siblings, component);
 
             string text = index < 0
-                ? "#?"
+                ? MissingIndexText
                 : $"#{index}";
 
             bool hasAlternatives = siblings.Length > 1;

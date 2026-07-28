@@ -1,9 +1,11 @@
+using System;
 using UnityEngine;
 
 namespace Base.AttributePackage
 {
     /// <summary>
-    /// Attribute to show a dropdown of all scenes included in the Build Settings in the inspector.
+    /// Draws a dropdown of all scenes included in the Build Settings. On a string field it stores the
+    /// scene name, on an int field the build index.
     /// </summary>
     /// <example>
     /// <code>
@@ -14,5 +16,6 @@ namespace Base.AttributePackage
     /// }
     /// </code>
     /// </example>
-    public class SceneNameAttribute : PropertyAttribute { }
+    [AttributeUsage(AttributeTargets.Field)]
+    public sealed class SceneNameAttribute : PropertyAttribute { }
 }

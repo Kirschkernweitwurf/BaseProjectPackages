@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace Base.AttributePackage.Editor
 {
@@ -15,55 +13,28 @@ namespace Base.AttributePackage.Editor
     /// a compact warning below explains what is missing.
     /// </summary>
     [CustomPropertyDrawer(typeof(AnimatorParamAttribute))]
-    public sealed class AnimatorParamDrawer : PropertyDrawer
+    public sealed class AnimatorParamDrawer : WarningFieldDrawer
     {
-        private const float WarningSpacing = 2f;
+        private string[] _names;
 
-        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+        protected override string UsageMessage => AttributeNames.Usage<AnimatorParamAttribute>("a string or int");
+
+        protected override bool IsSupported(SerializedProperty property)
+            => property.propertyType == SerializedPropertyType.String
+                || property.propertyType == SerializedPropertyType.Integer;
+
+        protected override string Evaluate(SerializedProperty property)
+            => Evaluate(property, (AnimatorParamAttribute)attribute, out _names);
+
+        protected override void DrawField(Rect rect, SerializedProperty property, GUIContent label, bool complete)
         {
-            if (!IsSupported(property))
-                return EditorGUIUtility.singleLineHeight;
-
-            string warning = Evaluate(property, (AnimatorParamAttribute)attribute, out _);
-            return warning == null
-                ? EditorGUIUtility.singleLineHeight
-                : EditorGUIUtility.singleLineHeight + WarningSpacing + CompactHelpBox.Height;
-        }
-
-        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
-        {
-            if (!IsSupported(property))
-            {
-                EditorGUI.LabelField(position, label.text,
-                    AttributeNames.Usage<AnimatorParamAttribute>("a string or int"));
-
-                return;
-            }
-
-            string warning = Evaluate(property, (AnimatorParamAttribute)attribute, out string[] names);
-
-            Rect fieldRect = new(position.x, position.y, position.width, EditorGUIUtility.singleLineHeight);
-
-            EditorGUI.BeginProperty(fieldRect, label, property);
-
-            if (warning == null)
-                DrawDropdown(fieldRect, property, label, names);
+            if (complete)
+                DrawDropdown(rect, property, label, _names);
             else
-                EditorGUI.PropertyField(fieldRect, property, label);
-
-            EditorGUI.EndProperty();
-
-            if (warning == null)
-                return;
-
-            Rect warningRect = new(position.x, fieldRect.yMax + WarningSpacing, position.width,
-                CompactHelpBox.Height);
-
-            CompactHelpBox.Draw(warningRect, warning, EInfoBoxType.Warning);
+                EditorGUI.PropertyField(rect, property, label);
         }
 
-        private static void DrawDropdown(Rect rect, SerializedProperty property, GUIContent label,
-            string[] names)
+        private static void DrawDropdown(Rect rect, SerializedProperty property, GUIContent label, string[] names)
         {
             bool isString = property.propertyType == SerializedPropertyType.String;
 
@@ -83,7 +54,7 @@ namespace Base.AttributePackage.Editor
         {
             names = null;
 
-            if (!TryResolveAnimator(property, attribute.AnimatorField, out Animator animator))
+            if (!MemberValueResolver.TryResolveSibling(property, attribute.AnimatorField, out Animator animator))
                 return $"Animator field '{attribute.AnimatorField}' was not found on this object.";
 
             if (animator == null)
@@ -100,19 +71,6 @@ namespace Base.AttributePackage.Editor
             return attribute.HasFilter
                 ? $"The AnimatorController has no {attribute.Type} parameters."
                 : "The AnimatorController has no parameters.";
-        }
-
-        private static bool TryResolveAnimator(SerializedProperty property, string animatorField,
-            out Animator animator)
-        {
-            animator = null;
-            Object target = property.serializedObject.targetObject;
-            FieldInfo field = ReflectionCache.GetField(target.GetType(), animatorField);
-            if (field == null || field.FieldType != typeof(Animator))
-                return false;
-
-            animator = field.GetValue(target) as Animator;
-            return true;
         }
 
         private static AnimatorController ResolveController(Animator animator)
@@ -150,9 +108,5 @@ namespace Base.AttributePackage.Editor
 
             return -1;
         }
-
-        private static bool IsSupported(SerializedProperty property)
-            => property.propertyType == SerializedPropertyType.String
-                || property.propertyType == SerializedPropertyType.Integer;
     }
 }

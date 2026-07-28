@@ -16,7 +16,9 @@ namespace Base.AttributePackage
     {
         private const BindingFlags Flags =
             BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly;
+
         private const int MaxDepth = 10;
+
         private const string PathSeparator = ".";
 
         private static readonly Dictionary<Type, FieldInfo[]> SerializedFields = new();
@@ -78,7 +80,7 @@ namespace Base.AttributePackage
             List<FieldInfo> fields = new();
             Type current = type;
 
-            while (current != null && current != typeof(object) && !IsFrameworkType(current))
+            while (current != null && current != typeof(object) && !FrameworkAssemblies.Contains(current))
             {
                 foreach (FieldInfo field in current.GetFields(Flags))
                 {
@@ -101,7 +103,7 @@ namespace Base.AttributePackage
             && type != typeof(string)
             && !type.IsEnum
             && !typeof(Object).IsAssignableFrom(type)
-            && !IsFrameworkType(type)
+            && !FrameworkAssemblies.Contains(type)
             && Attribute.IsDefined(type, typeof(SerializableAttribute));
 
         private static bool IsSerializableCollection(Type type, out Type element)
@@ -116,12 +118,6 @@ namespace Base.AttributePackage
                 return false;
 
             return element != null && IsNestedSerializable(element);
-        }
-
-        private static bool IsFrameworkType(Type type)
-        {
-            string assembly = type.Assembly.GetName().Name;
-            return assembly.StartsWith("Unity") || assembly.StartsWith("System") || assembly == "mscorlib";
         }
 
         private static string Combine(string prefix, string name) => prefix == null

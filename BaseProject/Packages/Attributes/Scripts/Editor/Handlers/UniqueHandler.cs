@@ -14,14 +14,15 @@ namespace Base.AttributePackage.Editor
     {
         private const float ButtonHeight = 18f;
 
-        public int Order => 20;
-
         private static readonly GUIContent FixContent =
             new("Remove Duplicates", "Keeps the first occurrence of every value and removes the repeats.");
 
         // Reused across draws. Filled and consumed inside one call, so the handler stays stateless.
         private static readonly List<string> Groups = new();
+
         private static readonly List<int> Repeats = new();
+
+        public int Order => 20;
 
         public void AfterField(in MemberContext context)
         {

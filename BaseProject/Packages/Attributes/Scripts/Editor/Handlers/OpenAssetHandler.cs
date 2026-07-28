@@ -9,62 +9,59 @@ namespace Base.AttributePackage.Editor
     /// references and on string fields holding a project asset path. Disabled when nothing is assigned.
     /// Inline by default, or on its own row when inline is false.
     /// </summary>
-    public sealed class OpenAssetHandler : IInlineFieldWidget, IAfterFieldHandler
+    public sealed class OpenAssetHandler : FieldButtonHandler
     {
+        private const int AfterFieldOrder = 92;
         private const string DefaultLabel = "Open";
-        private const float InlineWidth = 46f;
-        private const float RowWidth = 60f;
+        private const float InlineButtonWidth = 46f;
+        private const float RowButtonWidth = 60f;
+        private const string Tooltip = "Open the asset.";
+        private const int WidgetOrder = 20;
 
-        int IInlineFieldWidget.Order => 20;
+        private static readonly GUIContent Content = new(DefaultLabel, Tooltip);
 
-        int IAfterFieldHandler.Order => 92;
+        // Reused so a custom row label does not allocate a new content every repaint.
+        private static readonly GUIContent CustomContent = new(string.Empty, Tooltip);
 
-        private static readonly GUIContent Content = new(DefaultLabel, "Open the asset.");
+        protected override int InlineOrder => WidgetOrder;
 
-        public void AfterField(in MemberContext context)
+        protected override int RowOrder => AfterFieldOrder;
+
+        protected override float InlineWidth => InlineButtonWidth;
+
+        protected override float RowWidth => RowButtonWidth;
+
+        protected override bool TryGetPlacement(in MemberContext context, out bool inline)
         {
             OpenAssetAttribute attribute = context.GetAttribute<OpenAssetAttribute>();
-            if (attribute is not
-                {
-                    Inline: false
-                })
-                return;
-
-            Object asset = Resolve(context.Property);
-            GUIContent content = new(attribute.Label ?? DefaultLabel, "Open the asset.");
-
-            using (new EditorGUI.DisabledScope(asset == null))
-            {
-                if (FieldButtonRenderer.DrawRight(content, RowWidth) && asset != null)
-                    AssetDatabase.OpenAsset(asset);
-            }
+            inline = attribute != null && attribute.Inline;
+            return attribute != null;
         }
 
-        public float GetWidth(in MemberContext context)
-        {
-            OpenAssetAttribute attribute = context.GetAttribute<OpenAssetAttribute>();
-            return attribute is
-                {
-                    Inline: true
-                }
-                && IsSupported(context.Property)
-                    ? InlineWidth
-                    : 0f;
-        }
-
-        public void Draw(Rect rect, in MemberContext context)
-        {
-            Object asset = Resolve(context.Property);
-            using (new EditorGUI.DisabledScope(asset == null))
-            {
-                if (FieldButtonRenderer.DrawAt(rect, Content) && asset != null)
-                    AssetDatabase.OpenAsset(asset);
-            }
-        }
-
-        private static bool IsSupported(SerializedProperty property)
+        protected override bool IsSupported(SerializedProperty property)
             => property.propertyType == SerializedPropertyType.ObjectReference
                 || property.propertyType == SerializedPropertyType.String;
+
+        protected override bool IsEnabled(in MemberContext context) => Resolve(context.Property) != null;
+
+        protected override GUIContent GetContent(in MemberContext context)
+        {
+            OpenAssetAttribute attribute = context.GetAttribute<OpenAssetAttribute>();
+            if (attribute == null || attribute.Inline || string.IsNullOrEmpty(attribute.Label))
+                return Content;
+
+            CustomContent.text = attribute.Label;
+            return CustomContent;
+        }
+
+        protected override void Execute(in MemberContext context)
+        {
+            Object asset = Resolve(context.Property);
+            if (asset == null)
+                return;
+
+            AssetDatabase.OpenAsset(asset);
+        }
 
         private static Object Resolve(SerializedProperty property)
         {

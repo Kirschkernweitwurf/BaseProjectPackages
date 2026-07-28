@@ -20,6 +20,15 @@ namespace Base.AttributePackage.Editor
 
         private static readonly Dictionary<FieldInfo, Dictionary<Type, Attribute>> AttributesByField = new();
 
+        private static readonly Func<Type, Dictionary<string, FieldInfo>> BuildFields =
+            type => Build(type, declaring => declaring.GetFields(Flags));
+
+        private static readonly Func<Type, Dictionary<string, MethodInfo>> BuildMethods =
+            type => Build(type, declaring => declaring.GetMethods(Flags));
+
+        private static readonly Func<Type, Dictionary<string, PropertyInfo>> BuildProperties =
+            type => Build(type, declaring => declaring.GetProperties(Flags));
+
         /// <summary>
         /// Returns the field attribute of the given type, cached per field. Attributes are compile-time
         /// metadata, so this avoids repeated reflection during inspector repaints.
@@ -57,10 +66,10 @@ namespace Base.AttributePackage.Editor
                 : null;
 
         /// <summary>Returns the property with the given name anywhere in the type hierarchy, or null.</summary>
-        public static PropertyInfo GetProperty(Type type, string name) => GetMap(Properties, type, BuildProperties)
-            .TryGetValue(name, out PropertyInfo property)
-            ? property
-            : null;
+        public static PropertyInfo GetProperty(Type type, string name)
+            => GetMap(Properties, type, BuildProperties).TryGetValue(name, out PropertyInfo property)
+                ? property
+                : null;
 
         /// <summary>All fields declared across the type hierarchy.</summary>
         public static IEnumerable<FieldInfo> AllFields(Type type) => GetMap(Fields, type, BuildFields).Values;
@@ -81,49 +90,18 @@ namespace Base.AttributePackage.Editor
             return map;
         }
 
-        private static Dictionary<string, FieldInfo> BuildFields(Type type)
+        // Walks up the hierarchy so members declared on a base class are found too. The first
+        // declaration wins, which is the most derived one.
+        private static Dictionary<string, T> Build<T>(Type type, Func<Type, T[]> select) where T : MemberInfo
         {
-            Dictionary<string, FieldInfo> map = new();
+            Dictionary<string, T> map = new();
+
             while (type != null)
             {
-                foreach (FieldInfo field in type.GetFields(Flags))
+                foreach (T member in select(type))
                 {
-                    if (!map.ContainsKey(field.Name))
-                        map[field.Name] = field;
-                }
-
-                type = type.BaseType;
-            }
-
-            return map;
-        }
-
-        private static Dictionary<string, MethodInfo> BuildMethods(Type type)
-        {
-            Dictionary<string, MethodInfo> map = new();
-            while (type != null)
-            {
-                foreach (MethodInfo method in type.GetMethods(Flags))
-                {
-                    if (!map.ContainsKey(method.Name))
-                        map[method.Name] = method;
-                }
-
-                type = type.BaseType;
-            }
-
-            return map;
-        }
-
-        private static Dictionary<string, PropertyInfo> BuildProperties(Type type)
-        {
-            Dictionary<string, PropertyInfo> map = new();
-            while (type != null)
-            {
-                foreach (PropertyInfo property in type.GetProperties(Flags))
-                {
-                    if (!map.ContainsKey(property.Name))
-                        map[property.Name] = property;
+                    if (!map.ContainsKey(member.Name))
+                        map[member.Name] = member;
                 }
 
                 type = type.BaseType;

@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
@@ -14,13 +13,7 @@ namespace Base.AttributePackage.Editor
     /// </summary>
     public static class MemberRenderer
     {
-        private const string CoreLibraryAssembly = "mscorlib";
-        private const string SystemAssemblyPrefix = "System";
-        private const string UnityAssemblyPrefix = "Unity";
-
         private const float WidgetGap = 2f;
-
-        private static readonly Dictionary<Type, bool> FrameworkTypes = new();
 
         private static float[] _widgetWidths;
 
@@ -156,24 +149,10 @@ namespace Base.AttributePackage.Editor
             if (nestedType == null || nestedType == typeof(string))
                 return false;
 
-            if (IsFrameworkType(nestedType))
+            if (FrameworkAssemblies.Contains(nestedType))
                 return false;
 
             return !PropertyDrawerCache.HasDrawer(nestedType);
-        }
-
-        private static bool IsFrameworkType(Type type)
-        {
-            if (FrameworkTypes.TryGetValue(type, out bool cached))
-                return cached;
-
-            string assembly = type.Assembly.GetName().Name;
-            bool result = assembly.StartsWith(UnityAssemblyPrefix)
-                || assembly.StartsWith(SystemAssemblyPrefix)
-                || assembly == CoreLibraryAssembly;
-
-            FrameworkTypes[type] = result;
-            return result;
         }
     }
 }

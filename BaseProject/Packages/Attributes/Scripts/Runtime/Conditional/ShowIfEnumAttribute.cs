@@ -5,7 +5,7 @@ namespace Base.AttributePackage
 {
     /// <summary>
     /// Shows the field only while the referenced enum member equals one of the given values.
-    /// Example: <c>[ShowIfEnum(nameof(_mood), EMood.Elektrisiert)]</c>.
+    /// Example: <c>[ShowIfEnum(nameof(_mood), EMood.Excited)]</c>.
     /// </summary>
     [AttributeUsage(AttributeTargets.Field)]
     public sealed class ShowIfEnumAttribute : PropertyAttribute

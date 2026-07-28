@@ -11,7 +11,10 @@ namespace Base.AttributePackage.Editor.Windows.GetComponentAssigner
     /// </summary>
     public sealed class GetComponentAssignerWindow : EditorWindow
     {
+        private const float AssignButtonHeight = 28f;
         private const string MenuPath = "Tools/Base Packages/Unity Editor/References/Assign GetComponents";
+        private const float MinimumHeight = 140f;
+        private const float MinimumWidth = 300f;
         private const string WindowTitle = "Assign GetComponents";
 
         [SerializeField] private bool includePrefabs = true;
@@ -33,7 +36,7 @@ namespace Base.AttributePackage.Editor.Windows.GetComponentAssigner
 
             using (new EditorGUI.DisabledScope(!includePrefabs && !includeScenes))
             {
-                if (GUILayout.Button("Assign References", GUILayout.Height(28f)))
+                if (GUILayout.Button("Assign References", GUILayout.Height(AssignButtonHeight)))
                     Assign();
             }
 
@@ -47,7 +50,7 @@ namespace Base.AttributePackage.Editor.Windows.GetComponentAssigner
         {
             GetComponentAssignerWindow window = GetWindow<GetComponentAssignerWindow>();
 
-            window.minSize = new Vector2(300f, 140f);
+            window.minSize = new Vector2(MinimumWidth, MinimumHeight);
             window.Show();
         }
 

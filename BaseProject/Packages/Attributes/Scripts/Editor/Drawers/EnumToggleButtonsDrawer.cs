@@ -164,12 +164,10 @@ namespace Base.AttributePackage.Editor
             else if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>))
                 type = type.GetGenericArguments()[0];
 
-            return type is
-            {
-                IsEnum: true
-            }
-                ? type
-                : null;
+            if (type == null || !type.IsEnum)
+                return null;
+
+            return type;
         }
     }
 }

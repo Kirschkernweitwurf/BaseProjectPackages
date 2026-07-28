@@ -7,7 +7,8 @@ namespace Base.AttributePackage.Editor
     /// <summary>
     /// Resolves the managed object behind a <see cref="SerializedProperty"/> so the handler pipeline
     /// can descend into nested serializable types. Walks the property path with reflection and
-    /// handles array and list elements.
+    /// handles array and list elements. Resolves against the first target only, so nested values shown
+    /// while editing multiple objects come from that one.
     /// </summary>
     public static class SerializedPropertyReflection
     {

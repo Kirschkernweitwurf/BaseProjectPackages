@@ -13,9 +13,14 @@ namespace Base.AttributePackage.Editor
             if (attribute == null)
                 return;
 
-            if (context.Property.propertyType == SerializedPropertyType.ObjectReference
-                && context.Property.objectReferenceValue == null)
-                CompactHelpBox.Error(attribute.Message ?? context.DisplayName + " is required");
+            if (context.Property.propertyType != SerializedPropertyType.ObjectReference)
+                return;
+
+            if (context.Property.objectReferenceValue != null)
+                return;
+
+            CompactHelpBox.Error(attribute.Message
+                ?? context.DisplayName + " " + RequiredAttribute.DefaultReason);
         }
     }
 }

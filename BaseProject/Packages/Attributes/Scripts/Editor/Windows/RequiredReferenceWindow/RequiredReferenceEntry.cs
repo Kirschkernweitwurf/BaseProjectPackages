@@ -12,6 +12,7 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
         /// <summary>Display text shown in the UI.</summary>
         public string DisplayName => $"{ComponentName}.{Path}";
 
+        /// <summary>Creates an entry for one missing reference.</summary>
         public RequiredReferenceEntry(string componentName, string path)
         {
             ComponentName = componentName;

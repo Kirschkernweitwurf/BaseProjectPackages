@@ -14,6 +14,9 @@ namespace Base.AttributePackage.Editor
     /// </summary>
     public static class ButtonRenderer
     {
+        private const string CancelLabel = "Cancel";
+        private const string ConfirmLabel = "Confirm";
+
         private const BindingFlags MethodFlags =
             BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
 
@@ -27,10 +30,15 @@ namespace Base.AttributePackage.Editor
                 using (new EditorGUI.DisabledScope(!IsEnabled(button.Attribute.Mode)))
                 {
                     if (GUILayout.Button(button.Label) && Confirm(button))
-                        foreach (Object item in editor.targets)
-                            button.Method.Invoke(item, null);
+                        Invoke(editor, button);
                 }
             }
+        }
+
+        private static void Invoke(UnityEditor.Editor editor, in InspectorButton button)
+        {
+            foreach (Object item in editor.targets)
+                button.Method.Invoke(item, null);
         }
 
         private static InspectorButton[] GetButtons(Type type)
@@ -75,7 +83,7 @@ namespace Base.AttributePackage.Editor
             if (string.IsNullOrEmpty(button.Attribute.Confirm))
                 return true;
 
-            return EditorUtility.DisplayDialog(button.Label, button.Attribute.Confirm, "Confirm", "Cancel");
+            return EditorUtility.DisplayDialog(button.Label, button.Attribute.Confirm, ConfirmLabel, CancelLabel);
         }
     }
 }

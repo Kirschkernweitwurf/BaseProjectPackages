@@ -1,4 +1,6 @@
+using System;
 using System.Reflection;
+using Base.UtilityPackage.Logging;
 using UnityEditor;
 
 namespace Base.AttributePackage.Editor
@@ -6,6 +8,10 @@ namespace Base.AttributePackage.Editor
     /// <summary>Runs the custom method of a <see cref="ValidateInputAttribute"/> and reports failures.</summary>
     public sealed class ValidateInputHandler : IAfterFieldHandler
     {
+        private const string FailedPrefix = "Validation failed: ";
+        private const string MissingPrefix = "Validation method not found: ";
+        private const string ThrewPrefix = "Validation method threw an exception: ";
+
         public int Order => 20;
 
         public void AfterField(in MemberContext context)
@@ -16,10 +22,9 @@ namespace Base.AttributePackage.Editor
 
             MethodInfo method = ReflectionCache.GetMethod(context.DeclaringType, attribute.MethodName);
             if (method == null)
-                EditorGUILayout.HelpBox("Validation method not found: " + attribute.MethodName, MessageType.Warning);
+                EditorGUILayout.HelpBox(MissingPrefix + attribute.MethodName, MessageType.Warning);
             else if (!Invoke(method, context))
-                EditorGUILayout.HelpBox(attribute.Message ?? "Validation failed: " + attribute.MethodName,
-                    MessageType.Error);
+                EditorGUILayout.HelpBox(attribute.Message ?? FailedPrefix + attribute.MethodName, MessageType.Error);
         }
 
         private static bool Invoke(MethodInfo method, in MemberContext context)
@@ -40,10 +45,13 @@ namespace Base.AttributePackage.Editor
             try
             {
                 object result = method.Invoke(context.DeclaringObject, arguments);
-                return !(result is bool valid) || valid;
+                return result is not bool valid || valid;
             }
-            catch
+            catch (Exception exception)
             {
+                // A throwing validator is a bug in the validator, not an invalid value. Report it and
+                // let the field pass, so the inspector stays usable.
+                CustomLogger.LogError(ThrewPrefix + method.Name + "\n" + exception, context.Target);
                 return true;
             }
         }

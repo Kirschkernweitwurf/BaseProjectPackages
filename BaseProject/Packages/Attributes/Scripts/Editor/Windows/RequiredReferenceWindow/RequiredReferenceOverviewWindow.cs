@@ -12,10 +12,12 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
     /// </summary>
     public sealed class RequiredReferenceOverviewWindow : EditorWindow
     {
+        private const float BarSpacing = 4f;
         private const float ButtonHeight = 26f;
         private const float ButtonWidth = 140f;
         private const float ListSpacing = 4f;
-        private const string MenuPath = "Tools/Base Packages/Unity Editor/References/Required References";
+        private const float MinimumHeight = 200f;
+        private const float MinimumWidth = 320f;
         private const double MinScanInterval = 0.3;
         private const double SafetyPollInterval = 1.0;
         private const float SearchHeight = 20f;
@@ -41,7 +43,6 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
         {
             titleContent = new GUIContent(WindowTitle);
 
-            _assetGroups ??= new List<RequiredReferenceGroup>();
             _assetsDirty = true;
 
             EditorApplication.hierarchyChanged += MarkDirty;
@@ -70,12 +71,10 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
 
             GUILayout.Space(ListSpacing);
 
-            Object clicked =
-                RequiredReferenceView.DrawGroups(_groups, search, _styles, out bool anyShown);
+            Object clicked = RequiredReferenceView.DrawGroups(_groups, search, _styles, out bool anyShown);
 
             if (!anyShown)
-                EditorGUILayout.LabelField($"No matches for \"{search}\".",
-                    EditorStyles.centeredGreyMiniLabel);
+                EditorGUILayout.LabelField($"No matches for \"{search}\".", EditorStyles.centeredGreyMiniLabel);
 
             GUILayout.Space(ListSpacing);
 
@@ -108,12 +107,12 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
         }
 #endregion
 
-        [DynamicMenuItem(MenuPath)]
+        [DynamicMenuItem(ReferenceWindowInfo.MenuPath)]
         private static void Open()
         {
             RequiredReferenceOverviewWindow window = GetWindow<RequiredReferenceOverviewWindow>();
 
-            window.minSize = new Vector2(320f, 200f);
+            window.minSize = new Vector2(MinimumWidth, MinimumHeight);
             window.Show();
         }
 
@@ -128,11 +127,11 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
 
         private void DrawActionBar()
         {
-            EditorGUILayout.Space(4f);
+            EditorGUILayout.Space(BarSpacing);
 
             EditorGUILayout.BeginHorizontal();
 
-            EditorGUILayout.Space(4f, false);
+            EditorGUILayout.Space(BarSpacing, false);
 
             if (GUILayout.Button("Refresh", GUILayout.Height(ButtonHeight), GUILayout.Width(ButtonWidth)))
             {
@@ -148,11 +147,11 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
                 GUILayout.Width(SearchWidth),
                 GUILayout.Height(SearchHeight));
 
-            EditorGUILayout.Space(4f, false);
+            EditorGUILayout.Space(BarSpacing, false);
 
             EditorGUILayout.EndHorizontal();
 
-            EditorGUILayout.Space(4f);
+            EditorGUILayout.Space(BarSpacing);
         }
 
         private void DrawSummary()
@@ -184,7 +183,7 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
             List<RequiredReferenceGroup> scene = RequiredReferenceCollector.CollectScene(out int sceneTotal);
 
             _groups = new List<RequiredReferenceGroup>(scene);
-            _groups.AddRange(_assetGroups ?? new List<RequiredReferenceGroup>());
+            _groups.AddRange(_assetGroups);
             _total = sceneTotal + _assetTotal;
 
             Repaint();

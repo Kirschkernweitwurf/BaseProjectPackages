@@ -10,6 +10,9 @@ namespace Base.AttributePackage.Editor
     /// </summary>
     public sealed class ObjectConstraintHandler : IAfterFieldHandler
     {
+        private const string AssetOnlyMessage = "Only project assets are allowed here.";
+        private const string SceneOnlyMessage = "Only scene objects are allowed here.";
+
         public int Order => 0;
 
         public void AfterField(in MemberContext context)
@@ -27,9 +30,9 @@ namespace Base.AttributePackage.Editor
                 return;
 
             if (assetOnly && !IsAsset(current))
-                Reject(context, current, "Only project assets are allowed here.");
+                Reject(context, current, AssetOnlyMessage);
             else if (sceneOnly && !IsSceneObject(current))
-                Reject(context, current, "Only scene objects are allowed here.");
+                Reject(context, current, SceneOnlyMessage);
         }
 
         private static void Reject(in MemberContext context, Object current, string message)
