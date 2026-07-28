@@ -1,4 +1,3 @@
-#if UNITY_EDITOR
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -147,7 +146,8 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
             foreach (string path in Directory.GetFiles(absRoot, "*.cs", SearchOption.AllDirectories))
             {
                 string norm = path.Replace('\\', '/');
-                if (opt.SkipEditorFolders && norm.IndexOf("/Editor/", StringComparison.OrdinalIgnoreCase) >= 0)
+                if (opt.SkipEditorFolders
+                    && norm.IndexOf("/Editor/", StringComparison.OrdinalIgnoreCase) >= 0)
                     continue;
 
                 string source;
@@ -239,7 +239,8 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
                     foreach (Match call in Regex.Matches(body, @"\b(\w+)\s*\("))
                     {
                         string name = call.Groups[1].Value;
-                        if (!ctx.StaticMethods.TryGetValue(name, out string item) || !seen.Add(name))
+                        if (!ctx.StaticMethods.TryGetValue(name, out string item)
+                            || !seen.Add(name))
                             continue;
 
                         sb.Append('\n').Append(item);
@@ -389,7 +390,9 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
                 if (c == ';')
                     return;
 
-                if (c == '=' && b + 1 < n && s[b + 1] == '>')
+                if (c == '='
+                    && b + 1 < n
+                    && s[b + 1] == '>')
                     break;
 
                 b++;
@@ -763,7 +766,9 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
                     }
                     case ';':
                     {
-                        if (p == 0 && b == 0 && c == 0)
+                        if (p == 0
+                            && b == 0
+                            && c == 0)
                             return i;
 
                         break;
@@ -817,7 +822,11 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
                         break;
                 }
 
-                if (ch != sep || a != 0 || p != 0 || b != 0 || c != 0)
+                if (ch != sep
+                    || a != 0
+                    || p != 0
+                    || b != 0
+                    || c != 0)
                     continue;
 
                 res.Add(s.Substring(last, i - last));
@@ -886,7 +895,11 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
                     }
                 }
 
-                if (ch != '=' || a != 0 || p != 0 || b != 0 || c != 0)
+                if (ch != '='
+                    || a != 0
+                    || p != 0
+                    || b != 0
+                    || c != 0)
                     continue;
 
                 char nx = i + 1 < s.Length
@@ -1118,7 +1131,8 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
             foreach (PackageInfo package in packages)
             {
                 string resolved = package.resolvedPath.Replace('\\', '/').TrimEnd('/');
-                if (resolved.Length > 0 && abs.StartsWith(resolved + "/", StringComparison.OrdinalIgnoreCase))
+                if (resolved.Length > 0
+                    && abs.StartsWith(resolved + "/", StringComparison.OrdinalIgnoreCase))
                     return package.assetPath + abs[resolved.Length..];
             }
 
@@ -1126,4 +1140,3 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
         }
     }
 }
-#endif

@@ -56,18 +56,24 @@ namespace Base.ToolPackage.Identification
         /// <summary>Reports whether a string would be accepted as a key.</summary>
         public static bool IsValid(string value) => TryValidate(value, out _);
 
+        /// <inheritdoc/>
         public bool Equals(PersistentKey other) => string.Equals(Value, other.Value, StringComparison.Ordinal);
 
+        /// <inheritdoc/>
         public override bool Equals(object obj) => obj is PersistentKey other && Equals(other);
 
+        /// <inheritdoc/>
         public override int GetHashCode() => Value is null
             ? 0
             : StringComparer.Ordinal.GetHashCode(Value);
 
+        /// <summary>True when both keys hold the same value.</summary>
         public static bool operator ==(PersistentKey left, PersistentKey right) => left.Equals(right);
 
+        /// <summary>True when the keys hold different values.</summary>
         public static bool operator !=(PersistentKey left, PersistentKey right) => !left.Equals(right);
 
+        /// <inheritdoc/>
         public override string ToString() => Value ?? string.Empty;
 
         private static bool TryValidate(string value, out string error)
@@ -84,7 +90,10 @@ namespace Base.ToolPackage.Identification
                 return false;
             }
 
-            if (value[0] == ' ' || value[^1] == ' ' || char.IsWhiteSpace(value[0]) || char.IsWhiteSpace(value[^1]))
+            if (value[0] == ' '
+                || value[^1] == ' '
+                || char.IsWhiteSpace(value[0])
+                || char.IsWhiteSpace(value[^1]))
             {
                 error = "A PersistentKey must not have leading or trailing whitespace.";
                 return false;

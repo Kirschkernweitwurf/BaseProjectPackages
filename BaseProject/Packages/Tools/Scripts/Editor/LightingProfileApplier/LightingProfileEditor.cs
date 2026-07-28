@@ -13,6 +13,7 @@ namespace Base.ToolPackage.Editor.LightingProfileApplier
     [CustomEditor(typeof(LightingProfile))]
     public class LightingProfileEditor : AttributePackageEditor
     {
+        /// <inheritdoc/>
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();

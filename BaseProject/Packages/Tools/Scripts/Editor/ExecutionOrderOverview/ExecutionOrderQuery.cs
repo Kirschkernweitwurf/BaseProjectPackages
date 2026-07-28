@@ -1,7 +1,7 @@
-#if UNITY_EDITOR
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Base.ToolPackage.Editor.Shared;
 
 namespace Base.ToolPackage.Editor.ExecutionOrderOverview
 {
@@ -21,7 +21,7 @@ namespace Base.ToolPackage.Editor.ExecutionOrderOverview
             IEnumerable<ExecutionOrderEntry> query = entries;
 
             if (!includeExternal)
-                query = query.Where(entry => entry.Origin == ScriptOrigin.Project);
+                query = query.Where(entry => entry.Origin == EAssetOrigin.Project);
 
             if (!string.IsNullOrWhiteSpace(search))
             {
@@ -41,4 +41,3 @@ namespace Base.ToolPackage.Editor.ExecutionOrderOverview
                 || entry.Namespace.IndexOf(term, StringComparison.OrdinalIgnoreCase) >= 0;
     }
 }
-#endif

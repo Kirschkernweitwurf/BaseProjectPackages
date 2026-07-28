@@ -1,4 +1,3 @@
-#if UNITY_EDITOR
 using Base.ToolPackage.Identification;
 using Base.UtilityPackage.Logging;
 using UnityEditor;
@@ -83,4 +82,3 @@ namespace Base.ToolPackage.Editor.Identification
         }
     }
 }
-#endif

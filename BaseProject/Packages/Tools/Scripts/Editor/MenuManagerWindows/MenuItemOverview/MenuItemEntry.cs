@@ -1,5 +1,5 @@
-#if UNITY_EDITOR
 using System;
+using Base.ToolPackage.Editor.Shared;
 using UnityEditor;
 
 namespace Base.ToolPackage.Editor.MenuManagerWindows.MenuItemOverview
@@ -47,7 +47,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows.MenuItemOverview
         public string EntryId { get; }
 
         /// <summary>Where the defining script lives.</summary>
-        public EMenuItemOrigin Origin { get; }
+        public EAssetOrigin Origin { get; }
 
         /// <summary>Script asset that defines the item, or null for built-in items.</summary>
         public MonoScript Script { get; }
@@ -60,7 +60,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows.MenuItemOverview
 
         private MenuItemEntry(string menuPath, Type declaringType, string methodName, int priority,
             bool isValidation, EMenuDefinition definition, EMenuEntryState state, string entryId,
-            EMenuItemOrigin origin, MonoScript script, string assetPath)
+            EAssetOrigin origin, MonoScript script, string assetPath)
         {
             MenuPath = menuPath;
             int separator = menuPath.IndexOf('/');
@@ -92,15 +92,14 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows.MenuItemOverview
 
         /// <summary>Creates an entry for a <see cref="MenuItem"/> attribute.</summary>
         public static MenuItemEntry Attributed(string menuPath, Type declaringType, string methodName, int priority,
-            bool isValidation, EMenuItemOrigin origin, MonoScript script, string assetPath) => new(menuPath,
+            bool isValidation, EAssetOrigin origin, MonoScript script, string assetPath) => new(menuPath,
             declaringType, methodName, priority, isValidation, EMenuDefinition.Static,
             EMenuEntryState.Active, string.Empty, origin, script, assetPath);
 
         /// <summary>Creates an entry for an item registered through the menu manager.</summary>
         public static MenuItemEntry Managed(string entryId, string menuPath, Type declaringType, string methodName,
-            int priority, EMenuEntryState state, EMenuItemOrigin origin, MonoScript script, string assetPath) => new(
+            int priority, EMenuEntryState state, EAssetOrigin origin, MonoScript script, string assetPath) => new(
             menuPath, declaringType, methodName, priority, false, EMenuDefinition.Dynamic, state, entryId,
             origin, script, assetPath);
     }
 }
-#endif

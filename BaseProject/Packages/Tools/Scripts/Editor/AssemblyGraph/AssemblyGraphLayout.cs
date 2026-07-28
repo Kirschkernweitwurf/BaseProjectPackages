@@ -381,7 +381,10 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
             return columns;
         }
 
-        /// <summary>Median heuristic. Repeatedly reorders each column by the average position of its neighbors.</summary>
+        /// <summary>
+        /// Median heuristic. Repeatedly reorders each column by the average position of
+        /// its neighbors.
+        /// </summary>
         private static void ReduceCrossings(List<List<string>> columns,
             Dictionary<string, List<string>> outgoing,
             Dictionary<string, List<string>> incoming,

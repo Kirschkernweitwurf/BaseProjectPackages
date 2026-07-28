@@ -190,7 +190,9 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
 
         private static Transform ResolveRoot(GameObject[] roots, string name, int index)
         {
-            if (index >= 0 && index < roots.Length && roots[index].name == name)
+            if (index >= 0
+                && index < roots.Length
+                && roots[index].name == name)
                 return roots[index].transform;
 
             foreach (GameObject root in roots)

@@ -1,7 +1,7 @@
-#if UNITY_EDITOR
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Base.ToolPackage.Editor.Shared;
 using UnityEditor;
 using UnityEngine;
 
@@ -75,11 +75,10 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows.CreateAssetMenuOverview
         {
             MonoScript script = _scripts.Resolve(type);
             string assetPath = MenuScriptLookup.PathOf(script);
-            ECreateAssetOrigin origin = CreateAssetOriginResolver.Classify(assetPath);
+            EAssetOrigin origin = AssetOriginResolver.Classify(assetPath);
 
             return CreateAssetEntry.Attributed(attribute.menuName, attribute.fileName, type, attribute.order,
                 origin, script, assetPath);
         }
     }
 }
-#endif

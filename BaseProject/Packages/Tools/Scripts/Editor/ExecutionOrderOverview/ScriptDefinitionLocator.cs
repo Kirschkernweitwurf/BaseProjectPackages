@@ -1,4 +1,3 @@
-#if UNITY_EDITOR
 using System;
 using System.Text.RegularExpressions;
 using UnityEditor;
@@ -70,4 +69,3 @@ namespace Base.ToolPackage.Editor.ExecutionOrderOverview
         }
     }
 }
-#endif

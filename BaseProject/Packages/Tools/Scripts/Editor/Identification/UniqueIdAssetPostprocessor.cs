@@ -1,4 +1,3 @@
-#if UNITY_EDITOR
 using Base.ToolPackage.Identification;
 using UnityEditor;
 using UnityEngine;
@@ -29,4 +28,3 @@ namespace Base.ToolPackage.Editor.Identification
 #endregion
     }
 }
-#endif

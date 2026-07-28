@@ -130,7 +130,8 @@ namespace Base.ToolPackage.Editor.MissingScriptsOverviewWindow
                 GUILayout.Label("Include:", GUILayout.Width(54f));
 
                 GUIContent scenesContent = new(" Scenes",
-                    "Scans every scene in the project. Each scene is opened for scanning, so you are asked to save first.");
+                    "Scans every scene in the project. Each scene is opened for scanning, "
+                    + "so you are asked to save first.");
 
                 _scanScenes = GUILayout.Toggle(_scanScenes, scenesContent, GUILayout.Width(74f));
                 _scanPrefabs = GUILayout.Toggle(_scanPrefabs, " Prefabs", GUILayout.Width(78f));
@@ -238,7 +239,8 @@ namespace Base.ToolPackage.Editor.MissingScriptsOverviewWindow
                     RemoveEntry(entry);
             }
 
-            if (Event.current.type == EventType.MouseDown && labelRect.Contains(Event.current.mousePosition))
+            if (Event.current.type == EventType.MouseDown
+                && labelRect.Contains(Event.current.mousePosition))
             {
                 MissingScriptNavigator.Navigate(entry);
                 Event.current.Use();

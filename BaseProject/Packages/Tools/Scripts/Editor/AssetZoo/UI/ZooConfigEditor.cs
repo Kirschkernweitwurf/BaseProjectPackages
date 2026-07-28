@@ -1,4 +1,3 @@
-#if UNITY_EDITOR
 using Base.ToolPackage.Editor.AssetZoo.Config;
 using Base.ToolPackage.Editor.AssetZoo.Generation;
 using UnityEditor;
@@ -15,6 +14,7 @@ namespace Base.ToolPackage.Editor.AssetZoo.UI
     {
         private const float AuxButtonHeight = 22f;
 
+        /// <inheritdoc/>
         public override void OnInspectorGUI()
         {
             DrawDefaultInspector();
@@ -30,4 +30,3 @@ namespace Base.ToolPackage.Editor.AssetZoo.UI
         }
     }
 }
-#endif

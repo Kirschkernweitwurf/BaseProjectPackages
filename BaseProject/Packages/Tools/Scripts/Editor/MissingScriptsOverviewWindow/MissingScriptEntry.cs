@@ -27,6 +27,7 @@ namespace Base.ToolPackage.Editor.MissingScriptsOverviewWindow
 
         public string FileName => Path.GetFileName(AssetPath);
 
+        /// <summary>Creates an entry pointing at one missing script occurrence.</summary>
         public MissingScriptEntry(EMissingScriptSource source,
             string assetPath,
             int[] siblingPath,

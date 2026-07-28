@@ -1,6 +1,6 @@
-#if UNITY_EDITOR
 using System;
 using System.Collections.Generic;
+using Base.ToolPackage.Editor.Shared;
 using Base.ToolPackage.MenuManagerWindow;
 using UnityEditor;
 using UnityEngine;
@@ -97,10 +97,10 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows.CreateAssetMenuOverview
             EditorGUIUtility.PingObject(entry.Script);
         }
 
-        private static GUIContent OriginBadge(ECreateAssetOrigin origin) => origin switch
+        private static GUIContent OriginBadge(EAssetOrigin origin) => origin switch
         {
-            ECreateAssetOrigin.Package => new GUIContent("pkg", "This type lives in a package"),
-            ECreateAssetOrigin.BuiltIn => new GUIContent("lib", "This type is built into Unity"),
+            EAssetOrigin.Package => new GUIContent("pkg", "This type lives in a package"),
+            EAssetOrigin.BuiltIn => new GUIContent("lib", "This type is built into Unity"),
             _ => null
         };
 
@@ -329,4 +329,3 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows.CreateAssetMenuOverview
         }
     }
 }
-#endif

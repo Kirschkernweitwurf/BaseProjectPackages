@@ -17,6 +17,7 @@ namespace Base.ToolPackage.Editor.AssetZoo.Layout
         /// </summary>
         public readonly Vector3 TotalSize;
 
+        /// <summary>Creates a layout result from the computed positions and overall size.</summary>
         public LayoutResult(Vector3[] positions, Vector3 totalSize)
         {
             Positions = positions;

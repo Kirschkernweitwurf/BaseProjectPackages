@@ -11,6 +11,7 @@ namespace Base.ToolPackage.Editor.EmptyFoldersOverviewWindow
         /// <summary>Total folders removed when this one is deleted, including nested empties.</summary>
         public int NestedFolderCount { get; }
 
+        /// <summary>Creates an entry for one empty folder found by the scanner.</summary>
         public EmptyFolderEntry(string path, int nestedFolderCount)
         {
             Path = path;

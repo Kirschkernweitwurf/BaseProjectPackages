@@ -1,4 +1,3 @@
-#if UNITY_EDITOR
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -96,6 +95,7 @@ namespace Base.ToolPackage.Editor.UnityConstants
             "while"
         };
 
+        /// <summary>Writes the do-not-edit banner every generated file starts with.</summary>
         public static void WriteFileHeader(StringBuilder sb)
         {
             sb.AppendLine("// -----------------------------------------------------------------------------");
@@ -106,12 +106,14 @@ namespace Base.ToolPackage.Editor.UnityConstants
             sb.AppendLine();
         }
 
+        /// <summary>Writes a generated file into the output folder, creating the folder if needed.</summary>
         public static void WriteFile(string fileName, string content)
         {
             string path = Path.Combine(OutputFolder, fileName);
             File.WriteAllText(path, content.TrimEnd('\r', '\n'));
         }
 
+        /// <summary>Creates the folder and any missing parent folders.</summary>
         public static void EnsureFolderExists(string folder)
         {
             if (AssetDatabase.IsValidFolder(folder))
@@ -177,7 +179,7 @@ namespace Base.ToolPackage.Editor.UnityConstants
             return name;
         }
 
+        /// <summary>Escapes backslashes and quotes so the value is safe inside a generated string literal.</summary>
         public static string Escape(string value) => value.Replace("\\", @"\\").Replace("\"", "\\\"");
     }
 }
-#endif

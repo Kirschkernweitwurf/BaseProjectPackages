@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Base.UtilityPackage.Logging;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -32,8 +33,8 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
             Component component = target as Component;
             if (component == null)
             {
-                Debug.LogError(
-                    $"Play Mode Saver tracks components, not '{target.name}'. Mark a component on it instead.",
+                CustomLogger.LogError(
+                    $"Only components can be tracked, not '{target.name}'. Mark a component on it instead.",
                     target);
 
                 return;
@@ -152,12 +153,16 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
         private static PlayModeSavePayload BuildPayload(Component component)
         {
             Transform cloneRoot = PlayModePrefabResolver.FindCloneRoot(component.transform);
-            Transform prefabRoot = cloneRoot ?? component.transform.root;
+            bool isPrefabClone = cloneRoot != null;
+
+            Transform prefabRoot = isPrefabClone
+                ? cloneRoot
+                : component.transform.root;
 
             return new PlayModeSavePayload
             {
                 displayName = BuildDisplayName(component),
-                applyTarget = cloneRoot != null
+                applyTarget = isPrefabClone
                     ? EPlayModeApplyTarget.PrefabAsset
                     : EPlayModeApplyTarget.SceneInstance,
                 json = PlayModeSerializationUtility.CaptureJson(component),

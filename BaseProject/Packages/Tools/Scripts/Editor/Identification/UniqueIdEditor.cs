@@ -1,4 +1,3 @@
-#if UNITY_EDITOR
 using Base.ToolPackage.Identification;
 using UnityEditor;
 
@@ -10,6 +9,7 @@ namespace Base.ToolPackage.Editor.Identification
     [CustomEditor(typeof(UniqueIdScriptableObject))]
     public class UniqueIdEditor : UnityEditor.Editor
     {
+        /// <inheritdoc/>
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
@@ -23,4 +23,3 @@ namespace Base.ToolPackage.Editor.Identification
         }
     }
 }
-#endif

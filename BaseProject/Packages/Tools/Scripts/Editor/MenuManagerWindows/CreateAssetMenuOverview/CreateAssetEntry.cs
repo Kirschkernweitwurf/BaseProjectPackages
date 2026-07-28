@@ -1,5 +1,5 @@
-#if UNITY_EDITOR
 using System;
+using Base.ToolPackage.Editor.Shared;
 using UnityEditor;
 using UnityEngine;
 
@@ -45,7 +45,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows.CreateAssetMenuOverview
         public string EntryId { get; }
 
         /// <summary>Where the defining script lives.</summary>
-        public ECreateAssetOrigin Origin { get; }
+        public EAssetOrigin Origin { get; }
 
         /// <summary>Script asset that defines the type, or null for built-in types.</summary>
         public MonoScript Script { get; }
@@ -57,7 +57,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows.CreateAssetMenuOverview
         public bool IsDynamic => Definition == EMenuDefinition.Dynamic;
 
         private CreateAssetEntry(string menuName, string fileName, Type declaringType, string typeName, int order,
-            EMenuDefinition definition, EMenuEntryState state, string entryId, ECreateAssetOrigin origin,
+            EMenuDefinition definition, EMenuEntryState state, string entryId, EAssetOrigin origin,
             MonoScript script, string assetPath)
         {
             // Unity falls back to the type name when no menu name is supplied.
@@ -95,16 +95,15 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows.CreateAssetMenuOverview
 
         /// <summary>Creates an entry for a <see cref="CreateAssetMenuAttribute"/>.</summary>
         public static CreateAssetEntry Attributed(string menuName, string fileName, Type declaringType, int order,
-            ECreateAssetOrigin origin, MonoScript script, string assetPath) => new(menuName, fileName, declaringType,
+            EAssetOrigin origin, MonoScript script, string assetPath) => new(menuName, fileName, declaringType,
             declaringType.Name, order, EMenuDefinition.Static,
             EMenuEntryState.Active, string.Empty, origin, script, assetPath);
 
         /// <summary>Creates an entry for a type registered through the menu manager.</summary>
         public static CreateAssetEntry Managed(string entryId, string menuName, string fileName, Type declaringType,
-            string typeName, int order, EMenuEntryState state, ECreateAssetOrigin origin, MonoScript script,
+            string typeName, int order, EMenuEntryState state, EAssetOrigin origin, MonoScript script,
             string assetPath) => new(menuName, fileName, declaringType, typeName, order, EMenuDefinition.Dynamic, state,
             entryId,
             origin, script, assetPath);
     }
 }
-#endif

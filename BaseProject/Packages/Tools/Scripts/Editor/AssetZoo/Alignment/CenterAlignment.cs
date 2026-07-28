@@ -7,6 +7,7 @@ namespace Base.ToolPackage.Editor.AssetZoo.Alignment
     /// </summary>
     public class CenterAlignment : IAlignmentStrategy
     {
+        /// <inheritdoc/>
         public Vector3 GetOffset(Bounds prefabBounds) => -prefabBounds.center;
     }
 }

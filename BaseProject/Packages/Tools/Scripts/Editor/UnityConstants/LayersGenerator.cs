@@ -1,7 +1,7 @@
-#if UNITY_EDITOR
 using System.Collections.Generic;
 using System.Text;
 using Base.ToolPackage.MenuManagerWindow;
+using Base.UtilityPackage.Logging;
 using UnityEditor;
 using UnityEngine;
 
@@ -45,7 +45,8 @@ namespace Base.ToolPackage.Editor.UnityConstants
 
             sb.AppendLine();
             sb.AppendLine(
-                "        /// <summary>Bit-shifted layer mask values (1 << index) for use with LayerMask fields.</summary>");
+                "        /// <summary>Bit-shifted layer mask values (1 << index) "
+                + "for use with LayerMask fields.</summary>");
 
             sb.AppendLine("        public static class Masks");
             sb.AppendLine("        {");
@@ -59,8 +60,7 @@ namespace Base.ToolPackage.Editor.UnityConstants
 
             GeneratorUtility.WriteFile("Layers.cs", sb.ToString());
             AssetDatabase.Refresh();
-            Debug.Log("Layers generated in " + GeneratorUtility.OutputFolder, null);
+            CustomLogger.Log("Layers generated in " + GeneratorUtility.OutputFolder, null);
         }
     }
 }
-#endif

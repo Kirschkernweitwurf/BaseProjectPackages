@@ -1,4 +1,3 @@
-#if UNITY_EDITOR
 using System;
 using Base.ToolPackage.Identification;
 using Base.ToolPackage.MenuManagerWindow;
@@ -52,4 +51,3 @@ namespace Base.ToolPackage.Editor.Identification
         }
     }
 }
-#endif

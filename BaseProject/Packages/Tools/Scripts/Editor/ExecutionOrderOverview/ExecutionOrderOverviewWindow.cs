@@ -1,5 +1,5 @@
-#if UNITY_EDITOR
 using System.Collections.Generic;
+using Base.ToolPackage.Editor.Shared;
 using Base.ToolPackage.MenuManagerWindow;
 using UnityEditor;
 using UnityEngine;
@@ -64,10 +64,10 @@ namespace Base.ToolPackage.Editor.ExecutionOrderOverview
             EditorGUIUtility.PingObject(entry.Script);
         }
 
-        private static GUIContent OriginBadge(ScriptOrigin origin) => origin switch
+        private static GUIContent OriginBadge(EAssetOrigin origin) => origin switch
         {
-            ScriptOrigin.Package => new GUIContent("pkg", "This script lives in a package"),
-            ScriptOrigin.BuiltIn => new GUIContent("lib", "This script is built into Unity"),
+            EAssetOrigin.Package => new GUIContent("pkg", "This script lives in a package"),
+            EAssetOrigin.BuiltIn => new GUIContent("lib", "This script is built into Unity"),
             _ => null
         };
 
@@ -193,4 +193,3 @@ namespace Base.ToolPackage.Editor.ExecutionOrderOverview
         }
     }
 }
-#endif

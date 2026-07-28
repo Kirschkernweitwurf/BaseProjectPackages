@@ -10,7 +10,8 @@ namespace Base.ToolPackage.Editor.AssetZoo.Builder
     public static class BoundsCalculator
     {
         /// <summary>
-        /// Calculates the world-space bounds of a prefab by examining its MeshFilter and SkinnedMeshRenderer components.
+        /// Calculates the world-space bounds of a prefab by examining its MeshFilter and
+        /// SkinnedMeshRenderer components.
         /// Returns a default 1x1x1 bounds at the origin if the prefab is null or has no valid meshes.
         /// Note that this method does not instantiate the prefab, so it may not account for all possible variations
         /// in bounds due to animations, LODs, or other runtime factors.

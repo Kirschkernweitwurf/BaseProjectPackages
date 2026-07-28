@@ -1,4 +1,3 @@
-#if UNITY_EDITOR
 namespace Base.ToolPackage.Editor.AssetZoo.Generation
 {
     /// <summary>
@@ -26,6 +25,7 @@ namespace Base.ToolPackage.Editor.AssetZoo.Generation
         /// </summary>
         public string Message { get; }
 
+        /// <summary>Creates a result describing what a generation run produced.</summary>
         public ZooGenerationResult(bool success, int categoryCount, int entryCount, string message)
         {
             Success = success;
@@ -40,4 +40,3 @@ namespace Base.ToolPackage.Editor.AssetZoo.Generation
         public static ZooGenerationResult Failed(string message) => new(false, 0, 0, message);
     }
 }
-#endif

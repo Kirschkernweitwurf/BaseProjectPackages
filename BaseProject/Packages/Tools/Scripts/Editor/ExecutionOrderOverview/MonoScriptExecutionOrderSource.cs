@@ -1,6 +1,6 @@
-#if UNITY_EDITOR
 using System;
 using System.Collections.Generic;
+using Base.ToolPackage.Editor.Shared;
 using UnityEditor;
 using UnityEngine;
 
@@ -12,9 +12,6 @@ namespace Base.ToolPackage.Editor.ExecutionOrderOverview
     /// </summary>
     public sealed class MonoScriptExecutionOrderSource : IExecutionOrderSource
     {
-        private const string PackagePrefix = "Packages/";
-        private const string ProjectPrefix = "Assets/";
-
         /// <inheritdoc/>
         public IReadOnlyList<ExecutionOrderEntry> Collect()
         {
@@ -44,27 +41,12 @@ namespace Base.ToolPackage.Editor.ExecutionOrderOverview
                     : 0;
 
                 string assetPath = AssetDatabase.GetAssetPath(script);
-                ScriptOrigin origin = ClassifyOrigin(assetPath);
+                EAssetOrigin origin = AssetOriginResolver.Classify(assetPath);
 
                 entries.Add(new ExecutionOrderEntry(script, type, assetPath, origin, attributeOrder, projectOrder));
             }
 
             return entries;
         }
-
-        private static ScriptOrigin ClassifyOrigin(string assetPath)
-        {
-            if (string.IsNullOrEmpty(assetPath))
-                return ScriptOrigin.BuiltIn;
-
-            if (assetPath.StartsWith(PackagePrefix, StringComparison.Ordinal))
-                return ScriptOrigin.Package;
-
-            if (assetPath.StartsWith(ProjectPrefix, StringComparison.Ordinal))
-                return ScriptOrigin.Project;
-
-            return ScriptOrigin.BuiltIn;
-        }
     }
 }
-#endif

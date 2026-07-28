@@ -1,4 +1,3 @@
-#if UNITY_EDITOR
 using Base.ToolPackage.Editor.AssetZoo.Builder;
 using Base.ToolPackage.Editor.AssetZoo.Config;
 using Base.ToolPackage.Editor.AssetZoo.Generation;
@@ -125,6 +124,7 @@ namespace Base.ToolPackage.Editor.AssetZoo.UI
         [DynamicMenuItem(DefaultPath)]
         public static void Open() => Open(null);
 
+        /// <summary>Opens the builder window with the given config preselected.</summary>
         public static void Open(ZooConfig config)
         {
             ZooEditorWindow window = GetWindow<ZooEditorWindow>("Asset Zoo");
@@ -213,4 +213,3 @@ namespace Base.ToolPackage.Editor.AssetZoo.UI
         }
     }
 }
-#endif

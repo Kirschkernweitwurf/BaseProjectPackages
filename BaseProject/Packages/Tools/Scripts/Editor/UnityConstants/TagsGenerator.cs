@@ -1,4 +1,3 @@
-#if UNITY_EDITOR
 using System.Collections.Generic;
 using System.Text;
 using Base.ToolPackage.MenuManagerWindow;
@@ -44,4 +43,3 @@ namespace Base.ToolPackage.Editor.UnityConstants
         }
     }
 }
-#endif

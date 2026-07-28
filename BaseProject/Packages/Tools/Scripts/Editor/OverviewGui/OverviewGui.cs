@@ -113,6 +113,7 @@ namespace Base.ToolPackage.Editor.OverviewGui
             _ready = true;
         }
 
+        /// <summary>Returns the badge style matching the accent.</summary>
         public static GUIStyle BadgeStyle(EOverviewAccent accent) => accent == EOverviewAccent.Neutral
             ? NeutralBadgeStyle
             : WarningBadgeStyle;
@@ -191,6 +192,7 @@ namespace Base.ToolPackage.Editor.OverviewGui
             return height;
         }
 
+        /// <summary>Fills a row rect with the striping and hover tint used by the overview windows.</summary>
         public static void DrawRowBackground(Rect rect, bool hovered, bool even)
         {
             if (Event.current.type != EventType.Repaint)
@@ -202,6 +204,7 @@ namespace Base.ToolPackage.Editor.OverviewGui
                 EditorGUI.DrawRect(rect, RowEvenColor);
         }
 
+        /// <summary>Draws an inline hint box below the list.</summary>
         public static void DrawHint(string message)
         {
             GUILayout.FlexibleSpace();
@@ -216,6 +219,7 @@ namespace Base.ToolPackage.Editor.OverviewGui
             GUILayout.FlexibleSpace();
         }
 
+        /// <summary>Draws the empty state shown when a scan found nothing to report.</summary>
         public static void DrawSuccess(string title, string subtitle)
         {
             GUILayout.FlexibleSpace();
@@ -239,6 +243,7 @@ namespace Base.ToolPackage.Editor.OverviewGui
             GUILayout.FlexibleSpace();
         }
 
+        /// <summary>Selects and pings the asset at the given project relative path.</summary>
         public static void Navigate(string assetPath)
         {
             Object asset = AssetDatabase.LoadMainAssetAtPath(assetPath);
@@ -251,10 +256,12 @@ namespace Base.ToolPackage.Editor.OverviewGui
             EditorGUIUtility.PingObject(asset);
         }
 
+        /// <summary>Picks the singular or plural word for the given amount.</summary>
         public static string Plural(int amount, string singular, string plural) => amount == 1
             ? singular
             : plural;
 
+        /// <summary>Formats a byte count as a short human readable size.</summary>
         public static string FormatSize(long bytes)
         {
             if (bytes >= 1024L * 1024L)

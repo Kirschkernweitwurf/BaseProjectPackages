@@ -1,4 +1,3 @@
-#if UNITY_EDITOR
 using System.Collections.Generic;
 
 namespace Base.ToolPackage.Editor.ExecutionOrderOverview
@@ -13,4 +12,3 @@ namespace Base.ToolPackage.Editor.ExecutionOrderOverview
         IReadOnlyList<ExecutionOrderEntry> Collect();
     }
 }
-#endif

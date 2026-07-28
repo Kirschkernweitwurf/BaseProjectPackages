@@ -1,3 +1,4 @@
+using Base.UtilityPackage.Logging;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -42,8 +43,8 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
             if (!scene.IsValid()
                 || !scene.isLoaded)
             {
-                Debug.LogWarning(
-                    $"Play Mode Saver needs '{payload.scenePath}' open to restore '{payload.displayName}'.");
+                CustomLogger.LogWarning(
+                    $"Scene '{payload.scenePath}' must be open to restore '{payload.displayName}'.", null);
 
                 return false;
             }
@@ -53,8 +54,8 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
 
             if (owner == null)
             {
-                Debug.LogWarning($"Play Mode Saver could not find '{payload.sceneNamePath}' in '{payload.scenePath}'. "
-                    + "If it was spawned at runtime, switch this entry to Prefab Asset.");
+                CustomLogger.LogWarning($"Could not find '{payload.sceneNamePath}' in '{payload.scenePath}'. "
+                    + "If it was spawned at runtime, switch this entry to Prefab Asset.", null);
 
                 return false;
             }
@@ -64,8 +65,8 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
 
             if (target == null)
             {
-                Debug.LogWarning(
-                    $"Play Mode Saver could not find '{payload.componentTypeName}' on '{payload.sceneNamePath}'.");
+                CustomLogger.LogWarning(
+                    $"Could not find '{payload.componentTypeName}' on '{payload.sceneNamePath}'.", null);
 
                 return false;
             }
@@ -87,7 +88,7 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
             string assetPath = AssetDatabase.GUIDToAssetPath(payload.sourcePrefabGuid);
             if (string.IsNullOrEmpty(assetPath))
             {
-                Debug.LogWarning($"Play Mode Saver has no destination prefab for '{payload.displayName}'.");
+                CustomLogger.LogWarning($"No destination prefab for '{payload.displayName}'.", null);
                 return false;
             }
 
@@ -102,7 +103,7 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
 
                 if (owner == null)
                 {
-                    Debug.LogWarning($"Play Mode Saver could not find '{payload.prefabNamePath}' in '{assetPath}'.");
+                    CustomLogger.LogWarning($"Could not find '{payload.prefabNamePath}' in '{assetPath}'.", null);
                     return false;
                 }
 
@@ -111,7 +112,7 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
 
                 if (target == null)
                 {
-                    Debug.LogWarning($"Play Mode Saver could not find '{payload.componentTypeName}' in '{assetPath}'.");
+                    CustomLogger.LogWarning($"Could not find '{payload.componentTypeName}' in '{assetPath}'.", null);
                     return false;
                 }
 
@@ -132,7 +133,7 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
         {
             if (!PrefabUtility.IsPartOfPrefabInstance(target))
             {
-                Debug.LogWarning($"Play Mode Saver kept '{displayName}' in the scene because it is not a prefab.");
+                CustomLogger.LogWarning($"Kept '{displayName}' in the scene because it is not a prefab.", target);
                 return;
             }
 

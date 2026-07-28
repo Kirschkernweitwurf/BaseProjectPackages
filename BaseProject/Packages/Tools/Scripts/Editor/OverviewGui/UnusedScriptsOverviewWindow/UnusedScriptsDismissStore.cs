@@ -20,8 +20,10 @@ namespace Base.ToolPackage.Editor.OverviewGui.UnusedScriptsOverviewWindow
 
         private static HashSet<string> _guids;
 
+        /// <summary>True when the entry was dismissed.</summary>
         public static bool IsDismissed(string guid) => !string.IsNullOrEmpty(guid) && Guids.Contains(guid);
 
+        /// <summary>Excludes the entry from future scans.</summary>
         public static void Dismiss(string guid)
         {
             if (string.IsNullOrEmpty(guid))
@@ -31,6 +33,7 @@ namespace Base.ToolPackage.Editor.OverviewGui.UnusedScriptsOverviewWindow
                 Save();
         }
 
+        /// <summary>Excludes every given entry from future scans in one write.</summary>
         public static void DismissRange(IEnumerable<string> guids)
         {
             bool changed = false;
@@ -45,6 +48,7 @@ namespace Base.ToolPackage.Editor.OverviewGui.UnusedScriptsOverviewWindow
                 Save();
         }
 
+        /// <summary>Brings the entry back into future scans.</summary>
         public static void Restore(string guid)
         {
             if (string.IsNullOrEmpty(guid))
@@ -54,6 +58,7 @@ namespace Base.ToolPackage.Editor.OverviewGui.UnusedScriptsOverviewWindow
                 Save();
         }
 
+        /// <summary>Clears every dismissal.</summary>
         public static void Clear()
         {
             if (Guids.Count == 0)

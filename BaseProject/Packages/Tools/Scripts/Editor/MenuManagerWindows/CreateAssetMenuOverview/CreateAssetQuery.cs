@@ -1,7 +1,7 @@
-#if UNITY_EDITOR
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Base.ToolPackage.Editor.Shared;
 
 namespace Base.ToolPackage.Editor.MenuManagerWindows.CreateAssetMenuOverview
 {
@@ -28,7 +28,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows.CreateAssetMenuOverview
                 query = query.Where(entry => entry.Definition == definition.Value);
 
             if (!includeExternal)
-                query = query.Where(entry => entry.Origin == ECreateAssetOrigin.Project);
+                query = query.Where(entry => entry.Origin == EAssetOrigin.Project);
 
             if (!string.IsNullOrWhiteSpace(search))
             {
@@ -48,4 +48,3 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows.CreateAssetMenuOverview
                 || entry.TypeName.IndexOf(term, StringComparison.OrdinalIgnoreCase) >= 0;
     }
 }
-#endif

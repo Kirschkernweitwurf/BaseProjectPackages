@@ -1,4 +1,3 @@
-#if UNITY_EDITOR
 using System.Collections.Generic;
 using Base.ToolPackage.Editor.AssetZoo.Config;
 using Base.UtilityPackage.Editor;
@@ -15,6 +14,7 @@ namespace Base.ToolPackage.Editor.AssetZoo.UI
     [CustomPropertyDrawer(typeof(LayoutSettings))]
     public class LayoutSettingsDrawer : PropertyDrawer
     {
+        /// <inheritdoc/>
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             EditorGUI.BeginProperty(position, label, property);
@@ -45,6 +45,7 @@ namespace Base.ToolPackage.Editor.AssetZoo.UI
             EditorGUI.EndProperty();
         }
 
+        /// <inheritdoc/>
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
             float lineHeight = EditorGUIUtility.singleLineHeight;
@@ -91,4 +92,3 @@ namespace Base.ToolPackage.Editor.AssetZoo.UI
         }
     }
 }
-#endif

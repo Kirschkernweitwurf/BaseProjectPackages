@@ -170,7 +170,8 @@ namespace Base.ToolPackage.Editor.OverviewGui.UnusedScriptsOverviewWindow
                 names.Add(name);
 
                 // Attributes are used without the suffix, for example [Foo] for class FooAttribute.
-                if (name.EndsWith(AttributeSuffix, StringComparison.Ordinal) && name.Length > AttributeSuffix.Length)
+                if (name.EndsWith(AttributeSuffix, StringComparison.Ordinal)
+                    && name.Length > AttributeSuffix.Length)
                     names.Add(name.Substring(0, name.Length - AttributeSuffix.Length));
             }
 

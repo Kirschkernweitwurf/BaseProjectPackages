@@ -14,6 +14,7 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
         private readonly Action<AssemblyNodeInfo> _onFocusRequested;
         private readonly Action<AssemblyNodeInfo> _onCleanupRequested;
 
+        /// <summary>Builds the graph view and wires the callbacks its nodes raise.</summary>
         public AssemblyGraphView(Action<AssemblyNodeInfo> onFocusRequested, Action<AssemblyNodeInfo> onCleanupRequested)
         {
             _onFocusRequested = onFocusRequested;

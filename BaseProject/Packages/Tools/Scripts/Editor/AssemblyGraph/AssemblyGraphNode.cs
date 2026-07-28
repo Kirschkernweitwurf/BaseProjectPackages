@@ -23,6 +23,7 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
         private readonly Action<AssemblyNodeInfo> _onCleanupRequested;
         private readonly bool _isFocused;
 
+        /// <summary>Builds a graph node for one assembly, with its ports and action buttons.</summary>
         public AssemblyGraphNode(AssemblyNodeInfo info,
             bool isFocused,
             Action<AssemblyNodeInfo> onFocusRequested,

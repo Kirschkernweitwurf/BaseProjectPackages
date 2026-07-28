@@ -76,7 +76,8 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
             => $"This removes {referenceCount} reference(s) from {assemblyCount} assembly file(s).\n\n"
                 + "Only your own assemblies are touched. Unity packages and libraries are never modified.\n\n"
                 + "Detection reads compiled metadata. A reference that only supplies a constant value can look unused "
-                + "but still be needed. Commit your work first, then let Unity recompile and check the console for errors.";
+                + "but still be needed. Commit your work first, then let Unity recompile "
+                + "and check the console for errors.";
 
         private Toolbar BuildToolbar()
         {

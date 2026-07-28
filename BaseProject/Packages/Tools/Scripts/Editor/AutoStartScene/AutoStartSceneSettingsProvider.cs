@@ -18,6 +18,7 @@ namespace Base.ToolPackage.Editor.AutoStartScene
         public static SettingsProvider CreateSettingsProvider()
             => new AutoStartSceneSettingsProvider("Project/Custom Tools/Auto Start Scene");
 
+        /// <inheritdoc/>
         public override void OnGUI(string searchContext)
         {
             GUILayout.Label("Auto Start Scene", EditorStyles.boldLabel);

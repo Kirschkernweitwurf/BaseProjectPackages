@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Text;
+using Base.UtilityPackage.Logging;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -193,8 +194,8 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
             if (reference.kind == EPlayModeReferenceKind.SceneObject)
                 return ResolveSceneObject(reference, owner, prefabRoot);
 
-            Debug.LogWarning(
-                $"Play Mode Saver cleared '{reference.propertyPath}' because it pointed at a runtime object.", owner);
+            CustomLogger.LogWarning(
+                $"Cleared '{reference.propertyPath}' because it pointed at a runtime object.", owner);
 
             return null;
         }
@@ -211,7 +212,7 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
         {
             if (prefabRoot != null)
             {
-                Debug.LogWarning($"Play Mode Saver cleared '{reference.propertyPath}' because a prefab cannot hold a "
+                CustomLogger.LogWarning($"Cleared '{reference.propertyPath}' because a prefab cannot hold a "
                     + "reference to a scene object.", owner);
 
                 return null;
@@ -221,8 +222,8 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
             if (!scene.IsValid()
                 || !scene.isLoaded)
             {
-                Debug.LogWarning(
-                    $"Play Mode Saver cleared '{reference.propertyPath}' because '{reference.scenePath}' is not open.",
+                CustomLogger.LogWarning(
+                    $"Cleared '{reference.propertyPath}' because '{reference.scenePath}' is not open.",
                     owner);
 
                 return null;
@@ -354,7 +355,10 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
             if (current == '{' || current == '[')
                 return FindContainerEnd(json, cursor) + 1;
 
-            while (cursor < json.Length && json[cursor] != ',' && json[cursor] != '}' && json[cursor] != ']')
+            while (cursor < json.Length
+                && json[cursor] != ','
+                && json[cursor] != '}'
+                && json[cursor] != ']')
                 cursor++;
 
             return cursor;

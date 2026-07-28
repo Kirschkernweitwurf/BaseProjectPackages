@@ -1,4 +1,3 @@
-#if UNITY_EDITOR
 using Base.ToolPackage.MenuManagerWindow;
 using UnityEditor;
 using UnityEngine;
@@ -110,4 +109,3 @@ namespace Base.ToolPackage.Editor.OrderManagement
         }
     }
 }
-#endif

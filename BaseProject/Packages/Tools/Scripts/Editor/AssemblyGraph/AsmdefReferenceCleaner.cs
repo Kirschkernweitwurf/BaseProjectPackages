@@ -16,7 +16,9 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
         /// </summary>
         public static int RemoveReferences(string asmdefPath, HashSet<string> referenceNamesToRemove)
         {
-            if (string.IsNullOrEmpty(asmdefPath) || referenceNamesToRemove == null || referenceNamesToRemove.Count == 0)
+            if (string.IsNullOrEmpty(asmdefPath)
+                || referenceNamesToRemove == null
+                || referenceNamesToRemove.Count == 0)
                 return 0;
 
             string fullPath = ToAbsolutePath(asmdefPath);

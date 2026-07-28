@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Base.UtilityPackage.Logging;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -67,14 +68,15 @@ namespace Base.ToolPackage.Editor.ComponentClipboard
             {
                 SerializedProperty property = serializedObject.FindProperty(reference.PropertyPath);
 
-                if (property == null || property.propertyType != SerializedPropertyType.ObjectReference)
+                if (property == null
+                    || property.propertyType != SerializedPropertyType.ObjectReference)
                     continue;
 
                 Object resolved = reference.Resolve();
 
                 if (resolved == null && reference.HasTarget())
-                    Debug.LogWarning($"Component Clipboard: reference '{reference.PropertyPath}' on "
-                        + $"{displayName} could not be resolved and was cleared.");
+                    CustomLogger.LogWarning($"Reference '{reference.PropertyPath}' on "
+                        + $"{displayName} could not be resolved and was cleared.", target);
 
                 property.objectReferenceValue = resolved;
             }

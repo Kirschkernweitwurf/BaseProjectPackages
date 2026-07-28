@@ -1,4 +1,3 @@
-#if UNITY_EDITOR
 using System;
 using System.Collections.Generic;
 using Object = UnityEngine.Object;
@@ -54,4 +53,3 @@ namespace Base.ToolPackage.Editor.Identification
         }
     }
 }
-#endif

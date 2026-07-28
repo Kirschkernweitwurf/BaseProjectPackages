@@ -1,4 +1,3 @@
-#if UNITY_EDITOR
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -14,4 +13,3 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows.CreateAssetMenuOverview
         IReadOnlyList<CreateAssetEntry> Collect();
     }
 }
-#endif

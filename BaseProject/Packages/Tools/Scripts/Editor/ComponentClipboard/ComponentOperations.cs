@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Base.UtilityPackage.Logging;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
@@ -107,9 +108,13 @@ namespace Base.ToolPackage.Editor.ComponentClipboard
             {
                 Component component = components[index];
 
+                // A component destroyed since the selection was taken is nothing to warn about.
+                if (component == null)
+                    continue;
+
                 if (!CanDelete(component))
                 {
-                    Debug.LogWarning($"Component Clipboard: '{component?.GetType().Name}' cannot be removed.");
+                    CustomLogger.LogWarning($"'{component.GetType().Name}' cannot be removed.", component);
                     continue;
                 }
 
@@ -180,7 +185,7 @@ namespace Base.ToolPackage.Editor.ComponentClipboard
             {
                 if (!step.IsValid)
                 {
-                    Debug.LogError($"Component Clipboard: type '{step.Entry.TypeName}' could not be resolved.");
+                    CustomLogger.LogError($"Type '{step.Entry.TypeName}' could not be resolved.", target);
                     continue;
                 }
 
@@ -224,7 +229,9 @@ namespace Base.ToolPackage.Editor.ComponentClipboard
 
             foreach (Component candidate in candidates)
             {
-                if (candidate == null || candidate is Transform || candidate.gameObject != target)
+                if (candidate == null
+                    || candidate is Transform
+                    || candidate.gameObject != target)
                     continue;
 
                 Type type = candidate.GetType();

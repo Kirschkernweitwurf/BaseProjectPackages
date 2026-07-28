@@ -16,6 +16,7 @@ namespace Base.ToolPackage.Editor.OverviewGui.UnusedScriptsOverviewWindow
 
         public string Name => System.IO.Path.GetFileName(Path);
 
+        /// <summary>Creates an entry for one script that nothing appears to reference.</summary>
         public UnusedScriptEntry(string path, string guid)
         {
             Path = path;

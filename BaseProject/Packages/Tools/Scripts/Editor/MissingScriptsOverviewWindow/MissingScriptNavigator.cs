@@ -11,6 +11,7 @@ namespace Base.ToolPackage.Editor.MissingScriptsOverviewWindow
     /// </summary>
     public static class MissingScriptNavigator
     {
+        /// <summary>Selects and pings the object the entry points at, opening its scene if needed.</summary>
         public static void Navigate(MissingScriptEntry entry)
         {
             switch (entry.Source)
@@ -92,7 +93,9 @@ namespace Base.ToolPackage.Editor.MissingScriptsOverviewWindow
 
         private static Transform ResolveInScene(Scene scene, int[] siblingPath)
         {
-            if (!scene.IsValid() || siblingPath == null || siblingPath.Length == 0)
+            if (!scene.IsValid()
+                || siblingPath == null
+                || siblingPath.Length == 0)
                 return null;
 
             Transform root = null;

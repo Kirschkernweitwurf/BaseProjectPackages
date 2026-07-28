@@ -1,6 +1,6 @@
-#if UNITY_EDITOR
 using System;
 using System.Collections.Generic;
+using Base.ToolPackage.Editor.Shared;
 using UnityEditor;
 
 namespace Base.ToolPackage.Editor.MenuManagerWindows.MenuItemOverview
@@ -62,11 +62,10 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows.MenuItemOverview
 
             MonoScript script = _scripts.Resolve(declaringType);
             string assetPath = MenuScriptLookup.PathOf(script);
-            EMenuItemOrigin origin = MenuItemOriginResolver.Classify(assetPath);
+            EAssetOrigin origin = AssetOriginResolver.Classify(assetPath);
 
             return MenuItemEntry.Managed(entry.Id, path, declaringType, MethodNameOf(entry.Id),
                 entry.EffectivePriority, StateOf(entry), origin, script, assetPath);
         }
     }
 }
-#endif

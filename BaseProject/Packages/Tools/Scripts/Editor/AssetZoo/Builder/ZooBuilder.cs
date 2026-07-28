@@ -58,7 +58,6 @@ namespace Base.ToolPackage.Editor.AssetZoo.Builder
                 return;
             }
 
-#if UNITY_EDITOR
             bool useUndo = !Application.isPlaying;
             int undoGroup = 0;
             if (useUndo)
@@ -66,7 +65,6 @@ namespace Base.ToolPackage.Editor.AssetZoo.Builder
                 Undo.IncrementCurrentGroup();
                 undoGroup = Undo.GetCurrentGroup();
             }
-#endif
 
             ClearExisting();
 
@@ -93,13 +91,11 @@ namespace Base.ToolPackage.Editor.AssetZoo.Builder
                     ref categoryOffsetZ);
             }
 
-#if UNITY_EDITOR
             if (useUndo)
             {
                 Undo.SetCurrentGroupName(BuildUndoLabel);
                 Undo.CollapseUndoOperations(undoGroup);
             }
-#endif
         }
 
         /// <summary>
@@ -107,7 +103,6 @@ namespace Base.ToolPackage.Editor.AssetZoo.Builder
         /// </summary>
         public void Clear()
         {
-#if UNITY_EDITOR
             bool useUndo = !Application.isPlaying;
             int undoGroup = 0;
             if (useUndo)
@@ -115,23 +110,20 @@ namespace Base.ToolPackage.Editor.AssetZoo.Builder
                 Undo.IncrementCurrentGroup();
                 undoGroup = Undo.GetCurrentGroup();
             }
-#endif
+
             ClearExisting();
-#if UNITY_EDITOR
+
             if (useUndo)
             {
                 Undo.SetCurrentGroupName(ClearUndoLabel);
                 Undo.CollapseUndoOperations(undoGroup);
             }
-#endif
         }
 
         private static void RegisterTracked(GameObject go, string undoLabel)
         {
-#if UNITY_EDITOR
             if (!Application.isPlaying && go != null)
                 Undo.RegisterCreatedObjectUndo(go, undoLabel);
-#endif
         }
 
         private static GameObject CreateTracked(string name, Transform parent, string undoLabel)
@@ -146,7 +138,6 @@ namespace Base.ToolPackage.Editor.AssetZoo.Builder
 
         private static GameObject InstantiatePrefab(GameObject prefab, Transform parent)
         {
-#if UNITY_EDITOR
             if (!Application.isPlaying)
             {
                 GameObject instance = (GameObject)PrefabUtility.InstantiatePrefab(prefab, parent);
@@ -156,7 +147,7 @@ namespace Base.ToolPackage.Editor.AssetZoo.Builder
 
                 return instance;
             }
-#endif
+
             return Object.Instantiate(prefab, parent);
         }
 
@@ -285,13 +276,12 @@ namespace Base.ToolPackage.Editor.AssetZoo.Builder
 
             if (existing == null)
                 return;
-#if UNITY_EDITOR
+
             if (!Application.isPlaying)
             {
                 Undo.DestroyObjectImmediate(existing);
                 return;
             }
-#endif
             Object.Destroy(existing);
         }
     }

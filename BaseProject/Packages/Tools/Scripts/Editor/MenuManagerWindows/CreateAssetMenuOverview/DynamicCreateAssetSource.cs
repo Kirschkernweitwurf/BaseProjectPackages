@@ -1,6 +1,6 @@
-#if UNITY_EDITOR
 using System;
 using System.Collections.Generic;
+using Base.ToolPackage.Editor.Shared;
 using UnityEditor;
 
 namespace Base.ToolPackage.Editor.MenuManagerWindows.CreateAssetMenuOverview
@@ -82,7 +82,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows.CreateAssetMenuOverview
 
             MonoScript script = _scripts.Resolve(declaringType);
             string assetPath = MenuScriptLookup.PathOf(script);
-            ECreateAssetOrigin origin = CreateAssetOriginResolver.Classify(assetPath);
+            EAssetOrigin origin = AssetOriginResolver.Classify(assetPath);
 
             string fileName = string.IsNullOrWhiteSpace(entry.CreateFileName)
                 ? match?.DefaultFileName
@@ -94,4 +94,3 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows.CreateAssetMenuOverview
         }
     }
 }
-#endif

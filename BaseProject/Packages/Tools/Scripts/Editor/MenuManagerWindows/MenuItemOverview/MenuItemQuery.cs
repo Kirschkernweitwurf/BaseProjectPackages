@@ -1,7 +1,7 @@
-#if UNITY_EDITOR
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Base.ToolPackage.Editor.Shared;
 
 namespace Base.ToolPackage.Editor.MenuManagerWindows.MenuItemOverview
 {
@@ -29,7 +29,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows.MenuItemOverview
                 query = query.Where(entry => entry.Definition == definition.Value);
 
             if (!includeExternal)
-                query = query.Where(entry => entry.Origin == EMenuItemOrigin.Project);
+                query = query.Where(entry => entry.Origin == EAssetOrigin.Project);
 
             if (hideValidation)
                 query = query.Where(entry => !entry.IsValidation);
@@ -52,4 +52,3 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows.MenuItemOverview
                 || entry.Member.IndexOf(term, StringComparison.OrdinalIgnoreCase) >= 0;
     }
 }
-#endif

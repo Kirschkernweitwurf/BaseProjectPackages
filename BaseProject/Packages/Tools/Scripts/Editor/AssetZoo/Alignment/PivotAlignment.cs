@@ -7,6 +7,7 @@ namespace Base.ToolPackage.Editor.AssetZoo.Alignment
     /// </summary>
     public class PivotAlignment : IAlignmentStrategy
     {
+        /// <inheritdoc/>
         public Vector3 GetOffset(Bounds prefabBounds) => Vector3.zero;
     }
 }

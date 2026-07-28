@@ -1,4 +1,3 @@
-#if UNITY_EDITOR
 using Base.UtilityPackage.Logging;
 using UnityEditor;
 using UnityEditor.Build;
@@ -11,8 +10,10 @@ namespace Base.ToolPackage.Editor.Identification
     /// </summary>
     internal class UniqueIdPreBuildCheck : IPreprocessBuildWithReport
     {
+        /// <inheritdoc/>
         public int callbackOrder => 0;
 
+        /// <inheritdoc/>
         public void OnPreprocessBuild(BuildReport report)
         {
             if (!UniqueIdSettings.Enabled)
@@ -25,4 +26,3 @@ namespace Base.ToolPackage.Editor.Identification
         }
     }
 }
-#endif

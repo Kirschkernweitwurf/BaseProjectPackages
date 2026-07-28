@@ -243,7 +243,8 @@ namespace Base.ToolPackage.Editor.EmptyFoldersOverviewWindow
             if (GUI.Button(deleteRect, "Delete"))
                 _pendingDeletes.Add(entry);
 
-            if (Event.current.type == EventType.MouseDown && labelRect.Contains(Event.current.mousePosition))
+            if (Event.current.type == EventType.MouseDown
+                && labelRect.Contains(Event.current.mousePosition))
             {
                 Navigate(entry);
                 Event.current.Use();

@@ -1,4 +1,3 @@
-﻿#if UNITY_EDITOR
 using System;
 using System.Collections.Generic;
 using Base.UtilityPackage.Generated;
@@ -92,4 +91,3 @@ namespace Base.ToolPackage.Editor.HierarchySorter
             => string.Compare(a.name, b.name, StringComparison.OrdinalIgnoreCase);
     }
 }
-#endif

@@ -1,5 +1,5 @@
-#if UNITY_EDITOR
 using System;
+using Base.ToolPackage.Editor.Shared;
 using UnityEditor;
 
 namespace Base.ToolPackage.Editor.ExecutionOrderOverview
@@ -27,7 +27,7 @@ namespace Base.ToolPackage.Editor.ExecutionOrderOverview
         public string AssetPath { get; }
 
         /// <summary>Where the script's source lives.</summary>
-        public ScriptOrigin Origin { get; }
+        public EAssetOrigin Origin { get; }
 
         /// <summary>Order requested by the attribute, or zero when absent.</summary>
         public int AttributeOrder { get; }
@@ -44,7 +44,7 @@ namespace Base.ToolPackage.Editor.ExecutionOrderOverview
             : AttributeOrder;
 
         /// <summary>Creates an entry. <paramref name="type"/> supplies the name and namespace.</summary>
-        public ExecutionOrderEntry(MonoScript script, Type type, string assetPath, ScriptOrigin origin,
+        public ExecutionOrderEntry(MonoScript script, Type type, string assetPath, EAssetOrigin origin,
             int attributeOrder, int projectOrder)
         {
             Script = script;
@@ -61,4 +61,3 @@ namespace Base.ToolPackage.Editor.ExecutionOrderOverview
         }
     }
 }
-#endif
