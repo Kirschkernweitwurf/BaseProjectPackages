@@ -5,17 +5,13 @@ using UnityEngine.UI;
 namespace Base.UIPackage.Buttons
 {
     /// <summary>
-    /// Provides basic functionality for calling functions on click of a button
+    /// Base for components that run their own logic when the attached <see cref="Button"/> is clicked.
     /// </summary>
     [RequireComponent(typeof(Button))]
     public abstract class CustomButton : MonoBehaviour
     {
-        /// <summary>
-        /// The button component that will be used to call the OnClick method
-        /// </summary>
-        [Tooltip("The button component that will be used to call the OnClick method."
-            + " It automatically gets assigned if possible.")]
-        [GetComponent] [SerializeField] protected Button button;
+        [Tooltip("The button this component listens to. Auto-assigned from the same GameObject when empty.")]
+        [GetComponent] [Required] [SerializeField] protected Button button;
 
 #region Unity Callbacks
         protected virtual void Awake() => button.onClick.AddListener(OnClick);
@@ -24,7 +20,7 @@ namespace Base.UIPackage.Buttons
 #endregion
 
         /// <summary>
-        /// Called on click of the button
+        /// Called on click of the button.
         /// </summary>
         protected abstract void OnClick();
     }

@@ -9,9 +9,10 @@ namespace Base.UIPackage.Buttons
     /// <summary>
     /// Opens the selected menu on button click.
     /// </summary>
-    public class OpenMenuButton : CustomButton
+    public sealed class OpenMenuButton : CustomButton
     {
         [Required] [SerializeField] private MenuIdentifier menuToOpen;
+
         [Tooltip("Optional. The menu that stays registered as parent of the opened menu.")]
         [SerializeField] private MenuIdentifier parentMenuIdentifier;
 
@@ -20,8 +21,10 @@ namespace Base.UIPackage.Buttons
             if (!ServiceLocator.TryGet(out MenuManager menuManager))
                 return;
 
-            if (!menuManager.IsMenuOpen(menuToOpen))
-                menuManager.OpenMenu(menuToOpen, parentMenuIdentifier);
+            if (menuManager.IsMenuOpen(menuToOpen))
+                return;
+
+            menuManager.OpenMenu(menuToOpen, parentMenuIdentifier);
         }
     }
 }

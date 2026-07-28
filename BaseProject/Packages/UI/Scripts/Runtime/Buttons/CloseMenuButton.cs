@@ -9,7 +9,7 @@ namespace Base.UIPackage.Buttons
     /// <summary>
     /// Closes the selected menu on button click.
     /// </summary>
-    public class CloseMenuButton : CustomButton
+    public sealed class CloseMenuButton : CustomButton
     {
         [Required] [SerializeField] private MenuIdentifier menuToClose;
 
@@ -18,8 +18,10 @@ namespace Base.UIPackage.Buttons
             if (!ServiceLocator.TryGet(out MenuManager menuManager))
                 return;
 
-            if (menuManager.IsMenuOpen(menuToClose))
-                menuManager.CloseMenu(menuToClose);
+            if (!menuManager.IsMenuOpen(menuToClose))
+                return;
+
+            menuManager.CloseMenu(menuToClose);
         }
     }
 }

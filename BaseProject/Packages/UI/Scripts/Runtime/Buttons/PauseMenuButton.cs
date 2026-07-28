@@ -8,9 +8,9 @@ using UnityEngine;
 namespace Base.UIPackage.Buttons
 {
     /// <summary>
-    /// Toggles the pause menu on button click.
+    /// Toggles the pause menu on button click and keeps the button icon in sync with the pause state.
     /// </summary>
-    public class PauseMenuButton : CustomButton
+    public sealed class PauseMenuButton : CustomButton
     {
         [Header("Identifier")]
 
@@ -26,8 +26,7 @@ namespace Base.UIPackage.Buttons
         {
             PauseMenu.OnPauseStateChanged += SetButtonIcon;
 
-            if (ServiceLocator.TryGet(out MenuManager menuManager))
-                SetButtonIcon(menuManager.IsMenuOpen(pauseMenuIdentifier));
+            SetButtonIcon(PauseMenu.IsPaused);
         }
 
         protected override void OnDestroy()
@@ -43,16 +42,11 @@ namespace Base.UIPackage.Buttons
             if (!ServiceLocator.TryGet(out MenuManager menuManager))
                 return;
 
+            // The icon follows PauseMenu.OnPauseStateChanged, so it is not set here
             if (menuManager.IsMenuOpen(pauseMenuIdentifier))
-            {
                 menuManager.CloseMenu(pauseMenuIdentifier);
-                SetButtonIcon(false);
-            }
             else
-            {
                 menuManager.OpenMenu(pauseMenuIdentifier);
-                SetButtonIcon(true);
-            }
         }
 
         private void SetButtonIcon(bool isPaused) => button.image.sprite = isPaused

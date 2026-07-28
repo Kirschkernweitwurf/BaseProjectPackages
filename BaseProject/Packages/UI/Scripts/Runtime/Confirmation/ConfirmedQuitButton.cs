@@ -7,7 +7,7 @@ namespace Base.UIPackage.Confirmation
     /// <summary>
     /// Closes the game or stops the editor after the player confirms the prompt.
     /// </summary>
-    public class ConfirmedQuitButton : BaseConfirmationButton
+    public sealed class ConfirmedQuitButton : BaseConfirmationButton
     {
         protected override void OnClick() => ShowConfirmationBox();
 

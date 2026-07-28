@@ -8,8 +8,10 @@ namespace Base.UIPackage.Utility
     /// <summary>
     /// A simple FPS counter that displays the current frames per second in a UI TextMeshPro component.
     /// </summary>
-    public class FpsCounter : MonoBehaviour
+    public sealed class FpsCounter : MonoBehaviour
     {
+        private const float SmoothingFactor = 0.1f;
+        private const int UnsetFps = -1;
         private const float UpdateInterval = 0.5f;
 
         [SerializeField] private bool showInReleaseBuilds;
@@ -17,7 +19,7 @@ namespace Base.UIPackage.Utility
 
         private float _deltaTime;
         private float _timer;
-        private int _lastFps = -1;
+        private int _lastFps = UnsetFps;
 
 #region Unity Callbacks
         private void Awake()
@@ -28,7 +30,7 @@ namespace Base.UIPackage.Utility
 
         private void Update()
         {
-            _deltaTime += (Time.unscaledDeltaTime - _deltaTime) * 0.1f;
+            _deltaTime += (Time.unscaledDeltaTime - _deltaTime) * SmoothingFactor;
 
             _timer += Time.unscaledDeltaTime;
             if (_timer < UpdateInterval)

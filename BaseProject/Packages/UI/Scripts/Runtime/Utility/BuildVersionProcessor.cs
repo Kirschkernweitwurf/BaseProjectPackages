@@ -8,7 +8,7 @@ namespace Base.UIPackage.Utility
     /// Writes the date-version and build-number into a version.txt in the Streaming Assets folder.
     /// Called before a build is started.
     /// </summary>
-    public class BuildVersionProcessor : IPreprocessBuildWithReport
+    internal sealed class BuildVersionProcessor : IPreprocessBuildWithReport
     {
         public int callbackOrder => 0;
 

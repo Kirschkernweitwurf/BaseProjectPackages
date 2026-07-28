@@ -47,24 +47,17 @@ namespace Base.UIPackage.Confirmation
 #endregion
 
         /// <summary>
-        /// Displays the confirmation menu with the specified message and button texts.
+        /// Displays the confirmation menu for the given request.
         /// Executes the provided actions based on the user's choice.
         /// </summary>
-        /// <param name="message">The message to display in the confirmation menu.</param>
-        /// <param name="confirmText">The text for the confirm button.</param>
-        /// <param name="cancelText">The text for the cancel button.</param>
+        /// <param name="request">The message and the optional button labels.</param>
         /// <param name="onConfirm">The action to execute if the user confirms.</param>
         /// <param name="onCancel">The action to execute if the user cancels.</param>
-        public void Show(string message, string confirmText, string cancelText, Action onConfirm, Action onCancel)
+        public void Show(ConfirmationRequest request, Action onConfirm, Action onCancel)
         {
-            messageText.text = message;
-            confirmButtonText.text = string.IsNullOrEmpty(confirmText)
-                ? defaultConfirmText
-                : confirmText;
-
-            cancelButtonText.text = string.IsNullOrEmpty(cancelText)
-                ? defaultCancelText
-                : cancelText;
+            messageText.text = request.Message;
+            confirmButtonText.text = ResolveLabel(request.ConfirmText, defaultConfirmText);
+            cancelButtonText.text = ResolveLabel(request.CancelText, defaultCancelText);
 
             _onConfirm = onConfirm;
             _onCancel = onCancel;
@@ -82,6 +75,10 @@ namespace Base.UIPackage.Confirmation
 
             Close();
         }
+
+        private static string ResolveLabel(string label, string fallback) => string.IsNullOrEmpty(label)
+            ? fallback
+            : label;
 
         private void HandleConfirm() => _onConfirm?.Invoke();
 

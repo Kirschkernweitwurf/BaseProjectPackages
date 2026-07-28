@@ -10,11 +10,16 @@ namespace Base.UIPackage.Utility
     /// Fills a given Text with information about the version and when the last build was made
     /// from a version txt in the StreamingAssets folder.
     /// </summary>
-    public class BuildVersion : MonoBehaviour
+    public sealed class BuildVersion : MonoBehaviour
     {
+        private const int BuildNumberLineIndex = 2;
+        private const int FirstBuildNumber = 1;
+        private const string VersionFileName = "version.txt";
         private const int VersionInfoLineCount = 3;
+        private const int VersionLineIndex = 1;
 
-        private static readonly string PathVersionFile = Application.streamingAssetsPath + "/version.txt";
+        private static readonly string VersionFilePath =
+            Path.Combine(Application.streamingAssetsPath, VersionFileName);
 
         [SerializeField] private bool hideOnRelease;
         [Required] [SerializeField] private TMP_Text versionText;
@@ -30,24 +35,28 @@ namespace Base.UIPackage.Utility
 #endregion
 
 #if UNITY_EDITOR
+        /// <summary>
+        /// Writes the current application version into the version file and increments the build number.
+        /// Runs from the build pipeline before a build starts.
+        /// </summary>
         public static void UpdateVersionInfo()
         {
-            // Read Current Version Info (To Increase Build Number)
             string[] versionInfo = ReadVersionInfo();
-            int buildNumber = int.TryParse(versionInfo[2], out buildNumber)
-                ? buildNumber + 1
-                : 1;
 
-            // Update Current Version Info
-            versionInfo[1] = Application.version;
-            versionInfo[2] = buildNumber.ToString();
+            // Read the stored build number first so it can be increased
+            int buildNumber = int.TryParse(versionInfo[BuildNumberLineIndex], out int storedBuildNumber)
+                ? storedBuildNumber + 1
+                : FirstBuildNumber;
 
-            // Assuming the path to streaming assets folder might be missing on some platforms
-            string path = Path.GetDirectoryName(PathVersionFile);
-            if (path != null && !Directory.Exists(path))
-                Directory.CreateDirectory(path);
+            versionInfo[VersionLineIndex] = Application.version;
+            versionInfo[BuildNumberLineIndex] = buildNumber.ToString();
 
-            File.WriteAllLines(PathVersionFile, versionInfo);
+            // The StreamingAssets folder is missing on some platforms
+            string directory = Path.GetDirectoryName(VersionFilePath);
+            if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
+                Directory.CreateDirectory(directory);
+
+            File.WriteAllLines(VersionFilePath, versionInfo);
         }
 #endif
 
@@ -59,10 +68,10 @@ namespace Base.UIPackage.Utility
         {
             string[] versionInfo = new string[VersionInfoLineCount];
 
-            if (!File.Exists(PathVersionFile))
+            if (!File.Exists(VersionFilePath))
                 return versionInfo;
 
-            string[] lines = File.ReadAllLines(PathVersionFile);
+            string[] lines = File.ReadAllLines(VersionFilePath);
             for (int i = 0; i < versionInfo.Length && i < lines.Length; i++)
                 versionInfo[i] = lines[i];
 
@@ -73,9 +82,10 @@ namespace Base.UIPackage.Utility
         {
             string[] versionInfo = ReadVersionInfo();
 
-            versionText.text = string.IsNullOrEmpty(versionInfo[1]) && string.IsNullOrEmpty(versionInfo[2])
-                ? string.Empty
-                : $"{versionInfo[1]} [{versionInfo[2]}]";
+            versionText.text = string.IsNullOrEmpty(versionInfo[VersionLineIndex])
+                && string.IsNullOrEmpty(versionInfo[BuildNumberLineIndex])
+                    ? string.Empty
+                    : $"{versionInfo[VersionLineIndex]} [{versionInfo[BuildNumberLineIndex]}]";
         }
     }
 }

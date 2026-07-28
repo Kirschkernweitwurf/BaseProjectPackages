@@ -9,17 +9,18 @@ namespace Base.UIPackage.Utility
     /// Wrapper for a world space Canvas to set its world camera to the main camera.
     /// </summary>
     [RequireComponent(typeof(Canvas))]
-    public class WorldCanvasWrapper : MonoBehaviour
+    public sealed class WorldCanvasWrapper : MonoBehaviour
     {
-        [GetComponent] [SerializeField] private Canvas canvas;
+        [Tooltip("The canvas that gets the main camera assigned. Auto-assigned from the same GameObject when empty.")]
+        [GetComponent] [Required] [SerializeField] private Canvas canvas;
 
 #region Unity Callbacks
         private void Awake()
         {
-            if (!ServiceLocator.TryGet(out CameraProvider mainCameraProvider))
+            if (!ServiceLocator.TryGet(out CameraProvider cameraProvider))
                 return;
 
-            canvas.worldCamera = mainCameraProvider.Main;
+            canvas.worldCamera = cameraProvider.Main;
         }
 #endregion
     }

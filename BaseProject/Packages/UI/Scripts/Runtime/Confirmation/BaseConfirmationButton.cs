@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using Base.AttributePackage;
 using Base.CorePackage.Services;
 using Base.UIPackage.Buttons;
@@ -16,14 +17,27 @@ namespace Base.UIPackage.Confirmation
 
         [Tooltip("Optional. Empty uses the default text of the confirmation menu.")]
         [SerializeField] private string confirmText;
+
         [Tooltip("Optional. Empty uses the default text of the confirmation menu.")]
         [SerializeField] private string cancelText;
 
         /// <summary>
         /// Displays the confirmation menu to the player prompting them with the given message and actions.
-        /// Depending on their answer, will call <see cref="OnConfirm"/> or <see cref="OnCancel"/>
+        /// Depending on their answer, will call <see cref="OnConfirm"/> or <see cref="OnCancel"/>.
         /// </summary>
-        protected async void ShowConfirmationBox()
+        protected void ShowConfirmationBox() => _ = ShowConfirmationBoxAsync();
+
+        /// <summary>
+        /// Called when the player confirms the given prompt.
+        /// </summary>
+        protected virtual void OnConfirm() { }
+
+        /// <summary>
+        /// Called when the player cancels the given prompt.
+        /// </summary>
+        protected virtual void OnCancel() { }
+
+        private async Task ShowConfirmationBoxAsync()
         {
             try
             {
@@ -41,15 +55,5 @@ namespace Base.UIPackage.Confirmation
                 CustomLogger.LogError($"An error occurred while requesting confirmation: {e}", this);
             }
         }
-
-        /// <summary>
-        /// Called when the player confirms the given prompt.
-        /// </summary>
-        protected virtual void OnConfirm() { }
-
-        /// <summary>
-        /// Called when the player cancels the given prompts.
-        /// </summary>
-        protected virtual void OnCancel() { }
     }
 }

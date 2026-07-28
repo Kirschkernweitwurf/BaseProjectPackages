@@ -8,14 +8,14 @@ using UnityEditor;
 namespace Base.UIPackage.Utility
 {
     /// <summary>
-    /// Rotates the transform to always face the current viewing camera.
+    /// Rotates the transform to always face the current viewing camera, in play mode and in the scene view.
     /// </summary>
     [ExecuteAlways]
     [DisallowMultipleComponent]
-    public class EditorBillboard : MonoBehaviour
+    public sealed class EditorBillboard : MonoBehaviour
     {
-        private Vector3 _lastCameraPos;
-        private Quaternion _lastCameraRot;
+        private Vector3 _lastCameraPosition;
+        private Quaternion _lastCameraRotation;
         private bool _hasCachedCamera;
         private CameraProvider _cameraProvider;
 
@@ -25,15 +25,14 @@ namespace Base.UIPackage.Utility
             if (!Application.isPlaying)
                 return;
 
-            ServiceLocator.TryGet(out _cameraProvider);
+            // Without a provider there is nothing to face, so stop instead of failing every frame
+            if (!ServiceLocator.TryGet(out _cameraProvider))
+                enabled = false;
         }
 
         private void LateUpdate()
         {
             if (!Application.isPlaying)
-                return;
-
-            if (_cameraProvider == null)
                 return;
 
             if (!_cameraProvider.TryGetMain(out Camera mainCamera))
@@ -43,24 +42,31 @@ namespace Base.UIPackage.Utility
         }
 #endregion
 
-        private void FaceCameraIfMoved(Camera cam)
+        private void FaceCameraIfMoved(Camera viewingCamera)
         {
-            if (cam == null)
+            if (viewingCamera == null)
                 return;
 
-            Transform camTransform = cam.transform;
-            Vector3 pos = camTransform.position;
-            Quaternion rot = camTransform.rotation;
+            Transform cameraTransform = viewingCamera.transform;
+            Vector3 position = cameraTransform.position;
+            Quaternion rotation = cameraTransform.rotation;
 
-            if (_hasCachedCamera && pos == _lastCameraPos && rot == _lastCameraRot)
+            // Rotating only on movement keeps the scene view from being marked dirty every repaint
+            if (_hasCachedCamera
+                && position == _lastCameraPosition
+                && rotation == _lastCameraRotation)
                 return;
 
-            _lastCameraPos = pos;
-            _lastCameraRot = rot;
+            _lastCameraPosition = position;
+            _lastCameraRotation = rotation;
             _hasCachedCamera = true;
 
-            transform.forward = camTransform.forward;
+            transform.forward = cameraTransform.forward;
         }
+
+#if UNITY_EDITOR
+        private void FaceSceneViewCamera(SceneView sceneView) => FaceCameraIfMoved(sceneView.camera);
+#endif
 
 #if UNITY_EDITOR
         private void OnEnable()
@@ -68,7 +74,7 @@ namespace Base.UIPackage.Utility
             if (Application.isPlaying)
                 return;
 
-            SceneView.duringSceneGui += OnSceneGUI;
+            SceneView.duringSceneGui += FaceSceneViewCamera;
         }
 
         private void OnDisable()
@@ -76,10 +82,8 @@ namespace Base.UIPackage.Utility
             if (Application.isPlaying)
                 return;
 
-            SceneView.duringSceneGui -= OnSceneGUI;
+            SceneView.duringSceneGui -= FaceSceneViewCamera;
         }
-
-        private void OnSceneGUI(SceneView sceneView) => FaceCameraIfMoved(sceneView.camera);
 #endif
     }
 }
