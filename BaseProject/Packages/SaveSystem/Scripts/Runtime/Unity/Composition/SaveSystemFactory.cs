@@ -1,38 +1,42 @@
 using System.Collections.Generic;
-using System.IO;
 using System.Text;
+using Base.SaveSystemPackage.Core;
 using Base.SaveSystemPackage.Encryption;
 using Base.SaveSystemPackage.Savable;
 using Base.SaveSystemPackage.Serialization;
 using Base.SaveSystemPackage.Slots;
 using Base.SaveSystemPackage.Storage;
-using Base.SaveSystemPackage.System;
-using UnityEngine;
+using Base.UtilityPackage.Logging;
 
 namespace Base.SaveSystemPackage.Unity.Composition
 {
     /// <summary>
-    /// Builds a ready-to-use save system. The caller does NOT decide which storage to use; the
-    /// factory picks the right one for the current platform. Add console branches here and nothing
-    /// else in the game has to change.
+    /// Builds a ready-to-use save system. The caller does not decide which storage to use; the factory
+    /// picks the right one for the current platform. Add console branches here and nothing else in the
+    /// game has to change.
     /// </summary>
     public static class SaveSystemFactory
     {
-        public static Bundle Create(SaveSystemSettings settings, IReadOnlyList<ISaveMigration> migrations = null)
+        /// <summary>
+        /// Wires up storage, codec, serializer, registry and slot provider from the given settings.
+        /// </summary>
+        /// <param name="settings">The authored settings, or <c>null</c> to use the defaults.</param>
+        /// <param name="migrations">Steps that upgrade older saves on load.</param>
+        /// <returns>Every part the game needs, ready to use.</returns>
+        public static SaveSystemBundle Create(SaveSystemSettings settings,
+            IReadOnlyList<ISaveMigration> migrations = null)
         {
             settings ??= new SaveSystemSettings();
 
-            string root = Path.Combine(Application.persistentDataPath, SaveSystemSettings.DefaultSubFolder);
-            ISaveStorage storage = new FileSaveStorage(root);
+            ISaveStorage storage = new FileSaveStorage();
             ISaveSerializer serializer = new JsonUtilitySerializer(settings.PrettyPrint);
             ISaveCodec codec = BuildCodec(settings, serializer);
             ISavableRegistry registry = new SavableRegistry();
 
             ISaveSystem system = new SaveSystem(storage, codec, registry, settings.SaveVersion, migrations);
             ISaveSlotProvider slots = BuildSlotProvider(settings, system);
-            SaveSlotSelection selection = new();
 
-            return new Bundle(system, registry, slots, selection);
+            return new SaveSystemBundle(system, registry, slots, new SaveSlotSelection());
         }
 
         private static ISaveSlotProvider BuildSlotProvider(SaveSystemSettings settings, ISaveSystem system)
@@ -45,29 +49,35 @@ namespace Base.SaveSystemPackage.Unity.Composition
 
         private static ISaveCodec BuildCodec(SaveSystemSettings settings, ISaveSerializer serializer)
         {
-            NoOpEncryptor noop = new();
-            List<ISaveEncryptor> readers = new()
+            NoOpEncryptor noOpEncryptor = new();
+            List<ISaveEncryptor> readEncryptors = new()
             {
-                noop
+                noOpEncryptor
             };
 
-            ISaveEncryptor aes = null;
+            AesEncryptor aesEncryptor = null;
             if (!string.IsNullOrEmpty(settings.EncryptionPassphrase))
             {
-                byte[] saltBytes = string.IsNullOrEmpty(settings.Salt)
+                byte[] salt = string.IsNullOrEmpty(settings.Salt)
                     ? null
                     : Encoding.UTF8.GetBytes(settings.Salt);
 
-                aes = new AesEncryptor(settings.EncryptionPassphrase, saltBytes);
-                readers.Add(aes);
+                aesEncryptor = new AesEncryptor(settings.EncryptionPassphrase, salt);
+                readEncryptors.Add(aesEncryptor);
             }
 
-            bool encrypt = settings.ShouldEncryptOnWrite();
-            ISaveEncryptor writer = encrypt && aes != null
-                ? aes
-                : noop;
+            bool shouldEncrypt = settings.ShouldEncryptOnWrite();
 
-            return new SaveCodec(serializer, writer, readers);
+            // Falling back quietly would ship plain saves from a project that asked for encryption.
+            if (shouldEncrypt && aesEncryptor == null)
+                CustomLogger.LogError($"Encryption is set to '{settings.Encryption}' but no passphrase is "
+                    + "configured, so saves are written unencrypted.", null);
+
+            ISaveEncryptor writeEncryptor = shouldEncrypt && aesEncryptor != null
+                ? aesEncryptor
+                : noOpEncryptor;
+
+            return new SaveCodec(serializer, writeEncryptor, readEncryptors);
         }
     }
 }

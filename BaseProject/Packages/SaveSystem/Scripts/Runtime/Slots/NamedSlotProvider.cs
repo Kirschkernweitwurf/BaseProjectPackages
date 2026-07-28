@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
-using System.Threading.Tasks;
-using Base.SaveSystemPackage.Model;
-using Base.SaveSystemPackage.System;
+using Base.SaveSystemPackage.Core;
 using UnityEngine;
 
 namespace Base.SaveSystemPackage.Slots
@@ -14,28 +12,26 @@ namespace Base.SaveSystemPackage.Slots
     /// </summary>
     public sealed class NamedSlotProvider : ISaveSlotProvider
     {
-        public ESlotModel Model => ESlotModel.Named;
-
-        public bool SupportsNewSlots => true;
+        private const string GuidFormat = "N";
 
         private readonly ISaveReader _reader;
 
+        /// <inheritdoc/>
+        public ESlotModel Model => ESlotModel.Named;
+
+        /// <inheritdoc/>
+        public bool SupportsNewSlots => true;
+
+        /// <param name="reader">Used to list the saves that currently exist.</param>
+        /// <exception cref="ArgumentNullException">When the reader is null.</exception>
         public NamedSlotProvider(ISaveReader reader)
             => _reader = reader ?? throw new ArgumentNullException(nameof(reader));
 
+        /// <inheritdoc/>
         public async Awaitable<IReadOnlyList<SlotInfo>> ListSlotsAsync(CancellationToken ct = default)
-        {
-            IReadOnlyList<SaveMetadata> all = await _reader.ListSavesAsync(ct);
-            List<SaveMetadata> sorted = new(all);
-            sorted.Sort((a, b) => b.LastSavedUtc.CompareTo(a.LastSavedUtc));
+            => await SlotListing.ListNewestFirstAsync(_reader, ct);
 
-            List<SlotInfo> slots = new(sorted.Count);
-            foreach (SaveMetadata m in sorted)
-                slots.Add(new SlotInfo(m.SlotId, m));
-
-            return slots;
-        }
-
+        /// <inheritdoc/>
         public bool TryResolveSaveTarget(string selectedSlotId, out string slotId)
         {
             slotId = string.IsNullOrEmpty(selectedSlotId)
@@ -45,9 +41,10 @@ namespace Base.SaveSystemPackage.Slots
             return true;
         }
 
-        public async Awaitable EnforcePolicyAsync(string savedSlotId, CancellationToken ct = default)
-            => await Task.CompletedTask;
+        /// <inheritdoc/>
+        public Awaitable EnforcePolicyAsync(string savedSlotId, CancellationToken ct = default)
+            => AwaitableUtility.Completed();
 
-        private static string CreateNewSlotId() => Guid.NewGuid().ToString("N");
+        private static string CreateNewSlotId() => Guid.NewGuid().ToString(GuidFormat);
     }
 }

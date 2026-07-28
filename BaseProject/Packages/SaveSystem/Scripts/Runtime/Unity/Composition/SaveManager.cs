@@ -1,5 +1,6 @@
 using Base.CorePackage.Services;
 using Base.CorePackage.Services.Shutdown;
+using Base.SaveSystemPackage.Core;
 using Base.SaveSystemPackage.Savable;
 using Base.SaveSystemPackage.Slots;
 using UnityEngine;
@@ -7,22 +8,27 @@ using UnityEngine;
 namespace Base.SaveSystemPackage.Unity.Composition
 {
     /// <summary>
-    /// Main entry point for the save system. Owns the one shared <see cref="ISavableRegistry"/>
-    /// (so savables register with the same instance the system reads from) and the slot provider
-    /// the UI uses. On shutdown, it waits for any in-flight save before tearing down.
+    /// Main entry point for the save system. Owns the one shared <see cref="ISavableRegistry"/>, so
+    /// savables register with the same instance the system reads from, and the slot provider the UI
+    /// uses. On shutdown it waits for any in-flight save before releasing the parts.
     /// </summary>
-    public class SaveManager : GameServiceBehaviour, IShutdownHandler
+    public sealed class SaveManager : GameServiceBehaviour, IShutdownHandler
     {
         [SerializeField] private SaveSystemSettings settings = new();
 
+        /// <summary>The read and write API. <c>null</c> once the manager has shut down.</summary>
         public ISaveSystem SaveSystem { get; private set; }
 
+        /// <summary>Where savables register themselves.</summary>
         public ISavableRegistry Savables { get; private set; }
 
+        /// <summary>Slot bookkeeping for the configured model.</summary>
         public ISaveSlotProvider Slots { get; private set; }
 
+        /// <summary>The slot the player currently has selected.</summary>
         public SaveSlotSelection Selection { get; private set; }
 
+        /// <inheritdoc/>
         public bool HasShutDown { get; private set; }
 
 #region Unity Callbacks
@@ -32,7 +38,7 @@ namespace Base.SaveSystemPackage.Unity.Composition
 
             ShutdownManager.Register(this);
 
-            Bundle bundle = SaveSystemFactory.Create(settings);
+            SaveSystemBundle bundle = SaveSystemFactory.Create(settings);
 
             SaveSystem = bundle.System;
             Savables = bundle.Registry;
@@ -44,29 +50,33 @@ namespace Base.SaveSystemPackage.Unity.Composition
         {
             base.OnDestroy();
 
-            if (!HasShutDown)
-                Shutdown();
+            Shutdown();
         }
 #endregion
 
+        /// <inheritdoc/>
         public void Shutdown()
         {
-            ShutdownManager.Deregister(this);
-            HasShutDown = true;
+            if (HasShutDown)
+                return;
 
-            _ = FlushAndClearAsync();
+            HasShutDown = true;
+            ShutdownManager.Deregister(this);
+
+            _ = FlushAndReleaseAsync();
         }
 
-        private async Awaitable FlushAndClearAsync()
+        private async Awaitable FlushAndReleaseAsync()
         {
-            ISaveSystem system = SaveSystem;
+            // The references stay reachable until the flush is done. Clearing them first would leave
+            // an in-flight save writing into a system nothing can reach or wait on any more.
+            if (SaveSystem != null)
+                await SaveSystem.FlushAsync();
+
             SaveSystem = null;
             Savables = null;
             Slots = null;
             Selection = null;
-
-            if (system != null)
-                await system.FlushAsync();
         }
     }
 }

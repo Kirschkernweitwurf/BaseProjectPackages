@@ -8,8 +8,8 @@ namespace Base.SaveSystemPackage.Savable
     /// <summary>
     /// Default <see cref="ISavableRegistry"/>. Plain instance, no static state, so resetting between
     /// play sessions or tests is just "make a new one".
-    /// The ordered list is cached and only rebuilt after a register/deregister, so save and load
-    /// do not re-sort an unchanged set.
+    /// The ordered list is cached and only rebuilt after a register or deregister, so save and load do
+    /// not re-sort an unchanged set.
     /// </summary>
     public sealed class SavableRegistry : ISavableRegistry
     {
@@ -17,6 +17,7 @@ namespace Base.SaveSystemPackage.Savable
         private readonly HashSet<PersistentKey> _keys = new();
         private ISavable[] _orderedCache;
 
+        /// <inheritdoc/>
         public void Register(ISavable savable)
         {
             if (savable == null || _items.Contains(savable))
@@ -24,17 +25,16 @@ namespace Base.SaveSystemPackage.Savable
 
             if (savable.PersistentKey.IsEmpty)
             {
-                CustomLogger.LogWarning("A savable was registered with an empty PersistentKey. "
-                    + "Each savable must expose a valid PersistentKey. Skipping registration.", null);
+                CustomLogger.LogWarning($"A savable was registered with an empty {nameof(PersistentKey)}. "
+                    + $"Each savable must expose a valid {nameof(PersistentKey)}. Skipping registration.", null);
 
                 return;
             }
 
             if (!_keys.Add(savable.PersistentKey))
             {
-                CustomLogger.LogWarning($"A savable with {nameof(PersistentKey)} '{savable.PersistentKey}'"
-                    + " is already registered. Each savable must have a unique key."
-                    + " Skipping registration.", null);
+                CustomLogger.LogWarning($"A savable with {nameof(PersistentKey)} '{savable.PersistentKey}' is "
+                    + "already registered. Each savable must have a unique key. Skipping registration.", null);
 
                 return;
             }
@@ -43,6 +43,7 @@ namespace Base.SaveSystemPackage.Savable
             _orderedCache = null;
         }
 
+        /// <inheritdoc/>
         public void Deregister(ISavable savable)
         {
             if (savable == null || !_items.Remove(savable))
@@ -52,22 +53,24 @@ namespace Base.SaveSystemPackage.Savable
             _orderedCache = null;
         }
 
+        /// <inheritdoc/>
         public IReadOnlyList<ISavable> GetOrdered() => _orderedCache ??= BuildOrdered();
 
         private ISavable[] BuildOrdered()
         {
-            // Stable sort: highest priority first, ties keep registration order.
+            // Sorting indices rather than the items keeps the sort stable: ties fall back to the
+            // registration order instead of whatever Array.Sort happens to do.
             ISavable[] snapshot = _items.ToArray();
             int[] order = new int[snapshot.Length];
             for (int i = 0; i < order.Length; i++)
                 order[i] = i;
 
-            Array.Sort(order, comparison: (a, b) =>
+            Array.Sort(order, comparison: (first, second) =>
             {
-                int byPriority = ((byte)snapshot[b].Priority).CompareTo((byte)snapshot[a].Priority);
+                int byPriority = ((byte)snapshot[second].Priority).CompareTo((byte)snapshot[first].Priority);
                 return byPriority != 0
                     ? byPriority
-                    : a.CompareTo(b);
+                    : first.CompareTo(second);
             });
 
             ISavable[] ordered = new ISavable[snapshot.Length];

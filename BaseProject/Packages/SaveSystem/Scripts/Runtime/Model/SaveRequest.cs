@@ -1,7 +1,7 @@
 namespace Base.SaveSystemPackage.Model
 {
     /// <summary>
-    /// Data needed to write a save. The slot id is required, but the rest is optional.
+    /// Data needed to write a save. The slot id is required, the rest is optional.
     /// </summary>
     public readonly struct SaveRequest
     {
@@ -17,6 +17,10 @@ namespace Base.SaveSystemPackage.Model
         /// <summary>Optional thumbnail. Already encoded to PNG by the caller.</summary>
         public ScreenshotData? Screenshot { get; }
 
+        /// <param name="slotId">The slot to write to.</param>
+        /// <param name="displayName">New display name, or <c>null</c> to keep the existing one.</param>
+        /// <param name="playtimeSeconds">Total play time to stamp, or <c>null</c> to keep the existing one.</param>
+        /// <param name="screenshot">Optional thumbnail.</param>
         public SaveRequest(string slotId, string displayName = null, double? playtimeSeconds = null,
             ScreenshotData? screenshot = null)
         {

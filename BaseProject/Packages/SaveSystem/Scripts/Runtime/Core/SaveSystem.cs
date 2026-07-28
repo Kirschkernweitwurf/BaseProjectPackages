@@ -10,19 +10,19 @@ using Base.SaveSystemPackage.Storage;
 using Base.UtilityPackage.Logging;
 using UnityEngine;
 
-namespace Base.SaveSystemPackage.System
+namespace Base.SaveSystemPackage.Core
 {
     /// <summary>
     /// The default <see cref="ISaveSystem"/>. Uses an <see cref="ISaveStorage"/> for bytes, an
-    /// <see cref="ISaveCodec"/> for serialize/encrypt, and an injected <see cref="ISavableRegistry"/>
-    /// for the objects to collect from (no global statics).
-    /// Each slot is a folder holding up to three files: the data, the screenshot, and the metadata.
-    /// The metadata is written LAST and acts as the commit marker: if it is present, the save is
+    /// <see cref="ISaveCodec"/> for serialize and encrypt, and an injected <see cref="ISavableRegistry"/>
+    /// for the objects to collect from, so there are no global statics.
+    /// Each slot is a folder holding up to three files: the data, the screenshot and the metadata.
+    /// The metadata is written last and acts as the commit marker: if it is present, the save is
     /// complete. A crash mid-save therefore never looks like a finished save.
     /// Writes are serialized through a gate so two saves cannot interleave; <see cref="FlushAsync"/>
     /// waits for the current one.
-    /// State is collected and applied on the main thread; encode/decrypt work runs on a background
-    /// thread so large saves do not hitch the frame.
+    /// State is collected and applied on the main thread, while encode and decrypt work runs on a
+    /// background thread so large saves do not hitch the frame.
     /// </summary>
     public sealed class SaveSystem : ISaveSystem
     {
@@ -37,6 +37,12 @@ namespace Base.SaveSystemPackage.System
         private readonly Dictionary<int, ISaveMigration> _migrations = new();
         private readonly SemaphoreSlim _writeGate = new(1, 1);
 
+        /// <param name="storage">Where the raw bytes live. Swap this layer for a console save API.</param>
+        /// <param name="codec">Turns objects into bytes, including the header and encryption.</param>
+        /// <param name="registry">The savables to collect state from and hand state back to.</param>
+        /// <param name="saveVersion">The schema version written into new saves.</param>
+        /// <param name="migrations">Steps that upgrade an older save one version at a time.</param>
+        /// <exception cref="ArgumentNullException">When storage, codec or registry is null.</exception>
         public SaveSystem(ISaveStorage storage, ISaveCodec codec, ISavableRegistry registry, int saveVersion = 1,
             IReadOnlyList<ISaveMigration> migrations = null)
         {
@@ -55,10 +61,15 @@ namespace Base.SaveSystemPackage.System
             }
         }
 
+        /// <inheritdoc/>
+        /// <exception cref="ArgumentException">When the request carries no slot id.</exception>
         public async Awaitable SaveAsync(SaveRequest request, CancellationToken ct = default)
         {
+            // Throwing rather than logging: a save that silently did nothing is worse than a loud stop,
+            // and the caller must not report success. SaveSlotButtonBase already catches and logs.
             if (string.IsNullOrWhiteSpace(request.SlotId))
-                throw new ArgumentException("SaveRequest.SlotId must be set.", nameof(request));
+                throw new ArgumentException($"{nameof(SaveRequest)}.{nameof(SaveRequest.SlotId)} must be set.",
+                    nameof(request));
 
             await _writeGate.WaitAsync(ct);
             try
@@ -66,29 +77,24 @@ namespace Base.SaveSystemPackage.System
                 await Awaitable.MainThreadAsync();
 
                 SaveBlob blob = new();
-                foreach (ISavable s in _registry.GetOrdered())
-                    blob.Add(s.PersistentKey.Value, s.Serialize() ?? string.Empty);
+                foreach (ISavable savable in _registry.GetOrdered())
+                    blob.Add(savable.PersistentKey.Value, savable.Serialize() ?? string.Empty);
 
-                SaveMetadata meta = BuildMetadata(await LoadMetadataAsync(request.SlotId, ct), request);
-                SaveMetadataDto metaDto = SaveMetadataDto.From(meta);
+                SaveMetadata metadata = BuildMetadata(await LoadMetadataAsync(request.SlotId, ct), request);
+                SaveMetadataDto metadataDto = SaveMetadataDto.From(metadata);
 
-                // Encode (serialize + encrypt) off the main thread; it is pure CPU work.
+                // Encode (serialize and encrypt) off the main thread; it is pure CPU work.
                 await Awaitable.BackgroundThreadAsync();
                 byte[] dataBytes = _codec.Encode(blob);
-                byte[] metaBytes = _codec.Encode(metaDto);
+                byte[] metaBytes = _codec.Encode(metadataDto);
                 await Awaitable.MainThreadAsync();
 
                 await _storage.WriteAsync(DataKey(request.SlotId), dataBytes, ct);
 
-                if (request.Screenshot is
-                    {
-                        Png:
-                        {
-                            Length: > 0
-                        }
-                    } shot)
-                    await _storage.WriteAsync(ShotKey(request.SlotId), shot.Png, ct);
+                if (TryGetScreenshot(request, out ScreenshotData screenshot))
+                    await _storage.WriteAsync(ShotKey(request.SlotId), screenshot.Png, ct);
 
+                // The metadata is the commit marker, so it has to be the last thing written.
                 await _storage.WriteAsync(MetaKey(request.SlotId), metaBytes, ct);
             }
             finally
@@ -97,6 +103,7 @@ namespace Base.SaveSystemPackage.System
             }
         }
 
+        /// <inheritdoc/>
         public async Awaitable<ESaveLoadResult> LoadAsync(string slotId, CancellationToken ct = default)
         {
             byte[] metaBytes = await _storage.ReadAsync(MetaKey(slotId), ct);
@@ -110,20 +117,20 @@ namespace Base.SaveSystemPackage.System
                 return ESaveLoadResult.Corrupt;
             }
 
-            // Decode (decrypt + deserialize) off the main thread; it is pure CPU work.
-            SaveMetadataDto metaDto = null;
+            // Decode (decrypt and deserialize) off the main thread; it is pure CPU work.
+            SaveMetadataDto metadataDto = null;
             SaveBlob blob = null;
             Exception decodeError = null;
 
             await Awaitable.BackgroundThreadAsync();
             try
             {
-                metaDto = _codec.Decode<SaveMetadataDto>(metaBytes);
+                metadataDto = _codec.Decode<SaveMetadataDto>(metaBytes);
                 blob = _codec.Decode<SaveBlob>(dataBytes);
             }
-            catch (Exception e)
+            catch (Exception exception)
             {
-                decodeError = e;
+                decodeError = exception;
             }
 
             await Awaitable.MainThreadAsync();
@@ -134,7 +141,7 @@ namespace Base.SaveSystemPackage.System
                 return ESaveLoadResult.Corrupt;
             }
 
-            int storedVersion = metaDto.saveVersion;
+            int storedVersion = metadataDto.saveVersion;
             if (storedVersion > _saveVersion)
             {
                 CustomLogger.LogWarning($"Slot '{slotId}' was saved at version {storedVersion}, "
@@ -148,15 +155,17 @@ namespace Base.SaveSystemPackage.System
             if (storedVersion < _saveVersion && !TryMigrate(slotId, states, storedVersion))
                 return ESaveLoadResult.Corrupt;
 
-            foreach (ISavable s in _registry.GetOrdered())
-                s.Deserialize(states.GetValueOrDefault(s.PersistentKey.Value));
+            foreach (ISavable savable in _registry.GetOrdered())
+                savable.Deserialize(states.GetValueOrDefault(savable.PersistentKey.Value));
 
             return ESaveLoadResult.Success;
         }
 
+        /// <inheritdoc/>
         public async Awaitable<bool> ExistsAsync(string slotId, CancellationToken ct = default)
             => await _storage.ExistsAsync(MetaKey(slotId), ct);
 
+        /// <inheritdoc/>
         public async Awaitable DeleteAsync(string slotId, CancellationToken ct = default)
         {
             await _writeGate.WaitAsync(ct);
@@ -172,6 +181,7 @@ namespace Base.SaveSystemPackage.System
             }
         }
 
+        /// <inheritdoc/>
         public async Awaitable<SaveMetadata> LoadMetadataAsync(string slotId, CancellationToken ct = default)
         {
             byte[] bytes = await _storage.ReadAsync(MetaKey(slotId), ct);
@@ -182,19 +192,21 @@ namespace Base.SaveSystemPackage.System
             {
                 return _codec.Decode<SaveMetadataDto>(bytes).ToDomain();
             }
-            catch (Exception e)
+            catch (Exception exception)
             {
-                CustomLogger.LogWarning($"Failed to decode metadata for slot '{slotId}': {e.Message}", null);
+                CustomLogger.LogWarning($"Failed to decode metadata for slot '{slotId}': {exception.Message}", null);
                 return null;
             }
         }
 
+        /// <inheritdoc/>
         public async Awaitable<byte[]> LoadScreenshotPngAsync(string slotId, CancellationToken ct = default)
             => await _storage.ReadAsync(ShotKey(slotId), ct);
 
+        /// <inheritdoc/>
         public async Awaitable<IReadOnlyList<SaveMetadata>> ListSavesAsync(CancellationToken ct = default)
         {
-            IReadOnlyList<string> keys = await _storage.ListKeysAsync(null, ct);
+            IReadOnlyList<string> keys = await _storage.ListKeysAsync(prefix: null, ct);
 
             List<SaveMetadata> result = new();
             foreach (string key in keys)
@@ -210,7 +222,7 @@ namespace Base.SaveSystemPackage.System
                 {
                     result.Add(_codec.Decode<SaveMetadataDto>(bytes).ToDomain());
                 }
-                catch
+                catch (Exception)
                 {
                     // Skip but name it, so a corrupt save is diagnosable rather than silently gone.
                     CustomLogger.LogWarning($"Skipping unreadable save metadata for key '{key}'.", null);
@@ -220,6 +232,7 @@ namespace Base.SaveSystemPackage.System
             return result;
         }
 
+        /// <inheritdoc/>
         public async Awaitable FlushAsync(CancellationToken ct = default)
         {
             await _writeGate.WaitAsync(ct);
@@ -232,43 +245,45 @@ namespace Base.SaveSystemPackage.System
 
         private static string ShotKey(string slotId) => slotId + ShotSuffix;
 
+        private static bool TryGetScreenshot(SaveRequest request, out ScreenshotData screenshot)
+        {
+            screenshot = request.Screenshot ?? default;
+            return request.Screenshot.HasValue && screenshot.IsValid;
+        }
+
         private SaveMetadata BuildMetadata(SaveMetadata existing, SaveRequest request)
         {
             DateTime nowUtc = DateTime.UtcNow;
 
-            SaveMetadata meta =
-                existing ?? SaveMetadata.CreateNew(request.SlotId, _saveVersion, Application.version, nowUtc);
+            SaveMetadata metadata = existing
+                ?? SaveMetadata.CreateNew(request.SlotId, _saveVersion, Application.version, nowUtc);
 
-            meta = meta.With(saveVersion: _saveVersion,
+            metadata = metadata.With(displayName: request.DisplayName,
+                saveVersion: _saveVersion,
                 appVersion: Application.version,
                 lastSavedUtc: nowUtc,
-                displayName: request.DisplayName,
                 totalPlayTime: request.PlaytimeSeconds.HasValue
                     ? TimeSpan.FromSeconds(request.PlaytimeSeconds.Value)
                     : null);
 
-            if (request.Screenshot is
-                {
-                    Png:
-                    {
-                        Length: > 0
-                    }
-                } shot)
-                meta = meta.With(hasScreenshot: true, screenshotWidth: shot.Width, screenshotHeight: shot.Height);
+            if (!TryGetScreenshot(request, out ScreenshotData screenshot))
+                return metadata;
 
-            return meta;
+            return metadata.With(hasScreenshot: true,
+                screenshotWidth: screenshot.Width,
+                screenshotHeight: screenshot.Height);
         }
 
         private bool TryMigrate(string slotId, IDictionary<string, string> states, int fromVersion)
         {
             try
             {
-                for (int v = fromVersion; v < _saveVersion; v++)
+                for (int version = fromVersion; version < _saveVersion; version++)
                 {
-                    if (!_migrations.TryGetValue(v, out ISaveMigration step))
+                    if (!_migrations.TryGetValue(version, out ISaveMigration step))
                     {
-                        CustomLogger.LogError(
-                            $"No migration from version {v} for slot '{slotId}'." + " Cannot upgrade save.", null);
+                        CustomLogger.LogError($"No migration from version {version} for slot '{slotId}'. "
+                            + "Cannot upgrade save.", null);
 
                         return false;
                     }
@@ -278,9 +293,9 @@ namespace Base.SaveSystemPackage.System
 
                 return true;
             }
-            catch (Exception e)
+            catch (Exception exception)
             {
-                CustomLogger.LogError($"Migration failed for slot '{slotId}': {e.Message}", null);
+                CustomLogger.LogError($"Migration failed for slot '{slotId}': {exception.Message}", null);
                 return false;
             }
         }

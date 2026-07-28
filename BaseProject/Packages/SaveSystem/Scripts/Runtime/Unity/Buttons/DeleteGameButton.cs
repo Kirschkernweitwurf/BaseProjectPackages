@@ -14,6 +14,7 @@ namespace Base.SaveSystemPackage.Unity.Buttons
                 return;
 
             await Saves.DeleteAsync(slotId, ct);
+
             if (Selection.SelectedSlotId == slotId)
                 Selection.Clear();
 

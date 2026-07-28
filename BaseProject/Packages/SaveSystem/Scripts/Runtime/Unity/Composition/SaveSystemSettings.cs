@@ -7,42 +7,42 @@ using UnityEngine;
 namespace Base.SaveSystemPackage.Unity.Composition
 {
     /// <summary>
-    /// All save settings, shaped for the inspector. Lives on the SaveManager component, so the
-    /// slot model, encryption and versioning can be changed without code.
-    /// On the encryption choice: a single bool cannot mean "off in editor, on in build" because it
-    /// is one stored value. The 3-way enum makes that intent explicit while still being forceable.
+    /// All save settings, shaped for the inspector. Lives on the <see cref="SaveManager"/> component,
+    /// so the slot model, encryption and versioning can be changed without code.
+    /// On the encryption choice: a single bool cannot mean "off in editor, on in build" because it is
+    /// one stored value. The three-way enum makes that intent explicit while still being forceable.
     /// </summary>
     [Serializable]
     public sealed class SaveSystemSettings
     {
-        public const string DefaultSubFolder = "Saves";
-
         [field: Title("Slot Model")]
         [field: Tooltip("Fixed: numbered slots. Appending: a new save each time. Named: unlimited named slots.")]
         [field: EnumToggleButtons]
         [field: SerializeField] public ESlotModel SlotModel { get; private set; } = ESlotModel.Named;
 
-        [field: Tooltip("How many slots when SlotModel is Fixed.")]
+        [field: Tooltip("How many slots when " + nameof(SlotModel) + " is " + nameof(ESlotModel.Fixed) + ".")]
         [field: ShowIfEnum(nameof(SlotModel), ESlotModel.Fixed)]
         [field: SerializeField] public int FixedSlotCount { get; private set; } = 3;
 
-        [field: Tooltip("Max kept saves when SlotModel is Appending. 0 = unlimited.")]
+        [field: Tooltip("Max kept saves when " + nameof(SlotModel) + " is " + nameof(ESlotModel.Appending)
+            + ". 0 means unlimited.")]
         [field: ShowIfEnum(nameof(SlotModel), ESlotModel.Appending)]
         [field: SerializeField] public int MaxAppendingSaves { get; private set; } = 20;
 
         [field: Title("Encryption")]
         [field: Tooltip("Encryption mode on write. Reading always auto-detects.")]
         [field: EnumToggleButtons]
-        [field: SerializeField] public EEncryption Encryption { get; private set; } = EEncryption.Auto;
+        [field: SerializeField] public EEncryptionMode Encryption { get; private set; } = EEncryptionMode.Auto;
 
-        [field: Tooltip("Secret used for AES. Change it for your project. Keep it stable across versions.")]
-        [field: ShowIfEnum(nameof(Encryption), EEncryption.Auto, EEncryption.On)]
-        [field: SerializeField] public string EncryptionPassphrase { get; private set; } = "ChangeThis";
+        [field: Tooltip("Secret used for AES. Set your own per project and keep it stable across versions.")]
+        [field: ShowIfEnum(nameof(Encryption), EEncryptionMode.Auto, EEncryptionMode.On)]
+        [field: NotNullOrEmpty]
+        [field: SerializeField] public string EncryptionPassphrase { get; private set; } = string.Empty;
 
-        [field:
-            Tooltip("Salt used for AES key derivation. Change it for your project. Keep it stable across versions.")]
-        [field: ShowIfEnum(nameof(Encryption), EEncryption.Auto, EEncryption.On)]
-        [field: SerializeField] public string Salt { get; private set; } = "ChangeThis";
+        [field: Tooltip("Salt used for AES key derivation. Set your own per project and keep it stable.")]
+        [field: ShowIfEnum(nameof(Encryption), EEncryptionMode.Auto, EEncryptionMode.On)]
+        [field: NotNullOrEmpty]
+        [field: SerializeField] public string Salt { get; private set; } = string.Empty;
 
         [field: Title("Serialization")]
         [field: Tooltip("Indent JSON so it is easy to read. Handy while developing.")]
@@ -52,12 +52,13 @@ namespace Base.SaveSystemPackage.Unity.Composition
         [field: NotZero]
         [field: SerializeField] public int SaveVersion { get; private set; } = 1;
 
-        /// <summary>Resolves the encryption enum into a concrete yes/no for the current context.</summary>
+        /// <summary>Resolves the encryption mode into a concrete yes or no for the current context.</summary>
+        /// <returns><c>true</c> when the next write should be encrypted.</returns>
         public bool ShouldEncryptOnWrite() => Encryption switch
         {
-            EEncryption.On => true,
-            EEncryption.Off => false,
-            _ => !Application.isEditor // Auto
+            EEncryptionMode.On => true,
+            EEncryptionMode.Off => false,
+            _ => !Application.isEditor
         };
     }
 }

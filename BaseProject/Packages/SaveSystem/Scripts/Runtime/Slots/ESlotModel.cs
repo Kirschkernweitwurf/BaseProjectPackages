@@ -1,10 +1,8 @@
-using Base.SaveSystemPackage.Unity.Composition;
-
 namespace Base.SaveSystemPackage.Slots
 {
     /// <summary>
-    /// Which slot layout the game uses. Picked in the <see cref="SaveManager"/> settings; the factory builds
-    /// the matching <see cref="ISaveSlotProvider"/>.
+    /// Which slot layout the game uses. Picked in the <see cref="Unity.Composition.SaveManager"/>
+    /// settings; the factory builds the matching <see cref="ISaveSlotProvider"/>.
     /// </summary>
     public enum ESlotModel : byte
     {

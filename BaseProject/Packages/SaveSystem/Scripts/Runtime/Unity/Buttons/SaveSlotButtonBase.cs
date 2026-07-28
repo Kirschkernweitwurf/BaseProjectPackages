@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using Base.AttributePackage;
 using Base.CorePackage.Services;
+using Base.SaveSystemPackage.Core;
 using Base.SaveSystemPackage.Slots;
 using Base.SaveSystemPackage.Unity.Composition;
 using Base.UtilityPackage.Logging;
@@ -11,8 +12,8 @@ using UnityEngine.UI;
 namespace Base.SaveSystemPackage.Unity.Buttons
 {
     /// <summary>
-    /// Base for save-related buttons. Handles busy state, service resolution and cancellation.
-    /// Subclasses implement the specific action. Slot identity is read from the runtime
+    /// Base for save-related buttons. Handles busy state, service resolution and cancellation, while
+    /// subclasses implement the specific action. Slot identity is read from the runtime
     /// <see cref="SaveSlotSelection"/>, not from an authored asset.
     /// </summary>
     [RequireComponent(typeof(Button))]
@@ -20,14 +21,17 @@ namespace Base.SaveSystemPackage.Unity.Buttons
     {
         [GetComponent] [Required] [SerializeField] private Button button;
 
-        protected ISaveSystem Saves { get; private set; }
-
-        protected ISaveSlotProvider Slots { get; private set; }
-
-        protected SaveSlotSelection Selection { get; private set; }
-
         private bool _busy;
         private CancellationTokenSource _cts;
+
+        /// <summary>The save system, resolved on the first click.</summary>
+        protected ISaveSystem Saves { get; private set; }
+
+        /// <summary>The active slot provider, resolved on the first click.</summary>
+        protected ISaveSlotProvider Slots { get; private set; }
+
+        /// <summary>The shared slot selection, resolved on the first click.</summary>
+        protected SaveSlotSelection Selection { get; private set; }
 
 #region Unity Callbacks
         protected virtual void Awake() => button.onClick.AddListener(Trigger);
@@ -45,6 +49,7 @@ namespace Base.SaveSystemPackage.Unity.Buttons
         protected abstract Awaitable OnClickAsync(CancellationToken ct);
 
         /// <summary>The selected slot id, or <c>null</c> with a warning when none is selected.</summary>
+        /// <returns>The selected slot id.</returns>
         protected string RequireSelectedSlotId()
         {
             string slotId = Selection.SelectedSlotId;
@@ -55,6 +60,8 @@ namespace Base.SaveSystemPackage.Unity.Buttons
             return null;
         }
 
+        // Async void is the only shape a UnityEvent listener can take. It is safe here because the
+        // whole body is wrapped in a try/catch, so nothing can escape into an unobserved exception.
         // ReSharper disable once AsyncVoidMethod
         private async void Trigger()
         {
@@ -72,9 +79,9 @@ namespace Base.SaveSystemPackage.Unity.Buttons
                 await OnClickAsync(_cts.Token);
             }
             catch (OperationCanceledException) { }
-            catch (Exception e)
+            catch (Exception exception)
             {
-                CustomLogger.LogError($"Save button action failed: {e.Message}", this);
+                CustomLogger.LogError($"Save button action failed: {exception.Message}", this);
             }
             finally
             {
@@ -90,15 +97,20 @@ namespace Base.SaveSystemPackage.Unity.Buttons
             if (Saves != null && Slots != null && Selection != null)
                 return true;
 
+            // TryGet logs on its own. Going dead instead of guarding every click keeps a missing
+            // manager from filling the console one click at a time.
             if (!ServiceLocator.TryGet(out SaveManager manager))
             {
-                CustomLogger.LogWarning("No SaveManager available.", this);
+                button.interactable = false;
+                enabled = false;
+
                 return false;
             }
 
             Saves = manager.SaveSystem;
             Slots = manager.Slots;
             Selection = manager.Selection;
+
             return Saves != null && Slots != null && Selection != null;
         }
     }

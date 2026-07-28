@@ -3,10 +3,10 @@ using System.Threading;
 using Base.SaveSystemPackage.Model;
 using UnityEngine;
 
-namespace Base.SaveSystemPackage.System
+namespace Base.SaveSystemPackage.Core
 {
     /// <summary>
-    /// Read-only side of the save system. A load/continue menu only needs this, so it can depend
+    /// Read-only side of the save system. A load or continue menu only needs this, so it can depend
     /// on the narrow surface instead of the whole system (interface segregation).
     /// State is not returned; on load it is handed back to the registered savables.
     /// </summary>
@@ -27,7 +27,7 @@ namespace Base.SaveSystemPackage.System
         /// </summary>
         Awaitable<byte[]> LoadScreenshotPngAsync(string slotId, CancellationToken ct = default);
 
-        /// <summary>Metadata of every existing save, for a load/continue menu.</summary>
+        /// <summary>Metadata of every existing save, for a load or continue menu.</summary>
         Awaitable<IReadOnlyList<SaveMetadata>> ListSavesAsync(CancellationToken ct = default);
     }
 }

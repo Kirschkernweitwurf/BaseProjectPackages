@@ -8,6 +8,8 @@ namespace Base.SaveSystemPackage.Unity.Capture
     /// </summary>
     public sealed class ScreenCapturer : MonoBehaviour, IScreenshotCapturer
     {
+        private const int NoDepthBuffer = 0;
+
 #region Unity Callbacks
         private void Awake() => ServiceLocator.Register<IScreenshotCapturer>(this);
 
@@ -15,7 +17,7 @@ namespace Base.SaveSystemPackage.Unity.Capture
 #endregion
 
         /// <inheritdoc/>
-        public async Awaitable<Texture2D> CaptureAsync(int maxWidth = 480)
+        public async Awaitable<Texture2D> CaptureAsync(int maxWidth = IScreenshotCapturer.DefaultMaxWidth)
         {
             await Awaitable.EndOfFrameAsync();
 
@@ -24,47 +26,51 @@ namespace Base.SaveSystemPackage.Unity.Capture
                 return full;
 
             int height = Mathf.RoundToInt(full.height * (maxWidth / (float)full.width));
-            Texture2D thumb = Downscale(full, maxWidth, height);
+            Texture2D thumbnail = Downscale(full, maxWidth, height);
 
             Destroy(full);
-            return thumb;
+            return thumbnail;
         }
 
-        private static Texture2D Downscale(Texture2D src, int targetWidth, int targetHeight)
+        private static Texture2D Downscale(Texture2D source, int targetWidth, int targetHeight)
         {
+            // Blitting through a mip pyramid instead of a plain downscale avoids aliasing on the
+            // thumbnail, which is very visible at this size.
             bool linearProject = QualitySettings.activeColorSpace == ColorSpace.Linear;
-            RenderTextureReadWrite rw = linearProject
+            RenderTextureReadWrite readWrite = linearProject
                 ? RenderTextureReadWrite.sRGB
                 : RenderTextureReadWrite.Linear;
 
-            RenderTextureDescriptor fullDesc = new(src.width, src.height, RenderTextureFormat.ARGB32, 0)
-            {
-                useMipMap = true,
-                autoGenerateMips = false,
-                sRGB = linearProject
-            };
+            RenderTextureDescriptor fullDescriptor =
+                new(source.width, source.height, RenderTextureFormat.ARGB32, NoDepthBuffer)
+                {
+                    useMipMap = true,
+                    autoGenerateMips = false,
+                    sRGB = linearProject
+                };
 
-            RenderTexture pyramid = RenderTexture.GetTemporary(fullDesc);
+            RenderTexture pyramid = RenderTexture.GetTemporary(fullDescriptor);
 
-            Graphics.Blit(src, pyramid);
+            Graphics.Blit(source, pyramid);
             pyramid.GenerateMips();
             pyramid.filterMode = FilterMode.Trilinear;
 
-            RenderTexture small = RenderTexture.GetTemporary(
-                targetWidth, targetHeight, 0, RenderTextureFormat.ARGB32, rw);
+            RenderTexture small = RenderTexture.GetTemporary(targetWidth, targetHeight, NoDepthBuffer,
+                RenderTextureFormat.ARGB32, readWrite);
 
             Graphics.Blit(pyramid, small);
 
             RenderTexture previous = RenderTexture.active;
             RenderTexture.active = small;
 
-            Texture2D result = new(targetWidth, targetHeight, TextureFormat.RGB24, false);
-            result.ReadPixels(new Rect(0, 0, targetWidth, targetHeight), 0, 0);
+            Texture2D result = new(targetWidth, targetHeight, TextureFormat.RGB24, mipChain: false);
+            result.ReadPixels(new Rect(0, 0, targetWidth, targetHeight), destX: 0, destY: 0);
             result.Apply();
 
             RenderTexture.active = previous;
             RenderTexture.ReleaseTemporary(pyramid);
             RenderTexture.ReleaseTemporary(small);
+
             return result;
         }
     }

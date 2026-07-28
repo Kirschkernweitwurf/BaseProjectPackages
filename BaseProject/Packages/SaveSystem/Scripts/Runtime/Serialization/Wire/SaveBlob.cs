@@ -4,13 +4,14 @@ using System.Collections.Generic;
 namespace Base.SaveSystemPackage.Serialization.Wire
 {
     /// <summary>
-    /// The container written to disk: just the list of (id, state) pairs.
+    /// The container written to disk: just the list of id and state pairs.
     /// </summary>
     [Serializable]
     internal sealed class SaveBlob
     {
         public List<SaveEntry> entries = new();
 
+        /// <summary>Appends one savable's serialized state.</summary>
         public void Add(string id, string state) => entries.Add(new SaveEntry
         {
             id = id,
@@ -18,15 +19,16 @@ namespace Base.SaveSystemPackage.Serialization.Wire
         });
 
         /// <summary>
-        /// Build an id -> state map once, so loading is O(n) instead of O(n*m) linear scans.
+        /// Builds an id to state map once, so loading is O(n) instead of O(n*m) linear scans.
         /// </summary>
+        /// <returns>Every entry that carries an id.</returns>
         public Dictionary<string, string> ToLookup()
         {
             Dictionary<string, string> map = new(entries.Count);
-            foreach (SaveEntry e in entries)
+            foreach (SaveEntry entry in entries)
             {
-                if (e?.id != null)
-                    map[e.id] = e.state;
+                if (entry?.id != null)
+                    map[entry.id] = entry.state;
             }
 
             return map;

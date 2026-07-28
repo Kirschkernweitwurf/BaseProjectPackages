@@ -8,16 +8,26 @@ using UnityEngine;
 namespace Base.SaveSystemPackage.Storage
 {
     /// <summary>
-    /// Stores bytes as files under <c>Application.persistentDataPath</c>.
-    /// All disk work runs on a background thread and the call returns on the main thread.
-    /// Writes are atomic, so we write to a temp file first, then move it, so a crash mid-save can't corrupt your save.
+    /// Stores bytes as files under <see cref="Application.persistentDataPath"/>. All disk work runs on
+    /// a background thread and every call returns on the main thread.
+    /// Writes go to a temp file that is then moved into place, so a crash mid-write cannot corrupt an
+    /// existing save.
     /// </summary>
     public sealed class FileSaveStorage : ISaveStorage
     {
+        /// <summary>Folder under the persistent data path that holds all save slots.</summary>
+        public const string DefaultSubFolder = "Saves";
+
+        private const string TempSuffix = ".tmp";
+
         private readonly string _root;
 
+        /// <param name="root">
+        /// Absolute folder to store saves in. Defaults to <see cref="DefaultSubFolder"/> under the
+        /// persistent data path.
+        /// </param>
         public FileSaveStorage(string root = null)
-            => _root = root ?? Path.Combine(Application.persistentDataPath, "Saves");
+            => _root = root ?? Path.Combine(Application.persistentDataPath, DefaultSubFolder);
 
         /// <inheritdoc/>
         public async Awaitable WriteAsync(string key, byte[] bytes, CancellationToken ct = default)
@@ -31,14 +41,14 @@ namespace Base.SaveSystemPackage.Storage
                 ct.ThrowIfCancellationRequested();
                 Directory.CreateDirectory(Path.GetDirectoryName(path)!);
 
-                string tmp = path + ".tmp";
-                await File.WriteAllBytesAsync(tmp, bytes, ct);
+                string tempPath = path + TempSuffix;
+                await File.WriteAllBytesAsync(tempPath, bytes, ct);
 
                 // File.Replace swaps atomically, so there is no window where the file is gone.
                 if (File.Exists(path))
-                    File.Replace(tmp, path, null);
+                    File.Replace(tempPath, path, destinationBackupFileName: null);
                 else
-                    File.Move(tmp, path);
+                    File.Move(tempPath, path);
             }
             finally
             {
@@ -92,25 +102,11 @@ namespace Base.SaveSystemPackage.Storage
             await Awaitable.BackgroundThreadAsync();
             try
             {
-                if (File.Exists(path))
-                {
-                    File.Delete(path);
+                if (!File.Exists(path))
+                    return;
 
-                    // Remove the parent folder if it's empty now
-                    string parent = Path.GetDirectoryName(path);
-                    if (!string.IsNullOrEmpty(parent)
-                        && parent != _root
-                        && Directory.Exists(parent)
-                        && Directory.GetFileSystemEntries(parent).Length == 0)
-                        try
-                        {
-                            Directory.Delete(parent);
-                        }
-                        catch
-                        {
-                            /* folder busy or already gone; not a problem */
-                        }
-                }
+                File.Delete(path);
+                DeleteParentIfEmpty(path);
             }
             finally
             {
@@ -133,14 +129,15 @@ namespace Base.SaveSystemPackage.Storage
                 {
                     ct.ThrowIfCancellationRequested();
 
-                    string rel = Path.GetRelativePath(_root, file)
+                    string relative = Path.GetRelativePath(_root, file)
                         .Replace(Path.DirectorySeparatorChar, '/');
 
-                    if (rel.EndsWith(".tmp", StringComparison.Ordinal))
-                        continue; // skip half-written temp files
+                    // Half-written temp files are not keys anyone can read.
+                    if (relative.EndsWith(TempSuffix, StringComparison.Ordinal))
+                        continue;
 
-                    if (prefix == null || rel.StartsWith(prefix, StringComparison.Ordinal))
-                        result.Add(rel);
+                    if (prefix == null || relative.StartsWith(prefix, StringComparison.Ordinal))
+                        result.Add(relative);
                 }
 
                 return result;
@@ -151,20 +148,46 @@ namespace Base.SaveSystemPackage.Storage
             }
         }
 
+        private void DeleteParentIfEmpty(string path)
+        {
+            string parent = Path.GetDirectoryName(path);
+
+            if (string.IsNullOrEmpty(parent)
+                || parent == _root
+                || !Directory.Exists(parent)
+                || Directory.GetFileSystemEntries(parent).Length > 0)
+                return;
+
+            try
+            {
+                Directory.Delete(parent);
+            }
+            catch (IOException)
+            {
+                // Folder is busy. An empty folder left behind is harmless.
+            }
+            catch (UnauthorizedAccessException)
+            {
+                // Same: not worth failing the delete over.
+            }
+        }
+
         private bool TryGetPathForKey(string key, out string path)
         {
             path = string.Empty;
 
             if (string.IsNullOrWhiteSpace(key))
             {
-                CustomLogger.LogWarning("Key is null or whitespace. This is not valid!", null);
+                CustomLogger.LogWarning("Storage key is null or whitespace.", null);
                 return false;
             }
 
             string safe = key.Replace('\\', '/');
             if (safe.Contains(".."))
             {
-                CustomLogger.LogWarning("Key contains '..', which is not allowed for security reasons!", null);
+                CustomLogger.LogWarning($"Storage key '{key}' contains '..', which would escape the save "
+                    + "folder. Rejecting it.", null);
+
                 return false;
             }
 

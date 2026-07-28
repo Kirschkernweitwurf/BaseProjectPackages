@@ -3,12 +3,12 @@ using Base.SaveSystemPackage.Model;
 using Base.SaveSystemPackage.Savable;
 using UnityEngine;
 
-namespace Base.SaveSystemPackage.System
+namespace Base.SaveSystemPackage.Core
 {
     /// <summary>
-    /// Write side of the save system. Gameplay code that only saves/deletes can depend on just this.
-    /// Data is not passed in: every object that wants saving implements <see cref="ISavable"/> and registers;
-    /// on save the system collects their state.
+    /// Write side of the save system. Gameplay code that only saves or deletes can depend on just this.
+    /// Data is not passed in: every object that wants saving implements <see cref="ISavable"/> and
+    /// registers, and on save the system collects their state.
     /// </summary>
     public interface ISaveWriter
     {

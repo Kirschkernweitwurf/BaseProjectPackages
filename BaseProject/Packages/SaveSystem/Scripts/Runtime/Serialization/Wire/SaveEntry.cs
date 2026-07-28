@@ -3,10 +3,11 @@ using System;
 namespace Base.SaveSystemPackage.Serialization.Wire
 {
     /// <summary>
-    /// A single (id, state) pair collected from a savable. Plain [Serializable] type so JsonUtility can handle it.
+    /// A single id and state pair collected from a savable. Plain serializable type with public fields
+    /// so JsonUtility can handle it.
     /// </summary>
     [Serializable]
-    public sealed class SaveEntry
+    internal sealed class SaveEntry
     {
         public string id;
         public string state;
