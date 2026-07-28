@@ -7,9 +7,6 @@ using Base.UtilityPackage.Logging;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
 
 namespace Base.ControllerSupport.Controller.Navigation
 {
@@ -26,6 +23,8 @@ namespace Base.ControllerSupport.Controller.Navigation
 
         /// <summary>Serialized name of the priority field, for editor tooling.</summary>
         public const string PriorityFieldName = nameof(priority);
+
+        private readonly List<NavigableElement> _elements = new();
 
         [Title("Focus")]
         [Tooltip("Element selected when this group gains focus and no element is remembered.")]
@@ -45,26 +44,23 @@ namespace Base.ControllerSupport.Controller.Navigation
         [Tooltip("If true, navigation loops around the edges of the group.")]
         [SerializeField] private bool wrap;
 
+        private bool _hasWarnedNoTarget;
+        private bool _isActive;
+        private FocusWatchdog _focusWatchdog;
+        private GameObject _lastSeenSelection;
+        private GameObject _lastSelected;
+
         /// <summary>Focus priority used by the watchdog to choose between active groups.</summary>
         public EPriority Priority => priority;
 
         /// <summary>Whether the group activates itself in OnEnable instead of being driven externally.</summary>
         public bool AutoActivate => autoActivate;
 
-        private readonly List<NavigableElement> _elements = new();
-
-#if UNITY_EDITOR
-        private readonly List<Selectable> _validationBuffer = new();
-#endif
-
-        private bool _isActive;
-        private bool _hasWarnedNoTarget;
-
-        private FocusWatchdog _focusWatchdog;
-        private GameObject _lastSeenSelection;
-        private GameObject _lastSelected;
-
 #region Unity Callbacks
+        // The watchdog is optional: without it the group still wires and remembers, it just loses the
+        // focus safety net. Resolved once here so activation does not retry the lookup every time.
+        private void Awake() => ServiceLocator.TryGet(out _focusWatchdog);
+
         private void OnEnable()
         {
             if (autoActivate)
@@ -73,7 +69,9 @@ namespace Base.ControllerSupport.Controller.Navigation
 
         private void LateUpdate()
         {
-            if (!_isActive || !rememberLastSelected || EventSystem.current == null)
+            if (!_isActive
+                || !rememberLastSelected
+                || EventSystem.current == null)
                 return;
 
             GameObject current = EventSystem.current.currentSelectedGameObject;
@@ -82,7 +80,7 @@ namespace Base.ControllerSupport.Controller.Navigation
 
             _lastSeenSelection = current;
 
-            if (current != null && current.transform.IsChildOf(transform))
+            if (Contains(current))
                 _lastSelected = current;
         }
 
@@ -95,12 +93,13 @@ namespace Base.ControllerSupport.Controller.Navigation
             if (_isActive)
                 return;
 
-            if (_focusWatchdog == null)
-                ServiceLocator.TryGet(out _focusWatchdog);
-
             _isActive = true;
             _hasWarnedNoTarget = false;
-            _focusWatchdog?.RegisterGroup(this);
+
+            if (_focusWatchdog == null)
+                return;
+
+            _focusWatchdog.RegisterGroup(this);
         }
 
         /// <summary>Removes the group from the watchdog. Its elements stop being focus targets.</summary>
@@ -110,12 +109,17 @@ namespace Base.ControllerSupport.Controller.Navigation
                 return;
 
             _isActive = false;
-            _focusWatchdog?.DeregisterGroup(this);
+
+            if (_focusWatchdog == null)
+                return;
+
+            _focusWatchdog.DeregisterGroup(this);
         }
 
         /// <summary>Selects the remembered element if it is still valid, otherwise the default.</summary>
         public void RestoreFocus()
         {
+            // A missing EventSystem is already reported by the watchdog, so stay quiet here.
             if (EventSystem.current == null)
                 return;
 
@@ -140,37 +144,21 @@ namespace Base.ControllerSupport.Controller.Navigation
         /// <summary>True when the given object lives inside this group's hierarchy.</summary>
         public bool Contains(GameObject candidate) => candidate != null && candidate.transform.IsChildOf(transform);
 
-        /// <summary>Recollects child elements and rewires explicit navigation. Validates in the editor.</summary>
-        [ContextMenu("Rebuild Navigation")]
+        /// <summary>
+        /// Recollects the child elements and rewires explicit navigation between them. Triggered from the
+        /// editor tooling, never automatically, so wiring never changes silently.
+        /// </summary>
         public void Rebuild()
         {
-#if UNITY_EDITOR
-
-            // Add any missing element first so newly added ones are wired in this same pass.
-            if (!Application.isPlaying)
-                NavigationValidator.Validate(transform, _validationBuffer);
-#endif
-
             _elements.Clear();
             GetComponentsInChildren(true, _elements);
 
             NavigationBuilder.Wire(_elements, wrap);
-
-#if UNITY_EDITOR
-            if (!Application.isPlaying)
-                MarkElementsDirty();
-#endif
         }
 
         private Selectable ResolveFocusTarget()
         {
-            if (!rememberLastSelected || _lastSelected == null || !_lastSelected.activeInHierarchy)
-                return defaultElement.IsNavigable()
-                    ? defaultElement.Selectable
-                    : null;
-
-            Selectable remembered = _lastSelected.GetComponent<Selectable>();
-            if (remembered != null && remembered.IsInteractable())
+            if (TryResolveRememberedTarget(out Selectable remembered))
                 return remembered;
 
             return defaultElement.IsNavigable()
@@ -178,15 +166,23 @@ namespace Base.ControllerSupport.Controller.Navigation
                 : null;
         }
 
-#if UNITY_EDITOR
-        private void MarkElementsDirty()
+        private bool TryResolveRememberedTarget(out Selectable remembered)
         {
-            foreach (NavigableElement element in _elements)
-            {
-                if (element != null && element.Selectable != null)
-                    EditorUtility.SetDirty(element.Selectable);
-            }
+            remembered = null;
+
+            if (!rememberLastSelected
+                || _lastSelected == null
+                || !_lastSelected.activeInHierarchy)
+                return false;
+
+            Selectable candidate = _lastSelected.GetComponent<Selectable>();
+
+            if (candidate == null
+                || !candidate.IsInteractable())
+                return false;
+
+            remembered = candidate;
+            return true;
         }
-#endif
     }
 }

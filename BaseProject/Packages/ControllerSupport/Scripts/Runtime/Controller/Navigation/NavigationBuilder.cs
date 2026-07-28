@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Base.UtilityPackage.Logging;
 using UnityEngine;
 using UnityEngine.UI;
 using UINavigation = UnityEngine.UI.Navigation;
@@ -7,7 +8,7 @@ namespace Base.ControllerSupport.Controller.Navigation
 {
     /// <summary>
     /// Computes and writes explicit four-way navigation across a set of <see cref="NavigableElement"/>s
-    /// from their on-screen position. For each element it picks the nearest aligned neighbor in every
+    /// from their on-screen position. For each element it picks the nearest aligned neighbour in every
     /// direction, mirroring uGUI's built-in directional scoring.
     /// </summary>
     public static class NavigationBuilder
@@ -25,7 +26,10 @@ namespace Base.ControllerSupport.Controller.Navigation
         public static void Wire(IReadOnlyList<NavigableElement> elements, bool wrap)
         {
             if (elements == null)
+            {
+                CustomLogger.LogWarning("Cannot wire navigation without a list of elements.", null);
                 return;
+            }
 
             List<NavigableElement> active = Collect(elements);
 
@@ -34,7 +38,7 @@ namespace Base.ControllerSupport.Controller.Navigation
 
             foreach (NavigableElement element in active)
             {
-                UINavigation navigation = new()
+                element.Selectable.navigation = new UINavigation
                 {
                     mode = UINavigation.Mode.Explicit,
                     selectOnUp = FindNeighbour(element, active, Vector2.up, wrap),
@@ -42,8 +46,6 @@ namespace Base.ControllerSupport.Controller.Navigation
                     selectOnLeft = FindNeighbour(element, active, Vector2.left, wrap),
                     selectOnRight = FindNeighbour(element, active, Vector2.right, wrap)
                 };
-
-                element.Selectable.navigation = navigation;
             }
         }
 
@@ -85,20 +87,16 @@ namespace Base.ControllerSupport.Controller.Navigation
                 float distance = Mathf.Sqrt(sqrDistance);
                 float forward = Vector2.Dot(direction, toTarget);
 
-                if (forward > 0f)
+                if (IsInsideCone(forward, distance))
                 {
-                    // Reject targets outside the directional cone so off-axis elements are not wired.
-                    if (forward < distance * MinDirectionAlignment)
-                        continue;
-
                     // Favor aligned and near candidates, the same heuristic uGUI uses internally.
                     float score = forward / sqrDistance;
 
-                    if (score > bestScore)
-                    {
-                        bestScore = score;
-                        best = candidate.Selectable;
-                    }
+                    if (score <= bestScore)
+                        continue;
+
+                    bestScore = score;
+                    best = candidate.Selectable;
 
                     continue;
                 }
@@ -106,10 +104,10 @@ namespace Base.ControllerSupport.Controller.Navigation
                 if (!wrap)
                     continue;
 
-                // Track the element furthest in the opposite direction as the wrap target, on-axis only.
+                // The element furthest in the opposite direction becomes the wrap target, on-axis only.
                 float opposite = -forward;
 
-                if (opposite < distance * MinDirectionAlignment)
+                if (!IsInsideCone(opposite, distance))
                     continue;
 
                 if (opposite <= wrapScore)
@@ -126,6 +124,10 @@ namespace Base.ControllerSupport.Controller.Navigation
                 ? wrapBest
                 : null;
         }
+
+        /// <summary>Rejects targets that sit outside the directional cone, so off-axis elements stay unwired.</summary>
+        private static bool IsInsideCone(float projection, float distance) => projection > 0f
+            && projection >= distance * MinDirectionAlignment;
 
         private static Vector2 GetCenter(Selectable selectable)
         {

@@ -3,74 +3,45 @@ using Base.ControllerSupport.Controller.Navigation;
 using Base.ToolPackage.MenuManagerWindow;
 using UnityEditor;
 using UnityEngine;
-using Menu = Base.CorePackage.MenuManaging.Menu;
 
 namespace Base.ControllerSupport.Editor
 {
     /// <summary>
-    /// Overview of every <see cref="NavigableGroup"/> in the loaded scenes. Lists each group with
-    /// menu, scene, priority and element count badges, offers per group navigation and rebuild, and
-    /// hosts the scene wide and project wide rebuild actions. Groups sitting on a <see cref="Menu"/>
-    /// are checked against the menu rules: Auto Activate must be off, since the menu is the one
-    /// activating, and the priority should match the menu's. Violations tint the row, explain
-    /// themselves in tooltips and are resolved with the per row Fix button, never silently. Each badge
-    /// column uses one shared width, the widest text in that column, so rows align into clean
-    /// scannable columns and nothing ever clips.
+    /// Overview of every <see cref="NavigableGroup"/> in the loaded scenes. Lists each group with menu,
+    /// scene, priority and element count badges, offers per group navigation and rebuild, and hosts the
+    /// scene wide and project wide rebuild actions. Rule violations, described by
+    /// <see cref="NavigationGroupEntry"/>, tint the row, explain themselves in tooltips and are resolved
+    /// with the per row Fix button, never silently. Each badge column uses one shared width, the widest
+    /// text in that column, so rows align into clean scannable columns and nothing ever clips.
     /// </summary>
     public sealed class NavigationGroupsWindow : EditorWindow
     {
-        private const float BadgeGap = 4f;
-        private const float BadgeHeight = 16f;
-        private const float BadgePadding = 14f;
-        private const float ButtonWidth = 56f;
-        private const float FixButtonWidth = 40f;
-        private const float HeaderHeight = 20f;
+        private const string ActionsHeader = "Actions";
+        private const string CancelLabel = "Cancel";
+        private const string ConfirmMessage = "This opens every scene in the project, rebuilds all navigable "
+            + "groups and saves the scenes. Prefabs containing groups are rebuilt and saved too.\n\nContinue?";
+        private const string ConfirmTitle = "Rebuild Project Navigation";
+        private const string ElementsHeader = "Elements";
+        private const string EmptyElementsTooltip = "This group has no navigable elements.";
+        private const string EmptyMessage = "No navigable groups in the loaded scenes.";
+        private const string FixLabel = "Fix";
+        private const string GoToLabel = "Go to";
+        private const string GroupHeader = "Group";
+        private const string MenuHeader = "Menu";
         private const string MenuPath = "Tools/Base Packages/Unity Editor/Controller Navigation Groups";
-        private const float MinBadgeWidth = 64f;
-        private const string NoMenuText = "None";
-        private const float RowHeight = 26f;
-        private const float RowPadding = 6f;
+        private const string PriorityHeader = "Priority";
+        private const string RebuildLabel = "Rebuild";
+        private const string RebuildProjectLabel = "Rebuild Project";
+        private const string RebuildSceneLabel = "Rebuild Scene";
+        private const string RefreshLabel = "Refresh";
+        private const string SceneHeader = "Scene";
+        private const string SceneTooltip = "Scene";
         private const string WindowTitle = "Navigation Groups";
-        private static readonly Color ElementsBadgeColor = new(0.7f, 0.45f, 0.95f, 0.32f);
 
-        private static readonly Color EmptyBadgeColor = new(0.95f, 0.55f, 0.2f, 0.4f);
-        private static readonly Color HeaderColor = new(0f, 0f, 0f, 0.18f);
-        private static readonly Color HoverColor = new(1f, 1f, 1f, 0.05f);
-        private static readonly Color IssueRowColor = new(0.95f, 0.45f, 0.2f, 0.06f);
-        private static readonly Color MenuBadgeColor = new(0.3f, 0.7f, 0.4f, 0.32f);
-        private static readonly Color NoMenuBadgeColor = new(0.5f, 0.5f, 0.5f, 0.12f);
-        private static readonly Color PriorityBadgeColor = new(0.35f, 0.55f, 0.95f, 0.32f);
-        private static readonly Color SceneBadgeColor = new(0.5f, 0.5f, 0.5f, 0.28f);
-        private static readonly Color SeparatorColor = new(0f, 0f, 0f, 0.25f);
-        private static readonly Color StripeColor = new(1f, 1f, 1f, 0.02f);
-        private static readonly Color WarningBadgeColor = new(0.95f, 0.55f, 0.2f, 0.45f);
+        private readonly List<NavigationGroupEntry> _entries = new();
 
-        private GUIStyle BadgeStyle => _badgeStyle ??= new GUIStyle(EditorStyles.miniLabel)
-        {
-            alignment = TextAnchor.MiddleCenter,
-            fontSize = 10
-        };
-
-        private GUIStyle HeaderStyle => _headerStyle ??= new GUIStyle(EditorStyles.miniBoldLabel)
-        {
-            alignment = TextAnchor.MiddleCenter
-        };
-
-        private GUIStyle NameStyle => _nameStyle ??= new GUIStyle(EditorStyles.label)
-        {
-            alignment = TextAnchor.MiddleLeft,
-            fontStyle = FontStyle.Bold
-        };
-
-        private readonly List<int> _elementCounts = new();
-        private readonly List<NavigableGroup> _groups = new();
-        private readonly List<Menu> _menus = new();
-
-        private GUIStyle _badgeStyle;
         private float _elementsColumnWidth;
-        private GUIStyle _headerStyle;
         private float _menuColumnWidth;
-        private GUIStyle _nameStyle;
         private float _priorityColumnWidth;
         private float _sceneColumnWidth;
         private Vector2 _scroll;
@@ -78,7 +49,7 @@ namespace Base.ControllerSupport.Editor
 #region Unity Callbacks
         private void OnEnable()
         {
-            minSize = new Vector2(680f, 200f);
+            minSize = new Vector2(NavigationGroupsStyles.MinWindowWidth, NavigationGroupsStyles.MinWindowHeight);
             EditorApplication.hierarchyChanged += Refresh;
             Refresh();
         }
@@ -87,9 +58,9 @@ namespace Base.ControllerSupport.Editor
         {
             DrawToolbar();
 
-            if (_groups.Count == 0)
+            if (_entries.Count == 0)
             {
-                EditorGUILayout.HelpBox("No navigable groups in the loaded scenes.", MessageType.Info);
+                EditorGUILayout.HelpBox(EmptyMessage, MessageType.Info);
                 return;
             }
 
@@ -98,9 +69,9 @@ namespace Base.ControllerSupport.Editor
 
             _scroll = EditorGUILayout.BeginScrollView(_scroll);
 
-            for (int i = 0; i < _groups.Count; i++)
+            for (int i = 0; i < _entries.Count; i++)
             {
-                if (_groups[i] != null)
+                if (_entries[i].IsAlive)
                     DrawRow(i);
             }
 
@@ -110,6 +81,7 @@ namespace Base.ControllerSupport.Editor
         private void OnDisable() => EditorApplication.hierarchyChanged -= Refresh;
 #endregion
 
+        /// <summary>Opens the window and rescans the loaded scenes.</summary>
         [DynamicMenuItem(MenuPath)]
         public static void Open()
         {
@@ -118,112 +90,81 @@ namespace Base.ControllerSupport.Editor
             window.Show();
         }
 
-        private static void GoTo(NavigableGroup group)
+        private static bool ConfirmProjectRebuild()
+            => EditorUtility.DisplayDialog(ConfirmTitle, ConfirmMessage, RebuildLabel, CancelLabel);
+
+        private static float DrawBadge(float right, Rect row, string text, float width, Color color, string tooltip)
         {
-            Selection.activeGameObject = group.gameObject;
-            EditorGUIUtility.PingObject(group.gameObject);
-        }
+            float y = row.y + (row.height - NavigationGroupsStyles.BadgeHeight) * 0.5f;
+            Rect rect = new(right - width, y, width, NavigationGroupsStyles.BadgeHeight);
 
-        private static bool HasAutoActivateConflict(NavigableGroup group, Menu menu)
-            => menu != null && group.AutoActivate;
+            EditorGUI.DrawRect(rect, color);
+            GUI.Label(rect, new GUIContent(text, tooltip), NavigationGroupsStyles.Badge);
 
-        private static bool HasPriorityMismatch(NavigableGroup group, Menu menu)
-            => menu != null && group.Priority != menu.Priority;
-
-        private static string ElementsText(int elementCount) => elementCount == 1
-            ? "1 Element"
-            : $"{elementCount} Elements";
-
-        private static string BuildIssueTooltip(bool autoConflict, bool priorityMismatch, Menu menu)
-        {
-            string tooltip = string.Empty;
-
-            if (autoConflict)
-                tooltip += "Auto Activate is enabled, but the menu is the one activating this group.";
-
-            if (!priorityMismatch)
-                return tooltip;
-
-            if (autoConflict)
-                tooltip += "\n";
-
-            tooltip += $"Priority differs from the menu ({menu.Priority}).";
-            return tooltip;
-        }
-
-        // Fixes are only ever applied through this explicit click, with undo support, so the window
-        // reports problems instead of rewriting components silently.
-        private static void FixIssues(NavigableGroup group, Menu menu)
-        {
-            SerializedObject serializedGroup = new(group);
-
-            if (HasAutoActivateConflict(group, menu))
-                serializedGroup.FindProperty(NavigableGroup.AutoActivateFieldName).boolValue = false;
-
-            if (HasPriorityMismatch(group, menu))
-                serializedGroup.FindProperty(NavigableGroup.PriorityFieldName).intValue = (int)menu.Priority;
-
-            serializedGroup.ApplyModifiedProperties();
-        }
-
-        private static bool ConfirmProjectRebuild() => EditorUtility.DisplayDialog("Rebuild Project Navigation",
-            "This opens every scene in the project, rebuilds all navigable groups and saves the "
-            + "scenes. Prefabs containing groups are rebuilt and saved too.\n\nContinue?",
-            "Rebuild", "Cancel");
-
-        private static string MenuText(Menu menu) => menu != null
-            ? menu.GetType().Name
-            : NoMenuText;
-
-        private static Color MenuBadgeColorFor(Menu menu, bool autoConflict)
-        {
-            if (menu == null)
-                return NoMenuBadgeColor;
-
-            return autoConflict
-                ? WarningBadgeColor
-                : MenuBadgeColor;
-        }
-
-        private static string MenuTooltip(Menu menu, bool autoConflict, bool priorityMismatch)
-        {
-            if (menu == null)
-                return "This group sits on no menu and manages its own activation.";
-
-            return autoConflict || priorityMismatch
-                ? BuildIssueTooltip(autoConflict, priorityMismatch, menu)
-                : "This group sits on a menu, which drives its activation.";
+            return rect.x - NavigationGroupsStyles.BadgeGap;
         }
 
         private static float DrawButton(float right, Rect row, float width, string label, bool enabled,
             out bool clicked)
         {
-            Rect rect = new(right - width, row.y + (row.height - BadgeHeight - 2f) * 0.5f, width, BadgeHeight + 2f);
+            float y = row.y + (row.height - NavigationGroupsStyles.ButtonHeight) * 0.5f;
+            Rect rect = new(right - width, y, width, NavigationGroupsStyles.ButtonHeight);
 
             using (new EditorGUI.DisabledScope(!enabled))
                 clicked = GUI.Button(rect, label, EditorStyles.miniButton);
 
-            return rect.x - BadgeGap;
+            return rect.x - NavigationGroupsStyles.BadgeGap;
         }
+
+        private static float DrawLabel(float right, Rect strip, float width, string text)
+        {
+            Rect rect = new(right - width, strip.y, width, strip.height);
+            GUI.Label(rect, text, NavigationGroupsStyles.Header);
+
+            return rect.x - NavigationGroupsStyles.BadgeGap;
+        }
+
+        private static void DrawSeparator(Rect strip)
+        {
+            Rect rect = new(strip.x, strip.yMax - NavigationGroupsStyles.SeparatorThickness, strip.width,
+                NavigationGroupsStyles.SeparatorThickness);
+
+            EditorGUI.DrawRect(rect, NavigationGroupsStyles.SeparatorColor);
+        }
+
+        private static Color ResolveMenuBadgeColor(NavigationGroupEntry entry)
+        {
+            if (entry.Menu == null)
+                return NavigationGroupsStyles.NoMenuBadgeColor;
+
+            return entry.HasAutoActivateConflict
+                ? NavigationGroupsStyles.WarningBadgeColor
+                : NavigationGroupsStyles.MenuBadgeColor;
+        }
+
+        private static Rect ResolveNameRect(Rect strip, float right)
+            => new(strip.x + NavigationGroupsStyles.RowPadding, strip.y,
+                right - strip.x - NavigationGroupsStyles.RowPadding * 2f, strip.height);
 
         private void DrawToolbar()
         {
             EditorGUILayout.BeginHorizontal(EditorStyles.toolbar);
 
-            if (GUILayout.Button("Refresh", EditorStyles.toolbarButton, GUILayout.Width(60f)))
+            if (GUILayout.Button(RefreshLabel, EditorStyles.toolbarButton,
+                    GUILayout.Width(NavigationGroupsStyles.ToolbarButtonWidth)))
                 Refresh();
 
             GUILayout.FlexibleSpace();
-            GUILayout.Label($"{_groups.Count} group(s)", EditorStyles.miniLabel);
+            GUILayout.Label($"{_entries.Count} group(s)", EditorStyles.miniLabel);
             GUILayout.FlexibleSpace();
 
-            if (GUILayout.Button("Rebuild Scene", EditorStyles.toolbarButton))
+            if (GUILayout.Button(RebuildSceneLabel, EditorStyles.toolbarButton))
             {
                 NavigationRebuildService.RebuildLoadedScenes();
                 Refresh();
             }
 
-            if (GUILayout.Button("Rebuild Project", EditorStyles.toolbarButton) && ConfirmProjectRebuild())
+            if (GUILayout.Button(RebuildProjectLabel, EditorStyles.toolbarButton) && ConfirmProjectRebuild())
             {
                 NavigationRebuildService.RebuildProject();
                 Refresh();
@@ -236,155 +177,138 @@ namespace Base.ControllerSupport.Editor
         // precisely above its column. It lives outside the scroll view and stays visible.
         private void DrawHeader()
         {
-            Rect header = EditorGUILayout.GetControlRect(false, HeaderHeight, GUILayout.ExpandWidth(true));
+            Rect header = EditorGUILayout.GetControlRect(false, NavigationGroupsStyles.HeaderHeight,
+                GUILayout.ExpandWidth(true));
+
             header.x = 0f;
             header.width = position.width;
 
-            EditorGUI.DrawRect(header, HeaderColor);
-            EditorGUI.DrawRect(new Rect(header.x, header.yMax - 1f, header.width, 1f), SeparatorColor);
+            EditorGUI.DrawRect(header, NavigationGroupsStyles.HeaderColor);
+            DrawSeparator(header);
 
-            float x = header.xMax - RowPadding;
-            x = DrawHeaderLabel(x, header, ButtonWidth + BadgeGap + ButtonWidth + BadgeGap + FixButtonWidth,
-                "Actions");
+            float actionsWidth = NavigationGroupsStyles.ButtonWidth * 2f + NavigationGroupsStyles.FixButtonWidth
+                + NavigationGroupsStyles.BadgeGap * 2f;
 
-            x -= BadgeGap;
-            x = DrawHeaderLabel(x, header, _elementsColumnWidth, "Elements");
-            x = DrawHeaderLabel(x, header, _priorityColumnWidth, "Priority");
-            x = DrawHeaderLabel(x, header, _sceneColumnWidth, "Scene");
-            x = DrawHeaderLabel(x, header, _menuColumnWidth, "Menu");
+            float x = header.xMax - NavigationGroupsStyles.RowPadding;
+            x = DrawLabel(x, header, actionsWidth, ActionsHeader);
+            x -= NavigationGroupsStyles.BadgeGap;
+            x = DrawLabel(x, header, _elementsColumnWidth, ElementsHeader);
+            x = DrawLabel(x, header, _priorityColumnWidth, PriorityHeader);
+            x = DrawLabel(x, header, _sceneColumnWidth, SceneHeader);
+            x = DrawLabel(x, header, _menuColumnWidth, MenuHeader);
 
-            Rect nameRect = new(header.x + RowPadding, header.y, x - header.x - RowPadding * 2f, header.height);
-            EditorGUI.LabelField(nameRect, "Group", EditorStyles.miniBoldLabel);
-        }
-
-        private float DrawHeaderLabel(float right, Rect header, float width, string text)
-        {
-            Rect rect = new(right - width, header.y, width, header.height);
-            GUI.Label(rect, text, HeaderStyle);
-            return rect.x - BadgeGap;
+            EditorGUI.LabelField(ResolveNameRect(header, x), GroupHeader, EditorStyles.miniBoldLabel);
         }
 
         private void DrawRow(int index)
         {
-            NavigableGroup group = _groups[index];
-            Menu menu = _menus[index];
-            int elementCount = _elementCounts[index];
+            NavigationGroupEntry entry = _entries[index];
 
-            bool autoConflict = HasAutoActivateConflict(group, menu);
-            bool priorityMismatch = HasPriorityMismatch(group, menu);
-            bool hasIssues = autoConflict || priorityMismatch;
+            Rect row = EditorGUILayout.GetControlRect(false, NavigationGroupsStyles.RowHeight,
+                GUILayout.ExpandWidth(true));
 
-            Rect row = EditorGUILayout.GetControlRect(false, RowHeight, GUILayout.ExpandWidth(true));
             row.x = 0f;
             row.width = position.width;
 
-            if (index % 2 == 1)
-                EditorGUI.DrawRect(row, StripeColor);
-
-            if (hasIssues)
-                EditorGUI.DrawRect(row, IssueRowColor);
-
-            if (row.Contains(Event.current.mousePosition))
-            {
-                EditorGUI.DrawRect(row, HoverColor);
-                Repaint();
-            }
-
-            EditorGUI.DrawRect(new Rect(row.x, row.yMax - 1f, row.width, 1f), SeparatorColor);
+            DrawRowBackground(row, index, entry.HasIssues);
 
             // Fixed action buttons on the right, then column aligned badges right to left, name gets
             // whatever remains. Column widths come from the widest text, so nothing ever clips.
-            float x = row.xMax - RowPadding;
-            x = DrawButton(x, row, ButtonWidth, "Rebuild", true, out bool rebuildClicked);
-            x = DrawButton(x, row, ButtonWidth, "Go to", true, out bool goToClicked);
-            x = DrawButton(x, row, FixButtonWidth, "Fix", hasIssues, out bool fixClicked);
-            x -= BadgeGap;
+            float x = row.xMax - NavigationGroupsStyles.RowPadding;
+            x = DrawButton(x, row, NavigationGroupsStyles.ButtonWidth, RebuildLabel, true, out bool rebuildClicked);
+            x = DrawButton(x, row, NavigationGroupsStyles.ButtonWidth, GoToLabel, true, out bool goToClicked);
+            x = DrawButton(x, row, NavigationGroupsStyles.FixButtonWidth, FixLabel, entry.HasIssues,
+                out bool fixClicked);
 
-            bool isEmpty = elementCount == 0;
+            x -= NavigationGroupsStyles.BadgeGap;
+            x = DrawBadges(x, row, entry);
 
-            x = DrawBadge(x, row, ElementsText(elementCount), _elementsColumnWidth, isEmpty
-                ? EmptyBadgeColor
-                : ElementsBadgeColor, isEmpty
-                ? "This group has no navigable elements."
-                : string.Empty);
-
-            x = DrawBadge(x, row, group.Priority.ToString(), _priorityColumnWidth, priorityMismatch
-                ? WarningBadgeColor
-                : PriorityBadgeColor, priorityMismatch
-                ? $"Priority differs from the menu ({menu.Priority})."
-                : "Focus priority");
-
-            x = DrawBadge(x, row, group.gameObject.scene.name, _sceneColumnWidth, SceneBadgeColor, "Scene");
-
-            x = DrawBadge(x, row, MenuText(menu), _menuColumnWidth, MenuBadgeColorFor(menu, autoConflict),
-                MenuTooltip(menu, autoConflict, priorityMismatch));
-
-            Rect nameRect = new(row.x + RowPadding, row.y, x - row.x - RowPadding * 2f, row.height);
-            EditorGUI.LabelField(nameRect, new GUIContent(group.name, group.name), NameStyle);
+            EditorGUI.LabelField(ResolveNameRect(row, x), new GUIContent(entry.Group.name, entry.Group.name),
+                NavigationGroupsStyles.Name);
 
             if (goToClicked)
-                GoTo(group);
+                entry.GoTo();
 
             if (fixClicked)
-                FixIssues(group, menu);
+                entry.Fix();
 
             if (!rebuildClicked)
                 return;
 
-            group.Rebuild();
+            NavigationRebuildService.RebuildGroup(entry.Group);
             Refresh();
         }
 
-        private float DrawBadge(float right, Rect row, string text, float width, Color color, string tooltip)
+        private float DrawBadges(float right, Rect row, NavigationGroupEntry entry)
         {
-            Rect rect = new(right - width, row.y + (row.height - BadgeHeight) * 0.5f, width, BadgeHeight);
+            float x = DrawBadge(right, row, entry.ElementsText, _elementsColumnWidth, entry.IsEmpty
+                ? NavigationGroupsStyles.EmptyBadgeColor
+                : NavigationGroupsStyles.ElementsBadgeColor, entry.IsEmpty
+                ? EmptyElementsTooltip
+                : string.Empty);
 
-            EditorGUI.DrawRect(rect, color);
-            GUI.Label(rect, new GUIContent(text, tooltip), BadgeStyle);
+            x = DrawBadge(x, row, entry.PriorityText, _priorityColumnWidth, entry.HasPriorityMismatch
+                ? NavigationGroupsStyles.WarningBadgeColor
+                : NavigationGroupsStyles.PriorityBadgeColor, entry.PriorityTooltip);
 
-            return rect.x - BadgeGap;
+            x = DrawBadge(x, row, entry.SceneText, _sceneColumnWidth, NavigationGroupsStyles.SceneBadgeColor,
+                SceneTooltip);
+
+            return DrawBadge(x, row, entry.MenuText, _menuColumnWidth, ResolveMenuBadgeColor(entry),
+                entry.BuildMenuTooltip());
         }
 
-        private float MeasureBadge(string text)
-            => Mathf.Max(MinBadgeWidth, BadgeStyle.CalcSize(new GUIContent(text)).x + BadgePadding);
+        private void DrawRowBackground(Rect row, int index, bool hasIssues)
+        {
+            if (index % 2 == 1)
+                EditorGUI.DrawRect(row, NavigationGroupsStyles.StripeColor);
+
+            if (hasIssues)
+                EditorGUI.DrawRect(row, NavigationGroupsStyles.IssueRowColor);
+
+            if (row.Contains(Event.current.mousePosition))
+            {
+                EditorGUI.DrawRect(row, NavigationGroupsStyles.HoverColor);
+                Repaint();
+            }
+
+            DrawSeparator(row);
+        }
 
         // One shared width per column, taken from its widest text, keeps the badge edges aligned
         // across rows so the list reads like a table instead of jagged per row sizing.
         private void ComputeColumnWidths()
         {
-            _menuColumnWidth = MeasureBadge("Menu");
-            _sceneColumnWidth = MeasureBadge("Scene");
-            _priorityColumnWidth = MeasureBadge("Priority");
-            _elementsColumnWidth = MeasureBadge("Elements");
+            _menuColumnWidth = NavigationGroupsStyles.MeasureBadge(MenuHeader);
+            _sceneColumnWidth = NavigationGroupsStyles.MeasureBadge(SceneHeader);
+            _priorityColumnWidth = NavigationGroupsStyles.MeasureBadge(PriorityHeader);
+            _elementsColumnWidth = NavigationGroupsStyles.MeasureBadge(ElementsHeader);
 
-            for (int i = 0; i < _groups.Count; i++)
+            foreach (NavigationGroupEntry entry in _entries)
             {
-                NavigableGroup group = _groups[i];
-                if (group == null)
+                if (!entry.IsAlive)
                     continue;
 
-                _menuColumnWidth = Mathf.Max(_menuColumnWidth, MeasureBadge(MenuText(_menus[i])));
-                _sceneColumnWidth = Mathf.Max(_sceneColumnWidth, MeasureBadge(group.gameObject.scene.name));
-                _priorityColumnWidth = Mathf.Max(_priorityColumnWidth, MeasureBadge(group.Priority.ToString()));
-                _elementsColumnWidth = Mathf.Max(_elementsColumnWidth, MeasureBadge(ElementsText(_elementCounts[i])));
+                _menuColumnWidth = Mathf.Max(_menuColumnWidth, NavigationGroupsStyles.MeasureBadge(entry.MenuText));
+                _sceneColumnWidth = Mathf.Max(_sceneColumnWidth, NavigationGroupsStyles.MeasureBadge(entry.SceneText));
+
+                _priorityColumnWidth = Mathf.Max(_priorityColumnWidth,
+                    NavigationGroupsStyles.MeasureBadge(entry.PriorityText));
+
+                _elementsColumnWidth = Mathf.Max(_elementsColumnWidth,
+                    NavigationGroupsStyles.MeasureBadge(entry.ElementsText));
             }
         }
 
         private void Refresh()
         {
-            _groups.Clear();
-            _menus.Clear();
-            _elementCounts.Clear();
+            _entries.Clear();
 
             NavigableGroup[] found = FindObjectsByType<NavigableGroup>(FindObjectsInactive.Include,
                 FindObjectsSortMode.InstanceID);
 
             foreach (NavigableGroup group in found)
-            {
-                _groups.Add(group);
-                _menus.Add(group.GetComponent<Menu>());
-                _elementCounts.Add(group.GetComponentsInChildren<NavigableElement>(true).Length);
-            }
+                _entries.Add(new NavigationGroupEntry(group));
 
             Repaint();
         }

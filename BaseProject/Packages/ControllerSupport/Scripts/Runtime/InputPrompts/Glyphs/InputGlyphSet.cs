@@ -35,19 +35,18 @@ namespace Base.ControllerSupport.InputPrompts.Glyphs
         {
             sprite = null;
 
-            if (action == null || action.action == null)
-            {
-                CustomLogger.LogWarning($"Action reference is null or has no action assigned. DeviceType={DeviceType}",
-                    this);
-
-                return false;
-            }
-
             if (!TryFind(action, out InputGlyphEntry entry))
                 return false;
 
-            sprite = entry?.Sprite;
-            return sprite != null;
+            sprite = entry.Sprite;
+
+            if (sprite != null)
+                return true;
+
+            CustomLogger.LogWarning($"The glyph entry for action \"{action.action.name}\" has no sprite assigned. "
+                + $"Device type: {DeviceType}.", this);
+
+            return false;
         }
 
         /// <summary>Tries to resolve the TextMeshPro sprite name for an action on this device.</summary>
@@ -59,30 +58,44 @@ namespace Base.ControllerSupport.InputPrompts.Glyphs
                 return false;
 
             spriteName = entry.TmpSpriteName;
-            if (string.IsNullOrEmpty(spriteName))
-            {
-                CustomLogger.LogWarning($"No TMP sprite name found for action '{action.action.name}'"
-                    + $" (id={action.action.id}) in device type {DeviceType}.", this);
 
-                return false;
-            }
+            if (!string.IsNullOrEmpty(spriteName))
+                return true;
 
-            return true;
+            CustomLogger.LogWarning($"The glyph entry for action \"{action.action.name}\" has no TMP sprite name. "
+                + $"Device type: {DeviceType}.", this);
+
+            return false;
         }
 
         private bool TryFind(InputActionReference action, out InputGlyphEntry entry)
         {
-            _lookup ??= BuildLookup();
-            entry = _lookup.GetValueOrDefault(action.action.id);
-            if (entry == null)
+            entry = null;
+
+            if (action == null)
             {
-                CustomLogger.LogWarning($"No glyph entry found for action '{action.action.name}'"
-                    + $" (id={action.action.id}) in device type {DeviceType}.", this);
+                CustomLogger.LogWarning($"The action reference is null. Device type: {DeviceType}.", this);
+                return false;
+            }
+
+            if (action.action == null)
+            {
+                CustomLogger.LogWarning($"The action reference \"{action.name}\" has no action assigned. "
+                    + $"Device type: {DeviceType}.", this);
 
                 return false;
             }
 
-            return true;
+            _lookup ??= BuildLookup();
+            entry = _lookup.GetValueOrDefault(action.action.id);
+
+            if (entry != null)
+                return true;
+
+            CustomLogger.LogWarning($"No glyph entry found for action \"{action.action.name}\" "
+                + $"(id {action.action.id}). Device type: {DeviceType}.", this);
+
+            return false;
         }
 
         private Dictionary<Guid, InputGlyphEntry> BuildLookup()
@@ -92,19 +105,20 @@ namespace Base.ControllerSupport.InputPrompts.Glyphs
             for (int i = 0; i < entries.Count; i++)
             {
                 InputGlyphEntry entry = entries[i];
+
                 if (entry == null)
                 {
-                    CustomLogger.LogWarning(
-                        $"Null entry found in glyph set '{name}' (DeviceType={DeviceType}) at index {i}.", this);
+                    CustomLogger.LogWarning($"Entry {i} in glyph set \"{name}\" is empty. "
+                        + $"Device type: {DeviceType}.", this);
 
                     continue;
                 }
 
-                if (entry.Action == null || entry.Action.action == null)
+                if (entry.Action == null
+                    || entry.Action.action == null)
                 {
-                    CustomLogger.LogWarning(
-                        $"Glyph entry at index {i} in glyph set '{name}' (DeviceType={DeviceType}) has no action assigned.",
-                        this);
+                    CustomLogger.LogWarning($"Entry {i} in glyph set \"{name}\" has no action assigned. "
+                        + $"Device type: {DeviceType}.", this);
 
                     continue;
                 }

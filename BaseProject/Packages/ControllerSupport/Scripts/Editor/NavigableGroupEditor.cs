@@ -14,6 +14,9 @@ namespace Base.ControllerSupport.Editor
     [CustomEditor(typeof(NavigableGroup))]
     public sealed class NavigableGroupEditor : AttributePackageEditor
     {
+        private const string RebuildLabel = "Rebuild";
+        private const string RebuildSceneLabel = "Rebuild Scene";
+
         /// <inheritdoc/>
         public override void OnInspectorGUI()
         {
@@ -23,10 +26,10 @@ namespace Base.ControllerSupport.Editor
 
             using (new EditorGUILayout.HorizontalScope())
             {
-                if (GUILayout.Button("Rebuild"))
-                    ((NavigableGroup)target).Rebuild();
+                if (GUILayout.Button(RebuildLabel))
+                    NavigationRebuildService.RebuildGroup((NavigableGroup)target);
 
-                if (GUILayout.Button("Rebuild Scene"))
+                if (GUILayout.Button(RebuildSceneLabel))
                     NavigationRebuildService.RebuildLoadedScenes();
             }
         }

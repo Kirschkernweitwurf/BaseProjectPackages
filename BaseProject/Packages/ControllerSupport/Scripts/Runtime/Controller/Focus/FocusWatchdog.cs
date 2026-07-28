@@ -38,21 +38,13 @@ namespace Base.ControllerSupport.Controller.Focus
             if (!ShouldGuardFocus())
                 return;
 
-            if (EventSystem.current == null)
-            {
-                if (_hasWarnedMissingEventSystem)
-                    return;
-
-                _hasWarnedMissingEventSystem = true;
-                CustomLogger.LogWarning("No EventSystem exists in the scene, cannot operate.", this);
-
+            if (!HasEventSystem())
                 return;
-            }
-
-            _hasWarnedMissingEventSystem = false;
 
             GameObject current = EventSystem.current.currentSelectedGameObject;
-            if (current != null && current.activeInHierarchy)
+
+            if (current != null
+                && current.activeInHierarchy)
                 return;
 
             if (TryResolveActiveGroup(out NavigableGroup group))
@@ -99,13 +91,34 @@ namespace Base.ControllerSupport.Controller.Focus
                 return;
 
             GameObject current = EventSystem.current.currentSelectedGameObject;
-            if (current != null && current.activeInHierarchy && target.Contains(current))
+
+            if (current != null
+                && current.activeInHierarchy
+                && target.Contains(current))
                 return;
 
             target.RestoreFocus();
         }
 
         private bool ShouldGuardFocus() => _deviceTracker == null || _deviceTracker.IsUsingGamepad;
+
+        // This runs every frame, so the missing EventSystem is reported once instead of once per frame.
+        private bool HasEventSystem()
+        {
+            if (EventSystem.current != null)
+            {
+                _hasWarnedMissingEventSystem = false;
+                return true;
+            }
+
+            if (_hasWarnedMissingEventSystem)
+                return false;
+
+            _hasWarnedMissingEventSystem = true;
+            CustomLogger.LogWarning("No EventSystem exists in the scene, cannot operate.", this);
+
+            return false;
+        }
 
         private bool TryResolveActiveGroup(out NavigableGroup best)
         {
@@ -123,7 +136,8 @@ namespace Base.ControllerSupport.Controller.Focus
                     continue;
                 }
 
-                if (best != null && group.Priority <= best.Priority)
+                if (best != null
+                    && group.Priority <= best.Priority)
                     continue;
 
                 best = group;

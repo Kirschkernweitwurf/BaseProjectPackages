@@ -17,7 +17,7 @@ Full gamepad support for uGUI menus: reliable navigation wiring, focus that neve
 
 ### NavigableElement
 
-Marker component for a `Selectable` that should be part of gamepad navigation. Only marked selectables get wired. Anything without it is treated as a gap and fixed on demand during a rebuild (a `NavigableElement` is added and the fix is logged).
+Marker component for a `Selectable` that should be part of gamepad navigation. Only marked selectables get wired. Anything without it is treated as a gap and fixed on demand during a rebuild (a `NavigableElement` is added, its selectable is assigned and the fix is logged).
 
 ### NavigableGroup
 
@@ -31,7 +31,7 @@ A self-contained navigation context. Put it on a menu root and it collects all `
 | Remember Last Selected | Focus returns to the last used element instead of the default |
 | Wrap | Navigation loops around the edges of the group |
 
-Rebuild via the inspector buttons, the Navigation Groups window or `Rebuild()` in code.
+Rebuild via the inspector buttons or the Navigation Groups window. Both go through `NavigationRebuildService`, which adds missing elements, rewires and saves in one step. `NavigableGroup.Rebuild()` itself only rewires, so runtime code can call it without any editor dependency.
 
 ### FocusWatchdog
 
@@ -41,7 +41,7 @@ Ties on priority go to the most recently activated group.
 
 ### MenuNavigationModule
 
-The single seam between the menu layer and this package. Attach it to a menu and assign a group: the group activates when the menu opens and deactivates when it closes. Navigation stays menu-agnostic everywhere else.
+The single seam between the menu layer and this package. Attach it to a menu and assign a group: the group activates when the menu opens and deactivates when it closes. It warns at startup when the group's Auto Activate or priority disagrees with the menu. Navigation stays menu-agnostic everywhere else.
 
 ## Scrolling
 
@@ -52,7 +52,7 @@ The single seam between the menu layer and this package. Attach it to a menu and
 
 - **InputDeviceTracker**: service that tracks the active device family (`MouseKeyboard` or `Gamepad`) based on real actuation, ignoring noise like resting sticks. Raises `OnDeviceChanged`.
 - **InputGlyphSet**: ScriptableObject mapping input actions to glyphs for one device family. Create it from the asset menu (`Scriptable Objects/Base/Input/New Glyph Set`), one set per device.
-- **InputGlyphProvider**: service that resolves the right glyph for the active device. `TryGetSprite` for images, `GetTmpSpriteTag` for inline TextMeshPro tags. Raises `OnActiveDeviceChanged` so labels can refresh.
+- **InputGlyphProvider**: service that resolves the right glyph for the active device. `TryGetSprite` for images, `TryGetTmpSpriteTag` for inline TextMeshPro tags. Raises `OnActiveDeviceChanged` so labels can refresh.
 
 ## Quick Start
 
@@ -70,10 +70,15 @@ Rebuilds only ever run when you trigger them, so wiring never changes silently.
 - **Navigation Groups window** (`Tools > Base Packages > Unity Editor > Controller Navigation Groups`): lists every group in the loaded scenes with its scene, priority and element count. Per row you can go to a group, rebuild it or fix a missing element. The toolbar rebuilds every group in the loaded scenes or the whole project. The project rebuild opens every scene, rewires all groups and saves the scenes, and rebuilds any prefabs that contain groups too.
 - **Inspector**: Rebuild and Rebuild Scene buttons on every `NavigableGroup`.
 
+## Upgrading to 1.3.0
+
+`NavigableElement`, `GamepadScrollRect` and `ScrollIntoView` now hold their sibling component in a serialized `[GetComponent]` field instead of resolving it at runtime. Existing scenes and prefabs need those fields filled once. Open them, or run the GetComponent batch assigner from the Attributes package, or simply hit Rebuild Project in the Navigation Groups window.
+
 ## Dependencies
 
 - Unity Input System
 - Base Core Package (`ServiceLocator`, `GameServiceBehaviour`, menu managing, `EPriority`)
 - Base Utility Package (`CustomLogger`)
-- Base Tool Package (`DynamicCreateAssetMenu`)
+- Base Attribute Package (`[Required]`, `[GetComponent]`, `[Child]`)
+- Base Tool Package (`DynamicCreateAssetMenu`, `DynamicMenuItem`)
 - TextMeshPro (for inline glyph tags)

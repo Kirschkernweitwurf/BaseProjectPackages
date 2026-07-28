@@ -1,4 +1,5 @@
 using Base.AttributePackage;
+using Base.UtilityPackage.Logging;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -15,6 +16,11 @@ namespace Base.ControllerSupport.Controller.Scrolling
     {
         private const float DefaultDeadZone = 0.15f;
 
+        [Tooltip("The scroll view this component drives. Auto-assigned from the same GameObject.")]
+        [GetComponent]
+        [Required]
+        [SerializeField] private ScrollRect scrollRect;
+
         [Tooltip("Vector2 action that drives scrolling, e.g. the right stick.")]
         [Required]
         [SerializeField] private InputActionReference scrollAction;
@@ -30,16 +36,26 @@ namespace Base.ControllerSupport.Controller.Scrolling
         [Tooltip("If true, the vertical axis is inverted.")]
         [SerializeField] private bool invertVertical;
 
-        private ScrollRect _scrollRect;
+        private InputAction _scroll;
 
 #region Unity Callbacks
-        private void Awake() => _scrollRect = GetComponent<ScrollRect>();
+        private void Awake()
+        {
+            _scroll = scrollAction.action;
 
-        private void OnEnable() => scrollAction.action.Enable();
+            if (_scroll != null)
+                return;
+
+            // Disabling here also skips OnEnable, so the action is never touched while unresolved.
+            CustomLogger.LogError($"\"{nameof(scrollAction)}\" resolves to no action, scrolling is off.", this);
+            enabled = false;
+        }
+
+        private void OnEnable() => _scroll.Enable();
 
         private void Update()
         {
-            Vector2 input = scrollAction.action.ReadValue<Vector2>();
+            Vector2 input = _scroll.ReadValue<Vector2>();
 
             if (input.sqrMagnitude < deadZone * deadZone)
                 return;
@@ -47,7 +63,7 @@ namespace Base.ControllerSupport.Controller.Scrolling
             Apply(input);
         }
 
-        private void OnDisable() => scrollAction.action.Disable();
+        private void OnDisable() => _scroll.Disable();
 #endregion
 
         private void Apply(Vector2 input)
@@ -58,13 +74,13 @@ namespace Base.ControllerSupport.Controller.Scrolling
 
             float step = scrollSpeed * Time.unscaledDeltaTime;
 
-            if (_scrollRect.vertical)
-                _scrollRect.verticalNormalizedPosition =
-                    Mathf.Clamp01(_scrollRect.verticalNormalizedPosition + vertical * step);
+            if (scrollRect.vertical)
+                scrollRect.verticalNormalizedPosition =
+                    Mathf.Clamp01(scrollRect.verticalNormalizedPosition + vertical * step);
 
-            if (_scrollRect.horizontal)
-                _scrollRect.horizontalNormalizedPosition =
-                    Mathf.Clamp01(_scrollRect.horizontalNormalizedPosition + input.x * step);
+            if (scrollRect.horizontal)
+                scrollRect.horizontalNormalizedPosition =
+                    Mathf.Clamp01(scrollRect.horizontalNormalizedPosition + input.x * step);
         }
     }
 }

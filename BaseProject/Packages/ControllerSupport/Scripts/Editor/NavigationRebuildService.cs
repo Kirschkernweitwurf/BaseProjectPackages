@@ -8,30 +8,50 @@ using UnityEngine;
 namespace Base.ControllerSupport.Editor
 {
     /// <summary>
-    /// Shared rebuild entry points for <see cref="NavigableGroup"/>s, used by the inspector buttons
-    /// and the <see cref="NavigationGroupsWindow"/>. Rebuilds are always triggered deliberately by the
-    /// user, never automatically, so wiring changes are visible instead of happening silently.
+    /// The single rebuild entry point for <see cref="NavigableGroup"/>s, used by the inspector buttons
+    /// and the <see cref="NavigationGroupsWindow"/>. A rebuild adds missing elements, rewires the
+    /// navigation and marks the touched selectables dirty. Rebuilds are always triggered deliberately
+    /// by the user, never automatically, so wiring changes are visible instead of happening silently.
     /// </summary>
     public static class NavigationRebuildService
     {
+        private const string PrefabFilter = "t:Prefab";
         private const string ProgressTitle = "Rebuilding Navigation";
+        private const string SceneFilter = "t:Scene";
+        private const float ScenePhaseShare = 0.5f;
 
-        /// <summary>Rebuilds navigation on every group in the loaded scenes, including inactive ones.</summary>
+        private static readonly List<NavigableElement> Elements = new();
+        private static readonly List<NavigableGroup> Groups = new();
+        private static readonly string[] SearchFolders =
+        {
+            "Assets"
+        };
+
+        /// <summary>Rebuilds a single group and marks everything it touched dirty.</summary>
+        public static void RebuildGroup(NavigableGroup group)
+        {
+            if (group == null)
+            {
+                CustomLogger.LogWarning("Cannot rebuild a null group.", null);
+                return;
+            }
+
+            NavigationValidator.AddMissingElements(group.transform);
+            group.Rebuild();
+            MarkElementsDirty(group);
+        }
+
+        /// <summary>Rebuilds every group in the loaded scenes, including the ones on inactive objects.</summary>
         public static void RebuildLoadedScenes()
         {
-            NavigableGroup[] groups = Object.FindObjectsByType<NavigableGroup>(FindObjectsInactive.Include,
-                FindObjectsSortMode.None);
-
-            foreach (NavigableGroup group in groups)
-                group.Rebuild();
-
-            CustomLogger.Log($"Rebuilt {groups.Length} navigable group(s) in the loaded scenes.", null);
+            int rebuilt = RebuildFoundGroups();
+            CustomLogger.Log($"Rebuilt {rebuilt} navigable group(s) in the loaded scenes.", null);
         }
 
         /// <summary>
         /// Rebuilds navigation in every scene and prefab of the project and saves the results. Opens
-        /// each scene one by one and restores the current scene setup afterward. Returns false when
-        /// the user canceled over unsaved changes.
+        /// each scene one by one and restores the current scene setup afterward. Does nothing when the
+        /// user cancels over unsaved changes.
         /// </summary>
         public static void RebuildProject()
         {
@@ -61,30 +81,22 @@ namespace Base.ControllerSupport.Editor
 
         private static int RebuildAllScenes()
         {
-            string[] guids = AssetDatabase.FindAssets("t:Scene", new[]
-            {
-                "Assets"
-            });
-
+            string[] guids = AssetDatabase.FindAssets(SceneFilter, SearchFolders);
             int rebuilt = 0;
 
             for (int i = 0; i < guids.Length; i++)
             {
                 string path = AssetDatabase.GUIDToAssetPath(guids[i]);
-                EditorUtility.DisplayProgressBar(ProgressTitle, path, i / (float)guids.Length * 0.5f);
+                EditorUtility.DisplayProgressBar(ProgressTitle, path, i / (float)guids.Length * ScenePhaseShare);
 
                 EditorSceneManager.OpenScene(path, OpenSceneMode.Single);
 
-                NavigableGroup[] groups = Object.FindObjectsByType<NavigableGroup>(FindObjectsInactive.Include,
-                    FindObjectsSortMode.None);
+                int groups = RebuildFoundGroups();
 
-                if (groups.Length == 0)
+                if (groups == 0)
                     continue;
 
-                foreach (NavigableGroup group in groups)
-                    group.Rebuild();
-
-                rebuilt += groups.Length;
+                rebuilt += groups;
                 EditorSceneManager.SaveOpenScenes();
             }
 
@@ -93,21 +105,20 @@ namespace Base.ControllerSupport.Editor
 
         private static int RebuildAllPrefabs()
         {
-            string[] guids = AssetDatabase.FindAssets("t:Prefab", new[]
-            {
-                "Assets"
-            });
-
+            string[] guids = AssetDatabase.FindAssets(PrefabFilter, SearchFolders);
             int rebuilt = 0;
 
             for (int i = 0; i < guids.Length; i++)
             {
                 string path = AssetDatabase.GUIDToAssetPath(guids[i]);
-                EditorUtility.DisplayProgressBar(ProgressTitle, path, 0.5f + i / (float)guids.Length * 0.5f);
+                float progress = ScenePhaseShare + i / (float)guids.Length * (1f - ScenePhaseShare);
+                EditorUtility.DisplayProgressBar(ProgressTitle, path, progress);
 
                 // Cheap asset check first, so only prefabs that actually carry groups are opened for edit.
                 GameObject asset = AssetDatabase.LoadAssetAtPath<GameObject>(path);
-                if (asset == null || asset.GetComponentInChildren<NavigableGroup>(true) == null)
+
+                if (asset == null
+                    || asset.GetComponentInChildren<NavigableGroup>(true) == null)
                     continue;
 
                 rebuilt += RebuildPrefab(path);
@@ -126,7 +137,7 @@ namespace Base.ControllerSupport.Editor
                 contents.GetComponentsInChildren(true, groups);
 
                 foreach (NavigableGroup group in groups)
-                    group.Rebuild();
+                    RebuildGroup(group);
 
                 PrefabUtility.SaveAsPrefabAsset(contents, path);
                 return groups.Count;
@@ -134,6 +145,33 @@ namespace Base.ControllerSupport.Editor
             finally
             {
                 PrefabUtility.UnloadPrefabContents(contents);
+            }
+        }
+
+        private static int RebuildFoundGroups()
+        {
+            NavigableGroup[] found = Object.FindObjectsByType<NavigableGroup>(FindObjectsInactive.Include,
+                FindObjectsSortMode.None);
+
+            // Copied out first, because adding missing elements changes the scene while iterating.
+            Groups.Clear();
+            Groups.AddRange(found);
+
+            foreach (NavigableGroup group in Groups)
+                RebuildGroup(group);
+
+            return Groups.Count;
+        }
+
+        private static void MarkElementsDirty(NavigableGroup group)
+        {
+            Elements.Clear();
+            group.GetComponentsInChildren(true, Elements);
+
+            foreach (NavigableElement element in Elements)
+            {
+                if (element.Selectable != null)
+                    EditorUtility.SetDirty(element.Selectable);
             }
         }
     }

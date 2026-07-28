@@ -30,16 +30,23 @@ namespace Base.ControllerSupport.InputPrompts.Glyphs
         {
             base.Awake();
 
-            if (ServiceLocator.TryGet(out _deviceTracker))
-                _deviceTracker.OnDeviceChanged += HandleDeviceChanged;
+            ValidateGlyphSets();
+
+            // Without the tracker there is no active device, so every lookup would fail anyway.
+            if (!ServiceLocator.TryGet(out _deviceTracker))
+                return;
+
+            _deviceTracker.OnDeviceChanged += HandleDeviceChanged;
         }
 
         protected override void OnDestroy()
         {
             base.OnDestroy();
 
-            if (_deviceTracker != null)
-                _deviceTracker.OnDeviceChanged -= HandleDeviceChanged;
+            if (_deviceTracker == null)
+                return;
+
+            _deviceTracker.OnDeviceChanged -= HandleDeviceChanged;
         }
 #endregion
 
@@ -48,60 +55,23 @@ namespace Base.ControllerSupport.InputPrompts.Glyphs
         {
             sprite = null;
 
-            if (actionReference == null)
-            {
-                CustomLogger.LogWarning("Can't get sprite for null action.", this);
-                return false;
-            }
-
-            if (!TryResolveActiveSet(out InputGlyphSet set))
-            {
-                CustomLogger.LogWarning($"Can't get sprite. No active {nameof(InputGlyphSet)} found for device "
-                    + $"{_deviceTracker.CurrentDevice} in {nameof(InputGlyphProvider)}.", this);
-
-                return false;
-            }
-
-            if (!set.TryGetSprite(actionReference, out sprite))
-            {
-                CustomLogger.LogWarning($"No sprite found for action {actionReference.action?.name} in "
-                    + $"{nameof(InputGlyphSet)} for device {_deviceTracker.CurrentDevice}.", this);
-
-                return false;
-            }
-
-            return true;
+            return TryResolveActiveSet(actionReference, out InputGlyphSet set)
+                && set.TryGetSprite(actionReference, out sprite);
         }
 
         /// <summary>
-        /// Returns a TextMeshPro sprite tag for an action, e.g. <c>&lt;sprite name="ButtonSouth"&gt;</c>.
-        /// Returns an empty string when no glyph is mapped.
+        /// Tries to build a TextMeshPro sprite tag for an action, for example
+        /// <c>&lt;sprite name="ButtonSouth"&gt;</c>.
         /// </summary>
         public bool TryGetTmpSpriteTag(InputActionReference actionReference, out string spriteTag)
         {
             spriteTag = string.Empty;
 
-            if (actionReference == null)
-            {
-                CustomLogger.LogWarning("Can't get sprite tag for null action.", this);
+            if (!TryResolveActiveSet(actionReference, out InputGlyphSet set))
                 return false;
-            }
-
-            if (!TryResolveActiveSet(out InputGlyphSet set))
-            {
-                CustomLogger.LogWarning($"Can't get TMP sprite tag. No active {nameof(InputGlyphSet)} found for device "
-                    + $"{_deviceTracker.CurrentDevice} in {nameof(InputGlyphProvider)}.", this);
-
-                return false;
-            }
 
             if (!set.TryGetTmpSpriteName(actionReference, out string spriteName))
-            {
-                CustomLogger.LogWarning($"No TMP sprite name found for action {actionReference.action?.name} in "
-                    + $"{nameof(InputGlyphSet)} for device {_deviceTracker.CurrentDevice}.", this);
-
                 return false;
-            }
 
             spriteTag = CreateTmpSpriteTag(spriteName);
             return true;
@@ -109,25 +79,45 @@ namespace Base.ControllerSupport.InputPrompts.Glyphs
 
         private static string CreateTmpSpriteTag(string spriteName) => $"<sprite name=\"{spriteName}\">";
 
-        private bool TryResolveActiveSet(out InputGlyphSet inputGlyphSet)
+        // Empty slots are an authoring mistake, so they are reported once here instead of per lookup.
+        private void ValidateGlyphSets()
+        {
+            foreach (InputGlyphSet set in glyphSets)
+            {
+                if (set == null)
+                    CustomLogger.LogError($"An assigned {nameof(InputGlyphSet)} slot is empty.", this);
+            }
+        }
+
+        // The set itself reports why a mapping failed, so this only logs what the provider alone knows.
+        private bool TryResolveActiveSet(InputActionReference actionReference, out InputGlyphSet inputGlyphSet)
         {
             inputGlyphSet = null;
+
+            if (actionReference == null)
+            {
+                CustomLogger.LogWarning("Cannot resolve a glyph for a null action reference.", this);
+                return false;
+            }
+
+            if (_deviceTracker == null)
+                return false;
+
             EInputDeviceType device = _deviceTracker.CurrentDevice;
 
             foreach (InputGlyphSet set in glyphSets)
             {
                 if (set == null)
-                {
-                    CustomLogger.LogWarning($"Null {nameof(InputGlyphSet)} found in {nameof(InputGlyphProvider)}.",
-                        this);
-
                     continue;
-                }
 
-                if (set.DeviceType == device)
-                    return set;
+                if (set.DeviceType != device)
+                    continue;
+
+                inputGlyphSet = set;
+                return true;
             }
 
+            CustomLogger.LogWarning($"No {nameof(InputGlyphSet)} is assigned for device {device}.", this);
             return false;
         }
 

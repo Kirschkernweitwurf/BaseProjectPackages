@@ -13,32 +13,48 @@ namespace Base.ControllerSupport.Controller.Scrolling
     [RequireComponent(typeof(ScrollRect))]
     public sealed class ScrollIntoView : MonoBehaviour
     {
+        private const int BottomLeftCorner = 0;
+        private const int CornerCount = 4;
+        private const int TopRightCorner = 2;
+
+        private readonly Vector3[] _worldCorners = new Vector3[CornerCount];
+
+        [Tooltip("The scroll view this component drives. Auto-assigned from the same GameObject.")]
+        [GetComponent]
+        [Required]
+        [SerializeField] private ScrollRect scrollRect;
+
         [Tooltip("Padding in pixels kept between the selected element and the viewport edge.")]
         [Suffix("px")]
         [Min(0)]
         [SerializeField] private float padding = 16f;
 
-        private readonly Vector3[] _worldCorners = new Vector3[4];
-
-        private ScrollRect _scrollRect;
         private GameObject _lastSelected;
 
 #region Unity Callbacks
         private void Awake()
         {
-            _scrollRect = GetComponent<ScrollRect>();
+            if (scrollRect.content != null)
+                return;
 
-            if (_scrollRect.content == null)
-                CustomLogger.LogWarning("ScrollRect has no content assigned.", this);
+            CustomLogger.LogError($"The {nameof(ScrollRect)} has no content assigned, nothing can be scrolled "
+                + "into view.", this);
+
+            enabled = false;
         }
 
         private void LateUpdate()
         {
-            GameObject current = EventSystem.current.currentSelectedGameObject;
-            if (current == null || current == _lastSelected)
+            if (EventSystem.current == null)
                 return;
 
-            if (!current.transform.IsChildOf(_scrollRect.content))
+            GameObject current = EventSystem.current.currentSelectedGameObject;
+
+            if (current == null
+                || current == _lastSelected)
+                return;
+
+            if (!current.transform.IsChildOf(scrollRect.content))
                 return;
 
             _lastSelected = current;
@@ -49,26 +65,33 @@ namespace Base.ControllerSupport.Controller.Scrolling
         private void EnsureVisible(RectTransform target)
         {
             if (target == null)
-            {
-                CustomLogger.LogWarning("Target is null.", this);
                 return;
-            }
 
-            RectTransform viewport = _scrollRect.viewport != null
-                ? _scrollRect.viewport
-                : (RectTransform)_scrollRect.transform;
+            RectTransform viewport = scrollRect.viewport != null
+                ? scrollRect.viewport
+                : (RectTransform)scrollRect.transform;
 
             // Rebuild only this scroll view's content layout, not every canvas in the scene.
-            LayoutRebuilder.ForceRebuildLayoutImmediate(_scrollRect.content);
+            LayoutRebuilder.ForceRebuildLayoutImmediate(scrollRect.content);
 
             target.GetWorldCorners(_worldCorners);
-            Vector2 min = viewport.InverseTransformPoint(_worldCorners[0]);
-            Vector2 max = viewport.InverseTransformPoint(_worldCorners[2]);
+            Vector2 min = viewport.InverseTransformPoint(_worldCorners[BottomLeftCorner]);
+            Vector2 max = viewport.InverseTransformPoint(_worldCorners[TopRightCorner]);
 
-            Rect view = viewport.rect;
+            Vector2 delta = ResolveDelta(viewport.rect, min, max);
+
+            if (delta == Vector2.zero)
+                return;
+
+            scrollRect.velocity = Vector2.zero;
+            scrollRect.content.anchoredPosition -= delta;
+        }
+
+        private Vector2 ResolveDelta(Rect view, Vector2 min, Vector2 max)
+        {
             Vector2 delta = Vector2.zero;
 
-            if (_scrollRect.vertical)
+            if (scrollRect.vertical)
             {
                 if (max.y > view.yMax - padding)
                     delta.y = max.y - (view.yMax - padding);
@@ -76,19 +99,15 @@ namespace Base.ControllerSupport.Controller.Scrolling
                     delta.y = min.y - (view.yMin + padding);
             }
 
-            if (_scrollRect.horizontal)
-            {
-                if (max.x > view.xMax - padding)
-                    delta.x = max.x - (view.xMax - padding);
-                else if (min.x < view.xMin + padding)
-                    delta.x = min.x - (view.xMin + padding);
-            }
+            if (!scrollRect.horizontal)
+                return delta;
 
-            if (delta == Vector2.zero)
-                return;
+            if (max.x > view.xMax - padding)
+                delta.x = max.x - (view.xMax - padding);
+            else if (min.x < view.xMin + padding)
+                delta.x = min.x - (view.xMin + padding);
 
-            _scrollRect.velocity = Vector2.zero;
-            _scrollRect.content.anchoredPosition -= delta;
+            return delta;
         }
     }
 }

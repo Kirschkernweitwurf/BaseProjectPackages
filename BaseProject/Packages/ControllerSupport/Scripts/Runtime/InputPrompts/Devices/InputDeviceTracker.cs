@@ -43,30 +43,31 @@ namespace Base.ControllerSupport.InputPrompts.Devices
             _ => EInputDeviceType.Unknown
         };
 
+        // At least one control has to cross the threshold, so resting sticks do not flip the device.
+        private static bool HasActuation(InputEventPtr eventPtr, InputDevice device)
+        {
+            foreach (InputControl _ in eventPtr.EnumerateChangedControls(device, ActivationThreshold))
+                return true;
+
+            return false;
+        }
+
         private void HandleInputEvent(InputEventPtr eventPtr, InputDevice device)
         {
             // Only state changes carry actuation. Anything else is noise we ignore.
-            if (!eventPtr.IsA<StateEvent>() && !eventPtr.IsA<DeltaStateEvent>())
+            if (!eventPtr.IsA<StateEvent>()
+                && !eventPtr.IsA<DeltaStateEvent>())
                 return;
 
             EInputDeviceType deviceType = ResolveDeviceType(device);
 
             // Events from the already active family cannot change anything, so skip the actuation scan.
             // This is the hot path: the active device fires events constantly.
-            if (deviceType == EInputDeviceType.Unknown || deviceType == CurrentDevice)
+            if (deviceType == EInputDeviceType.Unknown
+                || deviceType == CurrentDevice)
                 return;
 
-            // Require at least one control to cross the threshold so resting sticks do not trigger.
-            foreach (InputControl _ in eventPtr.EnumerateChangedControls(device, ActivationThreshold))
-            {
-                SetCurrentDevice(deviceType);
-                return;
-            }
-        }
-
-        private void SetCurrentDevice(EInputDeviceType deviceType)
-        {
-            if (CurrentDevice == deviceType)
+            if (!HasActuation(eventPtr, device))
                 return;
 
             CurrentDevice = deviceType;
