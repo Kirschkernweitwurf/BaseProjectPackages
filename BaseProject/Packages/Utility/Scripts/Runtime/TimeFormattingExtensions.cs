@@ -7,27 +7,34 @@ namespace Base.UtilityPackage
     /// </summary>
     public static class TimeFormattingExtensions
     {
+        private const string HourUnit = "hour";
+        private const string MinuteUnit = "minute";
+        private const string SecondUnit = "second";
+
         /// <summary>
         /// Converts a time duration in seconds to a formatted string,
         /// e.g. "2 hours, 5 minutes and 30 seconds", "5 minutes and 30 seconds" or "30 seconds".
         /// </summary>
-        public static string ToMinutesSecondsText(this float seconds)
+        /// <param name="seconds">The duration in seconds. Negative values are treated as zero.</param>
+        /// <returns>The formatted duration.</returns>
+        public static string ToDurationText(this float seconds)
         {
-            if (seconds < 0f)
-                seconds = 0f;
+            TimeSpan duration = TimeSpan.FromSeconds(Math.Round(Math.Max(seconds, 0f)));
+            int hours = (int)duration.TotalHours;
 
-            int totalSeconds = (int)Math.Round(seconds);
-            TimeSpan ts = TimeSpan.FromSeconds(totalSeconds);
+            if (hours >= 1)
+                return $"{Format(hours, HourUnit)}, {Format(duration.Minutes, MinuteUnit)} "
+                    + $"and {Format(duration.Seconds, SecondUnit)}";
 
-            string text;
-            if (ts.TotalHours >= 1)
-                text = $"{(int)ts.TotalHours} hours, {ts.Minutes} minutes and {ts.Seconds} seconds";
-            else if (ts.TotalMinutes >= 1)
-                text = $"{ts.Minutes} minutes and {ts.Seconds} seconds";
-            else
-                text = $"{ts.Seconds} seconds";
+            if (duration.Minutes >= 1)
+                return $"{Format(duration.Minutes, MinuteUnit)} and {Format(duration.Seconds, SecondUnit)}";
 
-            return text;
+            return Format(duration.Seconds, SecondUnit);
         }
+
+        // Keeps the singular form for a value of one, so "1 seconds" cannot happen.
+        private static string Format(int value, string unit) => value == 1
+            ? $"{value} {unit}"
+            : $"{value} {unit}s";
     }
 }

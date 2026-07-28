@@ -2,8 +2,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Base.UtilityPackage.Logging;
-using UnityEditor;
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace Base.UtilityPackage
 {
@@ -13,12 +15,11 @@ namespace Base.UtilityPackage
     /// </summary>
     public class CoroutineRunner : CustomSingleton<CoroutineRunner>
     {
+        private const int FramesForNextFrame = 1;
+
         private readonly HashSet<Coroutine> _coroutines = new();
 
 #region Unity Callbacks
-        /// <summary>
-        /// Ensures all coroutines are stopped when this component is destroyed.
-        /// </summary>
         private void OnDestroy()
         {
             StopAllCoroutines();
@@ -63,7 +64,7 @@ namespace Base.UtilityPackage
 
             IEnumerator DelayedStart()
             {
-                yield return null; // Wait one frame
+                yield return null;
 
                 while (coroutine.MoveNext())
                     yield return coroutine.Current;
@@ -75,7 +76,8 @@ namespace Base.UtilityPackage
         /// </summary>
         /// <param name="actionToRun">The action to execute the next frame.</param>
         /// <returns>The <see cref="Coroutine"/> instance started.</returns>
-        public Coroutine RunNextFrame(Action actionToRun) => StartTracked(RunAfterFramesCoroutine(actionToRun, 1));
+        public Coroutine RunNextFrame(Action actionToRun)
+            => StartTracked(RunAfterFramesCoroutine(actionToRun, FramesForNextFrame));
 
         /// <summary>
         /// Runs the specified <paramref name="actionToRun"/> after a certain number of frames.
@@ -89,7 +91,7 @@ namespace Base.UtilityPackage
         {
             if (frameCount < 0)
             {
-                CustomLogger.LogWarning("Frame count must be non-negative.", this);
+                CustomLogger.LogWarning($"{nameof(frameCount)} must be non-negative.", this);
                 frameCount = 0;
             }
 
@@ -117,7 +119,7 @@ namespace Base.UtilityPackage
         {
             if (seconds < 0f)
             {
-                CustomLogger.LogWarning("Seconds must be non-negative.", this);
+                CustomLogger.LogWarning($"{nameof(seconds)} must be non-negative.", this);
                 seconds = 0f;
             }
 
@@ -157,11 +159,6 @@ namespace Base.UtilityPackage
         private static void ResetStatics() => Instance = null;
 #endif
 
-        /// <summary>
-        /// Runs the specified <paramref name="actionToRun"/> after waiting for the given number of frames.
-        /// </summary>
-        /// <param name="actionToRun">The action to run after the specified number of frames.</param>
-        /// <param name="frameCount">The number of frames to wait before running the action.</param>
         private static IEnumerator RunAfterFramesCoroutine(Action actionToRun, int frameCount)
         {
             for (int i = 0; i < frameCount; i++)
@@ -170,12 +167,6 @@ namespace Base.UtilityPackage
             actionToRun?.Invoke();
         }
 
-        /// <summary>
-        /// Runs the specified <paramref name="actionToRun"/> after waiting for the provided
-        /// <paramref name="yieldInstruction"/>.
-        /// </summary>
-        /// <param name="actionToRun">The action to run after the wait instruction completes.</param>
-        /// <param name="yieldInstruction">The yield instruction to wait for before executing the action.</param>
         private static IEnumerator RunActionDelayed(Action actionToRun, YieldInstruction yieldInstruction)
         {
             yield return yieldInstruction;
@@ -187,8 +178,6 @@ namespace Base.UtilityPackage
         /// Starts <paramref name="coroutine"/> wrapped in a tracker that removes it from the set on completion.
         /// Stopping the returned handle also stops the wrapped coroutine, since it is iterated inline.
         /// </summary>
-        /// <param name="coroutine">The coroutine enumerator to run.</param>
-        /// <returns>The <see cref="Coroutine"/> instance started.</returns>
         private Coroutine StartTracked(IEnumerator coroutine)
         {
             Coroutine handle = null;

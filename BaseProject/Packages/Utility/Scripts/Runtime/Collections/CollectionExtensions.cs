@@ -14,12 +14,11 @@ namespace Base.UtilityPackage.Collections
         /// </summary>
         /// <typeparam name="T">The type of the element.</typeparam>
         /// <param name="item">The element to wrap.</param>
+        /// <returns>An enumerable yielding only <paramref name="item"/>.</returns>
         /// <remarks>
-        /// <para>
         /// Using <see cref="IEnumerable{T}"/> instead of <see cref="List{T}"/> avoids unnecessary heap allocations
         /// when only enumeration is required. The compiler generates an iterator that yields a single element
         /// without creating an intermediate collection.
-        /// </para>
         /// </remarks>
         public static IEnumerable<T> Single<T>(T item)
         {
@@ -27,43 +26,24 @@ namespace Base.UtilityPackage.Collections
         }
 
         /// <summary>
-        /// Returns a random element from the array.
+        /// Returns a random element from a list. Arrays bind here as well, since they implement
+        /// <see cref="IList{T}"/>.
         /// </summary>
         /// <typeparam name="T">Element type.</typeparam>
-        /// <param name="array">The source array.</param>
-        /// <returns>A random element from the array.</returns>
-        public static T GetRandomElement<T>(this T[] array)
-        {
-            if (array == null)
-            {
-                CustomLogger.LogWarning($"{nameof(GetRandomElement)} called on a null array.", null);
-                return default(T);
-            }
-
-            if (array.Length == 0)
-            {
-                CustomLogger.LogWarning($"{nameof(GetRandomElement)} called on an empty array.", null);
-                return default(T);
-            }
-
-            return array[Random.Range(0, array.Length)];
-        }
-
-        /// <summary>
-        /// Returns a random element from a list.
-        /// </summary>
+        /// <param name="list">The source list.</param>
+        /// <returns>A random element, or the default value if the list is null or empty.</returns>
         public static T GetRandomElement<T>(this IList<T> list)
         {
             if (list == null)
             {
-                CustomLogger.LogWarning($"{nameof(GetRandomElement)} called on a null list.", null);
-                return default(T);
+                CustomLogger.LogWarning($"{nameof(GetRandomElement)} called on a null collection.", null);
+                return default;
             }
 
             if (list.Count == 0)
             {
-                CustomLogger.LogWarning($"{nameof(GetRandomElement)} called on an empty list.", null);
-                return default(T);
+                CustomLogger.LogWarning($"{nameof(GetRandomElement)} called on an empty collection.", null);
+                return default;
             }
 
             return list[Random.Range(0, list.Count)];

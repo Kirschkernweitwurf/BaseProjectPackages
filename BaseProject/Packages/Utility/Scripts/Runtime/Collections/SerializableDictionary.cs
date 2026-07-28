@@ -15,7 +15,10 @@ namespace Base.UtilityPackage.Collections
         : IEnumerable<KeyValuePair<TKey, TValue>>, ISerializationCallbackReceiver
     {
         private static readonly EqualityComparer<TKey> KeyComparer = EqualityComparer<TKey>.Default;
+
         [SerializeField] private List<SerializableDictionaryEntry<TKey, TValue>> entries = new();
+
+        private Dictionary<TKey, TValue> _dict;
 
         /// <summary>
         /// Gets the number of key-value pairs contained in the dictionary.
@@ -78,11 +81,10 @@ namespace Base.UtilityPackage.Collections
             }
         }
 
-        private Dictionary<TKey, TValue> _dict;
-
         /// <summary>
         /// Returns an enumerator that iterates through the dictionary.
         /// </summary>
+        /// <returns>An enumerator over all key-value pairs.</returns>
         public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
         {
             EnsureDictionary();
@@ -93,10 +95,8 @@ namespace Base.UtilityPackage.Collections
 
         void ISerializationCallbackReceiver.OnBeforeSerialize() { }
 
-        /// <summary>
-        /// Discards the runtime dictionary after Unity deserializes the entries (e.g. inspector edits),
-        /// so the next access rebuilds it from the fresh serialized data.
-        /// </summary>
+        // Discards the runtime dictionary after Unity deserializes the entries (e.g. inspector edits),
+        // so the next access rebuilds it from the fresh serialized data.
         void ISerializationCallbackReceiver.OnAfterDeserialize() => _dict = null;
 
         /// <summary>
@@ -171,13 +171,14 @@ namespace Base.UtilityPackage.Collections
                 return;
 
             _dict = new Dictionary<TKey, TValue>(entries.Count);
+
             foreach (SerializableDictionaryEntry<TKey, TValue> entry in entries)
             {
-                if (entry.key == null
-                    || _dict.ContainsKey(entry.key))
+                if (entry.Key == null
+                    || _dict.ContainsKey(entry.Key))
                     continue;
 
-                _dict[entry.key] = entry.value;
+                _dict[entry.Key] = entry.Value;
             }
         }
 
@@ -185,7 +186,7 @@ namespace Base.UtilityPackage.Collections
         {
             for (int i = 0; i < entries.Count; i++)
             {
-                if (!KeyComparer.Equals(entries[i].key, key))
+                if (!KeyComparer.Equals(entries[i].Key, key))
                     continue;
 
                 index = i;

@@ -45,22 +45,14 @@ namespace Base.UtilityPackage.Logging
             => Debug.LogError(FormatMessage(message, filePath), context);
 
         private static string FormatMessage(string message, string filePath)
-        {
-            string editorMarker = Platform.IsEditorMode()
-                ? LogTextFormatter.EditorMarker
-                : string.Empty;
-
-            return $"{editorMarker}{GetPrefix(filePath)} {message}";
-        }
+            => $"{CustomLoggingUtils.GetEditorMarker()}{GetPrefix(filePath)} {message}";
 
         private static string GetPrefix(string filePath)
         {
             if (PrefixCache.TryGetValue(filePath, out string prefix))
                 return prefix;
 
-            string className = Path.GetFileNameWithoutExtension(filePath);
-            string color = CustomLoggingUtils.GetColor(className);
-            prefix = $"<color={color}><b>[{className}]</b></color>";
+            prefix = CustomLoggingUtils.BuildClassTag(Path.GetFileNameWithoutExtension(filePath));
             PrefixCache[filePath] = prefix;
             return prefix;
         }

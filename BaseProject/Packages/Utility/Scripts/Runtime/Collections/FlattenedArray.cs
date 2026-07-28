@@ -8,8 +8,12 @@ namespace Base.UtilityPackage.Collections
     /// Represents a 2D array flattened into a 1D array for efficient storage and access.
     /// </summary>
     /// <typeparam name="T">Type of elements stored in the array.</typeparam>
-    public class FlattenedArray<T> : IEnumerable<T>
+    public sealed class FlattenedArray<T> : IEnumerable<T>
     {
+        private const string NonNegativeMessage = "Must be non-negative.";
+
+        private readonly T[] _data;
+
         /// <summary>
         /// Width of the 2D array.
         /// </summary>
@@ -21,7 +25,12 @@ namespace Base.UtilityPackage.Collections
         public int Height { get; }
 
         /// <summary>
-        /// Direct array access if needed.
+        /// Total number of elements in the array.
+        /// </summary>
+        public int Length => _data.Length;
+
+        /// <summary>
+        /// Direct access to the element at (x, y).
         /// </summary>
         public T this[int x, int y]
         {
@@ -30,17 +39,20 @@ namespace Base.UtilityPackage.Collections
         }
 
         /// <summary>
-        /// Total number of elements in the array.
+        /// Creates a grid of the given size.
         /// </summary>
-        public int Length => _data.Length;
-
-        private readonly T[] _data;
-
+        /// <param name="width">Number of columns. Must be non-negative.</param>
+        /// <param name="height">Number of rows. Must be non-negative.</param>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// Thrown if <paramref name="width"/> or <paramref name="height"/> is negative.
+        /// </exception>
         public FlattenedArray(int width, int height)
         {
-            if (width < 0
-                || height < 0)
-                throw new ArgumentOutOfRangeException($"{nameof(width)}/{nameof(height)} must be non-negative.");
+            if (width < 0)
+                throw new ArgumentOutOfRangeException(nameof(width), width, NonNegativeMessage);
+
+            if (height < 0)
+                throw new ArgumentOutOfRangeException(nameof(height), height, NonNegativeMessage);
 
             Width = width;
             Height = height;
@@ -50,23 +62,27 @@ namespace Base.UtilityPackage.Collections
         /// <summary>
         /// Returns the underlying array's enumerator, avoiding a custom iterator state machine.
         /// </summary>
+        /// <returns>An enumerator over all elements in row-major order.</returns>
         public IEnumerator<T> GetEnumerator() => ((IEnumerable<T>)_data).GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => _data.GetEnumerator();
 
         /// <summary>
-        /// Set the value at (x, y).
+        /// Sets the value at (x, y).
         /// </summary>
+        /// <param name="x">Column index.</param>
+        /// <param name="y">Row index.</param>
+        /// <param name="value">The value to store.</param>
         public void Set(int x, int y, T value) => _data[ToIndex(x, y)] = value;
 
         /// <summary>
-        /// Get the value at (x, y).
+        /// Gets the value at (x, y).
         /// </summary>
+        /// <param name="x">Column index.</param>
+        /// <param name="y">Row index.</param>
+        /// <returns>The stored value.</returns>
         public T Get(int x, int y) => _data[ToIndex(x, y)];
 
-        /// <summary>
-        /// Converts (x, y) into a flat array index.
-        /// </summary>
         private int ToIndex(int x, int y) => y * Width + x;
     }
 }

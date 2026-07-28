@@ -11,12 +11,16 @@ namespace Base.UtilityPackage.Editor
     /// </summary>
     public static class PropertyDrawerUtility
     {
+        private const string MissingOptionLabel = "<NULL>";
+        private const string NoneOptionLabel = "None";
+        private const int NoneOptionIndex = 0;
+
         /// <summary>
-        /// Draws a popup for selecting an object reference of type T from a list of options.
+        /// Draws a popup for selecting an object reference of type <typeparamref name="T"/> from a list of options.
         /// </summary>
         /// <typeparam name="T">Any UnityEngine.Object type.</typeparam>
         /// <param name="position">GUI position.</param>
-        /// <param name="property">SerializedObject reference property.</param>
+        /// <param name="property">The object reference property to write to.</param>
         /// <param name="label">Label for the popup.</param>
         /// <param name="options">List of objects to pick from.</param>
         /// <remarks>Includes a "None" option to clear the reference.</remarks>
@@ -30,36 +34,46 @@ namespace Base.UtilityPackage.Editor
                 return;
             }
 
-            // Build names array directly with "None" entry first (avoids intermediate list and LINQ garbage).
-            string[] names = new string[options.Count + 1];
-            names[0] = "None";
-            for (int i = 0; i < options.Count; i++)
-            {
-                names[i + 1] = options[i] != null
-                    ? options[i].name
-                    : "<NULL>";
-            }
-
-            Object current = property.objectReferenceValue;
-
-            // Determine current index with 1-based offset
-            int index = 0;
-            if (current is T typedCurrent)
-            {
-                int foundIndex = options.IndexOf(typedCurrent);
-                if (foundIndex >= 0)
-                    index = foundIndex + 1;
-            }
-
+            string[] names = BuildNames(options);
+            int index = GetCurrentIndex(property, options);
             int newIndex = EditorGUI.Popup(position, label.text, index, names);
 
-            // Only write back on an actual change so repaints don't touch the SerializedObject.
+            // Only write back on an actual change so repaints do not touch the SerializedObject.
             if (newIndex == index)
                 return;
 
-            property.objectReferenceValue = newIndex == 0
+            property.objectReferenceValue = newIndex == NoneOptionIndex
                 ? null
                 : options[newIndex - 1];
+        }
+
+        // Builds the names array directly with the "None" entry first, avoiding an intermediate list and LINQ garbage.
+        private static string[] BuildNames<T>(List<T> options) where T : Object
+        {
+            string[] names = new string[options.Count + 1];
+            names[NoneOptionIndex] = NoneOptionLabel;
+
+            for (int i = 0; i < options.Count; i++)
+            {
+                names[i + 1] = options[i] == null
+                    ? MissingOptionLabel
+                    : options[i].name;
+            }
+
+            return names;
+        }
+
+        // The popup index is offset by one, because the "None" entry occupies index zero.
+        private static int GetCurrentIndex<T>(SerializedProperty property, List<T> options) where T : Object
+        {
+            if (property.objectReferenceValue is not T current)
+                return NoneOptionIndex;
+
+            int foundIndex = options.IndexOf(current);
+
+            return foundIndex < 0
+                ? NoneOptionIndex
+                : foundIndex + 1;
         }
     }
 }
