@@ -1,7 +1,9 @@
+#if UNITY_EDITOR
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Base.ToolPackage.Editor.Shared;
+using Base.UtilityPackage;
 using UnityEditor;
 
 namespace Base.ToolPackage.Editor.MenuManagerWindows.MenuItemOverview
@@ -27,37 +29,15 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows.MenuItemOverview
 
             foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
             {
-                foreach (Type type in GetLoadableTypes(assembly))
+                foreach (Type type in ReflectionUtility.GetLoadableTypes(assembly))
                     CollectFromType(type, entries);
             }
 
             return entries;
         }
 
-        private static IEnumerable<Type> GetLoadableTypes(Assembly assembly)
-        {
-            try
-            {
-                return assembly.GetTypes();
-            }
-            catch (ReflectionTypeLoadException exception)
-            {
-                List<Type> loadable = new();
-                foreach (Type type in exception.Types)
-                {
-                    if (type != null)
-                        loadable.Add(type);
-                }
-
-                return loadable;
-            }
-        }
-
         private void CollectFromType(Type type, List<MenuItemEntry> entries)
         {
-            if (type == null)
-                return;
-
             MethodInfo[] methods;
             try
             {
@@ -86,3 +66,4 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows.MenuItemOverview
         }
     }
 }
+#endif

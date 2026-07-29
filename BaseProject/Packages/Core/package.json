@@ -2,7 +2,7 @@
   "name": "com.baseprojectpackages.core",
   "displayName": "Base Core Package",
   "description": "A collection of reusable core systems that any Unity project can build on. It provides a service locator, an event bus, timers, scene loading, audio, input, object pooling and a data driven tweening system. It also includes a menu framework, priority based cursor and timescale control, tooltips and an in-game debug menu with a cheat console and a log console. Everything lives under the Base.CorePackage namespace and ships with matching editor tooling.",
-  "version": "1.9.1",
+  "version": "1.9.2",
   "unity": "6000.3",
   "author": {
     "name": "Jonathan Alber"

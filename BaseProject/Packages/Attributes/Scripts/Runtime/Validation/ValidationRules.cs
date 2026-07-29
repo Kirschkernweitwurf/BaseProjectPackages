@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Base.UtilityPackage;
 
 namespace Base.AttributePackage
 {
@@ -21,12 +22,12 @@ namespace Base.AttributePackage
 
             foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
             {
-                if (FrameworkAssemblies.Contains(assembly.GetName().Name))
+                if (IsFrameworkAssembly(assembly.GetName().Name))
                     continue;
 
-                foreach (Type type in SafeGetTypes(assembly))
+                foreach (Type type in ReflectionUtility.GetLoadableTypes(assembly))
                 {
-                    if (type == null || type.IsAbstract || type.IsInterface)
+                    if (type.IsAbstract || type.IsInterface)
                         continue;
 
                     if (!typeof(IValidationRule).IsAssignableFrom(type))
@@ -42,16 +43,10 @@ namespace Base.AttributePackage
             return rules.ToArray();
         }
 
-        private static IEnumerable<Type> SafeGetTypes(Assembly assembly)
-        {
-            try
-            {
-                return assembly.GetTypes();
-            }
-            catch (ReflectionTypeLoadException exception)
-            {
-                return exception.Types;
-            }
-        }
+        private static bool IsFrameworkAssembly(string name) => name.StartsWith("Unity")
+            || name.StartsWith("System")
+            || name.StartsWith("Mono.")
+            || name.StartsWith("netstandard")
+            || name == "mscorlib";
     }
 }

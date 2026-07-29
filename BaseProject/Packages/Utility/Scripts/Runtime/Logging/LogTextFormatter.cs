@@ -30,8 +30,15 @@ namespace Base.UtilityPackage.Logging
         /// <summary>
         /// Colors text using a value from <see cref="EDebugLogColors"/>.
         /// </summary>
-        public static string Colorize(string text, EDebugLogColors color)
-            => $"<color={ColorToString(color)}>{text}</color>";
+        public static string Colorize(string text, EDebugLogColors color) => Colorize(text, ColorToString(color));
+
+        /// <summary>
+        /// Colors text using any value Unity's rich text accepts, such as a hex string or a named color.
+        /// </summary>
+        /// <param name="text">The text to color.</param>
+        /// <param name="color">The color value, for example "#FFAA00" or "cyan".</param>
+        /// <returns>The colored text.</returns>
+        public static string Colorize(string text, string color) => $"<color={color}>{text}</color>";
 
         /// <summary>
         /// Changes text size in Unity Console logs.

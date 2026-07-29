@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Base.CorePackage.Audio;
 using Base.ToolPackage.MenuManagerWindow;
+using Base.UtilityPackage.Editor;
 using Base.UtilityPackage.Logging;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -19,6 +20,7 @@ namespace Base.CorePackage.Editor.Audio
     {
         private const string ClipsFolder = "Assets/Audio";
         private const string ContainersFolder = "Assets/ScriptableObjects/AudioContainer";
+        private const string PrefabFilter = "t:Prefab";
 
         private readonly List<AudioClip> _unusedClips = new();
         private readonly List<NullClipReference> _nullClipReferences = new();
@@ -86,14 +88,10 @@ namespace Base.CorePackage.Editor.Audio
                 return new HashSet<AudioClip>();
             }
 
-            string[] guids = AssetDatabase.FindAssets("t:AudioClip", new[]
+            return new HashSet<AudioClip>(AssetDatabaseUtility.LoadAll<AudioClip>(folders: new[]
             {
                 ClipsFolder
-            });
-
-            return new HashSet<AudioClip>(guids
-                .Select(guid => AssetDatabase.LoadAssetAtPath<AudioClip>(AssetDatabase.GUIDToAssetPath(guid)))
-                .Where(clip => clip != null));
+            }));
         }
 
         private static void CollectUsedClipsFromScenes(HashSet<AudioClip> usedClips)
@@ -112,13 +110,14 @@ namespace Base.CorePackage.Editor.Audio
 
         private static void CollectUsedClipsFromPrefabs(HashSet<AudioClip> usedClips)
         {
-            string[] guids = AssetDatabase.FindAssets("t:Prefab");
-            for (int i = 0; i < guids.Length; i++)
-            {
-                string path = AssetDatabase.GUIDToAssetPath(guids[i]);
-                EditorUtility.DisplayProgressBar("Scanning Prefabs", path, (float)i / guids.Length);
+            // Paths rather than loaded assets, so the progress bar can name the prefab it is on.
+            List<string> paths = AssetDatabaseUtility.FindAssetPaths(PrefabFilter);
 
-                GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+            for (int i = 0; i < paths.Count; i++)
+            {
+                EditorUtility.DisplayProgressBar("Scanning Prefabs", paths[i], (float)i / paths.Count);
+
+                GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(paths[i]);
                 if (prefab != null)
                     CollectClipsFromHierarchy(prefab, usedClips);
             }
@@ -138,18 +137,13 @@ namespace Base.CorePackage.Editor.Audio
                 return;
             }
 
-            string[] guids = AssetDatabase.FindAssets("t:AudioContainer", new[]
+            List<AudioContainer> containers = AssetDatabaseUtility.LoadAll<AudioContainer>(folders: new[]
             {
                 ContainersFolder
             });
 
-            foreach (string guid in guids)
+            foreach (AudioContainer container in containers)
             {
-                string path = AssetDatabase.GUIDToAssetPath(guid);
-                AudioContainer container = AssetDatabase.LoadAssetAtPath<AudioContainer>(path);
-                if (container == null)
-                    continue;
-
                 AudioClip[] clips = container.Clips;
                 if (clips == null || clips.Length == 0)
                 {

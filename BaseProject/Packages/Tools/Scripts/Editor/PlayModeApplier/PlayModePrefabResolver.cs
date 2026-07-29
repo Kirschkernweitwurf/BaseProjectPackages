@@ -1,4 +1,5 @@
 using System.IO;
+using Base.UtilityPackage;
 using UnityEditor;
 using UnityEngine;
 
@@ -11,7 +12,6 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
     /// </summary>
     public static class PlayModePrefabResolver
     {
-        private const string CloneSuffix = "(Clone)";
         private const string PrefabFilter = " t:Prefab";
 
         /// <summary>
@@ -25,7 +25,7 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
 
             while (cursor != null)
             {
-                if (cursor.name.EndsWith(CloneSuffix))
+                if (cursor.name.EndsWith(InstantiationUtility.CloneSuffix))
                     highestClone = cursor;
 
                 cursor = cursor.parent;
@@ -41,7 +41,7 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
         /// </summary>
         public static string FindPrefabGuid(Transform root)
         {
-            string rootName = StripCloneSuffix(root.name);
+            string rootName = InstantiationUtility.StripCloneSuffix(root.name);
             string[] guids = AssetDatabase.FindAssets($"\"{rootName}\"{PrefabFilter}");
             string match = string.Empty;
             int matchCount = 0;
@@ -60,10 +60,5 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
                 ? match
                 : string.Empty;
         }
-
-        /// <summary>Removes Unity's "(Clone)" suffix from an instantiated object name.</summary>
-        private static string StripCloneSuffix(string name) => !name.EndsWith(CloneSuffix)
-            ? name
-            : name[..^CloneSuffix.Length].TrimEnd();
     }
 }

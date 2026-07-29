@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Base.UtilityPackage;
 using Base.UtilityPackage.Logging;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -42,7 +43,7 @@ namespace Base.CorePackage.ObjectPooling
         /// </summary>
         protected readonly T Prefab;
 
-        private readonly Transform parent;
+        private readonly Transform _parent;
         private readonly HashSet<T> _availableObjects = new();
         private readonly HashSet<T> _activeObjects = new();
         private readonly Action<T> _resetAction;
@@ -59,7 +60,7 @@ namespace Base.CorePackage.ObjectPooling
                 CustomLogger.LogError($"{nameof(prefab)} is null, this pool cannot create instances.", parent);
 
             Prefab = prefab;
-            this.parent = parent;
+            _parent = parent;
             _resetAction = resetAction;
         }
 
@@ -77,7 +78,7 @@ namespace Base.CorePackage.ObjectPooling
 
             if (element == null)
             {
-                CustomLogger.LogError($"Failed to create a new instance from {nameof(Prefab)}.", parent);
+                CustomLogger.LogError($"Failed to create a new instance from {nameof(Prefab)}.", _parent);
                 return false;
             }
 
@@ -102,7 +103,7 @@ namespace Base.CorePackage.ObjectPooling
         {
             if (element == null)
             {
-                CustomLogger.LogError("Tried to release a null element.", parent);
+                CustomLogger.LogError("Tried to release a null element.", _parent);
                 return;
             }
 
@@ -125,7 +126,7 @@ namespace Base.CorePackage.ObjectPooling
         {
             if (elements == null)
             {
-                CustomLogger.LogError("Tried to release a null collection.", parent);
+                CustomLogger.LogError("Tried to release a null collection.", _parent);
                 return;
             }
 
@@ -161,15 +162,18 @@ namespace Base.CorePackage.ObjectPooling
         public bool Contains(T element) => _activeObjects.Contains(element) || _availableObjects.Contains(element);
 
         /// <summary>
-        /// Creates a new instance from the prefab.
+        /// Creates a new instance from the prefab, without the "(Clone)" suffix in its name.
         /// </summary>
         /// <returns>The new instance, or null when the prefab is missing.</returns>
+        /// <remarks>
+        /// The missing prefab is already reported by the constructor, so this stays quiet.
+        /// </remarks>
         protected virtual T CreateInstance()
         {
             if (Prefab == null)
                 return null;
 
-            return Object.Instantiate(Prefab, parent);
+            return InstantiationUtility.CleanInstantiate(Prefab, _parent);
         }
 
         /// <summary>

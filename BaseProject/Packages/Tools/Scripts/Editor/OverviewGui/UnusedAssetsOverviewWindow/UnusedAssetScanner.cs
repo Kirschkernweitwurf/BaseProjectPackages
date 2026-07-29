@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using Base.UtilityPackage.Editor;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -166,12 +167,12 @@ namespace Base.ToolPackage.Editor.OverviewGui.UnusedAssetsOverviewWindow
                     if (string.IsNullOrEmpty(path))
                         continue;
 
+                    // A folder entry marks everything inside it as addressable, so expand it.
                     if (AssetDatabase.IsValidFolder(path))
-                        foreach (string guid in AssetDatabase.FindAssets(string.Empty, new[]
-                                 {
-                                     path
-                                 }))
-                            roots.Add(AssetDatabase.GUIDToAssetPath(guid));
+                        roots.UnionWith(AssetDatabaseUtility.FindAssetPaths(folders: new[]
+                        {
+                            path
+                        }));
                     else
                         roots.Add(path);
                 }

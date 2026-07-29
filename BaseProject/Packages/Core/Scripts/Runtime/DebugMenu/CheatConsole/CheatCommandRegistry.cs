@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Base.UtilityPackage;
 using Base.UtilityPackage.Logging;
-using Object = UnityEngine.Object;
 
 namespace Base.CorePackage.DebugMenu.CheatConsole
 {
@@ -36,7 +36,7 @@ namespace Base.CorePackage.DebugMenu.CheatConsole
 
             foreach (object target in targets)
             {
-                if (IsNull(target))
+                if (!UnityObjectUtility.IsAlive(target))
                     continue;
 
                 AddCommands(target.GetType().GetMethods(InstanceFlags), target, result);
@@ -66,29 +66,11 @@ namespace Base.CorePackage.DebugMenu.CheatConsole
                 if (assembly == null)
                     continue;
 
-                foreach (Type type in GetTypes(assembly))
-                {
-                    if (type == null)
-                        continue;
-
+                foreach (Type type in ReflectionUtility.GetLoadableTypes(assembly))
                     AddCommands(type.GetMethods(StaticFlags), null, result);
-                }
             }
 
             return result;
-        }
-
-        private static Type[] GetTypes(Assembly assembly)
-        {
-            // A partially loadable assembly still carries usable types, so the loaded ones are kept.
-            try
-            {
-                return assembly.GetTypes();
-            }
-            catch (ReflectionTypeLoadException exception)
-            {
-                return exception.Types;
-            }
         }
 
         private static void AddCommands(MethodInfo[] methods, object target, List<CheatCommandInfo> result)
@@ -101,15 +83,6 @@ namespace Base.CorePackage.DebugMenu.CheatConsole
 
                 result.Add(new CheatCommandInfo(attribute, method, target));
             }
-        }
-
-        // Destroyed Unity objects are only recognized by Unity's own equality operator.
-        private static bool IsNull(object target)
-        {
-            if (target is Object unityObject)
-                return unityObject == null;
-
-            return target == null;
         }
     }
 }

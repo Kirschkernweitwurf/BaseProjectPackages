@@ -10,19 +10,25 @@ namespace Base.UtilityPackage.Logging
     {
         private const float ColorSaturation = 0.5f;
         private const float ColorValue = 0.9f;
-        private const int HueSteps = 360;
+        private const uint HueSteps = 360u;
 
         /// <summary>
-        /// Generates a consistent color string for a given name, based on its hash code.
+        /// Generates a consistent color for a given name.
+        /// </summary>
+        /// <param name="name">The name to generate a color for (e.g. a class name or log category).</param>
+        /// <returns>A color that stays the same for the same name across sessions.</returns>
+        public static Color GetColorValue(string name)
+        {
+            float hue = StringUtility.GetStableHash(name) % HueSteps / (float)HueSteps;
+            return Color.HSVToRGB(hue, ColorSaturation, ColorValue);
+        }
+
+        /// <summary>
+        /// Generates a consistent color string for a given name.
         /// </summary>
         /// <param name="name">The name to generate a color for (e.g. a class name or log category).</param>
         /// <returns>A hex color string (e.g. "#FFAA00") that can be used in Unity rich text.</returns>
-        public static string GetColor(string name)
-        {
-            float hue = (name.GetHashCode() & int.MaxValue) % HueSteps / (float)HueSteps;
-            Color color = Color.HSVToRGB(hue, ColorSaturation, ColorValue);
-            return $"#{ColorUtility.ToHtmlStringRGB(color)}";
-        }
+        public static string GetColor(string name) => $"#{ColorUtility.ToHtmlStringRGB(GetColorValue(name))}";
 
         /// <summary>
         /// Builds the styled "[ClassName]" tag that every log message is prefixed with.
@@ -30,7 +36,7 @@ namespace Base.UtilityPackage.Logging
         /// <param name="className">Name of the class the message originates from.</param>
         /// <returns>The colored and bolded class tag.</returns>
         public static string BuildClassTag(string className)
-            => $"<color={GetColor(className)}>{LogTextFormatter.Bold($"[{className}]")}</color>";
+            => LogTextFormatter.Colorize(LogTextFormatter.Bold($"[{className}]"), GetColor(className));
 
         /// <summary>
         /// Returns the edit mode marker, or an empty string outside edit mode.

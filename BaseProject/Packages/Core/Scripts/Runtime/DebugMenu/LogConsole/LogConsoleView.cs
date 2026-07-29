@@ -79,7 +79,8 @@ namespace Base.CorePackage.DebugMenu.LogConsole
             };
 
             string timestamp = DateTime.Now.ToString(TimestampFormat, CultureInfo.InvariantCulture);
-            string line = $"<color={timestampColor}>[{timestamp}]</color> <color={DefaultColor}>{message}</color>";
+            string line = $"{LogTextFormatter.Colorize($"[{timestamp}]", timestampColor)} "
+                + LogTextFormatter.Colorize(message, DefaultColor);
 
             BufferedLines.Enqueue(line);
             while (BufferedLines.Count > MaxLines)

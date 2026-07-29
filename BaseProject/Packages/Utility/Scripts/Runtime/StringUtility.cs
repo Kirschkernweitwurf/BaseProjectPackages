@@ -9,6 +9,8 @@ namespace Base.UtilityPackage
     {
         // Headroom for the spaces inserted between words, so the builder does not have to grow.
         private const int BufferPadding = 8;
+        private const uint HashOffsetBasis = 2166136261u;
+        private const uint HashPrime = 16777619u;
 
         /// <summary>
         /// Returns a nicely formatted version of a variable name, by replacing underscores with spaces,
@@ -48,6 +50,32 @@ namespace Base.UtilityPackage
             }
 
             return result.ToString();
+        }
+
+        /// <summary>
+        /// Returns an FNV-1a hash of a string.
+        /// </summary>
+        /// <param name="value">The string to hash. Null and empty both return the offset basis.</param>
+        /// <returns>The hash value.</returns>
+        /// <remarks>
+        /// Unlike <see cref="string.GetHashCode"/> this stays identical across sessions, runtimes and Unity
+        /// versions, so it is safe to derive colors, bucket indices or file names from it and expect the same
+        /// result next time.
+        /// </remarks>
+        public static uint GetStableHash(string value)
+        {
+            uint hash = HashOffsetBasis;
+
+            if (string.IsNullOrEmpty(value))
+                return hash;
+
+            foreach (char character in value)
+            {
+                hash ^= character;
+                hash *= HashPrime;
+            }
+
+            return hash;
         }
     }
 }

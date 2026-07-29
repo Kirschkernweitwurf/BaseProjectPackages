@@ -1,7 +1,9 @@
 {
   "name": "Base.UtilityPackage.Editor",
   "rootNamespace": "Base.UtilityPackage.Editor",
-  "references": [],
+  "references": [
+    "GUID:922d81cfb9ff6984da4cb2213b66a375"
+  ],
   "includePlatforms": [
     "Editor"
   ],
