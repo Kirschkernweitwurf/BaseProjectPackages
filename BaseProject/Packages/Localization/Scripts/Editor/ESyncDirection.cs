@@ -1,4 +1,4 @@
-namespace Base.LocalizationPackage
+namespace Base.LocalizationPackage.Editor
 {
     /// <summary>
     /// The direction to sync String Table Collections with Google Sheets.

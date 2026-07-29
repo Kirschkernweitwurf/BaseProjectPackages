@@ -1,8 +1,6 @@
-#if UNITY_EDITOR
-#if !BASE_PACKAGES_DEV
 using UnityEditor;
 
-namespace Base.CorePackage.MenuManaging.Identifier.Editor
+namespace Base.CorePackage.Editor.MenuManaging.Identifier
 {
     /// <summary>
     /// Coalesces the regeneration requests coming from the asset callbacks into a single deferred run.
@@ -33,5 +31,3 @@ namespace Base.CorePackage.MenuManaging.Identifier.Editor
         }
     }
 }
-#endif
-#endif

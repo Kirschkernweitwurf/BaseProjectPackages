@@ -22,7 +22,6 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
         private const double SafetyPollInterval = 1.0;
         private const float SearchHeight = 20f;
         private const float SearchWidth = 200f;
-        private const string WindowTitle = "Required References";
 
         [SerializeField] private Vector2 scrollPosition;
         [SerializeField] private string search = string.Empty;
@@ -41,7 +40,7 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
 #region Unity Callbacks
         private void OnEnable()
         {
-            titleContent = new GUIContent(WindowTitle);
+            titleContent = new GUIContent(ReferenceWindowInfo.WindowTitle);
 
             _assetsDirty = true;
 

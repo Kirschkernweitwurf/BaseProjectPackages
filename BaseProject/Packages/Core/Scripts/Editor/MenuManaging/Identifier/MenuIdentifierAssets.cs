@@ -1,9 +1,8 @@
-#if UNITY_EDITOR
-#if !BASE_PACKAGES_DEV
 using System;
+using Base.CorePackage.MenuManaging.Identifier;
 using UnityEditor;
 
-namespace Base.CorePackage.MenuManaging.Identifier.Editor
+namespace Base.CorePackage.Editor.MenuManaging.Identifier
 {
     /// <summary>
     /// Shared asset path checks for <see cref="MenuIdentifier"/> assets, used by the asset callbacks.
@@ -39,9 +38,12 @@ namespace Base.CorePackage.MenuManaging.Identifier.Editor
             if (!AssetDatabase.IsValidFolder(path))
                 return false;
 
-            return AssetDatabase.FindAssets($"t:{nameof(MenuIdentifier)}", new[] { path }).Length > 0;
+            return AssetDatabase.FindAssets($"t:{nameof(MenuIdentifier)}", new[]
+                    {
+                        path
+                    })
+                    .Length
+                > 0;
         }
     }
 }
-#endif
-#endif

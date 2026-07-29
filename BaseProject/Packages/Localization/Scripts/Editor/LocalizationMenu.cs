@@ -1,6 +1,6 @@
 using Base.ToolPackage.MenuManagerWindow;
 
-namespace Base.LocalizationPackage
+namespace Base.LocalizationPackage.Editor
 {
     /// <summary>
     /// Adds menu items to the Unity Editor for syncing String Table

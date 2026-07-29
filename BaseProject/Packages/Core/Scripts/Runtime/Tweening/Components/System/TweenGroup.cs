@@ -7,6 +7,7 @@ using Base.CorePackage.Tweening.Core;
 using Base.CorePackage.Tweening.Core.Data;
 using Base.UtilityPackage.Logging;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Base.CorePackage.Tweening.Components.System
 {
@@ -28,13 +29,15 @@ namespace Base.CorePackage.Tweening.Components.System
         /// </summary>
         public event Action OnKilled;
 
+        [FormerlySerializedAs("showTweenBehaviours")]
         [ComponentPicker]
-        [Tooltip("The list of behaviours that should be played when showing the object.")]
-        [SerializeField] private List<TweenBehaviourBase> showTweenBehaviours = new();
+        [Tooltip("The list of behaviors that should be played when showing the object.")]
+        [SerializeField] private List<TweenBehaviourBase> showTweenBehaviors = new();
 
+        [FormerlySerializedAs("hideTweenBehaviours")]
         [ComponentPicker]
-        [Tooltip("The list of behaviours that should be played when hiding the object.")]
-        [SerializeField] private List<TweenBehaviourBase> hideTweenBehaviours = new();
+        [Tooltip("The list of behaviors that should be played when hiding the object.")]
+        [SerializeField] private List<TweenBehaviourBase> hideTweenBehaviors = new();
 
         [Header("Settings")]
 
@@ -68,8 +71,8 @@ namespace Base.CorePackage.Tweening.Components.System
         {
             Stop();
 
-            ResetBehaviours(showTweenBehaviours);
-            ResetBehaviours(hideTweenBehaviours);
+            ResetBehaviours(showTweenBehaviors);
+            ResetBehaviours(hideTweenBehaviors);
         }
 
         public void Shutdown()
@@ -89,18 +92,18 @@ namespace Base.CorePackage.Tweening.Components.System
         /// <summary>
         /// Plays the show behaviors forward.
         /// </summary>
-        public void Show() => PlayInternal(showTweenBehaviours, false);
+        public void Show() => PlayInternal(showTweenBehaviors, false);
 
         /// <summary>
         /// Plays the hide behaviors forward. If no hide behaviors are assigned, falls back to
         /// playing the show behaviors reversed so setups without a dedicated hide list still work.
         /// </summary>
-        public void Hide() => PlayInternal(hideTweenBehaviours is
+        public void Hide() => PlayInternal(hideTweenBehaviors is
         {
             Count: > 0
         }
-            ? hideTweenBehaviours
-            : showTweenBehaviours, true);
+            ? hideTweenBehaviors
+            : showTweenBehaviors, true);
 
         /// <summary>
         /// Stops all tweens in this group.
@@ -130,8 +133,8 @@ namespace Base.CorePackage.Tweening.Components.System
                 _sequence = null;
             }
 
-            StopBehaviours(showTweenBehaviours, complete);
-            StopBehaviours(hideTweenBehaviours, complete);
+            StopBehaviours(showTweenBehaviors, complete);
+            StopBehaviours(hideTweenBehaviors, complete);
 
             if (!wasRunning)
                 return;
@@ -220,6 +223,6 @@ namespace Base.CorePackage.Tweening.Components.System
             OnKilled?.Invoke();
         }
 
-        private bool HasAnyActiveTween() => HasActiveTween(showTweenBehaviours) || HasActiveTween(hideTweenBehaviours);
+        private bool HasAnyActiveTween() => HasActiveTween(showTweenBehaviors) || HasActiveTween(hideTweenBehaviors);
     }
 }

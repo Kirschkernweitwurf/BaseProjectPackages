@@ -131,7 +131,7 @@ authoring assets.
 
 ### Camera Utility
 
-- `MainCameraProvider` caches `Camera.main` and handles Unity's fake-null case.
+- `CameraProvider` caches `Camera.main` and handles Unity's fake-null case.
 
 ### Debug Menu
 

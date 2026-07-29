@@ -1,8 +1,7 @@
-#if UNITY_EDITOR
-#if !BASE_PACKAGES_DEV
+using Base.CorePackage.MenuManaging.Identifier;
 using UnityEditor;
 
-namespace Base.CorePackage.MenuManaging.Identifier.Editor
+namespace Base.CorePackage.Editor.MenuManaging.Identifier
 {
     /// <summary>
     /// Detects deletion of <see cref="MenuIdentifier"/> assets and queues a regeneration.
@@ -28,5 +27,3 @@ namespace Base.CorePackage.MenuManaging.Identifier.Editor
 #endregion
     }
 }
-#endif
-#endif

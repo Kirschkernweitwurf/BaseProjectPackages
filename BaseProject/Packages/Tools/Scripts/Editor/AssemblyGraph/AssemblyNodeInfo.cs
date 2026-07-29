@@ -28,7 +28,7 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
                 int dot = Name.IndexOf('.');
                 return dot < 0
                     ? Name
-                    : Name.Substring(0, dot);
+                    : Name[..dot];
             }
         }
 

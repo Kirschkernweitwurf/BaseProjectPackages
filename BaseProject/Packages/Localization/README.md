@@ -27,15 +27,6 @@ progress and logs a clear per-collection result.
 
 This package is Editor only.
 
-## Installation
-
-Add it to your project through the Package Manager or by referencing it in
-`manifest.json`:
-
-```json
-"com.baseprojectpackages.localization": "1.0.7"
-```
-
 ## Usage
 
 ### Menu items

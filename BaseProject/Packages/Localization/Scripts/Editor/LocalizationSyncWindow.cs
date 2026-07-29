@@ -5,7 +5,7 @@ using UnityEditor;
 using UnityEditor.Localization;
 using UnityEngine;
 
-namespace Base.LocalizationPackage
+namespace Base.LocalizationPackage.Editor
 {
     /// <summary>
     /// A custom Unity Editor window for syncing String Table Collections with Google Sheets.
@@ -56,7 +56,8 @@ namespace Base.LocalizationPackage
 #endregion
 
         /// <summary>
-        /// Opens the Localization Sync window. It is also reachable via the menu items in <see cref="LocalizationMenu"/>.
+        /// Opens the Localization Sync window.
+        /// It is also reachable via the menu items in <see cref="LocalizationMenu"/>.
         /// </summary>
         public static void Open()
         {

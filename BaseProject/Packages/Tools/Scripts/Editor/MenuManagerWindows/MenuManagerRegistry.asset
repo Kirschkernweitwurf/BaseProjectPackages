@@ -21,6 +21,10 @@ MonoBehaviour:
   columnStatusWidth: 52
   menuItemRoot:
   - rid: 5339058645413658751
+  - rid: 5339058706698469469
+  - rid: 5339058706698469470
+  - rid: 5339058706698469471
+  - rid: 5339058706698469472
   createAssetRoot:
   - rid: 5339058662016286883
   menuItemGroups: []
@@ -945,5 +949,53 @@ MonoBehaviour:
           enabled: 1
           kind: 1
           createFileName: TPF_FloatTweenProfile
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 5339058706698469469
+      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 0
+        entry:
+          id: MI:Base.LocalizationPackage.Editor.LocalizationMenu.PushAll
+          path: Tools/Base Packages/Assets/Localization/Push All String Tables
+          enabled: 1
+          kind: 0
+          createFileName: 
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 5339058706698469470
+      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 0
+        entry:
+          id: MI:Base.LocalizationPackage.Editor.LocalizationMenu.OpenWindow
+          path: Tools/Base Packages/Assets/Localization/Open Sync Window
+          enabled: 1
+          kind: 0
+          createFileName: 
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 5339058706698469471
+      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 0
+        entry:
+          id: MI:Base.LocalizationPackage.Editor.LocalizationMenu.PullAll
+          path: Tools/Base Packages/Assets/Localization/Pull All String Tables
+          enabled: 1
+          kind: 0
+          createFileName: 
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 5339058706698469472
+      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 0
+        entry:
+          id: MI:Base.CorePackage.Editor.MenuManaging.Identifier.MenuIdentifierGenerator.Regenerate
+          path: Tools/Base Packages/Assets/Menu/Regenerate Menu Identifiers
+          enabled: 1
+          kind: 0
+          createFileName: 
           overridePriority: 0
           overrideValue: 0

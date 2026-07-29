@@ -34,7 +34,7 @@ namespace Base.CorePackage.Tweening.Core
         /// <summary>
         /// Stop playback. By default, the behavior is killed without firing <c>OnFinished</c>.
         /// When <paramref name="complete"/> is <c>true</c>, the active tween snaps to its end value
-        /// and <c>OnFinished</c> is fired before <c>OnKilled</c> — useful to resolve gameplay
+        /// and <c>OnFinished</c> is fired before <c>OnKilled</c>. This is useful for any
         /// logic that depends on a tween finishing.
         /// </summary>
         /// <param name="complete">If <c>true</c>, complete the active tween instead of just killing it.</param>

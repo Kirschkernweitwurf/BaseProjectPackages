@@ -1,6 +1,5 @@
 using UnityEngine;
 #if UNITY_EDITOR
-using Base.UtilityPackage.Generated;
 using UnityEditor;
 #endif
 
@@ -14,6 +13,7 @@ namespace Base.UtilityPackage.Logging
     {
         private const string EnabledPrefKey = "Base.Logging.CustomLogHandler.Enabled";
         private const string MenuPath = "Tools/Base Packages/Unity Editor/Logging/Enable Custom Log Handler";
+        private const int MenuPriority = -11;
 
         // In builds there are no EditorPrefs, so the handler is always enabled.
         private static bool IsEnabled
@@ -45,7 +45,7 @@ namespace Base.UtilityPackage.Logging
         [InitializeOnLoadMethod]
         private static void InstallEditor() => Install();
 
-        [MenuItem(MenuPath, false, MenuOrders.UnityEditor)]
+        [MenuItem(MenuPath, false, MenuPriority)]
         private static void Toggle()
         {
             IsEnabled = !IsEnabled;
@@ -56,7 +56,7 @@ namespace Base.UtilityPackage.Logging
                 Uninstall();
         }
 
-        [MenuItem(MenuPath, true, MenuOrders.UnityEditor)]
+        [MenuItem(MenuPath, true, MenuPriority)]
         private static bool ToggleValidate()
         {
             Menu.SetChecked(MenuPath, IsEnabled);

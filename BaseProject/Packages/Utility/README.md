@@ -72,8 +72,3 @@ folder in your `manifest.json`.
 - **`SerializableDefaults`** - a base class for `[Serializable]` containers that applies field defaults exactly
   once, covering the case where Unity adds a list element without running your constructor.
 - **`EditorConstants`** - shared editor constants such as `ScriptPropertyName` (`m_Script`).
-
-## Note on raycasting
-
-`RaycastUtility` moved to the Base Core Package (`Base.CorePackage.Raycasting`), because it depends on the
-`ServiceLocator` and the `CameraProvider`. Older docs still listing it here are out of date.

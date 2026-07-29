@@ -1,4 +1,4 @@
-namespace Base.LocalizationPackage
+namespace Base.LocalizationPackage.Editor
 {
     /// <summary>
     /// Result of a sync operation, indicating success or failure and an optional message.
