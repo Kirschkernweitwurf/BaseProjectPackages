@@ -1,7 +1,7 @@
 using Base.AttributePackage;
 using Base.ToolPackage.MenuManagerWindow;
+using Base.UtilityPackage.Collections;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 namespace Base.CorePackage.Audio
 {
@@ -60,13 +60,6 @@ namespace Base.CorePackage.Audio
         /// instead of being skipped here, so the wrong data gets fixed instead of hidden.
         /// </summary>
         /// <returns>A clip to play, or null if the container has none assigned.</returns>
-        public AudioClip GetRandomClip()
-        {
-            if (Clips == null
-                || Clips.Length == 0)
-                return null;
-
-            return Clips[Random.Range(0, Clips.Length)];
-        }
+        public AudioClip GetRandomClip() => Clips.GetRandomElement();
     }
 }

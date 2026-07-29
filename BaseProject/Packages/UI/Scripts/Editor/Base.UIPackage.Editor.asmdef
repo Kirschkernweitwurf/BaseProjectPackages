@@ -1,0 +1,18 @@
+{
+    "name": "Base.UIPackage.Editor",
+    "rootNamespace": "Base.UIPackage.Editor",
+    "references": [
+        "GUID:f12f20722d8f4234b8dfcce9e344fb31"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

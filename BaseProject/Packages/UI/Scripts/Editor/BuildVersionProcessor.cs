@@ -1,8 +1,8 @@
-#if UNITY_EDITOR
+using Base.UIPackage.Utility;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
 
-namespace Base.UIPackage.Utility
+namespace Base.UIPackage.Editor
 {
     /// <summary>
     /// Writes the date-version and build-number into a version.txt in the Streaming Assets folder.
@@ -15,4 +15,3 @@ namespace Base.UIPackage.Utility
         public void OnPreprocessBuild(BuildReport report) => BuildVersion.UpdateVersionInfo();
     }
 }
-#endif
