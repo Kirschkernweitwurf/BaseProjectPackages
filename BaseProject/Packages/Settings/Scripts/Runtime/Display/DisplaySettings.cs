@@ -30,7 +30,7 @@ namespace Base.SettingsPackage.Display
         {
             if (!ResolutionProvider.TryParse(label, out int width, out int height))
             {
-                CustomLogger.LogError($"Invalid resolution label: '{label}'.", context: null);
+                CustomLogger.LogError($"Invalid resolution label: '{label}'.", null);
                 return false;
             }
 

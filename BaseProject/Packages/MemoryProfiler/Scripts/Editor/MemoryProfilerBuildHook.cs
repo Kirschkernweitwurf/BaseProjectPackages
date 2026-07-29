@@ -15,6 +15,17 @@ namespace Base.MemoryProfiler.Editor
         /// <summary>Order of this hook among all build callbacks.</summary>
         public int callbackOrder => 0;
 
+        /// <summary>Clears the baked path again, so the committed asset stays machine independent.</summary>
+        /// <param name="report">Build report supplied by Unity.</param>
+        public void OnPostprocessBuild(BuildReport report)
+        {
+            MemoryProfilerConfigSo config = LoadConfig();
+            if (config == null)
+                return;
+
+            WriteBakedPath(config, string.Empty);
+        }
+
         /// <summary>Bakes the resolved snapshot folder into the config before a development build.</summary>
         /// <param name="report">Build report supplied by Unity.</param>
         public void OnPreprocessBuild(BuildReport report)
@@ -27,17 +38,6 @@ namespace Base.MemoryProfiler.Editor
                 return;
 
             WriteBakedPath(config, MemoryProfilerRunner.ResolveStorageDirectory(config));
-        }
-
-        /// <summary>Clears the baked path again, so the committed asset stays machine independent.</summary>
-        /// <param name="report">Build report supplied by Unity.</param>
-        public void OnPostprocessBuild(BuildReport report)
-        {
-            MemoryProfilerConfigSo config = LoadConfig();
-            if (config == null)
-                return;
-
-            WriteBakedPath(config, string.Empty);
         }
 
         private static MemoryProfilerConfigSo LoadConfig()

@@ -18,12 +18,12 @@ namespace Base.AttributePackage.Editor
         private const float SignWidth = 16f;
         private const float ValueWidth = 50f;
 
-        private static GUIStyle _signStyle;
-
         private static GUIStyle SignStyle => _signStyle ??= new GUIStyle(EditorStyles.label)
         {
             alignment = TextAnchor.MiddleLeft
         };
+
+        private static GUIStyle _signStyle;
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {

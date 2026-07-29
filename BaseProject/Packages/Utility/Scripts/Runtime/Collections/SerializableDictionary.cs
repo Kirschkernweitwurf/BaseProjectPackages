@@ -18,8 +18,6 @@ namespace Base.UtilityPackage.Collections
 
         [SerializeField] private List<SerializableDictionaryEntry<TKey, TValue>> entries = new();
 
-        private Dictionary<TKey, TValue> _dict;
-
         /// <summary>
         /// Gets the number of key-value pairs contained in the dictionary.
         /// </summary>
@@ -80,6 +78,8 @@ namespace Base.UtilityPackage.Collections
                 return _dict.Values;
             }
         }
+
+        private Dictionary<TKey, TValue> _dict;
 
         /// <summary>
         /// Returns an enumerator that iterates through the dictionary.

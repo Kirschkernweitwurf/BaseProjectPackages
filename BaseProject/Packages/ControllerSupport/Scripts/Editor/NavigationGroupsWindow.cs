@@ -142,9 +142,9 @@ namespace Base.ControllerSupport.Editor
                 : NavigationGroupsStyles.MenuBadgeColor;
         }
 
-        private static Rect ResolveNameRect(Rect strip, float right)
-            => new(strip.x + NavigationGroupsStyles.RowPadding, strip.y,
-                right - strip.x - NavigationGroupsStyles.RowPadding * 2f, strip.height);
+        private static Rect ResolveNameRect(Rect strip, float right) => new(strip.x + NavigationGroupsStyles.RowPadding,
+            strip.y,
+            right - strip.x - NavigationGroupsStyles.RowPadding * 2f, strip.height);
 
         private void DrawToolbar()
         {
@@ -186,7 +186,8 @@ namespace Base.ControllerSupport.Editor
             EditorGUI.DrawRect(header, NavigationGroupsStyles.HeaderColor);
             DrawSeparator(header);
 
-            float actionsWidth = NavigationGroupsStyles.ButtonWidth * 2f + NavigationGroupsStyles.FixButtonWidth
+            float actionsWidth = NavigationGroupsStyles.ButtonWidth * 2f
+                + NavigationGroupsStyles.FixButtonWidth
                 + NavigationGroupsStyles.BadgeGap * 2f;
 
             float x = header.xMax - NavigationGroupsStyles.RowPadding;

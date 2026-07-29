@@ -139,6 +139,20 @@ namespace Base.ToolPackage.Editor.NamingConventions.Data
             return isChanged;
         }
 
+        private static bool IsSameList(List<string> first, List<string> second)
+        {
+            if (first.Count != second.Count)
+                return false;
+
+            for (int index = 0; index < first.Count; index++)
+            {
+                if (first[index] != second[index])
+                    return false;
+            }
+
+            return true;
+        }
+
         private bool ApplyLabel(AssetNamingRule detected)
         {
             if (IsEdited(EAssetNamingField.Label)
@@ -224,20 +238,6 @@ namespace Base.ToolPackage.Editor.NamingConventions.Data
 
             target.Clear();
             target.AddRange(detected);
-
-            return true;
-        }
-
-        private static bool IsSameList(List<string> first, List<string> second)
-        {
-            if (first.Count != second.Count)
-                return false;
-
-            for (int index = 0; index < first.Count; index++)
-            {
-                if (first[index] != second[index])
-                    return false;
-            }
 
             return true;
         }

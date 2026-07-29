@@ -12,13 +12,13 @@ namespace Base.AttributePackage.Editor
         private const int FontSize = 10;
         private const int HorizontalPadding = 2;
 
-        private static GUIStyle _style;
-
         private static GUIStyle Style => _style ??= new GUIStyle(EditorStyles.miniButton)
         {
             padding = new RectOffset(HorizontalPadding, HorizontalPadding, 0, 0),
             fontSize = FontSize
         };
+
+        private static GUIStyle _style;
 
         /// <summary>Draws a button at a fixed rect. Returns true on click.</summary>
         public static bool DrawAt(Rect rect, GUIContent content) => GUI.Button(rect, content, Style);

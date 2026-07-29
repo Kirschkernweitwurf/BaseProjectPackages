@@ -18,15 +18,15 @@ namespace Base.SaveSystemPackage.Slots
         private const string TicksFormat = "D19";
         private const int UnlimitedSaves = 0;
 
-        private readonly ISaveReader _reader;
-        private readonly ISaveWriter _writer;
-        private readonly int _maxSaves;
-
         /// <inheritdoc/>
         public ESlotModel Model => ESlotModel.Appending;
 
         /// <inheritdoc/>
         public bool SupportsNewSlots => true;
+
+        private readonly ISaveReader _reader;
+        private readonly ISaveWriter _writer;
+        private readonly int _maxSaves;
 
         /// <param name="reader">Used to list the saves that currently exist.</param>
         /// <param name="writer">Used to prune saves beyond the cap.</param>

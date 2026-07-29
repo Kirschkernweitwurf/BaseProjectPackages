@@ -19,13 +19,13 @@ namespace Base.ToolPackage.Editor.NamingConventions.Data
         // The general short pattern follows the local culture, e.g. 27.08.2026 14:30.
         private const string TimeFormat = "g";
 
-        private static List<AssetNamingHistoryEntry> _entries;
-
         /// <summary>Number of remembered actions.</summary>
         public static int Count => Entries.Count;
 
         /// <summary>Remembered actions, newest first.</summary>
         public static IReadOnlyList<AssetNamingHistoryEntry> Entries => _entries ??= Load();
+
+        private static List<AssetNamingHistoryEntry> _entries;
 
         /// <summary>Remembers one applied rename.</summary>
         public static void AddRename(string oldName, string newName, string assetPath, string guid)

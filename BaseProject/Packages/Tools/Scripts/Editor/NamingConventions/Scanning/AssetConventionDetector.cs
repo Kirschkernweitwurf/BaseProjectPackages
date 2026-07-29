@@ -18,13 +18,13 @@ namespace Base.ToolPackage.Editor.NamingConventions.Scanning
     public static class AssetConventionDetector
     {
         private const float DominanceThreshold = 0.6f;
-        private const int MinimumSamples = 5;
-        private const int MinimumSuffixTokens = 2;
         private const float MinimumPrefixShare = 0.2f;
+        private const int MinimumSamples = 5;
 
         // Suffix conventions are usually uniform, so a rarer token is more likely to be a category
         // like "_Lamp" than a real suffix. The higher bar keeps those out of the rule.
         private const float MinimumSuffixShare = 0.35f;
+        private const int MinimumSuffixTokens = 2;
         private const char TokenSeparator = '_';
 
         /// <summary>Returns one rule per asset kind that shows a clear convention.</summary>
@@ -132,8 +132,8 @@ namespace Base.ToolPackage.Editor.NamingConventions.Scanning
         private static AssetNamingRule BuildRule(string typeName, List<string> names)
         {
             List<string> cores = SplitEnumerations(names, out int enumerationDigits);
-            List<string> prefixes = CollectTokens(cores, fromStart: true, MinimumPrefixShare);
-            List<string> suffixes = CollectTokens(cores, fromStart: false, MinimumSuffixShare);
+            List<string> prefixes = CollectTokens(cores, true, MinimumPrefixShare);
+            List<string> suffixes = CollectTokens(cores, false, MinimumSuffixShare);
 
             AssetNamingRule rule = new(LabelOf(typeName), typeName,
                 FindDominantStyle(cores, prefixes, suffixes));

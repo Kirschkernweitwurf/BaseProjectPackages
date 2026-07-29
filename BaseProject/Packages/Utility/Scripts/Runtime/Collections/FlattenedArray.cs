@@ -12,8 +12,6 @@ namespace Base.UtilityPackage.Collections
     {
         private const string NonNegativeMessage = "Must be non-negative.";
 
-        private readonly T[] _data;
-
         /// <summary>
         /// Width of the 2D array.
         /// </summary>
@@ -37,6 +35,8 @@ namespace Base.UtilityPackage.Collections
             get => _data[ToIndex(x, y)];
             set => _data[ToIndex(x, y)] = value;
         }
+
+        private readonly T[] _data;
 
         /// <summary>
         /// Creates a grid of the given size.

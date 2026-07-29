@@ -14,13 +14,13 @@ namespace Base.SaveSystemPackage.Slots
     {
         private const string GuidFormat = "N";
 
-        private readonly ISaveReader _reader;
-
         /// <inheritdoc/>
         public ESlotModel Model => ESlotModel.Named;
 
         /// <inheritdoc/>
         public bool SupportsNewSlots => true;
+
+        private readonly ISaveReader _reader;
 
         /// <param name="reader">Used to list the saves that currently exist.</param>
         /// <exception cref="ArgumentNullException">When the reader is null.</exception>

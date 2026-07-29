@@ -15,15 +15,15 @@ namespace Base.SaveSystemPackage.Slots
         private const int MinSlotCount = 1;
         private const string SlotIdPrefix = "slot_";
 
-        private readonly ISaveReader _reader;
-        private readonly HashSet<string> _ids;
-        private readonly IReadOnlyList<string> _orderedIds;
-
         /// <inheritdoc/>
         public ESlotModel Model => ESlotModel.Fixed;
 
         /// <inheritdoc/>
         public bool SupportsNewSlots => false;
+
+        private readonly ISaveReader _reader;
+        private readonly HashSet<string> _ids;
+        private readonly IReadOnlyList<string> _orderedIds;
 
         /// <param name="reader">Used to read the metadata of each numbered slot.</param>
         /// <param name="count">How many slots exist. At least one.</param>
@@ -43,14 +43,6 @@ namespace Base.SaveSystemPackage.Slots
             _orderedIds = ids;
             _ids = new HashSet<string>(ids);
         }
-
-        /// <summary>
-        /// The id of the numbered slot at the given index, so a menu or a button can target one
-        /// without knowing how ids are spelled.
-        /// </summary>
-        /// <param name="index">Zero-based slot index.</param>
-        /// <returns>The slot id.</returns>
-        public static string SlotId(int index) => $"{SlotIdPrefix}{index}";
 
         /// <inheritdoc/>
         public async Awaitable<IReadOnlyList<SlotInfo>> ListSlotsAsync(CancellationToken ct = default)
@@ -72,5 +64,13 @@ namespace Base.SaveSystemPackage.Slots
         /// <inheritdoc/>
         public Awaitable EnforcePolicyAsync(string savedSlotId, CancellationToken ct = default)
             => AwaitableUtility.Completed();
+
+        /// <summary>
+        /// The id of the numbered slot at the given index, so a menu or a button can target one
+        /// without knowing how ids are spelled.
+        /// </summary>
+        /// <param name="index">Zero-based slot index.</param>
+        /// <returns>The slot id.</returns>
+        public static string SlotId(int index) => $"{SlotIdPrefix}{index}";
     }
 }

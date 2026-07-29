@@ -282,6 +282,7 @@ namespace Base.ToolPackage.Editor.AssetZoo.Builder
                 Undo.DestroyObjectImmediate(existing);
                 return;
             }
+
             Object.Destroy(existing);
         }
     }

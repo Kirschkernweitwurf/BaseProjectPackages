@@ -24,7 +24,10 @@ namespace Base.SaveSystemPackage.Unity.Composition
         [field: ShowIfEnum(nameof(SlotModel), ESlotModel.Fixed)]
         [field: SerializeField] public int FixedSlotCount { get; private set; } = 3;
 
-        [field: Tooltip("Max kept saves when " + nameof(SlotModel) + " is " + nameof(ESlotModel.Appending)
+        [field: Tooltip("Max kept saves when "
+            + nameof(SlotModel)
+            + " is "
+            + nameof(ESlotModel.Appending)
             + ". 0 means unlimited.")]
         [field: ShowIfEnum(nameof(SlotModel), ESlotModel.Appending)]
         [field: SerializeField] public int MaxAppendingSaves { get; private set; } = 20;

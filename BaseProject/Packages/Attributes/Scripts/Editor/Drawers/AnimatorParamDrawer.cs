@@ -15,9 +15,9 @@ namespace Base.AttributePackage.Editor
     [CustomPropertyDrawer(typeof(AnimatorParamAttribute))]
     public sealed class AnimatorParamDrawer : WarningFieldDrawer
     {
-        private string[] _names;
-
         protected override string UsageMessage => AttributeNames.Usage<AnimatorParamAttribute>("a string or int");
+
+        private string[] _names;
 
         protected override bool IsSupported(SerializedProperty property)
             => property.propertyType == SerializedPropertyType.String

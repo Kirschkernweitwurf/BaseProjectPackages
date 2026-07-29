@@ -24,8 +24,6 @@ namespace Base.ControllerSupport.Controller.Navigation
         /// <summary>Serialized name of the priority field, for editor tooling.</summary>
         public const string PriorityFieldName = nameof(priority);
 
-        private readonly List<NavigableElement> _elements = new();
-
         [Title("Focus")]
         [Tooltip("Element selected when this group gains focus and no element is remembered.")]
         [Required]
@@ -44,17 +42,19 @@ namespace Base.ControllerSupport.Controller.Navigation
         [Tooltip("If true, navigation loops around the edges of the group.")]
         [SerializeField] private bool wrap;
 
-        private bool _hasWarnedNoTarget;
-        private bool _isActive;
-        private FocusWatchdog _focusWatchdog;
-        private GameObject _lastSeenSelection;
-        private GameObject _lastSelected;
-
         /// <summary>Focus priority used by the watchdog to choose between active groups.</summary>
         public EPriority Priority => priority;
 
         /// <summary>Whether the group activates itself in OnEnable instead of being driven externally.</summary>
         public bool AutoActivate => autoActivate;
+
+        private readonly List<NavigableElement> _elements = new();
+
+        private bool _hasWarnedNoTarget;
+        private bool _isActive;
+        private FocusWatchdog _focusWatchdog;
+        private GameObject _lastSeenSelection;
+        private GameObject _lastSelected;
 
 #region Unity Callbacks
         // The watchdog is optional: without it the group still wires and remembers, it just loses the

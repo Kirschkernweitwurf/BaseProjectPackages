@@ -16,10 +16,10 @@ namespace Base.AttributePackage.Editor
     [CustomPropertyDrawer(typeof(SceneNameAttribute))]
     public sealed class SceneNameDrawer : WarningFieldDrawer
     {
+        protected override string UsageMessage => AttributeNames.Usage<SceneNameAttribute>("a string or int");
+
         private static string[] _displayNames;
         private static string[] _sceneNames;
-
-        protected override string UsageMessage => AttributeNames.Usage<SceneNameAttribute>("a string or int");
 
         protected override bool IsSupported(SerializedProperty property)
             => property.propertyType == SerializedPropertyType.String

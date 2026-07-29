@@ -68,19 +68,25 @@ namespace Base.ToolPackage.Editor.NamingConventions.Scanning
                 : DefaultDigits;
 
             if (!AssetNameEvaluator.TrySplitEnumeration(candidate, out string core, out string number))
-                return candidate + NumberSeparator + 1.ToString(DigitFormatPrefix + length,
-                    CultureInfo.InvariantCulture);
+                return candidate
+                    + NumberSeparator
+                    + 1.ToString(DigitFormatPrefix + length,
+                        CultureInfo.InvariantCulture);
 
             if (!int.TryParse(number, NumberStyles.None, CultureInfo.InvariantCulture, out int value))
-                return candidate + NumberSeparator + 1.ToString(DigitFormatPrefix + length,
-                    CultureInfo.InvariantCulture);
+                return candidate
+                    + NumberSeparator
+                    + 1.ToString(DigitFormatPrefix + length,
+                        CultureInfo.InvariantCulture);
 
             int width = digits > 0
                 ? digits
                 : number.Length;
 
-            return core + NumberSeparator + (value + 1).ToString(DigitFormatPrefix + width,
-                CultureInfo.InvariantCulture);
+            return core
+                + NumberSeparator
+                + (value + 1).ToString(DigitFormatPrefix + width,
+                    CultureInfo.InvariantCulture);
         }
     }
 }

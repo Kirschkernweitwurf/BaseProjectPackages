@@ -18,9 +18,9 @@ namespace Base.AttributePackage.Editor
         private const string ExposedParametersProperty = "m_ExposedParameters";
         private const string ParameterNameProperty = "name";
 
-        private string[] _names;
-
         protected override string UsageMessage => AttributeNames.Usage<MixerParameterAttribute>("a string");
+
+        private string[] _names;
 
         protected override bool IsSupported(SerializedProperty property)
             => property.propertyType == SerializedPropertyType.String;

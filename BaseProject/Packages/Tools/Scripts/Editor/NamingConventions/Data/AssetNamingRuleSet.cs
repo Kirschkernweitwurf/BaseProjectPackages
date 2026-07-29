@@ -20,8 +20,8 @@ namespace Base.ToolPackage.Editor.NamingConventions.Data
         private const string AssetFilter = "t:" + nameof(AssetNamingRuleSet);
         private const string DefaultAssetName = "ANRS_AssetNamingRuleSet.asset";
         private const string DefaultFolder = "Assets/Editor/NamingConventions";
-        private const string FolderSeparator = "/";
         private const int DefaultsVersion = 2;
+        private const string FolderSeparator = "/";
         private const string ScriptExtension = ".cs";
 
         private static readonly string[] DefaultIgnoredPaths =

@@ -25,13 +25,13 @@ namespace Base.CorePackage.Editor.Tweening
     {
         private const string MissingAssetWarning = "No asset assigned. The fields below are used instead.";
         private const string ProfileInfo = "Values, timing and loop behavior come from this profile.";
-        private const string SettingsAssetInfo = "Timing and loop behavior come from this asset.";
 
         /// <summary>
         /// Unity's built-in script reference. Not one of our own members, so there is nothing to
         /// derive this name from.
         /// </summary>
         private const string ScriptField = "m_Script";
+        private const string SettingsAssetInfo = "Timing and loop behavior come from this asset.";
 
         /// <summary>
         /// Draws the full inspector for the given tween component or tween profile.

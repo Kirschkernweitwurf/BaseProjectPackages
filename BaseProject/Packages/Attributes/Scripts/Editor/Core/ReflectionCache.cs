@@ -21,13 +21,13 @@ namespace Base.AttributePackage.Editor
         private static readonly Dictionary<FieldInfo, Dictionary<Type, Attribute>> AttributesByField = new();
 
         private static readonly Func<Type, Dictionary<string, FieldInfo>> BuildFields =
-            type => Build(type, declaring => declaring.GetFields(Flags));
+            type => Build(type, select: declaring => declaring.GetFields(Flags));
 
         private static readonly Func<Type, Dictionary<string, MethodInfo>> BuildMethods =
-            type => Build(type, declaring => declaring.GetMethods(Flags));
+            type => Build(type, select: declaring => declaring.GetMethods(Flags));
 
         private static readonly Func<Type, Dictionary<string, PropertyInfo>> BuildProperties =
-            type => Build(type, declaring => declaring.GetProperties(Flags));
+            type => Build(type, select: declaring => declaring.GetProperties(Flags));
 
         /// <summary>
         /// Returns the field attribute of the given type, cached per field. Attributes are compile-time
@@ -66,10 +66,10 @@ namespace Base.AttributePackage.Editor
                 : null;
 
         /// <summary>Returns the property with the given name anywhere in the type hierarchy, or null.</summary>
-        public static PropertyInfo GetProperty(Type type, string name)
-            => GetMap(Properties, type, BuildProperties).TryGetValue(name, out PropertyInfo property)
-                ? property
-                : null;
+        public static PropertyInfo GetProperty(Type type, string name) => GetMap(Properties, type, BuildProperties)
+            .TryGetValue(name, out PropertyInfo property)
+            ? property
+            : null;
 
         /// <summary>All fields declared across the type hierarchy.</summary>
         public static IEnumerable<FieldInfo> AllFields(Type type) => GetMap(Fields, type, BuildFields).Values;

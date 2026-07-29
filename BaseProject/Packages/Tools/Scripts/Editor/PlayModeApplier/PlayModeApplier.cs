@@ -43,8 +43,8 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
             if (!scene.IsValid()
                 || !scene.isLoaded)
             {
-                CustomLogger.LogWarning(
-                    $"Scene '{payload.scenePath}' must be open to restore '{payload.displayName}'.", null);
+                CustomLogger.LogWarning($"Scene '{payload.scenePath}' must be open to restore '{payload.displayName}'.",
+                    null);
 
                 return false;
             }
@@ -65,8 +65,8 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
 
             if (target == null)
             {
-                CustomLogger.LogWarning(
-                    $"Could not find '{payload.componentTypeName}' on '{payload.sceneNamePath}'.", null);
+                CustomLogger.LogWarning($"Could not find '{payload.componentTypeName}' on '{payload.sceneNamePath}'.",
+                    null);
 
                 return false;
             }

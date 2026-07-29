@@ -18,11 +18,6 @@ namespace Base.AttributePackage.Editor
         private const string Tooltip = "Open the asset.";
         private const int WidgetOrder = 20;
 
-        private static readonly GUIContent Content = new(DefaultLabel, Tooltip);
-
-        // Reused so a custom row label does not allocate a new content every repaint.
-        private static readonly GUIContent CustomContent = new(string.Empty, Tooltip);
-
         protected override int InlineOrder => WidgetOrder;
 
         protected override int RowOrder => AfterFieldOrder;
@@ -30,6 +25,11 @@ namespace Base.AttributePackage.Editor
         protected override float InlineWidth => InlineButtonWidth;
 
         protected override float RowWidth => RowButtonWidth;
+
+        private static readonly GUIContent Content = new(DefaultLabel, Tooltip);
+
+        // Reused so a custom row label does not allocate a new content every repaint.
+        private static readonly GUIContent CustomContent = new(string.Empty, Tooltip);
 
         protected override bool TryGetPlacement(in MemberContext context, out bool inline)
         {

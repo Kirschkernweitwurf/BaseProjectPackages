@@ -40,9 +40,9 @@ namespace Base.SaveSystemPackage.Serialization.Wire
             displayName,
             saveVersion,
             appVersion,
-            createdUtc: new DateTime(createdUtcTicks, DateTimeKind.Utc),
-            lastSavedUtc: new DateTime(lastSavedUtcTicks, DateTimeKind.Utc),
-            totalPlayTime: TimeSpan.FromSeconds(totalPlaySeconds),
+            new DateTime(createdUtcTicks, DateTimeKind.Utc),
+            new DateTime(lastSavedUtcTicks, DateTimeKind.Utc),
+            TimeSpan.FromSeconds(totalPlaySeconds),
             hasScreenshot,
             screenshotWidth,
             screenshotHeight);

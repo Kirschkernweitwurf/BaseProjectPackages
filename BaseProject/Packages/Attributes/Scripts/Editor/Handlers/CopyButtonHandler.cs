@@ -16,10 +16,6 @@ namespace Base.AttributePackage.Editor
         private const float RowButtonWidth = 52f;
         private const int WidgetOrder = 10;
 
-        private static readonly GUIContent Content = new("Copy", "Copy the value to the clipboard.");
-
-        private static readonly GUIContent Notice = new("Copied");
-
         protected override int InlineOrder => WidgetOrder;
 
         protected override int RowOrder => AfterFieldOrder;
@@ -27,6 +23,10 @@ namespace Base.AttributePackage.Editor
         protected override float InlineWidth => InlineButtonWidth;
 
         protected override float RowWidth => RowButtonWidth;
+
+        private static readonly GUIContent Content = new("Copy", "Copy the value to the clipboard.");
+
+        private static readonly GUIContent Notice = new("Copied");
 
         protected override bool TryGetPlacement(in MemberContext context, out bool inline)
         {

@@ -21,14 +21,14 @@ namespace Base.MemoryProfiler
         private const string SnapshotExtension = ".snap";
         private const string TimestampFormat = "yyyy-MM-dd_HH-mm-ss";
 
-        private static MemoryProfilerConfigSo _config;
-        private static Timer _intervalTimer;
-
         /// <summary>Path of the most recent snapshot, or null if none was taken.</summary>
         public static string LastSnapshotPath { get; private set; }
 
         /// <summary>True while automated captures are armed.</summary>
         public static bool IsActive { get; private set; }
+
+        private static MemoryProfilerConfigSo _config;
+        private static Timer _intervalTimer;
 
         /// <summary>Takes a snapshot immediately. Works in the editor and in development builds.</summary>
         public static void CaptureNow()
@@ -117,7 +117,7 @@ namespace Base.MemoryProfiler
 
         private static void StartIntervalTimer(float intervalSeconds)
         {
-            _intervalTimer = new Timer(intervalSeconds, loop: true);
+            _intervalTimer = new Timer(intervalSeconds, true);
             _intervalTimer.Completed += CaptureNow;
             _intervalTimer.Start();
         }

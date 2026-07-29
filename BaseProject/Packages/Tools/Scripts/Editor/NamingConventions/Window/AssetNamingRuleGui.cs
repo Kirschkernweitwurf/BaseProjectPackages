@@ -249,14 +249,15 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
                 NamingRule naming = rule.Naming;
 
                 DrawText(Columns.Field(row, 1), rule, EAssetNamingField.Label, rule.Label,
-                    value => rule.Label = value);
+                    apply: value => rule.Label = value);
 
                 DrawTypePopup(Columns.Field(row, 2), rule);
 
                 DrawText(Columns.Field(row, 3), rule, EAssetNamingField.TypeName, rule.TypeName,
-                    value => rule.TypeName = value);
+                    apply: value => rule.TypeName = value);
+
                 DrawText(Columns.Field(row, 4), rule, EAssetNamingField.PathFilter, rule.PathFilter,
-                    value => rule.PathFilter = value);
+                    apply: value => rule.PathFilter = value);
 
                 ENamingStyle style = (ENamingStyle)EditorGUI.Popup(Columns.Field(row, 5), (int)naming.Style,
                     AssetNamingGui.StyleLabels);
@@ -281,7 +282,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
                 DrawList(Columns.Field(row, 9), rule, EAssetNamingField.Stripped, naming.Stripped);
 
                 DrawText(Columns.Field(row, 10), rule, EAssetNamingField.Pattern, naming.Pattern,
-                    value => naming.Pattern = value);
+                    apply: value => naming.Pattern = value);
 
                 int digits = Mathf.Clamp(EditorGUI.DelayedIntField(Columns.Field(row, 11), rule.EnumerationDigits),
                     0, MaxEnumerationDigits);

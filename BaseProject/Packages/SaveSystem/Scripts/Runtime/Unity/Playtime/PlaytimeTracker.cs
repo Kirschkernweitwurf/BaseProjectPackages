@@ -14,14 +14,14 @@ namespace Base.SaveSystemPackage.Unity.Playtime
     /// </summary>
     public sealed class PlaytimeTracker : MonoBehaviour, IPlaytimeProvider
     {
-        private double _accumulated;
-        private float _sessionStart;
-        private bool _running;
-
         /// <inheritdoc/>
         public double TotalSeconds => _running
             ? _accumulated + (Time.realtimeSinceStartup - _sessionStart)
             : _accumulated;
+
+        private double _accumulated;
+        private float _sessionStart;
+        private bool _running;
 
 #region Unity Callbacks
         private void Awake() => ServiceLocator.Register<IPlaytimeProvider>(this);

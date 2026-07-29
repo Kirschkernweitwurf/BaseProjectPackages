@@ -9,8 +9,6 @@ namespace Base.ControllerSupport.Editor
     /// </summary>
     internal static class NavigationGroupsStyles
     {
-        private const int BadgeFontSize = 10;
-
         /// <summary>Horizontal gap between two badges or buttons.</summary>
         public const float BadgeGap = 4f;
 
@@ -52,6 +50,27 @@ namespace Base.ControllerSupport.Editor
 
         /// <summary>Width of the toolbar's "Refresh" button.</summary>
         public const float ToolbarButtonWidth = 60f;
+        private const int BadgeFontSize = 10;
+
+        /// <summary>Centered mini label used inside a badge.</summary>
+        public static GUIStyle Badge => _badge ??= new GUIStyle(EditorStyles.miniLabel)
+        {
+            alignment = TextAnchor.MiddleCenter,
+            fontSize = BadgeFontSize
+        };
+
+        /// <summary>Centered bold mini label used in the column header.</summary>
+        public static GUIStyle Header => _header ??= new GUIStyle(EditorStyles.miniBoldLabel)
+        {
+            alignment = TextAnchor.MiddleCenter
+        };
+
+        /// <summary>Bold label used for the group name.</summary>
+        public static GUIStyle Name => _name ??= new GUIStyle(EditorStyles.label)
+        {
+            alignment = TextAnchor.MiddleLeft,
+            fontStyle = FontStyle.Bold
+        };
 
         /// <summary>Badge color of the element count.</summary>
         public static readonly Color ElementsBadgeColor = new(0.7f, 0.45f, 0.95f, 0.32f);
@@ -92,26 +111,6 @@ namespace Base.ControllerSupport.Editor
         private static GUIStyle _badge;
         private static GUIStyle _header;
         private static GUIStyle _name;
-
-        /// <summary>Centered mini label used inside a badge.</summary>
-        public static GUIStyle Badge => _badge ??= new GUIStyle(EditorStyles.miniLabel)
-        {
-            alignment = TextAnchor.MiddleCenter,
-            fontSize = BadgeFontSize
-        };
-
-        /// <summary>Centered bold mini label used in the column header.</summary>
-        public static GUIStyle Header => _header ??= new GUIStyle(EditorStyles.miniBoldLabel)
-        {
-            alignment = TextAnchor.MiddleCenter
-        };
-
-        /// <summary>Bold label used for the group name.</summary>
-        public static GUIStyle Name => _name ??= new GUIStyle(EditorStyles.label)
-        {
-            alignment = TextAnchor.MiddleLeft,
-            fontStyle = FontStyle.Bold
-        };
 
         /// <summary>Width a badge needs for the given text, never below the shared minimum.</summary>
         public static float MeasureBadge(string text)

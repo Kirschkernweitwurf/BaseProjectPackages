@@ -206,7 +206,7 @@ namespace Base.SaveSystemPackage.Core
         /// <inheritdoc/>
         public async Awaitable<IReadOnlyList<SaveMetadata>> ListSavesAsync(CancellationToken ct = default)
         {
-            IReadOnlyList<string> keys = await _storage.ListKeysAsync(prefix: null, ct);
+            IReadOnlyList<string> keys = await _storage.ListKeysAsync(null, ct);
 
             List<SaveMetadata> result = new();
             foreach (string key in keys)
@@ -247,7 +247,7 @@ namespace Base.SaveSystemPackage.Core
 
         private static bool TryGetScreenshot(SaveRequest request, out ScreenshotData screenshot)
         {
-            screenshot = request.Screenshot ?? default;
+            screenshot = request.Screenshot ?? default(ScreenshotData);
             return request.Screenshot.HasValue && screenshot.IsValid;
         }
 
@@ -258,11 +258,11 @@ namespace Base.SaveSystemPackage.Core
             SaveMetadata metadata = existing
                 ?? SaveMetadata.CreateNew(request.SlotId, _saveVersion, Application.version, nowUtc);
 
-            metadata = metadata.With(displayName: request.DisplayName,
-                saveVersion: _saveVersion,
-                appVersion: Application.version,
-                lastSavedUtc: nowUtc,
-                totalPlayTime: request.PlaytimeSeconds.HasValue
+            metadata = metadata.With(request.DisplayName,
+                _saveVersion,
+                Application.version,
+                nowUtc,
+                request.PlaytimeSeconds.HasValue
                     ? TimeSpan.FromSeconds(request.PlaytimeSeconds.Value)
                     : null);
 

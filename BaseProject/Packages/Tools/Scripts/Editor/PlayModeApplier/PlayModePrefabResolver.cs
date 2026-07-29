@@ -62,12 +62,8 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
         }
 
         /// <summary>Removes Unity's "(Clone)" suffix from an instantiated object name.</summary>
-        public static string StripCloneSuffix(string name)
-        {
-            if (!name.EndsWith(CloneSuffix))
-                return name;
-
-            return name.Substring(0, name.Length - CloneSuffix.Length).TrimEnd();
-        }
+        private static string StripCloneSuffix(string name) => !name.EndsWith(CloneSuffix)
+            ? name
+            : name[..^CloneSuffix.Length].TrimEnd();
     }
 }

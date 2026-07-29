@@ -24,7 +24,8 @@ namespace Base.SaveSystemPackage.Unity.Buttons
         [Tooltip("Ignore the current selection and ask the model for a new slot.")]
         [SerializeField] private bool forceNewSlot;
 
-        [Tooltip("Fixed-slot index to save into. Used only by the " + nameof(ESlotModel.Fixed)
+        [Tooltip("Fixed-slot index to save into. Used only by the "
+            + nameof(ESlotModel.Fixed)
             + " model; -1 to use the selection.")]
         [DisableIf(nameof(forceNewSlot))]
         [SerializeField] private int fixedSlotIndex = UseSelection;

@@ -10,10 +10,10 @@ namespace Base.AttributePackage
     /// </summary>
     public static class ValidationRules
     {
-        private static IValidationRule[] _rules; // reset-ignore
-
         /// <summary>All discovered rules.</summary>
         public static IReadOnlyList<IValidationRule> All => _rules ??= Discover();
+
+        private static IValidationRule[] _rules; // reset-ignore
 
         private static IValidationRule[] Discover()
         {

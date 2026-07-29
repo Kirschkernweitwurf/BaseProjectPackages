@@ -12,8 +12,8 @@ namespace Base.UtilityPackage.Editor
     public static class PropertyDrawerUtility
     {
         private const string MissingOptionLabel = "<NULL>";
-        private const string NoneOptionLabel = "None";
         private const int NoneOptionIndex = 0;
+        private const string NoneOptionLabel = "None";
 
         /// <summary>
         /// Draws a popup for selecting an object reference of type <typeparamref name="T"/> from a list of options.

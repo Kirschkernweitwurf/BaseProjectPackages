@@ -21,9 +21,6 @@ namespace Base.SaveSystemPackage.Unity.Buttons
     {
         [GetComponent] [Required] [SerializeField] private Button button;
 
-        private bool _busy;
-        private CancellationTokenSource _cts;
-
         /// <summary>The save system, resolved on the first click.</summary>
         protected ISaveSystem Saves { get; private set; }
 
@@ -32,6 +29,9 @@ namespace Base.SaveSystemPackage.Unity.Buttons
 
         /// <summary>The shared slot selection, resolved on the first click.</summary>
         protected SaveSlotSelection Selection { get; private set; }
+
+        private bool _busy;
+        private CancellationTokenSource _cts;
 
 #region Unity Callbacks
         protected virtual void Awake() => button.onClick.AddListener(Trigger);

@@ -76,10 +76,10 @@ namespace Base.ToolPackage.Editor.NamingConventions.Scanning
 
             return style switch
             {
-                ENamingStyle.PascalCase => JoinCased(words, lowerFirst: false),
-                ENamingStyle.CamelCase => JoinCased(words, lowerFirst: true),
-                ENamingStyle.UpperSnakeCase => JoinSnake(words, upper: true),
-                ENamingStyle.LowerSnakeCase => JoinSnake(words, upper: false),
+                ENamingStyle.PascalCase => JoinCased(words, false),
+                ENamingStyle.CamelCase => JoinCased(words, true),
+                ENamingStyle.UpperSnakeCase => JoinSnake(words, true),
+                ENamingStyle.LowerSnakeCase => JoinSnake(words, false),
                 _ => name
             };
         }
@@ -102,7 +102,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Scanning
                 if (builder.Length > 0)
                     builder.Append(Underscore);
 
-                builder.Append(JoinCased(words, lowerFirst: false));
+                builder.Append(JoinCased(words, false));
             }
 
             return builder.Length == 0

@@ -16,12 +16,6 @@ namespace Base.AttributePackage.Editor
         private const int LeftMouseButton = 0;
         private const string WholeFormat = "0";
 
-        private static readonly Color BackgroundColor = new(0f, 0f, 0f, 0.25f);
-
-        private static readonly Color DefaultColor = new(0.26f, 0.59f, 0.98f);
-
-        private static GUIStyle _valueStyle;
-
         private static GUIStyle ValueStyle
         {
             get
@@ -38,6 +32,12 @@ namespace Base.AttributePackage.Editor
                 return _valueStyle;
             }
         }
+
+        private static readonly Color BackgroundColor = new(0f, 0f, 0f, 0.25f);
+
+        private static readonly Color DefaultColor = new(0.26f, 0.59f, 0.98f);
+
+        private static GUIStyle _valueStyle;
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {

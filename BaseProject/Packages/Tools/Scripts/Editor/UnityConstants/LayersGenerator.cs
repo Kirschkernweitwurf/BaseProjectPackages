@@ -44,8 +44,7 @@ namespace Base.ToolPackage.Editor.UnityConstants
                 sb.AppendLine($"        public const int {fieldName} = {index};");
 
             sb.AppendLine();
-            sb.AppendLine(
-                "        /// <summary>Bit-shifted layer mask values (1 << index) "
+            sb.AppendLine("        /// <summary>Bit-shifted layer mask values (1 << index) "
                 + "for use with LayerMask fields.</summary>");
 
             sb.AppendLine("        public static class Masks");

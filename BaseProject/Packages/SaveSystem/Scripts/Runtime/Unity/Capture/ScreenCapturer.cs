@@ -63,8 +63,8 @@ namespace Base.SaveSystemPackage.Unity.Capture
             RenderTexture previous = RenderTexture.active;
             RenderTexture.active = small;
 
-            Texture2D result = new(targetWidth, targetHeight, TextureFormat.RGB24, mipChain: false);
-            result.ReadPixels(new Rect(0, 0, targetWidth, targetHeight), destX: 0, destY: 0);
+            Texture2D result = new(targetWidth, targetHeight, TextureFormat.RGB24, false);
+            result.ReadPixels(new Rect(0, 0, targetWidth, targetHeight), 0, 0);
             result.Apply();
 
             RenderTexture.active = previous;

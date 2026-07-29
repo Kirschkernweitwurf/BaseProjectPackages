@@ -16,10 +16,10 @@ namespace Base.SaveSystemPackage.Encryption
         private const int IvSize = 16;
         private const int KeySize = 32;
 
-        private readonly byte[] _key;
-
         /// <inheritdoc/>
         public EEncryptionAlgorithm Algorithm => EEncryptionAlgorithm.Aes;
+
+        private readonly byte[] _key;
 
         /// <param name="passphrase">
         /// Any secret string. Keep it the same across versions or old saves will fail to decrypt.

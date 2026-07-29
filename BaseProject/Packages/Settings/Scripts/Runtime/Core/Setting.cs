@@ -14,13 +14,6 @@ namespace Base.SettingsPackage.Core
         /// <summary>Raised whenever <see cref="Value"/> changes, including on load, revert, and reset.</summary>
         public event Action<T> OnValueChanged;
 
-        private static readonly EqualityComparer<T> Comparer = EqualityComparer<T>.Default;
-
-        private readonly ISettingsStore _store;
-
-        private T _value;
-        private T _savedValue;
-
         /// <inheritdoc/>
         public PersistentKey Key { get; }
 
@@ -43,6 +36,13 @@ namespace Base.SettingsPackage.Core
                 OnValueChanged?.Invoke(_value);
             }
         }
+
+        private static readonly EqualityComparer<T> Comparer = EqualityComparer<T>.Default;
+
+        private readonly ISettingsStore _store;
+
+        private T _value;
+        private T _savedValue;
 
         /// <summary>Creates a setting bound to a store with the given key and default value.</summary>
         protected Setting(ISettingsStore store, PersistentKey key, T defaultValue)

@@ -10,10 +10,6 @@ namespace Base.AttributePackage.Editor
     /// </summary>
     public abstract class FieldButtonHandler : IInlineFieldWidget, IAfterFieldHandler
     {
-        int IInlineFieldWidget.Order => InlineOrder;
-
-        int IAfterFieldHandler.Order => RowOrder;
-
         /// <summary>Order of the inline button within the trailing area. Lower sits closer to the field.</summary>
         protected abstract int InlineOrder { get; }
 
@@ -25,6 +21,10 @@ namespace Base.AttributePackage.Editor
 
         /// <summary>Width of the button while it sits on its own row.</summary>
         protected abstract float RowWidth { get; }
+
+        int IInlineFieldWidget.Order => InlineOrder;
+
+        int IAfterFieldHandler.Order => RowOrder;
 
         /// <summary>Draws the button on its own row below the field, when the attribute asks for that.</summary>
         public void AfterField(in MemberContext context)

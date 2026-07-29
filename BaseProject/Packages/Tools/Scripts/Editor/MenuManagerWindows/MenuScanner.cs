@@ -104,8 +104,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
 
             if (method == null || method.ReturnType != typeof(bool))
             {
-                CustomLogger.LogWarning(
-                    $"Validate method '{methodName}' on {owner.Name} must be a static "
+                CustomLogger.LogWarning($"Validate method '{methodName}' on {owner.Name} must be a static "
                     + "bool method with no parameters.",
                     null);
 

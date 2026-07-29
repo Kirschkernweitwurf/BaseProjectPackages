@@ -69,7 +69,7 @@ namespace Base.LocalizationPackage
         {
             if (collection == null)
             {
-                CustomLogger.LogError($"{nameof(collection)} is null.", context: null);
+                CustomLogger.LogError($"{nameof(collection)} is null.", null);
                 return SyncResult.Fail(MissingCollectionMessage);
             }
 
@@ -99,10 +99,10 @@ namespace Base.LocalizationPackage
 
                 if (direction == ESyncDirection.Pull)
                     google.PullIntoStringTableCollection(extension.SheetId, collection, extension.Columns,
-                        removeMissingEntries: extension.RemoveMissingPulledKeys, reporter: reporter, createUndo: true);
+                        extension.RemoveMissingPulledKeys, reporter, true);
                 else
                     google.PushStringTableCollection(extension.SheetId, collection, extension.Columns,
-                        reporter: reporter);
+                        reporter);
             }
 
             if (direction == ESyncDirection.Pull)
@@ -192,12 +192,12 @@ namespace Base.LocalizationPackage
         {
             if (failed.Count == 0)
             {
-                CustomLogger.Log($"{direction} done for {succeeded} collection(s).", context: null);
+                CustomLogger.Log($"{direction} done for {succeeded} collection(s).", null);
                 return;
             }
 
             CustomLogger.LogWarning($"{direction} done for {succeeded} collection(s). "
-                + $"Skipped {failed.Count}:\n - {string.Join("\n - ", failed)}", context: null);
+                + $"Skipped {failed.Count}:\n - {string.Join("\n - ", failed)}", null);
         }
     }
 }

@@ -20,11 +20,11 @@ namespace Base.MemoryProfiler.Editor
         private static readonly GUIContent EnabledLabel = new("Enabled");
         private static readonly GUIContent FlagsLabel = new("Capture Flags");
         private static readonly GUIContent IntervalLabel = new("Interval (seconds)");
+        private static readonly Vector2 MinWindowSize = new(360f, 260f);
         private static readonly GUIContent OnIntervalLabel = new("Capture On Interval");
         private static readonly GUIContent OnSceneLoadLabel = new("Capture On Scene Load");
         private static readonly GUIContent PrefixLabel = new("File Name Prefix");
         private static readonly GUIContent StoragePathLabel = new("Snapshot Storage Path");
-        private static readonly Vector2 MinWindowSize = new(360f, 260f);
 
         private SerializedObject _serializedConfig;
         private SerializedProperty _isEnabled;

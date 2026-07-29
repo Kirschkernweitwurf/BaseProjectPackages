@@ -30,7 +30,7 @@ namespace Base.SettingsPackage.UI
         protected PersistentKey SettingKey { get; private set; }
 
 #region Unity Callbacks
-        protected virtual void Awake() => SettingKey = new(settingKey);
+        protected virtual void Awake() => SettingKey = new PersistentKey(settingKey);
 
         protected virtual void OnEnable()
         {

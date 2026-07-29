@@ -15,22 +15,6 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
         private const int SummaryFontSize = 12;
         private const int TitleFontSize = 15;
 
-        /// <summary>Accent used for problems.</summary>
-        public static readonly Color Accent = new(0.86f, 0.30f, 0.32f);
-
-        /// <summary>Accent used for the all-good state.</summary>
-        public static readonly Color Success = new(0.36f, 0.76f, 0.46f);
-
-        private static readonly Color DarkHeader = new(1f, 1f, 1f, 0.05f);
-
-        private static readonly Color LightHeader = new(0f, 0f, 0f, 0.05f);
-
-        private static readonly Color SubtitleColor = new(0.5f, 0.5f, 0.5f);
-
-        private static Texture _errorTexture;
-        private static Texture _objectTexture;
-        private static Texture _successTexture;
-
         /// <summary>Subtle background behind a group header.</summary>
         public static Color Header => EditorGUIUtility.isProSkin
             ? DarkHeader
@@ -62,6 +46,22 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
 
         /// <summary>Muted subtitle shown under the success title.</summary>
         public GUIStyle SuccessSubtitle { get; private set; }
+
+        /// <summary>Accent used for problems.</summary>
+        public static readonly Color Accent = new(0.86f, 0.30f, 0.32f);
+
+        /// <summary>Accent used for the all-good state.</summary>
+        public static readonly Color Success = new(0.36f, 0.76f, 0.46f);
+
+        private static readonly Color DarkHeader = new(1f, 1f, 1f, 0.05f);
+
+        private static readonly Color LightHeader = new(0f, 0f, 0f, 0.05f);
+
+        private static readonly Color SubtitleColor = new(0.5f, 0.5f, 0.5f);
+
+        private static Texture _errorTexture;
+        private static Texture _objectTexture;
+        private static Texture _successTexture;
 
         /// <summary>Builds the GUI styles once. Must run inside a GUI callback.</summary>
         public void EnsureBuilt()

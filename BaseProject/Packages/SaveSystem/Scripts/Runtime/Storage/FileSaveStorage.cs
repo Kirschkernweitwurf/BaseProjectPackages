@@ -46,7 +46,7 @@ namespace Base.SaveSystemPackage.Storage
 
                 // File.Replace swaps atomically, so there is no window where the file is gone.
                 if (File.Exists(path))
-                    File.Replace(tempPath, path, destinationBackupFileName: null);
+                    File.Replace(tempPath, path, null);
                 else
                     File.Move(tempPath, path);
             }

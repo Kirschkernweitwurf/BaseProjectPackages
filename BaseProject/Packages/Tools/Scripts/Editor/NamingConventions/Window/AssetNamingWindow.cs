@@ -41,22 +41,15 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
         private const float TimeWidth = 110f;
         private const float UndoWidth = 46f;
         private const string WindowTitle = "Asset Naming";
-
         private static readonly AssetNamingColumnLayout Columns = new(PrefsKey, 170f, 190f, 85f, 150f, 150f);
-
-        private static readonly GUIContent[] Headers =
-        {
-            new("Asset", "Current file name. Press Go To to find it in the Project view."),
-            new("Path", "Folder the asset lives in"),
-            new("Rule", "The rule the asset was checked against"),
-            new("Reason", "Why the current name was rejected"),
-            new("New Name", "Suggested replacement. Edit it freely, then press Rename or Enter.")
-        };
-
         private static readonly GUIContent ClearDismissedContent = new("Clear",
             "Bring every dismissed asset back into the scan");
 
         private static readonly GUIContent ClearHistoryContent = new("Clear", "Drop the whole history");
+
+
+
+
 
         private static readonly GUIContent CreateContent = new("Create Rule Set",
             "Create the rule set asset so the conventions are versioned with the project");
@@ -69,15 +62,21 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
 
         private static readonly GUIContent GoToContent = new("Go To", "Ping and select the asset in the Project view");
 
+        private static readonly GUIContent[] Headers =
+        {
+            new("Asset", "Current file name. Press Go To to find it in the Project view."),
+            new("Path", "Folder the asset lives in"),
+            new("Rule", "The rule the asset was checked against"),
+            new("Reason", "Why the current name was rejected"),
+            new("New Name", "Suggested replacement. Edit it freely, then press Rename or Enter.")
+        };
+
         private static readonly GUIContent RenameAllContent = new("Rename All",
             "Apply every suggestion in the current list");
 
         private static readonly GUIContent RenameContent = new("Rename", "Apply the suggested file name");
         private static readonly GUIContent RestoreContent = new("Restore", "Bring the asset back into the scan");
         private static readonly GUIContent ScanContent = new("Scan", "Scan the project for violations");
-
-        private static readonly GUIContent UndoContent = new("Undo",
-            "Take this back. A rename is renamed again, a dismiss is restored and the entry disappears.");
 
         private static readonly string[] SortLabels =
         {
@@ -86,10 +85,8 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
             "Group: Rule"
         };
 
-        private readonly List<AssetNamingViolation> _all = new();
-        private readonly List<AssetNamingViolation> _filtered = new();
-        private readonly List<AssetNamingGroup> _groups = new();
-        private readonly Dictionary<string, bool> _collapsedGroups = new();
+        private static readonly GUIContent UndoContent = new("Undo",
+            "Take this back. A rename is renamed again, a dismiss is restored and the entry disappears.");
 
         [SerializeField] private bool showDismissed;
         [SerializeField] private bool showFragments;
@@ -97,6 +94,11 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
         [SerializeField] private bool showResults = true;
         [SerializeField] private bool showRules = true;
         [SerializeField] private EAssetNamingSort sort = EAssetNamingSort.Folder;
+
+        private readonly List<AssetNamingViolation> _all = new();
+        private readonly List<AssetNamingViolation> _filtered = new();
+        private readonly List<AssetNamingGroup> _groups = new();
+        private readonly Dictionary<string, bool> _collapsedGroups = new();
 
         private AssetNamingRuleSet _ruleSet;
         private AssetNamingViolation _pendingRename;
@@ -123,8 +125,6 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
             titleContent = new GUIContent(WindowTitle);
             _ruleSet = AssetNamingRuleSet.Load();
         }
-
-        private void OnFocus() => _dismissedPaths = null;
 
         private void OnGUI()
         {
@@ -155,6 +155,8 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
 
             ApplyPending();
         }
+
+        private void OnFocus() => _dismissedPaths = null;
 #endregion
 
         /// <summary>Opens or focuses the window from the Tools menu.</summary>
@@ -178,8 +180,8 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
             EditorGUIUtility.PingObject(asset);
         }
 
-        private static GUIContent NameContent(AssetNamingViolation violation)
-            => new(violation.CurrentName, AssetDatabase.GetCachedIcon(violation.AssetPath), violation.AssetPath);
+        private static GUIContent NameContent(AssetNamingViolation violation) => new(violation.CurrentName,
+            AssetDatabase.GetCachedIcon(violation.AssetPath), violation.AssetPath);
 
         private static string DescribeAction(AssetNamingHistoryEntry entry) => entry.action switch
         {
@@ -213,11 +215,33 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
         private static Rect ReserveRows(int count)
             => GUILayoutUtility.GetRect(0f, count * AssetNamingGui.RowHeight, GUILayout.ExpandWidth(true));
 
-        private static Rect RowRect(Rect area, int index)
-            => new(area.x, area.y + index * AssetNamingGui.RowHeight, area.width, AssetNamingGui.RowHeight);
+        private static Rect RowRect(Rect area, int index) => new(area.x, area.y + index * AssetNamingGui.RowHeight,
+            area.width, AssetNamingGui.RowHeight);
 
         private static Rect ButtonRect(Rect row, float x, float width)
             => new(x, row.y + FieldInset, width, row.height - FieldInset * 2f);
+
+        /// <summary>
+        /// GUID behind a history entry. Older entries only stored a path, and a path goes stale as
+        /// soon as the asset is renamed again, which is why the GUID is the one that counts.
+        /// </summary>
+        private static string GuidOf(AssetNamingHistoryEntry entry)
+        {
+            if (!string.IsNullOrEmpty(entry.guid))
+                return entry.guid;
+
+            return AssetDatabase.AssetPathToGUID(entry.assetPath);
+        }
+
+        /// <summary>Current path of a history entry, resolved through its GUID.</summary>
+        private static string PathOf(AssetNamingHistoryEntry entry)
+        {
+            string path = AssetDatabase.GUIDToAssetPath(GuidOf(entry));
+
+            return string.IsNullOrEmpty(path)
+                ? entry.assetPath
+                : path;
+        }
 
         private void DrawToolbar()
         {
@@ -387,6 +411,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
             float pathStart = pathCell.x;
             Rect pathRect = new(pathStart, row.y, Mathf.Max(AssetNamingGui.Padding,
                 row.xMax - pathStart - reserved), row.height);
+
             Rect goToRect = ButtonRect(row, pathRect.xMax + AssetNamingGui.Padding, GoToWidth);
             Rect restoreRect = ButtonRect(row, goToRect.xMax + AssetNamingGui.Padding, RestoreWidth);
 
@@ -414,6 +439,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
             {
                 EditorGUILayout.HelpBox("The rule set is empty. Press Auto-Detect to read the conventions from "
                     + "the project, or add a rule by hand.", MessageType.Info);
+
                 return;
             }
 
@@ -427,6 +453,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
             {
                 AssetNamingGui.DrawSuccess("Every asset follows the rules",
                     "Nothing left to rename. Your project is perfectly named.");
+
                 return;
             }
 
@@ -476,6 +503,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
             {
                 EditorGUILayout.HelpBox("No violation matches the current search or rule filter.",
                     MessageType.Info);
+
                 return;
             }
 
@@ -507,6 +535,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
             GUI.Label(Columns.Cell(row, 0), NameContent(violation), AssetNamingGui.NameStyle);
             GUI.Label(Columns.Cell(row, 1), new GUIContent(FolderOf(violation.AssetPath), violation.AssetPath),
                 AssetNamingGui.DetailStyle);
+
             GUI.Label(Columns.Cell(row, 2), violation.RuleLabel, AssetNamingGui.DetailStyle);
             GUI.Label(Columns.Cell(row, 3), violation.Reason, AssetNamingGui.DetailStyle);
 
@@ -758,7 +787,11 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
             if (_isAddRulePending)
             {
                 _isAddRulePending = false;
-                _ruleSet.AddRule(new AssetNamingRule { UserCreated = true });
+                _ruleSet.AddRule(new AssetNamingRule
+                {
+                    UserCreated = true
+                });
+
                 _ruleSet.Persist();
                 return true;
             }
@@ -797,6 +830,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
                 AssetNamingDismissStore.Dismiss(_pendingDismiss.Guid);
                 AssetNamingHistoryStore.AddDismiss(_pendingDismiss.CurrentName, _pendingDismiss.AssetPath,
                     _pendingDismiss.Guid);
+
                 _pendingDismiss = null;
                 RefreshDismissed();
                 return true;
@@ -809,6 +843,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
                 AssetNamingDismissStore.Restore(_pendingRestoreGuid);
                 AssetNamingHistoryStore.AddRestore(Path.GetFileNameWithoutExtension(path), path,
                     _pendingRestoreGuid);
+
                 _pendingRestoreGuid = string.Empty;
                 RefreshDismissed();
                 return true;
@@ -877,28 +912,6 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
                 AssetNamingDismissStore.Dismiss(guid);
 
             return true;
-        }
-
-        /// <summary>
-        /// GUID behind a history entry. Older entries only stored a path, and a path goes stale as
-        /// soon as the asset is renamed again, which is why the GUID is the one that counts.
-        /// </summary>
-        private static string GuidOf(AssetNamingHistoryEntry entry)
-        {
-            if (!string.IsNullOrEmpty(entry.guid))
-                return entry.guid;
-
-            return AssetDatabase.AssetPathToGUID(entry.assetPath);
-        }
-
-        /// <summary>Current path of a history entry, resolved through its GUID.</summary>
-        private static string PathOf(AssetNamingHistoryEntry entry)
-        {
-            string path = AssetDatabase.GUIDToAssetPath(GuidOf(entry));
-
-            return string.IsNullOrEmpty(path)
-                ? entry.assetPath
-                : path;
         }
 
         private void RefreshDismissed()

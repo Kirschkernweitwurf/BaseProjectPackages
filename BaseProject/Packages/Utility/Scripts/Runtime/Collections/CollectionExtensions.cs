@@ -37,13 +37,13 @@ namespace Base.UtilityPackage.Collections
             if (list == null)
             {
                 CustomLogger.LogWarning($"{nameof(GetRandomElement)} called on a null collection.", null);
-                return default;
+                return default(T);
             }
 
             if (list.Count == 0)
             {
                 CustomLogger.LogWarning($"{nameof(GetRandomElement)} called on an empty collection.", null);
-                return default;
+                return default(T);
             }
 
             return list[Random.Range(0, list.Count)];

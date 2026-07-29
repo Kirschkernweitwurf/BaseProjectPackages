@@ -13,8 +13,6 @@ namespace Base.AttributePackage.Editor
         private const float ButtonWidth = 22f;
         private const int WidgetOrder = 30;
 
-        private static readonly GUIContent Content = new("\u2715", "Clear the value.");
-
         protected override int InlineOrder => WidgetOrder;
 
         protected override int RowOrder => AfterFieldOrder;
@@ -22,6 +20,8 @@ namespace Base.AttributePackage.Editor
         protected override float InlineWidth => ButtonWidth;
 
         protected override float RowWidth => ButtonWidth;
+
+        private static readonly GUIContent Content = new("\u2715", "Clear the value.");
 
         protected override bool TryGetPlacement(in MemberContext context, out bool inline)
         {

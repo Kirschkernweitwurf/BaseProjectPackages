@@ -11,7 +11,7 @@ namespace Base.UtilityPackage.Logging
     /// play mode logs.
     /// </summary>
     /// <remarks>
-    /// Unlike <see cref="CustomLogger"/> this also covers plain <see cref="Debug"/> calls and logs
+    /// Unlike <see cref="CustomLogger"/> this also covers plain <see cref="UnityEngine.Debug"/> calls and logs
     /// coming from third party code, at the cost of a stack trace lookup per message.
     /// </remarks>
     public sealed class CustomLogHandler : ILogHandler
@@ -98,7 +98,7 @@ namespace Base.UtilityPackage.Logging
         private static string GetCleanTypeName(Type type)
         {
             while (type.Name.IndexOf('<') >= 0
-                && type.DeclaringType != null)
+                   && type.DeclaringType != null)
                 type = type.DeclaringType;
 
             return type.Name;

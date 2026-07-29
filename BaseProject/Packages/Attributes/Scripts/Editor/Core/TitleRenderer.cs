@@ -16,17 +16,17 @@ namespace Base.AttributePackage.Editor
         private const float SpaceBelow = 2f;
         private const float UnderlineRowHeight = 3f;
 
-        private static readonly Color DefaultLine = new(0.5f, 0.5f, 0.5f, 0.5f);
-
-        private static GUIStyle _foldoutStyle;
-        private static GUIStyle _labelStyle;
-
         private static GUIStyle FoldoutStyle => _foldoutStyle ??= new GUIStyle(EditorStyles.foldout)
         {
             fontStyle = FontStyle.Bold
         };
 
         private static GUIStyle LabelStyle => _labelStyle ??= new GUIStyle(EditorStyles.boldLabel);
+
+        private static readonly Color DefaultLine = new(0.5f, 0.5f, 0.5f, 0.5f);
+
+        private static GUIStyle _foldoutStyle;
+        private static GUIStyle _labelStyle;
 
         /// <summary>Draws a plain bold title with an underline.</summary>
         public static void DrawPlain(TitleAttribute attribute)

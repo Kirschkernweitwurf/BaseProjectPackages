@@ -194,8 +194,8 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
             if (reference.kind == EPlayModeReferenceKind.SceneObject)
                 return ResolveSceneObject(reference, owner, prefabRoot);
 
-            CustomLogger.LogWarning(
-                $"Cleared '{reference.propertyPath}' because it pointed at a runtime object.", owner);
+            CustomLogger.LogWarning($"Cleared '{reference.propertyPath}' because it pointed at a runtime object.",
+                owner);
 
             return null;
         }
@@ -356,9 +356,9 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
                 return FindContainerEnd(json, cursor) + 1;
 
             while (cursor < json.Length
-                && json[cursor] != ','
-                && json[cursor] != '}'
-                && json[cursor] != ']')
+                   && json[cursor] != ','
+                   && json[cursor] != '}'
+                   && json[cursor] != ']')
                 cursor++;
 
             return cursor;

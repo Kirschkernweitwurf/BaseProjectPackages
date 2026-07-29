@@ -17,8 +17,6 @@ namespace Base.ControllerSupport.Controller.Scrolling
         private const int CornerCount = 4;
         private const int TopRightCorner = 2;
 
-        private readonly Vector3[] _worldCorners = new Vector3[CornerCount];
-
         [Tooltip("The scroll view this component drives. Auto-assigned from the same GameObject.")]
         [GetComponent]
         [Required]
@@ -28,6 +26,8 @@ namespace Base.ControllerSupport.Controller.Scrolling
         [Suffix("px")]
         [Min(0)]
         [SerializeField] private float padding = 16f;
+
+        private readonly Vector3[] _worldCorners = new Vector3[CornerCount];
 
         private GameObject _lastSelected;
 

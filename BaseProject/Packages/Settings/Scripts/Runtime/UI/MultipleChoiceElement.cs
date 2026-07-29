@@ -27,23 +27,23 @@ namespace Base.SettingsPackage.UI
         [SerializeField] [Required] private Transform selectionIndicatorParent;
         [SerializeField] private List<string> options = new();
 
-        private readonly List<SelectionIndicatorButton> _indicators = new();
-
-        private HashSetObjectPool<SelectionIndicatorButton> _indicatorPool;
-
         /// <summary>Every selectable option label, in display order.</summary>
         protected IReadOnlyList<string> Options => options;
 
         /// <summary>Index of the currently selected option within <see cref="Options"/>.</summary>
         protected int CurrentIndex { get; private set; }
 
+        private readonly List<SelectionIndicatorButton> _indicators = new();
+
+        private HashSetObjectPool<SelectionIndicatorButton> _indicatorPool;
+
 #region Unity Callbacks
         protected override void Awake()
         {
             base.Awake();
 
-            _indicatorPool = new HashSetObjectPool<SelectionIndicatorButton>(
-                selectionIndicatorPrefab, selectionIndicatorParent, CleanupIndicator);
+            _indicatorPool = new HashSetObjectPool<SelectionIndicatorButton>(selectionIndicatorPrefab,
+                selectionIndicatorParent, CleanupIndicator);
         }
 
         protected override void OnEnable()

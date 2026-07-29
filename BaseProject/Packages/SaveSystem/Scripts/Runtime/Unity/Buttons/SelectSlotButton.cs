@@ -16,7 +16,8 @@ namespace Base.SaveSystemPackage.Unity.Buttons
         private const int UseRuntimeId = -1;
 
         [Tooltip("Fixed-slot index to select. Ignored once a runtime id is set via "
-            + nameof(SetSlotId) + ".")]
+            + nameof(SetSlotId)
+            + ".")]
         [SerializeField] private int fixedSlotIndex = UseRuntimeId;
 
         private string _slotId;

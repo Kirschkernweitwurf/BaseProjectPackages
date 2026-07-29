@@ -15,7 +15,11 @@ namespace Base.ToolPackage.Editor.NamingConventions.Scanning
     {
         private const string Wildcard = "*";
 
-        private static readonly char[] ForbiddenSeparators = { ' ', '-' };
+        private static readonly char[] ForbiddenSeparators =
+        {
+            ' ',
+            '-'
+        };
 
         /// <summary>True when the name satisfies the rule or is on its ignore list.</summary>
         public static bool IsValid(NamingRule rule, string name, string requiredSuffix)
@@ -32,7 +36,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Scanning
             if (FindStripped(rule, name).Length > 0)
                 return false;
 
-            if (!HasAffix(rule.Prefixes, name, isPrefix: true))
+            if (!HasAffix(rule.Prefixes, name, true))
                 return false;
 
             if (!HasSuffix(rule, name, requiredSuffix))
@@ -55,7 +59,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Scanning
             if (stripped.Length > 0)
                 return $"Should not contain {stripped}";
 
-            if (!HasAffix(rule.Prefixes, name, isPrefix: true))
+            if (!HasAffix(rule.Prefixes, name, true))
                 return $"Missing prefix {string.Join(" or ", rule.Prefixes)}";
 
             if (requiredSuffix.Length > 0
@@ -80,7 +84,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Scanning
             if (core.Length == 0)
                 return name;
 
-            string prefix = FindMatchedAffix(rule.Prefixes, name, isPrefix: true);
+            string prefix = FindMatchedAffix(rule.Prefixes, name, true);
 
             if (prefix.Length == 0)
                 prefix = rule.PrimaryPrefix;
@@ -121,7 +125,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Scanning
             if (requiredSuffix.Length > 0)
                 return requiredSuffix;
 
-            string matched = FindMatchedAffix(rule.Suffixes, name, isPrefix: false);
+            string matched = FindMatchedAffix(rule.Suffixes, name, false);
 
             if (matched.Length > 0)
                 return matched;
@@ -141,7 +145,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Scanning
             if (rule.Suffixes.Count == 0)
                 return true;
 
-            if (FindMatchedAffix(rule.Suffixes, name, isPrefix: false).Length > 0)
+            if (FindMatchedAffix(rule.Suffixes, name, false).Length > 0)
                 return true;
 
             return rule.SuffixOptional;
@@ -181,8 +185,8 @@ namespace Base.ToolPackage.Editor.NamingConventions.Scanning
         {
             string core = StripAll(rule, name);
 
-            core = Strip(rule.Prefixes, core, isPrefix: true);
-            core = Strip(rule.Suffixes, core, isPrefix: false);
+            core = Strip(rule.Prefixes, core, true);
+            core = Strip(rule.Suffixes, core, false);
 
             if (requiredSuffix.Length > 0
                 && core.EndsWith(requiredSuffix, StringComparison.Ordinal))
@@ -198,7 +202,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Scanning
             string found = FindStripped(rule, core);
 
             while (found.Length > 0
-                && core.Length > found.Length)
+                   && core.Length > found.Length)
             {
                 core = core.StartsWith(found, StringComparison.Ordinal)
                     ? core[found.Length..]

@@ -65,17 +65,17 @@ namespace Base.SaveSystemPackage.Model
         /// <param name="appVersion">The current application version.</param>
         /// <param name="nowUtc">The moment the save is being created.</param>
         /// <returns>Metadata with no name, no play time and no screenshot.</returns>
-        public static SaveMetadata CreateNew(string slotId, int saveVersion, string appVersion, DateTime nowUtc)
-            => new(slotId,
-                displayName: null,
-                saveVersion,
-                appVersion,
-                createdUtc: nowUtc,
-                lastSavedUtc: nowUtc,
-                totalPlayTime: TimeSpan.Zero,
-                hasScreenshot: false,
-                screenshotWidth: 0,
-                screenshotHeight: 0);
+        public static SaveMetadata CreateNew(string slotId, int saveVersion, string appVersion, DateTime nowUtc) => new(
+            slotId,
+            null,
+            saveVersion,
+            appVersion,
+            nowUtc,
+            nowUtc,
+            TimeSpan.Zero,
+            false,
+            0,
+            0);
 
         /// <summary>
         /// Returns a copy with the given fields replaced. Pass only what changes; the rest is kept.
@@ -83,16 +83,15 @@ namespace Base.SaveSystemPackage.Model
         /// <returns>A new instance. This one is left untouched.</returns>
         public SaveMetadata With(string displayName = null, int? saveVersion = null, string appVersion = null,
             DateTime? lastSavedUtc = null, TimeSpan? totalPlayTime = null, bool? hasScreenshot = null,
-            int? screenshotWidth = null, int? screenshotHeight = null)
-            => new(SlotId,
-                displayName ?? DisplayName,
-                saveVersion ?? SaveVersion,
-                appVersion ?? AppVersion,
-                CreatedUtc,
-                lastSavedUtc ?? LastSavedUtc,
-                totalPlayTime ?? TotalPlayTime,
-                hasScreenshot ?? HasScreenshot,
-                screenshotWidth ?? ScreenshotWidth,
-                screenshotHeight ?? ScreenshotHeight);
+            int? screenshotWidth = null, int? screenshotHeight = null) => new(SlotId,
+            displayName ?? DisplayName,
+            saveVersion ?? SaveVersion,
+            appVersion ?? AppVersion,
+            CreatedUtc,
+            lastSavedUtc ?? LastSavedUtc,
+            totalPlayTime ?? TotalPlayTime,
+            hasScreenshot ?? HasScreenshot,
+            screenshotWidth ?? ScreenshotWidth,
+            screenshotHeight ?? ScreenshotHeight);
     }
 }
