@@ -3,18 +3,25 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEditor;
+using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace Base.AttributePackage.Editor
 {
     /// <summary>
-    /// Draws a dropdown of member-provided values for <see cref="DropdownAttribute"/>.
+    /// Draws a dropdown of member-provided values for <see cref="DropdownAttribute"/>. Short option
+    /// lists use a plain popup; longer ones switch to a searchable tree dropdown, since a flat popup
+    /// stops being usable once it no longer fits on screen.
     /// </summary>
     [CustomPropertyDrawer(typeof(DropdownAttribute))]
     public sealed class DropdownDrawer : PropertyDrawer
     {
+        private const string NoneLabel = "None";
         private const string NullLabel = "null";
+
+        // Kept alive between openings so the dropdown remembers its scroll position and search text.
+        private readonly AdvancedDropdownState _state = new();
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
@@ -27,18 +34,34 @@ namespace Base.AttributePackage.Editor
                 return;
             }
 
+            string[] labels = BuildLabels(values);
+            int current = CurrentIndex(property, values);
+
+            EditorGUI.BeginProperty(position, label, property);
+
+            if (values.Count < SearchableDropdown.Threshold)
+                DrawPopup(position, property, label, values, labels, current);
+            else
+                DrawSearchable(position, property, label, values, labels, current);
+
+            EditorGUI.EndProperty();
+        }
+
+        private static void DrawPopup(Rect position, SerializedProperty property, GUIContent label,
+            List<object> values, string[] labels, int current)
+        {
+            int selected = EditorGUI.Popup(position, label.text, current, labels);
+            if (selected >= 0 && selected < values.Count && selected != current)
+                SetValue(property, values[selected]);
+        }
+
+        private static string[] BuildLabels(List<object> values)
+        {
             string[] labels = new string[values.Count];
             for (int i = 0; i < values.Count; i++)
                 labels[i] = values[i]?.ToString() ?? NullLabel;
 
-            int current = CurrentIndex(property, values);
-
-            EditorGUI.BeginProperty(position, label, property);
-            int selected = EditorGUI.Popup(position, label.text, current, labels);
-            if (selected >= 0 && selected < values.Count && selected != current)
-                SetValue(property, values[selected]);
-
-            EditorGUI.EndProperty();
+            return labels;
         }
 
         private static List<object> ResolveOptions(SerializedProperty property, string member)
@@ -115,6 +138,33 @@ namespace Base.AttributePackage.Editor
                     property.objectReferenceValue = value as Object;
                     break;
             }
+        }
+
+        private void DrawSearchable(Rect position, SerializedProperty property, GUIContent label,
+            List<object> values, string[] labels, int current)
+        {
+            Rect fieldRect = EditorGUI.PrefixLabel(position, label);
+
+            string caption = current >= 0 && current < labels.Length
+                ? labels[current]
+                : NoneLabel;
+
+            if (!EditorGUI.DropdownButton(fieldRect, new GUIContent(caption), FocusType.Keyboard))
+                return;
+
+            // The property is captured for the callback, which runs after this OnGUI call has returned.
+            SerializedProperty captured = property.Copy();
+
+            SearchableDropdown menu = new(_state, label.text, labels, index =>
+            {
+                if (index < 0 || index >= values.Count)
+                    return;
+
+                SetValue(captured, values[index]);
+                captured.serializedObject.ApplyModifiedProperties();
+            });
+
+            menu.Show(fieldRect);
         }
     }
 }

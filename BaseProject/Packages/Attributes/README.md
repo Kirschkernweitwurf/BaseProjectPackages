@@ -65,13 +65,16 @@ Two read-only display helpers for things that aren't serialized:
 
 ## Conditional visibility
 
-All of these take a member name via `nameof`. The reference can be a bool field, a bool property or a parameterless method returning bool.
+All of these take one or more member names via `nameof`. Each reference can be a bool field, a bool property or a parameterless method returning bool.
 
 ```csharp
 [ShowIf(nameof(_enabled))]      // hide unless true
 [HideIf(nameof(_enabled))]      // hide while true
 [EnableIf(nameof(_enabled))]    // grey out unless true
 [DisableIf(nameof(_enabled))]   // grey out while true
+
+[ShowIf(nameof(_isRanged), nameof(_hasAmmo))]                  // every member must be true
+[ShowIf(EConditionMode.Any, nameof(_isMelee), nameof(_unarmed))]  // at least one must be true
 
 [ShowIfEnum(nameof(_mood), EMood.Electric)]                 // enum equals one of these
 [ShowIfEnum(nameof(_mood), EMood.Electric, EMood.Sad)]
@@ -80,6 +83,8 @@ All of these take a member name via `nameof`. The reference can be a bool field,
 [ReadOnlyInPlayMode]    // locked while playing
 [ReadOnlyInEditMode]    // locked while stopped
 ```
+
+`EConditionMode.All` is the default, so listing several members without a mode means all of them. There is no negation syntax on purpose: use `[HideIf]` instead of a `!` prefix, so nothing is encoded in a string that a rename could break.
 
 There are play-mode variants of show, hide, enable and disable too: `[ShowInPlayMode]`, `[HideInPlayMode]`, `[EnableInPlayMode]` and `[DisableInPlayMode]`.
 
@@ -100,6 +105,20 @@ These flag problems in the inspector or quietly correct the value. They stack, s
 [ValidateInput(nameof(IsEven), "Must be even.")] public int value;
 
 private bool IsEven(int v) => v % 2 == 0;        // also works with no parameter
+```
+
+`[RequiredIf]` is `[Required]` that only fires while a condition holds, for fields that are mandatory in one setup and meaningless in another. It takes the same members and modes as `[ShowIf]`.
+
+```csharp
+public bool usesCustomIcon;
+[RequiredIf(nameof(usesCustomIcon))] public Sprite icon;
+```
+
+`[MustImplement]` restricts an object reference by type rather than by location. The picker only lists objects that qualify, dropping a GameObject resolves the first component on it that does, and an assignment that cannot be satisfied is reverted.
+
+```csharp
+[MustImplement(typeof(IDamageable))] public GameObject target;
+[MustImplement(typeof(IDamageable), typeof(ISelectable))] public Component both;
 ```
 
 `[MinMax]` and `[Max]` really do reset the value: type 500 with a max of 100 and it snaps back to 100 when you commit. Both also clamp component-wise on `Vector2`, `Vector3`, `Vector2Int` and `Vector3Int`.
@@ -131,6 +150,9 @@ Fill a reference from the hierarchy so you stop dragging things by hand. They on
 [Tag] public string tag;                         // tag dropdown, [Tag(true)] to forbid new tags
 [ComponentPicker] public Collider hit;           // drop a GameObject, it picks the matching component
 [OpenAsset] public TextAsset config;             // button that opens the asset in its editor
+[Layer] public int spawnLayer;                   // single layer, use LayerMask when you need several
+[Layer] public string layerName;                 // on a string it stores the name instead
+[SortingLayer] public string sortingLayer;       // sorting layer name, or the id on an int
 ```
 
 Animator and audio, which resolve their options from a sibling field:
@@ -143,6 +165,30 @@ public Animator animator;
 public AudioMixer mixer;
 [MixerParameter(nameof(mixer))] public string exposedParam;  // exposed mixer parameters
 [AudioMixerGroup(nameof(mixer))] public AudioMixerGroup group;
+
+[AnimatorState(nameof(animator))] public string state;       // "LayerName.StateName", or the hash on an int
+
+public Material material;
+[ShaderParam(nameof(material))] public string property;      // any shader property, or the id on an int
+[ShaderParam(nameof(material), EShaderParamType.Color)] public string tint;
+```
+
+`[ShaderParam]` also accepts a `Renderer` or a `Shader` field as its source.
+
+## Editing referenced assets
+
+`[Expandable]` adds a toggle next to an asset reference that draws the asset's own inspector inline, so a ScriptableObject can be edited without changing the Project window selection.
+
+```csharp
+[Expandable] public WeaponConfig config;
+[Expandable(DefaultExpanded = true)] public AudioConfig audio;
+```
+
+`[ReferencePicker]` gives a `[SerializeReference]` field the type picker Unity does not provide, so the concrete implementation can be chosen and swapped in the inspector. The picker is searchable and grouped by namespace.
+
+```csharp
+[SerializeReference] [ReferencePicker] public IAbility ability;
+[SerializeReference] [ReferencePicker] public List<ICondition> conditions;
 ```
 
 ## Buttons and widgets
@@ -172,12 +218,77 @@ private string[] Options => new[] { "a", "b", "c" };
 
 Buttons and the read-only native members render at the bottom of the inspector, after your fields.
 
-There is also a change callback:
+`[HeaderButton]` puts a button in the component header instead, where it costs no vertical space and stays reachable while the component is collapsed. Buttons lay out right to left in declaration order.
+
+```csharp
+[HeaderButton("Open")] private void OpenWindow() { }
+[HeaderButton("Reset", Width = 50f, Confirm = "Reset everything?")] private void ResetAll() { }
+```
+
+`[Dropdown]` switches from a plain popup to a searchable tree once there are more than a handful of options, so long option lists stay usable. Options containing a slash become submenus.
+
+There are two change callbacks:
 
 ```csharp
 [OnValueChanged(nameof(OnHealthChanged))] public int health;
 private void OnHealthChanged() { }               // fires when the field is edited in the inspector
+
+[OnArraySizeChanged(nameof(OnSlotsResized))] public List<Item> slots;
+private void OnSlotsResized(int size) { }        // fires only when the element count changes
 ```
+
+`[OnArraySizeChanged]` accepts a parameterless method or one taking a single int. Edits to element values that keep the count do not fire it; use `[OnValueChanged]` for those.
+
+## Troubleshoot window
+
+`Tools > Base Packages > Unity Editor > Project Health > Attribute Troubleshoot`
+
+Every drawer and handler in this package fails quietly on purpose: an attribute that cannot resolve what it
+points at falls back to the plain field so a typo never breaks the whole inspector. That is the right runtime
+behavior and a terrible way to find mistakes, because the fallback is only visible while the affected object
+happens to be selected.
+
+Press **Scan Project** and the window walks every component, ScriptableObject and serializable type and lists
+what cannot work:
+
+- a condition member that does not exist or is not a bool, which makes the condition evaluate to true forever
+- `[Dropdown]` pointing at something that is not enumerable
+- `[AnimatorParam]`, `[AnimatorState]`, `[MixerParameter]` or `[ShaderParam]` whose sibling field is missing or
+  of the wrong type, including the exact-type rule the sibling resolver applies
+- an attribute on a field type its drawer cannot handle, for example `[Required]` on an int
+- `[GetComponent]`, `[Child]` or `[GetComponentInParent]` on a non-component type, on a `GameObject` field, or
+  on a ScriptableObject that has no hierarchy to search
+- `[Button]` or `[HeaderButton]` on a method with parameters, which the renderer skips
+- `[OnValueChanged]`, `[OnArraySizeChanged]`, `[InlineButton]` or `[ValidateInput]` whose target method is gone
+  or no longer matches the expected signature
+- `[ReferencePicker]` without `[SerializeReference]`, or on a type with no instantiable implementation
+
+Click a row's header to open the script. Errors mean the attribute does nothing; warnings mean it works but not
+the way it reads.
+
+### Samples tab
+
+A healthy project produces an empty report, which is the right outcome and a useless way to learn what the
+window looks like. The **Samples** tab scans a set of types that are broken on purpose, one per family of
+mistake, and shows the report they produce. These types are excluded from the project scan, so they never
+appear as real findings.
+
+They are also the test fixture: if a check stops working, its sample stops being reported.
+
+### Showcase tab
+
+A throwaway asset carrying one of every attribute, drawn through the real inspector. Edit anything, nothing is
+saved. Useful for seeing what an attribute actually looks like before reaching for it, and for checking a new
+drawer against the existing ones.
+
+Header buttons are the one thing that does not show up there. They live in the component header, which an
+embedded inspector does not draw.
+
+Adding a check is one file. Implement `IAttributeCheck` anywhere and `TypeCache` picks it up, the same way
+handlers and validation rules work.
+
+The scan is manual rather than continuous, because walking every type in the project is not cheap enough to run
+on a timer. A domain reload clears the result instead of showing a stale one.
 
 ## How it works, briefly
 
@@ -186,6 +297,9 @@ There are three ways a thing gets drawn:
 - **Decorators handled in the inspector** (titles, lines, validation, conditions, auto-assign) run through a small handler pipeline. Each attribute is one tiny handler class.
 - **Property drawers** (tag, curve, enum buttons, pickers, progress bar, inline button) replace how a single field renders.
 - The **inspector itself** only does grouping (foldouts, tabs) and hands each field to the pipeline.
+
+There is a fourth thing that is not drawing at all: **checks**, which the troubleshoot window runs over the whole
+project to find attributes that point at something they cannot use.
 
 Handlers are discovered with `TypeCache`, so adding a new one is genuinely just dropping in a file. Pick the interface that matches when it should run (`IBeforeFieldHandler`, `IVisibilityHandler`, `IEnableHandler`, `IAfterFieldHandler` or `IInlineFieldWidget`) or write a normal `PropertyDrawer` if you're replacing the field. No registration step.
 
@@ -214,4 +328,5 @@ public sealed class EnemyEditor : AttributePackageEditor
 
 - Unity only lets one package own the default inspector. If you also pull in Odin, NaughtyAttributes or similar, they'll fight over it and one loses silently. Fine as long as this is your only inspector package.
 - The pipeline reaches into nested `[Serializable]` structs and classes at any depth, so validation, conditional and layout attributes work on their fields too. It stops descending in three cases, handing those to Unity's default drawing: arrays and lists (attributes on fields of list elements are skipped), types that have their own `PropertyDrawer` and Unity or framework types like `Vector3`.
+- Serialized collections live in `Base.UtilityPackage`, not here: `SerializableDictionary<,>`, `SerializableHashSet<>` and `InterfaceReference<>` each ship with their own drawer. The pipeline hands any type with a `PropertyDrawer` straight to that drawer, so their attributes are not evaluated on the inner rows.
 - A couple of drawers do real work every repaint by nature. `[MixerParameter]` reads the mixer's exposed parameters and `[AnimatorParam]` reads the controller's parameters each time. On a field or two it's nothing; don't stack a dozen of them on one object.

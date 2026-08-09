@@ -11,23 +11,23 @@ namespace Base.UtilityPackage.Collections
     [Serializable]
     public struct SerializableDictionaryEntry<TKey, TValue>
     {
+        /// <summary>Name of the serialized key field. Used by the inspector drawer.</summary>
+        public const string KeyField = nameof(key);
+
+        /// <summary>Name of the serialized value field. Used by the inspector drawer.</summary>
+        public const string ValueField = nameof(value);
+
         // Field names are kept lowercase so existing serialized data keeps resolving.
         [SerializeField] private TKey key;
         [SerializeField] private TValue value;
 
-        /// <summary>
-        /// The key of the entry.
-        /// </summary>
+        /// <summary>The key of the entry.</summary>
         public TKey Key => key;
 
-        /// <summary>
-        /// The value associated with <see cref="Key"/>.
-        /// </summary>
+        /// <summary>The value associated with <see cref="Key"/>.</summary>
         public TValue Value => value;
 
-        /// <summary>
-        /// Creates an entry from a key and its value.
-        /// </summary>
+        /// <summary>Creates an entry from a key and its value.</summary>
         /// <param name="key">The key of the entry.</param>
         /// <param name="value">The value associated with the key.</param>
         public SerializableDictionaryEntry(TKey key, TValue value)

@@ -23,7 +23,12 @@ folder in your `manifest.json`.
   `[x, y]` indexer, `Get`, `Set` and `IEnumerable<T>` iteration.
 - **`SerializableDictionary<TKey, TValue>`** - a dictionary that serializes and edits in the Inspector. Keeps a
   serialized entry list and a runtime dictionary in sync, so lookups stay fast after Inspector edits.
+  Implements `IDictionary<,>` and `IReadOnlyDictionary<,>`, so it drops into any API expecting a dictionary.
+  Its drawer shows key-value rows instead of a nested entry list and flags duplicate keys, which the runtime
+  dictionary would otherwise drop without a word.
 - **`SerializableDictionaryEntry<TKey, TValue>`** - the serializable key-value struct backing the dictionary.
+- **`SerializableHashSet<T>`** - a set that serializes and edits in the Inspector. Implements `ISet<T>`, keeps a
+  serialized item list and a runtime set in sync, and flags duplicates in its drawer.
 
 ### Logging (`Base.UtilityPackage.Logging`)
 
@@ -59,6 +64,24 @@ folder in your `manifest.json`.
   `"2 hours, 5 minutes and 30 seconds"`.
 - **`TypeExtensions`** - `bool.ToInt()` and `int.ToBool()`.
 
+### Serialization (`Base.UtilityPackage.Serialization`)
+
+- **`InterfaceReference<TInterface, TObject>`** - serializes a Unity object while exposing it through an
+  interface, which Unity cannot serialize on its own. `Value` returns the interface and is null-safe against
+  destroyed objects; `UnderlyingValue` returns the Unity object itself.
+- **`InterfaceReference<TInterface>`** - the common form that accepts any Unity object implementing the
+  interface, so only the interface has to be named at the use site.
+
+The drawer restricts assignment to objects that implement the interface. Dropping a GameObject or a component
+that does not implement it directly resolves the first component on that object which does, so dragging a whole
+prefab works without hunting for the right component.
+
+```csharp
+[SerializeField] private InterfaceReference<IDamageable> target;
+
+private void Hit() => target.Value?.TakeDamage(1);
+```
+
 ### Generated (`Base.UtilityPackage.Generated`)
 
 - **`MenuOrders`** - auto-generated menu priority constants. Do not edit by hand.
@@ -72,3 +95,8 @@ folder in your `manifest.json`.
 - **`SerializableDefaults`** - a base class for `[Serializable]` containers that applies field defaults exactly
   once, covering the case where Unity adds a list element without running your constructor.
 - **`EditorConstants`** - shared editor constants such as `ScriptPropertyName` (`m_Script`).
+- **`Collections.SerializableCollectionGui`** - shared row metrics and duplicate detection for the serialized
+  collection drawers, so the dictionary and the set look and behave the same.
+- **`Collections.SerializableDictionaryDrawer`** - draws key-value rows with add and remove buttons.
+- **`Collections.SerializableHashSetDrawer`** - draws a flat item list with add and remove buttons.
+- **`Serialization.InterfaceReferenceDrawer`** - draws an interface reference as a filtered object field.

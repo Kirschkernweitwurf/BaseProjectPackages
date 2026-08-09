@@ -6,179 +6,161 @@ using UnityEngine;
 namespace Base.UtilityPackage.Collections
 {
     /// <summary>
-    /// A serializable dictionary that can be displayed and edited in the Unity Inspector.
+    /// A dictionary that survives Unity serialization and is editable in the inspector. Entries are
+    /// stored as a serialized list and projected into a runtime dictionary on first access, so lookups
+    /// stay O(1) while the authored data remains a plain list. When the inspector contains duplicate
+    /// keys, the first occurrence wins and the drawer reports the conflict.
     /// </summary>
     /// <typeparam name="TKey">The type of the dictionary keys.</typeparam>
     /// <typeparam name="TValue">The type of the dictionary values.</typeparam>
     [Serializable]
-    public class SerializableDictionary<TKey, TValue>
-        : IEnumerable<KeyValuePair<TKey, TValue>>, ISerializationCallbackReceiver
+    public sealed class SerializableDictionary<TKey, TValue>
+        : IDictionary<TKey, TValue>, IReadOnlyDictionary<TKey, TValue>, ISerializationCallbackReceiver
     {
+        /// <summary>Name of the serialized entry list. Used by the inspector drawer.</summary>
+        public const string EntriesField = nameof(entries);
+
         private static readonly EqualityComparer<TKey> KeyComparer = EqualityComparer<TKey>.Default;
 
+        private static readonly EqualityComparer<TValue> ValueComparer = EqualityComparer<TValue>.Default;
+
+        // Field name is kept lowercase and unchanged so existing serialized data keeps resolving.
         [SerializeField] private List<SerializableDictionaryEntry<TKey, TValue>> entries = new();
 
-        /// <summary>
-        /// Gets the number of key-value pairs contained in the dictionary.
-        /// </summary>
-        public int Count
-        {
-            get
-            {
-                EnsureDictionary();
-                return _dict.Count;
-            }
-        }
+        private Dictionary<TKey, TValue> _dictionary;
 
-        /// <summary>
-        /// Gets or sets the value associated with the specified key.
-        /// </summary>
+        /// <summary>Gets the number of key-value pairs contained in the dictionary.</summary>
+        public int Count => Resolved.Count;
+
+        /// <summary>Always false. The dictionary is writable at runtime.</summary>
+        public bool IsReadOnly => false;
+
+        /// <summary>Gets a collection of the keys contained in the dictionary.</summary>
+        public ICollection<TKey> Keys => Resolved.Keys;
+
+        /// <summary>Gets a collection of the values contained in the dictionary.</summary>
+        public ICollection<TValue> Values => Resolved.Values;
+
+        /// <summary>Gets or sets the value associated with the specified key.</summary>
         /// <param name="key">The key of the value to get or set.</param>
         /// <returns>The value associated with the key.</returns>
         public TValue this[TKey key]
         {
-            get
-            {
-                EnsureDictionary();
-                return _dict[key];
-            }
+            get => Resolved[key];
             set
             {
-                EnsureDictionary();
-
                 if (TryGetEntryIndex(key, out int index))
                     entries[index] = new SerializableDictionaryEntry<TKey, TValue>(key, value);
                 else
                     entries.Add(new SerializableDictionaryEntry<TKey, TValue>(key, value));
 
-                _dict[key] = value;
+                Resolved[key] = value;
             }
         }
 
-        /// <summary>
-        /// Gets an enumerable collection of the keys contained in the dictionary.
-        /// </summary>
-        public IEnumerable<TKey> Keys
+        IEnumerable<TKey> IReadOnlyDictionary<TKey, TValue>.Keys => Resolved.Keys;
+
+        IEnumerable<TValue> IReadOnlyDictionary<TKey, TValue>.Values => Resolved.Values;
+
+        // Rebuilds from the serialized entries on first access after every deserialization.
+        private Dictionary<TKey, TValue> Resolved
         {
             get
             {
-                EnsureDictionary();
-                return _dict.Keys;
+                if (_dictionary == null)
+                    Rebuild();
+
+                return _dictionary;
             }
         }
-
-        /// <summary>
-        /// Gets an enumerable collection of the values contained in the dictionary.
-        /// </summary>
-        public IEnumerable<TValue> Values
-        {
-            get
-            {
-                EnsureDictionary();
-                return _dict.Values;
-            }
-        }
-
-        private Dictionary<TKey, TValue> _dict;
-
-        /// <summary>
-        /// Returns an enumerator that iterates through the dictionary.
-        /// </summary>
-        /// <returns>An enumerator over all key-value pairs.</returns>
-        public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
-        {
-            EnsureDictionary();
-            return _dict.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         void ISerializationCallbackReceiver.OnBeforeSerialize() { }
 
-        // Discards the runtime dictionary after Unity deserializes the entries (e.g. inspector edits),
-        // so the next access rebuilds it from the fresh serialized data.
-        void ISerializationCallbackReceiver.OnAfterDeserialize() => _dict = null;
+        // Discards the runtime dictionary after Unity writes the entries back, for example after an
+        // inspector edit, so the next access rebuilds it from the fresh serialized data.
+        void ISerializationCallbackReceiver.OnAfterDeserialize() => _dictionary = null;
 
-        /// <summary>
-        /// Adds a new key-value pair to the dictionary.
-        /// </summary>
+        /// <summary>Adds a new key-value pair to the dictionary.</summary>
         /// <param name="key">The key to add.</param>
         /// <param name="value">The value associated with the key.</param>
-        /// <exception cref="ArgumentException">Thrown if the key already exists.</exception>
+        /// <exception cref="ArgumentException">Thrown when the key already exists.</exception>
         public void Add(TKey key, TValue value)
         {
-            EnsureDictionary();
-            _dict.Add(key, value); // Throws on duplicate keys, matching Dictionary semantics.
+            Resolved.Add(key, value); // Throws on duplicate keys before the entry list is touched.
             entries.Add(new SerializableDictionaryEntry<TKey, TValue>(key, value));
         }
 
-        /// <summary>
-        /// Removes the entry with the specified key from the dictionary.
-        /// </summary>
+        /// <summary>Adds an existing pair to the dictionary.</summary>
+        /// <param name="item">The pair to add.</param>
+        public void Add(KeyValuePair<TKey, TValue> item) => Add(item.Key, item.Value);
+
+        /// <summary>Removes all entries from the dictionary.</summary>
+        public void Clear()
+        {
+            entries.Clear();
+            Resolved.Clear();
+        }
+
+        /// <summary>Determines whether the dictionary contains the given pair.</summary>
+        /// <param name="item">The pair to locate.</param>
+        /// <returns>True when both the key and the value match.</returns>
+        public bool Contains(KeyValuePair<TKey, TValue> item)
+            => TryGetValue(item.Key, out TValue value) && ValueComparer.Equals(value, item.Value);
+
+        /// <summary>Determines whether the dictionary contains the specified key.</summary>
+        /// <param name="key">The key to locate.</param>
+        /// <returns>True when the dictionary contains the key.</returns>
+        public bool ContainsKey(TKey key) => Resolved.ContainsKey(key);
+
+        /// <summary>Copies all pairs into the given array, starting at the given index.</summary>
+        /// <param name="array">The destination array.</param>
+        /// <param name="arrayIndex">The index in the destination array to start writing at.</param>
+        public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
+            => ((ICollection<KeyValuePair<TKey, TValue>>)Resolved).CopyTo(array, arrayIndex);
+
+        /// <summary>Returns an enumerator that iterates through the dictionary.</summary>
+        /// <returns>An enumerator over all key-value pairs.</returns>
+        public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator() => Resolved.GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+        /// <summary>Removes the entry with the specified key.</summary>
         /// <param name="key">The key of the entry to remove.</param>
-        /// <returns>True if the entry was removed; otherwise, false.</returns>
+        /// <returns>True when an entry was removed.</returns>
         public bool Remove(TKey key)
         {
             if (!TryGetEntryIndex(key, out int index))
                 return false;
 
             entries.RemoveAt(index);
-            _dict?.Remove(key);
+            Resolved.Remove(key);
             return true;
         }
 
-        /// <summary>
-        /// Attempts to get the value associated with the specified key.
-        /// </summary>
+        /// <summary>Removes the given pair when both the key and the value match.</summary>
+        /// <param name="item">The pair to remove.</param>
+        /// <returns>True when an entry was removed.</returns>
+        public bool Remove(KeyValuePair<TKey, TValue> item) => Contains(item) && Remove(item.Key);
+
+        /// <summary>Attempts to get the value associated with the specified key.</summary>
         /// <param name="key">The key of the value to get.</param>
-        /// <param name="value">
-        /// When this method returns, contains the value if found; otherwise, the default value.
-        /// </param>
-        /// <returns>True if the key exists; otherwise, false.</returns>
-        public bool TryGetValue(TKey key, out TValue value)
-        {
-            EnsureDictionary();
-            return _dict.TryGetValue(key, out value);
-        }
+        /// <param name="value">The value when found, otherwise the default value.</param>
+        /// <returns>True when the key exists.</returns>
+        public bool TryGetValue(TKey key, out TValue value) => Resolved.TryGetValue(key, out value);
 
-        /// <summary>
-        /// Determines whether the dictionary contains the specified key.
-        /// </summary>
-        /// <param name="key">The key to locate.</param>
-        /// <returns>True if the dictionary contains the key; otherwise, false.</returns>
-        public bool ContainsKey(TKey key)
+        private void Rebuild()
         {
-            EnsureDictionary();
-            return _dict.ContainsKey(key);
-        }
-
-        /// <summary>
-        /// Removes all entries from the dictionary.
-        /// </summary>
-        public void Clear()
-        {
-            entries.Clear();
-            _dict?.Clear();
-        }
-
-        /// <summary>
-        /// Builds the runtime dictionary from the serialized entries if it does not exist yet.
-        /// Mutations keep both stores in sync afterwards, so no rebuild is needed per access.
-        /// </summary>
-        private void EnsureDictionary()
-        {
-            if (_dict != null)
-                return;
-
-            _dict = new Dictionary<TKey, TValue>(entries.Count);
+            _dictionary = new Dictionary<TKey, TValue>(entries.Count);
 
             foreach (SerializableDictionaryEntry<TKey, TValue> entry in entries)
             {
+                // Null and duplicate keys are authoring mistakes the drawer reports. Skipping them here
+                // keeps the runtime dictionary usable instead of throwing during deserialization.
                 if (entry.Key == null
-                    || _dict.ContainsKey(entry.Key))
+                    || _dictionary.ContainsKey(entry.Key))
                     continue;
 
-                _dict[entry.Key] = entry.Value;
+                _dictionary[entry.Key] = entry.Value;
             }
         }
 

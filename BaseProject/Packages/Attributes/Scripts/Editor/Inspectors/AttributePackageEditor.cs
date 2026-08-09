@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEditor;
+using UnityEngine;
 
 namespace Base.AttributePackage.Editor
 {
@@ -9,7 +10,8 @@ namespace Base.AttributePackage.Editor
     /// Base inspector for the attribute package. Handles the serialized script field, foldout and
     /// collapsible title grouping, then delegates each member to <see cref="MemberRenderer"/> and the
     /// handler pipeline. Tab groups are drawn by <see cref="TabGroupRenderer"/>, read-only native
-    /// members and buttons by their renderers. Derive concrete editors targeting MonoBehaviour and
+    /// members and buttons by their renderers. Header buttons are drawn into the component header by
+    /// <see cref="HeaderButtonRenderer"/>. Derive concrete editors targeting MonoBehaviour and
     /// ScriptableObject.
     /// </summary>
     public abstract class AttributePackageEditor : UnityEditor.Editor
@@ -20,6 +22,15 @@ namespace Base.AttributePackage.Editor
         private bool _foldoutExpanded = true;
         private bool _inTitleSection;
         private bool _titleExpanded = true;
+
+        protected override void OnHeaderGUI()
+        {
+            base.OnHeaderGUI();
+
+            // The default header reserves its own block, so its rect is the last one laid out. Drawing
+            // on top of it is the only way to reach the header without reimplementing Unity's version.
+            HeaderButtonRenderer.Draw(this, GUILayoutUtility.GetLastRect());
+        }
 
         public override void OnInspectorGUI()
         {
@@ -155,4 +166,4 @@ namespace Base.AttributePackage.Editor
             return expanded;
         }
     }
-}
+}

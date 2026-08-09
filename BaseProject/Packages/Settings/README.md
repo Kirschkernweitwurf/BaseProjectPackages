@@ -21,7 +21,7 @@ exist by placing components in a scene or by registering settings directly.
   default, the `SettingsRegistry` and the `SettingsContext` that owns them in a scene.
 - **Components** holds `SettingComponent`, the generic `TypedSettingComponent<TValue, TSetting>`
   and its per-type bases, plus ready-to-use components for audio volume, full screen mode,
-  resolution, quality level, VSync and language.
+  resolution, quality level, VSync, language and gamepad rumble.
 - **Display** holds `DisplaySettings` (thin wrappers over Unity's display APIs) and
   `ResolutionProvider` (turns available resolutions into stable labels).
 - **UI** holds `SettingElement`, the generic `TypedSettingElement<TValue, TSetting>` and the
@@ -128,6 +128,13 @@ public sealed class FileSettingsContext : SettingsContext
 - `VSyncSetting` stores the VSync count.
 - `LanguageSetting` stores an index into a curated list of locales and applies it through the
   Localization package.
+- `RumbleEnabledSetting` stores whether gamepad rumble is allowed and gates the `RumbleService`.
+- `RumbleIntensitySetting` stores the global rumble strength that scales every rumble request.
+
+Both rumble components take a `RumbleConfig` asset for their default and key off
+`RumbleSettingKeys`, so the component that writes a value, the service that reads it and the
+asset that seeds it cannot drift apart. Assign the same config the `RumbleService` uses. They are
+the reason this package references `Base.ControllerSupport`.
 
 ## Included UI elements
 
@@ -164,4 +171,5 @@ references survive the rename because the script GUIDs are unchanged.
 - `Base.ToolPackage` (`PersistentKey`)
 - `Base.UtilityPackage` (logging, math and coroutine helpers)
 - `Base.AttributePackage` (inspector attributes such as `[Required]`)
+- `Base.ControllerSupport` (`RumbleService`, for the rumble components only)
 - Unity Localization, TextMeshPro and Unity UI

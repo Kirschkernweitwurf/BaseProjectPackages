@@ -38,10 +38,38 @@ namespace Base.AttributePackage.Editor
             if (_exactTypes.Contains(type))
                 return true;
 
+            // A drawer for a generic type is registered against the open definition, for example
+            // SerializableDictionary<,>, while the inspected field carries a closed one. Without this
+            // step the pipeline would descend into the type and draw its raw backing list instead.
+            if (type.IsGenericType && _exactTypes.Contains(type.GetGenericTypeDefinition()))
+                return true;
+
             foreach (Type baseType in _baseTypes)
             {
-                if (baseType.IsAssignableFrom(type))
+                if (IsCoveredBy(baseType, type))
                     return true;
+            }
+
+            return false;
+        }
+
+        // Open generic base types cannot answer IsAssignableFrom, so the hierarchy is walked and each
+        // level compared against the definition instead.
+        private static bool IsCoveredBy(Type registered, Type type)
+        {
+            if (registered.IsAssignableFrom(type))
+                return true;
+
+            if (!registered.IsGenericTypeDefinition)
+                return false;
+
+            Type current = type;
+            while (current != null)
+            {
+                if (current.IsGenericType && current.GetGenericTypeDefinition() == registered)
+                    return true;
+
+                current = current.BaseType;
             }
 
             return false;
@@ -85,4 +113,4 @@ namespace Base.AttributePackage.Editor
                 _exactTypes.Add(target);
         }
     }
-}
+}

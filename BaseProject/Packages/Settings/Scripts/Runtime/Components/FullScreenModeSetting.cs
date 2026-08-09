@@ -12,8 +12,7 @@ namespace Base.SettingsPackage.Components
     /// </summary>
     public sealed class FullScreenModeSetting : IntSettingComponent
     {
-        [Header("Full Screen Mode")]
-
+        [Title("Full Screen Mode")]
         [Tooltip("Modes exposed to the player, in the order they appear in the menu.")]
         [SerializeField] [NotNullOrEmpty]
         private FullScreenMode[] availableModes =

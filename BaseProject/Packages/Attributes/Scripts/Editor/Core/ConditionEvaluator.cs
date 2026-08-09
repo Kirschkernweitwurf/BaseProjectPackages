@@ -12,9 +12,40 @@ namespace Base.AttributePackage.Editor
     public static class ConditionEvaluator
     {
         /// <summary>
+        /// Combines several bool members into one result. An empty member list resolves to true, so an
+        /// attribute without arguments never hides or disables anything.
+        /// </summary>
+        /// <param name="context">The member currently being drawn.</param>
+        /// <param name="mode">How the members are combined.</param>
+        /// <param name="members">Names of the bool members to evaluate.</param>
+        /// <returns>True when the combined condition holds.</returns>
+        public static bool ResolveAll(in MemberContext context, EConditionMode mode, string[] members)
+        {
+            if (members == null || members.Length == 0)
+                return true;
+
+            foreach (string member in members)
+            {
+                bool value = ResolveBool(context, member);
+
+                if (mode == EConditionMode.All && !value)
+                    return false;
+
+                if (mode == EConditionMode.Any && value)
+                    return true;
+            }
+
+            // All-mode reaching this point means nothing failed; Any-mode means nothing succeeded.
+            return mode == EConditionMode.All;
+        }
+
+        /// <summary>
         /// Resolves a bool member: a serialized bool sibling, a bool field, a bool property or a
         /// parameterless bool method. Returns true when the member cannot be resolved.
         /// </summary>
+        /// <param name="context">The member currently being drawn.</param>
+        /// <param name="member">Name of the bool member to evaluate.</param>
+        /// <returns>The value of the member, or true when it cannot be resolved.</returns>
         public static bool ResolveBool(in MemberContext context, string member)
         {
             SerializedProperty property = context.FindSiblingProperty(member);
@@ -42,6 +73,9 @@ namespace Base.AttributePackage.Editor
         }
 
         /// <summary>Resolves the current value of an enum field or property, or null.</summary>
+        /// <param name="context">The member currently being drawn.</param>
+        /// <param name="member">Name of the enum member to evaluate.</param>
+        /// <returns>The boxed enum value, or null when it cannot be resolved.</returns>
         public static object ResolveEnum(in MemberContext context, string member) => MemberValueResolver.TryResolve(
             context.DeclaringType, context.DeclaringObject, member,
             out object value)

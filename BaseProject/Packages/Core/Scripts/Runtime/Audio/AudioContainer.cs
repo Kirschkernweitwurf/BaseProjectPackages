@@ -48,7 +48,7 @@ namespace Base.CorePackage.Audio
         [field: Tooltip("Maximum number of clips from this container playing at the same time. The oldest source"
             + " is released when the limit is reached. Set to -1 for unlimited.")]
         [field: Min(-1)]
-        [field: SerializeField] public int MaxClipsPlaying { get; private set; } = -1;
+        [field: SerializeField] internal int MaxClipsPlaying { get; private set; } = -1;
 
         /// <summary>
         /// Whether this container is allowed to have any number of clips playing at the same time.

@@ -1,3 +1,4 @@
+using Base.AttributePackage;
 using Base.SettingsPackage.Display;
 using Base.ToolPackage.Identification;
 using UnityEngine;
@@ -14,8 +15,7 @@ namespace Base.SettingsPackage.Components
         private const int MaxVSyncCount = 4;
         private const int MinVSyncCount = 0;
 
-        [Header("VSync")]
-
+        [Title("VSync")]
         [SerializeField] [Range(MinVSyncCount, MaxVSyncCount)] private int defaultVSyncCount = 1;
 
         /// <inheritdoc/>

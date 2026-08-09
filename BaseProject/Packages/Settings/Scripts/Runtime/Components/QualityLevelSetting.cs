@@ -1,3 +1,4 @@
+using Base.AttributePackage;
 using Base.SettingsPackage.Display;
 using Base.ToolPackage.Identification;
 using UnityEngine;
@@ -12,8 +13,7 @@ namespace Base.SettingsPackage.Components
     {
         private const int UseCurrentLevel = -1;
 
-        [Header("Quality")]
-
+        [Title("Quality")]
         [Tooltip("Index into Unity's quality levels. Leave negative to use whatever Unity has set on first run.")]
         [SerializeField] private int defaultQualityLevel = UseCurrentLevel;
 

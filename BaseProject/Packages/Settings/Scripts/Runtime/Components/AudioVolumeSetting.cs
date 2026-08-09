@@ -16,8 +16,7 @@ namespace Base.SettingsPackage.Components
         private const float SilenceDecibels = -80f;
         private const float SilenceThreshold = 0.0001f;
 
-        [Header("Audio Volume")]
-
+        [Title("Audio Volume")]
         [SerializeField] [Required] private AudioMixer audioMixer;
 
         [Tooltip("Name of the exposed AudioMixer parameter. Also used as the setting's registry key.")]
