@@ -9,7 +9,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
     /// <summary>
     /// An overview of the whole graph with a box showing what is currently on screen. Written rather
     /// than taken from the graph library, because that one clamps anything outside its bounds to the
-    /// border instead of leaving it out, so a node that scrolls off the edge appears to slide across
+    /// border instead of leaving it out. So a node that scrolls off the edge appears to slide across
     /// the map and pile up on top of its neighbors. Here a node is drawn where it is or not at all,
     /// and the view box is the only thing allowed to be clipped.
     /// <br/><br/>
@@ -17,7 +17,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
     /// straight onto the container without raising anything, so a map that waits to be told only ever
     /// catches up once the drag has finished.
     /// </summary>
-    public sealed class CodebaseGraphMiniMap : VisualElement
+    internal sealed class CodebaseGraphMiniMap : VisualElement
     {
         private const float ContentPadding = 24f;
         private const string DotClass = "minimap-dot";
@@ -114,6 +114,30 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             ApplySelection();
         }
 
+        private static Rect Union(Rect first, Rect second)
+        {
+            float minX = Mathf.Min(first.xMin, second.xMin);
+            float minY = Mathf.Min(first.yMin, second.yMin);
+            float maxX = Mathf.Max(first.xMax, second.xMax);
+            float maxY = Mathf.Max(first.yMax, second.yMax);
+
+            return Rect.MinMaxRect(minX, minY, maxX, maxY);
+        }
+
+        private static Rect Grow(Rect rect, float amount) => new(rect.x - amount, rect.y - amount,
+            rect.width + amount * 2f, rect.height + amount * 2f);
+
+        private static VisualElement BuildDot(GraphEntry entry)
+        {
+            VisualElement dot = new();
+            dot.AddToClassList(DotClass);
+            dot.EnableInClassList(FindingDotClass, entry.HasOpenFindings);
+            dot.style.backgroundColor = GraphColorPalette.GetColor(entry.ColorSeed);
+            dot.userData = entry.Id;
+
+            return dot;
+        }
+
         private void ApplySelection()
         {
             foreach (VisualElement dot in _dots.Children())
@@ -133,30 +157,6 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             _lastPosition = position;
             _lastScale = zoom;
             PlaceViewBox();
-        }
-
-        private static Rect Union(Rect first, Rect second)
-        {
-            float minX = Mathf.Min(first.xMin, second.xMin);
-            float minY = Mathf.Min(first.yMin, second.yMin);
-            float maxX = Mathf.Max(first.xMax, second.xMax);
-            float maxY = Mathf.Max(first.yMax, second.yMax);
-
-            return Rect.MinMaxRect(minX, minY, maxX, maxY);
-        }
-
-        private static Rect Grow(Rect rect, float amount)
-            => new(rect.x - amount, rect.y - amount, rect.width + amount * 2f, rect.height + amount * 2f);
-
-        private VisualElement BuildDot(GraphEntry entry)
-        {
-            VisualElement dot = new();
-            dot.AddToClassList(DotClass);
-            dot.EnableInClassList(FindingDotClass, entry.HasOpenFindings);
-            dot.style.backgroundColor = GraphColorPalette.GetColor(entry.ColorSeed);
-            dot.userData = entry.Id;
-
-            return dot;
         }
 
         private void Redraw()
@@ -204,22 +204,22 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             if (Mathf.Approximately(zoom.x, 0f) || Mathf.Approximately(zoom.y, 0f))
                 return;
 
-            Rect visible = new(-position.x / zoom.x,
+            Rect rect = new(-position.x / zoom.x,
                 -position.y / zoom.y,
                 _graphView.layout.width / zoom.x,
                 _graphView.layout.height / zoom.y);
 
-            Vector2 corner = ToLocal(visible.position);
+            Vector2 corner = ToLocal(rect.position);
 
             _viewBox.style.left = corner.x;
             _viewBox.style.top = corner.y;
-            _viewBox.style.width = visible.width * _scale;
-            _viewBox.style.height = visible.height * _scale;
+            _viewBox.style.width = rect.width * _scale;
+            _viewBox.style.height = rect.height * _scale;
         }
 
         /// <summary>
         /// Reads where the canvas currently sits. The graph exposes this through a transform the
-        /// element layer has since deprecated, and the write side of the same pair is not deprecated
+        /// element layer has since deprecated. The write side of the same pair is not deprecated
         /// and takes the same types, so the read is kept here in one place rather than mixing two
         /// coordinate APIs across five call sites.
         /// </summary>
@@ -231,11 +231,11 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 #pragma warning restore 618
         }
 
-        private Vector2 ToLocal(Vector2 world)
-            => new((world.x - _content.x) * _scale + _offset.x, (world.y - _content.y) * _scale + _offset.y);
+        private Vector2 ToLocal(Vector2 world) => new((world.x - _content.x) * _scale + _offset.x,
+            (world.y - _content.y) * _scale + _offset.y);
 
-        private Vector2 ToWorld(Vector2 local)
-            => new((local.x - _offset.x) / _scale + _content.x, (local.y - _offset.y) / _scale + _content.y);
+        private Vector2 ToWorld(Vector2 local) => new((local.x - _offset.x) / _scale + _content.x,
+            (local.y - _offset.y) / _scale + _content.y);
 
         private void OnMouseDown(MouseDownEvent evt)
         {

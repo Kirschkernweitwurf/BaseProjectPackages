@@ -1,7 +1,7 @@
 namespace Base.ToolPackage.Editor.CodebaseGraph.Model
 {
     /// <summary>Category a scanned member falls into.</summary>
-    public enum EMemberKind : byte
+    internal enum EMemberKind : byte
     {
         Field = 0,
         SerializedField = 1,

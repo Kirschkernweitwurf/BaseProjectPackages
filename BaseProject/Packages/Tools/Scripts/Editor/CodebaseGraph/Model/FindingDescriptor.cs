@@ -4,7 +4,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Model
     /// Everything the window needs to say about one kind of finding: what to call it, what it actually
     /// means, what to do about it, and whether the window can do that for you.
     /// </summary>
-    public sealed class FindingDescriptor
+    internal sealed class FindingDescriptor
     {
         /// <summary>Wording used in the findings dropdown, phrased as a group of things.</summary>
         public string FilterLabel { get; }

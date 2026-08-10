@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Base.ToolPackage.Editor.CodebaseGraph.Model;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
@@ -10,10 +9,10 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 {
     /// <summary>
     /// Renders the current entries as draggable nodes with usage edges. A dense graph is unreadable if
-    /// every line is drawn the same weight at the same time, so lines are as heavy as the traffic they
-    /// carry, and selecting a node pushes everything it does not touch into the background.
+    /// every line is drawn the same weight at the same time. So lines are as heavy as the traffic they
+    /// carry and selecting a node pushes everything it does not touch into the background.
     /// </summary>
-    public sealed class CodebaseGraphView : GraphView
+    internal sealed class CodebaseGraphView : GraphView
     {
         private const float DimmedAlpha = 0.10f;
         private const float FadedAlpha = 0.07f;
@@ -115,7 +114,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
         /// <summary>Clears and rebuilds the graph from the given entries.</summary>
         /// <param name="entries">Entries to draw.</param>
-        /// <param name="focusedId">Id of the focused entry, or null.</param>
+        /// <param name="focusedId">ID of the focused entry, or null.</param>
         public void Rebuild(IReadOnlyList<GraphEntry> entries, string focusedId)
         {
             DeleteElements(graphElements.ToList());
@@ -164,16 +163,35 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
         /// <summary>Shows or hides the minimap.</summary>
         /// <param name="isVisible">Whether the minimap should be drawn.</param>
-        public void SetMiniMapVisible(bool isVisible)
-            => _miniMap.style.display = isVisible
-                ? DisplayStyle.Flex
-                : DisplayStyle.None;
+        public void SetMiniMapVisible(bool isVisible) => _miniMap.style.display = isVisible
+            ? DisplayStyle.Flex
+            : DisplayStyle.None;
+
+        private static Color Fade(Color color, float alpha) => new(color.r, color.g, color.b, alpha);
+
+        private static int ResolveWidth(int weight, bool isTouched)
+        {
+            if (isTouched)
+                return WideWidth;
+
+            if (weight >= HeavyWeight)
+                return ThickWidth;
+
+            return weight >= MediumWeight
+                ? MediumWidth
+                : ThinWidth;
+        }
 
         private void BuildMiniMap()
         {
-            _miniMap = new CodebaseGraphMiniMap(this);
-            _miniMap.style.width = MinimapWidth;
-            _miniMap.style.height = MinimapHeight;
+            _miniMap = new CodebaseGraphMiniMap(this)
+            {
+                style =
+                {
+                    width = MinimapWidth,
+                    height = MinimapHeight
+                }
+            };
 
             Add(_miniMap);
             RegisterCallback<GeometryChangedEvent>(_ => PlaceMiniMap());
@@ -278,11 +296,9 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             // It is the default because it answers the one question a line exists to answer, what does
             // this connect to, without every other line competing to answer it at the same time.
             if (_edgeMode == EEdgeMode.Muted)
-            {
                 return isTouched
                     ? SelectedColor
                     : Fade(RestingColor, FadedAlpha);
-            }
 
             if (selectedCount == 0)
                 return Fade(RestingColor, RestingAlpha);
@@ -295,8 +311,6 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
                 : Fade(RestingColor, DimmedAlpha);
         }
 
-        private static Color Fade(Color color, float alpha) => new(color.r, color.g, color.b, alpha);
-
         /// <summary>
         /// How visible a line is. This is what actually carries the emphasis, because opacity is a plain
         /// element style rather than something the graph recomputes for itself on the next redraw.
@@ -304,11 +318,9 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         private float ResolveOpacity(bool isTouched, int selectedCount)
         {
             if (_edgeMode == EEdgeMode.Muted)
-            {
                 return isTouched
                     ? FullOpacity
                     : FadedAlpha;
-            }
 
             if (selectedCount == 0)
                 return RestingAlpha;
@@ -316,19 +328,6 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             return isTouched
                 ? FullOpacity
                 : DimmedAlpha;
-        }
-
-        private int ResolveWidth(int weight, bool isTouched)
-        {
-            if (isTouched)
-                return WideWidth;
-
-            if (weight >= HeavyWeight)
-                return ThickWidth;
-
-            return weight >= MediumWeight
-                ? MediumWidth
-                : ThinWidth;
         }
 
         private bool IsVisible(bool isTouched, int selectedCount)

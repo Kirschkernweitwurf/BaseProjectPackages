@@ -4,7 +4,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Model
 {
     /// <summary>Findings the analyzer can report for a whole type.</summary>
     [Flags]
-    public enum ETypeIssue : byte
+    internal enum ETypeIssue : byte
     {
         None = 0,
         DeadType = 1,

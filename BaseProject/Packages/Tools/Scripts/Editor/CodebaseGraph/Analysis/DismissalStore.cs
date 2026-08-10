@@ -12,16 +12,10 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
     /// candidates can be worked through in sittings. Kept in ProjectSettings as plain text, so it
     /// survives recompiles and reviews cleanly in a diff.
     /// </summary>
-    public static class DismissalStore
+    internal static class DismissalStore
     {
         private const int CurrentVersion = 2;
         private const string FilePath = "ProjectSettings/CodebaseGraphDismissed.json";
-
-        private static readonly HashSet<string> Own = new(StringComparer.Ordinal);
-        private static readonly HashSet<string> Tree = new(StringComparer.Ordinal);
-
-        private static DateTime _lastWriteTimeUtc;
-        private static bool _isLoaded;
 
         /// <summary>Raised whenever the set of dismissals changes, so open windows can refresh.</summary>
         public static event Action Changed;
@@ -65,6 +59,12 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
                 return Tree;
             }
         }
+
+        private static readonly HashSet<string> Own = new(StringComparer.Ordinal);
+        private static readonly HashSet<string> Tree = new(StringComparer.Ordinal);
+
+        private static DateTime _lastWriteTimeUtc;
+        private static bool _isLoaded;
 
         /// <summary>
         /// Rereads the file when something outside the window changed it. The findings report tells
@@ -205,7 +205,10 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
 
             GraphIdentity.ReadEntry(id, out EFinding finding);
 
-            entries.Add(new DismissalEntry(id, kind, name, includesContents) { Finding = finding });
+            entries.Add(new DismissalEntry(id, kind, name, includesContents)
+            {
+                Finding = finding
+            });
         }
 
         private static int CompareEntries(DismissalEntry left, DismissalEntry right)
@@ -269,11 +272,11 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
                 if (data == null)
                     return;
 
-                Own.UnionWith(data.Own);
-                Tree.UnionWith(data.Tree);
+                Own.UnionWith(data.own);
+                Tree.UnionWith(data.tree);
                 _lastWriteTimeUtc = File.GetLastWriteTimeUtc(FilePath);
 
-                if (data.Version < CurrentVersion)
+                if (data.version < CurrentVersion)
                     ReportWidened();
             }
             catch (Exception exception)
@@ -284,9 +287,13 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
 
         private static void Save()
         {
-            DismissalData data = new() { Version = CurrentVersion };
-            data.Own.AddRange(Own);
-            data.Tree.AddRange(Tree);
+            DismissalData data = new()
+            {
+                version = CurrentVersion
+            };
+
+            data.own.AddRange(Own);
+            data.tree.AddRange(Tree);
 
             try
             {

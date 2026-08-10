@@ -3,7 +3,7 @@ using Base.ToolPackage.Editor.CodebaseGraph.Model;
 namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
 {
     /// <summary>One line of the findings report, with everything needed to rank and print it.</summary>
-    public sealed class FindingEntry
+    internal sealed class FindingEntry
     {
         /// <summary>Which finding this line reports.</summary>
         public EFinding Finding { get; }
@@ -15,10 +15,10 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         public string Id { get; }
 
         /// <summary>Asset path and line, or an empty string when the script could not be resolved.</summary>
-        public string Location { get; }
+        private readonly string location;
 
         /// <summary>Extra detail such as the other members of a cycle.</summary>
-        public string Detail { get; }
+        private readonly string detail;
 
         /// <summary>Creates a report entry.</summary>
         /// <param name="finding">Which finding this line reports.</param>
@@ -31,12 +31,12 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
             Finding = finding;
             Severity = severity;
             Id = id;
-            Location = location;
-            Detail = detail;
+            this.location = location;
+            this.detail = detail;
         }
 
         /// <summary>Formats the entry as a Markdown list item.</summary>
         /// <returns>The line to write.</returns>
-        public string Format() => $"- `{Id}`{Location}{Detail}";
+        public string Format() => $"- `{Id}`{location}{detail}";
     }
 }

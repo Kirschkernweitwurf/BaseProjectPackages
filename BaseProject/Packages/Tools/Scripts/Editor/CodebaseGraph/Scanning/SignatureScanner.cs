@@ -6,11 +6,11 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
 {
     /// <summary>
     /// Links the types that only appear in signatures. A field type, a parameter type, a return type
-    /// and a generic argument all live in metadata and never show up as an instruction, so without this
+    /// and a generic argument all live in metadata and never show up as an instruction. So without this
     /// pass an enum used purely as a field type, or a data class only ever passed as an argument, looks
     /// like nothing in the project references it.
     /// </summary>
-    public static class SignatureScanner
+    internal static class SignatureScanner
     {
         private const BindingFlags DeclaredMembers = BindingFlags.Public
             | BindingFlags.NonPublic

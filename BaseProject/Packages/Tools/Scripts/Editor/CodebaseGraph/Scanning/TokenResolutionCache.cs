@@ -14,13 +14,10 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
     /// method had no generic context at all, since those genuinely do depend on it and remembering one
     /// would report the token as unresolvable everywhere else in the module.
     /// </summary>
-    public sealed class TokenResolutionCache
+    internal sealed class TokenResolutionCache
     {
         private readonly Dictionary<(Module Module, int Token), TokenResolution> _entries = new();
         private readonly Dictionary<(Module Module, int Token), string> _literals = new();
-
-        /// <summary>Number of distinct tokens resolved so far.</summary>
-        public int Count => _entries.Count;
 
         /// <summary>Looks up a token that has already been resolved.</summary>
         /// <param name="module">Module the token belongs to.</param>
@@ -59,7 +56,6 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         /// <param name="module">Module the token belongs to.</param>
         /// <param name="token">The metadata token.</param>
         /// <param name="literal">The literal that was read.</param>
-        public void StoreLiteral(Module module, int token, string literal)
-            => _literals[(module, token)] = literal;
+        public void StoreLiteral(Module module, int token, string literal) => _literals[(module, token)] = literal;
     }
 }

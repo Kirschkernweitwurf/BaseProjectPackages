@@ -11,10 +11,10 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 {
     /// <summary>
     /// Lists everything that was dismissed during triage. Dismissing is easy to do in passing, which is
-    /// exactly why it needs somewhere to be looked at afterwards: without this the only record is a JSON
+    /// exactly why it needs somewhere to be looked at afterward: without this the only record is a JSON
     /// file, and a decision you cannot review is a decision you stop trusting.
     /// </summary>
-    public sealed class CodebaseGraphDismissalsWindow : EditorWindow
+    internal sealed class CodebaseGraphDismissalsWindow : EditorWindow
     {
         private const string AllFindingsText = "everything reported here";
         private const string CopyLabel = "Copy as instructions";
@@ -87,6 +87,8 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         private string _search = string.Empty;
 
 #region Unity Callbacks
+        private void OnDisable() => DismissalStore.Changed -= Rebuild;
+
         private void CreateGUI()
         {
             rootVisualElement.AddToClassList(RootClass);
@@ -105,8 +107,6 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             DismissalStore.Changed += Rebuild;
             Rebuild();
         }
-
-        private void OnDisable() => DismissalStore.Changed -= Rebuild;
 #endregion
 
         /// <summary>
@@ -116,7 +116,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         public static void CloseIfOpen()
         {
             foreach (CodebaseGraphDismissalsWindow window
-                in Resources.FindObjectsOfTypeAll<CodebaseGraphDismissalsWindow>())
+                     in Resources.FindObjectsOfTypeAll<CodebaseGraphDismissalsWindow>())
                 window.Close();
         }
 
@@ -128,11 +128,27 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             window.minSize = new Vector2(MinimumWindowWidth, MinimumWindowHeight);
         }
 
-        private static Label BuildLabel(string text, string styleClass)
+        private static string BuildScopeText(DismissalEntry entry)
         {
-            Label label = new(text);
-            label.AddToClassList(styleClass);
-            return label;
+            string scope = entry.IncludesContents
+                ? ScopeWithContents
+                : ScopeAlone;
+
+            string finding = entry.Finding == EFinding.None
+                ? AllFindingsText
+                : FindingCatalog.Describe(entry.Finding).Title;
+
+            string text = $"{finding}   \u00b7   {scope}";
+
+            return string.IsNullOrEmpty(entry.SuggestedId)
+                ? text
+                : $"{text}   {string.Format(SuggestionFormat, entry.SuggestedId)}";
+        }
+
+        private static void CopyInstructions()
+        {
+            EditorGUIUtility.systemCopyBuffer = DismissalTextFormat.Write();
+            EditorUtility.DisplayDialog(WindowTitle, CopyMessage, "OK");
         }
 
         private VisualElement BuildToolbar()
@@ -140,13 +156,23 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             Toolbar toolbar = new();
             toolbar.AddToClassList(ToolbarRowClass);
 
-            _restoreAllButton = new ToolbarButton(RestoreAll) { text = RestoreAllLabel };
+            _restoreAllButton = new ToolbarButton(RestoreAll)
+            {
+                text = RestoreAllLabel
+            };
+
             toolbar.Add(_restoreAllButton);
 
-            toolbar.Add(new ToolbarButton(CopyInstructions) { text = CopyLabel });
+            toolbar.Add(new ToolbarButton(CopyInstructions)
+            {
+                text = CopyLabel
+            });
 
-            ToolbarSearchField search = new();
-            search.tooltip = SearchPlaceholder;
+            ToolbarSearchField search = new()
+            {
+                tooltip = SearchPlaceholder
+            };
+
             search.RegisterValueChangedCallback(OnSearchChanged);
             toolbar.Add(search);
 
@@ -171,12 +197,12 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
             if (_entries.Count == 0)
             {
-                _list.Add(BuildLabel(EmptyText, PlaceholderClass));
+                _list.Add(GraphLabel.Build(EmptyText, PlaceholderClass));
                 return;
             }
 
             if (graph == null)
-                _list.Add(BuildLabel(ScanFirstText, PlaceholderClass));
+                _list.Add(GraphLabel.Build(ScanFirstText, PlaceholderClass));
 
             AppendStale(EStaleReason.Missing, MissingGroupFormat, MissingGroupText);
             AppendStale(EStaleReason.Resolved, ResolvedGroupFormat, ResolvedGroupText);
@@ -189,9 +215,12 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             if (count == 0)
                 return;
 
-            _list.Add(BuildLabel(string.Format(headingFormat, count), KindTitleClass));
-            _list.Add(BuildLabel(explanation, PlaceholderClass));
-            _list.Add(new Button(() => RemoveStale(reason)) { text = RemoveAllStaleLabel });
+            _list.Add(GraphLabel.Build(string.Format(headingFormat, count), KindTitleClass));
+            _list.Add(GraphLabel.Build(explanation, PlaceholderClass));
+            _list.Add(new Button(() => RemoveStale(reason))
+            {
+                text = RemoveAllStaleLabel
+            });
 
             foreach (DismissalEntry entry in _entries)
             {
@@ -211,7 +240,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
                 if (lastKind != entry.Kind)
                 {
-                    _list.Add(BuildLabel(entry.Kind.ToString(), KindTitleClass));
+                    _list.Add(GraphLabel.Build(entry.Kind.ToString(), KindTitleClass));
                     lastKind = entry.Kind;
                 }
 
@@ -237,9 +266,8 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             Rebuild();
         }
 
-        private bool IsMatch(DismissalEntry entry)
-            => string.IsNullOrEmpty(_search)
-                || entry.DisplayName.IndexOf(_search, StringComparison.OrdinalIgnoreCase) >= 0;
+        private bool IsMatch(DismissalEntry entry) => string.IsNullOrEmpty(_search)
+            || entry.DisplayName.IndexOf(_search, StringComparison.OrdinalIgnoreCase) >= 0;
 
         private VisualElement BuildRow(DismissalEntry entry)
         {
@@ -247,11 +275,17 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             row.AddToClassList(RowClass);
             row.EnableInClassList(StaleRowClass, entry.IsStale);
 
-            VisualElement text = new();
-            text.style.flexGrow = 1f;
-            text.Add(BuildLabel(entry.DisplayName, RowNameClass));
+            VisualElement text = new()
+            {
+                style =
+                {
+                    flexGrow = 1f
+                }
+            };
 
-            text.Add(BuildLabel(BuildScopeText(entry), RowScopeClass));
+            text.Add(GraphLabel.Build(entry.DisplayName, RowNameClass));
+
+            text.Add(GraphLabel.Build(BuildScopeText(entry), RowScopeClass));
             row.Add(text);
 
             if (entry.IsStale)
@@ -260,49 +294,34 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
                 return row;
             }
 
-            row.Add(new Button(() => Restore(entry)) { text = RestoreLabel });
+            row.Add(new Button(() => Restore(entry))
+            {
+                text = RestoreLabel
+            });
 
             if (entry.CanHoldContents)
-            {
                 row.Add(new Button(() => RestoreTree(entry))
                 {
                     text = RestoreTreeLabel,
                     tooltip = RestoreTreeTooltip
                 });
-            }
 
             return row;
-        }
-
-        private string BuildScopeText(DismissalEntry entry)
-        {
-            string scope = entry.IncludesContents
-                ? ScopeWithContents
-                : ScopeAlone;
-
-            string finding = entry.Finding == EFinding.None
-                ? AllFindingsText
-                : FindingCatalog.Describe(entry.Finding).Title;
-
-            string text = $"{finding}   \u00b7   {scope}";
-
-            return string.IsNullOrEmpty(entry.SuggestedId)
-                ? text
-                : $"{text}   {string.Format(SuggestionFormat, entry.SuggestedId)}";
         }
 
         private void AppendStaleButtons(VisualElement row, DismissalEntry entry)
         {
             if (!string.IsNullOrEmpty(entry.SuggestedId))
-            {
                 row.Add(new Button(() => UpdateToSuggestion(entry))
                 {
                     text = UpdateLabel,
                     tooltip = UpdateTooltip
                 });
-            }
 
-            row.Add(new Button(() => Restore(entry)) { text = RemoveLabel });
+            row.Add(new Button(() => Restore(entry))
+            {
+                text = RemoveLabel
+            });
         }
 
         private void Restore(DismissalEntry entry)
@@ -331,17 +350,10 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             Rebuild();
         }
 
-        private void CopyInstructions()
-        {
-            EditorGUIUtility.systemCopyBuffer = DismissalTextFormat.Write();
-            EditorUtility.DisplayDialog(WindowTitle, CopyMessage, "OK");
-        }
-
         private void OnSearchChanged(ChangeEvent<string> evt)
         {
             _search = evt.newValue ?? string.Empty;
             Rebuild();
         }
-
     }
 }

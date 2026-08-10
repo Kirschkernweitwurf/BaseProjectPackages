@@ -1,7 +1,7 @@
 namespace Base.ToolPackage.Editor.CodebaseGraph.Model
 {
     /// <summary>One directed usage from a source member to a target member, with how often it occurs.</summary>
-    public sealed class UsageEdgeInfo
+    internal sealed class UsageEdgeInfo
     {
         /// <summary>Member the usage originates from.</summary>
         public MemberKey SourceKey { get; }

@@ -7,7 +7,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Model
     /// because there are more than eight of them and a flags enum has to fit them all.
     /// </summary>
     [Flags]
-    public enum EMemberIssue : ushort
+    internal enum EMemberIssue : ushort
     {
         None = 0,
         DeadMember = 1,

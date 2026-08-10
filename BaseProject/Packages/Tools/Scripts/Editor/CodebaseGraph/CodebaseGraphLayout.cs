@@ -10,7 +10,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
     /// dependencies go, and reordered a few times to cut down on crossing edges. Entries without any
     /// relation form a grid above the clusters so they read as a separate group.
     /// </summary>
-    public static class CodebaseGraphLayout
+    internal static class CodebaseGraphLayout
     {
         private const float BadgeRowHeight = 30f;
 
@@ -43,6 +43,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
         /// <summary>Returns a placement rect for every entry.</summary>
         /// <param name="entries">Entries to place.</param>
+        /// <param name="mode">Layout mode to use.</param>
         /// <returns>The rects, keyed by entry id.</returns>
         public static Dictionary<string, Rect> Calculate(IReadOnlyList<GraphEntry> entries, ELayoutMode mode)
         {
@@ -54,6 +55,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
             if (mode == ELayoutMode.Grouped)
                 return CalculateGrouped(entries, byId);
+
             Dictionary<string, List<string>> outgoing = BuildOutgoing(entries, byId);
             Dictionary<string, List<string>> incoming = BuildIncoming(outgoing);
 
@@ -65,12 +67,28 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
             float offsetY = 0f;
             foreach (List<string> cluster in clusters)
-            {
                 offsetY += PlaceCluster(cluster, byId, outgoing, incoming, offsetY, result) + ClusterGap;
-            }
 
             PlaceLonelyBlock(lonely, byId, result);
             return result;
+        }
+
+        /// <summary>Returns the width a node of this level is drawn at.</summary>
+        /// <param name="entry">Entry to measure.</param>
+        /// <returns>The node width.</returns>
+        public static float MeasureWidth(GraphEntry entry)
+        {
+            switch (entry.Level)
+            {
+                case EGraphScope.Namespace:
+                    return NamespaceWidth;
+
+                case EGraphScope.Member:
+                    return MemberWidth;
+
+                default:
+                    return TypeWidth;
+            }
         }
 
         /// <summary>
@@ -595,24 +613,6 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
                 total += EstimateHeight(byId[column[index]]) + RowGap;
 
             return total - RowGap;
-        }
-
-        /// <summary>Returns the width a node of this level is drawn at.</summary>
-        /// <param name="entry">Entry to measure.</param>
-        /// <returns>The node width.</returns>
-        public static float MeasureWidth(GraphEntry entry)
-        {
-            switch (entry.Level)
-            {
-                case EGraphScope.Namespace:
-                    return NamespaceWidth;
-
-                case EGraphScope.Member:
-                    return MemberWidth;
-
-                default:
-                    return TypeWidth;
-            }
         }
 
         private static float EstimateHeight(GraphEntry entry)

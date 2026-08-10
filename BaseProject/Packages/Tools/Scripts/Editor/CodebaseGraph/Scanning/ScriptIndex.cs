@@ -7,7 +7,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
     /// What one pass over the project's scripts turned up: where each type is declared, and which files
     /// and type names came out of a generator.
     /// </summary>
-    public sealed class ScriptIndex
+    internal sealed class ScriptIndex
     {
         /// <summary>Asset path for each namespace qualified type name, resolved through MonoScript.</summary>
         public Dictionary<string, string> ByFullName { get; }

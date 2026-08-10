@@ -6,18 +6,18 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
 {
     /// <summary>
     /// Checks stored dismissals against the graph. An id embeds both the signature and the finding it
-    /// was written for, so a rename or a fix correctly brings the finding back, but without this the
+    /// was written for. So a rename or a fix correctly brings the finding back, but without this the
     /// dead entry sits in the file forever and nobody can tell a live decision from a fossil.
     /// <br/><br/>
     /// The two ways an entry can stop matching are kept apart on purpose. An entity that no longer
     /// exists is dead configuration. An entity that still exists whose finding no longer fires means
-    /// either the problem was fixed or a rule stopped detecting something it used to catch, and that
-    /// second case is the only warning anyone would ever get that a check went quietly inert.
+    /// either the problem was fixed or a rule stopped detecting something it used to catch.
+    /// That second case is the only warning anyone would ever get that a check went quietly inert.
     /// <br/><br/>
     /// Nothing is deleted here. A dismissal that stopped matching is exactly the moment a person
     /// should look at it.
     /// </summary>
-    public static class DismissalAudit
+    internal static class DismissalAudit
     {
         private const char MemberBoundary = '#';
         private const char ParameterOpen = '(';

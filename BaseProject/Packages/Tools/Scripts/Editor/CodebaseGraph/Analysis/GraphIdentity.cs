@@ -8,7 +8,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
     /// disk is keyed on names instead. The shapes nest by construction, which is what lets a namespace
     /// be dismissed or restored together with everything inside it.
     /// </summary>
-    public static class GraphIdentity
+    internal static class GraphIdentity
     {
         private const char FindingBoundary = '|';
         private const char MemberBoundary = '#';
@@ -20,16 +20,16 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
 
         /// <summary>
         /// Narrows an id to one finding. Without this a dismissal covers the whole entry, so setting
-        /// aside a size warning on a type also silences a future dead type or cycle on that same type,
-        /// and the tool hides a real problem because of a decision made about a different one.
+        /// aside a size warning on a type also silences a future dead type or cycle on that same type.
+        /// The tool hides a real problem because of a decision made about a different one.
         /// </summary>
-        /// <param name="id">Id of the entry.</param>
+        /// <param name="id">ID of the entry.</param>
         /// <param name="finding">Finding to narrow it to.</param>
         /// <returns>The id of that one finding on that entry.</returns>
         public static string ForFinding(string id, EFinding finding) => $"{id}{FindingBoundary}{finding}";
 
         /// <summary>Splits a stored id back into the entry it names and the finding, if it carries one.</summary>
-        /// <param name="id">Id to read.</param>
+        /// <param name="id">ID to read.</param>
         /// <param name="finding">The finding, or none when the id covers the whole entry.</param>
         /// <returns>The id with any finding removed.</returns>
         public static string ReadEntry(string id, out EFinding finding)
@@ -54,13 +54,13 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         public static bool IsValid(string id) => TryRead(id, out EDismissalKind _, out string _);
 
         /// <summary>Splits an id into what it points at and the name inside it.</summary>
-        /// <param name="id">Id to read.</param>
+        /// <param name="id">ID to read.</param>
         /// <param name="kind">What the id points at.</param>
         /// <param name="qualifiedName">The id with its prefix removed.</param>
         /// <returns>True when the id could be read.</returns>
         public static bool TryRead(string id, out EDismissalKind kind, out string qualifiedName)
         {
-            kind = default;
+            kind = default(EDismissalKind);
             qualifiedName = null;
 
             if (string.IsNullOrEmpty(id))
@@ -94,8 +94,8 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         /// True when one id sits inside another. A type lives under its namespace and a member under its
         /// type, and both boundaries are visible in the name itself.
         /// </summary>
-        /// <param name="outerId">Id of the containing entry.</param>
-        /// <param name="innerId">Id that may sit inside it.</param>
+        /// <param name="outerId">ID of the containing entry.</param>
+        /// <param name="innerId">ID that may sit inside it.</param>
         /// <returns>True when the inner id is contained by the outer one.</returns>
         public static bool IsNested(string outerId, string innerId)
         {

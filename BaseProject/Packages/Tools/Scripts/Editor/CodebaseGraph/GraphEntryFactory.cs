@@ -7,11 +7,11 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 {
     /// <summary>
     /// Flattens the graph into the entries the window draws. Focus mode walks outward from one entry
-    /// instead of applying the filters, so the picture around it always stays complete, and searching
-    /// ignores the current level entirely, because looking for a class you cannot place is exactly when
-    /// you do not know which namespace to be standing in.
+    /// instead of applying the filters, so the surrounding picture always stays complete.
+    /// Searching ignores the current level entirely, because looking for a class you cannot place
+    /// is exactly when you do not know which namespace to be standing in.
     /// </summary>
-    public static class GraphEntryFactory
+    internal static class GraphEntryFactory
     {
         private const string AbstractModifier = "abstract ";
         private const int ColorSeedSegments = 2;
@@ -157,7 +157,6 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             total = 0;
 
             if (wantsNamespaces)
-            {
                 foreach (NamespaceNodeInfo group in graph.Namespaces.Values)
                 {
                     if (!filter.IsMatch(group.Name) || !FindingCatalog.IsMatch(filter.Finding, group))
@@ -166,7 +165,6 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
                     total++;
                     Accept(entries, byId, BuildNamespaceEntry(group));
                 }
-            }
 
             foreach (TypeNodeInfo type in graph.Types.Values)
             {
@@ -295,7 +293,10 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
                 Type = declaring,
                 Glyph = GraphSymbols.GetGlyph(member.Kind),
                 Access = member.Access,
-                IsContract = declaring != null && declaring.Kind == ETypeKind.Interface
+                IsContract = declaring is
+                {
+                    Kind: ETypeKind.Interface
+                }
             };
 
             FindingCatalog.Collect(member, declaring, entry.Findings);
@@ -371,9 +372,20 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             NamespaceNodeInfo focus,
             int hops)
         {
-            HashSet<string> seen = new() { focus.Name };
-            List<NamespaceNodeInfo> result = new() { focus };
-            List<NamespaceNodeInfo> frontier = new() { focus };
+            HashSet<string> seen = new()
+            {
+                focus.Name
+            };
+
+            List<NamespaceNodeInfo> result = new()
+            {
+                focus
+            };
+
+            List<NamespaceNodeInfo> frontier = new()
+            {
+                focus
+            };
 
             for (int step = 0; step < hops; step++)
             {
@@ -475,9 +487,20 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             TypeNodeInfo focus,
             int hops)
         {
-            HashSet<TypeKey> seen = new() { focus.Key };
-            List<TypeNodeInfo> result = new() { focus };
-            List<TypeNodeInfo> frontier = new() { focus };
+            HashSet<TypeKey> seen = new()
+            {
+                focus.Key
+            };
+
+            List<TypeNodeInfo> result = new()
+            {
+                focus
+            };
+
+            List<TypeNodeInfo> frontier = new()
+            {
+                focus
+            };
 
             for (int step = 0; step < hops; step++)
             {
@@ -546,9 +569,20 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             MemberNodeInfo focus,
             int hops)
         {
-            HashSet<MemberKey> seen = new() { focus.Key };
-            List<MemberNodeInfo> result = new() { focus };
-            List<MemberNodeInfo> frontier = new() { focus };
+            HashSet<MemberKey> seen = new()
+            {
+                focus.Key
+            };
+
+            List<MemberNodeInfo> result = new()
+            {
+                focus
+            };
+
+            List<MemberNodeInfo> frontier = new()
+            {
+                focus
+            };
 
             for (int step = 0; step < hops; step++)
             {

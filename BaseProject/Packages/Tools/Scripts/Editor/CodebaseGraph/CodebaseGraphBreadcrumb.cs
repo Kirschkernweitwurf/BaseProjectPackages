@@ -13,7 +13,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
     /// one entry. They appear when that happens and are gone the rest of the time, instead of sitting
     /// greyed out in the toolbar with nothing to say for themselves.
     /// </summary>
-    public sealed class CodebaseGraphBreadcrumb : VisualElement
+    internal sealed class CodebaseGraphBreadcrumb : VisualElement
     {
         private const string BarClass = "breadcrumb-bar";
         private const string CurrentClass = "breadcrumb-current";
@@ -100,7 +100,11 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
         private Button BuildLink(string text, int index)
         {
-            Button link = new(() => _onSegmentClicked?.Invoke(index)) { text = text };
+            Button link = new(() => _onSegmentClicked?.Invoke(index))
+            {
+                text = text
+            };
+
             link.AddToClassList(SegmentClass);
             return link;
         }

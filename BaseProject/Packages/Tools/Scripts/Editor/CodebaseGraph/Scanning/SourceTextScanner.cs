@@ -16,7 +16,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
     /// name. A generic class, a nested type or a file named differently from its type has no resolved
     /// script path, and skipping those files made consts used inside them look dead.
     /// </summary>
-    public static class SourceTextScanner
+    internal static class SourceTextScanner
     {
         private const string BlockCommentEnd = "*/";
         private const char CharQuote = '\'';
@@ -48,7 +48,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
             {
                 typesByPath.TryGetValue(pair.Key, out List<TypeNodeInfo> declared);
 
-                MarkInlinedUsage(pair.Key, pair.Value, inlined, declared);
+                MarkInlinedUsage(pair.Value, inlined, declared);
                 MarkSuppressed(graph, pair.Key, pair.Value, declared);
             }
         }
@@ -102,9 +102,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
             return byPath;
         }
 
-        private static void MarkInlinedUsage(string path,
-            string source,
-            Dictionary<string, List<MemberNodeInfo>> inlined,
+        private static void MarkInlinedUsage(string source, Dictionary<string, List<MemberNodeInfo>> inlined,
             List<TypeNodeInfo> declared)
         {
             Dictionary<string, int> occurrences = CountIdentifiers(source);
@@ -118,7 +116,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
                 {
                     // Inside its own file the declaration itself is one occurrence, so a second one is
                     // the first real use. In any other file a single occurrence already is a use.
-                    int needed = IsDeclaredHere(member, path, declared)
+                    int needed = IsDeclaredHere(member, declared)
                         ? SelfFileOccurrences
                         : 1;
 
@@ -128,7 +126,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
             }
         }
 
-        private static bool IsDeclaredHere(MemberNodeInfo member, string path, List<TypeNodeInfo> declared)
+        private static bool IsDeclaredHere(MemberNodeInfo member, List<TypeNodeInfo> declared)
         {
             if (declared == null)
                 return false;
@@ -414,7 +412,6 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
 
         private static bool IsIdentifierStart(char value) => char.IsLetter(value) || value == Underscore;
 
-        private static bool IsIdentifierPart(char value)
-            => char.IsLetterOrDigit(value) || value == Underscore;
+        private static bool IsIdentifierPart(char value) => char.IsLetterOrDigit(value) || value == Underscore;
     }
 }

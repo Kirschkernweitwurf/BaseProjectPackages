@@ -7,7 +7,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
     /// The single place that knows what each finding means. A red line on a node is useless on its own,
     /// so every finding carries an explanation of what the scan actually saw and what to do about it.
     /// </summary>
-    public static class FindingCatalog
+    internal static class FindingCatalog
     {
         /// <summary>Order the findings appear in the dropdown.</summary>
         private static readonly EFinding[] Order =
@@ -73,10 +73,9 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         /// <summary>Returns the finding at a dropdown position.</summary>
         /// <param name="index">Index the dropdown reported.</param>
         /// <returns>The matching finding, or none when the index is out of range.</returns>
-        public static EFinding GetAt(int index)
-            => index < 0 || index >= Order.Length
-                ? EFinding.None
-                : Order[index];
+        public static EFinding GetAt(int index) => index < 0 || index >= Order.Length
+            ? EFinding.None
+            : Order[index];
 
         /// <summary>Returns the dropdown position of a finding.</summary>
         /// <param name="finding">Finding to locate.</param>
@@ -106,17 +105,6 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         public static bool IsHidden(NamespaceNodeInfo group)
             => !DismissalStore.IsEmpty && DismissalStore.Contains(group.DismissalId);
 
-        /// <summary>
-        /// True when one finding on this namespace is hidden, either because the namespace was set
-        /// aside wholesale or because this particular finding was.
-        /// </summary>
-        /// <param name="finding">Finding to test.</param>
-        /// <param name="group">Namespace to test.</param>
-        /// <returns>True when that finding is hidden.</returns>
-        public static bool IsHidden(EFinding finding, NamespaceNodeInfo group)
-            => IsHidden(group)
-                || DismissalStore.Contains(GraphIdentity.ForFinding(group.DismissalId, finding));
-
         /// <summary>True when this type, or the namespace holding it, was dismissed during triage.</summary>
         /// <param name="type">Type to test.</param>
         /// <returns>True when its findings are hidden.</returns>
@@ -128,14 +116,6 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
             return DismissalStore.Contains(type.DismissalId)
                 || DismissalStore.ContainsTree(GraphIdentity.ForNamespace(type.Namespace));
         }
-
-        /// <summary>True when one finding on this type is hidden.</summary>
-        /// <param name="finding">Finding to test.</param>
-        /// <param name="type">Type to test.</param>
-        /// <returns>True when that finding is hidden.</returns>
-        public static bool IsHidden(EFinding finding, TypeNodeInfo type)
-            => IsHidden(type)
-                || DismissalStore.Contains(GraphIdentity.ForFinding(type.DismissalId, finding));
 
         /// <summary>True when this member, or anything containing it, was dismissed during triage.</summary>
         /// <param name="declaring">Type the member is declared on.</param>
@@ -149,54 +129,6 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
             return DismissalStore.Contains(member.DismissalId)
                 || DismissalStore.ContainsTree(declaring.DismissalId)
                 || DismissalStore.ContainsTree(GraphIdentity.ForNamespace(declaring.Namespace));
-        }
-
-        /// <summary>True when one finding on this member is hidden.</summary>
-        /// <param name="finding">Finding to test.</param>
-        /// <param name="declaring">Type the member is declared on.</param>
-        /// <param name="member">Member to test.</param>
-        /// <returns>True when that finding is hidden.</returns>
-        public static bool IsHidden(EFinding finding, TypeNodeInfo declaring, MemberNodeInfo member)
-            => IsHidden(declaring, member)
-                || DismissalStore.Contains(GraphIdentity.ForFinding(member.DismissalId, finding));
-
-        /// <summary>True when anything reported on this member is still showing.</summary>
-        /// <param name="declaring">Type the member is declared on.</param>
-        /// <param name="member">Member to test.</param>
-        /// <returns>True when at least one finding survives triage.</returns>
-        public static bool HasVisibleFindings(TypeNodeInfo declaring, MemberNodeInfo member)
-        {
-            if (!member.HasIssues || IsHidden(declaring, member))
-                return false;
-
-            foreach (EFinding finding in Order)
-            {
-                if (MemberFlags.TryGetValue(finding, out EMemberIssue flag)
-                    && member.Issues.HasFlag(flag)
-                    && !IsHidden(finding, declaring, member))
-                    return true;
-            }
-
-            return false;
-        }
-
-        /// <summary>True when anything reported on this type itself is still showing.</summary>
-        /// <param name="type">Type to test.</param>
-        /// <returns>True when at least one finding survives triage.</returns>
-        public static bool HasVisibleFindings(TypeNodeInfo type)
-        {
-            if (!type.HasIssues || IsHidden(type))
-                return false;
-
-            foreach (EFinding finding in Order)
-            {
-                if (TypeFlags.TryGetValue(finding, out ETypeIssue flag)
-                    && type.Issues.HasFlag(flag)
-                    && !IsHidden(finding, type))
-                    return true;
-            }
-
-            return false;
         }
 
         /// <summary>Counts the findings on a type's members that are still showing.</summary>
@@ -349,6 +281,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         /// <summary>Checks a member against the current finding filter.</summary>
         /// <param name="finding">Finding to filter by.</param>
         /// <param name="member">Member to test.</param>
+        /// <param name="declaring">Type the member is declared on, or null when the member is not in a type.</param>
         /// <returns>True when the member should be shown.</returns>
         public static bool IsMatch(EFinding finding, MemberNodeInfo member, TypeNodeInfo declaring)
         {
@@ -378,9 +311,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
                 return true;
 
             if (finding == EFinding.Any)
-            {
                 return HasVisibleFindings(type) || CountVisibleMemberFindings(type) > 0;
-            }
 
             if (TypeFlags.TryGetValue(finding, out ETypeIssue typeFlag)
                 && type.Issues.HasFlag(typeFlag)
@@ -414,6 +345,71 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
             foreach (TypeNodeInfo type in group.Types)
             {
                 if (IsMatch(finding, type))
+                    return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// True when one finding on this namespace is hidden, either because the namespace was set
+        /// aside wholesale or because this particular finding was.
+        /// </summary>
+        /// <param name="finding">Finding to test.</param>
+        /// <param name="group">Namespace to test.</param>
+        /// <returns>True when that finding is hidden.</returns>
+        private static bool IsHidden(EFinding finding, NamespaceNodeInfo group) => IsHidden(group)
+            || DismissalStore.Contains(GraphIdentity.ForFinding(group.DismissalId, finding));
+
+        /// <summary>True when one finding on this type is hidden.</summary>
+        /// <param name="finding">Finding to test.</param>
+        /// <param name="type">Type to test.</param>
+        /// <returns>True when that finding is hidden.</returns>
+        private static bool IsHidden(EFinding finding, TypeNodeInfo type) => IsHidden(type)
+            || DismissalStore.Contains(GraphIdentity.ForFinding(type.DismissalId, finding));
+
+        /// <summary>True when one finding on this member is hidden.</summary>
+        /// <param name="finding">Finding to test.</param>
+        /// <param name="declaring">Type the member is declared on.</param>
+        /// <param name="member">Member to test.</param>
+        /// <returns>True when that finding is hidden.</returns>
+        private static bool IsHidden(EFinding finding, TypeNodeInfo declaring, MemberNodeInfo member)
+            => IsHidden(declaring, member)
+                || DismissalStore.Contains(GraphIdentity.ForFinding(member.DismissalId, finding));
+
+        /// <summary>True when anything reported on this member is still showing.</summary>
+        /// <param name="declaring">Type the member is declared on.</param>
+        /// <param name="member">Member to test.</param>
+        /// <returns>True when at least one finding survives triage.</returns>
+        private static bool HasVisibleFindings(TypeNodeInfo declaring, MemberNodeInfo member)
+        {
+            if (!member.HasIssues || IsHidden(declaring, member))
+                return false;
+
+            foreach (EFinding finding in Order)
+            {
+                if (MemberFlags.TryGetValue(finding, out EMemberIssue flag)
+                    && member.Issues.HasFlag(flag)
+                    && !IsHidden(finding, declaring, member))
+                    return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>True when anything reported on this type itself is still showing.</summary>
+        /// <param name="type">Type to test.</param>
+        /// <returns>True when at least one finding survives triage.</returns>
+        private static bool HasVisibleFindings(TypeNodeInfo type)
+        {
+            if (!type.HasIssues || IsHidden(type))
+                return false;
+
+            foreach (EFinding finding in Order)
+            {
+                if (TypeFlags.TryGetValue(finding, out ETypeIssue flag)
+                    && type.Issues.HasFlag(flag)
+                    && !IsHidden(finding, type))
                     return true;
             }
 
@@ -543,8 +539,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
                     "Decide whether the interface still needs it. If it does, leave it alone.",
                     false),
 
-                [EFinding.UnimplementedInterfaceMember] = new FindingDescriptor(
-                    "Unimplemented interface members",
+                [EFinding.UnimplementedInterfaceMember] = new FindingDescriptor("Unimplemented interface members",
                     "Declared on an interface, implemented by nobody",
                     "The interface declares it, nothing implements it and nothing calls it. It only "
                     + "exists on paper.",

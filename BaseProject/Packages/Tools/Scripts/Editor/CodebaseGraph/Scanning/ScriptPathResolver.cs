@@ -11,13 +11,13 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
     /// loses every nested type, every enum sharing a file and every generic class. A text pass over the
     /// same files fills those in, and notes which files came out of a generator while it is there.
     /// </summary>
-    public static class ScriptPathResolver
+    internal static class ScriptPathResolver
     {
         private const int HeaderWindow = 1200;
         private const string ScriptFilter = "t:MonoScript";
         private const string TypeDeclarationPattern = @"\b(?:class|struct|interface|enum|record)\s+@?(\w+)";
 
-        /// <summary>Header text that marks a file as tool output rather than hand written code.</summary>
+        /// <summary>Header text that marks a file as tool output rather than handwritten code.</summary>
         private static readonly string[] GeneratedHeaderMarkers =
         {
             "auto-generated",
@@ -46,7 +46,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         /// <summary>Reads every script once and builds the whole index from it.</summary>
         /// <param name="paths">Every script asset in the project.</param>
         /// <param name="progress">Reporter that can also cancel the pass.</param>
-        /// <returns>The index, or null when the scan was cancelled.</returns>
+        /// <returns>The index, or null when the scan was canceled.</returns>
         public static ScriptIndex Build(IReadOnlyList<string> paths, ScanProgress progress)
         {
             ScriptIndex index = new();

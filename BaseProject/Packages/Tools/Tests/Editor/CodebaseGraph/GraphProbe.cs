@@ -8,7 +8,7 @@ namespace Base.ToolPackage.Editor.Tests
     /// liveness rather than as dictionary lookups, which is the only way a suite about being right stays
     /// readable as the shapes it covers grow.
     /// </summary>
-    public sealed class GraphProbe
+    internal sealed class GraphProbe
     {
         private const string MissingText = "the scan never saw it";
         private const char NameSeparator = '.';

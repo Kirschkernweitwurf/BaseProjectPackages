@@ -4,7 +4,6 @@ using Base.ToolPackage.Editor.CodebaseGraph.Editing;
 using Base.ToolPackage.Editor.CodebaseGraph.Model;
 using Base.ToolPackage.MenuManagerWindow;
 using UnityEditor;
-using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -16,56 +15,24 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
     /// SendMessage, inspector wired UnityEvents and asset references stay invisible. Treat findings as
     /// candidates worth a look, not as proof.
     /// </summary>
-    public sealed class CodebaseGraphWindow : EditorWindow
+    internal sealed class CodebaseGraphWindow : EditorWindow
     {
-        private const string AllAssembliesLabel = "All assemblies";
         private const string AllTypesSegment = "All types";
-        private const string BackLabel = "Back";
-        private const string BackTooltip = "Goes up one level.";
         private const string ClearFocusLabel = "Clear focus";
-        private const int DataFlag = 2;
         private const int DefaultDetailHeight = 300;
         private const int DefaultListWidth = 340;
-        private const string DismissedFormat = "Dismissed ({0})";
-        private const string DismissedTooltip = "Opens the list of everything you dismissed.";
-        private const string EdgeAllLabel = "Lines: All";
-        private const string EdgeMutedLabel = "Lines: Muted";
-        private const string EdgeNoneLabel = "Lines: None";
-        private const string EdgeSelectedLabel = "Lines: Selected";
-
-        private const string EdgeTooltip = "How many lines to draw. Muted keeps them faint until you "
-            + "click something.";
-
         private const string EmptyFilterText = "Nothing matches the current filters.";
 
         private const string EmptyScanText = "No scan yet. Reading every compiled method body takes a few "
             + "seconds, so it does not run on its own.";
 
         private const string EmptyStateClass = "empty-state";
-        private const string ExportLabel = "Export findings";
 
         private const string ExportScopeHelp = "Open a namespace first, or pick an assembly in the "
             + "toolbar. Then press this again.";
 
         private const string ExportScopeLabel = "Export scope";
-
-        private const string ExportScopeTooltip = "Writes one namespace or assembly to a file. Small "
-            + "enough to hand to someone working on that part alone.";
-
-        private const string ExportTooltip = "Writes the whole report to a file.";
         private const string FocusNoticeFormat = "showing {0} and its neighbors, {1} step{2} out";
-        private const string ImportLabel = "Update dismissals";
-
-        private const string ImportTooltip = "Reads a list of dismissals back in, from the clipboard or a "
-            + "file.";
-
-        private const string LayoutDependenciesLabel = "Layout: Dependencies";
-        private const string LayoutGroupedLabel = "Layout: Grouped by name";
-
-        private const string LayoutTooltip = "Dependencies to understand the code. Grouped to find "
-            + "something by name.";
-
-        private const int MembersFlag = 4;
         private const string MembersHeadingFormat = "Members of {0}";
         private const string MiniMapHiddenLabel = "Minimap";
         private const string MiniMapShownLabel = "Minimap, click to hide";
@@ -74,47 +41,14 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         private const float MinimumWindowWidth = 1100f;
         private const string NamespacesHeadingFormat = "Namespaces ({0})";
         private const string NamespacesSegment = "All namespaces";
-        private const string NeighborFormat = "Neighbors: {0}";
-        private const int NeighborMaximum = 3;
-
-        private const string NeighborTooltip = "How many steps out from the focused entry the view "
-            + "reaches. One shows what it touches directly, three follows those connections two steps "
-            + "further.";
-
         private const string PluralSuffix = "s";
-        private const string PopupTextClass = "unity-base-popup-field__text";
-        private const int PrivateFlag = 1;
-        private const string RefreshLabel = "Rescan";
-        private const string RefreshTooltip = "Scans the project again.";
         private const string RootClass = "codebase-graph-root";
         private const string ScanLabel = "Scan project";
         private const string SearchCappedHeadingFormat = "Showing {0} of {1} matches for \"{2}\"";
-        private const string SearchCurrentLevelLabel = "Find: This level";
         private const long SearchDebounceMilliseconds = 180;
-        private const string SearchEverywhereLabel = "Find: Everything";
         private const string SearchHeadingFormat = "{0} matches for \"{1}\"";
-        private const string SearchMembersLabel = "Find: Members";
-
-        private const string SearchPlaceholder = "Search everything: namespaces, types and members, "
-            + "wherever they live";
-
-        private const string SearchScopeTooltip = "This level filters what is on screen. The others "
-            + "search the whole project.";
-
         private const string SearchSegmentFormat = "Search: {0}";
-        private const string SearchTypesLabel = "Find: Types";
-        private const string ShowDataLabel = "Fields and consts";
-        private const string ShowDataShort = "fields";
-        private const string ShowMembersLabel = "Members on type nodes";
-        private const string ShowMembersShort = "members";
-        private const string ShowNoneLabel = "Show: nothing extra";
-        private const string ShowPrefix = "Show: ";
-        private const string ShowPrivateLabel = "Private members";
-        private const string ShowPrivateShort = "private";
-        private const string ShowSeparator = ", ";
-        private const string ShowTooltip = "How much detail to show on each node.";
         private const string StatusBarClass = "status-bar";
-        private const string ToolbarRowClass = "top-bar";
         private const string TypesHeadingFormat = "Types in {0}";
         private const string WindowTitle = "Codebase Graph";
 
@@ -139,6 +73,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         private CodebaseGraphData _graph;
         private List<GraphEntry> _entries = new();
         private GraphEntry _selectedEntry;
+        private CodebaseGraphToolbar _toolbar;
         private CodebaseGraphView _graphView;
         private CodebaseGraphListPane _listPane;
         private CodebaseGraphDetailPane _detailPane;
@@ -146,18 +81,8 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         private Label _statusLabel;
         private VisualElement _emptyState;
         private Label _emptyLabel;
-        private Button _restoreButton;
-        private ToolbarButton _scopeButton;
         private Button _miniMapButton;
         private bool _isMiniMapVisible = true;
-        private PopupField<string> _assemblyField;
-        private PopupField<string> _findingField;
-        private PopupField<string> _edgeField;
-        private PopupField<string> _layoutField;
-        private MaskField _detailField;
-        private PopupField<string> _neighborField;
-        private PopupField<string> _searchScopeField;
-        private ToolbarSearchField _searchField;
         private IVisualElementScheduledItem _searchDebounce;
         private int _searchTotal;
 
@@ -178,10 +103,11 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             rootVisualElement.AddToClassList(RootClass);
             CodebaseGraphStyle.Apply(rootVisualElement);
 
-            rootVisualElement.Add(BuildToolbar());
+            _toolbar = new CodebaseGraphToolbar(_filter, BuildToolbarActions());
+            rootVisualElement.Add(_toolbar);
 
             _breadcrumb = new CodebaseGraphBreadcrumb(OnBreadcrumbClicked);
-            _breadcrumb.AddFocusControl(BuildNeighborField());
+            _breadcrumb.AddFocusControl(_toolbar.CreateNeighborField());
             _breadcrumb.AddFocusControl(new Button(ClearFocus)
             {
                 text = ClearFocusLabel
@@ -199,7 +125,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
             if (_graph != null)
             {
-                RefreshAssemblyChoices();
+                _toolbar.SetAssemblies(_graph.ScannedAssemblies);
                 RestoreNavigation();
             }
 
@@ -216,213 +142,45 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             window.minSize = new Vector2(MinimumWindowWidth, MinimumWindowHeight);
         }
 
-        private static List<string> BuildSearchScopeChoices() => new()
+        private static bool ReportProgress(float progress, string status)
+            => !EditorUtility.DisplayCancelableProgressBar(WindowTitle, status, progress);
+
+        private static void OnQuickFixRequested(GraphEntry entry, EFinding finding)
         {
-            SearchEverywhereLabel,
-            SearchCurrentLevelLabel,
-            SearchTypesLabel,
-            SearchMembersLabel
-        };
-
-        private static List<string> BuildLayoutChoices() => new()
-        {
-            LayoutDependenciesLabel,
-            LayoutGroupedLabel
-        };
-
-        private static List<string> BuildEdgeChoices() => new()
-        {
-            EdgeMutedLabel,
-            EdgeAllLabel,
-            EdgeSelectedLabel,
-            EdgeNoneLabel
-        };
-
-        private static List<string> BuildNeighborChoices()
-        {
-            List<string> choices = new(NeighborMaximum);
-
-            for (int hops = 1; hops <= NeighborMaximum; hops++)
-                choices.Add(string.Format(NeighborFormat, hops));
-
-            return choices;
+            if (CodebaseGraphQuickFix.Apply(entry, finding))
+                AssetDatabase.Refresh();
         }
 
-        private static List<string> BuildDetailChoices() => new()
+        private static string ResolveIdentity(GraphEntry entry)
         {
-            ShowPrivateLabel,
-            ShowDataLabel,
-            ShowMembersLabel
-        };
+            if (entry.Member != null && entry.Type != null)
+                return GraphIdentity.ForMember(entry.Type, entry.Member);
 
-        private VisualElement BuildToolbar()
-        {
-            Toolbar toolbar = new();
-            toolbar.AddToClassList(ToolbarRowClass);
+            if (entry.Type != null)
+                return GraphIdentity.ForType(entry.Type);
 
-            toolbar.Add(new ToolbarButton(GoBack)
-            {
-                text = BackLabel,
-                tooltip = BackTooltip
-            });
-
-            toolbar.Add(new ToolbarButton(Rescan)
-            {
-                text = RefreshLabel,
-                tooltip = RefreshTooltip
-            });
-
-            toolbar.Add(BuildSpacer());
-
-            _assemblyField = new PopupField<string>(new List<string>
-            {
-                AllAssembliesLabel
-            }, 0);
-
-            _assemblyField.RegisterValueChangedCallback(OnAssemblyChanged);
-            toolbar.Add(_assemblyField);
-
-            _findingField = new PopupField<string>(FindingCatalog.BuildChoices(), 0);
-            _findingField.RegisterValueChangedCallback(OnFindingChanged);
-            toolbar.Add(_findingField);
-
-            _layoutField = new PopupField<string>(BuildLayoutChoices(), 0);
-            _layoutField.tooltip = LayoutTooltip;
-            _layoutField.RegisterValueChangedCallback(OnLayoutModeChanged);
-            toolbar.Add(_layoutField);
-
-            _edgeField = new PopupField<string>(BuildEdgeChoices(), 0);
-            _edgeField.tooltip = EdgeTooltip;
-            _edgeField.RegisterValueChangedCallback(OnEdgeModeChanged);
-            toolbar.Add(_edgeField);
-
-            toolbar.Add(BuildDetailMenu());
-
-            _searchScopeField = new PopupField<string>(BuildSearchScopeChoices(), 0);
-            _searchScopeField.tooltip = SearchScopeTooltip;
-            _searchScopeField.RegisterValueChangedCallback(OnSearchScopeChanged);
-            toolbar.Add(_searchScopeField);
-
-            _searchField = new ToolbarSearchField();
-            _searchField.tooltip = SearchPlaceholder;
-            _searchField.RegisterValueChangedCallback(OnSearchChanged);
-            toolbar.Add(_searchField);
-
-            _restoreButton = new ToolbarButton(CodebaseGraphDismissalsWindow.Open)
-            {
-                text = string.Format(DismissedFormat, 0),
-                tooltip = DismissedTooltip
-            };
-
-            toolbar.Add(_restoreButton);
-
-            toolbar.Add(new ToolbarButton(ExportFindings)
-            {
-                text = ExportLabel,
-                tooltip = ExportTooltip
-            });
-
-            toolbar.Add(new ToolbarButton(ImportDismissals)
-            {
-                text = ImportLabel,
-                tooltip = ImportTooltip
-            });
-
-            _scopeButton = new ToolbarButton(ExportScope)
-            {
-                text = ExportScopeLabel,
-                tooltip = ExportScopeTooltip
-            };
-
-            toolbar.Add(_scopeButton);
-
-            return toolbar;
+            return entry.Namespace == null
+                ? null
+                : GraphIdentity.ForNamespace(entry.Namespace.Name);
         }
 
-        private PopupField<string> BuildNeighborField()
+        private static void OnOpenRequested(GraphEntry entry)
         {
-            _neighborField = new PopupField<string>(BuildNeighborChoices(), 0);
-            _neighborField.tooltip = NeighborTooltip;
-            _neighborField.RegisterValueChangedCallback(OnNeighborChanged);
-            return _neighborField;
-        }
-
-        private MaskField BuildDetailMenu()
-        {
-            _detailField = new MaskField(BuildDetailChoices(), ReadDetailMask())
-            {
-                tooltip = ShowTooltip
-            };
-
-            _detailField.RegisterValueChangedCallback(OnDetailChanged);
-            UpdateDetailText();
-
-            return _detailField;
-        }
-
-        private int ReadDetailMask()
-        {
-            int mask = 0;
-
-            if (_filter.ShowPrivate)
-                mask |= PrivateFlag;
-
-            if (_filter.ShowDataMembers)
-                mask |= DataFlag;
-
-            if (_filter.ShowMembersOnTypes)
-                mask |= MembersFlag;
-
-            return mask;
-        }
-
-        private void OnDetailChanged(ChangeEvent<int> evt)
-        {
-            _filter.ShowPrivate = (evt.newValue & PrivateFlag) != 0;
-            _filter.ShowDataMembers = (evt.newValue & DataFlag) != 0;
-            _filter.ShowMembersOnTypes = (evt.newValue & MembersFlag) != 0;
-
-            UpdateDetailText();
-            ApplyFilter();
-        }
-
-        /// <summary>
-        /// Writes what is actually switched on into the field. A mask field summarises itself as
-        /// Nothing, Mixed or Everything, none of which tells you which three things are meant.
-        /// </summary>
-        private void UpdateDetailText()
-        {
-            Label text = _detailField.Q<Label>(className: PopupTextClass);
-            if (text == null)
+            if (entry.Type == null)
                 return;
 
-            List<string> parts = new();
-
-            if (_filter.ShowPrivate)
-                parts.Add(ShowPrivateShort);
-
-            if (_filter.ShowDataMembers)
-                parts.Add(ShowDataShort);
-
-            if (_filter.ShowMembersOnTypes)
-                parts.Add(ShowMembersShort);
-
-            text.text = parts.Count == 0
-                ? ShowNoneLabel
-                : $"{ShowPrefix}{string.Join(ShowSeparator, parts)}";
-        }
-
-        private VisualElement BuildSpacer()
-        {
-            VisualElement spacer = new();
-            spacer.style.flexGrow = 1f;
-            return spacer;
+            MemberSourceEditor.OpenAtMember(entry.Type, entry.Member);
         }
 
         private VisualElement BuildBody()
         {
-            TwoPaneSplitView split = new(0, DefaultListWidth, TwoPaneSplitViewOrientation.Horizontal);
-            split.style.flexGrow = 1f;
+            TwoPaneSplitView split = new(0, DefaultListWidth, TwoPaneSplitViewOrientation.Horizontal)
+            {
+                style =
+                {
+                    flexGrow = 1f
+                }
+            };
 
             TwoPaneSplitView leftColumn = new(1, DefaultDetailHeight, TwoPaneSplitViewOrientation.Vertical);
 
@@ -440,8 +198,13 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             leftColumn.Add(_detailPane);
             split.Add(leftColumn);
 
-            VisualElement graphHost = new();
-            graphHost.style.flexGrow = 1f;
+            VisualElement graphHost = new()
+            {
+                style =
+                {
+                    flexGrow = 1f
+                }
+            };
 
             _graphView = new CodebaseGraphView(OnEntrySelected,
                 OnFocusRequested,
@@ -517,7 +280,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
                 EditorUtility.ClearProgressBar();
             }
 
-            // A cancelled scan leaves whatever was there before rather than emptying the window.
+            // A canceled scan leaves whatever was there before rather than emptying the window.
             if (scanned == null)
                 return;
 
@@ -529,13 +292,10 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             _graph = scanned;
             CodebaseGraphCache.Set(_graph);
 
-            RefreshAssemblyChoices();
+            _toolbar.SetAssemblies(_graph.ScannedAssemblies);
             RestoreNavigation();
             ApplyFilter();
         }
-
-        private bool ReportProgress(float progress, string status)
-            => !EditorUtility.DisplayCancelableProgressBar(WindowTitle, status, progress);
 
         /// <summary>
         /// Puts the window back where it was. Editor windows survive a domain reload but the scan does
@@ -565,21 +325,13 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             _filter.LayoutMode = savedLayoutMode;
             _filter.SearchScope = savedSearchScope;
             _filter.Finding = savedFinding;
-            _filter.Hops = Mathf.Clamp(savedHops, 1, NeighborMaximum);
+            _filter.Hops = Mathf.Clamp(savedHops, 1, CodebaseGraphToolbar.ReadNeighborMaximum());
             _filter.Search = savedSearch ?? string.Empty;
-            _filter.AssemblyName = _assemblyField.choices.Contains(savedAssembly)
+            _filter.AssemblyName = _toolbar.HasAssembly(savedAssembly)
                 ? savedAssembly
                 : null;
 
-            _findingField.index = FindingCatalog.GetIndex(_filter.Finding);
-            _edgeField.index = (int)_filter.EdgeMode;
-            _layoutField.index = (int)_filter.LayoutMode;
-            _searchScopeField.index = (int)_filter.SearchScope;
-            _detailField.SetValueWithoutNotify(ReadDetailMask());
-            UpdateDetailText();
-            _neighborField.SetValueWithoutNotify(string.Format(NeighborFormat, _filter.Hops));
-            _searchField.SetValueWithoutNotify(_filter.Search);
-            _assemblyField.SetValueWithoutNotify(_filter.AssemblyName ?? AllAssembliesLabel);
+            _toolbar.Sync();
         }
 
         private void SaveNavigation()
@@ -647,20 +399,6 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             _focusedMember = null;
         }
 
-        private void RefreshAssemblyChoices()
-        {
-            List<string> choices = new()
-            {
-                AllAssembliesLabel
-            };
-
-            choices.AddRange(_graph.ScannedAssemblies);
-
-            _assemblyField.choices = choices;
-            _assemblyField.SetValueWithoutNotify(AllAssembliesLabel);
-            _filter.AssemblyName = null;
-        }
-
         private void ApplyFilter()
         {
             if (_graphView == null)
@@ -687,7 +425,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             _breadcrumb.SetPath(BuildPath());
             _breadcrumb.SetFocus(BuildFocusNotice());
 
-            _restoreButton.text = string.Format(DismissedFormat, DismissalStore.Count);
+            _toolbar.SetDismissedCount(DismissalStore.Count);
             UpdateStatus(entries.Count);
             SaveNavigation();
         }
@@ -780,15 +518,15 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
         private string BuildFocusNotice()
         {
-            string name = _focusedMember?.Name ?? _focusedType?.ShortName ?? _focusedNamespace?.Name;
-            if (string.IsNullOrEmpty(name))
+            string focusedName = _focusedMember?.Name ?? _focusedType?.ShortName ?? _focusedNamespace?.Name;
+            if (string.IsNullOrEmpty(focusedName))
                 return string.Empty;
 
             string plural = _filter.Hops == 1
                 ? string.Empty
                 : PluralSuffix;
 
-            return string.Format(FocusNoticeFormat, name, _filter.Hops, plural);
+            return string.Format(FocusNoticeFormat, focusedName, _filter.Hops, plural);
         }
 
         private string ResolveFocusedId()
@@ -886,7 +624,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
                 return;
 
             ClearFocusState();
-            ClearSearch();
+            _toolbar.ClearSearch();
 
             if (entry.Namespace != null)
             {
@@ -901,15 +639,6 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
             ClearSelection();
             ApplyFilter();
-        }
-
-        private void ClearSearch()
-        {
-            if (!IsSearching)
-                return;
-
-            _filter.Search = string.Empty;
-            _searchField.SetValueWithoutNotify(string.Empty);
         }
 
         private void OnFocusRequested(GraphEntry entry)
@@ -1005,12 +734,6 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
                 ApplyFilter();
         }
 
-        private void OnQuickFixRequested(GraphEntry entry, EFinding finding)
-        {
-            if (CodebaseGraphQuickFix.Apply(entry, finding))
-                AssetDatabase.Refresh();
-        }
-
         private void OnRestoreRequested(GraphEntry entry)
         {
             string id = ResolveIdentity(entry);
@@ -1022,60 +745,14 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             RefreshSelection();
         }
 
-        private string ResolveIdentity(GraphEntry entry)
+        private void OnNeighborChanged()
         {
-            if (entry.Member != null && entry.Type != null)
-                return GraphIdentity.ForMember(entry.Type, entry.Member);
-
-            if (entry.Type != null)
-                return GraphIdentity.ForType(entry.Type);
-
-            return entry.Namespace == null
-                ? null
-                : GraphIdentity.ForNamespace(entry.Namespace.Name);
-        }
-
-        private void OnOpenRequested(GraphEntry entry)
-        {
-            if (entry.Type == null)
-                return;
-
-            MemberSourceEditor.OpenAtMember(entry.Type, entry.Member);
-        }
-
-        private void OnAssemblyChanged(ChangeEvent<string> evt)
-        {
-            _filter.AssemblyName = evt.newValue == AllAssembliesLabel
-                ? null
-                : evt.newValue;
-
-            ApplyFilter();
-        }
-
-        private void OnFindingChanged(ChangeEvent<string> evt)
-        {
-            _filter.Finding = FindingCatalog.GetAt(_findingField.index);
-            ApplyFilter();
-        }
-
-        private void OnNeighborChanged(ChangeEvent<string> evt)
-        {
-            _filter.Hops = _neighborField.index + 1;
-
             if (HasFocus)
                 ApplyFilter();
         }
 
-        private void OnSearchScopeChanged(ChangeEvent<string> evt)
+        private void OnSearchChanged()
         {
-            _filter.SearchScope = (ESearchScope)_searchScopeField.index;
-            ApplyFilter();
-        }
-
-        private void OnSearchChanged(ChangeEvent<string> evt)
-        {
-            _filter.Search = evt.newValue ?? string.Empty;
-
             // Rebuilding the entries, the layout and the graph on every keystroke is far too expensive.
             _searchDebounce ??= rootVisualElement.schedule.Execute(ApplyFilter);
             _searchDebounce.Pause();
@@ -1088,16 +765,25 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             ApplyFilter();
         }
 
-        private void OnLayoutModeChanged(ChangeEvent<string> evt)
-        {
-            _filter.LayoutMode = (ELayoutMode)_layoutField.index;
-            ApplyFilter();
-        }
+        private void OnEdgeModeChanged() => _graphView.SetEdgeMode(_filter.EdgeMode);
 
-        private void OnEdgeModeChanged(ChangeEvent<string> evt)
+        /// <summary>
+        /// Gathers what the toolbar is allowed to ask for. Everything here is a decision about cost:
+        /// changing a filter rebuilds the view, changing the line mode does not, and a keystroke waits
+        /// to see whether more are coming.
+        /// </summary>
+        private CodebaseGraphToolbarActions BuildToolbarActions() => new()
         {
-            _filter.EdgeMode = (EEdgeMode)_edgeField.index;
-            _graphView.SetEdgeMode(_filter.EdgeMode);
-        }
+            FilterChanged = ApplyFilter,
+            EdgeModeChanged = OnEdgeModeChanged,
+            NeighborChanged = OnNeighborChanged,
+            SearchChanged = OnSearchChanged,
+            Back = GoBack,
+            Rescan = Rescan,
+            Export = ExportFindings,
+            Import = ImportDismissals,
+            ExportScope = ExportScope,
+            OpenDismissals = CodebaseGraphDismissalsWindow.Open
+        };
     }
 }

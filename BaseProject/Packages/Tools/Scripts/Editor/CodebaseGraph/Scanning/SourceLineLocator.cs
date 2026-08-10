@@ -13,7 +13,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
     /// parameter type, translates operator names back into source, and falls back to the type's own
     /// declaration rather than line one.
     /// </summary>
-    public static class SourceLineLocator
+    internal static class SourceLineLocator
     {
         private const char BodyClose = '}';
         private const char BodyOpen = '{';
@@ -116,7 +116,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
             if (OperatorSpellings.TryGetValue(member.Name, out string spelling))
                 return FindToken(lines, spelling, startLine, endLine);
 
-            // An indexer is called Item in metadata and appears as this[ in source.
+            // An indexer is called Item in metadata and appears as this in source.
             if (member.Name == IndexerName)
             {
                 int indexer = FindToken(lines, IndexerSpelling, startLine, endLine);

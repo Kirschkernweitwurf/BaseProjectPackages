@@ -9,7 +9,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
     /// normalized back to their definition, so a usage of List&lt;int&gt; and List&lt;string&gt; lands on
     /// the same node.
     /// </summary>
-    public static class KeyFactory
+    internal static class KeyFactory
     {
         /// <summary>Builds the key of a type, normalizing wrappers and generic instantiations.</summary>
         /// <param name="type">Type to build a key for.</param>
@@ -17,7 +17,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         /// <returns>True when a key could be built.</returns>
         public static bool TryForType(Type type, out TypeKey key)
         {
-            key = default;
+            key = default(TypeKey);
 
             Type normalized = Normalize(type);
             if (normalized == null)
@@ -41,7 +41,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         /// <returns>True when a key could be built.</returns>
         public static bool TryForMember(MemberInfo member, out MemberKey key)
         {
-            key = default;
+            key = default(MemberKey);
             if (member == null)
                 return false;
 
@@ -68,7 +68,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
             Type current = type;
 
             while (current != null
-                && (current.IsArray || current.IsByRef || current.IsPointer))
+                   && (current.IsArray || current.IsByRef || current.IsPointer))
                 current = current.GetElementType();
 
             if (current == null || current.IsGenericParameter)

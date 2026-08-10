@@ -10,7 +10,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Editing
     /// It lives apart from the window because none of it is about the graph on screen, and a window that
     /// also owns file dialogs and clipboard parsing is doing two jobs.
     /// </summary>
-    public static class CodebaseGraphReportIo
+    internal static class CodebaseGraphReportIo
     {
         private const string DefaultReportName = "CodebaseGraphFindings.md";
         private const string ExportExtension = "md";

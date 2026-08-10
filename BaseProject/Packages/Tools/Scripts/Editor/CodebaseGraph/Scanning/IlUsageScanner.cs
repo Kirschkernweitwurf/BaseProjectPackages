@@ -12,7 +12,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
     /// to the exact member the compiler bound to.
     /// <br/><br/>
     /// String literals are read as well. Invoke, SendMessage and StartCoroutine name their target in a
-    /// string and no instruction ever points at what they call, so a literal matching a member of the
+    /// string and no instruction ever points at what they call. So a literal matching a member of the
     /// type it is loaded in is recorded as the weakest kind of usage. The literals of a body are only
     /// applied when that same body calls one of those methods, because otherwise a plain
     /// Debug.Log("Reset") would quietly silence every finding on a member called Reset.
@@ -22,7 +22,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
     /// such a call is a GameObject, not the component that owns the method, so there is nothing
     /// accurate to resolve the name against and any guess would be a guess.
     /// </summary>
-    public static class IlUsageScanner
+    internal static class IlUsageScanner
     {
         private const BindingFlags DeclaredMembers = BindingFlags.Public
             | BindingFlags.NonPublic
@@ -108,7 +108,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
             Module module = method.Module;
 
             if (!KeyFactory.TryForType(type, out TypeKey declaringKey))
-                declaringKey = default;
+                declaringKey = default(TypeKey);
 
             List<string> literals = null;
             bool hasDispatch = false;
@@ -273,25 +273,24 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
                             methodArguments));
 
                     default:
-                        return new TokenResolution(default, default, true, false);
+                        return new TokenResolution(default(MemberKey), default(TypeKey), true, false);
                 }
             }
             catch (Exception)
             {
                 // Tokens from generic contexts the runtime cannot rebuild are counted, not logged.
-                return new TokenResolution(default, default, false, false);
+                return new TokenResolution(default(MemberKey), default(TypeKey), false, false);
             }
         }
 
-        private static TokenResolution BuildUnknownResolution(MemberInfo member)
-            => member is Type type
-                ? BuildTypeResolution(type)
-                : BuildMemberResolution(member);
+        private static TokenResolution BuildUnknownResolution(MemberInfo member) => member is Type type
+            ? BuildTypeResolution(type)
+            : BuildMemberResolution(member);
 
         private static TokenResolution BuildMemberResolution(MemberInfo member)
         {
             if (member == null)
-                return new TokenResolution(default, default, true, false);
+                return new TokenResolution(default(MemberKey), default(TypeKey), true, false);
 
             KeyFactory.TryForMember(member, out MemberKey memberKey);
 
@@ -305,16 +304,14 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         private static TokenResolution BuildTypeResolution(Type type)
         {
             if (type == null)
-                return new TokenResolution(default, default, true, false);
+                return new TokenResolution(default(MemberKey), default(TypeKey), true, false);
 
             KeyFactory.TryForType(type, out TypeKey typeKey);
-            return new TokenResolution(default, typeKey, true, false);
+            return new TokenResolution(default(MemberKey), typeKey, true, false);
         }
 
         private static EUsageKind ResolveKind(OpCode code)
-            => UsageByOpCode.TryGetValue(code.Value, out EUsageKind mapped)
-                ? mapped
-                : EUsageKind.DelegateReference;
+            => UsageByOpCode.GetValueOrDefault(code.Value, EUsageKind.DelegateReference);
 
         private static byte[] ReadIl(MethodBase method)
         {

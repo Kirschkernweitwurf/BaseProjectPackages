@@ -10,7 +10,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
     /// back. Lines are instructions rather than a replacement of the whole file, so anything not
     /// mentioned is left exactly as it was.
     /// </summary>
-    public static class DismissalTextFormat
+    internal static class DismissalTextFormat
     {
         /// <summary>Verb that hides the findings on an entry itself.</summary>
         public const string DismissVerb = "dismiss";

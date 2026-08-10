@@ -3,7 +3,7 @@ using System.Collections.Generic;
 namespace Base.ToolPackage.Editor.CodebaseGraph.Model
 {
     /// <summary>One field, property, method, constructor or event in the graph, with its usages.</summary>
-    public sealed class MemberNodeInfo
+    internal sealed class MemberNodeInfo
     {
         /// <summary>Identity of the member.</summary>
         public MemberKey Key { get; }

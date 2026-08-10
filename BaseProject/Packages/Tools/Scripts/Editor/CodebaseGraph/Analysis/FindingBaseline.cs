@@ -12,7 +12,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
     /// first scan after opening Unity has nothing to compare against and marks nothing new, which is
     /// honest: with no baseline the only truthful answer is that everything is equally old.
     /// </summary>
-    public static class FindingBaseline
+    internal static class FindingBaseline
     {
         /// <summary>Collects the id of every finding currently raised.</summary>
         /// <param name="graph">Graph to read.</param>

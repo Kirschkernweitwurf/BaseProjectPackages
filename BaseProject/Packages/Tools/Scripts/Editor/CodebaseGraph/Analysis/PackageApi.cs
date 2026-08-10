@@ -7,7 +7,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
     /// part, but protected on a type someone can derive from is a contract too: the subclasses live in
     /// the projects that install the package, which a scan of this project can never see.
     /// </summary>
-    public static class PackageApi
+    internal static class PackageApi
     {
         /// <summary>True when the member is part of what consumers of the package are meant to use.</summary>
         /// <param name="member">Member to test.</param>
@@ -32,7 +32,6 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         /// <summary>True when the type itself is part of the published surface.</summary>
         /// <param name="type">Type to test.</param>
         /// <returns>True when nothing here using it proves nothing.</returns>
-        public static bool IsSurface(TypeNodeInfo type)
-            => type.IsPackageAssembly && type.Access == EAccessLevel.Public;
+        public static bool IsSurface(TypeNodeInfo type) => type.IsPackageAssembly && type.Access == EAccessLevel.Public;
     }
 }

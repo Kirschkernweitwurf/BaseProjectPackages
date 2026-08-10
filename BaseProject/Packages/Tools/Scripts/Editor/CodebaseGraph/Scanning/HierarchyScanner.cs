@@ -9,7 +9,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
     /// implementations out of the dead code list: nothing calls them directly, the runtime dispatches
     /// to them through the base or interface member.
     /// </summary>
-    public static class HierarchyScanner
+    internal static class HierarchyScanner
     {
         private const BindingFlags DeclaredMembers = BindingFlags.Public
             | BindingFlags.NonPublic

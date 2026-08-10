@@ -9,7 +9,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
     /// compilation, so the cache is dropped the moment the domain reloads.
     /// </summary>
     [InitializeOnLoad]
-    public static class CodebaseGraphCache
+    internal static class CodebaseGraphCache
     {
         private static CodebaseGraphData _graph;
         private static HashSet<string> _findingIds;
@@ -42,7 +42,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         public static void SetFindingIds(HashSet<string> ids) => _findingIds = ids;
 
         /// <summary>Drops the cached graph.</summary>
-        public static void Clear()
+        private static void Clear()
         {
             _graph = null;
             _findingIds = null;

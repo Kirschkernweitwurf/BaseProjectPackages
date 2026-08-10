@@ -18,7 +18,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
     /// they are there for reference. Ranking is what makes the file readable, so splitting it in two
     /// bought nothing and cost the second half its header, its caveats and its dismissal block.
     /// </summary>
-    public static class FindingReportWriter
+    internal static class FindingReportWriter
     {
         private const string Caveats = "Everything below was found by reading compiled metadata. Reflection, "
             + "SendMessage, Invoke by name, UnityEvents wired in the inspector, animation events and "
@@ -99,10 +99,9 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         }
 
         /// <summary>
-        /// Lists the largest types by compiled size. The size threshold behind the very large type
-        /// finding cannot be picked sensibly from a guess, because what counts as big depends entirely
-        /// on the codebase, so the report shows the top of the distribution and the number can be set
-        /// from that.
+        /// Lists the largest types by compiled size. The size threshold behind the very large type finding cannot
+        /// be picked sensibly from a guess, because what counts as big depends entirely on the codebase.
+        /// So the report shows the top of the distribution and the number can be set from that.
         /// </summary>
         private static void AppendSizeProfile(StringBuilder builder, CodebaseGraphData graph)
         {
@@ -496,6 +495,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
             builder.AppendLine($"- `{DismissalTextFormat.RestoreVerb} <id>` brings a dismissed entry back.");
             builder.AppendLine($"- `{DismissalTextFormat.RestoreWithContentsVerb} <id>` brings it back "
                 + "together with everything dismissed inside it.");
+
             builder.AppendLine("- Lines starting with a hash are comments, and blank lines are ignored.");
             builder.AppendLine();
             builder.AppendLine("The lines are instructions, not a replacement of the stored file, so "

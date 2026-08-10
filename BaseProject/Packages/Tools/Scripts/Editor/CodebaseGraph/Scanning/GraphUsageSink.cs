@@ -8,7 +8,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
     /// single edge with a count, and anything pointing outside the scanned assemblies is tallied as an
     /// external reference instead of pulling Unity into the picture.
     /// </summary>
-    public sealed class GraphUsageSink : IUsageSink
+    internal sealed class GraphUsageSink : IUsageSink
     {
         private readonly CodebaseGraphData _graph;
         private readonly MemberRegistry _registry;

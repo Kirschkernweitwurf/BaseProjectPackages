@@ -9,7 +9,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
     /// color, and a reader who has to guess at any of them will end up trusting none of them. Built from
     /// the same catalog the nodes draw from, so it cannot describe something that is not on screen.
     /// </summary>
-    public sealed class CodebaseGraphLegend : VisualElement
+    internal sealed class CodebaseGraphLegend : VisualElement
     {
         private const string BodyClass = "legend-body";
         private const string CollapsedText = "Legend";
@@ -57,48 +57,17 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             BuildBody();
         }
 
-        private static Label BuildLabel(string text, string styleClass)
-        {
-            Label label = new(text);
-            label.AddToClassList(styleClass);
-            return label;
-        }
-
-        private void BuildBody()
-        {
-            _body.Add(BuildLabel(ShapesTitle, TitleClass));
-            _body.Add(BuildShape(GraphSymbols.NamespaceGlyph, ShapeNamespaceText));
-            _body.Add(BuildShape(GraphSymbols.GetGlyph(ETypeKind.Class), ShapeTypeText));
-            _body.Add(BuildShape(GraphSymbols.GetGlyph(EMemberKind.Method), ShapeMemberText));
-
-            _body.Add(BuildLabel(TypesTitle, TitleClass));
-            foreach (KeyValuePair<ETypeKind, string> pair in GraphSymbols.GetTypeGlyphs())
-                _body.Add(BuildShape(pair.Value, pair.Key.ToString()));
-
-            _body.Add(BuildLabel(MembersTitle, TitleClass));
-            foreach (KeyValuePair<EMemberKind, string> pair in GraphSymbols.GetMemberGlyphs())
-                _body.Add(BuildShape(pair.Value, pair.Key.ToString()));
-
-            _body.Add(BuildLabel(VisibilityTitle, TitleClass));
-            foreach (EAccessLevel access in GraphSymbols.GetAccessOrder())
-                _body.Add(BuildAccess(access));
-
-            _body.Add(BuildLabel(StateTitle, TitleClass));
-            _body.Add(BuildSwatch(FindingSwatchClass, StateFindingText));
-            _body.Add(BuildSwatch(DismissedSwatchClass, StateDismissedText));
-        }
-
-        private VisualElement BuildShape(string glyph, string text)
+        private static VisualElement BuildShape(string glyph, string text)
         {
             VisualElement row = new();
             row.AddToClassList(EntryClass);
-            row.Add(BuildLabel(glyph, GlyphClass));
-            row.Add(BuildLabel(text, LabelClass));
+            row.Add(GraphLabel.Build(glyph, GlyphClass));
+            row.Add(GraphLabel.Build(text, LabelClass));
 
             return row;
         }
 
-        private VisualElement BuildSwatch(string swatchClass, string text)
+        private static VisualElement BuildSwatch(string swatchClass, string text)
         {
             VisualElement row = new();
             row.AddToClassList(EntryClass);
@@ -108,17 +77,41 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             swatch.AddToClassList(swatchClass);
             row.Add(swatch);
 
-            row.Add(BuildLabel(text, LabelClass));
+            row.Add(GraphLabel.Build(text, LabelClass));
             return row;
         }
 
-        private VisualElement BuildAccess(EAccessLevel access)
+        private static VisualElement BuildAccess(EAccessLevel access)
         {
             VisualElement row = BuildShape(GraphSymbols.GetGlyph(EMemberKind.Field), access.ToString());
             row.Q<Label>(className: GlyphClass).style.color = GraphSymbols.GetColor(access);
             row.Q<Label>(className: LabelClass).style.color = GraphSymbols.GetColor(access);
 
             return row;
+        }
+
+        private void BuildBody()
+        {
+            _body.Add(GraphLabel.Build(ShapesTitle, TitleClass));
+            _body.Add(BuildShape(GraphSymbols.NamespaceGlyph, ShapeNamespaceText));
+            _body.Add(BuildShape(GraphSymbols.GetGlyph(ETypeKind.Class), ShapeTypeText));
+            _body.Add(BuildShape(GraphSymbols.GetGlyph(EMemberKind.Method), ShapeMemberText));
+
+            _body.Add(GraphLabel.Build(TypesTitle, TitleClass));
+            foreach (KeyValuePair<ETypeKind, string> pair in GraphSymbols.GetTypeGlyphs())
+                _body.Add(BuildShape(pair.Value, pair.Key.ToString()));
+
+            _body.Add(GraphLabel.Build(MembersTitle, TitleClass));
+            foreach (KeyValuePair<EMemberKind, string> pair in GraphSymbols.GetMemberGlyphs())
+                _body.Add(BuildShape(pair.Value, pair.Key.ToString()));
+
+            _body.Add(GraphLabel.Build(VisibilityTitle, TitleClass));
+            foreach (EAccessLevel access in GraphSymbols.GetAccessOrder())
+                _body.Add(BuildAccess(access));
+
+            _body.Add(GraphLabel.Build(StateTitle, TitleClass));
+            _body.Add(BuildSwatch(FindingSwatchClass, StateFindingText));
+            _body.Add(BuildSwatch(DismissedSwatchClass, StateDismissedText));
         }
 
         private void Toggle()

@@ -1,7 +1,7 @@
 namespace Base.ToolPackage.Editor.CodebaseGraph.Model
 {
     /// <summary>Column the list pane is currently sorted by.</summary>
-    public enum ESortMode : byte
+    internal enum ESortMode : byte
     {
         Name = 0,
         FanIn = 1,

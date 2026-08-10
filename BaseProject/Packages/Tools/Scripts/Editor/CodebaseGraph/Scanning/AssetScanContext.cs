@@ -13,11 +13,14 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
     /// wrongly credited loses a little severity; one that is wrongly not credited is promoted to the top
     /// of the report as something to delete, and that is the more expensive mistake by far.
     /// </summary>
-    public sealed class AssetScanContext
+    internal sealed class AssetScanContext
     {
         private const string AnimationEventReason = "Called by an animation event";
         private const string ReferenceTypeReason = "Stored in an asset by SerializeReference";
         private const string UnityEventReason = "Called by a UnityEvent wired in the inspector";
+
+        /// <summary>True when nothing in the graph could be answered for by an asset.</summary>
+        public bool IsEmpty => _anyField.Count == 0 && _anyMethod.Count == 0 && _byFullName.Count == 0;
 
         private readonly Dictionary<string, TypeNodeInfo> _byFullName = new(StringComparer.Ordinal);
         private readonly Dictionary<string, TypeNodeInfo> _byGuid = new(StringComparer.Ordinal);
@@ -28,15 +31,15 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
 
         private CodebaseGraphData _graph;
 
-        /// <summary>True when nothing in the graph could be answered for by an asset.</summary>
-        public bool IsEmpty => _anyField.Count == 0 && _anyMethod.Count == 0 && _byFullName.Count == 0;
-
         /// <summary>Gathers everything the assets might have something to say about.</summary>
         /// <param name="graph">Graph to read from and later annotate.</param>
         /// <returns>The prepared context.</returns>
         public static AssetScanContext Build(CodebaseGraphData graph)
         {
-            AssetScanContext context = new() { _graph = graph };
+            AssetScanContext context = new()
+            {
+                _graph = graph
+            };
 
             foreach (TypeNodeInfo type in graph.Types.Values)
             {
@@ -64,7 +67,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         /// <summary>
         /// Records that one asset carries a value for a serialized field. The key is looked for on the
         /// script's own type and then up its base chain, because a component's block carries everything
-        /// it inherited too, and finally by name alone when the chain has nothing, which is what a
+        /// it inherited too. And finally by name alone when the chain has nothing, which is what a
         /// nested serializable class or an unresolvable script looks like.
         /// </summary>
         /// <param name="owner">Type the document belongs to, or null when it could not be resolved.</param>
@@ -116,8 +119,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         /// never the type, so this can only be matched by name across the project.
         /// </summary>
         /// <param name="methodName">Method the clip calls.</param>
-        public void MarkAnimationEvent(string methodName)
-            => MarkAnywhere(methodName, AnimationEventReason, true);
+        public void MarkAnimationEvent(string methodName) => MarkAnywhere(methodName, AnimationEventReason, true);
 
         /// <summary>Marks a type stored by SerializeReference as reachable.</summary>
         /// <param name="typeName">Namespace qualified name read from the reference entry.</param>
@@ -181,10 +183,9 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
             }
         }
 
-        private TypeNodeInfo ReadBaseType(TypeNodeInfo type)
-            => type.BaseTypeKey.IsValid
-                ? _graph.FindType(type.BaseTypeKey)
-                : null;
+        private TypeNodeInfo ReadBaseType(TypeNodeInfo type) => type.BaseTypeKey.IsValid
+            ? _graph.FindType(type.BaseTypeKey)
+            : null;
 
         private TypeNodeInfo ReadScriptType(string guid)
         {
@@ -200,9 +201,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
             if (type == null)
                 return null;
 
-            return _byFullName.TryGetValue(TypeNameFormatter.FormatFullName(type), out TypeNodeInfo node)
-                ? node
-                : null;
+            return _byFullName.GetValueOrDefault(TypeNameFormatter.FormatFullName(type));
         }
 
         private void CollectCandidates(TypeNodeInfo type)

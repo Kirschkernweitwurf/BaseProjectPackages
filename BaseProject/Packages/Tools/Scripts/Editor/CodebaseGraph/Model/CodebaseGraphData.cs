@@ -3,7 +3,7 @@ using System.Collections.Generic;
 namespace Base.ToolPackage.Editor.CodebaseGraph.Model
 {
     /// <summary>The complete scan result: every type, member and relation the builder found.</summary>
-    public sealed class CodebaseGraphData
+    internal sealed class CodebaseGraphData
     {
         /// <summary>Name used for types that are declared outside any namespace.</summary>
         public const string GlobalNamespaceName = "(global)";
@@ -71,18 +71,12 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Model
         /// <summary>Returns the type for a key, or null when it is outside the scanned scope.</summary>
         /// <param name="key">Identity of the type.</param>
         /// <returns>The type node, or null.</returns>
-        public TypeNodeInfo FindType(TypeKey key)
-            => Types.TryGetValue(key, out TypeNodeInfo type)
-                ? type
-                : null;
+        public TypeNodeInfo FindType(TypeKey key) => Types.GetValueOrDefault(key);
 
         /// <summary>Returns the member for a key, or null when it is outside the scanned scope.</summary>
         /// <param name="key">Identity of the member.</param>
         /// <returns>The member node, or null.</returns>
-        public MemberNodeInfo FindMember(MemberKey key)
-            => Members.TryGetValue(key, out MemberNodeInfo member)
-                ? member
-                : null;
+        public MemberNodeInfo FindMember(MemberKey key) => Members.GetValueOrDefault(key);
 
         /// <summary>Counts the types whose findings were suppressed as generated, sample or test code.</summary>
         /// <returns>The number of excluded types.</returns>

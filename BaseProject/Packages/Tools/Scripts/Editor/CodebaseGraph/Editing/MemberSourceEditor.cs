@@ -14,7 +14,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Editing
     /// unless exactly one line matches, and the match is then checked against the shape it claims to
     /// be. Anything ambiguous is left alone for a person to handle.
     /// </summary>
-    public static class MemberSourceEditor
+    internal static class MemberSourceEditor
     {
         private const string AccessorPattern = @"\b(private|protected|internal)\s+(get|set|init|add|remove)\b";
         private const char ArrowHead = '>';
@@ -68,8 +68,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Editing
         /// <returns>True when the file was changed.</returns>
         public static bool AddReadOnly(TypeNodeInfo type, MemberNodeInfo member)
         {
-            Regex pattern = new(
-                $@"^(\s*)((?:private|protected|internal|public)(?:\s+static)?\s+)"
+            Regex pattern = new(@"^(\s*)((?:private|protected|internal|public)(?:\s+static)?\s+)"
                 + $@"(?![^\r\n]*\b{ReadOnlyKeyword}\b)(?=[^\r\n]*\b{Regex.Escape(member.Name)}\b)",
                 RegexOptions.Multiline);
 
@@ -91,11 +90,11 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Editing
             AssetDatabase.OpenAsset(script, FindLine(type, member));
         }
 
-        private static int FindLine(TypeNodeInfo type, MemberNodeInfo member)
-            => SourceLineLocator.Find(SourceLineLocator.Split(type.ScriptPath),
-                member,
-                type.ShortName,
-                type.Kind == ETypeKind.Interface);
+        private static int FindLine(TypeNodeInfo type, MemberNodeInfo member) => SourceLineLocator.Find(
+            SourceLineLocator.Split(type.ScriptPath),
+            member,
+            type.ShortName,
+            type.Kind == ETypeKind.Interface);
 
         private static bool Rewrite(TypeNodeInfo type,
             MemberNodeInfo member,
@@ -296,8 +295,8 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Editing
         /// keeps the regex from matching the field it belongs to, and the single match it does find is
         /// then something else entirely.
         /// <br/><br/>
-        /// Only the declarator is tested, never the initialiser. A field written only from a constructor
-        /// is the shape this fix exists for, and an inline initialiser compiles into the constructor, so
+        /// Only the declarator is tested, never the initializer. A field written only from a constructor
+        /// is the shape this fix exists for, and an inline initializer compiles into the constructor, so
         /// the typical candidate reads like a list assigned a new instance on the spot. Judging the
         /// whole line would refuse almost every field it is meant to accept.
         /// </summary>

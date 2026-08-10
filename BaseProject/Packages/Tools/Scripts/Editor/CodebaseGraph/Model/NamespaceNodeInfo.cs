@@ -3,7 +3,7 @@ using System.Collections.Generic;
 namespace Base.ToolPackage.Editor.CodebaseGraph.Model
 {
     /// <summary>One namespace in the graph, aggregated from the types it contains.</summary>
-    public sealed class NamespaceNodeInfo
+    internal sealed class NamespaceNodeInfo
     {
         /// <summary>Full namespace name, or "(global)" when the types have no namespace.</summary>
         public string Name { get; }

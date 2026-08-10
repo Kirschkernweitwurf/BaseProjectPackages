@@ -7,7 +7,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
     /// Finds groups of nodes that can all reach each other. Written iteratively rather than
     /// recursively, because a deep dependency chain would otherwise blow the stack on a large project.
     /// </summary>
-    public static class CycleFinder
+    internal static class CycleFinder
     {
         private const int ShortestPossibleCycle = 2;
 
@@ -42,12 +42,45 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
             return best ?? new List<T>();
         }
 
+        /// <summary>Returns every group of two or more nodes that sit in a dependency cycle.</summary>
+        /// <typeparam name="T">Node identity type.</typeparam>
+        /// <param name="nodes">All nodes to consider.</param>
+        /// <param name="getTargets">Returns the nodes a given node depends on.</param>
+        /// <returns>One list per cycle, each holding the members of that cycle.</returns>
+        public static List<List<T>> FindCycles<T>(IEnumerable<T> nodes, Func<T, IEnumerable<T>> getTargets)
+        {
+            Dictionary<T, int> index = new();
+            Dictionary<T, int> lowLink = new();
+            HashSet<T> onStack = new();
+            Stack<T> component = new();
+            Stack<Frame<T>> work = new();
+            List<List<T>> cycles = new();
+            int nextIndex = 0;
+
+            foreach (T node in nodes)
+            {
+                if (index.ContainsKey(node))
+                    continue;
+
+                Visit(node, ref nextIndex, index, lowLink, onStack, component, work);
+
+                while (work.Count > 0)
+                    Step(getTargets, ref nextIndex, index, lowLink, onStack, component, work, cycles);
+            }
+
+            return cycles;
+        }
+
         private static List<T> FindCycleFrom<T>(T start,
             HashSet<T> members,
             Func<T, IEnumerable<T>> getTargets)
         {
             Dictionary<T, T> parents = new();
-            HashSet<T> seen = new() { start };
+            HashSet<T> seen = new()
+            {
+                start
+            };
+
             Queue<T> pending = new();
 
             pending.Enqueue(start);
@@ -96,35 +129,6 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
             return path;
         }
 
-        /// <summary>Returns every group of two or more nodes that sit in a dependency cycle.</summary>
-        /// <typeparam name="T">Node identity type.</typeparam>
-        /// <param name="nodes">All nodes to consider.</param>
-        /// <param name="getTargets">Returns the nodes a given node depends on.</param>
-        /// <returns>One list per cycle, each holding the members of that cycle.</returns>
-        public static List<List<T>> FindCycles<T>(IEnumerable<T> nodes, Func<T, IEnumerable<T>> getTargets)
-        {
-            Dictionary<T, int> index = new();
-            Dictionary<T, int> lowLink = new();
-            HashSet<T> onStack = new();
-            Stack<T> component = new();
-            Stack<Frame<T>> work = new();
-            List<List<T>> cycles = new();
-            int nextIndex = 0;
-
-            foreach (T node in nodes)
-            {
-                if (index.ContainsKey(node))
-                    continue;
-
-                Visit(node, ref nextIndex, index, lowLink, onStack, component, work);
-
-                while (work.Count > 0)
-                    Step(getTargets, ref nextIndex, index, lowLink, onStack, component, work, cycles);
-            }
-
-            return cycles;
-        }
-
         private static void Visit<T>(T node,
             ref int nextIndex,
             Dictionary<T, int> index,
@@ -157,15 +161,17 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
             if (frame.Enumerator.MoveNext())
             {
                 T target = frame.Enumerator.Current;
+                if (target == null)
+                    return;
 
-                if (!index.ContainsKey(target))
+                if (!index.TryGetValue(target, out int value))
                 {
                     Visit(target, ref nextIndex, index, lowLink, onStack, component, work);
                     return;
                 }
 
                 if (onStack.Contains(target))
-                    lowLink[frame.Node] = Math.Min(lowLink[frame.Node], index[target]);
+                    lowLink[frame.Node] = Math.Min(lowLink[frame.Node], value);
 
                 return;
             }

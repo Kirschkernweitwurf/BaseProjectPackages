@@ -8,7 +8,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
     /// database to hand over a MonoScript and its text, and the fallback matters: a package installed
     /// from Git lives under a virtual Packages path that never exists as a real file.
     /// </summary>
-    public static class ScriptSourceReader
+    internal static class ScriptSourceReader
     {
         /// <summary>Returns the source of a script asset, or an empty string when it cannot be read.</summary>
         /// <param name="assetPath">Asset path of the script.</param>

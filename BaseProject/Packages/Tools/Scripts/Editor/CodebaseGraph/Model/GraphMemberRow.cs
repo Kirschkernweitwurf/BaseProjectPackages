@@ -1,7 +1,7 @@
 namespace Base.ToolPackage.Editor.CodebaseGraph.Model
 {
     /// <summary>One line of a type node's member list, so a class on the graph reads like a class.</summary>
-    public sealed class GraphMemberRow
+    internal sealed class GraphMemberRow
     {
         /// <summary>Single letter standing for the kind of member.</summary>
         public string Glyph { get; }

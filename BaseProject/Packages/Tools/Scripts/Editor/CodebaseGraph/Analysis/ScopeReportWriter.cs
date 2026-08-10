@@ -11,10 +11,10 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
     /// the thing worth handing to somebody, or something, that is about to work on that slice alone.
     /// <br/><br/>
     /// The boundary comes first on purpose. What a slice depends on and what depends on it is the part
-    /// a reader cannot recover from the code in front of them, and getting it wrong is how a change
+    /// a reader cannot recover from the code in front of them. Getting it wrong is how a change
     /// that looked local turns out not to be.
     /// </summary>
-    public static class ScopeReportWriter
+    internal static class ScopeReportWriter
     {
         private const int MaximumMembers = 60;
         private const string TitleFormat = "# {0}";

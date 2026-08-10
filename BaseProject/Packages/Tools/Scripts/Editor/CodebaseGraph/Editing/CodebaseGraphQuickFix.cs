@@ -8,7 +8,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Editing
     /// person agreeing to it is agreeing to have their source rewritten, so the dialog says exactly what
     /// will change and on what terms the edit will refuse itself.
     /// </summary>
-    public static class CodebaseGraphQuickFix
+    internal static class CodebaseGraphQuickFix
     {
         private const string ApplyLabel = "Apply";
         private const string CancelLabel = "Cancel";

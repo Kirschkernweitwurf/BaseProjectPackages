@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Text;
 using Base.ToolPackage.Editor.CodebaseGraph.Model;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
 {
@@ -12,7 +13,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
     /// event adders never become nodes of their own. They are redirected onto the property or event
     /// they belong to, so the graph shows the code as it was written.
     /// </summary>
-    public static class MemberCollector
+    internal static class MemberCollector
     {
         private const BindingFlags DeclaredMembers = BindingFlags.Public
             | BindingFlags.NonPublic
@@ -139,10 +140,11 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
                 GetAccessLevel(type),
                 type.IsAbstract && type.IsSealed,
                 type.IsAbstract && !type.IsSealed,
-                typeof(UnityEngine.Object).IsAssignableFrom(type),
-                typeof(MonoBehaviour).IsAssignableFrom(type));
-
-            node.IsSealed = type.IsSealed;
+                typeof(Object).IsAssignableFrom(type),
+                typeof(MonoBehaviour).IsAssignableFrom(type))
+            {
+                IsSealed = type.IsSealed
+            };
 
             if (UnityEntryPointCatalog.TryGetEntryPointAttribute(type, out string reason)
                 || UnityEntryPointCatalog.IsEngineDriven(type, out reason))
@@ -327,8 +329,8 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
                     false);
 
                 if (UnityEntryPointCatalog.IsRuntimeConstructor(constructor.IsStatic,
-                    node.IsUnityObject,
-                    out string reason))
+                        node.IsUnityObject,
+                        out string reason))
                 {
                     member.IsEntryPoint = true;
                     member.EntryPointReason = reason;

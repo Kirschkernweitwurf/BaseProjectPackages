@@ -9,14 +9,14 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
     /// The sortable list next to the graph. A graph stops being readable well before a namespace runs
     /// out of types, so the list is what you scan, and the graph shows the neighborhood of what you pick.
     /// </summary>
-    public sealed class CodebaseGraphListPane : VisualElement
+    internal sealed class CodebaseGraphListPane : VisualElement
     {
         private const string ActiveSortClass = "is-active";
         private const string BadgeClass = "row-badge";
-        private const string DetailName = "row-detail";
-        private const string DismissedClass = "row-dismissed";
         private const string ClearClass = "row-clear";
         private const string ClearText = "Clear";
+        private const string DetailName = "row-detail";
+        private const string DismissedClass = "row-dismissed";
         private const string DismissedText = "Dismissed";
         private const string HeadingClass = "pane-heading";
         private const string OnlyNewLabel = "New only";
@@ -39,12 +39,12 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         private readonly Action<GraphEntry> _onSelected;
         private readonly Action<GraphEntry> _onActivated;
         private readonly Action<bool> _onOnlyNewChanged;
-
-        private Button _onlyNewButton;
-        private bool _isOnlyNew;
         private readonly Dictionary<ESortMode, Button> _sortButtons = new();
         private readonly ListView _listView;
         private readonly Label _headingLabel;
+
+        private Button _onlyNewButton;
+        private bool _isOnlyNew;
 
         private List<GraphEntry> _entries = new();
         private ESortMode _sortMode = ESortMode.Name;
@@ -52,7 +52,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
         /// <summary>Builds the list pane, its heading and its sort header.</summary>
         /// <param name="onSelected">Raised when a row is clicked.</param>
-        /// <param name="onActivated">Raised when a row is double clicked.</param>
+        /// <param name="onActivated">Raised when a row is double-clicked.</param>
         /// <param name="onOnlyNewChanged">Raised when the new only filter is switched.</param>
         public CodebaseGraphListPane(Action<GraphEntry> onSelected,
             Action<GraphEntry> onActivated,
@@ -75,10 +75,13 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
                 fixedItemHeight = RowHeight,
                 selectionType = SelectionType.Single,
                 makeItem = MakeRow,
-                bindItem = BindRow
+                bindItem = BindRow,
+                style =
+                {
+                    flexGrow = 1f
+                }
             };
 
-            _listView.style.flexGrow = 1f;
             _listView.selectionChanged += OnSelectionChanged;
             _listView.itemsChosen += OnItemsChosen;
             Add(_listView);
@@ -98,10 +101,26 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
         private static Label BuildRowLabel(string name, string styleClass)
         {
-            Label label = new();
-            label.name = name;
+            Label label = new()
+            {
+                name = name
+            };
+
             label.AddToClassList(styleClass);
             return label;
+        }
+
+        private static int CountFindings(GraphEntry entry) => entry.Findings.Count + entry.NestedFindingCount;
+
+        private static VisualElement MakeRow()
+        {
+            VisualElement row = new();
+            row.AddToClassList(RowClass);
+
+            row.Add(BuildRowLabel(TitleName, RowTitleClass));
+            row.Add(BuildRowLabel(DetailName, RowMetaClass));
+
+            return row;
         }
 
         private VisualElement BuildSortRow()
@@ -117,10 +136,13 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             _onlyNewButton = new Button(ToggleOnlyNew)
             {
                 text = OnlyNewLabel,
-                tooltip = OnlyNewTooltip
+                tooltip = OnlyNewTooltip,
+                style =
+                {
+                    flexGrow = 1f
+                }
             };
 
-            _onlyNewButton.style.flexGrow = 1f;
             row.Add(_onlyNewButton);
 
             return row;
@@ -135,8 +157,15 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
         private Button BuildSortButton(string label, ESortMode mode)
         {
-            Button button = new(() => SetSort(mode)) { text = label };
-            button.style.flexGrow = 1f;
+            Button button = new(() => SetSort(mode))
+            {
+                text = label,
+                style =
+                {
+                    flexGrow = 1f
+                }
+            };
+
             _sortButtons[mode] = button;
             return button;
         }
@@ -186,19 +215,6 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
                 default:
                     return string.Compare(left.Title, right.Title, StringComparison.OrdinalIgnoreCase);
             }
-        }
-
-        private int CountFindings(GraphEntry entry) => entry.Findings.Count + entry.NestedFindingCount;
-
-        private VisualElement MakeRow()
-        {
-            VisualElement row = new();
-            row.AddToClassList(RowClass);
-
-            row.Add(BuildRowLabel(TitleName, RowTitleClass));
-            row.Add(BuildRowLabel(DetailName, RowMetaClass));
-
-            return row;
         }
 
         private void BindRow(VisualElement element, int index)

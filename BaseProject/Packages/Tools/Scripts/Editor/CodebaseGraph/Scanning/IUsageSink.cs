@@ -3,7 +3,7 @@ using Base.ToolPackage.Editor.CodebaseGraph.Model;
 namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
 {
     /// <summary>Receives the raw usages the scanners find and folds them into the graph.</summary>
-    public interface IUsageSink
+    internal interface IUsageSink
     {
         /// <summary>Records that one member uses another.</summary>
         /// <param name="sourceKey">Member the usage starts at.</param>

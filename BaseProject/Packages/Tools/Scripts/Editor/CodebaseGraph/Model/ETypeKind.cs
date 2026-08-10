@@ -1,7 +1,7 @@
 namespace Base.ToolPackage.Editor.CodebaseGraph.Model
 {
     /// <summary>Category a scanned type falls into.</summary>
-    public enum ETypeKind : byte
+    internal enum ETypeKind : byte
     {
         Class = 0,
         Struct = 1,

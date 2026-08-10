@@ -4,7 +4,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Model
     /// A single finding the view can be narrowed down to. Member and type findings share one list,
     /// because from the toolbar they are all just "show me this one thing".
     /// </summary>
-    public enum EFinding : byte
+    internal enum EFinding : byte
     {
         None = 0,
         Any = 1,

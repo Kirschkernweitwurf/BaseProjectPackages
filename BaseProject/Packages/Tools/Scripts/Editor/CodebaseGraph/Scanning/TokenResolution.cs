@@ -3,7 +3,7 @@ using Base.ToolPackage.Editor.CodebaseGraph.Model;
 namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
 {
     /// <summary>What a metadata token turned out to point at, once resolved.</summary>
-    public readonly struct TokenResolution
+    internal readonly struct TokenResolution
     {
         /// <summary>Member the token names, or the default when it names no member.</summary>
         public MemberKey Member { get; }

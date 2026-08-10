@@ -3,7 +3,7 @@ using System;
 namespace Base.ToolPackage.Editor.CodebaseGraph.Model
 {
     /// <summary>The toolbar state, in one object, so the entry factory only takes a single argument.</summary>
-    public sealed class GraphFilter
+    internal sealed class GraphFilter
     {
         /// <summary>Assembly to restrict the view to, or null for all scanned assemblies.</summary>
         public string AssemblyName { get; set; }
@@ -41,8 +41,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Model
         /// <summary>Checks a display name against the current search text.</summary>
         /// <param name="text">Name to test.</param>
         /// <returns>True when the name should be shown.</returns>
-        public bool IsMatch(string text)
-            => string.IsNullOrEmpty(Search)
-                || (text != null && text.IndexOf(Search, StringComparison.OrdinalIgnoreCase) >= 0);
+        public bool IsMatch(string text) => string.IsNullOrEmpty(Search)
+            || text != null && text.IndexOf(Search, StringComparison.OrdinalIgnoreCase) >= 0;
     }
 }

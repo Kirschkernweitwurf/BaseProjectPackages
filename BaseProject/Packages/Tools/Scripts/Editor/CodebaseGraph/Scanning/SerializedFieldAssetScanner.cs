@@ -17,7 +17,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
     /// any component, and that count feeds the ranking, so a loose match quietly degrades the one
     /// finding with the best evidence behind it.
     /// </summary>
-    public static class SerializedFieldAssetScanner
+    internal static class SerializedFieldAssetScanner
     {
         private const string AnimationExtension = ".anim";
         private const string ControllerExtension = ".controller";

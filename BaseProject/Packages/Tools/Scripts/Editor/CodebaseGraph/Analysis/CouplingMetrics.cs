@@ -7,7 +7,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
     /// that counts declarations flags every enum and every constants holder, and a coupling rule with
     /// no sense of abstraction flags every stable utility in the project.
     /// </summary>
-    public static class CouplingMetrics
+    internal static class CouplingMetrics
     {
         private const int DataHolderMembers = 8;
         private const float DataHolderShare = 0.8f;
@@ -68,7 +68,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         /// <summary>
         /// True when a type is not really doing anything, whatever its size. Enums and static holders
         /// are obvious, but a lookup table declared as an ordinary class is the same thing wearing a
-        /// different hat, and is recognised by its members being almost all consts and static readonly.
+        /// different hat, and is recognized by its members being almost all consts and static readonly.
         /// </summary>
         private static bool IsExempt(TypeNodeInfo type)
         {

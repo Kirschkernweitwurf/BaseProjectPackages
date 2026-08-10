@@ -8,9 +8,12 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
     /// The single place that decides what a kind looks like and what a visibility is colored. Node
     /// drawing and the legend both read from here, so the legend cannot drift from what is on screen.
     /// </summary>
-    public static class GraphSymbols
+    internal static class GraphSymbols
     {
         private const string NamespaceGlyphText = "{}";
+
+        /// <summary>Glyph shown on a namespace node.</summary>
+        public static string NamespaceGlyph => NamespaceGlyphText;
 
         /// <summary>
         /// Color of each visibility, used for the accent stripe and the member rows. Pastel like the
@@ -48,32 +51,24 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             [ETypeKind.Struct] = "S"
         };
 
-        /// <summary>Glyph shown on a namespace node.</summary>
-        public static string NamespaceGlyph => NamespaceGlyphText;
-
         /// <summary>Returns the letter for a kind of type.</summary>
         /// <param name="kind">Kind to name.</param>
         /// <returns>The glyph.</returns>
-        public static string GetGlyph(ETypeKind kind)
-            => TypeGlyphs.TryGetValue(kind, out string glyph)
-                ? glyph
-                : NamespaceGlyphText;
+        public static string GetGlyph(ETypeKind kind) => TypeGlyphs.GetValueOrDefault(kind, NamespaceGlyphText);
 
         /// <summary>Returns the letter for a kind of member.</summary>
         /// <param name="kind">Kind to name.</param>
         /// <returns>The glyph.</returns>
-        public static string GetGlyph(EMemberKind kind)
-            => MemberGlyphs.TryGetValue(kind, out string glyph)
-                ? glyph
-                : MemberGlyphs[EMemberKind.Field];
+        public static string GetGlyph(EMemberKind kind) => MemberGlyphs.TryGetValue(kind, out string glyph)
+            ? glyph
+            : MemberGlyphs[EMemberKind.Field];
 
         /// <summary>Returns the color standing for a visibility.</summary>
         /// <param name="access">Visibility to color.</param>
         /// <returns>The color.</returns>
-        public static Color GetColor(EAccessLevel access)
-            => AccessColors.TryGetValue(access, out Color color)
-                ? color
-                : AccessColors[EAccessLevel.Private];
+        public static Color GetColor(EAccessLevel access) => AccessColors.TryGetValue(access, out Color color)
+            ? color
+            : AccessColors[EAccessLevel.Private];
 
         /// <summary>Lists the type glyphs in reading order, for the legend.</summary>
         /// <returns>Kind and glyph pairs.</returns>
@@ -85,14 +80,13 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
         /// <summary>Lists the visibilities in reading order, for the legend.</summary>
         /// <returns>The visibilities, widest first.</returns>
-        public static IReadOnlyList<EAccessLevel> GetAccessOrder()
-            => new[]
-            {
-                EAccessLevel.Public,
-                EAccessLevel.ProtectedInternal,
-                EAccessLevel.Protected,
-                EAccessLevel.Internal,
-                EAccessLevel.Private
-            };
+        public static IReadOnlyList<EAccessLevel> GetAccessOrder() => new[]
+        {
+            EAccessLevel.Public,
+            EAccessLevel.ProtectedInternal,
+            EAccessLevel.Protected,
+            EAccessLevel.Internal,
+            EAccessLevel.Private
+        };
     }
 }

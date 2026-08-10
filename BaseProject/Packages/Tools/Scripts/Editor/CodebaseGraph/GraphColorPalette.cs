@@ -13,7 +13,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
     /// out, but nothing about a pale coral says anything is wrong, so reds and oranges are back in the
     /// rotation and the variety roughly doubles.
     /// </summary>
-    public static class GraphColorPalette
+    internal static class GraphColorPalette
     {
         private const float BlueWeight = 0.0722f;
         private const float ContrastOffset = 0.05f;
@@ -32,13 +32,19 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         private const uint TierSpread = 7u;
         private const float ValueStep = 0.02f;
 
-        /// <summary>Saturations, all gentle, so two nearby hues still read as different colors.</summary>
-        private static readonly float[] Saturations = { 0.16f, 0.24f, 0.32f, 0.40f };
-
-        private static readonly Dictionary<string, Color> Cache = new();
-
         /// <summary>Color the node title is written in, dark because every background here is light.</summary>
         public static Color TitleTextColor { get; } = new(0.10f, 0.10f, 0.11f);
+
+        /// <summary>Saturations, all gentle, so two nearby hues still read as different colors.</summary>
+        private static readonly float[] Saturations =
+        {
+            0.16f,
+            0.24f,
+            0.32f,
+            0.40f
+        };
+
+        private static readonly Dictionary<string, Color> Cache = new();
 
         /// <summary>Returns the title color for a seed name. The same name always yields the same color.</summary>
         /// <param name="seed">Name to derive the color from.</param>
@@ -75,18 +81,15 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             return Color.HSVToRGB(hue, saturation, MaximumValue);
         }
 
-        private static float GetContrast(Color background)
-            => (GetRelativeLuminance(background) + ContrastOffset)
-                / (GetRelativeLuminance(TitleTextColor) + ContrastOffset);
+        private static float GetContrast(Color background) => (GetRelativeLuminance(background) + ContrastOffset)
+            / (GetRelativeLuminance(TitleTextColor) + ContrastOffset);
 
-        private static float GetRelativeLuminance(Color color)
-            => RedWeight * Linearize(color.r)
-                + GreenWeight * Linearize(color.g)
-                + BlueWeight * Linearize(color.b);
+        private static float GetRelativeLuminance(Color color) => RedWeight * Linearize(color.r)
+            + GreenWeight * Linearize(color.g)
+            + BlueWeight * Linearize(color.b);
 
-        private static float Linearize(float channel)
-            => channel <= LinearThreshold
-                ? channel / LinearDivisor
-                : Mathf.Pow((channel + GammaOffset) / GammaScale, GammaExponent);
+        private static float Linearize(float channel) => channel <= LinearThreshold
+            ? channel / LinearDivisor
+            : Mathf.Pow((channel + GammaOffset) / GammaScale, GammaExponent);
     }
 }

@@ -9,7 +9,7 @@ using Base.ToolPackage.Editor.CodebaseGraph.Scanning;
 namespace Base.ToolPackage.Editor.CodebaseGraph
 {
     /// <summary>Runs the whole scan and returns the finished graph.</summary>
-    public static class CodebaseGraphBuilder
+    internal static class CodebaseGraphBuilder
     {
         private const float AnalyzeProgress = 0.96f;
         private const float AssetProgress = 0.88f;
@@ -56,7 +56,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         /// True to analyze generated, sample and test code as well, which only the tool's own tests ask
         /// for.
         /// </param>
-        /// <returns>The finished graph, or null when the scan was cancelled.</returns>
+        /// <returns>The finished graph, or null when the scan was canceled.</returns>
         public static CodebaseGraphData Build(Func<float, string, bool> onProgress,
             bool includeExcludedScopes = false)
         {
@@ -116,9 +116,9 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
             // The asset pass has to run first. It marks methods and types that only the YAML knows are
             // reachable, and the analyzer reads exactly that when deciding what is dead, so running it
-            // afterwards would leave every one of those marks with nothing left to affect.
+            // afterward would leave every one of those marks with nothing left to affect.
             if (!SerializedFieldAssetScanner.Scan(graph,
-                new ScanProgress(onProgress, AssetProgress, AnalyzeProgress - AssetProgress)))
+                    new ScanProgress(onProgress, AssetProgress, AnalyzeProgress - AssetProgress)))
                 return null;
 
             if (!Report(onProgress, AnalyzeProgress, "Analyzing"))
@@ -153,6 +153,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
                     node.IsExcludedFromFindings = true;
                     node.ExclusionReason = TestAssemblyReason;
                 }
+
                 graph.Types[node.Key] = node;
 
                 foreach (MemberNodeInfo member in node.Members)
@@ -289,10 +290,9 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         }
 
         /// <summary>
-        /// Works out the numbers the size and coupling rules read. Compiled size and namespace reach say
-        /// how much a type really does, where a member count mostly counts backing fields, and
-        /// abstractness is what separates a type everything can safely depend on from one that cannot be
-        /// touched without consequences.
+        /// Works out the numbers the size and coupling rules read. Compiled size and namespace reach say how
+        /// much a type really does, where a member count mostly counts backing fields. Abstractness separates
+        /// a type everything can safely depend on from one that cannot be touched without consequences.
         /// </summary>
         private static void ComputeTypeMetrics(TypeNodeInfo type,
             CodebaseGraphData graph,
@@ -396,9 +396,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
                 return path;
 
             // A nested type lives in its outer type's file, and a generic never resolves through MonoScript.
-            return index.BySimpleName.TryGetValue(outermost, out string fallback)
-                ? fallback
-                : null;
+            return index.BySimpleName.GetValueOrDefault(outermost);
         }
 
         private static string ReadOutermostName(string shortName)
@@ -439,9 +437,8 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             }
         }
 
-        private static bool IsGeneratedFolder(string scriptPath)
-            => !string.IsNullOrEmpty(scriptPath)
-                && scriptPath.Contains(GeneratedFolderMarker, StringComparison.Ordinal);
+        private static bool IsGeneratedFolder(string scriptPath) => !string.IsNullOrEmpty(scriptPath)
+            && scriptPath.Contains(GeneratedFolderMarker, StringComparison.Ordinal);
 
         private static bool HasExcludedSegment(string text)
         {

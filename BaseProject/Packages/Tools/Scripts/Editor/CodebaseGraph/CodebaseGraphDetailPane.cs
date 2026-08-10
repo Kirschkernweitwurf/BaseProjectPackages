@@ -10,7 +10,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
     /// Explains whatever is selected. A red badge on a node only says that something was found, so this
     /// pane says what the scan actually saw, what to do about it, and whether the window can do it.
     /// </summary>
-    public sealed class CodebaseGraphDetailPane : VisualElement
+    internal sealed class CodebaseGraphDetailPane : VisualElement
     {
         private const string ActionClass = "finding-action";
         private const string ActionRowClass = "action-row";
@@ -108,8 +108,14 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
             AddToClassList(PaneClass);
 
-            _content = new ScrollView();
-            _content.style.flexGrow = 1f;
+            _content = new ScrollView
+            {
+                style =
+                {
+                    flexGrow = 1f
+                }
+            };
+
             Add(_content);
 
             ShowPlaceholder();
@@ -128,12 +134,12 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
                 return;
             }
 
-            _content.Add(BuildLabel(entry.Title, HeadingClass));
-            _content.Add(BuildLabel(entry.Subtitle, SubtitleClass));
+            _content.Add(GraphLabel.Build(entry.Title, HeadingClass));
+            _content.Add(GraphLabel.Build(entry.Subtitle, SubtitleClass));
             AppendEntryPointNote(entry);
 
             if (entry.IsDismissed)
-                _content.Add(BuildLabel(DismissedNoticeText, DismissedNoticeClass));
+                _content.Add(GraphLabel.Build(DismissedNoticeText, DismissedNoticeClass));
 
             _content.Add(BuildActionRow(entry));
 
@@ -144,26 +150,19 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             BuildRelations(entry, graph);
         }
 
-        private static Label BuildLabel(string text, string styleClass)
-        {
-            Label label = new(text);
-            label.AddToClassList(styleClass);
-            return label;
-        }
-
         private static void AppendRelations(VisualElement parent, string title, List<string> names)
         {
-            parent.Add(BuildLabel($"{title} ({names.Count})", SectionTitleClass));
+            parent.Add(GraphLabel.Build($"{title} ({names.Count})", SectionTitleClass));
 
             int shown = names.Count < MaxRelations
                 ? names.Count
                 : MaxRelations;
 
             for (int index = 0; index < shown; index++)
-                parent.Add(BuildLabel(names[index], RelationClass));
+                parent.Add(GraphLabel.Build(names[index], RelationClass));
 
             if (names.Count > shown)
-                parent.Add(BuildLabel(string.Format(MoreFormat, names.Count - shown), RelationClass));
+                parent.Add(GraphLabel.Build(string.Format(MoreFormat, names.Count - shown), RelationClass));
         }
 
         private static List<string> CollectNamespaceRelations(IEnumerable<string> names)
@@ -222,15 +221,51 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             return result;
         }
 
-        private void ShowPlaceholder() => _content.Add(BuildLabel(EmptyText, PlaceholderClass));
+        private static string ResolveEntryPointReason(GraphEntry entry)
+        {
+            if (entry.Member != null && entry.Member.IsEntryPoint)
+                return entry.Member.EntryPointReason;
+
+            return entry.Member == null && entry.Type != null && entry.Type.IsEntryPoint
+                ? entry.Type.EntryPointReason
+                : null;
+        }
+
+        private static void AppendCyclePartners(VisualElement card, GraphEntry entry, EFinding finding)
+        {
+            List<string> partners = null;
+
+            if (finding == EFinding.TypeCycle && entry.Type != null)
+                partners = entry.Type.CyclePartners;
+
+            if (finding == EFinding.NamespaceCycle && entry.Namespace != null)
+                partners = entry.Namespace.CyclePartners;
+
+            if (partners == null || partners.Count == 0)
+                return;
+
+            string cut = finding == EFinding.TypeCycle
+                ? entry.Type?.CycleCutHint
+                : entry.Namespace?.CycleCutHint;
+
+            if (!string.IsNullOrEmpty(cut))
+                card.Add(GraphLabel.Build(string.Format(CutHintFormat, cut), ActionClass));
+
+            card.Add(GraphLabel.Build(CycleTitleText, ActionTitleClass));
+
+            foreach (string partner in partners)
+                card.Add(GraphLabel.Build($"\u2022  {partner}", PartnerClass));
+        }
+
+        private void ShowPlaceholder() => _content.Add(GraphLabel.Build(EmptyText, PlaceholderClass));
 
         private void AppendMetrics(GraphEntry entry)
         {
             if (entry.Member != null || entry.Type == null)
                 return;
 
-            _content.Add(BuildLabel(MetricsTitleText, SectionTitleClass));
-            _content.Add(BuildLabel(string.Format(MetricsFormat,
+            _content.Add(GraphLabel.Build(MetricsTitleText, SectionTitleClass));
+            _content.Add(GraphLabel.Build(string.Format(MetricsFormat,
                     entry.Type.Abstractness,
                     entry.Type.Instability,
                     entry.Type.MainSequenceDistance),
@@ -243,17 +278,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             if (string.IsNullOrEmpty(reason))
                 return;
 
-            _content.Add(BuildLabel(string.Format(EntryPointFormat, reason), SubtitleClass));
-        }
-
-        private string ResolveEntryPointReason(GraphEntry entry)
-        {
-            if (entry.Member != null && entry.Member.IsEntryPoint)
-                return entry.Member.EntryPointReason;
-
-            return entry.Member == null && entry.Type != null && entry.Type.IsEntryPoint
-                ? entry.Type.EntryPointReason
-                : null;
+            _content.Add(GraphLabel.Build(string.Format(EntryPointFormat, reason), SubtitleClass));
         }
 
         private VisualElement BuildActionRow(GraphEntry entry)
@@ -270,10 +295,16 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             row.Add(focusButton);
 
             if (entry.CanDrillDown)
-                row.Add(new Button(() => _onDrillDown?.Invoke(entry)) { text = DrillLabel });
+                row.Add(new Button(() => _onDrillDown?.Invoke(entry))
+                {
+                    text = DrillLabel
+                });
 
             if (entry.Type != null)
-                row.Add(new Button(() => _onOpen?.Invoke(entry)) { text = OpenLabel });
+                row.Add(new Button(() => _onOpen?.Invoke(entry))
+                {
+                    text = OpenLabel
+                });
 
             AppendDismissButtons(row, entry);
             return row;
@@ -283,7 +314,11 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         {
             if (entry.IsDismissed)
             {
-                Button restore = new(() => _onRestore?.Invoke(entry)) { text = RestoreLabel };
+                Button restore = new(() => _onRestore?.Invoke(entry))
+                {
+                    text = RestoreLabel
+                };
+
                 restore.AddToClassList(DismissClass);
                 row.Add(restore);
 
@@ -322,13 +357,13 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             VisualElement card = new();
             card.AddToClassList(CardClass);
 
-            card.Add(BuildLabel(descriptor.Title, CardTitleClass));
-            card.Add(BuildLabel(descriptor.Explanation, ExplanationClass));
+            card.Add(GraphLabel.Build(descriptor.Title, CardTitleClass));
+            card.Add(GraphLabel.Build(descriptor.Explanation, ExplanationClass));
 
             if (!string.IsNullOrEmpty(descriptor.Action))
             {
-                card.Add(BuildLabel(ActionTitleText, ActionTitleClass));
-                card.Add(BuildLabel(descriptor.Action, ActionClass));
+                card.Add(GraphLabel.Build(ActionTitleText, ActionTitleClass));
+                card.Add(GraphLabel.Build(descriptor.Action, ActionClass));
             }
 
             AppendCyclePartners(card, entry, finding);
@@ -337,7 +372,10 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             actions.AddToClassList(ActionRowClass);
 
             if (descriptor.CanQuickFix && entry.Member != null)
-                actions.Add(new Button(() => _onQuickFix?.Invoke(entry, finding)) { text = FixLabel });
+                actions.Add(new Button(() => _onQuickFix?.Invoke(entry, finding))
+                {
+                    text = FixLabel
+                });
 
             // One finding at a time. Dismissing the whole entry silences findings nobody has looked at,
             // including ones the next scan has not raised yet.
@@ -352,32 +390,6 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             card.Add(actions);
 
             return card;
-        }
-
-        private void AppendCyclePartners(VisualElement card, GraphEntry entry, EFinding finding)
-        {
-            List<string> partners = null;
-
-            if (finding == EFinding.TypeCycle && entry.Type != null)
-                partners = entry.Type.CyclePartners;
-
-            if (finding == EFinding.NamespaceCycle && entry.Namespace != null)
-                partners = entry.Namespace.CyclePartners;
-
-            if (partners == null || partners.Count == 0)
-                return;
-
-            string cut = finding == EFinding.TypeCycle
-                ? entry.Type?.CycleCutHint
-                : entry.Namespace?.CycleCutHint;
-
-            if (!string.IsNullOrEmpty(cut))
-                card.Add(BuildLabel(string.Format(CutHintFormat, cut), ActionClass));
-
-            card.Add(BuildLabel(CycleTitleText, ActionTitleClass));
-
-            foreach (string partner in partners)
-                card.Add(BuildLabel($"\u2022  {partner}", PartnerClass));
         }
 
         private void BuildRelations(GraphEntry entry, CodebaseGraphData graph)

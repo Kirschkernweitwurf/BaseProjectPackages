@@ -5,7 +5,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Model
     /// evidence is a literal that happens to match a member name, which is how Invoke, SendMessage and
     /// StartCoroutine reach code that no instruction ever points at.
     /// </summary>
-    public enum EUsageKind : byte
+    internal enum EUsageKind : byte
     {
         Call = 0,
         VirtualCall = 1,

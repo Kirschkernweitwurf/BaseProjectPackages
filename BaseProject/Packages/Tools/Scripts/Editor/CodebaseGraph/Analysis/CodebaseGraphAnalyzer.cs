@@ -8,7 +8,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
     /// Turns the raw graph into findings. Everything here is a candidate, never a verdict: reflection,
     /// SendMessage, UnityEvent bindings and asset references are invisible to a code scan.
     /// </summary>
-    public static class CodebaseGraphAnalyzer
+    internal static class CodebaseGraphAnalyzer
     {
         private const string EdgeSeparator = " -> ";
         private const string ManyUsagesSuffix = " usages";
@@ -71,18 +71,16 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
             if (IsPrivateCandidate(member, declaring, realIncoming, graph))
                 member.Issues |= EMemberIssue.PrivateCandidate;
             else if (!PackageApi.IsSurface(member, declaring)
-                && IsPublicButInternalOnly(member, realIncoming, graph))
+                     && IsPublicButInternalOnly(member, realIncoming, graph))
                 member.Issues |= EMemberIssue.PublicButInternalOnly;
         }
 
         private static void AnalyzeType(TypeNodeInfo type)
         {
             if (IsDeadTypeCandidate(type))
-            {
                 type.Issues |= PackageApi.IsSurface(type)
                     ? ETypeIssue.UnusedPublicType
                     : ETypeIssue.DeadType;
-            }
 
             if (CouplingMetrics.IsGodClass(type))
                 type.Issues |= ETypeIssue.GodClass;
@@ -341,18 +339,18 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         private static void MarkTypeCycles(CodebaseGraphData graph, HashSet<string> namespacePairs)
         {
             List<List<TypeKey>> components = CycleFinder.FindCycles(graph.Types.Keys,
-                key => ReadCycleTargets(graph, key));
+                getTargets: key => ReadCycleTargets(graph, key));
 
             foreach (List<TypeKey> component in components)
             {
                 List<TypeKey> cycle = CycleFinder.FindShortestCycle(component,
-                    key => ReadCycleTargets(graph, key));
+                    getTargets: key => ReadCycleTargets(graph, key));
 
                 if (cycle.Count < MinimumCycleLength
                     || !IsReportableCycle(graph, cycle, component.Count, namespacePairs))
                     continue;
 
-                string cycleId = BuildCycleId(ReadTypeNames(graph, cycle));
+                string cycleId = BuildSortedKey(ReadTypeNames(graph, cycle));
                 string description = DescribeTypeCycle(graph, cycle);
                 string cut = SuggestTypeCut(graph, cycle);
 
@@ -404,7 +402,10 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
 
         private static string DescribeNamespaceCycle(List<string> cycle)
         {
-            List<string> names = new(cycle) { cycle[0] };
+            List<string> names = new(cycle)
+            {
+                cycle[0]
+            };
 
             return string.Join(EdgeSeparator, names);
         }
@@ -429,10 +430,9 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
             return best;
         }
 
-        private static string DescribeWeight(int weight)
-            => weight == 1
-                ? SingleUsageText
-                : $"{weight}{ManyUsagesSuffix}";
+        private static string DescribeWeight(int weight) => weight == 1
+            ? SingleUsageText
+            : $"{weight}{ManyUsagesSuffix}";
 
         private static List<string> ReadTypeNames(CodebaseGraphData graph, List<TypeKey> cycle)
         {
@@ -448,7 +448,12 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
             return names;
         }
 
-        private static string BuildCycleId(List<string> names)
+        /// <summary>
+        /// Builds a key that does not depend on the order the names arrived in. Two of these existed
+        /// under different names doing exactly the same thing, one for identifying a cycle and one for
+        /// remembering a pair, which are the same question asked twice.
+        /// </summary>
+        private static string BuildSortedKey(IEnumerable<string> names)
         {
             List<string> sorted = new(names);
             sorted.Sort(StringComparer.Ordinal);
@@ -506,17 +511,9 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
                 return false;
 
             if (namespaces.Count == 2)
-                namespacePairs.Add(BuildPairKey(namespaces));
+                namespacePairs.Add(BuildSortedKey(namespaces));
 
             return true;
-        }
-
-        private static string BuildPairKey(IEnumerable<string> names)
-        {
-            List<string> sorted = new(names);
-            sorted.Sort(StringComparer.Ordinal);
-
-            return string.Join(PairSeparator, sorted);
         }
 
         private static void MarkCycleMember(CodebaseGraphData graph,
@@ -549,22 +546,22 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         private static void MarkNamespaceCycles(CodebaseGraphData graph, HashSet<string> namespacePairs)
         {
             List<List<string>> cycles = CycleFinder.FindCycles(graph.Namespaces.Keys,
-                name => graph.Namespaces[name].Outgoing.Keys);
+                getTargets: name => graph.Namespaces[name].Outgoing.Keys);
 
             foreach (List<string> component in cycles)
             {
                 List<string> cycle = CycleFinder.FindShortestCycle(component,
-                    name => graph.Namespaces[name].Outgoing.Keys);
+                    getTargets: name => graph.Namespaces[name].Outgoing.Keys);
 
                 if (cycle.Count < MinimumCycleLength)
                     continue;
 
                 // The same reasoning as for types: only a component that is exactly the pair can be
                 // the thing a type cycle already said.
-                if (component.Count == 2 && cycle.Count == 2 && namespacePairs.Contains(BuildPairKey(cycle)))
+                if (component.Count == 2 && cycle.Count == 2 && namespacePairs.Contains(BuildSortedKey(cycle)))
                     continue;
 
-                string cycleId = BuildCycleId(cycle);
+                string cycleId = BuildSortedKey(cycle);
                 string description = DescribeNamespaceCycle(cycle);
                 string cut = SuggestNamespaceCut(graph, cycle);
 

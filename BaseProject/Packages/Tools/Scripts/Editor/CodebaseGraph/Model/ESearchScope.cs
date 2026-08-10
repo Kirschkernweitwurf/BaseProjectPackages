@@ -5,7 +5,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Model
     /// cannot place are different jobs, and a search box that only does one of them is wrong half
     /// the time.
     /// </summary>
-    public enum ESearchScope : byte
+    internal enum ESearchScope : byte
     {
         Everywhere = 0,
         CurrentLevel = 1,

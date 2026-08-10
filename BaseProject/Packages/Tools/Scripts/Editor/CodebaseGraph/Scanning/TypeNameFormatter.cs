@@ -4,7 +4,7 @@ using System.Text;
 namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
 {
     /// <summary>Turns reflection type names into something readable, without the arity backticks.</summary>
-    public static class TypeNameFormatter
+    internal static class TypeNameFormatter
     {
         private const char ArityMarker = '`';
         private const char NestedMarker = '+';

@@ -7,7 +7,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
     /// cannot say where it is leaves the bar frozen, and one that cannot be told to stop leaves the
     /// cancel button lying about what it does.
     /// </summary>
-    public sealed class ScanProgress
+    internal sealed class ScanProgress
     {
         private const int ReportInterval = 50;
 
@@ -30,7 +30,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         /// <param name="done">How many items are finished.</param>
         /// <param name="total">How many there are in all.</param>
         /// <param name="label">What the phase is doing.</param>
-        /// <returns>False when the scan was cancelled.</returns>
+        /// <returns>False when the scan was canceled.</returns>
         public bool Report(int done, int total, string label)
         {
             if (_callback == null || total == 0 || done % ReportInterval != 0)

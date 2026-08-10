@@ -1,7 +1,7 @@
 namespace Base.ToolPackage.Editor.CodebaseGraph.Model
 {
     /// <summary>One entry that was dismissed during triage, in the shape the overview list draws.</summary>
-    public sealed class DismissalEntry
+    internal sealed class DismissalEntry
     {
         /// <summary>The stable id the store holds.</summary>
         public string Id { get; }
@@ -24,10 +24,10 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Model
         /// <summary>Why this entry stopped matching, or none when it still does.</summary>
         public EStaleReason StaleReason { get; set; }
 
-        /// <summary>True when nothing in the current scan carries this id any more.</summary>
+        /// <summary>True when nothing in the current scan carries this id anymore.</summary>
         public bool IsStale => StaleReason != EStaleReason.None;
 
-        /// <summary>Id this one most likely became, when a single signature change explains the loss.</summary>
+        /// <summary>ID this one most likely became, when a single signature change explains the loss.</summary>
         public string SuggestedId { get; set; }
 
         /// <summary>Creates an overview entry.</summary>

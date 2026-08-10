@@ -8,7 +8,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
     /// Decoding table for raw IL. Maps opcode bytes to <see cref="OpCode"/> values and reports how many
     /// operand bytes follow, so a method body can be walked instruction by instruction.
     /// </summary>
-    public static class IlOpCodeTable
+    internal static class IlOpCodeTable
     {
         private const int ByteOperandSize = 1;
         private const int IntOperandSize = 4;
@@ -45,7 +45,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         /// <returns>True when an opcode could be read.</returns>
         public static bool TryRead(byte[] il, ref int position, out OpCode code)
         {
-            code = default;
+            code = default(OpCode);
             if (position >= il.Length)
                 return false;
 
@@ -104,11 +104,10 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         /// <summary>True when the operand of this opcode is a metadata token.</summary>
         /// <param name="code">The opcode that was just read.</param>
         /// <returns>True for token carrying opcodes.</returns>
-        public static bool HasMetadataToken(OpCode code)
-            => code.OperandType == OperandType.InlineField
-                || code.OperandType == OperandType.InlineMethod
-                || code.OperandType == OperandType.InlineTok
-                || code.OperandType == OperandType.InlineType;
+        public static bool HasMetadataToken(OpCode code) => code.OperandType == OperandType.InlineField
+            || code.OperandType == OperandType.InlineMethod
+            || code.OperandType == OperandType.InlineTok
+            || code.OperandType == OperandType.InlineType;
 
         /// <summary>Reads the four byte metadata token at the given position.</summary>
         /// <param name="il">Raw method body bytes.</param>

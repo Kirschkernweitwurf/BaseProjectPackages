@@ -8,7 +8,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Model
     /// ever deal with one kind of object. The level is kept on the entry because a namespace, a class
     /// and a field are drawn at different sizes and with different silhouettes.
     /// </summary>
-    public sealed class GraphEntry
+    internal sealed class GraphEntry
     {
         /// <summary>Unique id inside the current view, used for edges and selection.</summary>
         public string Id { get; }
@@ -58,7 +58,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Model
         /// <summary>The member this entry stands for, when the view is at member level.</summary>
         public MemberNodeInfo Member { get; set; }
 
-        /// <summary>True when double clicking the entry opens a deeper level.</summary>
+        /// <summary>True when double-clicking the entry opens a deeper level.</summary>
         public bool CanDrillDown { get; set; }
 
         /// <summary>Number of findings on the members inside this entry, for types and namespaces.</summary>

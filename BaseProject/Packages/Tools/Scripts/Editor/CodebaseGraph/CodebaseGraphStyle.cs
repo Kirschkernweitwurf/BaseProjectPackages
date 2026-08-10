@@ -4,11 +4,11 @@ using UnityEngine.UIElements;
 namespace Base.ToolPackage.Editor.CodebaseGraph
 {
     /// <summary>
-    /// Finds the stylesheet. Loaded from the path it is known to live at rather than searched for by
-    /// name, because a project-wide search for an asset called CodebaseGraph will happily return
+    /// Finds the stylesheet. Loaded from the path it is known to live at rather than searched for by name.
+    /// Because a project-wide search for an asset called CodebaseGraph will happily return
     /// somebody else's file, and the window would then be styled by whatever it happened to find.
     /// </summary>
-    public static class CodebaseGraphStyle
+    internal static class CodebaseGraphStyle
     {
         private const string FolderPath = "Packages/com.baseprojectpackages.tools/Scripts/Editor/CodebaseGraph";
         private const string SheetFilter = "CodebaseGraph t:StyleSheet";
@@ -32,10 +32,12 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
             // An embedded or renamed package moves the folder, so the fallback searches, but only
             // inside this tool's own folder rather than across the whole project.
-            foreach (string guid in AssetDatabase.FindAssets(SheetFilter, new[] { FolderPath }))
+            foreach (string guid in AssetDatabase.FindAssets(SheetFilter, new[]
+                     {
+                         FolderPath
+                     }))
             {
-                StyleSheet found = AssetDatabase.LoadAssetAtPath<StyleSheet>(
-                    AssetDatabase.GUIDToAssetPath(guid));
+                StyleSheet found = AssetDatabase.LoadAssetAtPath<StyleSheet>(AssetDatabase.GUIDToAssetPath(guid));
 
                 if (found != null)
                     return found;

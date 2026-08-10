@@ -8,15 +8,15 @@ using UnityEngine.UIElements;
 namespace Base.ToolPackage.Editor.CodebaseGraph
 {
     /// <summary>
-    /// A graph node showing one entry. Each level is drawn with its own width, corner radius and glyph,
-    /// so a namespace, a class and a field are told apart by shape rather than by reading them, and a
+    /// A graph node showing one entry. Each level is drawn with its own width, corner radius and glyph.
+    /// So a namespace, a class and a field are told apart by shape rather than by reading them, and a
     /// type lists its members the way a class does rather than only counting them.
     /// <br/><br/>
-    /// Actions live in the right click menu and on double click rather than on buttons, because a button
-    /// inside a GraphView node competes with the node's own drag and selection manipulators and swallows
-    /// about half of the clicks aimed at it.
+    /// Actions live in the right click menu and on double click rather than on buttons.
+    /// Because a button inside a GraphView node competes with the node's own drag
+    /// and selection manipulators and swallows about half of the clicks aimed at it.
     /// </summary>
-    public sealed class CodebaseGraphNode : Node
+    internal sealed class CodebaseGraphNode : Node
     {
         private const string AccentClass = "node-accent";
         private const string BadgeClass = "finding-badge";
@@ -56,8 +56,6 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         private const string TitleLabelName = "title-label";
         private const string TypeLevelClass = "level-type";
 
-        private static readonly Color BodyColor = new(0.20f, 0.20f, 0.22f, 1f);
-
         /// <summary>The entry this node stands for.</summary>
         public GraphEntry Entry { get; }
 
@@ -66,6 +64,8 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
         /// <summary>Port this node connects out of.</summary>
         public Port OutputPort { get; }
+
+        private static readonly Color BodyColor = new(0.20f, 0.20f, 0.22f, 1f);
 
         private readonly Action<GraphEntry> _onFocus;
         private readonly Action<GraphEntry> _onOpen;
@@ -134,27 +134,26 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         /// <inheritdoc/>
         public override void BuildContextualMenu(ContextualMenuPopulateEvent evt)
         {
-            evt.menu.AppendAction(FocusCommand, _ => _onFocus?.Invoke(Entry));
+            evt.menu.AppendAction(FocusCommand, action: _ => _onFocus?.Invoke(Entry));
 
             if (Entry.CanDrillDown)
-                evt.menu.AppendAction(DrillCommand, _ => _onDrillDown?.Invoke(Entry));
+                evt.menu.AppendAction(DrillCommand, action: _ => _onDrillDown?.Invoke(Entry));
 
             if (Entry.Type != null)
-                evt.menu.AppendAction(OpenCommand, _ => _onOpen?.Invoke(Entry));
+                evt.menu.AppendAction(OpenCommand, action: _ => _onOpen?.Invoke(Entry));
 
             if (!Entry.HasOpenFindings)
                 return;
 
-            evt.menu.AppendAction(DismissCommand, _ => _onDismiss?.Invoke(Entry, false));
+            evt.menu.AppendAction(DismissCommand, action: _ => _onDismiss?.Invoke(Entry, false));
 
             if (Entry.CanDrillDown)
-                evt.menu.AppendAction(DismissTreeCommand, _ => _onDismiss?.Invoke(Entry, true));
+                evt.menu.AppendAction(DismissTreeCommand, action: _ => _onDismiss?.Invoke(Entry, true));
         }
 
-        private static string BuildTooltip(GraphEntry entry)
-            => entry.HasDismissals
-                ? $"{entry.Subtitle}\n\n{DismissedTooltip}"
-                : entry.Subtitle;
+        private static string BuildTooltip(GraphEntry entry) => entry.HasDismissals
+            ? $"{entry.Subtitle}\n\n{DismissedTooltip}"
+            : entry.Subtitle;
 
         private static string ResolveLevelClass(EGraphScope level)
         {
@@ -171,11 +170,34 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             }
         }
 
-        private static Label BuildLabel(string text, string styleClass)
+        private static VisualElement BuildRow(GraphMemberRow row)
         {
-            Label label = new(text);
-            label.AddToClassList(styleClass);
-            return label;
+            VisualElement element = new();
+            element.AddToClassList(RowClass);
+            element.EnableInClassList(RowFindingClass, row.HasFinding);
+            element.EnableInClassList(RowDismissedClass, row.IsDismissed);
+
+            if (row.IsDismissed)
+                element.tooltip = DismissedRowTooltip;
+
+            Label glyph = GraphLabel.Build(row.Glyph, RowGlyphClass);
+            glyph.style.color = GraphSymbols.GetColor(row.Access);
+            element.Add(glyph);
+
+            Label label = GraphLabel.Build(row.Label, RowLabelClass);
+            label.style.color = GraphSymbols.GetColor(row.Access);
+            element.Add(label);
+
+            return element;
+        }
+
+        private static Label BuildDismissedBadge(string text)
+        {
+            Label badge = GraphLabel.Build(text, BadgeClass);
+            badge.AddToClassList(BadgeDismissedClass);
+            badge.tooltip = DismissedTooltip;
+
+            return badge;
         }
 
         private Port CreatePort(Direction direction)
@@ -200,15 +222,17 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
         private void BuildGlyph()
         {
-            Label glyph = BuildLabel(Entry.Glyph, GlyphClass);
+            Label glyph = GraphLabel.Build(Entry.Glyph, GlyphClass);
             glyph.style.color = GraphSymbols.GetColor(Entry.Access);
             titleContainer.Insert(0, glyph);
         }
 
         private void BuildBody()
         {
-            extensionContainer.Add(BuildLabel(Entry.Subtitle, SubtitleClass));
-            extensionContainer.Add(BuildLabel($"Used by {Entry.FanIn}   \u00b7   Uses {Entry.FanOut}", MetaClass));
+            string meta = $"Used by {Entry.FanIn}   \u00b7   Uses {Entry.FanOut}";
+
+            extensionContainer.Add(GraphLabel.Build(Entry.Subtitle, SubtitleClass));
+            extensionContainer.Add(GraphLabel.Build(meta, MetaClass));
 
             BuildRows();
             BuildBadges();
@@ -226,30 +250,9 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
                 list.Add(BuildRow(row));
 
             if (Entry.HiddenRowCount > 0)
-                list.Add(BuildLabel(string.Format(OverflowFormat, Entry.HiddenRowCount), SubtitleClass));
+                list.Add(GraphLabel.Build(string.Format(OverflowFormat, Entry.HiddenRowCount), SubtitleClass));
 
             extensionContainer.Add(list);
-        }
-
-        private VisualElement BuildRow(GraphMemberRow row)
-        {
-            VisualElement element = new();
-            element.AddToClassList(RowClass);
-            element.EnableInClassList(RowFindingClass, row.HasFinding);
-            element.EnableInClassList(RowDismissedClass, row.IsDismissed);
-
-            if (row.IsDismissed)
-                element.tooltip = DismissedRowTooltip;
-
-            Label glyph = BuildLabel(row.Glyph, RowGlyphClass);
-            glyph.style.color = GraphSymbols.GetColor(row.Access);
-            element.Add(glyph);
-
-            Label label = BuildLabel(row.Label, RowLabelClass);
-            label.style.color = GraphSymbols.GetColor(row.Access);
-            element.Add(label);
-
-            return element;
         }
 
         private void BuildBadges()
@@ -261,10 +264,10 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             badges.AddToClassList(BadgeRowClass);
 
             foreach (EFinding finding in Entry.Findings)
-                badges.Add(BuildLabel(FindingCatalog.Describe(finding).Title, BadgeClass));
+                badges.Add(GraphLabel.Build(FindingCatalog.Describe(finding).Title, BadgeClass));
 
             if (Entry.NestedFindingCount > 0)
-                badges.Add(BuildLabel(string.Format(NestedFormat, Entry.NestedFindingCount), BadgeClass));
+                badges.Add(GraphLabel.Build(string.Format(NestedFormat, Entry.NestedFindingCount), BadgeClass));
 
             if (Entry.IsDismissed)
                 badges.Add(BuildDismissedBadge(DismissedBadgeText));
@@ -274,15 +277,6 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
                     Entry.DismissedNestedCount)));
 
             extensionContainer.Add(badges);
-        }
-
-        private Label BuildDismissedBadge(string text)
-        {
-            Label badge = BuildLabel(text, BadgeClass);
-            badge.AddToClassList(BadgeDismissedClass);
-            badge.tooltip = DismissedTooltip;
-
-            return badge;
         }
 
         private void OnMouseDown(MouseDownEvent evt)

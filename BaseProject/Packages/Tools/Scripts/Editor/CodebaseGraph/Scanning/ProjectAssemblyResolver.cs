@@ -12,13 +12,13 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
     /// <summary>
     /// Decides which assemblies belong to the project. Everything under Assets counts, plus packages
     /// that are embedded, local or installed from Git, which is how the own packages arrive. Registry
-    /// and built in packages are never scanned, so the graph stays about the own code.
+    /// and built-in packages are never scanned, so the graph stays about the own code.
     /// <br/><br/>
     /// It also reports which of them are packages and which are test assemblies, because a public member
-    /// of a distributable package is API rather than dead code, and a test fixture is not production
+    /// of a distributable package is API rather than dead code. A test fixture is not production
     /// code even though it has to be scanned so that its calls keep production code alive.
     /// </summary>
-    public static class ProjectAssemblyResolver
+    internal static class ProjectAssemblyResolver
     {
         private const string PredefinedAssemblyPrefix = "Assembly-CSharp";
         private const string ProjectPathPrefix = "Assets/";

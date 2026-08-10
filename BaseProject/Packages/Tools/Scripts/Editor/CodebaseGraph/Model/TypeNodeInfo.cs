@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Base.ToolPackage.Editor.CodebaseGraph.Model
 {
     /// <summary>One type in the graph, with its members and its relations to other types.</summary>
-    public sealed class TypeNodeInfo
+    internal sealed class TypeNodeInfo
     {
         /// <summary>Identity of the type.</summary>
         public TypeKey Key { get; }

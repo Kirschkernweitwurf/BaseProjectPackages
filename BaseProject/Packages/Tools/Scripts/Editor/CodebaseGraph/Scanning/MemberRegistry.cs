@@ -9,7 +9,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
     /// written. Property accessors point at their property, auto property backing fields point at their
     /// property, event adders point at their event, and lambda bodies point at their owning method.
     /// </summary>
-    public sealed class MemberRegistry
+    internal sealed class MemberRegistry
     {
         private const int MaxRedirectDepth = 8;
 
@@ -74,7 +74,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         /// <returns>True when the type declares a member with that name.</returns>
         public bool TryFindByName(TypeKey typeKey, string name, out MemberKey key)
         {
-            key = default;
+            key = default(MemberKey);
             if (string.IsNullOrEmpty(name))
                 return false;
 
@@ -85,9 +85,6 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         /// <summary>Returns the node for a key, or null when the key is outside the scanned scope.</summary>
         /// <param name="key">Key to look up.</param>
         /// <returns>The member node, or null.</returns>
-        public MemberNodeInfo Find(MemberKey key)
-            => _members.TryGetValue(key, out MemberNodeInfo node)
-                ? node
-                : null;
+        public MemberNodeInfo Find(MemberKey key) => _members.GetValueOrDefault(key);
     }
 }

@@ -9,7 +9,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
     /// Records attribute usage. Attributes live in metadata rather than in IL, so without this pass
     /// every attribute class in the project would look like it is never used.
     /// </summary>
-    public static class AttributeUsageScanner
+    internal static class AttributeUsageScanner
     {
         private const BindingFlags DeclaredMembers = BindingFlags.Public
             | BindingFlags.NonPublic

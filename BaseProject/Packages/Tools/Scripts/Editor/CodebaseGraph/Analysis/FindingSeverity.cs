@@ -8,7 +8,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
     /// invisible among them. The rule of thumb is simple: the narrower the visibility and the more the
     /// code looks like something a person wrote and owns, the more a finding on it means.
     /// </summary>
-    public static class FindingSeverity
+    internal static class FindingSeverity
     {
         /// <summary>Ranks a finding on a member.</summary>
         /// <param name="finding">The finding being reported.</param>
@@ -25,11 +25,9 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
                 return ESeverity.Low;
 
             if (finding == EFinding.SerializedNeverRead)
-            {
                 return member.AssetUsageCount == 0
                     ? ESeverity.High
                     : ESeverity.Medium;
-            }
 
             if (member.Kind == EMemberKind.SerializedField || member.Kind == EMemberKind.EnumMember)
                 return ESeverity.Low;
@@ -58,10 +56,9 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
             return ESeverity.Medium;
         }
 
-        private static bool IsAlwaysLow(EFinding finding)
-            => finding == EFinding.UnusedPublicApi
-                || finding == EFinding.UnusedInterfaceMember
-                || finding == EFinding.HighInstability
-                || finding == EFinding.GodClass;
+        private static bool IsAlwaysLow(EFinding finding) => finding == EFinding.UnusedPublicApi
+            || finding == EFinding.UnusedInterfaceMember
+            || finding == EFinding.HighInstability
+            || finding == EFinding.GodClass;
     }
 }

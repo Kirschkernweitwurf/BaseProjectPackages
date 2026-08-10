@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
 {
@@ -13,7 +14,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
     /// deriving from UnityEngine.Object. An AssetPostprocessor is a plain class, so a single guard on
     /// UnityEngine.Object silently rejects a whole category of engine driven code.
     /// </summary>
-    public static class UnityEntryPointCatalog
+    internal static class UnityEntryPointCatalog
     {
         private const string AssetModificationProcessorBase = "AssetModificationProcessor";
         private const string AssetPostprocessorBase = "AssetPostprocessor";
@@ -278,7 +279,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         /// <summary>Checks whether a constructor is called by the runtime rather than by code.</summary>
         /// <param name="isStatic">Whether the constructor is the static one.</param>
         /// <param name="isUnityObject">Whether the declaring type derives from a Unity object.</param>
-        /// <param name="reason">Human readable reason, or null.</param>
+        /// <param name="reason">Human-readable reason, or null.</param>
         /// <returns>True when the constructor must never be reported as dead.</returns>
         public static bool IsRuntimeConstructor(bool isStatic, bool isUnityObject, out string reason)
         {
@@ -291,7 +292,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
 
         /// <summary>Checks whether Unity finds this type through its base type or an interface.</summary>
         /// <param name="type">Type to test.</param>
-        /// <param name="reason">Human readable reason, or null.</param>
+        /// <param name="reason">Human-readable reason, or null.</param>
         /// <returns>True when the type must never be reported as unreferenced.</returns>
         public static bool IsEngineDriven(Type type, out string reason)
         {
@@ -322,7 +323,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
 
         /// <summary>Checks whether a member is marked as deliberately out of scope for findings.</summary>
         /// <param name="member">Member or type to test.</param>
-        /// <param name="reason">Human readable reason, or null.</param>
+        /// <param name="reason">Human-readable reason, or null.</param>
         /// <returns>True when findings on it should be suppressed.</returns>
         public static bool IsSuppressed(MemberInfo member, out string reason)
         {
@@ -345,7 +346,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
 
         /// <summary>Checks whether a field is written by Unity instead of by code.</summary>
         /// <param name="field">Field to test.</param>
-        /// <param name="reason">Human readable reason, or null when the field is not an entry point.</param>
+        /// <param name="reason">Human-readable reason, or null when the field is not an entry point.</param>
         /// <returns>True when the field is filled in by serialization.</returns>
         public static bool IsSerializedEntryPoint(FieldInfo field, out string reason)
         {
@@ -404,7 +405,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
                 || parameter == typeof(float)
                 || parameter == typeof(string)
                 || parameter == typeof(AnimationEvent)
-                || typeof(UnityEngine.Object).IsAssignableFrom(parameter);
+                || typeof(Object).IsAssignableFrom(parameter);
         }
 
         /// <summary>Collects the earlier names a field still answers to in existing assets.</summary>
@@ -427,7 +428,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
 
         /// <summary>Checks whether any attribute on the member marks it as an entry point.</summary>
         /// <param name="member">Member to test.</param>
-        /// <param name="reason">Human readable reason, or null when nothing matched.</param>
+        /// <param name="reason">Human-readable reason, or null when nothing matched.</param>
         /// <returns>True when a known entry point attribute is present.</returns>
         public static bool TryGetEntryPointAttribute(MemberInfo member, out string reason)
         {
@@ -454,7 +455,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
                 return false;
 
             if (UnityMessageNames.Contains(methodName)
-                && typeof(UnityEngine.Object).IsAssignableFrom(declaringType))
+                && typeof(Object).IsAssignableFrom(declaringType))
                 return true;
 
             if (EditorWindowMessageNames.Contains(methodName) && InheritsFrom(declaringType, EditorWindowBase))
@@ -497,7 +498,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
             if (type == null)
                 return false;
 
-            return typeof(UnityEngine.Object).IsAssignableFrom(type)
+            return typeof(Object).IsAssignableFrom(type)
                 || type.IsDefined(typeof(SerializableAttribute), false);
         }
 

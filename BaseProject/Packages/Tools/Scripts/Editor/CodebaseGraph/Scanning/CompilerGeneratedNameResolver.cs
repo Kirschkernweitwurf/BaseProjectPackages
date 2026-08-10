@@ -8,7 +8,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
     /// brackets, for example "&lt;Start&gt;b__0_1" or "&lt;Start&gt;d__5". Without this, half the graph
     /// would point at machinery instead of at the code that was actually written.
     /// </summary>
-    public static class CompilerGeneratedNameResolver
+    internal static class CompilerGeneratedNameResolver
     {
         private const string BackingFieldSuffix = "k__BackingField";
         private const char CloseBracket = '>';
