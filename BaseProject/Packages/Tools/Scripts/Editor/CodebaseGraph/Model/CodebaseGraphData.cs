@@ -35,6 +35,22 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Model
         /// <summary>Number of metadata tokens that could not be resolved and were skipped.</summary>
         public int UnresolvedTokenCount { get; set; }
 
+        /// <summary>Serialized fields credited to the type the asset document actually names.</summary>
+        public int FieldsCreditedByType { get; set; }
+
+        /// <summary>
+        /// Serialized fields credited by name because the script was known but the key was not on its
+        /// type or any base of it. That is what a field of a nested serializable class looks like, and
+        /// it is a gap that could be closed by walking field types rather than a permanent limit.
+        /// </summary>
+        public int FieldsCreditedByNestedType { get; set; }
+
+        /// <summary>
+        /// Serialized fields credited by name because the script could not be resolved to a type at all,
+        /// which is what a generic MonoBehaviour looks like. Nothing can be done about those.
+        /// </summary>
+        public int FieldsCreditedByUnknownScript { get; set; }
+
         /// <summary>Number of types in the scan.</summary>
         public int TypeCount => Types.Count;
 

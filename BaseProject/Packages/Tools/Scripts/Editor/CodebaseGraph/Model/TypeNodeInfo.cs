@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Base.ToolPackage.Editor.CodebaseGraph.Model
 {
@@ -74,6 +75,9 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Model
         /// <summary>Type this one is nested inside, or the default when it is top level.</summary>
         public TypeKey DeclaringTypeKey { get; set; }
 
+        /// <summary>Type this one derives from, or the default when it derives from nothing scanned.</summary>
+        public TypeKey BaseTypeKey { get; set; }
+
         /// <summary>Every member declared directly on this type.</summary>
         public List<MemberNodeInfo> Members { get; }
 
@@ -98,6 +102,30 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Model
         /// <summary>The edges that close the loop, written out so the cycle can be checked by reading.</summary>
         public string CycleDescription { get; set; }
 
+        /// <summary>How many types are tangled together around this loop, which is often far more.</summary>
+        public int CycleComponentSize { get; set; }
+
+        /// <summary>The edge in the loop held together by the fewest usages, offered as a hint.</summary>
+        public string CycleCutHint { get; set; }
+
+        /// <summary>Total size of every compiled member body on this type, in bytes.</summary>
+        public int IlSize { get; set; }
+
+        /// <summary>How many different namespaces this type reaches into.</summary>
+        public int NamespaceReach { get; set; }
+
+        /// <summary>
+        /// Share of the members that only hold data: consts, enum members and static readonly fields.
+        /// A type made almost entirely of those is a lookup table however it happens to be declared.
+        /// </summary>
+        public float DataMemberShare { get; set; }
+
+        /// <summary>
+        /// Share of the members that are abstract, counting an interface as wholly abstract. Something
+        /// everything depends on is safer when it is abstract, because an abstraction changes rarely.
+        /// </summary>
+        public float Abstractness { get; set; }
+
         /// <summary>Number of types that depend on this one.</summary>
         public int FanIn => Incoming.Count;
 
@@ -111,6 +139,15 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Model
         public float Instability => FanIn + FanOut == 0
             ? 0f
             : FanOut / (float)(FanIn + FanOut);
+
+        /// <summary>
+        /// Distance from the main sequence, where abstractness and instability sum to one. Zero is
+        /// healthy: depended upon and abstract, or concrete and depending on plenty. One is a corner.
+        /// </summary>
+        public float MainSequenceDistance => Mathf.Abs(Abstractness + Instability - 1f);
+
+        /// <summary>True when something reported here was not reported by the previous scan.</summary>
+        public bool HasNewFindings { get; set; }
 
         /// <summary>True when the analyzer reported anything on the type itself.</summary>
         public bool HasIssues => Issues != ETypeIssue.None;

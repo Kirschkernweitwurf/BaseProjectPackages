@@ -13,29 +13,34 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
     public sealed class CodebaseGraphDetailPane : VisualElement
     {
         private const string ActionClass = "finding-action";
+        private const string ActionRowClass = "action-row";
         private const string ActionTitleClass = "finding-action-title";
         private const string ActionTitleText = "What to do";
         private const string CardClass = "finding-card";
         private const string CardTitleClass = "finding-card-title";
+        private const string CutHintFormat = "Cheapest edge to cut: {0}";
         private const string CycleTitleText = "The others caught in this same loop";
         private const string DismissClass = "dismiss-button";
         private const string DismissedNoticeClass = "dismissed-notice";
 
-        private const string DismissedNoticeText = "Dismissed. Findings here are silenced everywhere, "
-            + "including the exported report. Nothing about the code has changed.";
+        private const string DismissedNoticeText = "You dismissed this. It is hidden from the report. "
+            + "The code has not changed.";
 
-        private const string DismissLabel = "Dismiss";
+        private const string DismissFindingLabel = "Dismiss this";
 
-        private const string DismissTooltip = "Hides the findings on this entry. Everything stays in the "
-            + "graph, only the report goes quiet, and Restore dismissed in the toolbar brings it all back. "
-            + "To silence one permanently and visibly instead, put graph-ignore in a comment on the "
-            + "declaration line.";
+        private const string DismissFindingTooltip = "Hides this one finding. Anything else found here "
+            + "still shows.";
+
+        private const string DismissLabel = "Dismiss everything here";
+
+        private const string DismissTooltip = "Hides everything found here, now and in future scans. "
+            + "Usually you want the button on the single finding instead.";
 
         private const string DismissTreeLabel = "Dismiss with contents";
         private const string DrillLabel = "Open contents";
 
-        private const string EmptyText = "Pick something in the list or in the graph to see what it is, "
-            + "what was found on it, and what you can do about it.";
+        private const string EmptyText = "Click something in the list or the graph to see what it is and "
+            + "what was found on it.";
 
         private const string EntryPointFormat = "Reached from outside the code: {0}. That is why it is not "
             + "reported as unused.";
@@ -49,6 +54,11 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
         private const string HeadingClass = "pane-heading";
         private const int MaxRelations = 12;
+
+        private const string MetricsFormat = "Abstractness {0:0.00}   \u00b7   Instability {1:0.00}   "
+            + "\u00b7   Distance from the main sequence {2:0.00}";
+
+        private const string MetricsTitleText = "Shape numbers";
         private const string MoreFormat = "and {0} more";
         private const string OpenLabel = "Open script";
         private const string PaneClass = "pane";
@@ -68,6 +78,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         private readonly Action<GraphEntry> _onOpen;
         private readonly Action<GraphEntry, EFinding> _onQuickFix;
         private readonly Action<GraphEntry, bool> _onDismiss;
+        private readonly Action<GraphEntry, EFinding> _onDismissFinding;
         private readonly Action<GraphEntry> _onRestore;
         private readonly ScrollView _content;
 
@@ -76,13 +87,15 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         /// <param name="onDrillDown">Raised when the next level down should open.</param>
         /// <param name="onOpen">Raised when the script should be opened.</param>
         /// <param name="onQuickFix">Raised when a fixable finding should be applied.</param>
-        /// <param name="onDismiss">Raised when the findings here should be dismissed.</param>
+        /// <param name="onDismiss">Raised when every finding here should be dismissed.</param>
+        /// <param name="onDismissFinding">Raised when one finding here should be dismissed.</param>
         /// <param name="onRestore">Raised when a dismissed entry should be brought back.</param>
         public CodebaseGraphDetailPane(Action<GraphEntry> onFocus,
             Action<GraphEntry> onDrillDown,
             Action<GraphEntry> onOpen,
             Action<GraphEntry, EFinding> onQuickFix,
             Action<GraphEntry, bool> onDismiss,
+            Action<GraphEntry, EFinding> onDismissFinding,
             Action<GraphEntry> onRestore)
         {
             _onFocus = onFocus;
@@ -90,6 +103,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             _onOpen = onOpen;
             _onQuickFix = onQuickFix;
             _onDismiss = onDismiss;
+            _onDismissFinding = onDismissFinding;
             _onRestore = onRestore;
 
             AddToClassList(PaneClass);
@@ -126,6 +140,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             foreach (EFinding finding in entry.Findings)
                 _content.Add(BuildFindingCard(entry, finding));
 
+            AppendMetrics(entry);
             BuildRelations(entry, graph);
         }
 
@@ -208,6 +223,19 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         }
 
         private void ShowPlaceholder() => _content.Add(BuildLabel(EmptyText, PlaceholderClass));
+
+        private void AppendMetrics(GraphEntry entry)
+        {
+            if (entry.Member != null || entry.Type == null)
+                return;
+
+            _content.Add(BuildLabel(MetricsTitleText, SectionTitleClass));
+            _content.Add(BuildLabel(string.Format(MetricsFormat,
+                    entry.Type.Abstractness,
+                    entry.Type.Instability,
+                    entry.Type.MainSequenceDistance),
+                RelationClass));
+        }
 
         private void AppendEntryPointNote(GraphEntry entry)
         {
@@ -305,8 +333,23 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
             AppendCyclePartners(card, entry, finding);
 
+            VisualElement actions = new();
+            actions.AddToClassList(ActionRowClass);
+
             if (descriptor.CanQuickFix && entry.Member != null)
-                card.Add(new Button(() => _onQuickFix?.Invoke(entry, finding)) { text = FixLabel });
+                actions.Add(new Button(() => _onQuickFix?.Invoke(entry, finding)) { text = FixLabel });
+
+            // One finding at a time. Dismissing the whole entry silences findings nobody has looked at,
+            // including ones the next scan has not raised yet.
+            Button dismiss = new(() => _onDismissFinding?.Invoke(entry, finding))
+            {
+                text = DismissFindingLabel,
+                tooltip = DismissFindingTooltip
+            };
+
+            dismiss.AddToClassList(DismissClass);
+            actions.Add(dismiss);
+            card.Add(actions);
 
             return card;
         }
@@ -323,6 +366,13 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
             if (partners == null || partners.Count == 0)
                 return;
+
+            string cut = finding == EFinding.TypeCycle
+                ? entry.Type?.CycleCutHint
+                : entry.Namespace?.CycleCutHint;
+
+            if (!string.IsNullOrEmpty(cut))
+                card.Add(BuildLabel(string.Format(CutHintFormat, cut), ActionClass));
 
             card.Add(BuildLabel(CycleTitleText, ActionTitleClass));
 

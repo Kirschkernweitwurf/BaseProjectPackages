@@ -17,16 +17,25 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Editing
     public static class MemberSourceEditor
     {
         private const string AccessorPattern = @"\b(private|protected|internal)\s+(get|set|init|add|remove)\b";
+        private const char ArrowHead = '>';
+        private const char Assignment = '=';
+        private const char BlockComment = '*';
+        private const string BlockCommentEnd = "*/";
         private const char BodyClose = '}';
         private const char BodyOpen = '{';
+        private const char CharQuote = '\'';
+        private const char Escape = '\\';
         private const string ExpressionBody = "=>";
         private const string InternalKeyword = "internal";
         private const char LineBreak = '\n';
+        private const char LineComment = '/';
         private const char ParameterOpen = '(';
         private const string PrivateKeyword = "private";
         private const string PublicKeyword = "public";
+        private const char Quote = '"';
         private const string ReadOnlyKeyword = "readonly";
         private const char StatementEnd = ';';
+        private const char Verbatim = '@';
         private const string WiderKeywords = "public|internal|protected";
 
         /// <summary>Rewrites a public member declaration to internal.</summary>
@@ -185,26 +194,112 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Editing
             if (bodyStart < 0)
                 return firstLine;
 
-            int depth = 0;
+            int close = FindBodyClose(source, bodyStart);
 
-            for (int index = bodyStart; index < source.Length; index++)
+            // A body that never closes means the read went wrong, and returning everything after it
+            // makes the caller refuse the edit, which is the right way to be wrong here.
+            return close < 0
+                ? source[matchIndex..]
+                : source[matchIndex..(close + 1)];
+        }
+
+        /// <summary>
+        /// Walks braces while stepping over anything that only looks like one. A getter returning the
+        /// literal "}" would otherwise close the member early and hide whatever followed it.
+        /// </summary>
+        private static int FindBodyClose(string source, int bodyStart)
+        {
+            int depth = 0;
+            int index = bodyStart;
+
+            while (index < source.Length)
             {
-                if (source[index] == BodyOpen)
+                char value = source[index];
+
+                if (TrySkipLiteral(source, ref index))
+                    continue;
+
+                if (value == BodyOpen)
                     depth++;
-                else if (source[index] == BodyClose)
+                else if (value == BodyClose)
                     depth--;
 
                 if (depth == 0)
-                    return source[matchIndex..(index + 1)];
+                    return index;
+
+                index++;
             }
 
-            return source[matchIndex..];
+            return -1;
+        }
+
+        private static bool TrySkipLiteral(string source, ref int index)
+        {
+            char value = source[index];
+
+            if (value == LineComment && index + 1 < source.Length && source[index + 1] == LineComment)
+            {
+                int end = source.IndexOf(LineBreak, index);
+                index = end < 0
+                    ? source.Length
+                    : end;
+
+                return true;
+            }
+
+            if (value == LineComment && index + 1 < source.Length && source[index + 1] == BlockComment)
+            {
+                int end = source.IndexOf(BlockCommentEnd, index + 2, StringComparison.Ordinal);
+                index = end < 0
+                    ? source.Length
+                    : end + BlockCommentEnd.Length;
+
+                return true;
+            }
+
+            if (value != Quote && value != CharQuote)
+                return false;
+
+            bool isVerbatim = index > 0 && source[index - 1] == Verbatim && value == Quote;
+            index++;
+
+            while (index < source.Length)
+            {
+                if (!isVerbatim && source[index] == Escape)
+                {
+                    index += 2;
+                    continue;
+                }
+
+                if (source[index] != value)
+                {
+                    index++;
+                    continue;
+                }
+
+                // Two quotes in a row inside a verbatim string are one escaped quote.
+                if (isVerbatim && index + 1 < source.Length && source[index + 1] == value)
+                {
+                    index += 2;
+                    continue;
+                }
+
+                index++;
+                return true;
+            }
+
+            return true;
         }
 
         /// <summary>
         /// True when the matched line really is a plain field. An attribute written on the same line
         /// keeps the regex from matching the field it belongs to, and the single match it does find is
         /// then something else entirely.
+        /// <br/><br/>
+        /// Only the declarator is tested, never the initialiser. A field written only from a constructor
+        /// is the shape this fix exists for, and an inline initialiser compiles into the constructor, so
+        /// the typical candidate reads like a list assigned a new instance on the spot. Judging the
+        /// whole line would refuse almost every field it is meant to accept.
         /// </summary>
         private static bool IsFieldDeclaration(string source, int matchIndex)
         {
@@ -218,8 +313,30 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Editing
             if (trimmed.Length == 0 || trimmed[^1] != StatementEnd)
                 return false;
 
-            return trimmed.IndexOf(ParameterOpen) < 0
-                && trimmed.IndexOf(ExpressionBody, StringComparison.Ordinal) < 0;
+            string declarator = ReadDeclarator(trimmed);
+
+            return declarator.IndexOf(ParameterOpen) < 0
+                && declarator.IndexOf(ExpressionBody, StringComparison.Ordinal) < 0;
+        }
+
+        private static string ReadDeclarator(string line)
+        {
+            for (int index = 0; index < line.Length; index++)
+            {
+                if (line[index] != Assignment)
+                    continue;
+
+                // An expression bodied member and an equality test are not assignments.
+                bool isArrow = index + 1 < line.Length && line[index + 1] == ArrowHead;
+                bool isComparison = index + 1 < line.Length && line[index + 1] == Assignment;
+
+                if (isArrow || isComparison)
+                    continue;
+
+                return line[..index];
+            }
+
+            return line;
         }
     }
 }

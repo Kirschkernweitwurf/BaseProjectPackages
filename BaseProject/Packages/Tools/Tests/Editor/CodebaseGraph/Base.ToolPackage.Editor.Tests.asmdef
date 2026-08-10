@@ -1,0 +1,25 @@
+{
+    "name": "Base.ToolPackage.Editor.Tests",
+    "rootNamespace": "Base.ToolPackage.Editor.Tests",
+    "references": [
+        "Base.ToolPackage.Editor",
+        "Base.UtilityPackage",
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

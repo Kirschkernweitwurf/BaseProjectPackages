@@ -125,8 +125,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
         private void FollowTransform()
         {
-            Vector3 position = _graphView.viewTransform.position;
-            Vector3 zoom = _graphView.viewTransform.scale;
+            ReadViewTransform(out Vector3 position, out Vector3 zoom);
 
             if (position == _lastPosition && zoom == _lastScale)
                 return;
@@ -200,8 +199,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             if (_scale <= 0f)
                 return;
 
-            Vector3 position = _graphView.viewTransform.position;
-            Vector3 zoom = _graphView.viewTransform.scale;
+            ReadViewTransform(out Vector3 position, out Vector3 zoom);
 
             if (Mathf.Approximately(zoom.x, 0f) || Mathf.Approximately(zoom.y, 0f))
                 return;
@@ -217,6 +215,20 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             _viewBox.style.top = corner.y;
             _viewBox.style.width = visible.width * _scale;
             _viewBox.style.height = visible.height * _scale;
+        }
+
+        /// <summary>
+        /// Reads where the canvas currently sits. The graph exposes this through a transform the
+        /// element layer has since deprecated, and the write side of the same pair is not deprecated
+        /// and takes the same types, so the read is kept here in one place rather than mixing two
+        /// coordinate APIs across five call sites.
+        /// </summary>
+        private void ReadViewTransform(out Vector3 position, out Vector3 zoom)
+        {
+#pragma warning disable 618
+            position = _graphView.viewTransform.position;
+            zoom = _graphView.viewTransform.scale;
+#pragma warning restore 618
         }
 
         private Vector2 ToLocal(Vector2 world)
@@ -246,7 +258,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
                 return;
 
             Vector2 world = ToWorld(local);
-            Vector3 zoom = _graphView.viewTransform.scale;
+            ReadViewTransform(out Vector3 _, out Vector3 zoom);
 
             Vector3 position = new(-world.x * zoom.x + _graphView.layout.width * 0.5f,
                 -world.y * zoom.y + _graphView.layout.height * 0.5f,

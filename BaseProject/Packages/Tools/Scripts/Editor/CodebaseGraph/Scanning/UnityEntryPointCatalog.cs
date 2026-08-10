@@ -378,6 +378,35 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
             return field.IsPublic && IsSerializableContainer(field.DeclaringType);
         }
 
+        /// <summary>
+        /// True when a method could be the target of an animation event. A clip names only the method,
+        /// so the signature is the only guard there is: the engine will only call something public that
+        /// takes nothing, or one int, float, string, AnimationEvent or Object.
+        /// </summary>
+        /// <param name="method">Method to test.</param>
+        /// <returns>True when the engine could call it from a clip.</returns>
+        public static bool IsAnimationEventSignature(MethodInfo method)
+        {
+            if (method == null || !method.IsPublic || method.IsStatic)
+                return false;
+
+            ParameterInfo[] parameters = method.GetParameters();
+
+            if (parameters.Length == 0)
+                return true;
+
+            if (parameters.Length > 1)
+                return false;
+
+            Type parameter = parameters[0].ParameterType;
+
+            return parameter == typeof(int)
+                || parameter == typeof(float)
+                || parameter == typeof(string)
+                || parameter == typeof(AnimationEvent)
+                || typeof(UnityEngine.Object).IsAssignableFrom(parameter);
+        }
+
         /// <summary>Collects the earlier names a field still answers to in existing assets.</summary>
         /// <param name="field">Field to inspect.</param>
         /// <param name="aliases">List that receives the earlier names.</param>

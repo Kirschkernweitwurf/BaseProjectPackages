@@ -15,8 +15,15 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         private const string BadgeClass = "row-badge";
         private const string DetailName = "row-detail";
         private const string DismissedClass = "row-dismissed";
+        private const string ClearClass = "row-clear";
+        private const string ClearText = "Clear";
         private const string DismissedText = "Dismissed";
         private const string HeadingClass = "pane-heading";
+        private const string OnlyNewLabel = "New only";
+
+        private const string OnlyNewTooltip = "Shows only what this scan found and the last one did not. "
+            + "Needs two scans to mean anything.";
+
         private const string PaneClass = "pane";
         private const string RowClass = "list-row";
         private const int RowHeight = 42;
@@ -31,6 +38,10 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
         private readonly Action<GraphEntry> _onSelected;
         private readonly Action<GraphEntry> _onActivated;
+        private readonly Action<bool> _onOnlyNewChanged;
+
+        private Button _onlyNewButton;
+        private bool _isOnlyNew;
         private readonly Dictionary<ESortMode, Button> _sortButtons = new();
         private readonly ListView _listView;
         private readonly Label _headingLabel;
@@ -42,10 +53,14 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         /// <summary>Builds the list pane, its heading and its sort header.</summary>
         /// <param name="onSelected">Raised when a row is clicked.</param>
         /// <param name="onActivated">Raised when a row is double clicked.</param>
-        public CodebaseGraphListPane(Action<GraphEntry> onSelected, Action<GraphEntry> onActivated)
+        /// <param name="onOnlyNewChanged">Raised when the new only filter is switched.</param>
+        public CodebaseGraphListPane(Action<GraphEntry> onSelected,
+            Action<GraphEntry> onActivated,
+            Action<bool> onOnlyNewChanged)
         {
             _onSelected = onSelected;
             _onActivated = onActivated;
+            _onOnlyNewChanged = onOnlyNewChanged;
 
             AddToClassList(PaneClass);
 
@@ -99,7 +114,23 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             row.Add(BuildSortButton(SortByFanOutLabel, ESortMode.FanOut));
             row.Add(BuildSortButton(SortByFindingsLabel, ESortMode.Findings));
 
+            _onlyNewButton = new Button(ToggleOnlyNew)
+            {
+                text = OnlyNewLabel,
+                tooltip = OnlyNewTooltip
+            };
+
+            _onlyNewButton.style.flexGrow = 1f;
+            row.Add(_onlyNewButton);
+
             return row;
+        }
+
+        private void ToggleOnlyNew()
+        {
+            _isOnlyNew = !_isOnlyNew;
+            _onlyNewButton.EnableInClassList(ActiveSortClass, _isOnlyNew);
+            _onOnlyNewChanged?.Invoke(_isOnlyNew);
         }
 
         private Button BuildSortButton(string label, ESortMode mode)
@@ -181,6 +212,8 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             title.tooltip = entry.Subtitle;
 
             int findings = CountFindings(entry);
+            bool isClear = findings == 0 && !entry.HasDismissals;
+
             string meta = $"Used by {entry.FanIn}   \u00b7   Uses {entry.FanOut}";
 
             if (findings > 0)
@@ -189,8 +222,14 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             if (entry.HasDismissals)
                 meta = $"{meta}   \u00b7   {DismissedText}";
 
+            // Nothing found is worth saying out loud. A list where only problems are colored reads as
+            // a list of problems, and the work that cleared the rest leaves no trace.
+            if (isClear)
+                meta = $"{meta}   \u00b7   {ClearText}";
+
             detail.text = meta;
             detail.EnableInClassList(BadgeClass, findings > 0);
+            detail.EnableInClassList(ClearClass, isClear);
             detail.EnableInClassList(DismissedClass, findings == 0 && entry.HasDismissals);
         }
 

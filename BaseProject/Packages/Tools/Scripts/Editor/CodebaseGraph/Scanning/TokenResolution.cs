@@ -14,15 +14,20 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         /// <summary>True when the runtime could rebuild the token at all.</summary>
         public bool IsResolved { get; }
 
+        /// <summary>True when the token names a method that reaches other code by name.</summary>
+        public bool IsDispatch { get; }
+
         /// <summary>Creates a resolution.</summary>
         /// <param name="member">Member the token names.</param>
         /// <param name="type">Type the token names or the member belongs to.</param>
         /// <param name="isResolved">Whether the token could be rebuilt.</param>
-        public TokenResolution(MemberKey member, TypeKey type, bool isResolved)
+        /// <param name="isDispatch">Whether the token names a method that dispatches by name.</param>
+        public TokenResolution(MemberKey member, TypeKey type, bool isResolved, bool isDispatch)
         {
             Member = member;
             Type = type;
             IsResolved = isResolved;
+            IsDispatch = isDispatch;
         }
     }
 }

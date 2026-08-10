@@ -26,8 +26,17 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Model
         /// <summary>The edges that close the loop, written out so the cycle can be checked by reading.</summary>
         public string CycleDescription { get; set; }
 
+        /// <summary>How many namespaces are tangled together around this loop.</summary>
+        public int CycleComponentSize { get; set; }
+
+        /// <summary>The edge in the loop held together by the fewest usages, offered as a hint.</summary>
+        public string CycleCutHint { get; set; }
+
         /// <summary>Stable id used for dismissals, built once so lookups allocate nothing.</summary>
         public string DismissalId { get; set; }
+
+        /// <summary>True when something reported here was not reported by the previous scan.</summary>
+        public bool HasNewFindings { get; set; }
 
         /// <summary>Number of namespaces that depend on this one.</summary>
         public int FanIn => Incoming.Count;

@@ -32,6 +32,8 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         private const string ReferenceTitle = "# For reference: low confidence findings";
         private const string ReportTitle = "# Codebase Graph findings";
         private const string SectionMarker = "##";
+        private const int SizeProfileCount = 20;
+        private const string SizeProfileTitle = "# Size profile, for tuning the very large type threshold";
         private const int StartHereCount = 20;
         private const string SubsectionMarker = "###";
         private const string UnknownReason = "Unstated";
@@ -70,6 +72,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
             AppendIgnoreMarker(builder, graph);
             AppendDismissals(builder, graph);
             AppendReference(builder, entries);
+            AppendSizeProfile(builder, graph);
 
             return builder.ToString();
         }
@@ -93,6 +96,41 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
 
             builder.AppendLine();
             AppendSections(builder, entries, true);
+        }
+
+        /// <summary>
+        /// Lists the largest types by compiled size. The size threshold behind the very large type
+        /// finding cannot be picked sensibly from a guess, because what counts as big depends entirely
+        /// on the codebase, so the report shows the top of the distribution and the number can be set
+        /// from that.
+        /// </summary>
+        private static void AppendSizeProfile(StringBuilder builder, CodebaseGraphData graph)
+        {
+            List<TypeNodeInfo> largest = new(graph.Types.Values);
+            largest.Sort((left, right) => right.IlSize.CompareTo(left.IlSize));
+
+            builder.AppendLine(SizeProfileTitle);
+            builder.AppendLine();
+            builder.AppendLine("Compiled size folds in lambdas, local functions, iterators and async "
+                + "bodies, so a coroutine heavy type accumulates bytes without being structurally large. "
+                + "Read this alongside the namespace reach beside it, which measures something the "
+                + "compiler cannot inflate.");
+
+            builder.AppendLine();
+
+            int shown = largest.Count < SizeProfileCount
+                ? largest.Count
+                : SizeProfileCount;
+
+            for (int index = 0; index < shown; index++)
+            {
+                TypeNodeInfo type = largest[index];
+
+                builder.AppendLine($"- `{type.FullName}` - {type.IlSize} bytes, {type.Members.Count} "
+                    + $"members, reaches {type.NamespaceReach} namespaces");
+            }
+
+            builder.AppendLine();
         }
 
         private static List<FindingEntry> Collect(CodebaseGraphData graph)
@@ -139,9 +177,9 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
 
             entries.Add(new FindingEntry(EFinding.NamespaceCycle,
                 ESeverity.Medium,
-                group.DismissalId,
+                GraphIdentity.ForFinding(group.DismissalId, EFinding.NamespaceCycle),
                 string.Empty,
-                BuildCycleDetail(group.CyclePartners.Count + 1, group.CycleDescription)));
+                BuildCycleDetail(group.CycleDescription, group.CycleCutHint, group.CycleComponentSize)));
         }
 
         private static void CollectType(TypeNodeInfo type,
@@ -163,19 +201,29 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
                     continue;
 
                 string detail = finding == EFinding.TypeCycle
-                    ? BuildCycleDetail(type.CyclePartners.Count + 1, type.CycleDescription)
+                    ? BuildCycleDetail(type.CycleDescription, type.CycleCutHint, type.CycleComponentSize)
                     : string.Empty;
 
                 entries.Add(new FindingEntry(finding,
                     FindingSeverity.Resolve(finding, type),
-                    type.DismissalId,
+                    GraphIdentity.ForFinding(type.DismissalId, finding),
                     location,
                     detail));
             }
         }
 
-        private static string BuildCycleDetail(int depth, string description)
-            => $" the loop is {depth} deep and closes like this: {description}";
+        private static string BuildCycleDetail(string description, string cut, int componentSize)
+        {
+            string tangle = componentSize > 2
+                ? $" It sits inside a tangle of {componentSize}."
+                : string.Empty;
+
+            string hint = string.IsNullOrEmpty(cut)
+                ? string.Empty
+                : $" Cheapest edge to cut: {cut}.";
+
+            return $" Loop: {description}.{hint}{tangle}";
+        }
 
         private static string BuildAssetDetail(EFinding finding, MemberNodeInfo member)
         {
@@ -208,7 +256,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
                 {
                     entries.Add(new FindingEntry(finding,
                         FindingSeverity.Resolve(finding, member, type),
-                        member.DismissalId,
+                        GraphIdentity.ForFinding(member.DismissalId, finding),
                         location,
                         BuildAssetDetail(finding, member)));
                 }
@@ -372,10 +420,17 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
                 + "the code and keeps the decision reviewable.");
 
             builder.AppendLine();
-            builder.AppendLine("A dismissal id embeds the signature it was written for, so renaming or "
+            builder.AppendLine("An id names one finding on one entry, and the ids below are already "
+                + "written that way. Dismissing the whole entry instead is possible, by dropping the "
+                + "part after the bar, but it silences findings nobody has looked at, including ones a "
+                + "later scan raises for the first time.");
+
+            builder.AppendLine();
+            builder.AppendLine("An id also embeds the signature it was written for, so renaming or "
                 + "retyping the member brings the finding back and the stale entry is listed for review. "
                 + "That is deliberate: a silencing mechanism that survives arbitrary refactoring is one "
-                + "that can outlive its reason without telling anyone.");
+                + "that can outlive its reason without telling anyone. A dismissal for a finding you "
+                + "have since fixed goes stale the same way, and is listed the same way.");
 
             builder.AppendLine();
             builder.AppendLine("For a whole type that should never be reported at all, a fixture or a "
@@ -415,13 +470,17 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         {
             List<DismissalEntry> stored = DismissalStore.Collect();
             DismissalAudit.Apply(graph, stored);
-            int stale = DismissalAudit.CountStale(stored);
+
+            int missing = DismissalAudit.Count(stored, EStaleReason.Missing);
+            int resolved = DismissalAudit.Count(stored, EStaleReason.Resolved);
+            int stale = missing + resolved;
 
             builder.AppendLine("## Dismissed entries");
             builder.AppendLine();
-            builder.AppendLine($"{stored.Count - stale} dismissals active, {stale} no longer match "
-                + "anything. Stale ones are listed in the Dismissed window in the graph toolbar, where "
-                + "they can be removed or pointed at whatever replaced them.");
+            builder.AppendLine($"{stored.Count - stale} dismissals active. {missing} point at something "
+                + $"that no longer exists, and {resolved} silence a finding that is no longer raised, "
+                + "which usually means it was fixed. Both are listed in the Dismissed window in the "
+                + "graph toolbar and neither is removed for you.");
 
             builder.AppendLine();
             builder.AppendLine("These were reviewed and dismissed, so none of them appear anywhere in "

@@ -14,6 +14,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
     /// </summary>
     public static class DismissalStore
     {
+        private const int CurrentVersion = 2;
         private const string FilePath = "ProjectSettings/CodebaseGraphDismissed.json";
 
         private static readonly HashSet<string> Own = new(StringComparer.Ordinal);
@@ -202,7 +203,9 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
             if (!GraphIdentity.TryRead(id, out EDismissalKind kind, out string name))
                 return;
 
-            entries.Add(new DismissalEntry(id, kind, name, includesContents));
+            GraphIdentity.ReadEntry(id, out EFinding finding);
+
+            entries.Add(new DismissalEntry(id, kind, name, includesContents) { Finding = finding });
         }
 
         private static int CompareEntries(DismissalEntry left, DismissalEntry right)
@@ -212,6 +215,42 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
             return byKind != 0
                 ? byKind
                 : string.Compare(left.DisplayName, right.DisplayName, StringComparison.OrdinalIgnoreCase);
+        }
+
+        /// <summary>
+        /// Says once that an older file was read. Those ids name no finding, so each of them now
+        /// silences everything on its entry, including findings a later scan raises for the first time.
+        /// Nothing is changed for you, and nothing is remembered: this is a line to read, not a state
+        /// to manage.
+        /// </summary>
+        private static void ReportWidened()
+        {
+            int widened = 0;
+
+            foreach (string id in Own)
+                widened += CountEntryWide(id);
+
+            foreach (string id in Tree)
+                widened += CountEntryWide(id);
+
+            Save();
+
+            if (widened == 0)
+                return;
+
+            CustomLogger.LogWarning($"{widened} dismissals came from a file written before an id could "
+                + "name a single finding, so each one now silences everything on its entry. Re-apply "
+                + "them from a findings report to narrow them.",
+                null);
+        }
+
+        private static int CountEntryWide(string id)
+        {
+            GraphIdentity.ReadEntry(id, out EFinding finding);
+
+            return finding == EFinding.None
+                ? 1
+                : 0;
         }
 
         private static void Load()
@@ -233,6 +272,9 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
                 Own.UnionWith(data.Own);
                 Tree.UnionWith(data.Tree);
                 _lastWriteTimeUtc = File.GetLastWriteTimeUtc(FilePath);
+
+                if (data.Version < CurrentVersion)
+                    ReportWidened();
             }
             catch (Exception exception)
             {
@@ -242,7 +284,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
 
         private static void Save()
         {
-            DismissalData data = new();
+            DismissalData data = new() { Version = CurrentVersion };
             data.Own.AddRange(Own);
             data.Tree.AddRange(Tree);
 

@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.IO;
 using Base.ToolPackage.Editor.CodebaseGraph.Analysis;
 using Base.ToolPackage.Editor.CodebaseGraph.Editing;
 using Base.ToolPackage.Editor.CodebaseGraph.Model;
@@ -22,24 +21,20 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         private const string AllAssembliesLabel = "All assemblies";
         private const string AllTypesSegment = "All types";
         private const string BackLabel = "Back";
+        private const string BackTooltip = "Goes up one level.";
         private const string ClearFocusLabel = "Clear focus";
         private const int DataFlag = 2;
         private const int DefaultDetailHeight = 300;
         private const int DefaultListWidth = 340;
-        private const string DefaultReportName = "CodebaseGraphFindings.md";
-        private const string DemoteFixTitle = "Make member internal";
         private const string DismissedFormat = "Dismissed ({0})";
-
-        private const string DismissedTooltip = "Opens the list of everything dismissed, where entries can "
-            + "be brought back one at a time or together with their contents.";
-
+        private const string DismissedTooltip = "Opens the list of everything you dismissed.";
         private const string EdgeAllLabel = "Lines: All";
         private const string EdgeMutedLabel = "Lines: Muted";
         private const string EdgeNoneLabel = "Lines: None";
         private const string EdgeSelectedLabel = "Lines: Selected";
 
-        private const string EdgeTooltip = "How many relation lines are drawn. Selected only is what makes "
-            + "a dense view readable: pick a node and everything it does not touch stops being drawn.";
+        private const string EdgeTooltip = "How many lines to draw. Muted keeps them faint until you "
+            + "click something.";
 
         private const string EmptyFilterText = "Nothing matches the current filters.";
 
@@ -47,24 +42,28 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             + "seconds, so it does not run on its own.";
 
         private const string EmptyStateClass = "empty-state";
-        private const string ExportExtension = "md";
         private const string ExportLabel = "Export findings";
-        private const string ExportTitle = "Save findings report";
+
+        private const string ExportScopeHelp = "Open a namespace first, or pick an assembly in the "
+            + "toolbar. Then press this again.";
+
+        private const string ExportScopeLabel = "Export scope";
+
+        private const string ExportScopeTooltip = "Writes one namespace or assembly to a file. Small "
+            + "enough to hand to someone working on that part alone.";
+
+        private const string ExportTooltip = "Writes the whole report to a file.";
         private const string FocusNoticeFormat = "showing {0} and its neighbors, {1} step{2} out";
-        private const string ImportCancel = "Cancel";
-        private const string ImportFromClipboard = "Paste from clipboard";
-        private const string ImportFromFile = "Load from file";
         private const string ImportLabel = "Update dismissals";
 
-        private const string ImportMessage = "Reads dismissal instructions, the same block the findings "
-            + "report writes at the end. One instruction per line:\n\n"
-            + "  dismiss <id>\n  dismiss-tree <id>\n  restore <id>\n  restore-tree <id>\n\n"
-            + "Lines you leave out change nothing, so only restore removes a dismissal.";
+        private const string ImportTooltip = "Reads a list of dismissals back in, from the clipboard or a "
+            + "file.";
 
-        private const string ImportOpenTitle = "Open dismissal instructions";
+        private const string LayoutDependenciesLabel = "Layout: Dependencies";
+        private const string LayoutGroupedLabel = "Layout: Grouped by name";
 
-        private const string ImportResultFormat = "Applied {0} instructions.\n{1} were ignored because the "
-            + "verb was unknown, the id was malformed, or the entry was already in that state.";
+        private const string LayoutTooltip = "Dependencies to understand the code. Grouped to find "
+            + "something by name.";
 
         private const int MembersFlag = 4;
         private const string MembersHeadingFormat = "Members of {0}";
@@ -84,10 +83,9 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
         private const string PluralSuffix = "s";
         private const string PopupTextClass = "unity-base-popup-field__text";
-        private const string PrivateFixTitle = "Make member private";
         private const int PrivateFlag = 1;
-        private const string ReadOnlyFixTitle = "Make field readonly";
         private const string RefreshLabel = "Rescan";
+        private const string RefreshTooltip = "Scans the project again.";
         private const string RootClass = "codebase-graph-root";
         private const string ScanLabel = "Scan project";
         private const string SearchCappedHeadingFormat = "Showing {0} of {1} matches for \"{2}\"";
@@ -100,9 +98,8 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         private const string SearchPlaceholder = "Search everything: namespaces, types and members, "
             + "wherever they live";
 
-        private const string SearchScopeTooltip = "This level narrows what is already on screen. The other "
-            + "three look across the whole project regardless of where you are standing, which is what "
-            + "you want when you know a name but not where it lives.";
+        private const string SearchScopeTooltip = "This level filters what is on screen. The others "
+            + "search the whole project.";
 
         private const string SearchSegmentFormat = "Search: {0}";
         private const string SearchTypesLabel = "Find: Types";
@@ -115,20 +112,15 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         private const string ShowPrivateLabel = "Private members";
         private const string ShowPrivateShort = "private";
         private const string ShowSeparator = ", ";
-
-        private const string ShowTooltip = "How much detail the view carries. Turning members off on type "
-            + "nodes shrinks them back to a summary, which is worth doing on a large namespace.";
-
+        private const string ShowTooltip = "How much detail to show on each node.";
         private const string StatusBarClass = "status-bar";
-        private const string StyleSheetFilter = "CodebaseGraph t:StyleSheet";
         private const string ToolbarRowClass = "top-bar";
         private const string TypesHeadingFormat = "Types in {0}";
         private const string WindowTitle = "Codebase Graph";
 
-        private readonly GraphFilter _filter = new();
-
         [SerializeField] private EGraphScope savedScope;
         [SerializeField] private EEdgeMode savedEdgeMode;
+        [SerializeField] private ELayoutMode savedLayoutMode;
         [SerializeField] private ESearchScope savedSearchScope;
         [SerializeField] private EFinding savedFinding;
         [SerializeField] private int savedHops = 1;
@@ -137,7 +129,16 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         [SerializeField] private string savedSearch;
         [SerializeField] private string savedTypeName;
 
+        private bool HasFocus => _focusedNamespace != null || _focusedType != null || _focusedMember != null;
+
+        private bool IsSearching => !string.IsNullOrEmpty(_filter.Search)
+            && _filter.SearchScope != ESearchScope.CurrentLevel;
+
+        private readonly GraphFilter _filter = new();
+
         private CodebaseGraphData _graph;
+        private List<GraphEntry> _entries = new();
+        private GraphEntry _selectedEntry;
         private CodebaseGraphView _graphView;
         private CodebaseGraphListPane _listPane;
         private CodebaseGraphDetailPane _detailPane;
@@ -146,11 +147,13 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         private VisualElement _emptyState;
         private Label _emptyLabel;
         private Button _restoreButton;
+        private ToolbarButton _scopeButton;
         private Button _miniMapButton;
         private bool _isMiniMapVisible = true;
         private PopupField<string> _assemblyField;
         private PopupField<string> _findingField;
         private PopupField<string> _edgeField;
+        private PopupField<string> _layoutField;
         private MaskField _detailField;
         private PopupField<string> _neighborField;
         private PopupField<string> _searchScopeField;
@@ -165,22 +168,25 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         private TypeNodeInfo _focusedType;
         private MemberNodeInfo _focusedMember;
 
-        private bool HasFocus => _focusedNamespace != null || _focusedType != null || _focusedMember != null;
-
-        private bool IsSearching => !string.IsNullOrEmpty(_filter.Search)
-            && _filter.SearchScope != ESearchScope.CurrentLevel;
-
 #region Unity Callbacks
+        private void OnDisable() => DismissalStore.Changed -= ApplyFilter;
+
+        private void OnDestroy() => CodebaseGraphDismissalsWindow.CloseIfOpen();
+
         private void CreateGUI()
         {
             rootVisualElement.AddToClassList(RootClass);
-            LoadStyleSheet();
+            CodebaseGraphStyle.Apply(rootVisualElement);
 
             rootVisualElement.Add(BuildToolbar());
 
             _breadcrumb = new CodebaseGraphBreadcrumb(OnBreadcrumbClicked);
             _breadcrumb.AddFocusControl(BuildNeighborField());
-            _breadcrumb.AddFocusControl(new Button(ClearFocus) { text = ClearFocusLabel });
+            _breadcrumb.AddFocusControl(new Button(ClearFocus)
+            {
+                text = ClearFocusLabel
+            });
+
             rootVisualElement.Add(_breadcrumb);
 
             rootVisualElement.Add(BuildBody());
@@ -199,8 +205,6 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
             ApplyFilter();
         }
-
-        private void OnDisable() => DismissalStore.Changed -= ApplyFilter;
 #endregion
 
         /// <summary>Opens the window.</summary>
@@ -212,23 +216,27 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             window.minSize = new Vector2(MinimumWindowWidth, MinimumWindowHeight);
         }
 
-        private static List<string> BuildSearchScopeChoices()
-            => new()
-            {
-                SearchEverywhereLabel,
-                SearchCurrentLevelLabel,
-                SearchTypesLabel,
-                SearchMembersLabel
-            };
+        private static List<string> BuildSearchScopeChoices() => new()
+        {
+            SearchEverywhereLabel,
+            SearchCurrentLevelLabel,
+            SearchTypesLabel,
+            SearchMembersLabel
+        };
 
-        private static List<string> BuildEdgeChoices()
-            => new()
-            {
-                EdgeMutedLabel,
-                EdgeAllLabel,
-                EdgeSelectedLabel,
-                EdgeNoneLabel
-            };
+        private static List<string> BuildLayoutChoices() => new()
+        {
+            LayoutDependenciesLabel,
+            LayoutGroupedLabel
+        };
+
+        private static List<string> BuildEdgeChoices() => new()
+        {
+            EdgeMutedLabel,
+            EdgeAllLabel,
+            EdgeSelectedLabel,
+            EdgeNoneLabel
+        };
 
         private static List<string> BuildNeighborChoices()
         {
@@ -240,22 +248,48 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             return choices;
         }
 
+        private static List<string> BuildDetailChoices() => new()
+        {
+            ShowPrivateLabel,
+            ShowDataLabel,
+            ShowMembersLabel
+        };
+
         private VisualElement BuildToolbar()
         {
             Toolbar toolbar = new();
             toolbar.AddToClassList(ToolbarRowClass);
 
-            toolbar.Add(new ToolbarButton(GoBack) { text = BackLabel });
-            toolbar.Add(new ToolbarButton(Rescan) { text = RefreshLabel });
+            toolbar.Add(new ToolbarButton(GoBack)
+            {
+                text = BackLabel,
+                tooltip = BackTooltip
+            });
+
+            toolbar.Add(new ToolbarButton(Rescan)
+            {
+                text = RefreshLabel,
+                tooltip = RefreshTooltip
+            });
+
             toolbar.Add(BuildSpacer());
 
-            _assemblyField = new PopupField<string>(new List<string> { AllAssembliesLabel }, 0);
+            _assemblyField = new PopupField<string>(new List<string>
+            {
+                AllAssembliesLabel
+            }, 0);
+
             _assemblyField.RegisterValueChangedCallback(OnAssemblyChanged);
             toolbar.Add(_assemblyField);
 
             _findingField = new PopupField<string>(FindingCatalog.BuildChoices(), 0);
             _findingField.RegisterValueChangedCallback(OnFindingChanged);
             toolbar.Add(_findingField);
+
+            _layoutField = new PopupField<string>(BuildLayoutChoices(), 0);
+            _layoutField.tooltip = LayoutTooltip;
+            _layoutField.RegisterValueChangedCallback(OnLayoutModeChanged);
+            toolbar.Add(_layoutField);
 
             _edgeField = new PopupField<string>(BuildEdgeChoices(), 0);
             _edgeField.tooltip = EdgeTooltip;
@@ -279,10 +313,28 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
                 text = string.Format(DismissedFormat, 0),
                 tooltip = DismissedTooltip
             };
+
             toolbar.Add(_restoreButton);
 
-            toolbar.Add(new ToolbarButton(ExportFindings) { text = ExportLabel });
-            toolbar.Add(new ToolbarButton(ImportDismissals) { text = ImportLabel });
+            toolbar.Add(new ToolbarButton(ExportFindings)
+            {
+                text = ExportLabel,
+                tooltip = ExportTooltip
+            });
+
+            toolbar.Add(new ToolbarButton(ImportDismissals)
+            {
+                text = ImportLabel,
+                tooltip = ImportTooltip
+            });
+
+            _scopeButton = new ToolbarButton(ExportScope)
+            {
+                text = ExportScopeLabel,
+                tooltip = ExportScopeTooltip
+            };
+
+            toolbar.Add(_scopeButton);
 
             return toolbar;
         }
@@ -307,14 +359,6 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
             return _detailField;
         }
-
-        private static List<string> BuildDetailChoices()
-            => new()
-            {
-                ShowPrivateLabel,
-                ShowDataLabel,
-                ShowMembersLabel
-            };
 
         private int ReadDetailMask()
         {
@@ -382,7 +426,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
             TwoPaneSplitView leftColumn = new(1, DefaultDetailHeight, TwoPaneSplitViewOrientation.Vertical);
 
-            _listPane = new CodebaseGraphListPane(OnEntrySelected, OnEntryActivated);
+            _listPane = new CodebaseGraphListPane(OnEntrySelected, OnEntryActivated, OnOnlyNewChanged);
             leftColumn.Add(_listPane);
 
             _detailPane = new CodebaseGraphDetailPane(OnFocusRequested,
@@ -390,6 +434,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
                 OnOpenRequested,
                 OnQuickFixRequested,
                 OnDismissRequested,
+                OnDismissFindingRequested,
                 OnRestoreRequested);
 
             leftColumn.Add(_detailPane);
@@ -421,14 +466,21 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
             _emptyLabel = new Label(EmptyScanText);
             _emptyState.Add(_emptyLabel);
-            _emptyState.Add(new Button(Rescan) { text = ScanLabel });
+            _emptyState.Add(new Button(Rescan)
+            {
+                text = ScanLabel
+            });
 
             return _emptyState;
         }
 
         private VisualElement BuildMiniMapToggle()
         {
-            _miniMapButton = new Button(ToggleMiniMap) { text = MiniMapShownLabel };
+            _miniMapButton = new Button(ToggleMiniMap)
+            {
+                text = MiniMapShownLabel
+            };
+
             _miniMapButton.AddToClassList(MiniMapToggleClass);
 
             return _miniMapButton;
@@ -469,6 +521,11 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             if (scanned == null)
                 return;
 
+            // The comparison has to happen before the ids are replaced, since one is the baseline for
+            // the other.
+            FindingBaseline.Apply(scanned, CodebaseGraphCache.TakeFindingIds());
+            CodebaseGraphCache.SetFindingIds(FindingBaseline.Collect(scanned));
+
             _graph = scanned;
             CodebaseGraphCache.Set(_graph);
 
@@ -505,6 +562,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         private void RestoreFilter()
         {
             _filter.EdgeMode = savedEdgeMode;
+            _filter.LayoutMode = savedLayoutMode;
             _filter.SearchScope = savedSearchScope;
             _filter.Finding = savedFinding;
             _filter.Hops = Mathf.Clamp(savedHops, 1, NeighborMaximum);
@@ -515,6 +573,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
             _findingField.index = FindingCatalog.GetIndex(_filter.Finding);
             _edgeField.index = (int)_filter.EdgeMode;
+            _layoutField.index = (int)_filter.LayoutMode;
             _searchScopeField.index = (int)_filter.SearchScope;
             _detailField.SetValueWithoutNotify(ReadDetailMask());
             UpdateDetailText();
@@ -530,6 +589,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             savedTypeName = _currentType?.FullName;
             savedAssembly = _filter.AssemblyName;
             savedEdgeMode = _filter.EdgeMode;
+            savedLayoutMode = _filter.LayoutMode;
             savedSearchScope = _filter.SearchScope;
             savedFinding = _filter.Finding;
             savedHops = _filter.Hops;
@@ -550,7 +610,35 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             return null;
         }
 
-        private void ClearSelection() => _detailPane.Show(null, _graph);
+        private void ClearSelection()
+        {
+            _selectedEntry = null;
+            _detailPane.Show(null, _graph);
+        }
+
+        /// <summary>
+        /// Redraws the detail pane for whatever is selected, using the entry the rebuild just produced.
+        /// Dismissing something is a decision about the thing on screen, and losing the thing on screen
+        /// as a result means checking the decision took effect is a hunt.
+        /// </summary>
+        private void RefreshSelection()
+        {
+            if (_selectedEntry == null)
+                return;
+
+            foreach (GraphEntry entry in _entries)
+            {
+                if (entry.Id != _selectedEntry.Id)
+                    continue;
+
+                _selectedEntry = entry;
+                _detailPane.Show(entry, _graph);
+
+                return;
+            }
+
+            ClearSelection();
+        }
 
         private void ClearFocusState()
         {
@@ -561,7 +649,11 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
         private void RefreshAssemblyChoices()
         {
-            List<string> choices = new() { AllAssembliesLabel };
+            List<string> choices = new()
+            {
+                AllAssembliesLabel
+            };
+
             choices.AddRange(_graph.ScannedAssemblies);
 
             _assemblyField.choices = choices;
@@ -584,9 +676,11 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             DismissalStore.Refresh();
 
             List<GraphEntry> entries = BuildEntries();
+            _entries = entries;
 
             _listPane.SetEntries(BuildHeading(entries.Count), entries);
             _graphView.SetEdgeMode(_filter.EdgeMode);
+            _graphView.SetLayoutMode(_filter.LayoutMode);
             _graphView.Rebuild(entries, ResolveFocusedId());
             SetEmptyStateVisible(entries.Count == 0, EmptyFilterText);
 
@@ -641,11 +735,9 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         private string BuildHeading(int shownCount)
         {
             if (IsSearching)
-            {
                 return shownCount < _searchTotal
                     ? string.Format(SearchCappedHeadingFormat, shownCount, _searchTotal, _filter.Search)
                     : string.Format(SearchHeadingFormat, shownCount, _filter.Search);
-            }
 
             switch (_scope)
             {
@@ -664,7 +756,10 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
         private List<string> BuildPath()
         {
-            List<string> path = new() { NamespacesSegment };
+            List<string> path = new()
+            {
+                NamespacesSegment
+            };
 
             if (IsSearching)
             {
@@ -709,11 +804,14 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
                 : null;
         }
 
-        private void UpdateStatus(int shownCount)
-            => _statusLabel.text = $"{shownCount} shown        {_graph.TypeCount} types, "
-                + $"{_graph.MemberCount} members        {_graph.CountTypeIssues()} type findings, "
-                + $"{_graph.CountMemberIssues()} member findings        scanned in {_graph.ScanSeconds:0.0}s, "
-                + $"{_graph.UnresolvedTokenCount} tokens skipped";
+        private void UpdateStatus(int shownCount) => _statusLabel.text =
+            $"{shownCount} shown        {_graph.TypeCount} types, "
+            + $"{_graph.MemberCount} members        {_graph.CountTypeIssues()} type findings, "
+            + $"{_graph.CountMemberIssues()} member findings        scanned in {_graph.ScanSeconds:0.0}s, "
+            + $"{_graph.UnresolvedTokenCount} tokens skipped, "
+            + $"{_graph.FieldsCreditedByType} fields by type, "
+            + $"{_graph.FieldsCreditedByNestedType} by name under a known script, "
+            + $"{_graph.FieldsCreditedByUnknownScript} by name under an unresolved script";
 
         private void OnBreadcrumbClicked(int index)
         {
@@ -767,6 +865,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
         private void OnEntrySelected(GraphEntry entry)
         {
+            _selectedEntry = entry;
             _detailPane.Show(entry, _graph);
         }
 
@@ -862,8 +961,54 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
                 return;
 
             DismissalStore.Dismiss(id, includeContents);
-            ClearSelection();
             ApplyFilter();
+            RefreshSelection();
+        }
+
+        private void OnDismissFindingRequested(GraphEntry entry, EFinding finding)
+        {
+            string id = ResolveIdentity(entry);
+            if (id == null)
+                return;
+
+            DismissalStore.Dismiss(GraphIdentity.ForFinding(id, finding), false);
+            ApplyFilter();
+            RefreshSelection();
+        }
+
+        private void ExportFindings() => CodebaseGraphReportIo.Export(_graph);
+
+        /// <summary>
+        /// Exports whatever is currently in view. The namespace you have opened wins, then the assembly
+        /// the toolbar is filtered to, because that is the order in which they narrow what is on screen.
+        /// </summary>
+        private void ExportScope()
+        {
+            if (!string.IsNullOrEmpty(_currentNamespace))
+            {
+                CodebaseGraphReportIo.ExportScope(_graph, _currentNamespace, false);
+                return;
+            }
+
+            if (!string.IsNullOrEmpty(_filter.AssemblyName))
+            {
+                CodebaseGraphReportIo.ExportScope(_graph, _filter.AssemblyName, true);
+                return;
+            }
+
+            EditorUtility.DisplayDialog(ExportScopeLabel, ExportScopeHelp, "OK");
+        }
+
+        private void ImportDismissals()
+        {
+            if (CodebaseGraphReportIo.Import())
+                ApplyFilter();
+        }
+
+        private void OnQuickFixRequested(GraphEntry entry, EFinding finding)
+        {
+            if (CodebaseGraphQuickFix.Apply(entry, finding))
+                AssetDatabase.Refresh();
         }
 
         private void OnRestoreRequested(GraphEntry entry)
@@ -873,8 +1018,8 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
                 return;
 
             DismissalStore.Restore(id);
-            ClearSelection();
             ApplyFilter();
+            RefreshSelection();
         }
 
         private string ResolveIdentity(GraphEntry entry)
@@ -890,136 +1035,12 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
                 : GraphIdentity.ForNamespace(entry.Namespace.Name);
         }
 
-        private void ExportFindings()
-        {
-            if (_graph == null)
-                return;
-
-            string path = EditorUtility.SaveFilePanel(ExportTitle,
-                string.Empty,
-                DefaultReportName,
-                ExportExtension);
-
-            if (string.IsNullOrEmpty(path))
-                return;
-
-            File.WriteAllText(path, FindingReportWriter.Build(_graph));
-            EditorUtility.RevealInFinder(path);
-        }
-
-        private void ImportDismissals()
-        {
-            int choice = EditorUtility.DisplayDialogComplex(ImportLabel,
-                ImportMessage,
-                ImportFromClipboard,
-                ImportCancel,
-                ImportFromFile);
-
-            if (choice == 1)
-                return;
-
-            string text = choice == 0
-                ? EditorGUIUtility.systemCopyBuffer
-                : ReadInstructionFile();
-
-            if (string.IsNullOrEmpty(text))
-                return;
-
-            DismissalTextFormat.Apply(text, out int applied, out int ignored);
-            ApplyFilter();
-
-            EditorUtility.DisplayDialog(ImportLabel,
-                string.Format(ImportResultFormat, applied, ignored),
-                "OK");
-        }
-
-        private string ReadInstructionFile()
-        {
-            string path = EditorUtility.OpenFilePanel(ImportOpenTitle, string.Empty, ExportExtension);
-
-            return string.IsNullOrEmpty(path) || !File.Exists(path)
-                ? string.Empty
-                : File.ReadAllText(path);
-        }
-
         private void OnOpenRequested(GraphEntry entry)
         {
             if (entry.Type == null)
                 return;
 
             MemberSourceEditor.OpenAtMember(entry.Type, entry.Member);
-        }
-
-        private void OnQuickFixRequested(GraphEntry entry, EFinding finding)
-        {
-            if (entry.Member == null || entry.Type == null)
-                return;
-
-            bool confirmed = EditorUtility.DisplayDialog(BuildFixTitle(finding),
-                BuildFixMessage(entry, finding),
-                "Apply",
-                "Cancel");
-
-            if (!confirmed)
-                return;
-
-            if (ApplyFix(entry, finding))
-                AssetDatabase.Refresh();
-        }
-
-        private bool ApplyFix(GraphEntry entry, EFinding finding)
-        {
-            switch (finding)
-            {
-                case EFinding.PrivateCandidate:
-                    return MemberSourceEditor.DemoteToPrivate(entry.Type, entry.Member);
-
-                case EFinding.PublicButInternalOnly:
-                    return MemberSourceEditor.DemoteToInternal(entry.Type, entry.Member);
-
-                default:
-                    return MemberSourceEditor.AddReadOnly(entry.Type, entry.Member);
-            }
-        }
-
-        private string BuildFixTitle(EFinding finding)
-        {
-            switch (finding)
-            {
-                case EFinding.PrivateCandidate:
-                    return PrivateFixTitle;
-
-                case EFinding.PublicButInternalOnly:
-                    return DemoteFixTitle;
-
-                default:
-                    return ReadOnlyFixTitle;
-            }
-        }
-
-        private string BuildFixMessage(GraphEntry entry, EFinding finding)
-        {
-            string change = BuildFixChange(finding);
-
-            return $"This edits the source of {entry.Member.Name} in {entry.Type.ShortName}, {change}."
-                + "\n\nThe declaration is matched by name, and the edit is refused when more than one "
-                + "line matches or when the member declares its own accessor visibility. Commit your work "
-                + "first, then let Unity recompile and check the console.";
-        }
-
-        private string BuildFixChange(EFinding finding)
-        {
-            switch (finding)
-            {
-                case EFinding.PrivateCandidate:
-                    return "lowering it to private";
-
-                case EFinding.PublicButInternalOnly:
-                    return "changing public to internal";
-
-                default:
-                    return "adding readonly";
-            }
         }
 
         private void OnAssemblyChanged(ChangeEvent<string> evt)
@@ -1061,24 +1082,22 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             _searchDebounce.ExecuteLater(SearchDebounceMilliseconds);
         }
 
+        private void OnOnlyNewChanged(bool value)
+        {
+            _filter.OnlyNew = value;
+            ApplyFilter();
+        }
+
+        private void OnLayoutModeChanged(ChangeEvent<string> evt)
+        {
+            _filter.LayoutMode = (ELayoutMode)_layoutField.index;
+            ApplyFilter();
+        }
+
         private void OnEdgeModeChanged(ChangeEvent<string> evt)
         {
             _filter.EdgeMode = (EEdgeMode)_edgeField.index;
             _graphView.SetEdgeMode(_filter.EdgeMode);
-        }
-
-        private void LoadStyleSheet()
-        {
-            foreach (string guid in AssetDatabase.FindAssets(StyleSheetFilter))
-            {
-                string path = AssetDatabase.GUIDToAssetPath(guid);
-                StyleSheet sheet = AssetDatabase.LoadAssetAtPath<StyleSheet>(path);
-                if (sheet == null)
-                    continue;
-
-                rootVisualElement.styleSheets.Add(sheet);
-                return;
-            }
         }
     }
 }

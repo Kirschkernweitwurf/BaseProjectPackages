@@ -16,14 +16,20 @@
 }
 
 .top-bar {
-    height: 30px;
+    flex-wrap: wrap;
+    min-height: 30px;
+    padding-top: var(--space-sm);
+    padding-bottom: var(--space-sm);
     padding-left: var(--space-md);
     padding-right: var(--space-md);
     align-items: center;
 }
 
 .top-bar > * {
+    flex-shrink: 0;
     margin-right: var(--space-md);
+    margin-top: 1px;
+    margin-bottom: 1px;
 }
 
 .top-bar ToolbarButton,
@@ -241,6 +247,10 @@
 
 .list-row-meta.row-dismissed {
     color: rgb(176, 216, 211);
+}
+
+.list-row-meta.row-clear {
+    color: rgb(150, 200, 146);
 }
 
 .dismissal-row {

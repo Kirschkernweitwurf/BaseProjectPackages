@@ -11,8 +11,8 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
     /// <summary>Runs the whole scan and returns the finished graph.</summary>
     public static class CodebaseGraphBuilder
     {
-        private const float AnalyzeProgress = 0.9f;
-        private const float AssetProgress = 0.96f;
+        private const float AnalyzeProgress = 0.96f;
+        private const float AssetProgress = 0.88f;
         private const float CollectProgress = 0.1f;
 
         private const BindingFlags DeclaredMembers = BindingFlags.Public
@@ -52,8 +52,13 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         /// <param name="onProgress">
         /// Called with a normalized progress value and a status line. Returning false cancels the scan.
         /// </param>
+        /// <param name="includeExcludedScopes">
+        /// True to analyze generated, sample and test code as well, which only the tool's own tests ask
+        /// for.
+        /// </param>
         /// <returns>The finished graph, or null when the scan was cancelled.</returns>
-        public static CodebaseGraphData Build(Func<float, string, bool> onProgress)
+        public static CodebaseGraphData Build(Func<float, string, bool> onProgress,
+            bool includeExcludedScopes = false)
         {
             Stopwatch stopwatch = Stopwatch.StartNew();
             CodebaseGraphData graph = new();
@@ -106,19 +111,22 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             SourceTextScanner.Scan(graph, index);
             index.ReleaseSources();
 
+            if (!Report(onProgress, AssetProgress, "Checking prefabs and scenes"))
+                return null;
+
+            // The asset pass has to run first. It marks methods and types that only the YAML knows are
+            // reachable, and the analyzer reads exactly that when deciding what is dead, so running it
+            // afterwards would leave every one of those marks with nothing left to affect.
+            if (!SerializedFieldAssetScanner.Scan(graph,
+                new ScanProgress(onProgress, AssetProgress, AnalyzeProgress - AssetProgress)))
+                return null;
+
             if (!Report(onProgress, AnalyzeProgress, "Analyzing"))
                 return null;
 
             BuildNamespaceRelations(graph);
-            ComputeFanCounts(graph);
-            CodebaseGraphAnalyzer.Analyze(graph);
-
-            if (!Report(onProgress, AssetProgress, "Checking prefabs and scenes"))
-                return null;
-
-            if (!SerializedFieldAssetScanner.Scan(graph,
-                new ScanProgress(onProgress, AssetProgress, 1f - AssetProgress)))
-                return null;
+            ComputeMetrics(graph);
+            CodebaseGraphAnalyzer.Analyze(graph, includeExcludedScopes);
 
             stopwatch.Stop();
             graph.ScanSeconds = (float)stopwatch.Elapsed.TotalSeconds;
@@ -259,12 +267,75 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             return Report(onProgress, progress, $"Reading method bodies {done} / {total}");
         }
 
-        private static void ComputeFanCounts(CodebaseGraphData graph)
+        private static bool IsDataMember(MemberNodeInfo member)
+        {
+            if (member.Kind == EMemberKind.Const || member.Kind == EMemberKind.EnumMember)
+                return true;
+
+            return member.IsStatic && member.IsReadOnly;
+        }
+
+        private static void ComputeMetrics(CodebaseGraphData graph)
         {
             HashSet<MemberKey> scratch = new();
 
             foreach (MemberNodeInfo member in graph.Members.Values)
                 member.RecomputeFanCounts(scratch);
+
+            HashSet<string> namespaces = new();
+
+            foreach (TypeNodeInfo type in graph.Types.Values)
+                ComputeTypeMetrics(type, graph, namespaces);
+        }
+
+        /// <summary>
+        /// Works out the numbers the size and coupling rules read. Compiled size and namespace reach say
+        /// how much a type really does, where a member count mostly counts backing fields, and
+        /// abstractness is what separates a type everything can safely depend on from one that cannot be
+        /// touched without consequences.
+        /// </summary>
+        private static void ComputeTypeMetrics(TypeNodeInfo type,
+            CodebaseGraphData graph,
+            HashSet<string> namespaces)
+        {
+            int size = 0;
+            int abstractMembers = 0;
+            int dataMembers = 0;
+
+            foreach (MemberNodeInfo member in type.Members)
+            {
+                size += member.IlSize;
+
+                if (member.IsAbstract)
+                    abstractMembers++;
+
+                if (IsDataMember(member))
+                    dataMembers++;
+            }
+
+            type.IlSize = size;
+            type.DataMemberShare = type.Members.Count == 0
+                ? 0f
+                : dataMembers / (float)type.Members.Count;
+
+            if (type.Kind == ETypeKind.Interface)
+                abstractMembers = type.Members.Count;
+
+            type.Abstractness = type.Members.Count == 0
+                ? 0f
+                : abstractMembers / (float)type.Members.Count;
+
+            namespaces.Clear();
+
+            foreach (TypeKey target in type.Outgoing.Keys)
+            {
+                TypeNodeInfo other = graph.FindType(target);
+
+                if (other != null && other.Namespace != type.Namespace)
+                    namespaces.Add(other.Namespace);
+            }
+
+            type.NamespaceReach = namespaces.Count;
         }
 
         private static void ApplyScriptPaths(CodebaseGraphData graph, ScriptIndex index)

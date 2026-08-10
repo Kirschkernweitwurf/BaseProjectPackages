@@ -15,13 +15,14 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
     /// </summary>
     public static class SourceLineLocator
     {
+        private const char BodyClose = '}';
+        private const char BodyOpen = '{';
         private const string CommentPattern = @"^\s*(///|//|\*|/\*)";
+
         private const string DeclarationPattern = @"\b(public|private|protected|internal|static|const|"
             + @"readonly|abstract|virtual|override|sealed|partial|event|delegate|class|struct|interface|"
             + @"enum|record|operator|implicit|explicit)\b";
 
-        private const char BodyClose = '}';
-        private const char BodyOpen = '{';
         private const int FirstLine = 1;
         private const string IndexerName = "Item";
         private const string IndexerSpelling = "this[";

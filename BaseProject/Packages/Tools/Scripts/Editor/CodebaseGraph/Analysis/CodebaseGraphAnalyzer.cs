@@ -10,18 +10,26 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
     /// </summary>
     public static class CodebaseGraphAnalyzer
     {
+        private const string EdgeSeparator = " -> ";
+        private const string ManyUsagesSuffix = " usages";
+        private const int MinimumCycleLength = 2;
         private const int MinimumInterestingCycle = 2;
-        private const string EdgeSeparator = "; ";
         private const string PairSeparator = " <-> ";
+        private const string SingleUsageText = "1 usage";
 
         /// <summary>Runs every check and writes the findings onto the nodes.</summary>
         /// <param name="graph">Graph to analyze.</param>
-        public static void Analyze(CodebaseGraphData graph)
+        /// <param name="includeExcludedScopes">
+        /// True to analyze generated, sample and test code as well. Only the tool's own test fixture
+        /// asks for this: the shapes it checks the liveness rules against live in a test assembly, which
+        /// is precisely the scope those findings are normally suppressed for.
+        /// </param>
+        public static void Analyze(CodebaseGraphData graph, bool includeExcludedScopes = false)
         {
             foreach (TypeNodeInfo type in graph.Types.Values)
             {
                 // Generated output, sample fixtures and tests are not code anyone is going to clean up.
-                if (type.IsExcludedFromFindings)
+                if (type.IsExcludedFromFindings && !includeExcludedScopes)
                     continue;
 
                 foreach (MemberNodeInfo member in type.Members)
@@ -79,7 +87,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
             if (CouplingMetrics.IsGodClass(type))
                 type.Issues |= ETypeIssue.GodClass;
 
-            if (CouplingMetrics.IsUnstableDependency(type))
+            if (CouplingMetrics.IsHardToChange(type))
                 type.Issues |= ETypeIssue.HighInstability;
         }
 
@@ -332,20 +340,120 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
 
         private static void MarkTypeCycles(CodebaseGraphData graph, HashSet<string> namespacePairs)
         {
-            List<List<TypeKey>> cycles = CycleFinder.FindCycles(graph.Types.Keys,
+            List<List<TypeKey>> components = CycleFinder.FindCycles(graph.Types.Keys,
                 key => ReadCycleTargets(graph, key));
 
-            foreach (List<TypeKey> cycle in cycles)
+            foreach (List<TypeKey> component in components)
             {
-                if (!IsReportableCycle(graph, cycle, namespacePairs))
+                List<TypeKey> cycle = CycleFinder.FindShortestCycle(component,
+                    key => ReadCycleTargets(graph, key));
+
+                if (cycle.Count < MinimumCycleLength
+                    || !IsReportableCycle(graph, cycle, component.Count, namespacePairs))
                     continue;
 
                 string cycleId = BuildCycleId(ReadTypeNames(graph, cycle));
                 string description = DescribeTypeCycle(graph, cycle);
+                string cut = SuggestTypeCut(graph, cycle);
 
                 foreach (TypeKey key in cycle)
-                    MarkCycleMember(graph, cycle, key, cycleId, description);
+                    MarkCycleMember(graph, cycle, key, cycleId, description, cut, component.Count);
             }
+        }
+
+        /// <summary>
+        /// Writes the loop out as the path it actually is. A component holds many overlapping loops, so
+        /// naming all of its members says nothing about which arrow to remove.
+        /// </summary>
+        private static string DescribeTypeCycle(CodebaseGraphData graph, List<TypeKey> cycle)
+        {
+            List<string> names = ReadTypeNames(graph, cycle);
+            names.Add(names[0]);
+
+            return string.Join(EdgeSeparator, names);
+        }
+
+        /// <summary>
+        /// Picks the edge in the loop that the fewest usages hold together. It is the cheapest one to
+        /// break, and it is offered as a hint rather than a verdict: the count says how much code has to
+        /// move, not whether that is the dependency which should never have existed.
+        /// </summary>
+        private static string SuggestTypeCut(CodebaseGraphData graph, List<TypeKey> cycle)
+        {
+            string best = string.Empty;
+            int lowest = int.MaxValue;
+
+            for (int index = 0; index < cycle.Count; index++)
+            {
+                TypeNodeInfo source = graph.FindType(cycle[index]);
+                TypeKey targetKey = cycle[(index + 1) % cycle.Count];
+                TypeNodeInfo target = graph.FindType(targetKey);
+
+                if (source == null || target == null)
+                    continue;
+
+                if (!source.Outgoing.TryGetValue(targetKey, out int weight) || weight >= lowest)
+                    continue;
+
+                lowest = weight;
+                best = $"{source.ShortName} -> {target.ShortName} ({DescribeWeight(weight)})";
+            }
+
+            return best;
+        }
+
+        private static string DescribeNamespaceCycle(List<string> cycle)
+        {
+            List<string> names = new(cycle) { cycle[0] };
+
+            return string.Join(EdgeSeparator, names);
+        }
+
+        private static string SuggestNamespaceCut(CodebaseGraphData graph, List<string> cycle)
+        {
+            string best = string.Empty;
+            int lowest = int.MaxValue;
+
+            for (int index = 0; index < cycle.Count; index++)
+            {
+                NamespaceNodeInfo source = graph.Namespaces[cycle[index]];
+                string target = cycle[(index + 1) % cycle.Count];
+
+                if (!source.Outgoing.TryGetValue(target, out int weight) || weight >= lowest)
+                    continue;
+
+                lowest = weight;
+                best = $"{source.Name} -> {target} ({DescribeWeight(weight)})";
+            }
+
+            return best;
+        }
+
+        private static string DescribeWeight(int weight)
+            => weight == 1
+                ? SingleUsageText
+                : $"{weight}{ManyUsagesSuffix}";
+
+        private static List<string> ReadTypeNames(CodebaseGraphData graph, List<TypeKey> cycle)
+        {
+            List<string> names = new();
+
+            foreach (TypeKey key in cycle)
+            {
+                TypeNodeInfo type = graph.FindType(key);
+                if (type != null)
+                    names.Add(type.ShortName);
+            }
+
+            return names;
+        }
+
+        private static string BuildCycleId(List<string> names)
+        {
+            List<string> sorted = new(names);
+            sorted.Sort(StringComparer.Ordinal);
+
+            return string.Join(PairSeparator, sorted);
         }
 
         private static IEnumerable<TypeKey> ReadCycleTargets(CodebaseGraphData graph, TypeKey key)
@@ -370,8 +478,15 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
             return target != null && target.DeclaringTypeKey.Equals(source.Key);
         }
 
+        /// <summary>
+        /// Decides whether a loop is worth a line. The ownership test only applies when the whole
+        /// component is that pair and nothing else. Judging the tightest loop on its own would let a
+        /// forty type tangle go unreported whenever its shortest loop happens to be two types in one
+        /// namespace, which is the common case and the opposite of what the filter is for.
+        /// </summary>
         private static bool IsReportableCycle(CodebaseGraphData graph,
             List<TypeKey> cycle,
+            int componentSize,
             HashSet<string> namespacePairs)
         {
             HashSet<string> namespaces = new();
@@ -383,8 +498,11 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
                     namespaces.Add(type.Namespace);
             }
 
-            // A pair inside one namespace is ownership, not a design problem worth a report line.
-            if (cycle.Count <= MinimumInterestingCycle && namespaces.Count <= 1)
+            bool isOwnershipPair = componentSize <= MinimumInterestingCycle
+                && cycle.Count <= MinimumInterestingCycle
+                && namespaces.Count <= 1;
+
+            if (isOwnershipPair)
                 return false;
 
             if (namespaces.Count == 2)
@@ -401,94 +519,13 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
             return string.Join(PairSeparator, sorted);
         }
 
-        private static List<string> ReadTypeNames(CodebaseGraphData graph, List<TypeKey> cycle)
-        {
-            List<string> names = new();
-
-            foreach (TypeKey key in cycle)
-            {
-                TypeNodeInfo type = graph.FindType(key);
-                if (type != null)
-                    names.Add(type.ShortName);
-            }
-
-            return names;
-        }
-
-        private static string BuildCycleId(List<string> names)
-        {
-            List<string> sorted = new(names);
-            sorted.Sort(StringComparer.Ordinal);
-
-            return string.Join(PairSeparator, sorted);
-        }
-
-        /// <summary>
-        /// Writes the loop out edge by edge. A set of names alone invites the reader to look for direct
-        /// references between all of them, when the loop usually closes through a chain.
-        /// </summary>
-        private static string DescribeTypeCycle(CodebaseGraphData graph, List<TypeKey> cycle)
-        {
-            HashSet<TypeKey> members = new(cycle);
-            List<string> parts = new();
-
-            foreach (TypeKey key in cycle)
-            {
-                TypeNodeInfo type = graph.FindType(key);
-                if (type == null)
-                    continue;
-
-                List<string> targets = new();
-
-                foreach (TypeKey target in type.Outgoing.Keys)
-                {
-                    TypeNodeInfo other = graph.FindType(target);
-                    if (other != null && !target.Equals(key) && members.Contains(target))
-                        targets.Add(other.ShortName);
-                }
-
-                if (targets.Count == 0)
-                    continue;
-
-                targets.Sort(StringComparer.Ordinal);
-                parts.Add($"{type.ShortName} -> {string.Join(", ", targets)}");
-            }
-
-            parts.Sort(StringComparer.Ordinal);
-            return string.Join(EdgeSeparator, parts);
-        }
-
-        private static string DescribeNamespaceCycle(CodebaseGraphData graph, List<string> cycle)
-        {
-            HashSet<string> members = new(cycle);
-            List<string> parts = new();
-
-            foreach (string name in cycle)
-            {
-                List<string> targets = new();
-
-                foreach (string target in graph.Namespaces[name].Outgoing.Keys)
-                {
-                    if (target != name && members.Contains(target))
-                        targets.Add(target);
-                }
-
-                if (targets.Count == 0)
-                    continue;
-
-                targets.Sort(StringComparer.Ordinal);
-                parts.Add($"{name} -> {string.Join(", ", targets)}");
-            }
-
-            parts.Sort(StringComparer.Ordinal);
-            return string.Join(EdgeSeparator, parts);
-        }
-
         private static void MarkCycleMember(CodebaseGraphData graph,
             List<TypeKey> cycle,
             TypeKey key,
             string cycleId,
-            string description)
+            string description,
+            string cut,
+            int componentSize)
         {
             TypeNodeInfo type = graph.FindType(key);
             if (type == null || type.IsExcludedFromFindings)
@@ -497,6 +534,8 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
             type.Issues |= ETypeIssue.TypeCycle;
             type.CycleId = cycleId;
             type.CycleDescription = description;
+            type.CycleCutHint = cut;
+            type.CycleComponentSize = componentSize;
 
             foreach (TypeKey partner in cycle)
             {
@@ -512,19 +551,30 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
             List<List<string>> cycles = CycleFinder.FindCycles(graph.Namespaces.Keys,
                 name => graph.Namespaces[name].Outgoing.Keys);
 
-            foreach (List<string> cycle in cycles)
+            foreach (List<string> component in cycles)
             {
-                if (cycle.Count == 2 && namespacePairs.Contains(BuildPairKey(cycle)))
+                List<string> cycle = CycleFinder.FindShortestCycle(component,
+                    name => graph.Namespaces[name].Outgoing.Keys);
+
+                if (cycle.Count < MinimumCycleLength)
+                    continue;
+
+                // The same reasoning as for types: only a component that is exactly the pair can be
+                // the thing a type cycle already said.
+                if (component.Count == 2 && cycle.Count == 2 && namespacePairs.Contains(BuildPairKey(cycle)))
                     continue;
 
                 string cycleId = BuildCycleId(cycle);
-                string description = DescribeNamespaceCycle(graph, cycle);
+                string description = DescribeNamespaceCycle(cycle);
+                string cut = SuggestNamespaceCut(graph, cycle);
 
                 foreach (string name in cycle)
                 {
                     NamespaceNodeInfo group = graph.Namespaces[name];
                     group.CycleId = cycleId;
                     group.CycleDescription = description;
+                    group.CycleCutHint = cut;
+                    group.CycleComponentSize = component.Count;
 
                     foreach (string partner in cycle)
                     {

@@ -17,8 +17,8 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
     {
         private const float DimmedAlpha = 0.10f;
         private const float FadedAlpha = 0.07f;
-        private const float FullOpacity = 1f;
         private const long FrameDelayMilliseconds = 60;
+        private const float FullOpacity = 1f;
         private const int HeavyWeight = 12;
         private const int MediumWeight = 4;
         private const int MediumWidth = 2;
@@ -47,6 +47,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         private CodebaseGraphNode _focusedNode;
         private CodebaseGraphMiniMap _miniMap;
         private EEdgeMode _edgeMode = EEdgeMode.Muted;
+        private ELayoutMode _layoutMode = ELayoutMode.Dependencies;
 
         /// <summary>Builds the view and wires the actions its nodes raise.</summary>
         /// <param name="onSelect">Raised on a single click on a node.</param>
@@ -100,6 +101,10 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             RefreshEdges();
         }
 
+        /// <summary>Sets how the graph arranges what it draws.</summary>
+        /// <param name="mode">The arrangement to use.</param>
+        public void SetLayoutMode(ELayoutMode mode) => _layoutMode = mode;
+
         /// <summary>Sets how many relation lines are drawn at once.</summary>
         /// <param name="mode">The mode to draw in.</param>
         public void SetEdgeMode(EEdgeMode mode)
@@ -123,7 +128,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
                 return;
             }
 
-            Dictionary<string, Rect> placements = CodebaseGraphLayout.Calculate(entries);
+            Dictionary<string, Rect> placements = CodebaseGraphLayout.Calculate(entries, _layoutMode);
             Dictionary<string, CodebaseGraphNode> byId = new();
 
             foreach (GraphEntry entry in entries)

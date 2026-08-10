@@ -7,6 +7,13 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
     [Serializable]
     public sealed class DismissalData
     {
+        /// <summary>
+        /// Format the file was written with. It exists for one reason: an id written before ids could
+        /// name a finding is byte identical to a deliberate entry wide one, so without this the older
+        /// file comes back from a rollback or a fresh clone silently broadened.
+        /// </summary>
+        public int Version;
+
         /// <summary>Ids whose own findings are hidden.</summary>
         public List<string> Own = new();
 

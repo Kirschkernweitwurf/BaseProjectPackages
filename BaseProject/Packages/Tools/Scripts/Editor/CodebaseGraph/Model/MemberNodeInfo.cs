@@ -62,6 +62,12 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Model
         /// <summary>How many prefabs, scenes or assets set this serialized field.</summary>
         public int AssetUsageCount { get; set; }
 
+        /// <summary>True when the signature is one the engine could call from an animation clip.</summary>
+        public bool IsAnimationEventSignature { get; set; }
+
+        /// <summary>True when something reported here was not reported by the previous scan.</summary>
+        public bool HasNewFindings { get; set; }
+
         /// <summary>Earlier names this field answers to, from FormerlySerializedAs.</summary>
         public List<string> SerializedAliases { get; } = new();
 

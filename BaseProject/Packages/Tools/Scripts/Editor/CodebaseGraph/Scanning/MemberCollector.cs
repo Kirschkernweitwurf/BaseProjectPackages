@@ -160,6 +160,9 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
             if (type.DeclaringType != null && KeyFactory.TryForType(type.DeclaringType, out TypeKey outer))
                 node.DeclaringTypeKey = outer;
 
+            if (type.BaseType != null && KeyFactory.TryForType(type.BaseType, out TypeKey baseKey))
+                node.BaseTypeKey = baseKey;
+
             return node;
         }
 
@@ -371,6 +374,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
                 }
 
                 member.IsStateReset = isReset;
+                member.IsAnimationEventSignature = UnityEntryPointCatalog.IsAnimationEventSignature(method);
 
                 Add(registry, node, member);
             }

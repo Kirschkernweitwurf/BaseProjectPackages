@@ -10,8 +10,8 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
     /// <br/><br/>
     /// Caching by token alone is safe here because every result is normalized to a definition: a
     /// constructed generic collapses onto its open form, and a bare generic parameter is dropped, so the
-    /// generic context a token was read in cannot change the answer. Failures are not cached at all,
-    /// because those genuinely do depend on the context the token was read in, and remembering one
+    /// generic context a token was read in cannot change the answer. Failures are only cached when the
+    /// method had no generic context at all, since those genuinely do depend on it and remembering one
     /// would report the token as unresolvable everywhere else in the module.
     /// </summary>
     public sealed class TokenResolutionCache
@@ -30,13 +30,18 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         public bool TryGet(Module module, int token, out TokenResolution resolution)
             => _entries.TryGetValue((module, token), out resolution);
 
-        /// <summary>Remembers what a token resolved to. Failures are dropped rather than kept.</summary>
+        /// <summary>Remembers what a token resolved to.</summary>
         /// <param name="module">Module the token belongs to.</param>
         /// <param name="token">The metadata token.</param>
         /// <param name="resolution">What it resolved to.</param>
-        public void Store(Module module, int token, TokenResolution resolution)
+        /// <param name="isContextFree">
+        /// Whether the method it was read in had no generic arguments. A failure is only remembered
+        /// then, because with a context the same token may resolve perfectly well somewhere else, and
+        /// remembering the first failure would report it as unresolvable across the whole module.
+        /// </param>
+        public void Store(Module module, int token, TokenResolution resolution, bool isContextFree)
         {
-            if (!resolution.IsResolved)
+            if (!resolution.IsResolved && !isContextFree)
                 return;
 
             _entries[(module, token)] = resolution;

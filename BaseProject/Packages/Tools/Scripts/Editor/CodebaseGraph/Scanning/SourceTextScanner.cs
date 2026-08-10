@@ -18,12 +18,23 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
     /// </summary>
     public static class SourceTextScanner
     {
+        private const string BlockCommentEnd = "*/";
+        private const char CharQuote = '\'';
+        private const char CommentSlash = '/';
+        private const char CommentStar = '*';
         private const string CommentStart = "//";
+        private const char Escape = '\\';
+        private const char HoleClose = '}';
+        private const char HoleOpen = '{';
         private const string IgnoreMarker = "graph-ignore";
+        private const char Interpolation = '$';
         private const char LineBreak = '\n';
+        private const int MaximumStringPrefix = 2;
         private const int MinimumNameLength = 3;
+        private const char Quote = '"';
         private const int SelfFileOccurrences = 2;
         private const char Underscore = '_';
+        private const char Verbatim = '@';
 
         /// <summary>Marks inlined members that are used, and any member carrying the ignore marker.</summary>
         /// <param name="graph">Graph to annotate.</param>
@@ -193,9 +204,14 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         }
 
         /// <summary>
-        /// Walks the characters directly rather than running a regex. This runs over every source file
-        /// in the project, and a hand written scan of what is a very simple pattern is several times
-        /// faster than the engine that would otherwise do it.
+        /// Counts the identifiers in a file, ignoring anything that is not code. Walking the characters
+        /// directly rather than running a regex is several times faster over every source file in the
+        /// project, and it is also the only way to tell code from the text inside it.
+        /// <br/><br/>
+        /// Skipping strings and comments matters more than it looks. This count is the entire evidence
+        /// for whether an inlined const is used, so a const called Speed mentioned once in a log message
+        /// anywhere in the project would otherwise read as alive forever. Interpolation holes are still
+        /// read, because the code inside them is code.
         /// </summary>
         private static Dictionary<string, int> CountIdentifiers(string source)
         {
@@ -204,22 +220,196 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
 
             while (index < source.Length)
             {
+                if (TrySkipComment(source, ref index) || TrySkipText(source, ref index, counts))
+                    continue;
+
                 if (!IsIdentifierStart(source[index]))
                 {
                     index++;
                     continue;
                 }
 
-                int start = index;
-                while (index < source.Length && IsIdentifierPart(source[index]))
-                    index++;
-
-                string identifier = source[start..index];
-                counts.TryGetValue(identifier, out int count);
-                counts[identifier] = count + 1;
+                ReadIdentifier(source, ref index, counts);
             }
 
             return counts;
+        }
+
+        private static void ReadIdentifier(string source, ref int index, Dictionary<string, int> counts)
+        {
+            int start = index;
+
+            while (index < source.Length && IsIdentifierPart(source[index]))
+                index++;
+
+            string identifier = source[start..index];
+            counts.TryGetValue(identifier, out int count);
+            counts[identifier] = count + 1;
+        }
+
+        private static bool TrySkipComment(string source, ref int index)
+        {
+            if (source[index] != CommentSlash || index + 1 >= source.Length)
+                return false;
+
+            if (source[index + 1] == CommentSlash)
+            {
+                int end = source.IndexOf(LineBreak, index);
+                index = end < 0
+                    ? source.Length
+                    : end;
+
+                return true;
+            }
+
+            if (source[index + 1] != CommentStar)
+                return false;
+
+            int close = source.IndexOf(BlockCommentEnd, index + 2, StringComparison.Ordinal);
+            index = close < 0
+                ? source.Length
+                : close + BlockCommentEnd.Length;
+
+            return true;
+        }
+
+        /// <summary>
+        /// Steps over a string or character literal. An interpolated string is walked rather than
+        /// skipped, so the identifiers inside its holes are still counted.
+        /// </summary>
+        private static bool TrySkipText(string source, ref int index, Dictionary<string, int> counts)
+        {
+            char value = source[index];
+
+            if (value == CharQuote)
+            {
+                SkipCharLiteral(source, ref index);
+                return true;
+            }
+
+            if (value != Quote)
+                return false;
+
+            bool isVerbatim = HasPrefix(source, index, Verbatim);
+            bool isInterpolated = HasPrefix(source, index, Interpolation);
+
+            index++;
+
+            while (index < source.Length)
+            {
+                char current = source[index];
+
+                if (!isVerbatim && current == Escape)
+                {
+                    index += 2;
+                    continue;
+                }
+
+                if (isInterpolated && current == HoleOpen)
+                {
+                    // Two braces in a row are a literal brace rather than the start of a hole.
+                    if (index + 1 < source.Length && source[index + 1] == HoleOpen)
+                    {
+                        index += 2;
+                        continue;
+                    }
+
+                    ReadHole(source, ref index, counts);
+                    continue;
+                }
+
+                if (current != Quote)
+                {
+                    index++;
+                    continue;
+                }
+
+                // Two quotes in a row inside a verbatim string are one escaped quote.
+                if (isVerbatim && index + 1 < source.Length && source[index + 1] == Quote)
+                {
+                    index += 2;
+                    continue;
+                }
+
+                index++;
+                return true;
+            }
+
+            return true;
+        }
+
+        private static void ReadHole(string source, ref int index, Dictionary<string, int> counts)
+        {
+            int depth = 0;
+
+            while (index < source.Length)
+            {
+                char value = source[index];
+
+                if (value == HoleOpen)
+                {
+                    depth++;
+                    index++;
+                    continue;
+                }
+
+                if (value == HoleClose)
+                {
+                    depth--;
+                    index++;
+
+                    if (depth <= 0)
+                        return;
+
+                    continue;
+                }
+
+                if (IsIdentifierStart(value))
+                {
+                    ReadIdentifier(source, ref index, counts);
+                    continue;
+                }
+
+                index++;
+            }
+        }
+
+        private static void SkipCharLiteral(string source, ref int index)
+        {
+            index++;
+
+            while (index < source.Length)
+            {
+                if (source[index] == Escape)
+                {
+                    index += 2;
+                    continue;
+                }
+
+                if (source[index] == CharQuote)
+                {
+                    index++;
+                    return;
+                }
+
+                index++;
+            }
+        }
+
+        private static bool HasPrefix(string source, int index, char prefix)
+        {
+            for (int back = 1; back <= MaximumStringPrefix && index - back >= 0; back++)
+            {
+                char value = source[index - back];
+
+                if (value == prefix)
+                    return true;
+
+                if (value != Verbatim && value != Interpolation)
+                    return false;
+            }
+
+            return false;
         }
 
         private static bool IsIdentifierStart(char value) => char.IsLetter(value) || value == Underscore;

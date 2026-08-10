@@ -44,13 +44,16 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         /// <summary>Returns a placement rect for every entry.</summary>
         /// <param name="entries">Entries to place.</param>
         /// <returns>The rects, keyed by entry id.</returns>
-        public static Dictionary<string, Rect> Calculate(IReadOnlyList<GraphEntry> entries)
+        public static Dictionary<string, Rect> Calculate(IReadOnlyList<GraphEntry> entries, ELayoutMode mode)
         {
             Dictionary<string, Rect> result = new();
             if (entries == null || entries.Count == 0)
                 return result;
 
             Dictionary<string, GraphEntry> byId = BuildLookup(entries);
+
+            if (mode == ELayoutMode.Grouped)
+                return CalculateGrouped(entries, byId);
             Dictionary<string, List<string>> outgoing = BuildOutgoing(entries, byId);
             Dictionary<string, List<string>> incoming = BuildIncoming(outgoing);
 
@@ -68,6 +71,76 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
             PlaceLonelyBlock(lonely, byId, result);
             return result;
+        }
+
+        /// <summary>
+        /// Lays everything out by name, in families, ignoring dependencies entirely. The layered
+        /// arrangement answers what depends on what, which is the wrong question when you are trying to
+        /// find something: it scatters one package across the width of the graph according to how deep
+        /// each part sits. This puts a package back together and sorts it, at the cost of every edge
+        /// being longer.
+        /// </summary>
+        private static Dictionary<string, Rect> CalculateGrouped(IReadOnlyList<GraphEntry> entries,
+            Dictionary<string, GraphEntry> byId)
+        {
+            Dictionary<string, Rect> result = new();
+            Dictionary<string, List<string>> families = new(StringComparer.Ordinal);
+
+            foreach (GraphEntry entry in entries)
+            {
+                if (!families.TryGetValue(entry.ColorSeed, out List<string> members))
+                {
+                    members = new List<string>();
+                    families[entry.ColorSeed] = members;
+                }
+
+                members.Add(entry.Id);
+            }
+
+            List<string> seeds = new(families.Keys);
+            seeds.Sort(StringComparer.OrdinalIgnoreCase);
+
+            float x = 0f;
+
+            foreach (string seed in seeds)
+            {
+                List<string> members = families[seed];
+                members.Sort((left, right) => string.Compare(byId[left].Title,
+                    byId[right].Title,
+                    StringComparison.OrdinalIgnoreCase));
+
+                x += PlaceFamily(members, byId, x, result) + ClusterGap;
+            }
+
+            return result;
+        }
+
+        private static float PlaceFamily(List<string> members,
+            Dictionary<string, GraphEntry> byId,
+            float startX,
+            Dictionary<string, Rect> result)
+        {
+            float width = MeasureColumnWidth(members, byId);
+            float x = startX;
+            float cursorY = 0f;
+            int rowIndex = 0;
+
+            foreach (string id in members)
+            {
+                if (rowIndex == MaxColumnRows)
+                {
+                    rowIndex = 0;
+                    cursorY = 0f;
+                    x += width + SubColumnGap;
+                }
+
+                float height = EstimateHeight(byId[id]);
+                result[id] = new Rect(x, cursorY, MeasureWidth(byId[id]), height);
+                cursorY += height + RowGap;
+                rowIndex++;
+            }
+
+            return x - startX + width;
         }
 
         private static Dictionary<string, GraphEntry> BuildLookup(IReadOnlyList<GraphEntry> entries)

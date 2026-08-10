@@ -2,27 +2,80 @@ using Base.ToolPackage.Editor.CodebaseGraph.Model;
 
 namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
 {
-    /// <summary>Thresholds that turn raw coupling numbers into findings.</summary>
+    /// <summary>
+    /// Turns raw coupling numbers into findings. Both rules here are deliberately narrow: a size rule
+    /// that counts declarations flags every enum and every constants holder, and a coupling rule with
+    /// no sense of abstraction flags every stable utility in the project.
+    /// </summary>
     public static class CouplingMetrics
     {
+        private const int DataHolderMembers = 8;
+        private const float DataHolderShare = 0.8f;
         private const int GodClassFanOut = 25;
-        private const int GodClassMemberCount = 40;
-        private const int InstabilityMinimumFanIn = 3;
-        private const float InstabilityThreshold = 0.8f;
 
-        /// <summary>True when the type carries so much that it almost certainly does more than one job.</summary>
+        /// <summary>
+        /// Member count at which a type is called large. Deliberately blunt and deliberately high: a
+        /// hundred members is a number anyone can read off the node and argue with, where a compiled
+        /// byte count is not. Compiled size was tried and dropped, because a real scan showed no break
+        /// anywhere in the distribution, and a threshold with no break behind it only ever names
+        /// whichever file happens to be biggest that week.
+        /// </summary>
+        private const int GodClassMembers = 100;
+
+        private const int GodClassNamespaceReach = 12;
+        private const float PainMaximumAbstractness = 0.2f;
+        private const float PainMaximumInstability = 0.3f;
+        private const int PainMinimumFanIn = 10;
+
+        /// <summary>
+        /// True when the type carries so much that it almost certainly does more than one job. Reach is
+        /// the signal that carries this: depending on a dozen different namespaces is a claim about
+        /// structure, where size is only a claim about verbosity. The member count is kept as a coarse
+        /// second opinion and set high enough that it only agrees with the obvious cases.
+        /// </summary>
         /// <param name="type">Type to test.</param>
         /// <returns>True when the type looks overloaded.</returns>
         public static bool IsGodClass(TypeNodeInfo type)
-            => type.Members.Count > GodClassMemberCount || type.FanOut > GodClassFanOut;
+        {
+            if (IsExempt(type))
+                return false;
+
+            return type.NamespaceReach > GodClassNamespaceReach
+                || type.FanOut > GodClassFanOut
+                || type.Members.Count > GodClassMembers;
+        }
 
         /// <summary>
-        /// True when a lot of code depends on this type while it in turn depends on a lot of others.
-        /// Changing it then ripples outward, which is exactly what a stable shared type should not do.
+        /// True when a type is load bearing and concrete at the same time. Plenty of code depends on it,
+        /// it depends on little, and almost nothing about it is abstract, so there is no seam to change
+        /// behind and every edit reaches everything that uses it.
+        /// <br/><br/>
+        /// The other corner, an abstraction nothing uses, is deliberately not reported here. The unused
+        /// API and unused interface member findings say that more precisely already.
         /// </summary>
         /// <param name="type">Type to test.</param>
-        /// <returns>True when the type is a risky dependency.</returns>
-        public static bool IsUnstableDependency(TypeNodeInfo type)
-            => type.FanIn >= InstabilityMinimumFanIn && type.Instability > InstabilityThreshold;
+        /// <returns>True when the type is hard to change safely.</returns>
+        public static bool IsHardToChange(TypeNodeInfo type)
+        {
+            if (IsExempt(type))
+                return false;
+
+            return type.FanIn >= PainMinimumFanIn
+                && type.Abstractness <= PainMaximumAbstractness
+                && type.Instability <= PainMaximumInstability;
+        }
+
+        /// <summary>
+        /// True when a type is not really doing anything, whatever its size. Enums and static holders
+        /// are obvious, but a lookup table declared as an ordinary class is the same thing wearing a
+        /// different hat, and is recognised by its members being almost all consts and static readonly.
+        /// </summary>
+        private static bool IsExempt(TypeNodeInfo type)
+        {
+            if (type.Kind == ETypeKind.Enum || type.IsStatic)
+                return true;
+
+            return type.Members.Count >= DataHolderMembers && type.DataMemberShare >= DataHolderShare;
+        }
     }
 }

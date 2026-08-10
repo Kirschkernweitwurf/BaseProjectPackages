@@ -8,26 +8,35 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
     /// <summary>
     /// What the asset pass needs to look things up, and where its answers are written back. Holding it
     /// apart from the walking keeps the YAML reader to reading YAML.
+    /// <br/><br/>
+    /// Every lookup here fails towards crediting rather than away from it. A serialized field that is
+    /// wrongly credited loses a little severity; one that is wrongly not credited is promoted to the top
+    /// of the report as something to delete, and that is the more expensive mistake by far.
     /// </summary>
     public sealed class AssetScanContext
     {
+        private const string AnimationEventReason = "Called by an animation event";
         private const string ReferenceTypeReason = "Stored in an asset by SerializeReference";
         private const string UnityEventReason = "Called by a UnityEvent wired in the inspector";
 
         private readonly Dictionary<string, TypeNodeInfo> _byFullName = new(StringComparer.Ordinal);
         private readonly Dictionary<string, TypeNodeInfo> _byGuid = new(StringComparer.Ordinal);
+        private readonly Dictionary<string, List<MemberNodeInfo>> _anyField = new(StringComparer.Ordinal);
+        private readonly Dictionary<string, List<MemberNodeInfo>> _anyMethod = new(StringComparer.Ordinal);
 
         private readonly Dictionary<TypeKey, Dictionary<string, List<MemberNodeInfo>>> _candidates = new();
 
-        /// <summary>True when nothing was reported that an asset could answer for.</summary>
-        public bool IsEmpty => _candidates.Count == 0 && _byFullName.Count == 0;
+        private CodebaseGraphData _graph;
 
-        /// <summary>Gathers the members worth asking the assets about.</summary>
+        /// <summary>True when nothing in the graph could be answered for by an asset.</summary>
+        public bool IsEmpty => _anyField.Count == 0 && _anyMethod.Count == 0 && _byFullName.Count == 0;
+
+        /// <summary>Gathers everything the assets might have something to say about.</summary>
         /// <param name="graph">Graph to read from and later annotate.</param>
         /// <returns>The prepared context.</returns>
         public static AssetScanContext Build(CodebaseGraphData graph)
         {
-            AssetScanContext context = new();
+            AssetScanContext context = new() { _graph = graph };
 
             foreach (TypeNodeInfo type in graph.Types.Values)
             {
@@ -40,7 +49,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
 
         /// <summary>Finds the type a script guid points at, remembering the answer.</summary>
         /// <param name="guid">Guid read out of an m_Script reference.</param>
-        /// <returns>The type, or null when it is outside the scan.</returns>
+        /// <returns>The type, or null when the script cannot be resolved.</returns>
         public TypeNodeInfo ResolveByGuid(string guid)
         {
             if (_byGuid.TryGetValue(guid, out TypeNodeInfo cached))
@@ -52,19 +61,40 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
             return resolved;
         }
 
-        /// <summary>Records that one asset carries a value for a field of this type.</summary>
-        /// <param name="owner">Type the document belongs to.</param>
+        /// <summary>
+        /// Records that one asset carries a value for a serialized field. The key is looked for on the
+        /// script's own type and then up its base chain, because a component's block carries everything
+        /// it inherited too, and finally by name alone when the chain has nothing, which is what a
+        /// nested serializable class or an unresolvable script looks like.
+        /// </summary>
+        /// <param name="owner">Type the document belongs to, or null when it could not be resolved.</param>
         /// <param name="key">Serialized key read from the document.</param>
         public void CreditField(TypeNodeInfo owner, string key)
         {
-            if (!_candidates.TryGetValue(owner.Key, out Dictionary<string, List<MemberNodeInfo>> byName))
+            for (TypeNodeInfo current = owner; current != null; current = ReadBaseType(current))
+            {
+                if (!_candidates.TryGetValue(current.Key, out Dictionary<string, List<MemberNodeInfo>> byName))
+                    continue;
+
+                if (!byName.TryGetValue(key, out List<MemberNodeInfo> members))
+                    continue;
+
+                Credit(members);
+                _graph.FieldsCreditedByType++;
+                return;
+            }
+
+            if (!_anyField.TryGetValue(key, out List<MemberNodeInfo> anywhere))
                 return;
 
-            if (!byName.TryGetValue(key, out List<MemberNodeInfo> members))
-                return;
+            Credit(anywhere);
 
-            foreach (MemberNodeInfo member in members)
-                member.AssetUsageCount++;
+            // Which of the two ways this fell through matters: one is a gap that could be closed, the
+            // other is a script that cannot be resolved to a type at all.
+            if (owner == null)
+                _graph.FieldsCreditedByUnknownScript++;
+            else
+                _graph.FieldsCreditedByNestedType++;
         }
 
         /// <summary>Marks a method named by an inspector wired UnityEvent as reachable.</summary>
@@ -72,18 +102,22 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         /// <param name="methodName">Method the event calls.</param>
         public void MarkEventTarget(string typeName, string methodName)
         {
-            if (!_byFullName.TryGetValue(typeName, out TypeNodeInfo type))
-                return;
-
-            foreach (MemberNodeInfo member in type.Members)
+            if (_byFullName.TryGetValue(typeName, out TypeNodeInfo type))
             {
-                if (member.Name != methodName)
-                    continue;
-
-                member.IsEntryPoint = true;
-                member.EntryPointReason = UnityEventReason;
+                MarkNamed(type, methodName, UnityEventReason);
+                return;
             }
+
+            MarkAnywhere(methodName, UnityEventReason, false);
         }
+
+        /// <summary>
+        /// Marks a method named by an animation event as reachable. A clip records only the method name,
+        /// never the type, so this can only be matched by name across the project.
+        /// </summary>
+        /// <param name="methodName">Method the clip calls.</param>
+        public void MarkAnimationEvent(string methodName)
+            => MarkAnywhere(methodName, AnimationEventReason, true);
 
         /// <summary>Marks a type stored by SerializeReference as reachable.</summary>
         /// <param name="typeName">Namespace qualified name read from the reference entry.</param>
@@ -95,6 +129,62 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
             type.IsEntryPoint = true;
             type.EntryPointReason = ReferenceTypeReason;
         }
+
+        private static void Credit(List<MemberNodeInfo> members)
+        {
+            foreach (MemberNodeInfo member in members)
+                member.AssetUsageCount++;
+        }
+
+        private static void MarkNamed(TypeNodeInfo type, string methodName, string reason)
+        {
+            foreach (MemberNodeInfo member in type.Members)
+            {
+                if (member.Name != methodName || member.Kind != EMemberKind.Method)
+                    continue;
+
+                member.IsEntryPoint = true;
+                member.EntryPointReason = reason;
+            }
+        }
+
+        private static void Add(Dictionary<string, List<MemberNodeInfo>> byName,
+            string key,
+            MemberNodeInfo member)
+        {
+            if (!byName.TryGetValue(key, out List<MemberNodeInfo> members))
+            {
+                members = new List<MemberNodeInfo>();
+                byName[key] = members;
+            }
+
+            members.Add(member);
+        }
+
+        /// <summary>
+        /// Marks every method of a given name across the project. A clip names only the method, so this
+        /// is the one place name matching cannot be avoided, and the signature gate is what keeps it
+        /// from being the loose matching that was taken out of the field pass.
+        /// </summary>
+        private void MarkAnywhere(string methodName, string reason, bool requiresEventSignature)
+        {
+            if (!_anyMethod.TryGetValue(methodName, out List<MemberNodeInfo> members))
+                return;
+
+            foreach (MemberNodeInfo member in members)
+            {
+                if (requiresEventSignature && !member.IsAnimationEventSignature)
+                    continue;
+
+                member.IsEntryPoint = true;
+                member.EntryPointReason = reason;
+            }
+        }
+
+        private TypeNodeInfo ReadBaseType(TypeNodeInfo type)
+            => type.BaseTypeKey.IsValid
+                ? _graph.FindType(type.BaseTypeKey)
+                : null;
 
         private TypeNodeInfo ReadScriptType(string guid)
         {
@@ -121,33 +211,34 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
 
             foreach (MemberNodeInfo member in type.Members)
             {
-                if (!member.Issues.HasFlag(EMemberIssue.SerializedNeverRead))
+                if (member.Kind == EMemberKind.Method)
+                {
+                    Add(_anyMethod, member.Name, member);
+                    continue;
+                }
+
+                if (member.Kind != EMemberKind.SerializedField)
                     continue;
 
                 byName ??= new Dictionary<string, List<MemberNodeInfo>>(StringComparer.Ordinal);
 
-                Add(byName, member.Name, member);
+                Register(byName, member.Name, member);
 
                 // A renamed field still answers to the name the assets were written with.
                 foreach (string alias in member.SerializedAliases)
-                    Add(byName, alias, member);
+                    Register(byName, alias, member);
             }
 
             if (byName != null)
                 _candidates[type.Key] = byName;
         }
 
-        private static void Add(Dictionary<string, List<MemberNodeInfo>> byName,
+        private void Register(Dictionary<string, List<MemberNodeInfo>> byName,
             string key,
             MemberNodeInfo member)
         {
-            if (!byName.TryGetValue(key, out List<MemberNodeInfo> members))
-            {
-                members = new List<MemberNodeInfo>();
-                byName[key] = members;
-            }
-
-            members.Add(member);
+            Add(byName, key, member);
+            Add(_anyField, key, member);
         }
     }
 }

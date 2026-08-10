@@ -8,31 +8,34 @@ using UnityEditor;
 namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
 {
     /// <summary>
-    /// Reads what the assets say about the code. Three things live only in YAML and nowhere in IL: which
-    /// serialized fields actually carry a value, which methods an inspector wired UnityEvent calls, and
-    /// which types were stored by SerializeReference.
+    /// Reads what the assets say about the code. Four things live only in YAML and nowhere in IL: which
+    /// serialized fields actually carry a value, which methods an inspector wired UnityEvent calls,
+    /// which methods an animation clip calls, and which types were stored by SerializeReference.
     /// <br/><br/>
-    /// Every one of them is tied to the script that owns the document it appears in. Matching a field
-    /// name across the whole project would credit a dead field called speed with every prefab that has
-    /// any speed on any component, and that count feeds the ranking, so a loose match quietly degrades
-    /// the one finding with the best evidence behind it.
+    /// Fields are tied to the script that owns the document they appear in. Matching a field name across
+    /// the whole project would credit a dead field called speed with every prefab that has any speed on
+    /// any component, and that count feeds the ranking, so a loose match quietly degrades the one
+    /// finding with the best evidence behind it.
     /// </summary>
     public static class SerializedFieldAssetScanner
     {
+        private const string AnimationExtension = ".anim";
+        private const string ControllerExtension = ".controller";
         private const string DocumentMarker = "---";
+        private const string FunctionNameKey = "functionName:";
+        private const string GuidPattern = @"guid:\s*([0-9a-fA-F]{32})";
         private const char KeyBoundary = ':';
         private const char LineBreak = '\n';
         private const string MethodNameKey = "m_MethodName:";
         private const string ObjectExtension = ".asset";
+        private const string PackagePrefix = "Packages/";
         private const string PrefabExtension = ".prefab";
         private const string ProjectPrefix = "Assets/";
+        private const string ReferenceTypePattern = @"class:\s*([\w`]+),\s*ns:\s*([\w\.]*),";
         private const string SceneExtension = ".unity";
         private const string ScriptKey = "m_Script:";
         private const string TargetTypeKey = "m_TargetAssemblyTypeName:";
         private const string YamlHeader = "%YAML";
-
-        private const string GuidPattern = @"guid:\s*([0-9a-fA-F]{32})";
-        private const string ReferenceTypePattern = @"class:\s*([\w`]+),\s*ns:\s*([\w\.]*),";
 
         private static readonly Regex GuidRegex = new(GuidPattern, RegexOptions.Compiled);
         private static readonly Regex ReferenceTypeRegex = new(ReferenceTypePattern, RegexOptions.Compiled);
@@ -74,10 +77,19 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         }
 
         private static bool IsScannable(string path)
-            => path.StartsWith(ProjectPrefix, StringComparison.Ordinal)
-                && (path.EndsWith(PrefabExtension, StringComparison.OrdinalIgnoreCase)
-                    || path.EndsWith(ObjectExtension, StringComparison.OrdinalIgnoreCase)
-                    || path.EndsWith(SceneExtension, StringComparison.OrdinalIgnoreCase));
+        {
+            // Packages count too: the asset that motivated reading SerializeReference entries at all
+            // lives in one, so restricting this to the project folder would miss the case outright.
+            if (!path.StartsWith(ProjectPrefix, StringComparison.Ordinal)
+                && !path.StartsWith(PackagePrefix, StringComparison.Ordinal))
+                return false;
+
+            return path.EndsWith(PrefabExtension, StringComparison.OrdinalIgnoreCase)
+                || path.EndsWith(ObjectExtension, StringComparison.OrdinalIgnoreCase)
+                || path.EndsWith(SceneExtension, StringComparison.OrdinalIgnoreCase)
+                || path.EndsWith(AnimationExtension, StringComparison.OrdinalIgnoreCase)
+                || path.EndsWith(ControllerExtension, StringComparison.OrdinalIgnoreCase);
+        }
 
         private static void ReadAsset(string path, AssetScanContext context)
         {
@@ -86,6 +98,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
                 return;
 
             TypeNodeInfo owner = null;
+            bool hasScript = false;
             string eventTarget = null;
             HashSet<string> credited = new(StringComparer.Ordinal);
 
@@ -94,12 +107,13 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
                 if (line.StartsWith(DocumentMarker, StringComparison.Ordinal))
                 {
                     owner = null;
+                    hasScript = false;
                     eventTarget = null;
                     credited.Clear();
                     continue;
                 }
 
-                if (TryReadOwner(line, context, ref owner))
+                if (TryReadOwner(line, context, ref owner, ref hasScript))
                     continue;
 
                 if (TryReadEventTarget(line, ref eventTarget))
@@ -108,14 +122,27 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
                 if (TryReadEventMethod(line, eventTarget, context))
                     continue;
 
+                if (TryReadAnimationEvent(line, context))
+                    continue;
+
                 if (TryReadReferenceType(line, context))
                     continue;
 
-                CreditField(line, owner, context, credited);
+                if (hasScript)
+                    CreditField(line, owner, context, credited);
             }
         }
 
-        private static bool TryReadOwner(string line, AssetScanContext context, ref TypeNodeInfo owner)
+        /// <summary>
+        /// Reads which script a document belongs to. A document with no script at all credits nothing,
+        /// but one whose script cannot be resolved still does, by name alone, because a generic
+        /// MonoBehaviour resolves to nothing and refusing there would promote its fields to the top of
+        /// the report as things to delete.
+        /// </summary>
+        private static bool TryReadOwner(string line,
+            AssetScanContext context,
+            ref TypeNodeInfo owner,
+            ref bool hasScript)
         {
             if (line.IndexOf(ScriptKey, StringComparison.Ordinal) < 0)
                 return false;
@@ -124,6 +151,20 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
             owner = match.Success
                 ? context.ResolveByGuid(match.Groups[1].Value)
                 : null;
+
+            hasScript = true;
+            return true;
+        }
+
+        private static bool TryReadAnimationEvent(string line, AssetScanContext context)
+        {
+            int marker = line.IndexOf(FunctionNameKey, StringComparison.Ordinal);
+            if (marker < 0)
+                return false;
+
+            string method = line[(marker + FunctionNameKey.Length)..].Trim();
+            if (method.Length > 0)
+                context.MarkAnimationEvent(method);
 
             return true;
         }
@@ -180,9 +221,6 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
             AssetScanContext context,
             HashSet<string> credited)
         {
-            if (owner == null)
-                return;
-
             int colon = line.IndexOf(KeyBoundary);
             if (colon <= 0)
                 return;

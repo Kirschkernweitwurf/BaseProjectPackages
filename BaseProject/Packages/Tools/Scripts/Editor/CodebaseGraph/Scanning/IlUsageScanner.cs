@@ -11,10 +11,16 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
     /// instead of source text means overloads, generic instantiations and extension methods all resolve
     /// to the exact member the compiler bound to.
     /// <br/><br/>
-    /// String literals are read as well. Invoke, SendMessage, StartCoroutine and animation events all
-    /// name their target in a string, and no instruction ever points at what they call, so a literal
-    /// that matches a member of the type it is loaded in is recorded as the weakest kind of usage. It
-    /// can only ever silence a finding, never raise one.
+    /// String literals are read as well. Invoke, SendMessage and StartCoroutine name their target in a
+    /// string and no instruction ever points at what they call, so a literal matching a member of the
+    /// type it is loaded in is recorded as the weakest kind of usage. The literals of a body are only
+    /// applied when that same body calls one of those methods, because otherwise a plain
+    /// Debug.Log("Reset") would quietly silence every finding on a member called Reset.
+    /// <br/><br/>
+    /// A literal is resolved only against the type the calling code sits in, so a SendMessage aimed at
+    /// another object is not covered. That is deliberate rather than a gap left open: the receiver of
+    /// such a call is a GameObject, not the component that owns the method, so there is nothing
+    /// accurate to resolve the name against and any guess would be a guess.
     /// </summary>
     public static class IlUsageScanner
     {
@@ -27,6 +33,19 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         private const int MinimumNameLength = 3;
         private const int TokenSize = 4;
         private const char Underscore = '_';
+
+        /// <summary>Methods that reach code by name, which is what makes a nearby literal meaningful.</summary>
+        private static readonly HashSet<string> DispatchNames = new(StringComparer.Ordinal)
+        {
+            "BroadcastMessage",
+            "CancelInvoke",
+            "Invoke",
+            "InvokeRepeating",
+            "SendMessage",
+            "SendMessageUpwards",
+            "StartCoroutine",
+            "StopCoroutine"
+        };
 
         /// <summary>Maps the token carrying opcodes to the usage they express.</summary>
         private static readonly Dictionary<short, EUsageKind> UsageByOpCode = BuildUsageTable();
@@ -91,7 +110,8 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
             if (!KeyFactory.TryForType(type, out TypeKey declaringKey))
                 declaringKey = default;
 
-            TypeKey receiverKey = default;
+            List<string> literals = null;
+            bool hasDispatch = false;
             int position = 0;
 
             while (IlOpCodeTable.TryRead(il, ref position, out OpCode code))
@@ -111,51 +131,59 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
                         cache,
                         sink);
 
-                    if (resolution.Type.IsValid)
-                        receiverKey = resolution.Type;
+                    hasDispatch |= resolution.IsDispatch;
                 }
                 else if (hasToken && code.OperandType == OperandType.InlineString)
                 {
                     int token = IlOpCodeTable.ReadToken(il, position);
-                    HandleLiteral(token, module, sourceKey, declaringKey, receiverKey, registry, cache, sink);
+                    string literal = ReadCachedLiteral(module, token, cache);
+
+                    if (IsMemberName(literal))
+                    {
+                        literals ??= new List<string>();
+                        literals.Add(literal);
+                    }
                 }
 
                 position += operandSize;
                 if (operandSize == 0 && code.OperandType != OperandType.InlineNone)
                     break;
             }
+
+            if (hasDispatch && literals != null)
+                ApplyLiterals(literals, sourceKey, declaringKey, registry, sink);
         }
 
         /// <summary>
-        /// Matches a string literal against member names. Only the type the code sits in and the type
-        /// most recently touched are considered, so the guess stays tight enough to be worth trusting.
+        /// Applies the literals a body loaded, now that the body is known to dispatch by name. Only the
+        /// type the calling code sits in is considered, which covers the common shape of a component
+        /// invoking one of its own methods and refuses to guess about anything else.
         /// </summary>
-        private static void HandleLiteral(int token,
-            Module module,
+        private static void ApplyLiterals(List<string> literals,
             MemberKey sourceKey,
             TypeKey declaringKey,
-            TypeKey receiverKey,
             MemberRegistry registry,
-            TokenResolutionCache cache,
             IUsageSink sink)
         {
-            if (!cache.TryGetLiteral(module, token, out string literal))
-            {
-                literal = ReadLiteral(module, token);
-                cache.StoreLiteral(module, token, literal);
-            }
-
-            if (!IsMemberName(literal))
+            if (!declaringKey.IsValid)
                 return;
 
-            if (declaringKey.IsValid && registry.TryFindByName(declaringKey, literal, out MemberKey own))
+            foreach (string literal in literals)
             {
-                sink.AddMemberUsage(sourceKey, own, EUsageKind.StringReference);
-                return;
+                if (registry.TryFindByName(declaringKey, literal, out MemberKey own))
+                    sink.AddMemberUsage(sourceKey, own, EUsageKind.StringReference);
             }
+        }
 
-            if (receiverKey.IsValid && registry.TryFindByName(receiverKey, literal, out MemberKey target))
-                sink.AddMemberUsage(sourceKey, target, EUsageKind.StringReference);
+        private static string ReadCachedLiteral(Module module, int token, TokenResolutionCache cache)
+        {
+            if (cache.TryGetLiteral(module, token, out string literal))
+                return literal;
+
+            literal = ReadLiteral(module, token);
+            cache.StoreLiteral(module, token, literal);
+
+            return literal;
         }
 
         private static string ReadLiteral(Module module, int token)
@@ -199,7 +227,10 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
             if (!cache.TryGet(module, token, out TokenResolution resolution))
             {
                 resolution = Resolve(code, token, module, typeArguments, methodArguments);
-                cache.Store(module, token, resolution);
+                cache.Store(module,
+                    token,
+                    resolution,
+                    typeArguments.Length == 0 && methodArguments.Length == 0);
             }
 
             if (!resolution.IsResolved)
@@ -242,13 +273,13 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
                             methodArguments));
 
                     default:
-                        return new TokenResolution(default, default, true);
+                        return new TokenResolution(default, default, true, false);
                 }
             }
             catch (Exception)
             {
                 // Tokens from generic contexts the runtime cannot rebuild are counted, not logged.
-                return new TokenResolution(default, default, false);
+                return new TokenResolution(default, default, false, false);
             }
         }
 
@@ -260,7 +291,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         private static TokenResolution BuildMemberResolution(MemberInfo member)
         {
             if (member == null)
-                return new TokenResolution(default, default, true);
+                return new TokenResolution(default, default, true, false);
 
             KeyFactory.TryForMember(member, out MemberKey memberKey);
 
@@ -268,16 +299,16 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
             if (member.DeclaringType != null)
                 KeyFactory.TryForType(member.DeclaringType, out typeKey);
 
-            return new TokenResolution(memberKey, typeKey, true);
+            return new TokenResolution(memberKey, typeKey, true, DispatchNames.Contains(member.Name));
         }
 
         private static TokenResolution BuildTypeResolution(Type type)
         {
             if (type == null)
-                return new TokenResolution(default, default, true);
+                return new TokenResolution(default, default, true, false);
 
             KeyFactory.TryForType(type, out TypeKey typeKey);
-            return new TokenResolution(default, typeKey, true);
+            return new TokenResolution(default, typeKey, true, false);
         }
 
         private static EUsageKind ResolveKind(OpCode code)

@@ -18,6 +18,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         private const int MaxRowsPerType = 14;
         private const int MaxSearchResults = 150;
         private const string MemberIdPrefix = "me:";
+        private const string MemberWord = "member";
         private const string MonoBehaviourNote = ", MonoBehaviour";
         private const string NamespaceIdPrefix = "ns:";
         private const string PluralSuffix = "s";
@@ -359,7 +360,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
             foreach (NamespaceNodeInfo group in graph.Namespaces.Values)
             {
-                if (IsVisible(group, filter))
+                if (IsVisible(group, filter) && (!filter.OnlyNew || group.HasNewFindings))
                     result.Add(group);
             }
 
@@ -406,6 +407,21 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             }
         }
 
+        /// <summary>True when the type itself or anything it declares was newly reported.</summary>
+        private static bool HasNewFindings(TypeNodeInfo type)
+        {
+            if (type.HasNewFindings)
+                return true;
+
+            foreach (MemberNodeInfo member in type.Members)
+            {
+                if (member.HasNewFindings)
+                    return true;
+            }
+
+            return false;
+        }
+
         private static bool IsVisible(NamespaceNodeInfo group, GraphFilter filter)
         {
             if (!FindingCatalog.IsMatch(filter.Finding, group))
@@ -444,6 +460,9 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
                     continue;
 
                 if (!filter.IsMatch(type.FullName))
+                    continue;
+
+                if (filter.OnlyNew && !HasNewFindings(type))
                     continue;
 
                 result.Add(type);
@@ -512,6 +531,9 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
                     continue;
 
                 if (!filter.IsMatch(member.Name))
+                    continue;
+
+                if (filter.OnlyNew && !member.HasNewFindings)
                     continue;
 
                 result.Add(member);
@@ -609,8 +631,9 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
                 ? MonoBehaviourNote
                 : string.Empty;
 
-            return $"{type.Access} {BuildTypeModifier(type)}{type.Kind}{note}"
-                + $"{SubtitleSeparator}{Count(type.Members.Count, "member")}";
+            string members = Count(type.Members.Count, MemberWord);
+
+            return $"{type.Access} {BuildTypeModifier(type)}{type.Kind}{note}{SubtitleSeparator}{members}";
         }
 
         private static string BuildTypeModifier(TypeNodeInfo type)

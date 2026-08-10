@@ -26,6 +26,12 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Model
         /// <summary>How many relation lines the graph draws at once.</summary>
         public EEdgeMode EdgeMode { get; set; } = EEdgeMode.Muted;
 
+        /// <summary>True to show only what the previous scan did not report.</summary>
+        public bool OnlyNew { get; set; }
+
+        /// <summary>How the graph arranges what it draws.</summary>
+        public ELayoutMode LayoutMode { get; set; } = ELayoutMode.Dependencies;
+
         /// <summary>How far a search reaches.</summary>
         public ESearchScope SearchScope { get; set; } = ESearchScope.Everywhere;
 

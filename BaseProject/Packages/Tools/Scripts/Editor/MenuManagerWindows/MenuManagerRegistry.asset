@@ -109,6 +109,27 @@ MonoBehaviour:
           createFileName: 
           overridePriority: 0
           overrideValue: 0
+    - rid: 4171306565811306589
+      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 0
+        entry:
+          id: CA:Base.ToolPackage.Editor.CodebaseGraph.Analysis.PackageDependencyRules
+          path: Package Dependency Rules
+          enabled: 1
+          kind: 1
+          createFileName: PackageDependencyRules
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 4171306565811306602
+      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 1
+        name: Codebase Graph
+        expanded: 0
+        merged: 0
+        children:
+        - rid: 4171306565811306589
     - rid: 5339058645413658751
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
       data:
@@ -615,6 +636,7 @@ MonoBehaviour:
         - rid: 5339058662016286893
         - rid: 5339058662016286894
         - rid: 5339058662016286895
+        - rid: 4171306565811306602
     - rid: 5339058662016286886
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
       data:
@@ -665,7 +687,7 @@ MonoBehaviour:
       data:
         separator: 1
         name: Tweening
-        expanded: 1
+        expanded: 0
         merged: 0
         children:
         - rid: 5339058662016286901
@@ -675,7 +697,7 @@ MonoBehaviour:
       data:
         separator: 1
         name: Menus
-        expanded: 1
+        expanded: 0
         merged: 0
         children:
         - rid: 5339058662016286903
@@ -684,7 +706,7 @@ MonoBehaviour:
       data:
         separator: 1
         name: Input
-        expanded: 1
+        expanded: 0
         merged: 0
         children:
         - rid: 5339058662016286904
@@ -695,7 +717,7 @@ MonoBehaviour:
       data:
         separator: 1
         name: Folder Convention
-        expanded: 1
+        expanded: 0
         merged: 0
         children:
         - rid: 5339058662016286905
@@ -704,7 +726,7 @@ MonoBehaviour:
       data:
         separator: 1
         name: Naming Conventions
-        expanded: 1
+        expanded: 0
         merged: 0
         children:
         - rid: 5339058662016286906

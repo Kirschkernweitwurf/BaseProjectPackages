@@ -10,12 +10,43 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
     /// </summary>
     public static class GraphIdentity
     {
+        private const char FindingBoundary = '|';
         private const char MemberBoundary = '#';
         private const string MemberPrefix = "member:";
         private const string MemberSeparator = "#";
         private const char NamespaceBoundary = '.';
         private const string NamespacePrefix = "namespace:";
         private const string TypePrefix = "type:";
+
+        /// <summary>
+        /// Narrows an id to one finding. Without this a dismissal covers the whole entry, so setting
+        /// aside a size warning on a type also silences a future dead type or cycle on that same type,
+        /// and the tool hides a real problem because of a decision made about a different one.
+        /// </summary>
+        /// <param name="id">Id of the entry.</param>
+        /// <param name="finding">Finding to narrow it to.</param>
+        /// <returns>The id of that one finding on that entry.</returns>
+        public static string ForFinding(string id, EFinding finding) => $"{id}{FindingBoundary}{finding}";
+
+        /// <summary>Splits a stored id back into the entry it names and the finding, if it carries one.</summary>
+        /// <param name="id">Id to read.</param>
+        /// <param name="finding">The finding, or none when the id covers the whole entry.</param>
+        /// <returns>The id with any finding removed.</returns>
+        public static string ReadEntry(string id, out EFinding finding)
+        {
+            finding = EFinding.None;
+
+            if (string.IsNullOrEmpty(id))
+                return id;
+
+            int boundary = id.LastIndexOf(FindingBoundary);
+            if (boundary < 0)
+                return id;
+
+            return Enum.TryParse(id[(boundary + 1)..], out finding)
+                ? id[..boundary]
+                : id;
+        }
 
         /// <summary>Checks that a string looks like an id this tool produced.</summary>
         /// <param name="id">Text to test.</param>
@@ -34,6 +65,8 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
 
             if (string.IsNullOrEmpty(id))
                 return false;
+
+            id = ReadEntry(id, out EFinding _);
 
             if (id.StartsWith(NamespacePrefix, StringComparison.Ordinal))
             {
