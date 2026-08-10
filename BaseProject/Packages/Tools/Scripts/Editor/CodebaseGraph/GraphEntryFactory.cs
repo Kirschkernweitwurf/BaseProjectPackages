@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Base.ToolPackage.Editor.CodebaseGraph.Analysis;
 using Base.ToolPackage.Editor.CodebaseGraph.Model;
@@ -6,17 +7,22 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 {
     /// <summary>
     /// Flattens the graph into the entries the window draws. Focus mode walks outward from one entry
-    /// instead of applying the filters, so the picture around it always stays complete.
+    /// instead of applying the filters, so the picture around it always stays complete, and searching
+    /// ignores the current level entirely, because looking for a class you cannot place is exactly when
+    /// you do not know which namespace to be standing in.
     /// </summary>
     public static class GraphEntryFactory
     {
         private const string AbstractModifier = "abstract ";
         private const int ColorSeedSegments = 2;
+        private const int MaxRowsPerType = 14;
+        private const int MaxSearchResults = 150;
         private const string MemberIdPrefix = "me:";
         private const string MonoBehaviourNote = ", MonoBehaviour";
         private const string NamespaceIdPrefix = "ns:";
         private const string PluralSuffix = "s";
         private const string StaticModifier = "static ";
+        private const string SubtitleSeparator = "  \u00b7  ";
         private const string TypeIdPrefix = "ty:";
 
         /// <summary>Builds the id a member entry is published under.</summary>
@@ -29,45 +35,36 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         /// <returns>The entry id.</returns>
         public static string MakeTypeId(TypeKey key) => TypeIdPrefix + key;
 
-        /// <summary>Builds the namespace level entries.</summary>
+        /// <summary>Builds the id a namespace entry is published under.</summary>
+        /// <param name="name">Full namespace name.</param>
+        /// <returns>The entry id.</returns>
+        public static string MakeNamespaceId(string name) => NamespaceIdPrefix + name;
+
+        /// <summary>Builds the namespace level entries, or the neighborhood of a focused one.</summary>
         /// <param name="graph">Graph to read from.</param>
         /// <param name="filter">Current toolbar state.</param>
+        /// <param name="focus">Namespace to center the view on, or null.</param>
         /// <returns>The entries to draw.</returns>
-        public static List<GraphEntry> BuildNamespaces(CodebaseGraphData graph, GraphFilter filter)
+        public static List<GraphEntry> BuildNamespaces(CodebaseGraphData graph,
+            GraphFilter filter,
+            NamespaceNodeInfo focus)
         {
+            List<NamespaceNodeInfo> visible = focus == null
+                ? CollectFilteredNamespaces(graph, filter)
+                : CollectNamespaceNeighborhood(graph, focus, filter.Hops);
+
             Dictionary<string, GraphEntry> byId = new();
             List<GraphEntry> entries = new();
 
-            foreach (NamespaceNodeInfo group in graph.Namespaces.Values)
+            foreach (NamespaceNodeInfo group in visible)
             {
-                if (!IsVisible(group, filter))
-                    continue;
-
-                GraphEntry entry = new(MakeNamespaceId(group.Name),
-                    group.Name,
-                    Count(group.Types.Count, "type"),
-                    BuildColorSeed(group.Name),
-                    group.FanIn,
-                    group.FanOut)
-                {
-                    Namespace = group,
-                    CanDrillDown = true
-                };
-
-                FindingCatalog.Collect(group, entry.Findings);
-                entry.NestedFindingCount = FindingCatalog.CountVisibleFindings(group);
+                GraphEntry entry = BuildNamespaceEntry(group);
                 entries.Add(entry);
                 byId[entry.Id] = entry;
             }
 
             foreach (GraphEntry entry in entries)
-            {
-                foreach (string target in entry.Namespace.Outgoing.Keys)
-                {
-                    if (byId.ContainsKey(MakeNamespaceId(target)))
-                        entry.TargetIds.Add(MakeNamespaceId(target));
-                }
-            }
+                LinkNamespace(entry, byId);
 
             return entries;
         }
@@ -92,32 +89,13 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
             foreach (TypeNodeInfo type in visible)
             {
-                GraphEntry entry = new(MakeTypeId(type.Key),
-                    type.ShortName,
-                    BuildTypeSubtitle(type),
-                    BuildColorSeed(type.Namespace),
-                    type.FanIn,
-                    type.FanOut)
-                {
-                    Type = type,
-                    CanDrillDown = true
-                };
-
-                FindingCatalog.Collect(type, entry.Findings);
-                entry.NestedFindingCount = FindingCatalog.CountVisibleMemberFindings(type);
-
+                GraphEntry entry = BuildTypeEntry(type, filter);
                 entries.Add(entry);
                 byKey[type.Key] = entry;
             }
 
             foreach (GraphEntry entry in entries)
-            {
-                foreach (TypeKey target in entry.Type.Outgoing.Keys)
-                {
-                    if (byKey.ContainsKey(target))
-                        entry.TargetIds.Add(MakeTypeId(target));
-                }
-            }
+                LinkType(entry, byKey);
 
             return entries;
         }
@@ -145,39 +123,287 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
             foreach (MemberNodeInfo member in visible)
             {
-                TypeNodeInfo declaring = graph.FindType(member.DeclaringTypeKey);
-                bool isForeign = declaring != null && !declaring.Key.Equals(owner.Key);
-
-                GraphEntry entry = new(MakeMemberId(member.Key),
-                    isForeign
-                        ? $"{declaring.ShortName}.{member.Name}"
-                        : member.Signature,
-                    BuildMemberSubtitle(member),
-                    BuildColorSeed(declaring == null
-                        ? owner.Namespace
-                        : declaring.Namespace),
-                    member.FanIn,
-                    member.FanOut)
-                {
-                    Member = member,
-                    Type = declaring
-                };
-
-                FindingCatalog.Collect(member, declaring, entry.Findings);
+                GraphEntry entry = BuildMemberEntry(member, graph.FindType(member.DeclaringTypeKey), owner);
                 entries.Add(entry);
                 byKey[member.Key] = entry;
             }
 
             foreach (GraphEntry entry in entries)
+                LinkMember(entry, byKey);
+
+            return entries;
+        }
+
+        /// <summary>
+        /// Builds matches from every level at once. Searching is what you reach for when you know a name
+        /// and not where it lives, so restricting it to the level you happen to be standing on defeats
+        /// the point.
+        /// </summary>
+        /// <param name="graph">Graph to read from.</param>
+        /// <param name="filter">Current toolbar state, carrying the search text.</param>
+        /// <param name="total">Receives how many matched before the cap was applied.</param>
+        /// <returns>The entries to draw.</returns>
+        public static List<GraphEntry> BuildSearch(CodebaseGraphData graph, GraphFilter filter, out int total)
+        {
+            bool wantsTypes = filter.SearchScope != ESearchScope.Members;
+            bool wantsMembers = filter.SearchScope != ESearchScope.Types;
+            bool wantsNamespaces = filter.SearchScope == ESearchScope.Everywhere;
+
+            List<GraphEntry> entries = new();
+            Dictionary<string, GraphEntry> byId = new();
+            Dictionary<TypeKey, GraphEntry> byType = new();
+            Dictionary<MemberKey, GraphEntry> byMember = new();
+            total = 0;
+
+            if (wantsNamespaces)
             {
-                foreach (UsageEdgeInfo edge in entry.Member.Outgoing)
+                foreach (NamespaceNodeInfo group in graph.Namespaces.Values)
                 {
-                    if (byKey.ContainsKey(edge.TargetKey))
-                        entry.TargetIds.Add(MakeMemberId(edge.TargetKey));
+                    if (!filter.IsMatch(group.Name) || !FindingCatalog.IsMatch(filter.Finding, group))
+                        continue;
+
+                    total++;
+                    Accept(entries, byId, BuildNamespaceEntry(group));
                 }
             }
 
+            foreach (TypeNodeInfo type in graph.Types.Values)
+            {
+                if (wantsTypes
+                    && filter.IsMatch(type.FullName)
+                    && FindingCatalog.IsMatch(filter.Finding, type))
+                {
+                    total++;
+                    GraphEntry entry = BuildTypeEntry(type, filter);
+
+                    if (Accept(entries, byId, entry))
+                        byType[type.Key] = entry;
+                }
+
+                if (wantsMembers)
+                    CollectSearchMembers(type, filter, entries, byId, byMember, ref total);
+            }
+
+            foreach (GraphEntry entry in entries)
+                LinkSearch(entry, byId, byType, byMember);
+
             return entries;
+        }
+
+        private static void CollectSearchMembers(TypeNodeInfo type,
+            GraphFilter filter,
+            List<GraphEntry> entries,
+            Dictionary<string, GraphEntry> byId,
+            Dictionary<MemberKey, GraphEntry> byMember,
+            ref int total)
+        {
+            foreach (MemberNodeInfo member in type.Members)
+            {
+                if (!filter.IsMatch(member.Name) || !FindingCatalog.IsMatch(filter.Finding, member, type))
+                    continue;
+
+                total++;
+                GraphEntry entry = BuildMemberEntry(member, type, type);
+
+                if (Accept(entries, byId, entry))
+                    byMember[member.Key] = entry;
+            }
+        }
+
+        private static bool Accept(List<GraphEntry> entries,
+            Dictionary<string, GraphEntry> byId,
+            GraphEntry entry)
+        {
+            if (entries.Count >= MaxSearchResults)
+                return false;
+
+            entries.Add(entry);
+            byId[entry.Id] = entry;
+            return true;
+        }
+
+        private static GraphEntry BuildNamespaceEntry(NamespaceNodeInfo group)
+        {
+            GraphEntry entry = new(MakeNamespaceId(group.Name),
+                group.Name,
+                Count(group.Types.Count, "type"),
+                BuildColorSeed(group.Name),
+                group.FanIn,
+                group.FanOut,
+                EGraphScope.Namespace)
+            {
+                Namespace = group,
+                CanDrillDown = true,
+                Glyph = GraphSymbols.NamespaceGlyph,
+                Access = EAccessLevel.Public
+            };
+
+            FindingCatalog.Collect(group, entry.Findings);
+            entry.NestedFindingCount = FindingCatalog.CountVisibleFindings(group);
+            entry.IsDismissed = FindingCatalog.IsHidden(group);
+            entry.DismissedNestedCount = FindingCatalog.CountDismissedFindings(group);
+
+            return entry;
+        }
+
+        private static GraphEntry BuildTypeEntry(TypeNodeInfo type, GraphFilter filter)
+        {
+            GraphEntry entry = new(MakeTypeId(type.Key),
+                type.ShortName,
+                BuildTypeSubtitle(type),
+                BuildColorSeed(type.Namespace),
+                type.FanIn,
+                type.FanOut,
+                EGraphScope.Type)
+            {
+                Type = type,
+                CanDrillDown = true,
+                Glyph = GraphSymbols.GetGlyph(type.Kind),
+                Access = type.Access,
+                IsContract = type.Kind == ETypeKind.Interface
+            };
+
+            FindingCatalog.Collect(type, entry.Findings);
+            entry.NestedFindingCount = FindingCatalog.CountVisibleMemberFindings(type);
+            entry.IsDismissed = FindingCatalog.IsHidden(type);
+            entry.DismissedNestedCount = FindingCatalog.CountDismissedMemberFindings(type);
+            AppendRows(type, filter, entry);
+
+            return entry;
+        }
+
+        private static GraphEntry BuildMemberEntry(MemberNodeInfo member,
+            TypeNodeInfo declaring,
+            TypeNodeInfo owner)
+        {
+            bool isForeign = declaring != null && !declaring.Key.Equals(owner.Key);
+
+            GraphEntry entry = new(MakeMemberId(member.Key),
+                isForeign
+                    ? $"{declaring.ShortName}.{member.Name}"
+                    : member.Signature,
+                BuildMemberSubtitle(member),
+                BuildColorSeed(declaring == null
+                    ? owner.Namespace
+                    : declaring.Namespace),
+                member.FanIn,
+                member.FanOut,
+                EGraphScope.Member)
+            {
+                Member = member,
+                Type = declaring,
+                Glyph = GraphSymbols.GetGlyph(member.Kind),
+                Access = member.Access,
+                IsContract = declaring != null && declaring.Kind == ETypeKind.Interface
+            };
+
+            FindingCatalog.Collect(member, declaring, entry.Findings);
+            entry.IsDismissed = member.HasIssues
+                && declaring != null
+                && FindingCatalog.IsHidden(declaring, member);
+
+            return entry;
+        }
+
+        private static void LinkNamespace(GraphEntry entry, Dictionary<string, GraphEntry> byId)
+        {
+            foreach (KeyValuePair<string, int> target in entry.Namespace.Outgoing)
+            {
+                if (byId.ContainsKey(MakeNamespaceId(target.Key)))
+                    entry.Targets.Add(new GraphEdgeInfo(MakeNamespaceId(target.Key), target.Value));
+            }
+        }
+
+        private static void LinkType(GraphEntry entry, Dictionary<TypeKey, GraphEntry> byKey)
+        {
+            foreach (KeyValuePair<TypeKey, int> target in entry.Type.Outgoing)
+            {
+                if (byKey.ContainsKey(target.Key))
+                    entry.Targets.Add(new GraphEdgeInfo(MakeTypeId(target.Key), target.Value));
+            }
+        }
+
+        private static void LinkMember(GraphEntry entry, Dictionary<MemberKey, GraphEntry> byKey)
+        {
+            foreach (UsageEdgeInfo edge in entry.Member.Outgoing)
+            {
+                if (byKey.ContainsKey(edge.TargetKey))
+                    entry.Targets.Add(new GraphEdgeInfo(MakeMemberId(edge.TargetKey), edge.Count));
+            }
+        }
+
+        private static void LinkSearch(GraphEntry entry,
+            Dictionary<string, GraphEntry> byId,
+            Dictionary<TypeKey, GraphEntry> byType,
+            Dictionary<MemberKey, GraphEntry> byMember)
+        {
+            if (entry.Member != null)
+            {
+                LinkMember(entry, byMember);
+                return;
+            }
+
+            if (entry.Namespace != null)
+            {
+                LinkNamespace(entry, byId);
+                return;
+            }
+
+            LinkType(entry, byType);
+        }
+
+        private static List<NamespaceNodeInfo> CollectFilteredNamespaces(CodebaseGraphData graph,
+            GraphFilter filter)
+        {
+            List<NamespaceNodeInfo> result = new();
+
+            foreach (NamespaceNodeInfo group in graph.Namespaces.Values)
+            {
+                if (IsVisible(group, filter))
+                    result.Add(group);
+            }
+
+            return result;
+        }
+
+        private static List<NamespaceNodeInfo> CollectNamespaceNeighborhood(CodebaseGraphData graph,
+            NamespaceNodeInfo focus,
+            int hops)
+        {
+            HashSet<string> seen = new() { focus.Name };
+            List<NamespaceNodeInfo> result = new() { focus };
+            List<NamespaceNodeInfo> frontier = new() { focus };
+
+            for (int step = 0; step < hops; step++)
+            {
+                List<NamespaceNodeInfo> next = new();
+
+                foreach (NamespaceNodeInfo current in frontier)
+                {
+                    AddNamespaces(graph, current.Outgoing.Keys, seen, result, next);
+                    AddNamespaces(graph, current.Incoming.Keys, seen, result, next);
+                }
+
+                frontier = next;
+            }
+
+            return result;
+        }
+
+        private static void AddNamespaces(CodebaseGraphData graph,
+            IEnumerable<string> names,
+            HashSet<string> seen,
+            List<NamespaceNodeInfo> result,
+            List<NamespaceNodeInfo> next)
+        {
+            foreach (string name in names)
+            {
+                if (!seen.Add(name) || !graph.Namespaces.TryGetValue(name, out NamespaceNodeInfo group))
+                    continue;
+
+                result.Add(group);
+                next.Add(group);
+            }
         }
 
         private static bool IsVisible(NamespaceNodeInfo group, GraphFilter filter)
@@ -338,6 +564,65 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             next.Add(member);
         }
 
+        /// <summary>
+        /// Fills the member list a type node draws. Reading a class means reading its members, so the
+        /// node shows them rather than only counting them, capped so one large type cannot dominate.
+        /// </summary>
+        private static void AppendRows(TypeNodeInfo type, GraphFilter filter, GraphEntry entry)
+        {
+            if (!filter.ShowMembersOnTypes)
+                return;
+
+            List<MemberNodeInfo> members = new(type.Members);
+            members.Sort(CompareMembers);
+
+            foreach (MemberNodeInfo member in members)
+            {
+                if (entry.Rows.Count == MaxRowsPerType)
+                {
+                    entry.HiddenRowCount = members.Count - MaxRowsPerType;
+                    return;
+                }
+
+                bool isDismissed = member.HasIssues && FindingCatalog.IsHidden(type, member);
+
+                entry.Rows.Add(new GraphMemberRow(GraphSymbols.GetGlyph(member.Kind),
+                    member.Signature,
+                    member.Access,
+                    member.HasIssues && !isDismissed,
+                    isDismissed));
+            }
+        }
+
+        private static int CompareMembers(MemberNodeInfo left, MemberNodeInfo right)
+        {
+            int byKind = left.Kind.CompareTo(right.Kind);
+
+            return byKind != 0
+                ? byKind
+                : string.Compare(left.Name, right.Name, StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static string BuildTypeSubtitle(TypeNodeInfo type)
+        {
+            string note = type.IsMonoBehaviour
+                ? MonoBehaviourNote
+                : string.Empty;
+
+            return $"{type.Access} {BuildTypeModifier(type)}{type.Kind}{note}"
+                + $"{SubtitleSeparator}{Count(type.Members.Count, "member")}";
+        }
+
+        private static string BuildTypeModifier(TypeNodeInfo type)
+        {
+            if (type.IsStatic)
+                return StaticModifier;
+
+            return type.IsAbstract
+                ? AbstractModifier
+                : string.Empty;
+        }
+
         private static string BuildMemberSubtitle(MemberNodeInfo member)
         {
             string prefix = member.IsStatic
@@ -349,29 +634,6 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
                 : string.Empty;
 
             return $"{prefix}{member.Access} {member.Kind}{size}";
-        }
-
-        private static string MakeNamespaceId(string name) => NamespaceIdPrefix + name;
-
-        private static string BuildTypeSubtitle(TypeNodeInfo type)
-        {
-            string note = type.IsMonoBehaviour
-                ? MonoBehaviourNote
-                : string.Empty;
-
-            return $"{type.Access} {BuildTypeModifier(type)}{type.Kind}{note}, "
-                + $"{Count(type.Members.Count, "member")}, "
-                + $"{Count(type.ExternalReferenceCount, "external ref")}";
-        }
-
-        private static string BuildTypeModifier(TypeNodeInfo type)
-        {
-            if (type.IsStatic)
-                return StaticModifier;
-
-            return type.IsAbstract
-                ? AbstractModifier
-                : string.Empty;
         }
 
         private static string Count(int value, string singular)

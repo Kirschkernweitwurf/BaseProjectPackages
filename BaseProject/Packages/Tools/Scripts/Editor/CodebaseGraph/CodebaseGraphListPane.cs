@@ -14,6 +14,8 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         private const string ActiveSortClass = "is-active";
         private const string BadgeClass = "row-badge";
         private const string DetailName = "row-detail";
+        private const string DismissedClass = "row-dismissed";
+        private const string DismissedText = "Dismissed";
         private const string HeadingClass = "pane-heading";
         private const string PaneClass = "pane";
         private const string RowClass = "list-row";
@@ -179,11 +181,17 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             title.tooltip = entry.Subtitle;
 
             int findings = CountFindings(entry);
-            detail.text = findings == 0
-                ? $"used by {entry.FanIn}   \u00b7   uses {entry.FanOut}"
-                : $"used by {entry.FanIn}   \u00b7   uses {entry.FanOut}   \u00b7   {findings} findings";
+            string meta = $"Used by {entry.FanIn}   \u00b7   Uses {entry.FanOut}";
 
+            if (findings > 0)
+                meta = $"{meta}   \u00b7   {findings} findings";
+
+            if (entry.HasDismissals)
+                meta = $"{meta}   \u00b7   {DismissedText}";
+
+            detail.text = meta;
             detail.EnableInClassList(BadgeClass, findings > 0);
+            detail.EnableInClassList(DismissedClass, findings == 0 && entry.HasDismissals);
         }
 
         private void OnSelectionChanged(IEnumerable<object> selection)

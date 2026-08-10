@@ -12,9 +12,11 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
     /// numbers it can open directly, and the caveats up front so it does not delete something Unity
     /// calls by name.
     /// <br/><br/>
-    /// Findings are ranked and split. A scan of a real project produces thousands of true statements of
-    /// which a few dozen are worth acting on, so the main report carries the high and medium ones with a
-    /// short list at the very top, and everything low confidence goes to a separate verbose file.
+    /// A scan of a real project produces thousands of true statements of which a few dozen are worth
+    /// acting on, so everything is ranked and the twenty highest are listed at the very top. The low
+    /// confidence findings still follow, after the parts you act on, under a heading that says plainly
+    /// they are there for reference. Ranking is what makes the file readable, so splitting it in two
+    /// bought nothing and cost the second half its header, its caveats and its dismissal block.
     /// </summary>
     public static class FindingReportWriter
     {
@@ -25,13 +27,14 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
 
         private const string CodeFence = "```";
         private const string CommentPrefix = "# ";
-        private const string EmptySection = "Nothing found.";
         private const string IgnoreMarker = "graph-ignore";
-        private const string MainTitle = "# Codebase Graph findings";
         private const string NothingDismissed = "Nothing is dismissed right now.";
-        private const string UnknownReason = "Unstated";
+        private const string ReferenceTitle = "# For reference: low confidence findings";
+        private const string ReportTitle = "# Codebase Graph findings";
+        private const string SectionMarker = "##";
         private const int StartHereCount = 20;
-        private const string VerboseTitle = "# Codebase Graph findings, low confidence";
+        private const string SubsectionMarker = "###";
+        private const string UnknownReason = "Unstated";
 
         /// <summary>Order the sections appear in.</summary>
         private static readonly EFinding[] SectionOrder =
@@ -53,41 +56,43 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
             EFinding.UnusedPublicApi
         };
 
-        /// <summary>Builds the main report, holding the findings worth reading first.</summary>
+        /// <summary>Builds the report.</summary>
         /// <param name="graph">Graph to report on.</param>
         /// <returns>The Markdown text.</returns>
-        public static string BuildMain(CodebaseGraphData graph)
+        public static string Build(CodebaseGraphData graph)
         {
             List<FindingEntry> entries = Collect(graph);
             StringBuilder builder = new();
 
-            AppendHeader(builder, graph, MainTitle, entries);
+            AppendHeader(builder, graph, entries);
             AppendStartHere(builder, entries);
-            AppendSections(builder, entries, ESeverity.Medium);
+            AppendSections(builder, entries, false);
             AppendIgnoreMarker(builder, graph);
             AppendDismissals(builder, graph);
+            AppendReference(builder, entries);
 
             return builder.ToString();
         }
 
-        /// <summary>Builds the companion report holding everything ranked low.</summary>
-        /// <param name="graph">Graph to report on.</param>
-        /// <returns>The Markdown text.</returns>
-        public static string BuildVerbose(CodebaseGraphData graph)
+        /// <summary>
+        /// Appends the low confidence findings after everything actionable. They sit at the end rather
+        /// than in a file of their own, because they are true and worth having on hand, just never the
+        /// reason anyone opened the report.
+        /// </summary>
+        private static void AppendReference(StringBuilder builder, List<FindingEntry> entries)
         {
-            List<FindingEntry> entries = Collect(graph);
-            StringBuilder builder = new();
+            if (Count(entries, ESeverity.Low) == 0)
+                return;
 
-            builder.AppendLine(VerboseTitle);
+            builder.AppendLine(ReferenceTitle);
             builder.AppendLine();
-            builder.AppendLine("Everything here is true and almost none of it is worth acting on. Public "
-                + "API of a distributable package, interface contracts, enum members and serialized "
-                + "fields all end up in this file. Read it when you are deliberately shrinking something.");
+            builder.AppendLine("Everything past this point is true and almost none of it is worth acting "
+                + "on. The published API of a distributable package, interface contracts, enum members "
+                + "and serialized fields all land here. Read it when you are deliberately shrinking "
+                + "something, and otherwise stop at the section above.");
 
             builder.AppendLine();
-            AppendSections(builder, entries, ESeverity.Low);
-
-            return builder.ToString();
+            AppendSections(builder, entries, true);
         }
 
         private static List<FindingEntry> Collect(CodebaseGraphData graph)
@@ -212,13 +217,12 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
 
         private static void AppendHeader(StringBuilder builder,
             CodebaseGraphData graph,
-            string title,
             List<FindingEntry> entries)
         {
             int packages = graph.PackageAssemblies.Count;
             int project = graph.ScannedAssemblies.Count - packages;
 
-            builder.AppendLine(title);
+            builder.AppendLine(ReportTitle);
             builder.AppendLine();
             builder.AppendLine($"Generated {DateTime.Now:yyyy-MM-dd HH:mm}.");
             builder.AppendLine($"Scanned {graph.TypeCount} types and {graph.MemberCount} members in "
@@ -233,7 +237,8 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
 
             builder.AppendLine();
             builder.AppendLine($"{Count(entries, ESeverity.High)} findings ranked high, "
-                + $"{Count(entries, ESeverity.Medium)} medium, {Count(entries, ESeverity.Low)} low.");
+                + $"{Count(entries, ESeverity.Medium)} medium, {Count(entries, ESeverity.Low)} low. The "
+                + "low ones are gathered at the end, after everything worth acting on.");
 
             builder.AppendLine();
             builder.AppendLine("## How to read this");
@@ -315,28 +320,24 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
             builder.AppendLine();
         }
 
-        private static void AppendSections(StringBuilder builder,
-            List<FindingEntry> entries,
-            ESeverity worstIncluded)
+        private static void AppendSections(StringBuilder builder, List<FindingEntry> entries, bool wantsLow)
         {
             foreach (EFinding finding in SectionOrder)
-                AppendSection(builder, entries, finding, worstIncluded);
+                AppendSection(builder, entries, finding, wantsLow);
         }
 
         private static void AppendSection(StringBuilder builder,
             List<FindingEntry> entries,
             EFinding finding,
-            ESeverity worstIncluded)
+            bool wantsLow)
         {
             List<FindingEntry> matching = new();
 
             foreach (FindingEntry entry in entries)
             {
-                bool wanted = worstIncluded == ESeverity.Low
-                    ? entry.Severity == ESeverity.Low
-                    : entry.Severity <= worstIncluded;
+                bool isLow = entry.Severity == ESeverity.Low;
 
-                if (entry.Finding == finding && wanted)
+                if (entry.Finding == finding && isLow == wantsLow)
                     matching.Add(entry);
             }
 
@@ -344,8 +345,11 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
                 return;
 
             FindingDescriptor descriptor = FindingCatalog.Describe(finding);
+            string heading = wantsLow
+                ? SubsectionMarker
+                : SectionMarker;
 
-            builder.AppendLine($"## {descriptor.Title} ({matching.Count})");
+            builder.AppendLine($"{heading} {descriptor.Title} ({matching.Count})");
             builder.AppendLine();
             builder.AppendLine($"**What the scan saw.** {descriptor.Explanation}");
             builder.AppendLine();
@@ -420,9 +424,10 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
                 + "they can be removed or pointed at whatever replaced them.");
 
             builder.AppendLine();
-            builder.AppendLine("These were reviewed and set aside, so none of them appear in the sections "
-                + "above. To change that, edit the block below and hand it back through **Update "
-                + "dismissals** in the window toolbar, either from the clipboard or as a file.");
+            builder.AppendLine("These were reviewed and dismissed, so none of them appear anywhere in "
+                + "this report. To change that, edit the block below and hand it back through **Update "
+                + "dismissals** in the window toolbar, either from the clipboard or as a file. That "
+                + "button only reads; this report is written by **Export findings** next to it.");
 
             builder.AppendLine();
             builder.AppendLine($"- `{DismissalTextFormat.DismissVerb} <id>` hides the findings on that entry.");

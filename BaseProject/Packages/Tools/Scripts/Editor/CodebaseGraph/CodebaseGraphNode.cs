@@ -8,25 +8,53 @@ using UnityEngine.UIElements;
 namespace Base.ToolPackage.Editor.CodebaseGraph
 {
     /// <summary>
-    /// A graph node showing one entry. Actions live in the right click menu and on double click rather
-    /// than on buttons, because a button inside a GraphView node competes with the node's own drag and
-    /// selection manipulators and swallows about half of the clicks aimed at it.
+    /// A graph node showing one entry. Each level is drawn with its own width, corner radius and glyph,
+    /// so a namespace, a class and a field are told apart by shape rather than by reading them, and a
+    /// type lists its members the way a class does rather than only counting them.
+    /// <br/><br/>
+    /// Actions live in the right click menu and on double click rather than on buttons, because a button
+    /// inside a GraphView node competes with the node's own drag and selection manipulators and swallows
+    /// about half of the clicks aimed at it.
     /// </summary>
     public sealed class CodebaseGraphNode : Node
     {
+        private const string AccentClass = "node-accent";
         private const string BadgeClass = "finding-badge";
+        private const string BadgeDismissedClass = "is-dismissed";
         private const string BadgeRowClass = "finding-row";
+        private const string ContractClass = "is-contract";
         private const string DismissCommand = "Dismiss findings here";
+        private const string DismissedBadgeText = "Dismissed, findings silenced";
+        private const string DismissedInsideFormat = "{0} dismissed inside";
+        private const string DismissedNodeClass = "has-dismissals";
+        private const string DismissedRowTooltip = "This member has a finding that was dismissed.";
+
+        private const string DismissedTooltip = "Findings here were reviewed and dismissed, so they are "
+            + "silenced everywhere including the report. The Dismissed button in the toolbar lists them "
+            + "and brings them back.";
+
         private const string DismissTreeCommand = "Dismiss findings here and inside";
         private const string DrillCommand = "Open contents";
         private const string FindingsClass = "has-findings";
         private const string FocusCommand = "Focus on this";
         private const string FocusedClass = "is-focused";
+        private const string GlyphClass = "node-glyph";
+        private const string MemberLevelClass = "level-member";
         private const string MetaClass = "node-meta";
+        private const string NamespaceLevelClass = "level-namespace";
         private const string NestedFormat = "{0} more inside";
         private const string NodeClass = "codebase-node";
         private const string OpenCommand = "Open script";
+        private const string OverflowFormat = "and {0} more members";
+        private const string RowClass = "member-row";
+        private const string RowDismissedClass = "is-dismissed";
+        private const string RowFindingClass = "has-finding";
+        private const string RowGlyphClass = "member-glyph";
+        private const string RowLabelClass = "member-label";
+        private const string RowListClass = "member-list";
         private const string SubtitleClass = "node-subtitle";
+        private const string TitleLabelName = "title-label";
+        private const string TypeLevelClass = "level-type";
 
         private static readonly Color BodyColor = new(0.20f, 0.20f, 0.22f, 1f);
 
@@ -52,7 +80,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         /// <param name="onFocus">Raised when the view should center on this entry.</param>
         /// <param name="onDrillDown">Raised when the next level down should open.</param>
         /// <param name="onOpen">Raised when the script should be opened.</param>
-        /// <param name="onDismiss">Raised when the findings here should be set aside.</param>
+        /// <param name="onDismiss">Raised when the findings here should be dismissed.</param>
         public CodebaseGraphNode(GraphEntry entry,
             bool isFocused,
             Action<GraphEntry> onSelect,
@@ -69,17 +97,26 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             _onDismiss = onDismiss;
 
             title = entry.Title;
-            tooltip = entry.Subtitle;
-            AddToClassList(NodeClass);
-            style.width = CodebaseGraphLayout.NodeWidth;
+            tooltip = BuildTooltip(entry);
 
-            if (entry.BadgeCount > 0)
+            AddToClassList(NodeClass);
+            AddToClassList(ResolveLevelClass(entry.Level));
+            style.width = CodebaseGraphLayout.MeasureWidth(entry);
+
+            if (entry.IsContract)
+                AddToClassList(ContractClass);
+
+            if (entry.HasOpenFindings)
                 AddToClassList(FindingsClass);
+
+            if (entry.HasDismissals)
+                AddToClassList(DismissedNodeClass);
 
             if (isFocused)
                 AddToClassList(FocusedClass);
 
             ApplyColors();
+            BuildGlyph();
 
             InputPort = CreatePort(Direction.Input);
             inputContainer.Add(InputPort);
@@ -105,13 +142,40 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             if (Entry.Type != null)
                 evt.menu.AppendAction(OpenCommand, _ => _onOpen?.Invoke(Entry));
 
-            if (Entry.BadgeCount == 0)
+            if (!Entry.HasOpenFindings)
                 return;
 
             evt.menu.AppendAction(DismissCommand, _ => _onDismiss?.Invoke(Entry, false));
 
             if (Entry.CanDrillDown)
                 evt.menu.AppendAction(DismissTreeCommand, _ => _onDismiss?.Invoke(Entry, true));
+        }
+
+        private static string BuildTooltip(GraphEntry entry)
+            => entry.HasDismissals
+                ? $"{entry.Subtitle}\n\n{DismissedTooltip}"
+                : entry.Subtitle;
+
+        private static string ResolveLevelClass(EGraphScope level)
+        {
+            switch (level)
+            {
+                case EGraphScope.Namespace:
+                    return NamespaceLevelClass;
+
+                case EGraphScope.Member:
+                    return MemberLevelClass;
+
+                default:
+                    return TypeLevelClass;
+            }
+        }
+
+        private static Label BuildLabel(string text, string styleClass)
+        {
+            Label label = new(text);
+            label.AddToClassList(styleClass);
+            return label;
         }
 
         private Port CreatePort(Direction direction)
@@ -126,18 +190,70 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             mainContainer.style.backgroundColor = BodyColor;
             extensionContainer.style.backgroundColor = BodyColor;
             titleContainer.style.backgroundColor = GraphColorPalette.GetColor(Entry.ColorSeed);
+            titleContainer.Q<Label>(TitleLabelName).style.color = GraphColorPalette.TitleTextColor;
+
+            VisualElement accent = new();
+            accent.AddToClassList(AccentClass);
+            accent.style.backgroundColor = GraphSymbols.GetColor(Entry.Access);
+            mainContainer.Insert(0, accent);
+        }
+
+        private void BuildGlyph()
+        {
+            Label glyph = BuildLabel(Entry.Glyph, GlyphClass);
+            glyph.style.color = GraphSymbols.GetColor(Entry.Access);
+            titleContainer.Insert(0, glyph);
         }
 
         private void BuildBody()
         {
-            Label subtitle = new(Entry.Subtitle);
-            subtitle.AddToClassList(SubtitleClass);
-            extensionContainer.Add(subtitle);
+            extensionContainer.Add(BuildLabel(Entry.Subtitle, SubtitleClass));
+            extensionContainer.Add(BuildLabel($"Used by {Entry.FanIn}   \u00b7   Uses {Entry.FanOut}", MetaClass));
 
-            Label meta = new($"used by {Entry.FanIn}   \u00b7   uses {Entry.FanOut}");
-            meta.AddToClassList(MetaClass);
-            extensionContainer.Add(meta);
+            BuildRows();
+            BuildBadges();
+        }
 
+        private void BuildRows()
+        {
+            if (Entry.Rows.Count == 0)
+                return;
+
+            VisualElement list = new();
+            list.AddToClassList(RowListClass);
+
+            foreach (GraphMemberRow row in Entry.Rows)
+                list.Add(BuildRow(row));
+
+            if (Entry.HiddenRowCount > 0)
+                list.Add(BuildLabel(string.Format(OverflowFormat, Entry.HiddenRowCount), SubtitleClass));
+
+            extensionContainer.Add(list);
+        }
+
+        private VisualElement BuildRow(GraphMemberRow row)
+        {
+            VisualElement element = new();
+            element.AddToClassList(RowClass);
+            element.EnableInClassList(RowFindingClass, row.HasFinding);
+            element.EnableInClassList(RowDismissedClass, row.IsDismissed);
+
+            if (row.IsDismissed)
+                element.tooltip = DismissedRowTooltip;
+
+            Label glyph = BuildLabel(row.Glyph, RowGlyphClass);
+            glyph.style.color = GraphSymbols.GetColor(row.Access);
+            element.Add(glyph);
+
+            Label label = BuildLabel(row.Label, RowLabelClass);
+            label.style.color = GraphSymbols.GetColor(row.Access);
+            element.Add(label);
+
+            return element;
+        }
+
+        private void BuildBadges()
+        {
             if (Entry.BadgeCount == 0)
                 return;
 
@@ -145,18 +261,27 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             badges.AddToClassList(BadgeRowClass);
 
             foreach (EFinding finding in Entry.Findings)
-                badges.Add(BuildBadge(FindingCatalog.Describe(finding).Title));
+                badges.Add(BuildLabel(FindingCatalog.Describe(finding).Title, BadgeClass));
 
             if (Entry.NestedFindingCount > 0)
-                badges.Add(BuildBadge(string.Format(NestedFormat, Entry.NestedFindingCount)));
+                badges.Add(BuildLabel(string.Format(NestedFormat, Entry.NestedFindingCount), BadgeClass));
+
+            if (Entry.IsDismissed)
+                badges.Add(BuildDismissedBadge(DismissedBadgeText));
+
+            if (Entry.DismissedNestedCount > 0)
+                badges.Add(BuildDismissedBadge(string.Format(DismissedInsideFormat,
+                    Entry.DismissedNestedCount)));
 
             extensionContainer.Add(badges);
         }
 
-        private Label BuildBadge(string text)
+        private Label BuildDismissedBadge(string text)
         {
-            Label badge = new(text);
-            badge.AddToClassList(BadgeClass);
+            Label badge = BuildLabel(text, BadgeClass);
+            badge.AddToClassList(BadgeDismissedClass);
+            badge.tooltip = DismissedTooltip;
+
             return badge;
         }
 

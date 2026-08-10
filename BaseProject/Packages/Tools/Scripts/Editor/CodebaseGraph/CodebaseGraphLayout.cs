@@ -18,23 +18,28 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         /// Rough height of a node body. Nodes size themselves to their content, so this only has to be
         /// close enough to keep rows from touching.
         /// </summary>
-        private const float BaseNodeHeight = 126f;
+        private const float BaseNodeHeight = 138f;
 
         private const float ClusterGap = 160f;
         private const float ColumnGap = 110f;
         private const float LonelyBlockGap = 200f;
         private const int LonelyColumns = 6;
         private const int MaxColumnRows = 12;
+        private const float MemberListPadding = 16f;
+        private const float MemberRowHeight = 18f;
+
+        /// <summary>
+        /// Each level is drawn at its own width so the silhouette alone says which one you are looking
+        /// at. The node applies these to itself rather than the stylesheet carrying its own copy,
+        /// because the layout has to place nodes at exactly the width they render.
+        /// </summary>
+        private const float MemberWidth = 280f;
+
+        private const float NamespaceWidth = 380f;
         private const int OrderingSweeps = 6;
         private const float RowGap = 30f;
         private const float SubColumnGap = 24f;
-
-        /// <summary>
-        /// Width every node is drawn at. The node applies this to itself rather than the stylesheet
-        /// carrying its own copy of the number, because the layout has to place nodes at exactly the
-        /// width they render, and two numbers in two files drift apart the first time one is touched.
-        /// </summary>
-        public const float NodeWidth = 320f;
+        private const float TypeWidth = 320f;
 
         /// <summary>Returns a placement rect for every entry.</summary>
         /// <param name="entries">Entries to place.</param>
@@ -83,10 +88,12 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             {
                 List<string> targets = new();
 
-                foreach (string target in entry.TargetIds)
+                foreach (GraphEdgeInfo target in entry.Targets)
                 {
-                    if (target != entry.Id && byId.ContainsKey(target) && !targets.Contains(target))
-                        targets.Add(target);
+                    if (target.TargetId != entry.Id
+                        && byId.ContainsKey(target.TargetId)
+                        && !targets.Contains(target.TargetId))
+                        targets.Add(target.TargetId);
                 }
 
                 outgoing[entry.Id] = targets;
@@ -398,6 +405,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             float startY,
             Dictionary<string, Rect> result)
         {
+            float width = MeasureColumnWidth(ids, byId);
             float x = startX;
             float cursorY = startY;
             int rowIndex = 0;
@@ -408,16 +416,26 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
                 {
                     rowIndex = 0;
                     cursorY = startY;
-                    x += NodeWidth + SubColumnGap;
+                    x += width + SubColumnGap;
                 }
 
                 float height = EstimateHeight(byId[id]);
-                result[id] = new Rect(x, cursorY, NodeWidth, height);
+                result[id] = new Rect(x, cursorY, MeasureWidth(byId[id]), height);
                 cursorY += height + RowGap;
                 rowIndex++;
             }
 
-            return x - startX + NodeWidth;
+            return x - startX + width;
+        }
+
+        private static float MeasureColumnWidth(List<string> ids, Dictionary<string, GraphEntry> byId)
+        {
+            float widest = 0f;
+
+            foreach (string id in ids)
+                widest = Mathf.Max(widest, MeasureWidth(byId[id]));
+
+            return widest;
         }
 
         private static void PlaceLonelyBlock(List<string> lonely,
@@ -434,10 +452,13 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             {
                 float rowHeight = MeasureTallestNode(row, byId);
 
+                float width = MeasureColumnWidth(row, byId);
+
                 for (int column = 0; column < row.Count; column++)
                 {
-                    float x = column * (NodeWidth + ColumnGap);
-                    result[row[column]] = new Rect(x, startY, NodeWidth, EstimateHeight(byId[row[column]]));
+                    float x = column * (width + ColumnGap);
+                    GraphEntry entry = byId[row[column]];
+                    result[row[column]] = new Rect(x, startY, MeasureWidth(entry), EstimateHeight(entry));
                 }
 
                 startY += rowHeight + RowGap;
@@ -503,7 +524,36 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             return total - RowGap;
         }
 
+        /// <summary>Returns the width a node of this level is drawn at.</summary>
+        /// <param name="entry">Entry to measure.</param>
+        /// <returns>The node width.</returns>
+        public static float MeasureWidth(GraphEntry entry)
+        {
+            switch (entry.Level)
+            {
+                case EGraphScope.Namespace:
+                    return NamespaceWidth;
+
+                case EGraphScope.Member:
+                    return MemberWidth;
+
+                default:
+                    return TypeWidth;
+            }
+        }
+
         private static float EstimateHeight(GraphEntry entry)
-            => BaseNodeHeight + entry.BadgeCount * BadgeRowHeight;
+        {
+            float rows = entry.Rows.Count * MemberRowHeight;
+            float overflow = entry.HiddenRowCount > 0
+                ? MemberRowHeight
+                : 0f;
+
+            float list = entry.Rows.Count > 0
+                ? MemberListPadding
+                : 0f;
+
+            return BaseNodeHeight + entry.BadgeCount * BadgeRowHeight + rows + overflow + list;
+        }
     }
 }

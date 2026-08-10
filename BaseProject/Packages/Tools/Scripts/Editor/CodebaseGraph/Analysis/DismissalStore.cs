@@ -8,7 +8,7 @@ using UnityEngine;
 namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
 {
     /// <summary>
-    /// Remembers which findings have been looked at and set aside, so a first pass over a few thousand
+    /// Remembers which findings have been looked at and dismissed, so a first pass over a few thousand
     /// candidates can be worked through in sittings. Kept in ProjectSettings as plain text, so it
     /// survives recompiles and reviews cleanly in a diff.
     /// </summary>
@@ -25,7 +25,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         /// <summary>Raised whenever the set of dismissals changes, so open windows can refresh.</summary>
         public static event Action Changed;
 
-        /// <summary>True when nothing has been set aside, so lookups can skip the work entirely.</summary>
+        /// <summary>True when nothing has been dismissed, so lookups can skip the work entirely.</summary>
         public static bool IsEmpty
         {
             get
@@ -35,7 +35,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
             }
         }
 
-        /// <summary>How many entries have been set aside.</summary>
+        /// <summary>How many entries have been dismissed.</summary>
         public static int Count
         {
             get
@@ -117,7 +117,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
             Save();
         }
 
-        /// <summary>Brings one set aside entry back, whichever way it was dismissed.</summary>
+        /// <summary>Brings one dismissed entry back, whichever way it was dismissed.</summary>
         /// <param name="id">Stable id of the entry.</param>
         /// <returns>True when the entry had been dismissed and is now showing again.</returns>
         public static bool Restore(string id)
@@ -188,7 +188,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
             return entries;
         }
 
-        /// <summary>Brings every set aside entry back.</summary>
+        /// <summary>Brings every dismissed entry back.</summary>
         public static void RestoreAll()
         {
             Load();

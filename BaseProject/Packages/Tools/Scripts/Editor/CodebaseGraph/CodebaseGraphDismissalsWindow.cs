@@ -10,7 +10,7 @@ using UnityEngine.UIElements;
 namespace Base.ToolPackage.Editor.CodebaseGraph
 {
     /// <summary>
-    /// Lists everything that was set aside during triage. Dismissing is easy to do in passing, which is
+    /// Lists everything that was dismissed during triage. Dismissing is easy to do in passing, which is
     /// exactly why it needs somewhere to be looked at afterwards: without this the only record is a JSON
     /// file, and a decision you cannot review is a decision you stop trusting.
     /// </summary>
@@ -22,7 +22,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
         private const string CountFormat = "{0} dismissed";
         private const string CountWithStaleFormat = "{0} dismissed, {1} no longer match anything";
-        private const string EmptyText = "Nothing is dismissed. Anything you set aside in the graph window "
+        private const string EmptyText = "Nothing is dismissed. Anything you dismiss in the graph window "
             + "shows up here, and can be brought back one entry at a time.";
 
         private const string HeadingClass = "pane-heading";

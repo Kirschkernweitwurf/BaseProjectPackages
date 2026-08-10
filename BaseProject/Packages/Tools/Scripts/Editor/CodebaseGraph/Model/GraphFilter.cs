@@ -20,6 +20,15 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Model
         /// <summary>True to include fields, consts and properties in the member view.</summary>
         public bool ShowDataMembers { get; set; } = true;
 
+        /// <summary>True to list a type's members inside its node, so it reads like a class.</summary>
+        public bool ShowMembersOnTypes { get; set; } = true;
+
+        /// <summary>How many relation lines the graph draws at once.</summary>
+        public EEdgeMode EdgeMode { get; set; } = EEdgeMode.Muted;
+
+        /// <summary>How far a search reaches.</summary>
+        public ESearchScope SearchScope { get; set; } = ESearchScope.Everywhere;
+
         /// <summary>How many steps out from a focused entry the neighborhood reaches.</summary>
         public int Hops { get; set; } = 1;
 

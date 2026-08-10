@@ -18,6 +18,12 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         private const string CardClass = "finding-card";
         private const string CardTitleClass = "finding-card-title";
         private const string CycleTitleText = "The others caught in this same loop";
+        private const string DismissClass = "dismiss-button";
+        private const string DismissedNoticeClass = "dismissed-notice";
+
+        private const string DismissedNoticeText = "Dismissed. Findings here are silenced everywhere, "
+            + "including the exported report. Nothing about the code has changed.";
+
         private const string DismissLabel = "Dismiss";
 
         private const string DismissTooltip = "Hides the findings on this entry. Everything stays in the "
@@ -50,6 +56,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         private const string PlaceholderClass = "pane-placeholder";
         private const string RelationClass = "relation-entry";
         private const string RepeatFormat = "  x{0}";
+        private const string RestoreLabel = "Bring back";
         private const string SectionTitleClass = "section-title";
         private const string SubtitleClass = "pane-subtitle";
         private const string ToolbarRowClass = "action-row";
@@ -61,6 +68,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         private readonly Action<GraphEntry> _onOpen;
         private readonly Action<GraphEntry, EFinding> _onQuickFix;
         private readonly Action<GraphEntry, bool> _onDismiss;
+        private readonly Action<GraphEntry> _onRestore;
         private readonly ScrollView _content;
 
         /// <summary>Builds an empty detail pane.</summary>
@@ -68,18 +76,21 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         /// <param name="onDrillDown">Raised when the next level down should open.</param>
         /// <param name="onOpen">Raised when the script should be opened.</param>
         /// <param name="onQuickFix">Raised when a fixable finding should be applied.</param>
-        /// <param name="onDismiss">Raised when the findings here should be set aside.</param>
+        /// <param name="onDismiss">Raised when the findings here should be dismissed.</param>
+        /// <param name="onRestore">Raised when a dismissed entry should be brought back.</param>
         public CodebaseGraphDetailPane(Action<GraphEntry> onFocus,
             Action<GraphEntry> onDrillDown,
             Action<GraphEntry> onOpen,
             Action<GraphEntry, EFinding> onQuickFix,
-            Action<GraphEntry, bool> onDismiss)
+            Action<GraphEntry, bool> onDismiss,
+            Action<GraphEntry> onRestore)
         {
             _onFocus = onFocus;
             _onDrillDown = onDrillDown;
             _onOpen = onOpen;
             _onQuickFix = onQuickFix;
             _onDismiss = onDismiss;
+            _onRestore = onRestore;
 
             AddToClassList(PaneClass);
 
@@ -106,6 +117,10 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             _content.Add(BuildLabel(entry.Title, HeadingClass));
             _content.Add(BuildLabel(entry.Subtitle, SubtitleClass));
             AppendEntryPointNote(entry);
+
+            if (entry.IsDismissed)
+                _content.Add(BuildLabel(DismissedNoticeText, DismissedNoticeClass));
+
             _content.Add(BuildActionRow(entry));
 
             foreach (EFinding finding in entry.Findings)
@@ -238,23 +253,38 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
         private void AppendDismissButtons(VisualElement row, GraphEntry entry)
         {
-            if (entry.BadgeCount == 0)
+            if (entry.IsDismissed)
+            {
+                Button restore = new(() => _onRestore?.Invoke(entry)) { text = RestoreLabel };
+                restore.AddToClassList(DismissClass);
+                row.Add(restore);
+
+                return;
+            }
+
+            if (!entry.HasOpenFindings)
                 return;
 
-            row.Add(new Button(() => _onDismiss?.Invoke(entry, false))
+            Button dismiss = new(() => _onDismiss?.Invoke(entry, false))
             {
                 text = DismissLabel,
                 tooltip = DismissTooltip
-            });
+            };
+
+            dismiss.AddToClassList(DismissClass);
+            row.Add(dismiss);
 
             if (!entry.CanDrillDown)
                 return;
 
-            row.Add(new Button(() => _onDismiss?.Invoke(entry, true))
+            Button dismissTree = new(() => _onDismiss?.Invoke(entry, true))
             {
                 text = DismissTreeLabel,
                 tooltip = DismissTooltip
-            });
+            };
+
+            dismissTree.AddToClassList(DismissClass);
+            row.Add(dismissTree);
         }
 
         private VisualElement BuildFindingCard(GraphEntry entry, EFinding finding)

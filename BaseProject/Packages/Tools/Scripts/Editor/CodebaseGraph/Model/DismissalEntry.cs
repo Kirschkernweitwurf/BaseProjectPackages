@@ -1,6 +1,6 @@
 namespace Base.ToolPackage.Editor.CodebaseGraph.Model
 {
-    /// <summary>One entry that was set aside during triage, in the shape the overview list draws.</summary>
+    /// <summary>One entry that was dismissed during triage, in the shape the overview list draws.</summary>
     public sealed class DismissalEntry
     {
         /// <summary>The stable id the store holds.</summary>

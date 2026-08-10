@@ -5,8 +5,8 @@
     --text-primary: rgb(214, 214, 216);
     --text-muted: rgb(148, 148, 154);
     --text-link: rgb(120, 172, 240);
-    --text-guidance: rgb(214, 190, 142);
-    --text-danger: rgb(214, 118, 112);
+    --text-guidance: rgb(230, 208, 166);
+    --text-danger: rgb(233, 168, 162);
     --space-xs: 2px;
     --space-sm: 4px;
     --space-md: 8px;
@@ -34,8 +34,13 @@
     -unity-text-align: middle-center;
 }
 
-.top-bar PopupField {
+.top-bar PopupField,
+.top-bar MaskField {
     min-width: 130px;
+}
+
+.top-bar MaskField > Label {
+    display: none;
 }
 
 .top-bar .unity-base-popup-field__input {
@@ -234,6 +239,10 @@
     color: var(--text-danger);
 }
 
+.list-row-meta.row-dismissed {
+    color: rgb(176, 216, 211);
+}
+
 .dismissal-row {
     flex-direction: row;
     align-items: center;
@@ -277,6 +286,61 @@
     flex-direction: row;
     flex-wrap: wrap;
     padding: var(--space-lg);
+}
+
+.action-row Button.dismiss-button {
+    border-left-width: 3px;
+    border-left-color: rgb(150, 208, 202);
+    color: rgb(176, 216, 211);
+}
+
+.minimap {
+    position: absolute;
+    background-color: rgba(28, 28, 30, 0.90);
+    border-width: 1px;
+    border-color: var(--surface-line);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.minimap-dot {
+    position: absolute;
+    border-radius: 1px;
+    opacity: 0.75;
+}
+
+.minimap-dot.has-finding {
+    border-width: 1px;
+    border-color: rgb(230, 158, 152);
+}
+
+.minimap-dot.is-selected {
+    border-width: 2px;
+    border-color: rgb(255, 255, 255);
+    opacity: 1;
+}
+
+.minimap-view {
+    position: absolute;
+    background-color: rgba(255, 255, 255, 0.10);
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.65);
+}
+
+.minimap-toggle {
+    position: absolute;
+    right: 14px;
+    bottom: 14px;
+    height: 22px;
+    -unity-text-align: middle-left;
+    background-color: rgba(40, 40, 42, 0.94);
+    border-width: 1px;
+    border-color: var(--surface-line);
+    border-radius: 4px;
+    color: var(--text-muted);
+    font-size: 11px;
+    margin: 0;
+    padding: var(--space-sm) var(--space-md);
 }
 
 .action-row Button {
@@ -383,6 +447,180 @@
     height: 24px;
 }
 
+.codebase-node > #node-border {
+    border-radius: 4px;
+    border-color: rgb(66, 66, 72);
+    border-width: 1px;
+    overflow: hidden;
+}
+
+.codebase-node.level-namespace > #node-border {
+    border-radius: 16px;
+}
+
+.codebase-node.level-type > #node-border {
+    border-radius: 2px;
+}
+
+.codebase-node.level-member > #node-border {
+    border-radius: 10px;
+}
+
+.codebase-node.is-contract > #node-border {
+    border-color: rgb(150, 150, 158);
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 3px;
+    border-bottom-color: rgba(150, 150, 158, 0.35);
+}
+
+.node-accent {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+}
+
+.codebase-node #title {
+    align-items: center;
+}
+
+.node-glyph {
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    align-self: center;
+    background-color: rgba(0, 0, 0, 0.55);
+    border-radius: 9px;
+    font-size: 11px;
+    height: 18px;
+    width: 18px;
+    margin-left: 10px;
+    margin-right: 2px;
+    padding: 0;
+}
+
+.member-list {
+    border-top-width: 1px;
+    border-top-color: rgba(255, 255, 255, 0.07);
+    margin-top: 8px;
+    padding-top: 4px;
+}
+
+.member-row {
+    flex-direction: row;
+    align-items: center;
+    height: 17px;
+    padding-left: 12px;
+    padding-right: 12px;
+}
+
+.member-row.has-finding {
+    background-color: rgba(230, 158, 152, 0.16);
+}
+
+.member-row.is-dismissed {
+    background-color: rgba(150, 208, 202, 0.14);
+}
+
+.member-glyph {
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    font-size: 9px;
+    min-width: 14px;
+    margin-right: 6px;
+}
+
+.member-label {
+    font-size: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.legend {
+    position: absolute;
+    right: 14px;
+    top: 14px;
+    max-width: 260px;
+    background-color: rgba(40, 40, 42, 0.94);
+    border-width: 1px;
+    border-color: var(--surface-line);
+    border-radius: 4px;
+    padding: var(--space-md);
+}
+
+.legend Button {
+    -unity-text-align: middle-left;
+    background-color: rgba(0, 0, 0, 0);
+    border-width: 0;
+    color: var(--text-muted);
+    font-size: 11px;
+    margin: 0;
+    padding: 0;
+}
+
+.legend-body {
+    margin-top: var(--space-md);
+}
+
+.legend-title {
+    -unity-font-style: bold;
+    color: var(--text-primary);
+    font-size: 10px;
+    margin-top: var(--space-md);
+    margin-bottom: var(--space-xs);
+}
+
+.legend-entry {
+    flex-direction: row;
+    align-items: center;
+    height: 16px;
+}
+
+.legend-glyph {
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    color: var(--text-primary);
+    font-size: 9px;
+    min-width: 16px;
+    margin-right: var(--space-md);
+}
+
+.legend-swatch {
+    border-radius: 2px;
+    height: 10px;
+    width: 10px;
+    margin-left: 3px;
+    margin-right: var(--space-lg);
+}
+
+.legend-swatch-finding {
+    background-color: rgb(230, 158, 152);
+}
+
+.legend-swatch-dismissed {
+    background-color: rgb(150, 208, 202);
+}
+
+.dismissed-notice {
+    background-color: rgba(150, 208, 202, 0.14);
+    border-left-width: 3px;
+    border-left-color: rgb(150, 208, 202);
+    border-radius: 3px;
+    color: rgb(178, 218, 213);
+    font-size: 11px;
+    margin: var(--space-md) var(--space-lg) 0 var(--space-lg);
+    padding: var(--space-md);
+    white-space: normal;
+}
+
+.legend-label {
+    color: var(--text-muted);
+    font-size: 10px;
+}
+
 .codebase-node #title-label {
     -unity-font-style: bold;
     font-size: 12px;
@@ -391,39 +629,48 @@
     white-space: nowrap;
 }
 
-.codebase-node > #node-border {
-    border-radius: 4px;
-    border-color: rgb(66, 66, 72);
-    border-width: 1px;
-}
-
 .codebase-node.has-findings > #node-border {
     border-color: rgb(160, 92, 88);
     border-width: 1px;
 }
 
+.codebase-node.has-dismissals > #node-border {
+    border-color: rgb(150, 208, 202);
+    border-width: 1px;
+}
+
+.codebase-node.has-findings.has-dismissals > #node-border {
+    border-color: rgb(230, 158, 152);
+    border-width: 2px;
+}
+
 .codebase-node.is-focused > #node-border {
-    border-color: rgb(226, 186, 104);
+    border-color: rgb(242, 214, 150);
     border-width: 2px;
 }
 
 .node-subtitle {
     color: rgb(148, 148, 154);
     font-size: 10px;
-    max-width: 292px;
+    height: 14px;
     margin-left: 12px;
     margin-right: 12px;
     margin-top: 8px;
-    white-space: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .node-meta {
     color: rgb(190, 190, 196);
     font-size: 11px;
+    height: 15px;
     margin-left: 12px;
     margin-right: 12px;
     margin-top: 6px;
     margin-bottom: 8px;
+    overflow: hidden;
+    white-space: nowrap;
 }
 
 .finding-row {
@@ -434,14 +681,19 @@
     margin-bottom: 10px;
 }
 
+.finding-badge.is-dismissed {
+    background-color: rgba(150, 208, 202, 0.18);
+    color: rgb(176, 220, 214);
+}
+
 .finding-badge {
-    background-color: rgba(214, 118, 112, 0.16);
+    background-color: rgba(230, 158, 152, 0.18);
     border-radius: 3px;
-    color: rgb(226, 152, 148);
+    color: rgb(238, 184, 179);
     font-size: 10px;
     margin-top: 4px;
     padding: 3px 7px;
-    max-width: 272px;
+    max-width: 320px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
