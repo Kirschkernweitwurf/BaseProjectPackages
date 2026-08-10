@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Text.RegularExpressions;
 using Base.ToolPackage.Editor.CodebaseGraph.Model;
@@ -8,18 +9,24 @@ using UnityEditor;
 namespace Base.ToolPackage.Editor.CodebaseGraph.Editing
 {
     /// <summary>
-    /// Applies the two quick fixes the graph can offer. Both are deliberately timid: the declaration is
-    /// matched by member name in the declaring type's own file, and the edit is refused unless exactly
-    /// one line matches. Anything ambiguous is left alone for the person to handle.
+    /// Applies the three quick fixes the graph can offer. All of them are deliberately timid: the
+    /// declaration is matched by member name in the declaring type's own file, the edit is refused
+    /// unless exactly one line matches, and the match is then checked against the shape it claims to
+    /// be. Anything ambiguous is left alone for a person to handle.
     /// </summary>
     public static class MemberSourceEditor
     {
         private const string AccessorPattern = @"\b(private|protected|internal)\s+(get|set|init|add|remove)\b";
+        private const char BodyClose = '}';
+        private const char BodyOpen = '{';
+        private const string ExpressionBody = "=>";
         private const string InternalKeyword = "internal";
         private const char LineBreak = '\n';
+        private const char ParameterOpen = '(';
         private const string PrivateKeyword = "private";
         private const string PublicKeyword = "public";
         private const string ReadOnlyKeyword = "readonly";
+        private const char StatementEnd = ';';
         private const string WiderKeywords = "public|internal|protected";
 
         /// <summary>Rewrites a public member declaration to internal.</summary>
@@ -31,7 +38,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Editing
             Regex pattern = new($@"^(\s*){PublicKeyword}(\s+)(?=[^\r\n]*\b{Regex.Escape(member.Name)}\b)",
                 RegexOptions.Multiline);
 
-            return Rewrite(type, member, pattern, $"$1{InternalKeyword}$2");
+            return Rewrite(type, member, pattern, $"$1{InternalKeyword}$2", false);
         }
 
         /// <summary>Rewrites a member declaration to private, whatever it was before.</summary>
@@ -43,7 +50,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Editing
             Regex pattern = new($@"^(\s*)(?:{WiderKeywords})(\s+)(?=[^\r\n]*\b{Regex.Escape(member.Name)}\b)",
                 RegexOptions.Multiline);
 
-            return Rewrite(type, member, pattern, $"$1{PrivateKeyword}$2");
+            return Rewrite(type, member, pattern, $"$1{PrivateKeyword}$2", false);
         }
 
         /// <summary>Adds the readonly keyword to a field declaration.</summary>
@@ -57,7 +64,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Editing
                 + $@"(?![^\r\n]*\b{ReadOnlyKeyword}\b)(?=[^\r\n]*\b{Regex.Escape(member.Name)}\b)",
                 RegexOptions.Multiline);
 
-            return Rewrite(type, member, pattern, $"$1$2{ReadOnlyKeyword} ");
+            return Rewrite(type, member, pattern, $"$1$2{ReadOnlyKeyword} ", true);
         }
 
         /// <summary>Opens the script that declares the member and jumps to its declaration.</summary>
@@ -81,7 +88,11 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Editing
                 type.ShortName,
                 type.Kind == ETypeKind.Interface);
 
-        private static bool Rewrite(TypeNodeInfo type, MemberNodeInfo member, Regex pattern, string replacement)
+        private static bool Rewrite(TypeNodeInfo type,
+            MemberNodeInfo member,
+            Regex pattern,
+            string replacement,
+            bool requiresField)
         {
             if (type == null || string.IsNullOrEmpty(type.ScriptPath))
             {
@@ -114,30 +125,101 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Editing
                 return false;
             }
 
-            // Lowering the declaration below an accessor that is already narrower will not compile,
-            // for example public with an internal set becoming internal with an internal set.
-            if (HasNarrowerAccessor(source, matches[0].Index))
-            {
-                CustomLogger.LogWarning($"{member.Name} in {type.ShortName} declares its own accessor "
-                    + "visibility, so lowering the declaration would not compile. Edit it by hand.",
-                    null);
-
+            if (!IsSafeToRewrite(source, matches[0].Index, member, type, requiresField))
                 return false;
-            }
 
             File.WriteAllText(type.ScriptPath, pattern.Replace(source, replacement, 1));
             AssetDatabase.ImportAsset(type.ScriptPath);
             return true;
         }
 
+        private static bool IsSafeToRewrite(string source,
+            int matchIndex,
+            MemberNodeInfo member,
+            TypeNodeInfo type,
+            bool requiresField)
+        {
+            if (requiresField && !IsFieldDeclaration(source, matchIndex))
+            {
+                CustomLogger.LogWarning($"The line matched for {member.Name} in {type.ShortName} is not a "
+                    + "plain field declaration, so nothing was changed. Edit it by hand.",
+                    null);
+
+                return false;
+            }
+
+            // Lowering the declaration below an accessor that is already narrower will not compile,
+            // for example public with an internal set becoming internal with an internal set.
+            if (!HasNarrowerAccessor(source, matchIndex))
+                return true;
+
+            CustomLogger.LogWarning($"{member.Name} in {type.ShortName} declares its own accessor "
+                + "visibility, so lowering the declaration would not compile. Edit it by hand.",
+                null);
+
+            return false;
+        }
+
+        /// <summary>
+        /// Looks for a narrower accessor across the whole member, not just its first line. A property
+        /// written over several lines keeps its private set on a line of its own, and checking only as
+        /// far as the next line break walks straight past it.
+        /// </summary>
         private static bool HasNarrowerAccessor(string source, int matchIndex)
+            => Regex.IsMatch(ReadMemberSpan(source, matchIndex), AccessorPattern);
+
+        private static string ReadMemberSpan(string source, int matchIndex)
+        {
+            int lineEnd = source.IndexOf(LineBreak, matchIndex);
+            int declarationEnd = lineEnd < 0
+                ? source.Length
+                : lineEnd;
+
+            string firstLine = source[matchIndex..declarationEnd];
+
+            // A declaration that ends on its own line has no body to walk into.
+            if (firstLine.IndexOf(StatementEnd) >= 0 && firstLine.IndexOf(BodyOpen) < 0)
+                return firstLine;
+
+            int bodyStart = source.IndexOf(BodyOpen, matchIndex);
+            if (bodyStart < 0)
+                return firstLine;
+
+            int depth = 0;
+
+            for (int index = bodyStart; index < source.Length; index++)
+            {
+                if (source[index] == BodyOpen)
+                    depth++;
+                else if (source[index] == BodyClose)
+                    depth--;
+
+                if (depth == 0)
+                    return source[matchIndex..(index + 1)];
+            }
+
+            return source[matchIndex..];
+        }
+
+        /// <summary>
+        /// True when the matched line really is a plain field. An attribute written on the same line
+        /// keeps the regex from matching the field it belongs to, and the single match it does find is
+        /// then something else entirely.
+        /// </summary>
+        private static bool IsFieldDeclaration(string source, int matchIndex)
         {
             int lineEnd = source.IndexOf(LineBreak, matchIndex);
             string line = lineEnd < 0
                 ? source[matchIndex..]
                 : source[matchIndex..lineEnd];
 
-            return Regex.IsMatch(line, AccessorPattern);
+            string trimmed = line.TrimEnd();
+
+            if (trimmed.Length == 0 || trimmed[^1] != StatementEnd)
+                return false;
+
+            return trimmed.IndexOf(ParameterOpen) < 0
+                && trimmed.IndexOf(ExpressionBody, StringComparison.Ordinal) < 0;
         }
     }
 }

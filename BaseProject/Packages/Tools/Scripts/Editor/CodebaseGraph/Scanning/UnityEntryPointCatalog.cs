@@ -21,6 +21,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         private const string ConstructorReason = "Called by the runtime";
         private const string EditorWindowBase = "EditorWindow";
         private const string EngineDrivenReason = "Found by Unity through its base type";
+        private const string FormerlySerializedAsName = "FormerlySerializedAs";
         private const string SerializeFieldReason = "Written by Unity serialization";
         private const string UnityMessageReason = "Unity message";
 
@@ -89,7 +90,9 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
             "Editor",
             "EditorTool",
             "EditorWindow",
+            "AssetImporterEditor",
             "PropertyDrawer",
+            "ScriptableRenderPass",
             "ScriptableWizard",
             "ScriptedImporter",
             "SettingsProvider"
@@ -98,10 +101,17 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         /// <summary>Interfaces Unity discovers by implementation rather than by reference.</summary>
         private static readonly HashSet<string> EngineDrivenInterfaceNames = new(StringComparer.Ordinal)
         {
+            "IActiveBuildTargetChanged",
             "IFilterBuildAssemblies",
+            "IOrderedCallback",
+            "IPostBuildPlayerScriptDLLs",
+            "IPostprocessBuild",
             "IPostprocessBuildWithReport",
+            "IPreprocessBuild",
             "IPreprocessBuildWithReport",
-            "IProcessSceneWithReport"
+            "IProcessScene",
+            "IProcessSceneWithReport",
+            "IUnityLinkerProcessor"
         };
 
         /// <summary>
@@ -111,6 +121,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         /// </summary>
         private static readonly HashSet<string> EntryPointAttributeNames = new(StringComparer.Ordinal)
         {
+            "BurstCompile",
             "Button",
             "ClutchShortcut",
             "ContextMenu",
@@ -118,9 +129,12 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
             "CustomEditor",
             "CustomGridBrush",
             "CustomPropertyDrawer",
+            "CustomTimelineEditor",
             "DidReloadScripts",
+            "DrawGizmo",
             "DynamicCreateAssetMenu",
             "DynamicMenuItem",
+            "EditorToolbarElement",
             "ExecuteAlways",
             "ExecuteInEditMode",
             "HeaderButton",
@@ -129,6 +143,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
             "InitializeOnLoadMethod",
             "InlineButton",
             "MenuItem",
+            "MonoPInvokeCallback",
             "OnOpenAsset",
             "Overlay",
             "PostProcessBuild",
@@ -143,7 +158,8 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
             "TearDown",
             "Test",
             "TestCase",
-            "UnityTest"
+            "UnityTest",
+            "UsedImplicitly"
         };
 
         /// <summary>Attributes that mark a whole type or member as deliberately out of scope.</summary>
@@ -360,6 +376,24 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
 
             // A public field is only written by Unity when the type it sits on is serialized at all.
             return field.IsPublic && IsSerializableContainer(field.DeclaringType);
+        }
+
+        /// <summary>Collects the earlier names a field still answers to in existing assets.</summary>
+        /// <param name="field">Field to inspect.</param>
+        /// <param name="aliases">List that receives the earlier names.</param>
+        public static void CollectSerializedAliases(FieldInfo field, List<string> aliases)
+        {
+            foreach (CustomAttributeData attribute in ReadAttributes(field))
+            {
+                if (TrimAttributeSuffix(attribute.AttributeType.Name) != FormerlySerializedAsName)
+                    continue;
+
+                foreach (CustomAttributeTypedArgument argument in attribute.ConstructorArguments)
+                {
+                    if (argument.Value is string alias && alias.Length > 0)
+                        aliases.Add(alias);
+                }
+            }
         }
 
         /// <summary>Checks whether any attribute on the member marks it as an entry point.</summary>

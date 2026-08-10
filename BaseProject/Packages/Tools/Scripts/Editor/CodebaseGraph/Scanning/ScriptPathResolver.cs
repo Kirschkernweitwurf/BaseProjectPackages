@@ -45,15 +45,19 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
 
         /// <summary>Reads every script once and builds the whole index from it.</summary>
         /// <param name="paths">Every script asset in the project.</param>
-        /// <returns>The index.</returns>
-        public static ScriptIndex Build(IReadOnlyList<string> paths)
+        /// <param name="progress">Reporter that can also cancel the pass.</param>
+        /// <returns>The index, or null when the scan was cancelled.</returns>
+        public static ScriptIndex Build(IReadOnlyList<string> paths, ScanProgress progress)
         {
             ScriptIndex index = new();
 
-            foreach (string path in paths)
+            for (int position = 0; position < paths.Count; position++)
             {
-                IndexByMonoScript(path, index);
-                IndexBySourceText(path, index);
+                IndexByMonoScript(paths[position], index);
+                IndexBySourceText(paths[position], index);
+
+                if (!progress.Report(position, paths.Count, "Reading scripts"))
+                    return null;
             }
 
             return index;
@@ -96,10 +100,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
             }
         }
 
-        /// <summary>True when the opening lines of a file say a tool wrote it.</summary>
-        /// <param name="source">Source text, which may be empty.</param>
-        /// <returns>True for generated files.</returns>
-        public static bool HasGeneratedHeader(string source)
+        private static bool HasGeneratedHeader(string source)
         {
             if (string.IsNullOrEmpty(source))
                 return false;

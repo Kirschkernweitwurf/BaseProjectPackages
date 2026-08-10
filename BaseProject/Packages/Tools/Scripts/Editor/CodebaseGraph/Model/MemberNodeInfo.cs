@@ -62,6 +62,9 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Model
         /// <summary>How many prefabs, scenes or assets set this serialized field.</summary>
         public int AssetUsageCount { get; set; }
 
+        /// <summary>Earlier names this field answers to, from FormerlySerializedAs.</summary>
+        public List<string> SerializedAliases { get; } = new();
+
         /// <summary>True when the source line carries the ignore marker, which silences every finding.</summary>
         public bool IsSuppressed { get; set; }
 

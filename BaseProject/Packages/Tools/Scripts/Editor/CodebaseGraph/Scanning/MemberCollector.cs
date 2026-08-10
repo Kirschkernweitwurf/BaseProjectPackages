@@ -26,6 +26,12 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         /// <summary>Member names of each interface, so a widely implemented one is only read once.</summary>
         private static readonly Dictionary<Type, string[]> InterfaceMemberNames = new();
 
+        /// <summary>
+        /// Empties the caches held between types. They are keyed on Type, so leaving them in place
+        /// would grow the tool's own footprint with every rescan for the life of the domain.
+        /// </summary>
+        public static void ResetCaches() => InterfaceMemberNames.Clear();
+
         /// <summary>Creates the type node and registers every member it declares.</summary>
         /// <param name="type">Type to collect.</param>
         /// <param name="registry">Registry that receives the member nodes and redirects.</param>
@@ -288,6 +294,8 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
                     member.IsEntryPoint = true;
                     member.EntryPointReason = reason;
                 }
+
+                UnityEntryPointCatalog.CollectSerializedAliases(field, member.SerializedAliases);
 
                 ApplyAttributeEntryPoint(field, member);
                 Add(registry, node, member);

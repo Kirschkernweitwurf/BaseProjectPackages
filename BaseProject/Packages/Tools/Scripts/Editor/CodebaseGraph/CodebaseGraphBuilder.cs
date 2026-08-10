@@ -80,6 +80,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             if (!Report(onProgress, MembersProgress, "Collecting members"))
                 return null;
 
+            MemberCollector.ResetCaches();
             MemberRegistry registry = new(graph.Members);
             CollectTypes(declaredTypes, registry, graph, packageAssemblies, testAssemblies);
             RegisterGeneratedRedirects(declaredTypes, generatedTypes, registry);
@@ -91,7 +92,12 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             if (!Report(onProgress, PathsProgress, "Reading scripts"))
                 return null;
 
-            ScriptIndex index = ScriptPathResolver.Build(ScriptPathResolver.CollectPaths());
+            ScriptIndex index = ScriptPathResolver.Build(ScriptPathResolver.CollectPaths(),
+                new ScanProgress(onProgress, PathsProgress, SourceTextProgress - PathsProgress));
+
+            if (index == null)
+                return null;
+
             ApplyScriptPaths(graph, index);
 
             if (!Report(onProgress, SourceTextProgress, "Matching inlined constants"))
@@ -110,7 +116,9 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             if (!Report(onProgress, AssetProgress, "Checking prefabs and scenes"))
                 return null;
 
-            SerializedFieldAssetScanner.Scan(graph);
+            if (!SerializedFieldAssetScanner.Scan(graph,
+                new ScanProgress(onProgress, AssetProgress, 1f - AssetProgress)))
+                return null;
 
             stopwatch.Stop();
             graph.ScanSeconds = (float)stopwatch.Elapsed.TotalSeconds;
@@ -273,20 +281,42 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             PropagateExclusion(graph);
         }
 
+        /// <summary>
+        /// Carries an exclusion down through every level of nesting. Checking only the immediate parent
+        /// makes the result depend on the order the dictionary happens to hand types back, so a type
+        /// nested three deep is excluded or not depending on which of its ancestors was seen first.
+        /// </summary>
         private static void PropagateExclusion(CodebaseGraphData graph)
         {
             foreach (TypeNodeInfo type in graph.Types.Values)
             {
-                if (type.IsExcludedFromFindings || !type.DeclaringTypeKey.IsValid)
+                if (type.IsExcludedFromFindings)
                     continue;
 
-                TypeNodeInfo outer = graph.FindType(type.DeclaringTypeKey);
-                if (outer == null || !outer.IsExcludedFromFindings)
+                TypeNodeInfo excluded = FindExcludedAncestor(graph, type);
+                if (excluded == null)
                     continue;
 
                 type.IsExcludedFromFindings = true;
-                type.ExclusionReason = outer.ExclusionReason;
+                type.ExclusionReason = excluded.ExclusionReason;
             }
+        }
+
+        private static TypeNodeInfo FindExcludedAncestor(CodebaseGraphData graph, TypeNodeInfo type)
+        {
+            TypeNodeInfo current = type;
+
+            while (current.DeclaringTypeKey.IsValid)
+            {
+                current = graph.FindType(current.DeclaringTypeKey);
+                if (current == null)
+                    return null;
+
+                if (current.IsExcludedFromFindings)
+                    return current;
+            }
+
+            return null;
         }
 
         private static string ResolvePath(TypeNodeInfo type, string outermost, ScriptIndex index)
@@ -324,9 +354,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             if (type.IsExcludedFromFindings)
                 return;
 
-            if (index.IsGenerated(type.ScriptPath, outermost)
-                || IsGeneratedFolder(type.ScriptPath)
-                || ScriptPathResolver.HasGeneratedHeader(ScriptSourceReader.Read(type.ScriptPath)))
+            if (index.IsGenerated(type.ScriptPath, outermost) || IsGeneratedFolder(type.ScriptPath))
             {
                 type.IsExcludedFromFindings = true;
                 type.ExclusionReason = GeneratedReason;
