@@ -49,6 +49,9 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         private const string SearchHeadingFormat = "{0} matches for \"{1}\"";
         private const string SearchSegmentFormat = "Search: {0}";
         private const string StatusBarClass = "status-bar";
+        private const string TypesCappedHeadingFormat = "Types in {0}, showing {1} of {2}. Narrow the "
+            + "filter to see the rest.";
+
         private const string TypesHeadingFormat = "Types in {0}";
         private const string WindowTitle = "Codebase Graph";
 
@@ -85,6 +88,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         private bool _isMiniMapVisible = true;
         private IVisualElementScheduledItem _searchDebounce;
         private int _searchTotal;
+        private int _typeTotal;
 
         private EGraphScope _scope = EGraphScope.Namespace;
         private string _currentNamespace;
@@ -286,8 +290,8 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
             // The comparison has to happen before the ids are replaced, since one is the baseline for
             // the other.
-            FindingBaseline.Apply(scanned, CodebaseGraphCache.TakeFindingIds());
-            CodebaseGraphCache.SetFindingIds(FindingBaseline.Collect(scanned));
+            FindingBaseline.Apply(scanned, FindingBaseline.Read());
+            FindingBaseline.Write(FindingBaseline.Collect(scanned));
 
             _graph = scanned;
             CodebaseGraphCache.Set(_graph);
@@ -460,7 +464,11 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             switch (_scope)
             {
                 case EGraphScope.Type:
-                    return GraphEntryFactory.BuildTypes(_graph, _filter, _currentNamespace, _focusedType);
+                    return GraphEntryFactory.BuildTypes(_graph,
+                        _filter,
+                        _currentNamespace,
+                        _focusedType,
+                        out _typeTotal);
 
                 case EGraphScope.Member:
                     return GraphEntryFactory.BuildMembers(_graph, _filter, _currentType, _focusedMember);
@@ -480,7 +488,12 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             switch (_scope)
             {
                 case EGraphScope.Type:
-                    return string.Format(TypesHeadingFormat, _currentNamespace ?? AllTypesSegment);
+                    return shownCount < _typeTotal
+                        ? string.Format(TypesCappedHeadingFormat,
+                            _currentNamespace ?? AllTypesSegment,
+                            shownCount,
+                            _typeTotal)
+                        : string.Format(TypesHeadingFormat, _currentNamespace ?? AllTypesSegment);
 
                 case EGraphScope.Member:
                     return _currentType == null

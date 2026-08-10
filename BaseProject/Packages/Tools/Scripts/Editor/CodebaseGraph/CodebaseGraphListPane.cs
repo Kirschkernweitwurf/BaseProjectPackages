@@ -22,7 +22,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         private const string OnlyNewLabel = "New only";
 
         private const string OnlyNewTooltip = "Shows only what this scan found and the last one did not. "
-            + "Needs two scans to mean anything.";
+            + "Empty until you have scanned twice.";
 
         private const string PaneClass = "pane";
         private const string RowClass = "list-row";

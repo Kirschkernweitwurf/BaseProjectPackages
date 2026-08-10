@@ -15,6 +15,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
     {
         private const string AbstractModifier = "abstract ";
         private const int ColorSeedSegments = 2;
+        private const int MaximumTypes = 150;
         private const int MaxRowsPerType = 14;
         private const int MaxSearchResults = 150;
         private const string MemberIdPrefix = "me:";
@@ -79,17 +80,25 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         public static List<GraphEntry> BuildTypes(CodebaseGraphData graph,
             GraphFilter filter,
             string namespaceName,
-            TypeNodeInfo focus)
+            TypeNodeInfo focus,
+            out int total)
         {
             List<TypeNodeInfo> visible = focus == null
                 ? CollectFilteredTypes(graph, filter, namespaceName)
                 : CollectTypeNeighborhood(graph, focus, filter.Hops);
+
+            total = visible.Count;
 
             Dictionary<TypeKey, GraphEntry> byKey = new();
             List<GraphEntry> entries = new();
 
             foreach (TypeNodeInfo type in visible)
             {
+                // Every node carries member rows and goes through the layout, so an unfiltered
+                // namespace of a few hundred types is the one way left to hang the editor.
+                if (entries.Count == MaximumTypes)
+                    break;
+
                 GraphEntry entry = BuildTypeEntry(type, filter);
                 entries.Add(entry);
                 byKey[type.Key] = entry;

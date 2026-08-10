@@ -16,7 +16,8 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
     /// </summary>
     internal static class ScopeReportWriter
     {
-        private const int MaximumMembers = 60;
+        private const int MaximumMembers = 40;
+        private const int MaximumTypes = 60;
         private const string TitleFormat = "# {0}";
         private const string UnknownFileText = "an unknown file";
 
@@ -34,7 +35,9 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
             builder.AppendLine();
 
             builder.AppendLine($"{types.Count} types. Everything below is inside this scope. Nothing "
-                + "outside it is described, except where it is named as a dependency.");
+                + "outside it is described, except where it is named as a dependency. Private members "
+                + "are left out: the shape of what a slice offers is what a reader needs, and the "
+                + "private detail is the part you would open the source for.");
 
             builder.AppendLine();
 
@@ -142,8 +145,23 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
             builder.AppendLine("## Types");
             builder.AppendLine();
 
+            int shown = 0;
+
             foreach (TypeNodeInfo type in types)
             {
+                // This report is written to be read in one sitting, by a person or by something with a
+                // context window. A scope of ninety types with their members is neither.
+                if (shown == MaximumTypes)
+                {
+                    builder.AppendLine($"and {types.Count - MaximumTypes} more types, left out to keep "
+                        + "this readable. Export a narrower scope to see them.");
+
+                    builder.AppendLine();
+                    return;
+                }
+
+                shown++;
+
                 builder.AppendLine($"### {type.FullName}");
                 builder.AppendLine();
                 string path = string.IsNullOrEmpty(type.ScriptPath)
@@ -160,19 +178,31 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
 
         private static void AppendMembers(StringBuilder builder, TypeNodeInfo type)
         {
-            int shown = 0;
+            List<MemberNodeInfo> visible = new();
 
             foreach (MemberNodeInfo member in type.Members)
             {
+                if (member.Access != EAccessLevel.Private)
+                    visible.Add(member);
+            }
+
+            int shown = 0;
+
+            foreach (MemberNodeInfo member in visible)
+            {
                 if (shown == MaximumMembers)
                 {
-                    builder.AppendLine($"- and {type.Members.Count - MaximumMembers} more members");
+                    builder.AppendLine($"- and {visible.Count - MaximumMembers} more members");
                     break;
                 }
 
                 builder.AppendLine($"- `{member.Access} {member.Signature}`");
                 shown++;
             }
+
+            int hidden = type.Members.Count - visible.Count;
+            if (hidden > 0)
+                builder.AppendLine($"- and {hidden} private members, not listed");
 
             builder.AppendLine();
         }

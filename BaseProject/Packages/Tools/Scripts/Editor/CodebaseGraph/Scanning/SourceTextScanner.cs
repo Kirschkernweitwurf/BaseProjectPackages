@@ -211,7 +211,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         /// anywhere in the project would otherwise read as alive forever. Interpolation holes are still
         /// read, because the code inside them is code.
         /// </summary>
-        private static Dictionary<string, int> CountIdentifiers(string source)
+        internal static Dictionary<string, int> CountIdentifiers(string source)
         {
             Dictionary<string, int> counts = new(StringComparer.Ordinal);
             int index = 0;

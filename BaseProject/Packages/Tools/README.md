@@ -24,6 +24,34 @@ Most windows live under **Tools > Base Packages** in the Unity menu bar.
 - **Missing Scripts Overview** lists every missing script in the project and jumps to it on click.
 - **Empty Folders Overview** lists empty folders and lets you jump to or delete them.
 
+### Codebase Graph
+
+**Codebase Graph** (`Unity Editor/Project Health`) reads the compiled IL of every project assembly and
+draws what depends on what, at three levels: namespaces, types and members. It exists to answer one
+question honestly, which is whether a piece of code is still reachable.
+
+- **Findings**, ranked high to low: dead members and types, serialized fields nothing reads, fields
+  written and never read, members that could be private, internal or readonly, mutable static state,
+  type and namespace cycles with the cheapest edge to cut named, very large types and types that are
+  load bearing and concrete at once.
+- **What a code scan cannot see is looked for anyway.** Invoke and SendMessage by name, UnityEvent
+  targets wired in the inspector, animation events, types stored by `SerializeReference`, and consts
+  the compiler inlined are all resolved from IL string literals and from asset YAML, so working code is
+  not reported dead.
+- **Dismissals** are per finding and stored in `ProjectSettings/CodebaseGraphDismissed.json`. An id
+  embeds the signature it was written for, so a rename brings the finding back and the stale entry is
+  listed for review rather than silently kept.
+- **Export findings** writes the whole report as Markdown, dismissal block included. **Export scope**
+  writes one namespace or assembly on its own, with its boundary first, small enough to hand to
+  somebody working on that part alone.
+- **New only** shows what this scan found and the last one did not, compared against
+  `ProjectSettings/CodebaseGraphBaseline.json`.
+- Put `[CodebaseGraphIgnore]` on a type that should never be reported, such as a test fixture or a
+  generator's output.
+
+Its own liveness rules are covered by a test suite under `Tests`. See `Tests/README.md` for how to make
+them appear in the Test Runner.
+
 ### Code generation
 
 - **Generate Layers** (`Code/Generation`) writes a `Layers` class with all layer indices (0-31) plus a nested `Masks` class of bit shifted mask values.

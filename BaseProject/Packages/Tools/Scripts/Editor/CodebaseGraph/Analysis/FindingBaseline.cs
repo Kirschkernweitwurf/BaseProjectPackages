@@ -1,5 +1,9 @@
+using System;
 using System.Collections.Generic;
+using System.IO;
 using Base.ToolPackage.Editor.CodebaseGraph.Model;
+using Base.UtilityPackage.Logging;
+using UnityEngine;
 
 namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
 {
@@ -8,12 +12,56 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
     /// list you already read and decided about, and the part worth looking at is what changed since you
     /// last looked, which is otherwise invisible in a list of four hundred.
     /// <br/><br/>
-    /// Nothing is stored on disk. The comparison is against the previous scan in this session, so the
-    /// first scan after opening Unity has nothing to compare against and marks nothing new, which is
-    /// honest: with no baseline the only truthful answer is that everything is equally old.
+    /// The ids are kept on disk beside the dismissals. They have to be: fixing something recompiles,
+    /// and a baseline held in memory dies with the domain, so the scan that comes after a fix would
+    /// always find nothing to compare against. That is the one moment this exists for.
     /// </summary>
     internal static class FindingBaseline
     {
+        private const string FilePath = "ProjectSettings/CodebaseGraphBaseline.json";
+
+        /// <summary>Reads the ids the previous scan wrote.</summary>
+        /// <returns>The ids, or an empty set when there is no baseline yet.</returns>
+        public static HashSet<string> Read()
+        {
+            if (!File.Exists(FilePath))
+                return new HashSet<string>();
+
+            try
+            {
+                FindingBaselineData data =
+                    JsonUtility.FromJson<FindingBaselineData>(File.ReadAllText(FilePath));
+
+                return data == null
+                    ? new HashSet<string>()
+                    : new HashSet<string>(data.Ids);
+            }
+            catch (Exception exception)
+            {
+                CustomLogger.LogWarning($"Could not read {FilePath}: {exception.Message}", null);
+                return new HashSet<string>();
+            }
+        }
+
+        /// <summary>Writes the ids this scan raised, to compare the next one against.</summary>
+        /// <param name="ids">Ids the scan raised.</param>
+        public static void Write(HashSet<string> ids)
+        {
+            FindingBaselineData data = new();
+            data.Ids.AddRange(ids);
+
+            try
+            {
+                File.WriteAllText(FilePath, JsonUtility.ToJson(data, true));
+            }
+            catch (Exception exception)
+            {
+                // A read only file under source control throws UnauthorizedAccessException rather than
+                // IOException, and losing a baseline must not take the scan down with it.
+                CustomLogger.LogWarning($"Could not write {FilePath}: {exception.Message}", null);
+            }
+        }
+
         /// <summary>Collects the id of every finding currently raised.</summary>
         /// <param name="graph">Graph to read.</param>
         /// <returns>The ids, in the same form dismissals use.</returns>
