@@ -20,7 +20,11 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
             + @"readonly|abstract|virtual|override|sealed|partial|event|delegate|class|struct|interface|"
             + @"enum|record|operator|implicit|explicit)\b";
 
+        private const char BodyClose = '}';
+        private const char BodyOpen = '{';
         private const int FirstLine = 1;
+        private const string IndexerName = "Item";
+        private const string IndexerSpelling = "this[";
         private const string InterfaceMemberPattern = @"\s*[\w<>\[\],\.\?]+\s+";
         private const string NameOfMarker = "nameof(";
         private const string ParameterClose = ")";
@@ -73,16 +77,21 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
             if (lines == null || lines.Length == 0)
                 return FirstLine;
 
+            int typeLine = FindTypeLine(lines, typeName);
             if (member == null)
-                return FindTypeLine(lines, typeName);
+                return typeLine;
 
-            int found = OperatorSpellings.TryGetValue(member.Name, out string spelling)
-                ? FindToken(lines, spelling)
-                : FindMemberLine(lines, member, isInterface);
+            // A file often holds several types, and a sibling field of the same name in another one
+            // would otherwise win purely by sitting higher up.
+            int end = FindBodyEnd(lines, typeLine);
+            int found = FindInRange(lines, member, isInterface, typeLine, end);
+
+            if (found == 0 && (typeLine > FirstLine || end < lines.Length))
+                found = FindInRange(lines, member, isInterface, FirstLine, lines.Length);
 
             return found > 0
                 ? found
-                : FindTypeLine(lines, typeName);
+                : typeLine;
         }
 
         /// <summary>Reads a script and splits it into lines.</summary>
@@ -97,12 +106,27 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
                 : source.Split('\n');
         }
 
-        private static int FindMemberLine(string[] lines, MemberNodeInfo member, bool isInterface)
+        private static int FindInRange(string[] lines,
+            MemberNodeInfo member,
+            bool isInterface,
+            int startLine,
+            int endLine)
         {
+            if (OperatorSpellings.TryGetValue(member.Name, out string spelling))
+                return FindToken(lines, spelling, startLine, endLine);
+
+            // An indexer is called Item in metadata and appears as this[ in source.
+            if (member.Name == IndexerName)
+            {
+                int indexer = FindToken(lines, IndexerSpelling, startLine, endLine);
+                if (indexer > 0)
+                    return indexer;
+            }
+
             string firstParameter = ReadFirstParameterType(member.Signature);
             int loose = 0;
 
-            for (int index = 0; index < lines.Length; index++)
+            for (int index = startLine - 1; index < endLine && index < lines.Length; index++)
             {
                 string line = lines[index];
 
@@ -142,10 +166,13 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
                 && Regex.IsMatch(line, InterfaceMemberPattern + Regex.Escape(name) + @"\s*[<({]");
         }
 
-        private static int FindToken(string[] lines, string token)
+        private static int FindToken(string[] lines, string token, int startLine, int endLine)
         {
-            for (int index = 0; index < lines.Length; index++)
+            for (int index = startLine - 1; index < endLine && index < lines.Length; index++)
             {
+                if (index < 0)
+                    continue;
+
                 if (lines[index].IndexOf(token, StringComparison.Ordinal) >= 0)
                     return index + 1;
             }
@@ -153,12 +180,46 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
             return 0;
         }
 
+        /// <summary>Walks braces from a type declaration to the line its body closes on.</summary>
+        private static int FindBodyEnd(string[] lines, int typeLine)
+        {
+            int depth = 0;
+            bool opened = false;
+
+            for (int index = typeLine - 1; index < lines.Length; index++)
+            {
+                if (index < 0)
+                    continue;
+
+                foreach (char value in lines[index])
+                {
+                    if (value == BodyOpen)
+                    {
+                        depth++;
+                        opened = true;
+                    }
+                    else if (value == BodyClose)
+                    {
+                        depth--;
+                    }
+                }
+
+                if (opened && depth <= 0)
+                    return index + 1;
+            }
+
+            return lines.Length;
+        }
+
         private static int FindTypeLine(string[] lines, string typeName)
         {
             if (lines == null || lines.Length == 0 || string.IsNullOrEmpty(typeName))
                 return FirstLine;
 
-            Regex pattern = new(TypeDeclarationPattern + Regex.Escape(typeName) + @"\b");
+            // A generic type is written with its parameters, and the name alone is followed by an angle
+            // bracket rather than by a word boundary.
+            string bare = ReadBareName(typeName);
+            Regex pattern = new(TypeDeclarationPattern + Regex.Escape(bare) + @"\s*[<\s:{]");
 
             for (int index = 0; index < lines.Length; index++)
             {
@@ -167,6 +228,20 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
             }
 
             return FirstLine;
+        }
+
+        private static string ReadBareName(string typeName)
+        {
+            int nested = typeName.LastIndexOf('.');
+            string name = nested < 0
+                ? typeName
+                : typeName[(nested + 1)..];
+
+            int generic = name.IndexOf('<');
+
+            return generic < 0
+                ? name
+                : name[..generic];
         }
 
         private static string ReadFirstParameterType(string signature)

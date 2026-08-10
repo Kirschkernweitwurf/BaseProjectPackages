@@ -1,4 +1,5 @@
 using System;
+using Base.ToolPackage.Editor.CodebaseGraph.Analysis;
 using Base.ToolPackage.Editor.CodebaseGraph.Model;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;

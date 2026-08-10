@@ -13,14 +13,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot
         private const int TitleFontSize = 15;
         private const string WarningIcon = "console.warnicon.sml";
 
-        /// <summary>Accent used for findings that stop an attribute from working.</summary>
-        public static readonly Color Error = new(0.86f, 0.30f, 0.32f);
-
-        /// <summary>Accent used for the all-good state.</summary>
-        public static readonly Color Success = new(0.36f, 0.76f, 0.46f);
-
-        /// <summary>Accent used for findings that only change behavior.</summary>
-        public static readonly Color Warning = new(0.88f, 0.63f, 0.13f);
+        private static readonly Color Success = new(0.36f, 0.76f, 0.46f);
 
         private static readonly Color DarkHeader = new(1f, 1f, 1f, 0.05f);
 

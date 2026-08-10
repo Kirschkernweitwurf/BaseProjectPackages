@@ -18,7 +18,9 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
     /// </summary>
     public static class SourceTextScanner
     {
+        private const string CommentStart = "//";
         private const string IgnoreMarker = "graph-ignore";
+        private const char LineBreak = '\n';
         private const int MinimumNameLength = 3;
         private const int SelfFileOccurrences = 2;
         private const char Underscore = '_';
@@ -29,9 +31,6 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         public static void Scan(CodebaseGraphData graph, ScriptIndex index)
         {
             Dictionary<string, List<MemberNodeInfo>> inlined = CollectInlinedMembers(graph);
-            if (inlined.Count == 0)
-                return;
-
             Dictionary<string, List<TypeNodeInfo>> typesByPath = MapTypesByPath(graph);
 
             foreach (KeyValuePair<string, string> pair in index.Sources)
@@ -39,7 +38,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
                 typesByPath.TryGetValue(pair.Key, out List<TypeNodeInfo> declared);
 
                 MarkInlinedUsage(pair.Key, pair.Value, inlined, declared);
-                MarkSuppressed(pair.Value, declared);
+                MarkSuppressed(graph, pair.Key, pair.Value, declared);
             }
         }
 
@@ -132,32 +131,65 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
             return false;
         }
 
-        private static void MarkSuppressed(string source, List<TypeNodeInfo> declared)
+        private static void MarkSuppressed(CodebaseGraphData graph,
+            string path,
+            string source,
+            List<TypeNodeInfo> declared)
         {
-            if (declared == null || source.IndexOf(IgnoreMarker, StringComparison.Ordinal) < 0)
+            if (source.IndexOf(IgnoreMarker, StringComparison.Ordinal) < 0)
                 return;
 
-            foreach (string line in source.Split('\n'))
+            string[] lines = source.Split(LineBreak);
+
+            for (int index = 0; index < lines.Length; index++)
             {
+                string line = lines[index];
                 if (line.IndexOf(IgnoreMarker, StringComparison.Ordinal) < 0)
                     continue;
 
-                foreach (TypeNodeInfo type in declared)
-                    SuppressNamedMembers(type, line);
+                if (!SuppressOnLine(declared, ReadCodeBeforeMarker(line)))
+                    graph.UnmatchedIgnoreMarkers.Add($"{path}:{index + 1}");
             }
         }
 
-        private static void SuppressNamedMembers(TypeNodeInfo type, string line)
+        /// <summary>
+        /// Takes only the code in front of the comment. Matching the whole line would let a name
+        /// mentioned inside the explanation silence a completely different member.
+        /// </summary>
+        private static string ReadCodeBeforeMarker(string line)
         {
-            foreach (MemberNodeInfo member in type.Members)
-            {
-                // A plain containment test first, so the regex only runs on the handful that could match.
-                if (line.IndexOf(member.Name, StringComparison.Ordinal) < 0)
-                    continue;
+            int marker = line.IndexOf(IgnoreMarker, StringComparison.Ordinal);
+            int comment = line.LastIndexOf(CommentStart, marker, StringComparison.Ordinal);
 
-                if (Regex.IsMatch(line, $@"\b{Regex.Escape(member.Name)}\b"))
+            return comment <= 0
+                ? string.Empty
+                : line[..comment];
+        }
+
+        private static bool SuppressOnLine(List<TypeNodeInfo> declared, string code)
+        {
+            if (declared == null || code.Length == 0)
+                return false;
+
+            bool matched = false;
+
+            foreach (TypeNodeInfo type in declared)
+            {
+                foreach (MemberNodeInfo member in type.Members)
+                {
+                    // A plain containment test first, so the regex only runs on the few that could match.
+                    if (code.IndexOf(member.Name, StringComparison.Ordinal) < 0)
+                        continue;
+
+                    if (!Regex.IsMatch(code, $@"\b{Regex.Escape(member.Name)}\b"))
+                        continue;
+
                     member.IsSuppressed = true;
+                    matched = true;
+                }
             }
+
+            return matched;
         }
 
         /// <summary>

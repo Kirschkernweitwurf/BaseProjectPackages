@@ -4,7 +4,6 @@ using System.IO;
 using Base.ToolPackage.Editor.CodebaseGraph.Analysis;
 using Base.ToolPackage.Editor.CodebaseGraph.Editing;
 using Base.ToolPackage.Editor.CodebaseGraph.Model;
-using Base.ToolPackage.Editor.CodebaseGraph.Scanning;
 using Base.ToolPackage.MenuManagerWindow;
 using UnityEditor;
 using UnityEditor.UIElements;

@@ -29,6 +29,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         private const string IgnoreMarker = "graph-ignore";
         private const string MainTitle = "# Codebase Graph findings";
         private const string NothingDismissed = "Nothing is dismissed right now.";
+        private const string UnknownReason = "Unstated";
         private const int StartHereCount = 20;
         private const string VerboseTitle = "# Codebase Graph findings, low confidence";
 
@@ -63,8 +64,8 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
             AppendHeader(builder, graph, MainTitle, entries);
             AppendStartHere(builder, entries);
             AppendSections(builder, entries, ESeverity.Medium);
-            AppendIgnoreMarker(builder);
-            AppendDismissals(builder);
+            AppendIgnoreMarker(builder, graph);
+            AppendDismissals(builder, graph);
 
             return builder.ToString();
         }
@@ -135,7 +136,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
                 ESeverity.Medium,
                 group.DismissalId,
                 string.Empty,
-                BuildCycleDetail(group.Name, group.CyclePartners)));
+                BuildCycleDetail(group.CyclePartners.Count + 1, group.CycleDescription)));
         }
 
         private static void CollectType(TypeNodeInfo type,
@@ -157,7 +158,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
                     continue;
 
                 string detail = finding == EFinding.TypeCycle
-                    ? BuildCycleDetail(type.ShortName, type.CyclePartners)
+                    ? BuildCycleDetail(type.CyclePartners.Count + 1, type.CycleDescription)
                     : string.Empty;
 
                 entries.Add(new FindingEntry(finding,
@@ -168,21 +169,19 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
             }
         }
 
-        private static string BuildCycleDetail(string owner, List<string> partners)
-        {
-            List<string> members = new(partners) { owner };
-            members.Sort(StringComparer.Ordinal);
-
-            return $" the whole loop is {members.Count} deep: {string.Join(", ", members)}";
-        }
+        private static string BuildCycleDetail(int depth, string description)
+            => $" the loop is {depth} deep and closes like this: {description}";
 
         private static string BuildAssetDetail(EFinding finding, MemberNodeInfo member)
         {
             if (finding != EFinding.SerializedNeverRead)
                 return string.Empty;
 
-            return member.AssetUsageCount == 0
-                ? " no prefab, scene or asset sets it either"
+            if (member.AssetUsageCount == 0)
+                return " no prefab, scene or asset sets it either";
+
+            return member.AssetUsageCount == 1
+                ? " set on 1 prefab, scene or asset"
                 : $" set on {member.AssetUsageCount} prefabs, scenes or assets";
         }
 
@@ -227,8 +226,10 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
                 + "from the project itself.");
 
             builder.AppendLine($"{graph.CountExcludedTypes()} types were left out as generated, sample or "
-                + "test code. Public API findings on package assemblies are ranked low and moved to the "
-                + "companion file.");
+                + "test code. Published package API is ranked low and moved to the companion file.");
+
+            builder.AppendLine();
+            AppendExclusions(builder, graph);
 
             builder.AppendLine();
             builder.AppendLine($"{Count(entries, ESeverity.High)} findings ranked high, "
@@ -243,6 +244,38 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
                 + "into the instruction block at the end. The three shapes are "
                 + "`namespace:<full namespace>`, `type:<full type name>` and "
                 + "`member:<full type name>#<member signature>`.");
+
+            builder.AppendLine();
+        }
+
+        /// <summary>
+        /// Lists why types were left out. An exclusion that quietly failed to happen is otherwise
+        /// invisible, and the only symptom is generated code showing up in the findings.
+        /// </summary>
+        private static void AppendExclusions(StringBuilder builder, CodebaseGraphData graph)
+        {
+            Dictionary<string, int> byReason = new(StringComparer.Ordinal);
+
+            foreach (TypeNodeInfo type in graph.Types.Values)
+            {
+                if (!type.IsExcludedFromFindings)
+                    continue;
+
+                string reason = type.ExclusionReason ?? UnknownReason;
+                byReason.TryGetValue(reason, out int count);
+                byReason[reason] = count + 1;
+            }
+
+            if (byReason.Count == 0)
+                return;
+
+            List<string> reasons = new(byReason.Keys);
+            reasons.Sort(StringComparer.Ordinal);
+
+            builder.AppendLine("Left out:");
+
+            foreach (string reason in reasons)
+                builder.AppendLine($"- {reason}: {byReason[reason]} types");
 
             builder.AppendLine();
         }
@@ -325,28 +358,67 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
             builder.AppendLine();
         }
 
-        private static void AppendIgnoreMarker(StringBuilder builder)
+        private static void AppendIgnoreMarker(StringBuilder builder, CodebaseGraphData graph)
         {
-            builder.AppendLine("## Silencing a finding in the source");
+            builder.AppendLine("## Silencing a finding");
             builder.AppendLine();
-            builder.AppendLine($"Putting `{IgnoreMarker}` in a comment on the same line as a member "
-                + "silences every finding on it, permanently and visibly, without touching the dismissal "
-                + "file. A `[CodebaseGraphIgnore]` or `[TroubleshootSample]` attribute does the same for a "
-                + "whole type. Either is the better choice when the finding is wrong for a reason a "
-                + "reader of the code should know about.");
+            builder.AppendLine("Why a finding is wrong belongs at the declaration as an ordinary comment, "
+                + "because it is worth writing whether or not this tool exists. Silencing it is tool "
+                + "state and belongs in the dismissal block below. Doing both keeps the reasoning next to "
+                + "the code and keeps the decision reviewable.");
 
             builder.AppendLine();
-            builder.AppendLine("```csharp");
-            builder.AppendLine($"private static int _instanceCount; // {IgnoreMarker}: cleared by the "
-                + "bootstrapper, which the scan cannot see");
+            builder.AppendLine("A dismissal id embeds the signature it was written for, so renaming or "
+                + "retyping the member brings the finding back and the stale entry is listed for review. "
+                + "That is deliberate: a silencing mechanism that survives arbitrary refactoring is one "
+                + "that can outlive its reason without telling anyone.");
 
-            builder.AppendLine("```");
+            builder.AppendLine();
+            builder.AppendLine("For a whole type that should never be reported at all, a fixture or a "
+                + "generator's output, put `[CodebaseGraphIgnore]` on the type instead. That is a property "
+                + "of the type rather than of anyone's review state, it survives renaming on purpose, and "
+                + "one attribute replaces every id the type would otherwise need.");
+
+            builder.AppendLine();
+            builder.AppendLine($"A same line `{IgnoreMarker}` comment is still honored for compatibility, "
+                + "but it is no longer the recommended route: it silences by name, so it rides through "
+                + "renames and keeps working after the member has stopped meaning what it meant.");
+
+            builder.AppendLine();
+            AppendUnmatchedMarkers(builder, graph);
+        }
+
+        private static void AppendUnmatchedMarkers(StringBuilder builder, CodebaseGraphData graph)
+        {
+            if (graph.UnmatchedIgnoreMarkers.Count == 0)
+                return;
+
+            builder.AppendLine($"### Markers that silenced nothing ({graph.UnmatchedIgnoreMarkers.Count})");
+            builder.AppendLine();
+            builder.AppendLine($"These lines carry `{IgnoreMarker}` but no member is declared on them, so "
+                + "they had no effect. The marker only reads the code in front of the comment, which is "
+                + "why one written on the line above a field does nothing.");
+
+            builder.AppendLine();
+
+            foreach (string location in graph.UnmatchedIgnoreMarkers)
+                builder.AppendLine($"- {location}");
+
             builder.AppendLine();
         }
 
-        private static void AppendDismissals(StringBuilder builder)
+        private static void AppendDismissals(StringBuilder builder, CodebaseGraphData graph)
         {
+            List<DismissalEntry> stored = DismissalStore.Collect();
+            DismissalAudit.Apply(graph, stored);
+            int stale = DismissalAudit.CountStale(stored);
+
             builder.AppendLine("## Dismissed entries");
+            builder.AppendLine();
+            builder.AppendLine($"{stored.Count - stale} dismissals active, {stale} no longer match "
+                + "anything. Stale ones are listed in the Dismissed window in the graph toolbar, where "
+                + "they can be removed or pointed at whatever replaced them.");
+
             builder.AppendLine();
             builder.AppendLine("These were reviewed and set aside, so none of them appear in the sections "
                 + "above. To change that, edit the block below and hand it back through **Update "

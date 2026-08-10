@@ -11,6 +11,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
     public static class CodebaseGraphAnalyzer
     {
         private const int MinimumInterestingCycle = 2;
+        private const string EdgeSeparator = "; ";
         private const string PairSeparator = " <-> ";
 
         /// <summary>Runs every check and writes the findings onto the nodes.</summary>
@@ -61,7 +62,8 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
 
             if (IsPrivateCandidate(member, declaring, realIncoming, graph))
                 member.Issues |= EMemberIssue.PrivateCandidate;
-            else if (!declaring.IsPackageAssembly && IsPublicButInternalOnly(member, realIncoming, graph))
+            else if (!PackageApi.IsSurface(member, declaring)
+                && IsPublicButInternalOnly(member, realIncoming, graph))
                 member.Issues |= EMemberIssue.PublicButInternalOnly;
         }
 
@@ -69,7 +71,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         {
             if (IsDeadTypeCandidate(type))
             {
-                type.Issues |= type.IsPackageAssembly && type.Access == EAccessLevel.Public
+                type.Issues |= PackageApi.IsSurface(type)
                     ? ETypeIssue.UnusedPublicType
                     : ETypeIssue.DeadType;
             }
@@ -114,7 +116,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
                 return;
             }
 
-            if (declaring.IsPackageAssembly && member.Access == EAccessLevel.Public)
+            if (PackageApi.IsSurface(member, declaring))
             {
                 member.Issues |= EMemberIssue.UnusedPublicApi;
                 return;
@@ -290,7 +292,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
             if (member.IsVirtual || member.IsAbstract || HasImplementors(member))
                 return false;
 
-            if (member.ImplementsInterfaceMember)
+            if (member.ImplementsInterfaceMember || PackageApi.IsSurface(member, declaring))
                 return false;
 
             foreach (UsageEdgeInfo edge in member.Incoming)
@@ -339,9 +341,10 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
                     continue;
 
                 string cycleId = BuildCycleId(ReadTypeNames(graph, cycle));
+                string description = DescribeTypeCycle(graph, cycle);
 
                 foreach (TypeKey key in cycle)
-                    MarkCycleMember(graph, cycle, key, cycleId);
+                    MarkCycleMember(graph, cycle, key, cycleId, description);
             }
         }
 
@@ -420,10 +423,72 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
             return string.Join(PairSeparator, sorted);
         }
 
+        /// <summary>
+        /// Writes the loop out edge by edge. A set of names alone invites the reader to look for direct
+        /// references between all of them, when the loop usually closes through a chain.
+        /// </summary>
+        private static string DescribeTypeCycle(CodebaseGraphData graph, List<TypeKey> cycle)
+        {
+            HashSet<TypeKey> members = new(cycle);
+            List<string> parts = new();
+
+            foreach (TypeKey key in cycle)
+            {
+                TypeNodeInfo type = graph.FindType(key);
+                if (type == null)
+                    continue;
+
+                List<string> targets = new();
+
+                foreach (TypeKey target in type.Outgoing.Keys)
+                {
+                    TypeNodeInfo other = graph.FindType(target);
+                    if (other != null && !target.Equals(key) && members.Contains(target))
+                        targets.Add(other.ShortName);
+                }
+
+                if (targets.Count == 0)
+                    continue;
+
+                targets.Sort(StringComparer.Ordinal);
+                parts.Add($"{type.ShortName} -> {string.Join(", ", targets)}");
+            }
+
+            parts.Sort(StringComparer.Ordinal);
+            return string.Join(EdgeSeparator, parts);
+        }
+
+        private static string DescribeNamespaceCycle(CodebaseGraphData graph, List<string> cycle)
+        {
+            HashSet<string> members = new(cycle);
+            List<string> parts = new();
+
+            foreach (string name in cycle)
+            {
+                List<string> targets = new();
+
+                foreach (string target in graph.Namespaces[name].Outgoing.Keys)
+                {
+                    if (target != name && members.Contains(target))
+                        targets.Add(target);
+                }
+
+                if (targets.Count == 0)
+                    continue;
+
+                targets.Sort(StringComparer.Ordinal);
+                parts.Add($"{name} -> {string.Join(", ", targets)}");
+            }
+
+            parts.Sort(StringComparer.Ordinal);
+            return string.Join(EdgeSeparator, parts);
+        }
+
         private static void MarkCycleMember(CodebaseGraphData graph,
             List<TypeKey> cycle,
             TypeKey key,
-            string cycleId)
+            string cycleId,
+            string description)
         {
             TypeNodeInfo type = graph.FindType(key);
             if (type == null || type.IsExcludedFromFindings)
@@ -431,6 +496,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
 
             type.Issues |= ETypeIssue.TypeCycle;
             type.CycleId = cycleId;
+            type.CycleDescription = description;
 
             foreach (TypeKey partner in cycle)
             {
@@ -452,11 +518,13 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
                     continue;
 
                 string cycleId = BuildCycleId(cycle);
+                string description = DescribeNamespaceCycle(graph, cycle);
 
                 foreach (string name in cycle)
                 {
                     NamespaceNodeInfo group = graph.Namespaces[name];
                     group.CycleId = cycleId;
+                    group.CycleDescription = description;
 
                     foreach (string partner in cycle)
                     {

@@ -74,6 +74,6 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot
 
         private static AttributeIssue Build(string member, Type attributeType, string message,
             EAttributeIssueSeverity severity)
-            => new(null, member, AttributeNames.Display(attributeType), message, severity);
+            => new(member, AttributeNames.Display(attributeType), message, severity);
     }
 }

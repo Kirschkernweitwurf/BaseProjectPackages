@@ -253,6 +253,11 @@
     height: 22px;
 }
 
+.dismissal-row.dismissal-stale {
+    border-left-width: 3px;
+    border-left-color: var(--text-guidance);
+}
+
 .dismissal-name {
     -unity-font-style: bold;
     color: var(--text-primary);

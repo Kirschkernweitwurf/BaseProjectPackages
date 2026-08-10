@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Base.AttributePackage;
-using Base.CorePackage.MenuManaging;
+using Base.CorePackage.Contracts;
 using Base.CorePackage.Services.Shutdown;
 using Base.CorePackage.Tweening.Core;
 using Base.CorePackage.Tweening.Core.Data;

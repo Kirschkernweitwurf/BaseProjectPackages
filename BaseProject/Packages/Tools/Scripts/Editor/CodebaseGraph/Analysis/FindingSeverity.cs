@@ -20,8 +20,8 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
             if (IsAlwaysLow(finding))
                 return ESeverity.Low;
 
-            // The public surface of a distributable package exists to be called from elsewhere.
-            if (declaring != null && declaring.IsPackageAssembly && member.Access == EAccessLevel.Public)
+            // The published surface of a distributable package exists to be called from elsewhere.
+            if (PackageApi.IsSurface(member, declaring))
                 return ESeverity.Low;
 
             if (finding == EFinding.SerializedNeverRead)
@@ -49,7 +49,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
             if (IsAlwaysLow(finding))
                 return ESeverity.Low;
 
-            if (type.IsPackageAssembly && type.Access == EAccessLevel.Public)
+            if (PackageApi.IsSurface(type))
                 return ESeverity.Low;
 
             if (finding == EFinding.DeadType)

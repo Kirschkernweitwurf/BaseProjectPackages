@@ -21,6 +21,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             + "through Update dismissals in the graph window, or hand it to an agent to edit.";
 
         private const string CountFormat = "{0} dismissed";
+        private const string CountWithStaleFormat = "{0} dismissed, {1} no longer match anything";
         private const string EmptyText = "Nothing is dismissed. Anything you set aside in the graph window "
             + "shows up here, and can be brought back one entry at a time.";
 
@@ -36,6 +37,23 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         private const string RestoreTreeLabel = "Restore with contents";
         private const string RestoreTreeTooltip = "Also brings back everything dismissed inside this one, "
             + "which is the exact reverse of dismissing with contents.";
+
+        private const string ScanFirstText = "Nothing has been scanned yet, so it cannot be told which of "
+            + "these still match something. Scan in the graph window to find out.";
+
+        private const string StaleGroupFormat = "No longer matches anything ({0})";
+        private const string StaleGroupText = "The id embeds the signature it was written for, so these "
+            + "stopped matching when something was renamed, retyped or deleted. The finding came back on "
+            + "its own. Nothing is removed for you, because a dismissal that stopped matching is exactly "
+            + "when someone should look at it again.";
+
+        private const string StaleRowClass = "dismissal-stale";
+        private const string SuggestionFormat = "looks like it became {0}";
+        private const string RemoveAllStaleLabel = "Remove all stale";
+        private const string RemoveLabel = "Remove";
+        private const string UpdateLabel = "Update";
+        private const string UpdateTooltip = "Points the dismissal at the member that most likely replaced "
+            + "it, keeping the decision rather than starting again.";
 
         private const string RootClass = "codebase-graph-root";
         private const string RowClass = "dismissal-row";
@@ -113,12 +131,18 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
         private void Rebuild()
         {
+            CodebaseGraphData graph = CodebaseGraphCache.Get();
+
             _entries.Clear();
             _entries.AddRange(DismissalStore.Collect());
+            DismissalAudit.Apply(graph, _entries);
 
-            _countLabel.text = string.Format(CountFormat, _entries.Count);
+            int stale = DismissalAudit.CountStale(_entries);
+            _countLabel.text = stale == 0
+                ? string.Format(CountFormat, _entries.Count)
+                : string.Format(CountWithStaleFormat, _entries.Count, stale);
+
             _restoreAllButton.SetEnabled(_entries.Count > 0);
-
             _list.Clear();
 
             if (_entries.Count == 0)
@@ -127,11 +151,36 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
                 return;
             }
 
+            if (graph == null)
+                _list.Add(BuildLabel(ScanFirstText, PlaceholderClass));
+
+            AppendStale(stale);
+            AppendLive();
+        }
+
+        private void AppendStale(int stale)
+        {
+            if (stale == 0)
+                return;
+
+            _list.Add(BuildLabel(string.Format(StaleGroupFormat, stale), KindTitleClass));
+            _list.Add(BuildLabel(StaleGroupText, PlaceholderClass));
+            _list.Add(new Button(RemoveAllStale) { text = RemoveAllStaleLabel });
+
+            foreach (DismissalEntry entry in _entries)
+            {
+                if (entry.IsStale && IsMatch(entry))
+                    _list.Add(BuildRow(entry));
+            }
+        }
+
+        private void AppendLive()
+        {
             EDismissalKind? lastKind = null;
 
             foreach (DismissalEntry entry in _entries)
             {
-                if (!IsMatch(entry))
+                if (entry.IsStale || !IsMatch(entry))
                     continue;
 
                 if (lastKind != entry.Kind)
@@ -144,6 +193,24 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             }
         }
 
+        private void RemoveAllStale()
+        {
+            foreach (DismissalEntry entry in _entries)
+            {
+                if (entry.IsStale)
+                    DismissalStore.Restore(entry.Id);
+            }
+
+            Rebuild();
+        }
+
+        private void UpdateToSuggestion(DismissalEntry entry)
+        {
+            DismissalStore.Restore(entry.Id);
+            DismissalStore.Dismiss(entry.SuggestedId, entry.IncludesContents);
+            Rebuild();
+        }
+
         private bool IsMatch(DismissalEntry entry)
             => string.IsNullOrEmpty(_search)
                 || entry.DisplayName.IndexOf(_search, StringComparison.OrdinalIgnoreCase) >= 0;
@@ -152,17 +219,21 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         {
             VisualElement row = new();
             row.AddToClassList(RowClass);
+            row.EnableInClassList(StaleRowClass, entry.IsStale);
 
             VisualElement text = new();
             text.style.flexGrow = 1f;
             text.Add(BuildLabel(entry.DisplayName, RowNameClass));
 
-            text.Add(BuildLabel(entry.IncludesContents
-                    ? ScopeWithContents
-                    : ScopeAlone,
-                RowScopeClass));
-
+            text.Add(BuildLabel(BuildScopeText(entry), RowScopeClass));
             row.Add(text);
+
+            if (entry.IsStale)
+            {
+                AppendStaleButtons(row, entry);
+                return row;
+            }
+
             row.Add(new Button(() => Restore(entry)) { text = RestoreLabel });
 
             if (entry.CanHoldContents)
@@ -175,6 +246,31 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             }
 
             return row;
+        }
+
+        private string BuildScopeText(DismissalEntry entry)
+        {
+            string scope = entry.IncludesContents
+                ? ScopeWithContents
+                : ScopeAlone;
+
+            return string.IsNullOrEmpty(entry.SuggestedId)
+                ? scope
+                : $"{scope}   {string.Format(SuggestionFormat, entry.SuggestedId)}";
+        }
+
+        private void AppendStaleButtons(VisualElement row, DismissalEntry entry)
+        {
+            if (!string.IsNullOrEmpty(entry.SuggestedId))
+            {
+                row.Add(new Button(() => UpdateToSuggestion(entry))
+                {
+                    text = UpdateLabel,
+                    tooltip = UpdateTooltip
+                });
+            }
+
+            row.Add(new Button(() => Restore(entry)) { text = RemoveLabel });
         }
 
         private void Restore(DismissalEntry entry)

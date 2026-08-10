@@ -50,8 +50,7 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
         /// <summary>Accent used for problems.</summary>
         public static readonly Color Accent = new(0.86f, 0.30f, 0.32f);
 
-        /// <summary>Accent used for the all-good state.</summary>
-        public static readonly Color Success = new(0.36f, 0.76f, 0.46f);
+        private static readonly Color Success = new(0.36f, 0.76f, 0.46f);
 
         private static readonly Color DarkHeader = new(1f, 1f, 1f, 0.05f);
 

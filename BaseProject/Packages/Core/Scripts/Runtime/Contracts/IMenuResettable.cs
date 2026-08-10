@@ -1,4 +1,4 @@
-namespace Base.CorePackage.MenuManaging
+namespace Base.CorePackage.Contracts
 {
     /// <summary>
     /// Implemented by components that should reset to a known baseline when their

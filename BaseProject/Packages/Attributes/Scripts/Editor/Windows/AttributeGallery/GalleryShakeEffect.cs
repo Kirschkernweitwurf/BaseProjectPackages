@@ -13,6 +13,6 @@ namespace Base.AttributePackage.Editor.Windows.AttributeGallery
         [SerializeField] [Percentage(slider: true)] private float falloff = 0.5f;
 
         /// <inheritdoc/>
-        public string Description => $"Shake at {amplitude} units.";
+        public string Description => $"Shake at {amplitude} units, falling off to {falloff:P0}.";
     }
 }

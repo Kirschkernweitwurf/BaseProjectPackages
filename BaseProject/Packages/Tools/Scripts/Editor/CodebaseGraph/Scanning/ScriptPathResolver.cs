@@ -96,8 +96,14 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
             }
         }
 
-        private static bool HasGeneratedHeader(string source)
+        /// <summary>True when the opening lines of a file say a tool wrote it.</summary>
+        /// <param name="source">Source text, which may be empty.</param>
+        /// <returns>True for generated files.</returns>
+        public static bool HasGeneratedHeader(string source)
         {
+            if (string.IsNullOrEmpty(source))
+                return false;
+
             string header = source[..Math.Min(source.Length, HeaderWindow)];
 
             foreach (string marker in GeneratedHeaderMarkers)

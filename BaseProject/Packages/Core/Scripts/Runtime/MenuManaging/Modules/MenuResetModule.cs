@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Base.CorePackage.Contracts;
 using Object = UnityEngine.Object;
 
 namespace Base.CorePackage.MenuManaging.Modules

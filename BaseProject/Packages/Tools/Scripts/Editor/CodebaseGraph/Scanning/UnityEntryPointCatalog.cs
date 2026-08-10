@@ -352,7 +352,10 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
             if (field.IsDefined(typeof(NonSerializedAttribute), false))
                 return false;
 
-            if (field.IsDefined(typeof(SerializeField), false))
+            // SerializeReference persists a field just as SerializeField does, and a readonly field is
+            // not serialized at all, so mistaking one for a plain field costs the stored data.
+            if (field.IsDefined(typeof(SerializeField), false)
+                || field.IsDefined(typeof(SerializeReference), false))
                 return true;
 
             // A public field is only written by Unity when the type it sits on is serialized at all.

@@ -14,7 +14,9 @@ namespace Base.AttributePackage
         /// <summary>All discovered rules.</summary>
         public static IReadOnlyList<IValidationRule> All => _rules ??= Discover();
 
-        private static IValidationRule[] _rules; // reset-ignore
+        // Reflection cache over loaded types. Those cannot change without a domain reload,
+        // which clears this anyway, so carrying it across play sessions is correct.
+        private static IValidationRule[] _rules;
 
         private static IValidationRule[] Discover()
         {

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Base.ToolPackage.Editor.CodebaseGraph.Analysis;
 using Base.ToolPackage.Editor.CodebaseGraph.Model;
 
 namespace Base.ToolPackage.Editor.CodebaseGraph

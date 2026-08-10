@@ -32,6 +32,9 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Model
         /// <summary>True for abstract types.</summary>
         public bool IsAbstract { get; }
 
+        /// <summary>True when no type can derive from this one.</summary>
+        public bool IsSealed { get; set; }
+
         /// <summary>True when the type derives from a Unity object.</summary>
         public bool IsUnityObject { get; }
 
@@ -91,6 +94,9 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Model
 
         /// <summary>Identifies the cycle this type belongs to, shared by every type in the same loop.</summary>
         public string CycleId { get; set; }
+
+        /// <summary>The edges that close the loop, written out so the cycle can be checked by reading.</summary>
+        public string CycleDescription { get; set; }
 
         /// <summary>Number of types that depend on this one.</summary>
         public int FanIn => Incoming.Count;

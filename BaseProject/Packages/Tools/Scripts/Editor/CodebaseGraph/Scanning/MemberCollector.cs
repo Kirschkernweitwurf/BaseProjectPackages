@@ -136,6 +136,8 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
                 typeof(UnityEngine.Object).IsAssignableFrom(type),
                 typeof(MonoBehaviour).IsAssignableFrom(type));
 
+            node.IsSealed = type.IsSealed;
+
             if (UnityEntryPointCatalog.TryGetEntryPointAttribute(type, out string reason)
                 || UnityEntryPointCatalog.IsEngineDriven(type, out reason))
             {

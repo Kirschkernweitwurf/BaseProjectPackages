@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Base.ToolPackage.Editor.CodebaseGraph.Analysis;
 using Base.ToolPackage.Editor.CodebaseGraph.Model;
 using UnityEngine.UIElements;
 

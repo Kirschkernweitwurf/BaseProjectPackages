@@ -1,8 +1,7 @@
 using System.Collections.Generic;
-using Base.ToolPackage.Editor.CodebaseGraph.Analysis;
 using Base.ToolPackage.Editor.CodebaseGraph.Model;
 
-namespace Base.ToolPackage.Editor.CodebaseGraph
+namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
 {
     /// <summary>
     /// The single place that knows what each finding means. A red line on a node is useless on its own,

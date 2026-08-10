@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Base.AttributePackage;
-using Base.CorePackage.DebugMenu.CheatConsole.Cheats;
 using Base.CorePackage.Input;
 using Base.CorePackage.Services;
 using UnityEngine;

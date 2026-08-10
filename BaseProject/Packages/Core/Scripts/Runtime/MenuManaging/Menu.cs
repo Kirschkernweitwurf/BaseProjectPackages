@@ -133,6 +133,14 @@ namespace Base.CorePackage.MenuManaging
             if (IsTransitioning)
                 return;
 
+            if (TryGetBlockingMenu(out MenuIdentifier blockingMenu))
+            {
+                CustomLogger.LogWarning($"Menu \"{MenuIdentifier}\" cannot open while \"{blockingMenu}\" is open.",
+                    this);
+
+                return;
+            }
+
             IsTransitioning = true;
             IsOpen = true;
 
@@ -221,6 +229,34 @@ namespace Base.CorePackage.MenuManaging
         /// Runs after a back request closed the menu, before <see cref="BackRequested"/> is raised.
         /// </summary>
         protected virtual void OnBack() { }
+
+        /// <summary>
+        /// Finds the first menu in <see cref="blockingMenus"/> that is currently open. Menus listed
+        /// there own the screen while they are up, so this one must stay closed until they go away.
+        /// </summary>
+        /// <param name="blockingMenu">The open menu that blocks this one, or <c>null</c>.</param>
+        /// <returns><c>true</c> when a blocking menu is open.</returns>
+        private bool TryGetBlockingMenu(out MenuIdentifier blockingMenu)
+        {
+            blockingMenu = null;
+
+            if (blockingMenus == null || blockingMenus.Length == 0)
+                return false;
+
+            if (!ServiceLocator.TryGet(out MenuManager menuManager))
+                return false;
+
+            foreach (MenuIdentifier identifier in blockingMenus)
+            {
+                if (identifier == null || !menuManager.IsMenuOpen(identifier))
+                    continue;
+
+                blockingMenu = identifier;
+                return true;
+            }
+
+            return false;
+        }
 
         private void RegisterParentMenu(MenuIdentifier parentMenuIdentifier)
         {

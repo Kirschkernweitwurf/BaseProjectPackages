@@ -23,6 +23,9 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Model
         /// <summary>Identifies the cycle this namespace belongs to, shared by every one in the loop.</summary>
         public string CycleId { get; set; }
 
+        /// <summary>The edges that close the loop, written out so the cycle can be checked by reading.</summary>
+        public string CycleDescription { get; set; }
+
         /// <summary>Stable id used for dismissals, built once so lookups allocate nothing.</summary>
         public string DismissalId { get; set; }
 

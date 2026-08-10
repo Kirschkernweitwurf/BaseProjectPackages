@@ -18,6 +18,12 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Model
         /// <summary>True when the entry can hold others, so restoring it can reach further.</summary>
         public bool CanHoldContents => Kind != EDismissalKind.Member;
 
+        /// <summary>True when nothing in the current scan carries this id any more.</summary>
+        public bool IsStale { get; set; }
+
+        /// <summary>Id this one most likely became, when a single signature change explains the loss.</summary>
+        public string SuggestedId { get; set; }
+
         /// <summary>Creates an overview entry.</summary>
         /// <param name="id">The stable id the store holds.</param>
         /// <param name="kind">What the id points at.</param>

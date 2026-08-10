@@ -4,8 +4,9 @@ using System.Diagnostics;
 using System.Reflection;
 using Base.ToolPackage.Editor.CodebaseGraph.Analysis;
 using Base.ToolPackage.Editor.CodebaseGraph.Model;
+using Base.ToolPackage.Editor.CodebaseGraph.Scanning;
 
-namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
+namespace Base.ToolPackage.Editor.CodebaseGraph
 {
     /// <summary>Runs the whole scan and returns the finished graph.</summary>
     public static class CodebaseGraphBuilder
@@ -323,7 +324,9 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
             if (type.IsExcludedFromFindings)
                 return;
 
-            if (index.IsGenerated(type.ScriptPath, outermost) || IsGeneratedFolder(type.ScriptPath))
+            if (index.IsGenerated(type.ScriptPath, outermost)
+                || IsGeneratedFolder(type.ScriptPath)
+                || ScriptPathResolver.HasGeneratedHeader(ScriptSourceReader.Read(type.ScriptPath)))
             {
                 type.IsExcludedFromFindings = true;
                 type.ExclusionReason = GeneratedReason;

@@ -27,7 +27,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot
             => Add(issues, member, attributeType, message, EAttributeIssueSeverity.Warning);
 
         private static void Add(List<AttributeIssue> issues, MemberInfo member, Type attributeType, string message,
-            EAttributeIssueSeverity severity) => issues.Add(new AttributeIssue(member.DeclaringType, member.Name,
+            EAttributeIssueSeverity severity) => issues.Add(new AttributeIssue(member.Name,
             AttributeNames.Display(attributeType), message, severity));
     }
 }

@@ -23,6 +23,12 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Model
         /// <summary>Names of the scanned assemblies that ship inside a distributable package.</summary>
         public HashSet<string> PackageAssemblies { get; }
 
+        /// <summary>
+        /// Places where an ignore marker was written but matched no member. A marker that quietly does
+        /// nothing is the worst failure a tool for finding silent problems can have.
+        /// </summary>
+        public List<string> UnmatchedIgnoreMarkers { get; }
+
         /// <summary>How long the scan took, in seconds.</summary>
         public float ScanSeconds { get; set; }
 
@@ -43,6 +49,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Model
             Namespaces = new Dictionary<string, NamespaceNodeInfo>();
             ScannedAssemblies = new List<string>();
             PackageAssemblies = new HashSet<string>();
+            UnmatchedIgnoreMarkers = new List<string>();
         }
 
         /// <summary>Returns the type for a key, or null when it is outside the scanned scope.</summary>

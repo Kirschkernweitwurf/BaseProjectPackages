@@ -28,6 +28,8 @@ namespace Base.MemoryProfiler
         public static bool IsActive { get; private set; }
 
         private static MemoryProfilerConfigSo _config;
+
+        // Bootstrap calls Stop() before every play session, which stops and nulls this.
         private static Timer _intervalTimer;
 
         /// <summary>Takes a snapshot immediately. Works in the editor and in development builds.</summary>

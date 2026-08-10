@@ -32,17 +32,6 @@ namespace Base.ToolPackage.Editor.Identification
             return candidateId;
         }
 
-        /// <summary>
-        /// Registers an existing valid ID (used when we know we don't need to mutate it).
-        /// </summary>
-        internal static void Register(Object asset, string id)
-        {
-            if (string.IsNullOrEmpty(id))
-                return;
-
-            UsedIds[id] = asset;
-        }
-
         private static bool IsDuplicate(Object asset, string id)
         {
             if (!UsedIds.TryGetValue(id, out Object existing))
