@@ -95,7 +95,11 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         /// <param name="assemblies">Assemblies the scan covered.</param>
         public void SetAssemblies(IEnumerable<string> assemblies)
         {
-            List<string> choices = new() { AllAssembliesLabel };
+            List<string> choices = new()
+            {
+                AllAssembliesLabel
+            };
+
             choices.AddRange(assemblies);
 
             _assemblyField.choices = choices;
@@ -125,8 +129,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
         /// <summary>Shows how many entries are currently dismissed.</summary>
         /// <param name="count">Number of dismissals.</param>
-        public void SetDismissedCount(int count)
-            => _dismissedButton.text = string.Format(DismissedFormat, count);
+        public void SetDismissedCount(int count) => _dismissedButton.text = string.Format(DismissedFormat, count);
 
         /// <summary>Clears the search box without raising a change.</summary>
         public void ClearSearch()
@@ -162,19 +165,17 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             return choices;
         }
 
-        private static List<string> BuildSearchScopeChoices()
-            => new()
-            {
-                SearchEverywhereLabel,
-                SearchCurrentLevelLabel,
-                SearchTypesLabel,
-                SearchMembersLabel
-            };
+        private static List<string> BuildSearchScopeChoices() => new()
+        {
+            SearchEverywhereLabel,
+            SearchCurrentLevelLabel,
+            SearchTypesLabel,
+            SearchMembersLabel
+        };
 
-        private static DropdownMenuAction.Status ReadStatus(bool isOn)
-            => isOn
-                ? DropdownMenuAction.Status.Checked
-                : DropdownMenuAction.Status.Normal;
+        private static DropdownMenuAction.Status ReadStatus(bool isOn) => isOn
+            ? DropdownMenuAction.Status.Checked
+            : DropdownMenuAction.Status.Normal;
 
         private void Build()
         {
@@ -196,7 +197,11 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
         private void AddFilters()
         {
-            _assemblyField = new PopupField<string>(new List<string> { AllAssembliesLabel }, 0);
+            _assemblyField = new PopupField<string>(new List<string>
+            {
+                AllAssembliesLabel
+            }, 0);
+
             _assemblyField.RegisterValueChangedCallback(OnAssemblyChanged);
             Add(_assemblyField);
 
@@ -214,7 +219,11 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             _searchScopeField.RegisterValueChangedCallback(OnSearchScopeChanged);
             Add(_searchScopeField);
 
-            _searchField = new ToolbarSearchField { tooltip = SearchPlaceholder };
+            _searchField = new ToolbarSearchField
+            {
+                tooltip = SearchPlaceholder
+            };
+
             _searchField.style.flexGrow = 1f;
             _searchField.RegisterValueChangedCallback(OnSearchChanged);
             Add(_searchField);
@@ -256,16 +265,16 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             menu.menu.AppendSeparator();
 
             menu.menu.AppendAction(ShowPrivateLabel,
-                _ => ToggleShowPrivate(),
-                _ => ReadStatus(_filter.ShowPrivate));
+                action: _ => ToggleShowPrivate(),
+                actionStatusCallback: _ => ReadStatus(_filter.ShowPrivate));
 
             menu.menu.AppendAction(ShowDataLabel,
-                _ => ToggleShowData(),
-                _ => ReadStatus(_filter.ShowDataMembers));
+                action: _ => ToggleShowData(),
+                actionStatusCallback: _ => ReadStatus(_filter.ShowDataMembers));
 
             menu.menu.AppendAction(ShowMembersLabel,
-                _ => ToggleShowMembers(),
-                _ => ReadStatus(_filter.ShowMembersOnTypes));
+                action: _ => ToggleShowMembers(),
+                actionStatusCallback: _ => ReadStatus(_filter.ShowMembersOnTypes));
 
             return menu;
         }
@@ -278,23 +287,21 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
                 tooltip = ReportTooltip
             };
 
-            menu.menu.AppendAction(ExportLabel, _ => _actions.Export?.Invoke());
-            menu.menu.AppendAction(ExportScopeLabel, _ => _actions.ExportScope?.Invoke());
+            menu.menu.AppendAction(ExportLabel, action: _ => _actions.Export?.Invoke());
+            menu.menu.AppendAction(ExportScopeLabel, action: _ => _actions.ExportScope?.Invoke());
             menu.menu.AppendSeparator();
-            menu.menu.AppendAction(ImportLabel, _ => _actions.Import?.Invoke());
+            menu.menu.AppendAction(ImportLabel, action: _ => _actions.Import?.Invoke());
 
             return menu;
         }
 
-        private void AppendLayout(ToolbarMenu menu, string label, ELayoutMode mode)
-            => menu.menu.AppendAction(label,
-                _ => SetLayout(mode),
-                _ => ReadStatus(_filter.LayoutMode == mode));
+        private void AppendLayout(ToolbarMenu menu, string label, ELayoutMode mode) => menu.menu.AppendAction(label,
+            action: _ => SetLayout(mode),
+            actionStatusCallback: _ => ReadStatus(_filter.LayoutMode == mode));
 
-        private void AppendEdge(ToolbarMenu menu, string label, EEdgeMode mode)
-            => menu.menu.AppendAction(label,
-                _ => SetEdge(mode),
-                _ => ReadStatus(_filter.EdgeMode == mode));
+        private void AppendEdge(ToolbarMenu menu, string label, EEdgeMode mode) => menu.menu.AppendAction(label,
+            action: _ => SetEdge(mode),
+            actionStatusCallback: _ => ReadStatus(_filter.EdgeMode == mode));
 
         private void SetLayout(ELayoutMode mode)
         {

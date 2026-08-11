@@ -28,11 +28,11 @@ namespace Base.ToolPackage.Editor.OverviewGui.PrefabOverviewWindow
                 contents = PrefabUtility.LoadPrefabContents(assetPath);
 
                 if (contents == null)
-                    return default;
+                    return default(PrefabOverrideCounts);
 
                 // Only the contents of a variant behave like an instance of another prefab.
                 if (!PrefabUtility.IsPartOfPrefabInstance(contents))
-                    return default;
+                    return default(PrefabOverrideCounts);
 
                 return new PrefabOverrideCounts(CountModifiedProperties(contents),
                     PrefabUtility.GetAddedComponents(contents).Count,
@@ -42,7 +42,7 @@ namespace Base.ToolPackage.Editor.OverviewGui.PrefabOverviewWindow
             catch (Exception exception)
             {
                 CustomLogger.LogWarning($"Overrides of {assetPath} could not be read: {exception.Message}", null);
-                return default;
+                return default(PrefabOverrideCounts);
             }
             finally
             {
@@ -77,6 +77,6 @@ namespace Base.ToolPackage.Editor.OverviewGui.PrefabOverviewWindow
 
         private static bool IsRootName(PropertyModification modification, Object baseRoot)
             => modification.propertyPath == NameProperty
-               && modification.target == baseRoot;
+                && modification.target == baseRoot;
     }
 }

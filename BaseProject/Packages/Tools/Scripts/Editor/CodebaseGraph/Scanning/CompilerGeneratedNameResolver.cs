@@ -20,7 +20,13 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         private const string SetPrefix = "set_";
 
         /// <summary>The four accessor prefixes the compiler puts in front of a property or event.</summary>
-        private static readonly string[] AccessorPrefixes = { GetPrefix, SetPrefix, AddPrefix, RemovePrefix };
+        private static readonly string[] AccessorPrefixes =
+        {
+            GetPrefix,
+            SetPrefix,
+            AddPrefix,
+            RemovePrefix
+        };
 
         /// <summary>True when the name was produced by the compiler rather than written by hand.</summary>
         /// <param name="name">Type or member name to test.</param>
@@ -80,24 +86,6 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
             return !string.IsNullOrEmpty(ownerName);
         }
 
-        private static int FindMatchingBracket(string name, int open)
-        {
-            int depth = 0;
-
-            for (int index = open; index < name.Length; index++)
-            {
-                if (name[index] == OpenBracket)
-                    depth++;
-                else if (name[index] == CloseBracket)
-                    depth--;
-
-                if (depth == 0)
-                    return index;
-            }
-
-            return -1;
-        }
-
         /// <summary>
         /// Strips an accessor prefix, so get_Order becomes Order. A lambda written inside a property
         /// getter encodes its owner as the accessor, but only the property itself is ever registered as
@@ -138,6 +126,24 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
                 return false;
 
             return TryGetOwnerName(fieldName, out propertyName);
+        }
+
+        private static int FindMatchingBracket(string name, int open)
+        {
+            int depth = 0;
+
+            for (int index = open; index < name.Length; index++)
+            {
+                if (name[index] == OpenBracket)
+                    depth++;
+                else if (name[index] == CloseBracket)
+                    depth--;
+
+                if (depth == 0)
+                    return index;
+            }
+
+            return -1;
         }
     }
 }

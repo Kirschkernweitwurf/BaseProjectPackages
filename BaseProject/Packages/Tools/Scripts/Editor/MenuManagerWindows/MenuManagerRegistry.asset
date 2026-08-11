@@ -20,8 +20,8 @@ MonoBehaviour:
   columnPriorityWidth: 58
   columnStatusWidth: 52
   menuItemRoot:
-  - rid: 5339058645413658751
   - rid: 4171306542554939473
+  - rid: 5339058645413658751
   createAssetRoot:
   - rid: 5339058662016286883
   menuItemGroups: []
@@ -109,27 +109,6 @@ MonoBehaviour:
           createFileName: 
           overridePriority: 0
           overrideValue: 0
-    - rid: 4171306565811306589
-      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
-      data:
-        separator: 0
-        entry:
-          id: CA:Base.ToolPackage.Editor.CodebaseGraph.Analysis.PackageDependencyRules
-          path: Package Dependency Rules
-          enabled: 1
-          kind: 1
-          createFileName: PackageDependencyRules
-          overridePriority: 0
-          overrideValue: 0
-    - rid: 4171306565811306602
-      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
-      data:
-        separator: 1
-        name: Codebase Graph
-        expanded: 0
-        merged: 0
-        children:
-        - rid: 4171306565811306589
     - rid: 5339058645413658751
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
       data:
@@ -158,13 +137,13 @@ MonoBehaviour:
         expanded: 0
         merged: 0
         children:
+        - rid: 5339058645413659006
         - rid: 5339058645413658762
         - rid: 5339058645413658763
         - rid: 5339058645413658764
         - rid: 5339058645413658765
         - rid: 5339058645413658766
         - rid: 5339058645413658767
-        - rid: 5339058645413659006
     - rid: 5339058645413658755
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
       data:
@@ -183,12 +162,12 @@ MonoBehaviour:
         expanded: 1
         merged: 0
         children:
-        - rid: 5339058645413658770
-        - rid: 5339058645413658771
         - rid: 5339058645413658772
         - rid: 5339058645413658773
         - rid: 5339058645413658774
         - rid: 5339058645413658775
+        - rid: 5339058645413658770
+        - rid: 5339058645413658771
     - rid: 5339058645413658762
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
       data:
@@ -225,9 +204,9 @@ MonoBehaviour:
         expanded: 0
         merged: 0
         children:
-        - rid: 5339058706698469469
         - rid: 5339058706698469470
         - rid: 5339058706698469471
+        - rid: 5339058706698469469
     - rid: 5339058645413658766
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
       data:
@@ -280,12 +259,12 @@ MonoBehaviour:
         expanded: 1
         merged: 0
         children:
-        - rid: 5339058645413658793
         - rid: 5339058645413658794
-        - rid: 5339058645413658802
-        - rid: 4171306542554939475
         - rid: 4171306542554939503
         - rid: 4171306542554939516
+        - rid: 5339058645413658802
+        - rid: 4171306542554939475
+        - rid: 5339058645413658793
     - rid: 5339058645413658771
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
       data:
@@ -627,16 +606,15 @@ MonoBehaviour:
         merged: 0
         children:
         - rid: 5339058662016286886
-        - rid: 5339058662016286887
+        - rid: 5339058662016286890
+        - rid: 5339058662016286894
+        - rid: 5339058662016286893
         - rid: 5339058662016286888
         - rid: 5339058662016286889
-        - rid: 5339058662016286890
-        - rid: 5339058662016286891
         - rid: 5339058662016286892
-        - rid: 5339058662016286893
-        - rid: 5339058662016286894
         - rid: 5339058662016286895
-        - rid: 4171306565811306602
+        - rid: 5339058662016286891
+        - rid: 5339058662016286887
     - rid: 5339058662016286886
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
       data:
@@ -710,8 +688,8 @@ MonoBehaviour:
         merged: 0
         children:
         - rid: 5339058662016286904
-        - rid: 4171306542554939478
         - rid: 4171306542554939492
+        - rid: 4171306542554939478
     - rid: 5339058662016286894
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
       data:
@@ -798,9 +776,9 @@ MonoBehaviour:
         expanded: 1
         merged: 0
         children:
-        - rid: 5339058662016286907
         - rid: 5339058662016286908
         - rid: 5339058662016286909
+        - rid: 5339058662016286907
     - rid: 5339058662016286902
       type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
       data:

@@ -17,8 +17,6 @@ namespace Base.ToolPackage.Editor.Tests.Fixtures
         /// Carries its own body, so nothing has to implement it. It is never called, which should read as
         /// an unused contract member rather than as one waiting to be written.
         /// </summary>
-        void Describe()
-        {
-        }
+        void Describe() { }
     }
 }

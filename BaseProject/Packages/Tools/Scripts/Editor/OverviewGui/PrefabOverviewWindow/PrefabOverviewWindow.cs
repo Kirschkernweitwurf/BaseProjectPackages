@@ -269,7 +269,7 @@ namespace Base.ToolPackage.Editor.OverviewGui.PrefabOverviewWindow
             string term = _search.Trim();
 
             return entry.Name.IndexOf(term, StringComparison.OrdinalIgnoreCase) >= 0
-                   || entry.AssetPath.IndexOf(term, StringComparison.OrdinalIgnoreCase) >= 0;
+                || entry.AssetPath.IndexOf(term, StringComparison.OrdinalIgnoreCase) >= 0;
         }
 
         private bool MatchesFilter(PrefabEntry entry)

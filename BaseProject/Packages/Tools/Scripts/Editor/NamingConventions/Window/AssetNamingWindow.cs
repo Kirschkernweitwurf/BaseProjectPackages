@@ -1,8 +1,6 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using Base.ToolPackage.Editor.NamingConventions.Data;
-using Base.ToolPackage.Editor.NamingConventions.Renaming;
 using Base.ToolPackage.Editor.NamingConventions.Scanning;
 using Base.ToolPackage.MenuManagerWindow;
 using Base.UtilityPackage.Logging;
@@ -19,6 +17,9 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
     /// stay editable in the rule table afterwards. Rules, Dismissed, Scan Results and History are
     /// collapsible sections inside one shared scroll view, each with its own accent color. Every
     /// rename, dismiss and restore lands in the clearable History.
+    /// <para/>
+    /// The window only draws. <see cref="AssetNamingQuery"/> owns the results and the filters,
+    /// <see cref="AssetNamingEdits"/> owns every change that is deferred past the layout pass.
     /// </summary>
     public sealed class AssetNamingWindow : EditorWindow
     {
@@ -46,12 +47,6 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
             "Bring every dismissed asset back into the scan");
 
         private static readonly GUIContent ClearHistoryContent = new("Clear", "Drop the whole history");
-
-
-
-
-
-
 
         private static readonly GUIContent CreateContent = new("Create Rule Set",
             "Create the rule set asset so the conventions are versioned with the project");
@@ -90,34 +85,17 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
         private static readonly GUIContent UndoContent = new("Undo",
             "Take this back. A rename is renamed again, a dismiss is restored and the entry disappears.");
 
+        [SerializeField] private AssetNamingQuery query = new();
         [SerializeField] private bool showDismissed;
         [SerializeField] private bool showFragments;
         [SerializeField] private bool showHistory;
         [SerializeField] private bool showResults = true;
         [SerializeField] private bool showRules = true;
-        [SerializeField] private EAssetNamingSort sort = EAssetNamingSort.Folder;
 
-        private readonly List<AssetNamingViolation> _all = new();
-        private readonly List<AssetNamingViolation> _filtered = new();
-        private readonly List<AssetNamingGroup> _groups = new();
+        private readonly AssetNamingEdits _edits = new();
         private readonly Dictionary<string, bool> _collapsedGroups = new();
 
         private AssetNamingRuleSet _ruleSet;
-        private AssetNamingViolation _pendingRename;
-        private AssetNamingViolation _pendingDismiss;
-        private AssetNamingHistoryEntry _pendingUndo;
-        private List<string> _dismissedPaths;
-        private string _pendingRestoreGuid = string.Empty;
-        private string _ruleFilter = string.Empty;
-        private string _search = string.Empty;
-        private int _pendingRuleRemoval = AssetNamingRuleGui.NoIndex;
-        private int _pendingFragmentRemoval = AssetNamingRuleGui.NoIndex;
-        private bool _isAddRulePending;
-        private bool _isAddFragmentPending;
-        private bool _isClearDismissedPending;
-        private bool _isClearHistoryPending;
-        private bool _isRenameAllPending;
-        private bool _hasScanned;
         private bool _needsScan;
         private Vector2 _scroll;
 
@@ -158,7 +136,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
             ApplyPending();
         }
 
-        private void OnFocus() => _dismissedPaths = null;
+        private void OnFocus() => query.InvalidateDismissed();
 #endregion
 
         /// <summary>Opens or focuses the window from the Tools menu.</summary>
@@ -223,26 +201,10 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
         private static Rect ButtonRect(Rect row, float x, float width)
             => new(x, row.y + FieldInset, width, row.height - FieldInset * 2f);
 
-        /// <summary>
-        /// GUID behind a history entry. Older entries only stored a path, and a path goes stale as
-        /// soon as the asset is renamed again, which is why the GUID is the one that counts.
-        /// </summary>
-        private static string GuidOf(AssetNamingHistoryEntry entry)
+        private void Rescan()
         {
-            if (!string.IsNullOrEmpty(entry.guid))
-                return entry.guid;
-
-            return AssetDatabase.AssetPathToGUID(entry.assetPath);
-        }
-
-        /// <summary>Current path of a history entry, resolved through its GUID.</summary>
-        private static string PathOf(AssetNamingHistoryEntry entry)
-        {
-            string path = AssetDatabase.GUIDToAssetPath(GuidOf(entry));
-
-            return string.IsNullOrEmpty(path)
-                ? entry.assetPath
-                : path;
+            _needsScan = false;
+            query.Scan(_ruleSet);
         }
 
         private void DrawToolbar()
@@ -257,27 +219,27 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
                     if (GUILayout.Button(DetectContent, EditorStyles.toolbarButton, GUILayout.Width(DetectWidth)))
                         DetectConventions();
 
-                    using (new EditorGUI.DisabledScope(_filtered.Count == 0))
+                    using (new EditorGUI.DisabledScope(query.Filtered.Count == 0))
                     {
                         if (GUILayout.Button(RenameAllContent, EditorStyles.toolbarButton,
                                 GUILayout.Width(RenameAllWidth)))
-                            _isRenameAllPending = true;
+                            _edits.RequestRenameAll();
                     }
 
                     GUILayout.FlexibleSpace();
 
                     EditorGUI.BeginChangeCheck();
 
-                    sort = (EAssetNamingSort)EditorGUILayout.Popup((int)sort, SortLabels, EditorStyles.toolbarPopup,
-                        GUILayout.Width(SortWidth));
+                    query.Sort = (EAssetNamingSort)EditorGUILayout.Popup((int)query.Sort, SortLabels,
+                        EditorStyles.toolbarPopup, GUILayout.Width(SortWidth));
 
                     DrawRuleFilter();
 
-                    _search = GUILayout.TextField(_search, EditorStyles.toolbarSearchField,
+                    query.Search = GUILayout.TextField(query.Search, EditorStyles.toolbarSearchField,
                         GUILayout.MinWidth(SearchWidth));
 
                     if (EditorGUI.EndChangeCheck())
-                        RunQuery();
+                        query.Run();
                 }
             }
         }
@@ -289,7 +251,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
             int selected = EditorGUILayout.Popup(current, labels, EditorStyles.toolbarPopup,
                 GUILayout.Width(FilterWidth));
 
-            _ruleFilter = selected <= 0
+            query.RuleFilter = selected <= 0
                 ? string.Empty
                 : labels[selected];
         }
@@ -307,12 +269,12 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
 
         private int IndexOfRuleFilter(string[] labels)
         {
-            if (_ruleFilter.Length == 0)
+            if (query.RuleFilter.Length == 0)
                 return 0;
 
             for (int index = 1; index < labels.Length; index++)
             {
-                if (labels[index] == _ruleFilter)
+                if (labels[index] == query.RuleFilter)
                     return index;
             }
 
@@ -343,33 +305,31 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
                     out bool isAddFragmentRequested, out int fragmentRemovalIndex);
 
                 if (isAddFragmentRequested)
-                    _isAddFragmentPending = true;
+                    _edits.RequestAddFragment();
 
                 if (fragmentRemovalIndex != AssetNamingRuleGui.NoIndex)
-                    _pendingFragmentRemoval = fragmentRemovalIndex;
+                    _edits.RequestFragmentRemoval(fragmentRemovalIndex);
 
                 EditorGUILayout.Space(4f);
 
                 int ruleRemovalIndex = AssetNamingRuleGui.DrawRules(_ruleSet);
 
                 if (ruleRemovalIndex != AssetNamingRuleGui.NoIndex)
-                    _pendingRuleRemoval = ruleRemovalIndex;
+                    _edits.RequestRuleRemoval(ruleRemovalIndex);
 
                 EditorGUILayout.Space(2f);
 
                 if (AssetNamingRuleGui.DrawAddButton())
-                    _isAddRulePending = true;
+                    _edits.RequestAddRule();
             }
         }
 
         private void DrawDismissedSection()
         {
-            _dismissedPaths ??= BuildDismissedPaths();
-
-            if (_dismissedPaths.Count == 0)
+            if (query.DismissedCount == 0)
                 return;
 
-            List<string> visible = FilterDismissed();
+            IReadOnlyList<string> visible = query.GetVisibleDismissed();
 
             showDismissed = AssetNamingGui.DrawSectionHeader(showDismissed, "Dismissed", visible.Count,
                 AssetNamingGui.DismissedAccent);
@@ -383,25 +343,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
                 DrawDismissedRow(RowRect(area, index), index, visible[index]);
 
             if (GUILayout.Button(ClearDismissedContent, GUILayout.Width(ButtonWidth)))
-                _isClearDismissedPending = true;
-        }
-
-        private List<string> FilterDismissed()
-        {
-            if (string.IsNullOrWhiteSpace(_search))
-                return _dismissedPaths;
-
-            List<string> visible = new();
-
-            foreach (string path in _dismissedPaths)
-            {
-                if (!path.Contains(_search, StringComparison.OrdinalIgnoreCase))
-                    continue;
-
-                visible.Add(path);
-            }
-
-            return visible;
+                _edits.RequestClearDismissed();
         }
 
         private void DrawDismissedRow(Rect row, int index, string path)
@@ -426,12 +368,12 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
                 PingAsset(path);
 
             if (GUI.Button(restoreRect, RestoreContent, EditorStyles.miniButton))
-                _pendingRestoreGuid = AssetDatabase.AssetPathToGUID(path);
+                _edits.RequestRestore(AssetDatabase.AssetPathToGUID(path));
         }
 
         private void DrawResultsSection()
         {
-            showResults = AssetNamingGui.DrawSectionHeader(showResults, "Scan Results", _filtered.Count,
+            showResults = AssetNamingGui.DrawSectionHeader(showResults, "Scan Results", query.Filtered.Count,
                 AssetNamingGui.ResultsAccent);
 
             if (!showResults)
@@ -445,13 +387,13 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
                 return;
             }
 
-            if (!_hasScanned)
+            if (!query.HasScanned)
             {
                 EditorGUILayout.HelpBox("Press Scan to check the project.", MessageType.None);
                 return;
             }
 
-            if (_all.Count == 0)
+            if (query.ScannedCount == 0)
             {
                 AssetNamingGui.DrawSuccess("Every asset follows the rules",
                     "Nothing left to rename. Your project is perfectly named.");
@@ -459,7 +401,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
                 return;
             }
 
-            if (_filtered.Count == 0)
+            if (query.Filtered.Count == 0)
             {
                 DrawEmptyResults();
                 return;
@@ -467,7 +409,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
 
             DrawResultsHeader();
 
-            foreach (AssetNamingGroup group in _groups)
+            foreach (AssetNamingGroup group in query.Groups)
                 DrawGroup(group);
         }
 
@@ -501,7 +443,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
         /// </summary>
         private void DrawEmptyResults()
         {
-            if (IsFilterActive())
+            if (query.IsFilterActive)
             {
                 EditorGUILayout.HelpBox("No violation matches the current search or rule filter.",
                     MessageType.Info);
@@ -512,8 +454,6 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
             AssetNamingGui.DrawSuccess("Every asset follows the rules",
                 "The rest is dismissed. Nothing left to rename.");
         }
-
-        private bool IsFilterActive() => !string.IsNullOrWhiteSpace(_search) || _ruleFilter.Length > 0;
 
         private void DrawResultsHeader()
         {
@@ -550,7 +490,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
                 PingAsset(violation.AssetPath);
 
             if (GUI.Button(dismissRect, DismissContent, EditorStyles.miniButton))
-                _pendingDismiss = violation;
+                _edits.RequestDismiss(violation);
 
             bool isRenameClicked = GUI.Button(renameRect, RenameContent, EditorStyles.miniButton);
 
@@ -558,7 +498,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
                 && !IsSubmitted(controlName))
                 return;
 
-            _pendingRename = violation;
+            _edits.RequestRename(violation);
         }
 
         private void DrawHistorySection()
@@ -581,7 +521,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
                 DrawHistoryRow(RowRect(area, index), index, entries[index]);
 
             if (GUILayout.Button(ClearHistoryContent, GUILayout.Width(ButtonWidth)))
-                _isClearHistoryPending = true;
+                _edits.RequestClearHistory();
         }
 
         private void DrawHistoryRow(Rect row, int index, AssetNamingHistoryEntry entry)
@@ -596,14 +536,16 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
             Rect undoRect = ButtonRect(row, timeRect.xMax + padding, UndoWidth);
             Rect goToRect = ButtonRect(row, undoRect.xMax + padding, GoToWidth);
 
-            GUI.Label(textRect, new GUIContent(DescribeAction(entry), PathOf(entry)), AssetNamingGui.NameStyle);
+            GUI.Label(textRect, new GUIContent(DescribeAction(entry), AssetNamingHistoryStore.PathOf(entry)),
+                AssetNamingGui.NameStyle);
+
             GUI.Label(timeRect, entry.time, AssetNamingGui.DetailStyle);
 
             if (GUI.Button(undoRect, UndoContent, EditorStyles.miniButton))
-                _pendingUndo = entry;
+                _edits.RequestUndo(entry);
 
             if (GUI.Button(goToRect, GoToContent, EditorStyles.miniButton))
-                PingAsset(PathOf(entry));
+                PingAsset(AssetNamingHistoryStore.PathOf(entry));
         }
 
         /// <summary>
@@ -617,121 +559,6 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
 
             first = Mathf.Clamp(above, 0, Mathf.Max(0, count - 1));
             last = Mathf.Min(count, first + Mathf.CeilToInt(position.height / rowHeight) + 2);
-        }
-
-        private List<string> BuildDismissedPaths()
-        {
-            List<string> paths = new();
-
-            foreach (string guid in AssetNamingDismissStore.GetAll())
-            {
-                string path = AssetDatabase.GUIDToAssetPath(guid);
-
-                if (string.IsNullOrEmpty(path))
-                    continue;
-
-                paths.Add(path);
-            }
-
-            paths.Sort(StringComparer.Ordinal);
-
-            return paths;
-        }
-
-        private void Rescan()
-        {
-            _needsScan = false;
-            _all.Clear();
-            _all.AddRange(AssetNamingScanner.Scan(_ruleSet));
-            _hasScanned = true;
-
-            // The dismissed rows keep resolved paths, and a rename leaves those stale even though
-            // the GUID behind them is still right, so the cache is dropped with every scan.
-            _dismissedPaths = null;
-            RunQuery();
-        }
-
-        private void RunQuery()
-        {
-            _filtered.Clear();
-
-            foreach (AssetNamingViolation violation in _all)
-            {
-                if (AssetNamingDismissStore.IsDismissed(violation.Guid))
-                    continue;
-
-                if (!IsMatchingFilter(violation))
-                    continue;
-
-                _filtered.Add(violation);
-            }
-
-            _filtered.Sort(Compare);
-            BuildGroups();
-        }
-
-        /// <summary>Splits the filtered list into the collapsible groups the sort mode asks for.</summary>
-        private void BuildGroups()
-        {
-            _groups.Clear();
-
-            Dictionary<string, AssetNamingGroup> byKey = new();
-
-            foreach (AssetNamingViolation violation in _filtered)
-            {
-                string key = GroupKeyOf(violation);
-
-                if (!byKey.TryGetValue(key, out AssetNamingGroup group))
-                {
-                    group = new AssetNamingGroup(key);
-                    byKey[key] = group;
-                    _groups.Add(group);
-                }
-
-                group.Violations.Add(violation);
-            }
-        }
-
-        private string GroupKeyOf(AssetNamingViolation violation)
-        {
-            if (sort == EAssetNamingSort.Rule)
-                return violation.RuleLabel;
-
-            if (sort != EAssetNamingSort.Folder)
-                return string.Empty;
-
-            string directory = Path.GetDirectoryName(violation.AssetPath);
-
-            return string.IsNullOrEmpty(directory)
-                ? "Assets"
-                : directory.Replace('\\', '/');
-        }
-
-        private bool IsMatchingFilter(AssetNamingViolation violation)
-        {
-            if (_ruleFilter.Length > 0
-                && violation.RuleLabel != _ruleFilter)
-                return false;
-
-            if (string.IsNullOrWhiteSpace(_search))
-                return true;
-
-            return violation.AssetPath.Contains(_search, StringComparison.OrdinalIgnoreCase);
-        }
-
-        private int Compare(AssetNamingViolation first, AssetNamingViolation second)
-        {
-            if (sort == EAssetNamingSort.Name)
-                return string.Compare(first.CurrentName, second.CurrentName, StringComparison.OrdinalIgnoreCase);
-
-            if (sort != EAssetNamingSort.Rule)
-                return string.Compare(first.AssetPath, second.AssetPath, StringComparison.OrdinalIgnoreCase);
-
-            int byRule = string.Compare(first.RuleLabel, second.RuleLabel, StringComparison.Ordinal);
-
-            return byRule != 0
-                ? byRule
-                : string.Compare(first.AssetPath, second.AssetPath, StringComparison.OrdinalIgnoreCase);
         }
 
         /// <summary>
@@ -775,179 +602,14 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
         /// </summary>
         private void ApplyPending()
         {
-            if (ApplyRuleEdits())
+            EAssetNamingEditOutcome outcome = _edits.Apply(_ruleSet, query);
+
+            if (outcome == EAssetNamingEditOutcome.None)
                 return;
 
-            if (ApplyStoreEdits())
-                return;
-
-            ApplyRenames();
-        }
-
-        private bool ApplyRuleEdits()
-        {
-            if (_isAddRulePending)
-            {
-                _isAddRulePending = false;
-                _ruleSet.AddRule(new AssetNamingRule
-                {
-                    UserCreated = true
-                });
-
-                _ruleSet.Persist();
-                return true;
-            }
-
-            if (_pendingRuleRemoval != AssetNamingRuleGui.NoIndex)
-            {
-                _ruleSet.RemoveRuleAt(_pendingRuleRemoval);
-                _pendingRuleRemoval = AssetNamingRuleGui.NoIndex;
-                _ruleSet.Persist();
-                return true;
-            }
-
-            if (_isAddFragmentPending)
-            {
-                _isAddFragmentPending = false;
-                _ruleSet.AddIgnoredFragment(string.Empty);
-                _ruleSet.Persist();
-                return true;
-            }
-
-            if (_pendingFragmentRemoval != AssetNamingRuleGui.NoIndex)
-            {
-                _ruleSet.RemoveIgnoredFragmentAt(_pendingFragmentRemoval);
-                _pendingFragmentRemoval = AssetNamingRuleGui.NoIndex;
-                _ruleSet.Persist();
-                return true;
-            }
-
-            return false;
-        }
-
-        private bool ApplyStoreEdits()
-        {
-            if (_pendingDismiss != null)
-            {
-                AssetNamingDismissStore.Dismiss(_pendingDismiss.Guid);
-                AssetNamingHistoryStore.AddDismiss(_pendingDismiss.CurrentName, _pendingDismiss.AssetPath,
-                    _pendingDismiss.Guid);
-
-                _pendingDismiss = null;
-                RefreshDismissed();
-                return true;
-            }
-
-            if (_pendingRestoreGuid.Length > 0)
-            {
-                string path = AssetDatabase.GUIDToAssetPath(_pendingRestoreGuid);
-
-                AssetNamingDismissStore.Restore(_pendingRestoreGuid);
-                AssetNamingHistoryStore.AddRestore(Path.GetFileNameWithoutExtension(path), path,
-                    _pendingRestoreGuid);
-
-                _pendingRestoreGuid = string.Empty;
-                RefreshDismissed();
-                return true;
-            }
-
-            if (_isClearDismissedPending)
-            {
-                _isClearDismissedPending = false;
-                AssetNamingDismissStore.Clear();
-                RefreshDismissed();
-                return true;
-            }
-
-            if (_isClearHistoryPending)
-            {
-                _isClearHistoryPending = false;
-                AssetNamingHistoryStore.Clear();
-                Repaint();
-                return true;
-            }
-
-            return ApplyUndo();
-        }
-
-        /// <summary>
-        /// Takes one history entry back. A rename is renamed again, a dismiss is restored and the
-        /// other way round. The entry is forgotten afterwards, so the history stays a list of what
-        /// is still in effect.
-        /// </summary>
-        private bool ApplyUndo()
-        {
-            if (_pendingUndo == null)
-                return false;
-
-            AssetNamingHistoryEntry entry = _pendingUndo;
-            _pendingUndo = null;
-
-            if (!Revert(entry))
-                return true;
-
-            AssetNamingHistoryStore.Remove(entry);
-            _dismissedPaths = null;
-            _needsScan = _hasScanned;
-            RunQuery();
-            Repaint();
-
-            return true;
-        }
-
-        private bool Revert(AssetNamingHistoryEntry entry)
-        {
-            string guid = GuidOf(entry);
-
-            if (string.IsNullOrEmpty(guid))
-            {
-                CustomLogger.LogWarning($"Cannot undo, {entry.oldName} is gone.", _ruleSet);
-                return false;
-            }
-
-            if (entry.action == EAssetNamingAction.Renamed)
-                return AssetRenamer.RenameTo(AssetDatabase.GUIDToAssetPath(guid), entry.oldName);
-
-            if (entry.action == EAssetNamingAction.Dismissed)
-                AssetNamingDismissStore.Restore(guid);
-            else
-                AssetNamingDismissStore.Dismiss(guid);
-
-            return true;
-        }
-
-        private void RefreshDismissed()
-        {
-            _dismissedPaths = null;
-            RunQuery();
-            Repaint();
-        }
-
-        private void ApplyRenames()
-        {
-            if (_isRenameAllPending)
-            {
-                _isRenameAllPending = false;
-                CustomLogger.Log($"Renamed {AssetRenamer.RenameAll(_filtered)} asset(s).", _ruleSet);
+            if (outcome == EAssetNamingEditOutcome.Rescan)
                 _needsScan = true;
-                return;
-            }
 
-            if (_pendingRename == null)
-                return;
-
-            AssetNamingViolation violation = _pendingRename;
-            _pendingRename = null;
-
-            if (!AssetRenamer.Rename(violation))
-                return;
-
-            _all.Remove(violation);
-            _filtered.Remove(violation);
-
-            // The rows are drawn from the groups, so dropping the violation from the flat lists
-            // alone would leave a dead row behind that still offers Rename and Dismiss.
-            BuildGroups();
             Repaint();
         }
     }

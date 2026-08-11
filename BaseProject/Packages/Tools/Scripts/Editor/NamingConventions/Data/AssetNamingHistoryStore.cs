@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using UnityEditor;
 using UnityEngine;
 
 namespace Base.ToolPackage.Editor.NamingConventions.Data
@@ -57,6 +58,32 @@ namespace Base.ToolPackage.Editor.NamingConventions.Data
 
             ((List<AssetNamingHistoryEntry>)Entries).Clear();
             Save();
+        }
+
+        /// <summary>
+        /// GUID behind a history entry. Older entries only stored a path, and a path goes stale as
+        /// soon as the asset is renamed again, which is why the GUID is the one that counts.
+        /// </summary>
+        /// <param name="entry">The entry to resolve.</param>
+        /// <returns>The stored GUID, or the one behind the stored path.</returns>
+        public static string GuidOf(AssetNamingHistoryEntry entry)
+        {
+            if (!string.IsNullOrEmpty(entry.guid))
+                return entry.guid;
+
+            return AssetDatabase.AssetPathToGUID(entry.assetPath);
+        }
+
+        /// <summary>Current path of a history entry, resolved through its GUID.</summary>
+        /// <param name="entry">The entry to resolve.</param>
+        /// <returns>The current path, or the stored one when the asset is gone.</returns>
+        public static string PathOf(AssetNamingHistoryEntry entry)
+        {
+            string path = AssetDatabase.GUIDToAssetPath(GuidOf(entry));
+
+            return string.IsNullOrEmpty(path)
+                ? entry.assetPath
+                : path;
         }
 
         private static void Add(EAssetNamingAction action, string oldName, string newName, string assetPath,

@@ -10,6 +10,11 @@ namespace Base.ToolPackage.Editor.Tests.Fixtures
     /// </summary>
     public sealed class FixtureDeadCode
     {
+        /// <summary>Called by the fixture behaviour, so the type itself is reachable.</summary>
+        public void Touch() => _writeOnly = 1;
+
+        /// <summary>Called by nothing at all.</summary>
+        private void NeverCalled() { }
 #pragma warning disable 169, 414
         /// <summary>Assigned and never read, which is a write only field.</summary>
         private int _writeOnly;
@@ -17,13 +22,5 @@ namespace Base.ToolPackage.Editor.Tests.Fixtures
         /// <summary>Neither read nor written by anything.</summary>
         private int _untouched;
 #pragma warning restore 169, 414
-
-        /// <summary>Called by the fixture behaviour, so the type itself is reachable.</summary>
-        public void Touch() => _writeOnly = 1;
-
-        /// <summary>Called by nothing at all.</summary>
-        private void NeverCalled()
-        {
-        }
     }
 }

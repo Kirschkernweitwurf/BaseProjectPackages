@@ -65,8 +65,7 @@ namespace Base.ToolPackage.Editor.Tests
 
         /// <summary>A method called only from inside a local function.</summary>
         [Test]
-        public void LocalFunctionCallKeepsItsTargetAlive()
-            => AssertAlive(Behaviour, "CalledFromLocalFunction");
+        public void LocalFunctionCallKeepsItsTargetAlive() => AssertAlive(Behaviour, "CalledFromLocalFunction");
 
         /// <summary>A method called only from inside a lambda.</summary>
         [Test]
@@ -78,8 +77,7 @@ namespace Base.ToolPackage.Editor.Tests
         /// call the lambda makes is dropped without a word.
         /// </summary>
         [Test]
-        public void AccessorLambdaCallKeepsItsTargetAlive()
-            => AssertAlive(Behaviour, "CalledFromAccessorLambda");
+        public void AccessorLambdaCallKeepsItsTargetAlive() => AssertAlive(Behaviour, "CalledFromAccessorLambda");
 
         /// <summary>An implicit interface implementation, called through the interface.</summary>
         [Test]
@@ -133,48 +131,38 @@ namespace Base.ToolPackage.Editor.Tests
 
         /// <summary>A tool that reports nothing passes every test above, so this one has to fail it.</summary>
         [Test]
-        public void UnusedMethodIsReported()
-        {
-            Assert.That(_probe.HasIssue(DeadCode, "NeverCalled", EMemberIssue.DeadMember),
-                Is.True,
-                $"NeverCalled is called by nothing: {_probe.DescribeType(DeadCode)}");
-        }
+        public void UnusedMethodIsReported() => Assert.That(
+            _probe.HasIssue(DeadCode, "NeverCalled", EMemberIssue.DeadMember),
+            Is.True,
+            $"NeverCalled is called by nothing: {_probe.DescribeType(DeadCode)}");
 
         /// <summary>A field nothing touches at all.</summary>
         [Test]
-        public void UntouchedFieldIsReported()
-        {
-            Assert.That(_probe.HasIssue(DeadCode, "_untouched", EMemberIssue.DeadMember),
-                Is.True,
-                $"_untouched is neither read nor written: {_probe.DescribeType(DeadCode)}");
-        }
+        public void UntouchedFieldIsReported() => Assert.That(
+            _probe.HasIssue(DeadCode, "_untouched", EMemberIssue.DeadMember),
+            Is.True,
+            $"_untouched is neither read nor written: {_probe.DescribeType(DeadCode)}");
 
         /// <summary>A field written and never read.</summary>
         [Test]
-        public void WriteOnlyFieldIsReported()
-        {
-            Assert.That(_probe.HasIssue(DeadCode, "_writeOnly", EMemberIssue.WriteOnlyField),
-                Is.True,
-                $"_writeOnly is assigned and never read: {_probe.DescribeType(DeadCode)}");
-        }
+        public void WriteOnlyFieldIsReported() => Assert.That(
+            _probe.HasIssue(DeadCode, "_writeOnly", EMemberIssue.WriteOnlyField),
+            Is.True,
+            $"_writeOnly is assigned and never read: {_probe.DescribeType(DeadCode)}");
 
         /// <summary>A serialized field Unity writes and no code reads.</summary>
         [Test]
-        public void SerializedFieldNeverReadIsReported()
-        {
-            Assert.That(_probe.HasIssue(Behaviour, "_neverRead", EMemberIssue.SerializedNeverRead),
-                Is.True,
-                $"_neverRead is serialized and never read: {_probe.DescribeType(Behaviour)}");
-        }
+        public void SerializedFieldNeverReadIsReported() => Assert.That(
+            _probe.HasIssue(Behaviour, "_neverRead", EMemberIssue.SerializedNeverRead),
+            Is.True,
+            $"_neverRead is serialized and never read: {_probe.DescribeType(Behaviour)}");
 
         /// <summary>A const nothing reads, which the text pass has to fail to find.</summary>
         [Test]
-        public void UnreadConstIsReported()
-        {
-            Assert.That(_probe.HasIssue(Constants, UnreadConstName, EMemberIssue.DeadMember),
-                Is.True,
-                $"the unread const is read nowhere: {_probe.DescribeType(Constants)}");
-        }
+        public void UnreadConstIsReported() => Assert.That(
+            _probe.HasIssue(Constants, UnreadConstName, EMemberIssue.DeadMember),
+            Is.True,
+            $"the unread const is read nowhere: {_probe.DescribeType(Constants)}");
 
         /// <summary>
         /// The same shape published rather than internal. In a package that is API a consumer may be

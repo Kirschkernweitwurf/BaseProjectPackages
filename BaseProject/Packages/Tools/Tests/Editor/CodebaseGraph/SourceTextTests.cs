@@ -34,13 +34,11 @@ namespace Base.ToolPackage.Editor.Tests
 
         /// <summary>A verbatim string carries no code, including where it escapes its own quotes.</summary>
         [Test]
-        public void VerbatimStringIsNotCounted()
-            => AssertCount("string s = @\"raw \"\"quoted\"\" SharedLabel\";", 0);
+        public void VerbatimStringIsNotCounted() => AssertCount("string s = @\"raw \"\"quoted\"\" SharedLabel\";", 0);
 
         /// <summary>An escaped quote does not end the literal early and let the rest read as code.</summary>
         [Test]
-        public void EscapedQuoteDoesNotEndTheLiteral()
-            => AssertCount("string s = \"he said \\\" SharedLabel\";", 0);
+        public void EscapedQuoteDoesNotEndTheLiteral() => AssertCount("string s = \"he said \\\" SharedLabel\";", 0);
 
         /// <summary>The code inside an interpolation hole is code.</summary>
         [Test]
@@ -48,13 +46,11 @@ namespace Base.ToolPackage.Editor.Tests
 
         /// <summary>A doubled brace is a literal brace rather than the start of a hole.</summary>
         [Test]
-        public void EscapedBraceIsNotAHole()
-            => AssertCount("string s = $\"{{SharedLabel}} and {SharedLabel}\";", 1);
+        public void EscapedBraceIsNotAHole() => AssertCount("string s = $\"{{SharedLabel}} and {SharedLabel}\";", 1);
 
         /// <summary>A character literal holding a quote does not open a string.</summary>
         [Test]
-        public void CharLiteralQuoteDoesNotOpenAString()
-            => AssertCount("char c = \'\"\'; int SharedLabel = 1;", 1);
+        public void CharLiteralQuoteDoesNotOpenAString() => AssertCount("char c = \'\"\'; int SharedLabel = 1;", 1);
 
         private static void AssertCount(string source, int expected)
         {

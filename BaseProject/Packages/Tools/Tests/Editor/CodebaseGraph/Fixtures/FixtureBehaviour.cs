@@ -13,8 +13,13 @@ namespace Base.ToolPackage.Editor.Tests.Fixtures
     {
         private const string InvokedName = "InvokedByName";
 
+        /// <summary>A field like event, both subscribed to and raised from this same type.</summary>
+        public event Action Changed;
+
         /// <summary>Written by Unity through the generated backing field, never assigned in code.</summary>
         [field: SerializeField] public GameObject Prefab { get; private set; }
+
+        [SerializeField] private int _neverRead;
 
         /// <summary>Runs a lambda from inside a getter, which is where the owner name is an accessor.</summary>
         public int LambdaInAccessor
@@ -31,13 +36,8 @@ namespace Base.ToolPackage.Editor.Tests.Fixtures
             }
         }
 
-        /// <summary>A field like event, both subscribed to and raised from this same type.</summary>
-        public event Action Changed;
-
-        [SerializeField] private int _neverRead;
-        [SerializeField] private FixtureVector _vector;
-
         private readonly FixtureDeadCode _dead = new();
+        [SerializeField] private FixtureVector _vector;
 
 #region Unity Callbacks
         private void Awake()
@@ -67,19 +67,16 @@ namespace Base.ToolPackage.Editor.Tests.Fixtures
 #endregion
 
         /// <summary>Implemented implicitly, called through the interface rather than by name.</summary>
-        public void Implicit()
-        {
-        }
+        public void Implicit() { }
+
+        /// <summary>Explicit implementation, whose metadata name carries the interface in front of it.</summary>
+        void IFixtureContract.Explicit() { }
 
         /// <summary>Called by the engine from the string handed to Invoke, and by nothing else.</summary>
-        private void InvokedByName()
-        {
-        }
+        private void InvokedByName() { }
 
         /// <summary>Subscribed to the field like event, and called by nothing else.</summary>
-        private void OnChanged()
-        {
-        }
+        private void OnChanged() { }
 
         /// <summary>An iterator, whose body the compiler moves into a hidden state machine.</summary>
         private IEnumerator Countdown()
@@ -88,35 +85,27 @@ namespace Base.ToolPackage.Editor.Tests.Fixtures
         }
 
         /// <summary>Called only from inside a local function, which is itself hidden machinery.</summary>
-        private void CalledFromLocalFunction()
-        {
-        }
+        private void CalledFromLocalFunction() { }
 
         /// <summary>Called only from inside a lambda, which the compiler moves into a hidden class.</summary>
-        private void CalledFromLambda()
-        {
-        }
+        private void CalledFromLambda() { }
 
         /// <summary>
         /// Called only from inside a lambda that lives in a property getter. The machinery names its
         /// owner as get_LambdaInAccessor, and only the property is ever registered, so this is the
         /// shape where the owner lookup can fail and take every call in the lambda with it.
         /// </summary>
-        private void CalledFromAccessorLambda()
-        {
-        }
-
-        /// <summary>Explicit implementation, whose metadata name carries the interface in front of it.</summary>
-        void IFixtureContract.Explicit()
-        {
-        }
+        private void CalledFromAccessorLambda() { }
 
         private void RunThroughLocalFunction()
         {
             Step();
             return;
 
-            void Step() => CalledFromLocalFunction();
+            void Step()
+            {
+                CalledFromLocalFunction();
+            }
         }
 
         private void RunThroughLambda()

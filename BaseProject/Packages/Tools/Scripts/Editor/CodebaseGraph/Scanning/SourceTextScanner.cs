@@ -53,6 +53,38 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
             }
         }
 
+        /// <summary>
+        /// Counts the identifiers in a file, ignoring anything that is not code. Walking the characters
+        /// directly rather than running a regex is several times faster over every source file in the
+        /// project, and it is also the only way to tell code from the text inside it.
+        /// <br/><br/>
+        /// Skipping strings and comments matters more than it looks. This count is the entire evidence
+        /// for whether an inlined const is used, so a const called Speed mentioned once in a log message
+        /// anywhere in the project would otherwise read as alive forever. Interpolation holes are still
+        /// read, because the code inside them is code.
+        /// </summary>
+        internal static Dictionary<string, int> CountIdentifiers(string source)
+        {
+            Dictionary<string, int> counts = new(StringComparer.Ordinal);
+            int index = 0;
+
+            while (index < source.Length)
+            {
+                if (TrySkipComment(source, ref index) || TrySkipText(source, ref index, counts))
+                    continue;
+
+                if (!IsIdentifierStart(source[index]))
+                {
+                    index++;
+                    continue;
+                }
+
+                ReadIdentifier(source, ref index, counts);
+            }
+
+            return counts;
+        }
+
         private static Dictionary<string, List<MemberNodeInfo>> CollectInlinedMembers(CodebaseGraphData graph)
         {
             Dictionary<string, List<MemberNodeInfo>> byName = new(StringComparer.Ordinal);
@@ -211,38 +243,6 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
             }
 
             return matched;
-        }
-
-        /// <summary>
-        /// Counts the identifiers in a file, ignoring anything that is not code. Walking the characters
-        /// directly rather than running a regex is several times faster over every source file in the
-        /// project, and it is also the only way to tell code from the text inside it.
-        /// <br/><br/>
-        /// Skipping strings and comments matters more than it looks. This count is the entire evidence
-        /// for whether an inlined const is used, so a const called Speed mentioned once in a log message
-        /// anywhere in the project would otherwise read as alive forever. Interpolation holes are still
-        /// read, because the code inside them is code.
-        /// </summary>
-        internal static Dictionary<string, int> CountIdentifiers(string source)
-        {
-            Dictionary<string, int> counts = new(StringComparer.Ordinal);
-            int index = 0;
-
-            while (index < source.Length)
-            {
-                if (TrySkipComment(source, ref index) || TrySkipText(source, ref index, counts))
-                    continue;
-
-                if (!IsIdentifierStart(source[index]))
-                {
-                    index++;
-                    continue;
-                }
-
-                ReadIdentifier(source, ref index, counts);
-            }
-
-            return counts;
         }
 
         private static void ReadIdentifier(string source, ref int index, Dictionary<string, int> counts)
