@@ -12,7 +12,6 @@ namespace Base.AttributePackage
         private const string PathSeparator = "/";
 
         private const string ReadableSeparator = " > ";
-
         /// <summary>Human-readable menu location of the overview window.</summary>
         private static readonly string MenuLocation = MenuPath.Replace(PathSeparator, ReadableSeparator);
         /// <summary>Pointer appended to validation logs, with the location on its own line.</summary>

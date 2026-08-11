@@ -7,7 +7,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
     /// One collapsible group of scan results, for example a folder or a rule. A group with an
     /// empty key is drawn without a header, which is what the ungrouped list uses.
     /// </summary>
-    public sealed class AssetNamingGroup
+    internal sealed class AssetNamingGroup
     {
         /// <summary>Header of the group. Empty when the list is not grouped.</summary>
         public string Key { get; }

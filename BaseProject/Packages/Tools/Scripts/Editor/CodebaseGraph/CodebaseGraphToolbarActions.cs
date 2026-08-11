@@ -34,8 +34,5 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
         /// <summary>Raised to write a report about one namespace or assembly.</summary>
         public Action ExportScope;
-
-        /// <summary>Raised to open the list of dismissals.</summary>
-        public Action OpenDismissals;
     }
 }

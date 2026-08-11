@@ -8,7 +8,7 @@ using UnityEditor;
 namespace Base.ToolPackage.Editor.OrderManagement
 {
     /// <summary>Writes the generated constants file from an <see cref="OrderRegistry"/>.</summary>
-    public static class OrderCodeGenerator
+    internal static class OrderCodeGenerator
     {
         private const string FileExtension = ".cs";
         private const string Indent = "    ";

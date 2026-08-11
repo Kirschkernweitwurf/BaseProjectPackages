@@ -10,7 +10,7 @@ namespace Base.ToolPackage.Editor.OverviewGui.UnusedAssetsOverviewWindow
     /// Remembers assets the user chose to keep. Stored by GUID in a per-project file under
     /// ProjectSettings, so dismissals survive rescans and restarts and can be committed for the team.
     /// </summary>
-    public static class UnusedAssetsDismissStore
+    internal static class UnusedAssetsDismissStore
     {
         private const string FilePath = "ProjectSettings/UnusedAssetsDismissed.json";
 

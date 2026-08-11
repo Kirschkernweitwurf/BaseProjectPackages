@@ -31,8 +31,10 @@ namespace Base.UtilityPackage.Editor.Collections
             Collect(items);
 
             for (int i = 0; i < items.arraySize; i++)
+            {
                 height += SerializableCollectionGui.Spacing
                     + EditorGUI.GetPropertyHeight(items.GetArrayElementAtIndex(i), true);
+            }
 
             if (SerializableCollectionGui.FindDuplicates(_items).Count > 0)
                 height += SerializableCollectionGui.Spacing + SerializableCollectionGui.Line * 2f;

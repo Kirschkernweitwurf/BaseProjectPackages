@@ -8,7 +8,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot
     /// Discovers and instantiates every <see cref="IAttributeCheck"/> via <see cref="TypeCache"/>, so a
     /// new check is a new file and nothing else.
     /// </summary>
-    public static class AttributeCheckRegistry
+    internal static class AttributeCheckRegistry
     {
         /// <summary>All discovered checks.</summary>
         public static IAttributeCheck[] Checks => _checks ??= Create();

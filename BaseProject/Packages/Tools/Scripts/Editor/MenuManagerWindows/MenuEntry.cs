@@ -8,7 +8,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
     /// priority is derived at runtime.
     /// </summary>
     [Serializable]
-    public sealed class MenuEntry
+    internal sealed class MenuEntry
     {
         [SerializeField]
         private string id;

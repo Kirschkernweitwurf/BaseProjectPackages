@@ -3,7 +3,7 @@ namespace Base.ToolPackage.Editor.OverviewGui.PrefabOverviewWindow
     /// <summary>
     /// Amount of overrides a prefab variant carries on top of its base prefab.
     /// </summary>
-    public readonly struct PrefabOverrideCounts
+    internal readonly struct PrefabOverrideCounts
     {
         /// <summary>Number of modified serialized properties, without the name of the variant root.</summary>
         public int ModifiedProperties { get; }

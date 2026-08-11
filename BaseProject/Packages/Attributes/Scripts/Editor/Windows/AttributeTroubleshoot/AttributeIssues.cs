@@ -8,7 +8,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot
     /// Builds issue records so every check phrases its findings the same way and derives the attribute
     /// name from its type instead of a literal.
     /// </summary>
-    public static class AttributeIssues
+    internal static class AttributeIssues
     {
         /// <summary>Records a problem that stops the attribute from working at all.</summary>
         /// <param name="issues">The list the finding is appended to.</param>

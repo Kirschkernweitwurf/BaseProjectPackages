@@ -22,8 +22,6 @@ namespace Base.UtilityPackage.Collections
 
         [SerializeField] private List<T> items = new();
 
-        private HashSet<T> _set;
-
         /// <summary>Gets the number of items contained in the set.</summary>
         public int Count => Resolved.Count;
 
@@ -41,6 +39,8 @@ namespace Base.UtilityPackage.Collections
                 return _set;
             }
         }
+
+        private HashSet<T> _set;
 
         void ISerializationCallbackReceiver.OnBeforeSerialize() { }
 

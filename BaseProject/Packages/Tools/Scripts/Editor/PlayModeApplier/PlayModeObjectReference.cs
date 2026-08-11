@@ -7,7 +7,7 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
     /// Raw JSON only stores instance ids, which are meaningless once the play mode scene is torn down.
     /// </summary>
     [Serializable]
-    public class PlayModeObjectReference
+    internal class PlayModeObjectReference
     {
         public string propertyPath;
         public EPlayModeReferenceKind kind;

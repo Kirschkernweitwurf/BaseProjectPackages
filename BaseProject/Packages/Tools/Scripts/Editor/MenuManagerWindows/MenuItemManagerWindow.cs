@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Base.ToolPackage.Editor.MenuManagerWindows
 {
     /// <summary>Window to arrange dynamic menu item entries.</summary>
-    public sealed class MenuItemManagerWindow : MenuManagerWindowBase
+    internal sealed class MenuItemManagerWindow : MenuManagerWindowBase
     {
         private const string WindowTitle = "Menu Items";
 

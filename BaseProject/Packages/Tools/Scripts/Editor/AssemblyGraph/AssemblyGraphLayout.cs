@@ -9,7 +9,7 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
     /// depth, and ordered to reduce edge crossings. Orphans dock to the cluster that shares their root
     /// name. Orphans without any relative form their own horizontal block above the clusters.
     /// </summary>
-    public static class AssemblyGraphLayout
+    internal static class AssemblyGraphLayout
     {
         private const float BaseNodeHeight = 108f;
         private const float ClusterGap = 140f;

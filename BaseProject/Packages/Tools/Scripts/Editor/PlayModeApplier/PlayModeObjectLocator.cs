@@ -12,7 +12,7 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
     /// Each path is stored twice, once by sibling index and once by name. The index is tried first and the
     /// name is used to verify it, so a renamed object or a reordered hierarchy still resolves.
     /// </summary>
-    public static class PlayModeObjectLocator
+    internal static class PlayModeObjectLocator
     {
         private const char SegmentSeparator = '/';
         private const int UnknownIndex = -1;

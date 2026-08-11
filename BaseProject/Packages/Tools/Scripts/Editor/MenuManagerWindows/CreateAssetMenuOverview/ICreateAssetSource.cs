@@ -7,7 +7,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows.CreateAssetMenuOverview
     /// Supplies the set of <see cref="CreateAssetMenuAttribute"/> entries currently defined
     /// in the editor. Implementations decide where that information comes from.
     /// </summary>
-    public interface ICreateAssetSource
+    internal interface ICreateAssetSource
     {
         /// <summary>Builds a fresh snapshot of all CreateAssetMenu entries.</summary>
         IReadOnlyList<CreateAssetEntry> Collect();

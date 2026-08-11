@@ -9,7 +9,7 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
     /// so neither should the mark. This also avoids ids entirely, which sidesteps both the
     /// InstanceID to EntityId migration and the way play mode rewrites GlobalObjectIds.
     /// </summary>
-    public static class PlayModeMarks
+    internal static class PlayModeMarks
     {
         /// <summary>Components marked during the current play session.</summary>
         public static IReadOnlyList<Component> Components => _marked;

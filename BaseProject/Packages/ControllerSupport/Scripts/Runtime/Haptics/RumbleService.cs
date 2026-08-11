@@ -19,11 +19,11 @@ namespace Base.ControllerSupport.Haptics
     /// </summary>
     public sealed class RumbleService : GameServiceBehaviour
     {
-        /// <summary>Raised whenever rumble is switched on or off, so UI can follow the state.</summary>
-        public event Action<bool> OnRumbleEnabledChanged;
-
         private const float FullIntensity = 1f;
         private const float MotorsAtRest = 0f;
+
+        /// <summary>Raised whenever rumble is switched on or off, so UI can follow the state.</summary>
+        public event Action<bool> OnRumbleEnabledChanged;
 
         [Title("Rumble")]
         [Tooltip("Defaults this service starts from. Share the asset with the rumble setting components.")]
@@ -60,17 +60,17 @@ namespace Base.ControllerSupport.Haptics
             ApplyCurrentRequest();
         }
 
-        private void OnApplicationFocus(bool hasFocus)
+        private void OnApplicationPause(bool isPaused)
         {
-            if (hasFocus)
+            if (!isPaused)
                 return;
 
             StopMotors();
         }
 
-        private void OnApplicationPause(bool isPaused)
+        private void OnApplicationFocus(bool hasFocus)
         {
-            if (!isPaused)
+            if (hasFocus)
                 return;
 
             StopMotors();

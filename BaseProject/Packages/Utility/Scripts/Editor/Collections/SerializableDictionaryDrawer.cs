@@ -6,15 +6,15 @@ using UnityEngine;
 namespace Base.UtilityPackage.Editor.Collections
 {
     /// <summary>
-    /// Draws a <see cref="SerializableDictionary{TKey, TValue}"/> as key-value rows instead of the
+    /// Draws a <see cref="SerializableDictionary{TKey,TValue}"/> as key-value rows instead of the
     /// nested entry list Unity would show by default. Duplicate keys are tinted and summarized, since
     /// the runtime dictionary silently keeps only their first occurrence.
     /// </summary>
     [CustomPropertyDrawer(typeof(SerializableDictionary<,>), true)]
     public sealed class SerializableDictionaryDrawer : PropertyDrawer
     {
-        private const float KeyWeight = 0.4f;
         private const string DuplicateMessage = "Duplicate keys are ignored at runtime. Only the first wins.";
+        private const float KeyWeight = 0.4f;
         private const string MissingEntriesMessage = "Serialized entry list not found.";
 
         // Reused across rows so the drawer allocates one list per repaint instead of one per row.

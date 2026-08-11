@@ -9,7 +9,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows.MenuItemOverview
     /// Source that reports every menu item registered through the menu manager, including the
     /// ones that are switched off or whose code has disappeared since the last scan.
     /// </summary>
-    public sealed class DynamicMenuItemSource : IMenuItemSource
+    internal sealed class DynamicMenuItemSource : IMenuItemSource
     {
         private readonly MenuScriptLookup _scripts = new();
 

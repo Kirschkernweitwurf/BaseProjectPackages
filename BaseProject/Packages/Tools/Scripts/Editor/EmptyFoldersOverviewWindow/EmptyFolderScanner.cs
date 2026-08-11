@@ -12,7 +12,7 @@ namespace Base.ToolPackage.Editor.EmptyFoldersOverviewWindow
     /// and every subfolder is empty too. Only the top-most empty folders are returned, since
     /// deleting one also removes its nested empty folders.
     /// </summary>
-    public static class EmptyFolderScanner
+    internal static class EmptyFolderScanner
     {
         private const string RootFolder = "Assets";
 

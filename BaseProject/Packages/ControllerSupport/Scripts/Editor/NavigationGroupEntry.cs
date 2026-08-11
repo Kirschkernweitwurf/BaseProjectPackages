@@ -21,9 +21,6 @@ namespace Base.ControllerSupport.Editor
         /// <summary>The menu on the same GameObject, or null when the group manages its own activation.</summary>
         public Menu Menu { get; }
 
-        /// <summary>Number of navigable elements below the group.</summary>
-        public int ElementCount { get; }
-
         /// <summary>True while the group still exists. Scanned rows can be destroyed between repaints.</summary>
         public bool IsAlive => Group != null;
 
@@ -62,6 +59,9 @@ namespace Base.ControllerSupport.Editor
         public string PriorityTooltip => HasPriorityMismatch
             ? $"Priority differs from the menu ({Menu.Priority})."
             : "Focus priority.";
+
+        /// <summary>Number of navigable elements below the group.</summary>
+        private int ElementCount { get; }
 
         /// <summary>Collects the menu and element count belonging to a group.</summary>
         public NavigationGroupEntry(NavigableGroup group)

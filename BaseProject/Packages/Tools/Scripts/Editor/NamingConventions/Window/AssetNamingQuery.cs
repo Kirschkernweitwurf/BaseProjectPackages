@@ -109,28 +109,6 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
             RebuildGroups();
         }
 
-        /// <summary>Splits the filtered list into the collapsible groups the sort mode asks for.</summary>
-        public void RebuildGroups()
-        {
-            _groups.Clear();
-
-            Dictionary<string, AssetNamingGroup> byKey = new();
-
-            foreach (AssetNamingViolation violation in _filtered)
-            {
-                string key = GroupKeyOf(violation);
-
-                if (!byKey.TryGetValue(key, out AssetNamingGroup group))
-                {
-                    group = new AssetNamingGroup(key);
-                    byKey[key] = group;
-                    _groups.Add(group);
-                }
-
-                group.Violations.Add(violation);
-            }
-        }
-
         /// <summary>
         /// Drops a violation that was just renamed away. The rows are drawn from the groups, so
         /// dropping it from the flat lists alone would leave a dead row behind that still offers
@@ -189,6 +167,28 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
             paths.Sort(StringComparer.Ordinal);
 
             return paths;
+        }
+
+        /// <summary>Splits the filtered list into the collapsible groups the sort mode asks for.</summary>
+        private void RebuildGroups()
+        {
+            _groups.Clear();
+
+            Dictionary<string, AssetNamingGroup> byKey = new();
+
+            foreach (AssetNamingViolation violation in _filtered)
+            {
+                string key = GroupKeyOf(violation);
+
+                if (!byKey.TryGetValue(key, out AssetNamingGroup group))
+                {
+                    group = new AssetNamingGroup(key);
+                    byKey[key] = group;
+                    _groups.Add(group);
+                }
+
+                group.Violations.Add(violation);
+            }
         }
 
         private bool IsMatchingFilter(AssetNamingViolation violation)

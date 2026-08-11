@@ -7,7 +7,7 @@ using Object = UnityEngine.Object;
 namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
 {
     /// <summary>Renders the grouped list of issues. Returns the object a click targeted.</summary>
-    public static class RequiredReferenceView
+    internal static class RequiredReferenceView
     {
         private const float AccentWidth = 3f;
         private const float BadgeInset = 4f;

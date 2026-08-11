@@ -12,7 +12,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot
     /// Unity types are skipped, since their fields never carry these attributes, and so are the types
     /// marked <see cref="TroubleshootSampleAttribute"/>, which are broken on purpose.
     /// </summary>
-    public static class AttributeTroubleshootCollector
+    internal static class AttributeTroubleshootCollector
     {
         /// <summary>Scans the project and returns the findings grouped by declaring type.</summary>
         /// <param name="errors">Total number of findings that stop an attribute from working.</param>

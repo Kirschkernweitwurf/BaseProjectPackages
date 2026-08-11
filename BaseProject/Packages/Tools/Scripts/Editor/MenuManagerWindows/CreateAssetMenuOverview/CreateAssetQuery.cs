@@ -9,7 +9,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows.CreateAssetMenuOverview
     /// Pure filtering and sorting for asset creation entries. The input collection is never
     /// modified; a new ordered list is always returned.
     /// </summary>
-    public static class CreateAssetQuery
+    internal static class CreateAssetQuery
     {
         /// <summary>
         /// Optionally restricts to a single top-level menu and a single definition, hides

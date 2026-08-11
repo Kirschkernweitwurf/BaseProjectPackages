@@ -7,7 +7,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
     /// Row metrics, label styles, colored section headers and the success block of the asset
     /// naming window. Pure presentation.
     /// </summary>
-    public static class AssetNamingGui
+    internal static class AssetNamingGui
     {
         /// <summary>Horizontal padding between columns.</summary>
         public const float Padding = 6f;

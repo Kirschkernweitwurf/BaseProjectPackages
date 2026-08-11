@@ -6,7 +6,7 @@ using Object = UnityEngine.Object;
 namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
 {
     /// <summary>Scans scene objects and ScriptableObject assets for validation issues, grouped per owner.</summary>
-    public static class RequiredReferenceCollector
+    internal static class RequiredReferenceCollector
     {
         /// <summary>Returns one group per scene object with issues. Scene objects group by GameObject.</summary>
         public static List<RequiredReferenceGroup> CollectScene(out int total)

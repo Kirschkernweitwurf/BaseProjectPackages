@@ -8,7 +8,7 @@ using UnityEngine;
 namespace Base.ToolPackage.Editor.AssemblyGraph
 {
     /// <summary>Removes unused references from asmdef files while keeping every other field intact.</summary>
-    public static class AsmdefReferenceCleaner
+    internal static class AsmdefReferenceCleaner
     {
         /// <summary>
         /// Removes the given reference names from the asmdef at the given asset path.

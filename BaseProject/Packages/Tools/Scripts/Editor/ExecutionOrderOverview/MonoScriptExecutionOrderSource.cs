@@ -10,7 +10,7 @@ namespace Base.ToolPackage.Editor.ExecutionOrderOverview
     /// Default source that reads execution orders from all runtime MonoScripts, covering
     /// project scripts, package scripts and Unity's built-in scripts in a single call.
     /// </summary>
-    public sealed class MonoScriptExecutionOrderSource : IExecutionOrderSource
+    internal sealed class MonoScriptExecutionOrderSource : IExecutionOrderSource
     {
         /// <inheritdoc/>
         public IReadOnlyList<ExecutionOrderEntry> Collect()

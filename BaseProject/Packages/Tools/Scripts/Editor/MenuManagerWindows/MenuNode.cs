@@ -5,7 +5,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
 {
     /// <summary>Base type for a node in the menu tree. Either a group or an entry.</summary>
     [Serializable]
-    public abstract class MenuNode
+    internal abstract class MenuNode
     {
         [SerializeField]
         private bool separator;

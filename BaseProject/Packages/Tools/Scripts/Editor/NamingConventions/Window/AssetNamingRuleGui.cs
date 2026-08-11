@@ -15,7 +15,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
     /// columns are edited as comma separated text through delayed fields, so typing never fights
     /// with the value being rebuilt on every repaint.
     /// </summary>
-    public static class AssetNamingRuleGui
+    internal static class AssetNamingRuleGui
     {
         /// <summary>Returned when no row was marked for removal.</summary>
         public const int NoIndex = -1;

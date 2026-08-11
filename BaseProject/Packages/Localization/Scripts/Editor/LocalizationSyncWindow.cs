@@ -10,7 +10,7 @@ namespace Base.LocalizationPackage.Editor
     /// <summary>
     /// A custom Unity Editor window for syncing String Table Collections with Google Sheets.
     /// </summary>
-    public sealed class LocalizationSyncWindow : EditorWindow
+    internal sealed class LocalizationSyncWindow : EditorWindow
     {
         private const string BoxStyle = "box";
         private const string HeaderLabel = "String Table Collections";

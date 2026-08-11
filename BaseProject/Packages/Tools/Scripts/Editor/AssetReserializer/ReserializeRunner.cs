@@ -16,7 +16,7 @@ namespace Base.ToolPackage.Editor.AssetReserializer
     /// The rewrite uses the serializer of the running editor, so the diff is usually larger than the
     /// rename alone. Commit before running a batch.
     /// </remarks>
-    public static class ReserializeRunner
+    internal static class ReserializeRunner
     {
         private const string PrefabFilter = "t:Prefab";
         private const string SceneFilter = "t:Scene";

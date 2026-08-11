@@ -12,7 +12,7 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
     /// <summary>
     /// Pure text-based scanner for static fields that are not reset on Enter Play Mode.
     /// </summary>
-    public static class StaticResetScanner
+    internal static class StaticResetScanner
     {
         private static readonly HashSet<string> Modifiers = new()
         {

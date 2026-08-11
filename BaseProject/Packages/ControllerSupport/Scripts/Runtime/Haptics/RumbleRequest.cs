@@ -10,8 +10,6 @@ namespace Base.ControllerSupport.Haptics
     {
         private const float LoopLength = 1f;
 
-        private float _elapsed;
-
         /// <summary>The pattern being played.</summary>
         public RumblePatternData Pattern { get; }
 
@@ -23,6 +21,8 @@ namespace Base.ControllerSupport.Haptics
 
         /// <summary>True once a non-looping pattern has run past its duration.</summary>
         public bool IsFinished => !Pattern.Loop && _elapsed >= Pattern.Duration;
+
+        private float _elapsed;
 
         /// <summary>Creates a request for a pattern on behalf of a caller.</summary>
         /// <param name="pattern">The curves and timing to play.</param>

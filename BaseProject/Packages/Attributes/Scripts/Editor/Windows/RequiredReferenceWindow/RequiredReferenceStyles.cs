@@ -7,7 +7,7 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
     /// Cached styles, colors and icons for the required-reference window.
     /// Pure presentation.
     /// </summary>
-    public sealed class RequiredReferenceStyles
+    internal sealed class RequiredReferenceStyles
     {
         private const string AlertIcon = "console.erroricon.sml";
         private const string ObjectIcon = "GameObject Icon";

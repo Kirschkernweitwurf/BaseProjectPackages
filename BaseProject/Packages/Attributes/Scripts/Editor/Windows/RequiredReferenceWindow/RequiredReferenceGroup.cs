@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
 {
     /// <summary>A set of validation issues that all live on the same object or asset.</summary>
-    public sealed class RequiredReferenceGroup
+    internal sealed class RequiredReferenceGroup
     {
         /// <summary>The owner of the issues. A GameObject for scene items, the asset otherwise.</summary>
         public Object Owner { get; }

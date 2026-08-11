@@ -12,7 +12,7 @@ using Object = UnityEngine.Object;
 namespace Base.ToolPackage.Editor.MenuManagerWindows
 {
     /// <summary>The shipped package layout, saved as an asset so it travels with the package.</summary>
-    public sealed class MenuRegistry : ScriptableObject
+    internal sealed class MenuRegistry : ScriptableObject
     {
         private const string AssetFileName = "MenuManagerRegistry.asset";
         private const int CurrentSchema = 4;

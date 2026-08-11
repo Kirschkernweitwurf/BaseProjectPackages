@@ -9,15 +9,15 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot
     /// Draws the grouped findings of the troubleshoot window. Pure presentation: it reports which type
     /// the user clicked and leaves opening the script to the window.
     /// </summary>
-    public static class AttributeTroubleshootView
+    internal static class AttributeTroubleshootView
     {
         private const float HeaderHeight = 22f;
         private const float HeaderIconSize = 16f;
         private const float IconSize = 14f;
         private const float Indent = 20f;
         private const float RowSpacing = 2f;
-        private const float SuccessSpacing = 8f;
         private const float SuccessIconSize = 48f;
+        private const float SuccessSpacing = 8f;
         private const string SuccessSubtitle = "Every attribute points at something it can use.";
         private const string SuccessTitle = "No problems found.";
 

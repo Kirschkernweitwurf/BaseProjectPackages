@@ -5,7 +5,7 @@ namespace Base.ToolPackage.Editor.OverviewGui.PrefabOverviewWindow
     /// <summary>
     /// Links scanned prefabs into variant trees and flags the entries that look problematic.
     /// </summary>
-    public static class PrefabHierarchyBuilder
+    internal static class PrefabHierarchyBuilder
     {
         private const int DeepChainDepth = 3;
         private const int HeavyOverrideCount = 30;

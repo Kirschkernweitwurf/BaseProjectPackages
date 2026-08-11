@@ -27,8 +27,6 @@ namespace Base.UtilityPackage.Collections
         // Field name is kept lowercase and unchanged so existing serialized data keeps resolving.
         [SerializeField] private List<SerializableDictionaryEntry<TKey, TValue>> entries = new();
 
-        private Dictionary<TKey, TValue> _dictionary;
-
         /// <summary>Gets the number of key-value pairs contained in the dictionary.</summary>
         public int Count => Resolved.Count;
 
@@ -74,11 +72,7 @@ namespace Base.UtilityPackage.Collections
             }
         }
 
-        void ISerializationCallbackReceiver.OnBeforeSerialize() { }
-
-        // Discards the runtime dictionary after Unity writes the entries back, for example after an
-        // inspector edit, so the next access rebuilds it from the fresh serialized data.
-        void ISerializationCallbackReceiver.OnAfterDeserialize() => _dictionary = null;
+        private Dictionary<TKey, TValue> _dictionary;
 
         /// <summary>Adds a new key-value pair to the dictionary.</summary>
         /// <param name="key">The key to add.</param>
@@ -147,6 +141,12 @@ namespace Base.UtilityPackage.Collections
         /// <param name="value">The value when found, otherwise the default value.</param>
         /// <returns>True when the key exists.</returns>
         public bool TryGetValue(TKey key, out TValue value) => Resolved.TryGetValue(key, out value);
+
+        void ISerializationCallbackReceiver.OnBeforeSerialize() { }
+
+        // Discards the runtime dictionary after Unity writes the entries back, for example after an
+        // inspector edit, so the next access rebuilds it from the fresh serialized data.
+        void ISerializationCallbackReceiver.OnAfterDeserialize() => _dictionary = null;
 
         private void Rebuild()
         {

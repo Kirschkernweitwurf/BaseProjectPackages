@@ -19,6 +19,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         private const string DismissedClass = "row-dismissed";
         private const string DismissedText = "Dismissed";
         private const string HeadingClass = "pane-heading";
+        private const string OnlyNewClass = "only-new";
         private const string OnlyNewLabel = "New only";
 
         private const string OnlyNewTooltip = "Shows only what this scan found and the last one did not. "
@@ -29,6 +30,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         private const int RowHeight = 42;
         private const string RowMetaClass = "list-row-meta";
         private const string RowTitleClass = "list-row-title";
+        private const string SeparatorClass = "sort-separator";
         private const string SortByFanInLabel = "Used by";
         private const string SortByFanOutLabel = "Uses";
         private const string SortByFindingsLabel = "Findings";
@@ -47,7 +49,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         private bool _isOnlyNew;
 
         private List<GraphEntry> _entries = new();
-        private ESortMode _sortMode = ESortMode.Name;
+        private ESortMode _sortMode = ESortMode.Findings;
         private bool _isRebuilding;
 
         /// <summary>Builds the list pane, its heading and its sort header.</summary>
@@ -128,10 +130,11 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             VisualElement row = new();
             row.AddToClassList(SortRowClass);
 
+            // Findings first and first by default, because what is wrong is why the list is open.
+            row.Add(BuildSortButton(SortByFindingsLabel, ESortMode.Findings));
             row.Add(BuildSortButton(SortByNameLabel, ESortMode.Name));
             row.Add(BuildSortButton(SortByFanInLabel, ESortMode.FanIn));
             row.Add(BuildSortButton(SortByFanOutLabel, ESortMode.FanOut));
-            row.Add(BuildSortButton(SortByFindingsLabel, ESortMode.Findings));
 
             _onlyNewButton = new Button(ToggleOnlyNew)
             {
@@ -143,6 +146,13 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
                 }
             };
 
+            // The four before it choose an order. This one hides rows, so a line stands between them and
+            // it lights up in its own color rather than reading as a fifth way to sort.
+            VisualElement separator = new();
+            separator.AddToClassList(SeparatorClass);
+            row.Add(separator);
+
+            _onlyNewButton.AddToClassList(OnlyNewClass);
             row.Add(_onlyNewButton);
 
             return row;

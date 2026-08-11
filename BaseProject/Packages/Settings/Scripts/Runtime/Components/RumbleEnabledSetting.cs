@@ -18,13 +18,13 @@ namespace Base.SettingsPackage.Components
         [Required]
         [SerializeField] private RumbleConfig config;
 
-        private RumbleService _rumbleService;
-
         /// <inheritdoc/>
         public override PersistentKey Key => RumbleSettingKeys.Enabled;
 
         /// <inheritdoc/>
         protected override bool DefaultValue => config.RumbleEnabled;
+
+        private RumbleService _rumbleService;
 
 #region Unity Callbacks
         // The service is a GameServiceBehaviour at -1 and this component sits at 0, so it is always

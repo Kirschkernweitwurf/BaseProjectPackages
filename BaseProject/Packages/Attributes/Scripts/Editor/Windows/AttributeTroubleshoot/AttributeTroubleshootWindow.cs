@@ -33,8 +33,8 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot
             "These findings come from types that are broken on purpose, so the report can be read on a "
             + "project that has nothing wrong. They are excluded from the project scan.";
         private const string ScanLabel = "Scan";
-        private const string SearchHint = "Nothing matches the current filter.";
         private const float SearchHeight = 20f;
+        private const string SearchHint = "Nothing matches the current filter.";
         private const float SearchWidth = 220f;
         private const string SuccessMessage = "No problems found.";
 
@@ -51,14 +51,6 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot
         [SerializeField] private Vector2 scrollPosition;
         [SerializeField] private Vector2 showcaseScrollPosition;
 
-        private readonly AttributeTroubleshootStyles _styles = new();
-
-        private List<AttributeIssueGroup> _groups = new();
-        private AttributeShowcase _showcase;
-        private bool _scanned;
-        private int _errors;
-        private int _warnings;
-
         // Created on first use and never saved, so the showcase can be edited freely without leaving
         // anything behind in the project.
         private AttributeShowcase ShowcaseAsset
@@ -74,6 +66,14 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot
                 return _showcase;
             }
         }
+
+        private readonly AttributeTroubleshootStyles _styles = new();
+
+        private List<AttributeIssueGroup> _groups = new();
+        private AttributeShowcase _showcase;
+        private bool _scanned;
+        private int _errors;
+        private int _warnings;
 
 #region Unity Callbacks
         private void OnEnable()

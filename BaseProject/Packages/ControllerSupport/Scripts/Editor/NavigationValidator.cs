@@ -13,7 +13,7 @@ namespace Base.ControllerSupport.Editor
     /// which silently breaks gamepad flow, so the missing component is added and the fix is logged.
     /// Runs as the first step of a rebuild, so newly added elements are wired in the same pass.
     /// </summary>
-    public static class NavigationValidator
+    internal static class NavigationValidator
     {
         private static readonly List<Selectable> Selectables = new();
 

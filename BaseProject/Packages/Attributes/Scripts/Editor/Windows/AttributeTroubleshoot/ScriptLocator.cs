@@ -9,7 +9,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot
     /// Results are cached because the underlying asset search is expensive and the answer only changes
     /// on a domain reload.
     /// </summary>
-    public static class ScriptLocator
+    internal static class ScriptLocator
     {
         private const string ScriptFilter = "t:MonoScript";
 

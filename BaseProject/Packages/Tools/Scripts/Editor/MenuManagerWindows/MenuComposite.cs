@@ -3,7 +3,7 @@ using System.Collections.Generic;
 namespace Base.ToolPackage.Editor.MenuManagerWindows
 {
     /// <summary>Coordinates the read only package registry and the writable project overlay as one view.</summary>
-    public static class MenuComposite
+    internal static class MenuComposite
     {
         private static MenuRegistry Registry => MenuRegistry.Instance;
 

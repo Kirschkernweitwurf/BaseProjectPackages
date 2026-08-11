@@ -3,7 +3,7 @@ namespace Base.ToolPackage.Editor.OverviewGui.UnusedAssetsOverviewWindow
     /// <summary>
     /// One asset that looks unreferenced, with its type and size for display.
     /// </summary>
-    public sealed class UnusedAssetEntry
+    internal sealed class UnusedAssetEntry
     {
         /// <summary>Asset path, for example "Assets/Art/Unused.png".</summary>
         public string Path { get; }

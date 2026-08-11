@@ -8,7 +8,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows.MenuItemOverview
     /// Finds the source line of a specific <see cref="MenuItem"/> attribute so the editor
     /// can jump straight to the priority argument.
     /// </summary>
-    public static class MenuItemDefinitionLocator
+    internal static class MenuItemDefinitionLocator
     {
         private const string AttributeToken = "MenuItem";
 

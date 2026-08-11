@@ -9,7 +9,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows.CreateAssetMenuOverview
     /// Finds the source line of a specific <see cref="CreateAssetMenuAttribute"/> so the editor
     /// can jump straight to the order argument.
     /// </summary>
-    public static class CreateAssetDefinitionLocator
+    internal static class CreateAssetDefinitionLocator
     {
         private const string AttributeToken = "CreateAssetMenu";
 

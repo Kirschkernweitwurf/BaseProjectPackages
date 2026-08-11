@@ -13,7 +13,7 @@ namespace Base.ControllerSupport.Editor
     /// navigation and marks the touched selectables dirty. Rebuilds are always triggered deliberately
     /// by the user, never automatically, so wiring changes are visible instead of happening silently.
     /// </summary>
-    public static class NavigationRebuildService
+    internal static class NavigationRebuildService
     {
         private const string PrefabFilter = "t:Prefab";
         private const string ProgressTitle = "Rebuilding Navigation";

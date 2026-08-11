@@ -10,7 +10,7 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
     /// Unity's own prefab APIs all return null in play mode, so the link has to be guessed from
     /// the "(Clone)" naming convention. The guess can be overridden by hand in the window.
     /// </summary>
-    public static class PlayModePrefabResolver
+    internal static class PlayModePrefabResolver
     {
         private const string PrefabFilter = " t:Prefab";
 

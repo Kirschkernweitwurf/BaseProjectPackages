@@ -5,7 +5,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
 {
     /// <summary>Leaf node wrapping a single managed entry.</summary>
     [Serializable]
-    public sealed class MenuEntryNode : MenuNode
+    internal sealed class MenuEntryNode : MenuNode
     {
         [SerializeField]
         private MenuEntry entry;

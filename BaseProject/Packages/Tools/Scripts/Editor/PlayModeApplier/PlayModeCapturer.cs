@@ -11,7 +11,7 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
     /// while the play mode scene is still alive. Nothing is written here, capture only fills the pending list.
     /// </summary>
     [InitializeOnLoad]
-    public static class PlayModeCapturer
+    internal static class PlayModeCapturer
     {
         private const string ComponentForgetPath = "CONTEXT/Component/Forget Play Mode Changes";
         private const string ComponentMarkPath = "CONTEXT/Component/Save Play Mode Changes";
@@ -24,8 +24,18 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
             EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
         }
 
+        /// <summary>Builds a readable label such as "P_Garden_Bush01(Clone) (Transform)".</summary>
+        public static string BuildDisplayName(Object target)
+        {
+            Component component = target as Component;
+            if (component != null)
+                return $"{component.gameObject.name} ({component.GetType().Name})";
+
+            return target.name;
+        }
+
         /// <summary>Flags a component for saving. Marking the same component twice is a no-op.</summary>
-        public static void Mark(Object target)
+        private static void Mark(Object target)
         {
             if (target == null)
                 return;
@@ -44,17 +54,7 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
         }
 
         /// <summary>Removes the flag from a component.</summary>
-        public static void Forget(Object target) => PlayModeMarks.Remove(target as Component);
-
-        /// <summary>Builds a readable label such as "P_Garden_Bush01(Clone) (Transform)".</summary>
-        public static string BuildDisplayName(Object target)
-        {
-            Component component = target as Component;
-            if (component != null)
-                return $"{component.gameObject.name} ({component.GetType().Name})";
-
-            return target.name;
-        }
+        private static void Forget(Object target) => PlayModeMarks.Remove(target as Component);
 
         [MenuItem(ComponentMarkPath, false)]
         private static void MarkComponent(MenuCommand command) => Mark(command.context);

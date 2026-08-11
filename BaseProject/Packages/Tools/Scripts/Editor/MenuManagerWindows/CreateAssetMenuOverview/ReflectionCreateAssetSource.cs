@@ -14,7 +14,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows.CreateAssetMenuOverview
     /// <see cref="CreateAssetMenuAttribute"/>, covering project, package and built-in
     /// Unity ScriptableObjects.
     /// </summary>
-    public sealed class ReflectionCreateAssetSource : ICreateAssetSource
+    internal sealed class ReflectionCreateAssetSource : ICreateAssetSource
     {
         private readonly MenuScriptLookup _scripts = new();
 

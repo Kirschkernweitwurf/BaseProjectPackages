@@ -9,7 +9,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows.MenuItemOverview
     /// Pure filtering and sorting for menu item entries. The input collection is never
     /// modified; a new ordered list is always returned.
     /// </summary>
-    public static class MenuItemQuery
+    internal static class MenuItemQuery
     {
         /// <summary>
         /// Optionally restricts to a single top-level menu and a single definition, hides

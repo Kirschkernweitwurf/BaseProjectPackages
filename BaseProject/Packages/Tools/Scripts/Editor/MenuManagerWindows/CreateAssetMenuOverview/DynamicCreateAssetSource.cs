@@ -9,7 +9,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows.CreateAssetMenuOverview
     /// Source that reports every asset creation entry registered through the menu manager,
     /// including the ones that are switched off or whose type has disappeared since the last scan.
     /// </summary>
-    public sealed class DynamicCreateAssetSource : ICreateAssetSource
+    internal sealed class DynamicCreateAssetSource : ICreateAssetSource
     {
         private const string IdPrefix = "CA:";
 

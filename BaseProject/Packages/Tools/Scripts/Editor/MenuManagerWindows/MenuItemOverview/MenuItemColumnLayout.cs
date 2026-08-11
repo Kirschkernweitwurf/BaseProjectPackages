@@ -8,7 +8,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows.MenuItemOverview
     /// Priority and the kind chip are pinned left, the state marker, the source badge and the
     /// manage link are pinned right, and the menu path and member share the remaining width.
     /// </summary>
-    public readonly struct MenuItemColumnLayout
+    internal readonly struct MenuItemColumnLayout
     {
         /// <summary>Menu priority.</summary>
         public Rect Priority { get; }

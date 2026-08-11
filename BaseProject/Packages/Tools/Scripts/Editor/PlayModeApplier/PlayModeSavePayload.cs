@@ -10,7 +10,7 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
     /// The destination is a choice in the window rather than a guess made here.
     /// </summary>
     [Serializable]
-    public class PlayModeSavePayload
+    internal class PlayModeSavePayload
     {
         public string displayName;
         public EPlayModeApplyTarget applyTarget;

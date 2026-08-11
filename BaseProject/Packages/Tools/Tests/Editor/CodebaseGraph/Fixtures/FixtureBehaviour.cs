@@ -63,6 +63,7 @@ namespace Base.ToolPackage.Editor.Tests.Fixtures
             contract.Explicit();
 
             Debug.Log(FixtureConstants.SharedLabel);
+            Debug.Log(FixtureNestingHost.Metrics.Padding);
         }
 #endregion
 

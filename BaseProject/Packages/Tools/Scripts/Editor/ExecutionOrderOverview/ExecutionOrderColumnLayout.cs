@@ -8,7 +8,7 @@ namespace Base.ToolPackage.Editor.ExecutionOrderOverview
     /// aligned. Order is pinned left, the source badge is pinned right, and the name and
     /// namespace share the remaining width.
     /// </summary>
-    public readonly struct ExecutionOrderColumnLayout
+    internal readonly struct ExecutionOrderColumnLayout
     {
         /// <summary>Effective execution order.</summary>
         public Rect Order { get; }

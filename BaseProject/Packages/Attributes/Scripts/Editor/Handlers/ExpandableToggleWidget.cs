@@ -18,13 +18,6 @@ namespace Base.AttributePackage.Editor
 
         public int Order => WidgetOrder;
 
-        /// <summary>Returns whether the inline inspector of the given member is open.</summary>
-        /// <param name="context">The member currently being drawn.</param>
-        /// <param name="attribute">The attribute driving the toggle.</param>
-        /// <returns>True while the inline inspector should be drawn.</returns>
-        public static bool IsExpanded(in MemberContext context, ExpandableAttribute attribute)
-            => EditorPrefs.GetBool(KeyFor(context), attribute.DefaultExpanded);
-
         public float GetWidth(in MemberContext context) => IsSupported(context)
             ? ButtonWidth
             : 0f;
@@ -45,6 +38,13 @@ namespace Base.AttributePackage.Editor
             if (GUI.Button(rect, content, EditorStyles.miniButton))
                 EditorPrefs.SetBool(key, !expanded);
         }
+
+        /// <summary>Returns whether the inline inspector of the given member is open.</summary>
+        /// <param name="context">The member currently being drawn.</param>
+        /// <param name="attribute">The attribute driving the toggle.</param>
+        /// <returns>True while the inline inspector should be drawn.</returns>
+        public static bool IsExpanded(in MemberContext context, ExpandableAttribute attribute)
+            => EditorPrefs.GetBool(KeyFor(context), attribute.DefaultExpanded);
 
         private static string KeyFor(in MemberContext context)
             => StateKey.For(context.Target.GetType(), context.Property.propertyPath);

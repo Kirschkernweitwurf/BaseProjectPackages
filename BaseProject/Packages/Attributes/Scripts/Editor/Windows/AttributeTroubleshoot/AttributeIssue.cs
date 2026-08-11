@@ -1,7 +1,7 @@
 namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot
 {
     /// <summary>A single misconfigured attribute usage found by a check.</summary>
-    public readonly struct AttributeIssue
+    internal readonly struct AttributeIssue
     {
         /// <summary>Name of the field or method carrying the attribute.</summary>
         public readonly string MemberName;

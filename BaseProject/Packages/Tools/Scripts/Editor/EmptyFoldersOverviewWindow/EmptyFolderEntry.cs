@@ -3,7 +3,7 @@ namespace Base.ToolPackage.Editor.EmptyFoldersOverviewWindow
     /// <summary>
     /// One empty folder, plus how many folders get removed with it (itself and nested empties).
     /// </summary>
-    public sealed class EmptyFolderEntry
+    internal sealed class EmptyFolderEntry
     {
         /// <summary>Asset path of the folder, for example "Assets/Art/Unused".</summary>
         public string Path { get; }

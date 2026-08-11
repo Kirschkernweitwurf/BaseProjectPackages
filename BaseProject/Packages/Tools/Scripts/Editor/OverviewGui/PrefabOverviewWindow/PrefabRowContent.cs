@@ -8,7 +8,7 @@ namespace Base.ToolPackage.Editor.OverviewGui.PrefabOverviewWindow
     /// Ready made labels for one row of the prefab overview. Built once per scan so that drawing does not
     /// format strings or look up icons on every repaint.
     /// </summary>
-    public sealed class PrefabRowContent
+    internal sealed class PrefabRowContent
     {
         private const string FallbackIconName = "Prefab Icon";
         private const string IssueBadgeText = "!";

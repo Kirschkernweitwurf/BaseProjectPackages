@@ -3,7 +3,7 @@ using System.Collections.Generic;
 namespace Base.ToolPackage.Editor.AssemblyGraph
 {
     /// <summary>One assembly node in the graph, with its declared references.</summary>
-    public sealed class AssemblyNodeInfo
+    internal sealed class AssemblyNodeInfo
     {
         /// <summary>Name of the assembly.</summary>
         public string Name { get; }

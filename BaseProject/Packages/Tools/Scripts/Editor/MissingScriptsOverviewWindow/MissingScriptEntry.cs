@@ -5,7 +5,7 @@ namespace Base.ToolPackage.Editor.MissingScriptsOverviewWindow
     /// <summary>
     /// One found missing script, holding enough data to navigate back to it.
     /// </summary>
-    public sealed class MissingScriptEntry
+    internal sealed class MissingScriptEntry
     {
         public EMissingScriptSource Source { get; }
 

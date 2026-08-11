@@ -24,37 +24,38 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Editing
             + "the wrong thing. Commit your work first, then check the console after Unity recompiles.";
 
         /// <summary>Asks for confirmation and rewrites the source when it is given.</summary>
-        /// <param name="entry">Entry the finding sits on.</param>
+        /// <param name="type">Type that declares the member.</param>
+        /// <param name="member">Member the finding sits on.</param>
         /// <param name="finding">Finding being acted on.</param>
         /// <returns>True when a file was changed.</returns>
-        public static bool Apply(GraphEntry entry, EFinding finding)
+        public static bool Apply(TypeNodeInfo type, MemberNodeInfo member, EFinding finding)
         {
-            if (entry?.Member == null || entry.Type == null)
+            if (type == null || member == null)
                 return false;
 
             bool confirmed = EditorUtility.DisplayDialog(ReadTitle(finding),
-                string.Format(WarningFormat, entry.Member.Name, entry.Type.ShortName, ReadChange(finding)),
+                string.Format(WarningFormat, member.Name, type.ShortName, ReadChange(finding)),
                 ApplyLabel,
                 CancelLabel);
 
             if (!confirmed)
                 return false;
 
-            return Rewrite(entry, finding);
+            return Rewrite(type, member, finding);
         }
 
-        private static bool Rewrite(GraphEntry entry, EFinding finding)
+        private static bool Rewrite(TypeNodeInfo type, MemberNodeInfo member, EFinding finding)
         {
             switch (finding)
             {
                 case EFinding.PrivateCandidate:
-                    return MemberSourceEditor.DemoteToPrivate(entry.Type, entry.Member);
+                    return MemberSourceEditor.DemoteToPrivate(type, member);
 
                 case EFinding.PublicButInternalOnly:
-                    return MemberSourceEditor.DemoteToInternal(entry.Type, entry.Member);
+                    return MemberSourceEditor.DemoteToInternal(type, member);
 
                 default:
-                    return MemberSourceEditor.AddReadOnly(entry.Type, entry.Member);
+                    return MemberSourceEditor.AddReadOnly(type, member);
             }
         }
 

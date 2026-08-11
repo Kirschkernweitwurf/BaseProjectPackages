@@ -4,7 +4,6 @@ using Base.ToolPackage.Editor.CodebaseGraph.Analysis;
 using Base.ToolPackage.Editor.CodebaseGraph.Model;
 using UnityEditor;
 using UnityEditor.UIElements;
-using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace Base.ToolPackage.Editor.CodebaseGraph
@@ -14,7 +13,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
     /// exactly why it needs somewhere to be looked at afterward: without this the only record is a JSON
     /// file, and a decision you cannot review is a decision you stop trusting.
     /// </summary>
-    internal sealed class CodebaseGraphDismissalsWindow : EditorWindow
+    internal sealed class CodebaseGraphDismissalsPane : VisualElement
     {
         private const string AllFindingsText = "everything reported here";
         private const string CopyLabel = "Copy as instructions";
@@ -22,6 +21,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         private const string CopyMessage = "The instruction block is on the clipboard. Paste it back "
             + "through Update dismissals in the graph window, or hand it to an agent to edit.";
 
+        private const string CopyTitle = "Dismissals";
         private const string CountFormat = "{0} dismissed";
         private const string CountWithStaleFormat = "{0} dismissed, {1} no longer match anything";
 
@@ -30,15 +30,13 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
         private const string HeadingClass = "pane-heading";
         private const string KindTitleClass = "section-title";
-
-        private const int MinimumWindowHeight = 320;
-        private const int MinimumWindowWidth = 620;
         private const string MissingGroupFormat = "The thing it pointed at is gone ({0})";
 
         private const string MissingGroupText = "An id embeds the signature it was written for, so these "
             + "stopped matching when something was renamed, retyped or deleted. That is dead "
             + "configuration and can go, once you are satisfied it was a rename rather than a mistake.";
 
+        private const string OddClass = "is-odd";
         private const string PaneClass = "pane";
         private const string PlaceholderClass = "pane-placeholder";
         private const string RemoveAllStaleLabel = "Remove all stale";
@@ -58,7 +56,6 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         private const string RestoreTreeTooltip = "Also brings back everything dismissed inside this one, "
             + "which is the exact reverse of dismissing with contents.";
 
-        private const string RootClass = "codebase-graph-root";
         private const string RowClass = "dismissal-row";
         private const string RowNameClass = "dismissal-name";
         private const string RowScopeClass = "dismissal-scope";
@@ -77,56 +74,42 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         private const string UpdateTooltip = "Points the dismissal at the member that most likely replaced "
             + "it, keeping the decision rather than starting again.";
 
-        private const string WindowTitle = "Dismissed findings";
-
         private readonly List<DismissalEntry> _entries = new();
 
-        private ScrollView _list;
-        private Label _countLabel;
+        private readonly ScrollView _list;
+        private readonly Label _countLabel;
         private Button _restoreAllButton;
+        private int _rowCount;
         private string _search = string.Empty;
 
-#region Unity Callbacks
-        private void OnDisable() => DismissalStore.Changed -= Rebuild;
-
-        private void CreateGUI()
+        /// <summary>Builds the pane, its toolbar and its list.</summary>
+        public CodebaseGraphDismissalsPane()
         {
-            rootVisualElement.AddToClassList(RootClass);
-            CodebaseGraphStyle.Apply(rootVisualElement);
-
-            rootVisualElement.Add(BuildToolbar());
+            AddToClassList(PaneClass);
+            Add(BuildToolbar());
 
             _countLabel = new Label(string.Empty);
             _countLabel.AddToClassList(HeadingClass);
-            rootVisualElement.Add(_countLabel);
+            Add(_countLabel);
 
-            _list = new ScrollView();
-            _list.AddToClassList(PaneClass);
-            rootVisualElement.Add(_list);
+            _list = new ScrollView
+            {
+                style =
+                {
+                    flexGrow = 1f
+                }
+            };
+
+            Add(_list);
 
             DismissalStore.Changed += Rebuild;
+            RegisterCallback<DetachFromPanelEvent>(_ => DismissalStore.Changed -= Rebuild);
+
             Rebuild();
         }
-#endregion
 
-        /// <summary>
-        /// Closes the window if it is open. It shows the state of one graph window and offers actions
-        /// that only make sense beside it, so leaving it behind would strand a panel with no owner.
-        /// </summary>
-        public static void CloseIfOpen()
-        {
-            foreach (CodebaseGraphDismissalsWindow window
-                     in Resources.FindObjectsOfTypeAll<CodebaseGraphDismissalsWindow>())
-                window.Close();
-        }
-
-        /// <summary>Opens the window.</summary>
-        public static void Open()
-        {
-            CodebaseGraphDismissalsWindow window = GetWindow<CodebaseGraphDismissalsWindow>();
-            window.titleContent = new GUIContent(WindowTitle);
-            window.minSize = new Vector2(MinimumWindowWidth, MinimumWindowHeight);
-        }
+        /// <summary>Rereads the dismissals, after a scan has changed what counts as stale.</summary>
+        public void Refresh() => Rebuild();
 
         private static string BuildScopeText(DismissalEntry entry)
         {
@@ -148,7 +131,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         private static void CopyInstructions()
         {
             EditorGUIUtility.systemCopyBuffer = DismissalTextFormat.Write();
-            EditorUtility.DisplayDialog(WindowTitle, CopyMessage, "OK");
+            EditorUtility.DisplayDialog(CopyTitle, CopyMessage, "OK");
         }
 
         private VisualElement BuildToolbar()
@@ -193,6 +176,8 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
                 : string.Format(CountWithStaleFormat, _entries.Count, stale);
 
             _restoreAllButton.SetEnabled(_entries.Count > 0);
+
+            _rowCount = 0;
             _list.Clear();
 
             if (_entries.Count == 0)
@@ -250,12 +235,16 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
         private void RemoveStale(EStaleReason reason)
         {
+            List<string> doomed = new();
+
             foreach (DismissalEntry entry in _entries)
             {
                 if (entry.StaleReason == reason)
-                    DismissalStore.Restore(entry.Id);
+                    doomed.Add(entry.Id);
             }
 
+            // Collected first, because restoring raises the change event, which rebuilds this very list.
+            DismissalStore.RestoreMany(doomed);
             Rebuild();
         }
 
@@ -273,6 +262,11 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         {
             VisualElement row = new();
             row.AddToClassList(RowClass);
+
+            // Counted rather than taken from an index, because headings and explanations sit between
+            // the rows and would otherwise flip the stripe halfway down a group.
+            row.EnableInClassList(OddClass, _rowCount % 2 == 1);
+            _rowCount++;
             row.EnableInClassList(StaleRowClass, entry.IsStale);
 
             VisualElement text = new()

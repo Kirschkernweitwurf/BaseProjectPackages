@@ -7,7 +7,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
     /// Shared drawing helpers for the menu overview windows. Rows, chips, headers and colors
     /// live here so the menu item window and the asset creation window stay identical.
     /// </summary>
-    public static class MenuOverviewGui
+    internal static class MenuOverviewGui
     {
         /// <summary>Horizontal padding between columns.</summary>
         public const float Padding = 6f;
@@ -18,16 +18,6 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         public const float StripeWidth = 3f;
 
         private const float ChipInset = 3f;
-
-        /// <summary>Centered mini label used inside a colored chip.</summary>
-        public static GUIStyle ChipStyle => _chipStyle ??= new GUIStyle(EditorStyles.miniBoldLabel)
-        {
-            alignment = TextAnchor.MiddleCenter,
-            normal =
-            {
-                textColor = Color.white
-            }
-        };
 
         /// <summary>Label style for menu paths. Uses rich text to dim everything but the last segment.</summary>
         public static GUIStyle PathStyle => _pathStyle ??= new GUIStyle(EditorStyles.label)
@@ -78,6 +68,16 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         {
             alignment = TextAnchor.MiddleLeft,
             fixedHeight = 0f
+        };
+
+        /// <summary>Centered mini label used inside a colored chip.</summary>
+        private static GUIStyle ChipStyle => _chipStyle ??= new GUIStyle(EditorStyles.miniBoldLabel)
+        {
+            alignment = TextAnchor.MiddleCenter,
+            normal =
+            {
+                textColor = Color.white
+            }
         };
 
         private static Color MissingColor => new(0.92f, 0.42f, 0.38f);

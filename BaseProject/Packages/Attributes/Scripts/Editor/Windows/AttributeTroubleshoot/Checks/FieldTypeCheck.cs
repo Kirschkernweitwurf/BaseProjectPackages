@@ -12,7 +12,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Checks
     /// unsupported type either falls back to the plain field or draws a usage hint in place of the
     /// value, and neither is obvious unless the object happens to be selected.
     /// </summary>
-    public sealed class FieldTypeCheck : IAttributeCheck
+    internal sealed class FieldTypeCheck : IAttributeCheck
     {
         private const string ObjectReference = "an object reference";
         private const string StringOnly = "a string";

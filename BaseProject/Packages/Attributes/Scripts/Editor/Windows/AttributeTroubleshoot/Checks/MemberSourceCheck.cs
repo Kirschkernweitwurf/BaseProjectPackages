@@ -11,7 +11,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Checks
     /// The picker drawers fall back to a plain field and a warning when the source is missing, so these
     /// mistakes are only visible while the affected object happens to be selected.
     /// </summary>
-    public sealed class MemberSourceCheck : IAttributeCheck
+    internal sealed class MemberSourceCheck : IAttributeCheck
     {
         public void Inspect(Type type, List<AttributeIssue> issues)
         {
@@ -20,13 +20,17 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Checks
                 VerifyDropdown(type, field, issues);
                 VerifyProgressBar(type, field, issues);
                 VerifySibling<AnimatorParamAttribute>(type, field, issues,
-                    attribute => attribute.AnimatorField, typeof(Animator));
+                    selector: attribute => attribute.AnimatorField, typeof(Animator));
+
                 VerifySibling<AnimatorStateAttribute>(type, field, issues,
-                    attribute => attribute.AnimatorField, typeof(Animator));
+                    selector: attribute => attribute.AnimatorField, typeof(Animator));
+
                 VerifySibling<MixerParameterAttribute>(type, field, issues,
-                    attribute => attribute.MixerField, typeof(AudioMixer));
+                    selector: attribute => attribute.MixerField, typeof(AudioMixer));
+
                 VerifySibling<AudioMixerGroupAttribute>(type, field, issues,
-                    attribute => attribute.MixerField, typeof(AudioMixer));
+                    selector: attribute => attribute.MixerField, typeof(AudioMixer));
+
                 VerifyShaderParam(type, field, issues);
             }
         }
@@ -43,15 +47,14 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Checks
             {
                 AttributeIssues.Error(issues, field, attributeType,
                     $"'{attribute.Member}' does not exist on {owner.Name}. The plain field is drawn instead.");
+
                 return;
             }
 
             Type valueType = CheckedMembers.ValueTypeOf(owner, attribute.Member);
             if (!CheckedMembers.IsEnumerable(valueType))
-            {
                 AttributeIssues.Error(issues, field, attributeType,
                     $"'{attribute.Member}' is not an enumerable of options. The plain field is drawn instead.");
-            }
         }
 
         private static void VerifyProgressBar(Type owner, FieldInfo field, List<AttributeIssue> issues)
@@ -66,6 +69,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Checks
             {
                 AttributeIssues.Error(issues, field, attributeType,
                     $"'{attribute.MaxMember}' does not exist on {owner.Name}.");
+
                 return;
             }
 
@@ -109,16 +113,15 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Checks
             {
                 AttributeIssues.Error(issues, field, attributeType,
                     $"'{attribute.SourceField}' does not exist on {owner.Name}.");
+
                 return;
             }
 
             if (source.FieldType != typeof(Material)
                 && source.FieldType != typeof(Shader)
                 && !typeof(Renderer).IsAssignableFrom(source.FieldType))
-            {
                 AttributeIssues.Error(issues, field, attributeType,
                     $"'{attribute.SourceField}' is not a Material, Renderer or Shader field.");
-            }
         }
     }
 }

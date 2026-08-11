@@ -9,7 +9,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Checks
     /// condition evaluates to true, so a mistyped or renamed member silently leaves the field always
     /// visible and always editable, which is the failure this check exists to surface.
     /// </summary>
-    public sealed class ConditionMemberCheck : IAttributeCheck
+    internal sealed class ConditionMemberCheck : IAttributeCheck
     {
         private const string EmptyMessage = "No condition members given, so the attribute never applies.";
 
@@ -56,14 +56,13 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Checks
                 {
                     AttributeIssues.Error(issues, field, attributeType,
                         $"'{member}' does not exist on {owner.Name}. The condition always evaluates to true.");
+
                     continue;
                 }
 
                 if (!CheckedMembers.IsBool(owner, member))
-                {
                     AttributeIssues.Error(issues, field, attributeType,
                         $"'{member}' is not a bool. The condition always evaluates to true.");
-                }
             }
         }
 
@@ -79,6 +78,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Checks
             {
                 AttributeIssues.Error(issues, field, attributeType,
                     $"'{attribute.Member}' does not exist on {owner.Name}.");
+
                 return;
             }
 
@@ -93,6 +93,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Checks
             {
                 AttributeIssues.Warning(issues, field, attributeType,
                     "No values given, so the field is never shown.");
+
                 return;
             }
 
@@ -102,6 +103,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Checks
                 {
                     AttributeIssues.Error(issues, field, attributeType,
                         $"A given value is not a {memberType.Name} and can never match.");
+
                     return;
                 }
             }

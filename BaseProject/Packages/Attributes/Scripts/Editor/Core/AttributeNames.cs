@@ -28,8 +28,7 @@ namespace Base.AttributePackage.Editor
         }
 
         /// <summary>Builds a usage hint, for example "Use [Tag] with a string.".</summary>
-        public static string Usage<T>(string requirement) where T : Attribute
-            => Usage(typeof(T), requirement);
+        public static string Usage<T>(string requirement) where T : Attribute => Usage(typeof(T), requirement);
 
         /// <summary>
         /// Builds a usage hint from an attribute type. The non-generic form exists for callers that only
@@ -41,4 +40,4 @@ namespace Base.AttributePackage.Editor
         public static string Usage(Type attributeType, string requirement)
             => $"Use [{Display(attributeType)}] with {requirement}.";
     }
-}
+}

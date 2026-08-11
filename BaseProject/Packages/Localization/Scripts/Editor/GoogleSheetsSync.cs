@@ -10,7 +10,7 @@ namespace Base.LocalizationPackage.Editor
     /// <summary>
     /// Syncs String Table Collections with Google Sheets based on the Google Sheets extension settings.
     /// </summary>
-    public static class GoogleSheetsSync
+    internal static class GoogleSheetsSync
     {
         /// <summary>
         /// Shown when no String Table Collection with a <see cref="GoogleSheetsExtension"/> exists.

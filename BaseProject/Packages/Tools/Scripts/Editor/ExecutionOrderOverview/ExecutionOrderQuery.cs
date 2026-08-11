@@ -9,7 +9,7 @@ namespace Base.ToolPackage.Editor.ExecutionOrderOverview
     /// Pure filtering and sorting for execution-order entries. The input collection is
     /// never modified; a new ordered list is always returned.
     /// </summary>
-    public static class ExecutionOrderQuery
+    internal static class ExecutionOrderQuery
     {
         /// <summary>
         /// Optionally hides everything outside the project, applies a name/namespace search

@@ -7,7 +7,7 @@ namespace Base.ToolPackage.Editor.OverviewGui.PrefabOverviewWindow
     /// <summary>
     /// One prefab asset found during a scan, together with its place in the variant hierarchy.
     /// </summary>
-    public sealed class PrefabEntry
+    internal sealed class PrefabEntry
     {
         /// <summary>GUID of the prefab asset.</summary>
         public string Guid { get; }

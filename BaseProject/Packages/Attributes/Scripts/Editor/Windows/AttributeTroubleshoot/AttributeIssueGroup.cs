@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot
 {
     /// <summary>All issues found on a single type, so the window can list them under one header.</summary>
-    public sealed class AttributeIssueGroup
+    internal sealed class AttributeIssueGroup
     {
         /// <summary>
         /// The type the issues were found on, or null for a fabricated sample group. Null groups cannot

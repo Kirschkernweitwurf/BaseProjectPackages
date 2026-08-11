@@ -6,7 +6,7 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
     /// One line in the session history.
     /// </summary>
     [Serializable]
-    public class PlayModeHistoryEntry
+    internal class PlayModeHistoryEntry
     {
         public string timestamp;
         public EPlayModeHistoryAction action;

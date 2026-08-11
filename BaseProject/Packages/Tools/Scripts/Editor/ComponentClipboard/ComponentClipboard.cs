@@ -11,7 +11,7 @@ namespace Base.ToolPackage.Editor.ComponentClipboard
     /// never committed to version control.
     /// </summary>
     [FilePath(FilePathConstant, FilePathAttribute.Location.ProjectFolder)]
-    public class ComponentClipboard : ScriptableSingleton<ComponentClipboard>
+    internal class ComponentClipboard : ScriptableSingleton<ComponentClipboard>
     {
         private const string FilePathConstant = "UserSettings/Base/ComponentClipboard.asset";
 

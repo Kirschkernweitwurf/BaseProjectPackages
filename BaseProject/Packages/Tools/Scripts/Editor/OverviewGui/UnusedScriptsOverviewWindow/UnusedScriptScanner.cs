@@ -16,7 +16,7 @@ namespace Base.ToolPackage.Editor.OverviewGui.UnusedScriptsOverviewWindow
     /// when it belongs to an editor assembly and editor scripts are ignored. This is a heuristic,
     /// so review before deleting: fully dynamic reflection and code generation cannot be detected.
     /// </summary>
-    public static class UnusedScriptScanner
+    internal static class UnusedScriptScanner
     {
         private const string AttributeSuffix = "Attribute";
 

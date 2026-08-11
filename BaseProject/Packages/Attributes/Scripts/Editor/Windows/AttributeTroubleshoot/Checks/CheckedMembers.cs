@@ -98,7 +98,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Checks
         /// <param name="type">The type to test.</param>
         /// <returns>True when the field would serialize as an array.</returns>
         public static bool IsCollection(Type type) => type.IsArray
-            || (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>));
+            || type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>);
 
         /// <summary>Returns the element type of an array or list, or the type itself.</summary>
         /// <param name="type">The type to unwrap.</param>

@@ -82,6 +82,17 @@ namespace Base.ToolPackage.Editor.Tests
             return member != null && member.Issues.HasFlag(issue);
         }
 
+        /// <summary>True when the analyzer reported a particular finding on a type.</summary>
+        /// <param name="typeName">Full name of the type.</param>
+        /// <param name="issue">Finding to look for.</param>
+        /// <returns>True when the finding is present.</returns>
+        public bool HasTypeIssue(string typeName, ETypeIssue issue)
+        {
+            TypeNodeInfo type = FindType(typeName);
+
+            return type != null && type.Issues.HasFlag(issue);
+        }
+
         /// <summary>Lists every member of a type that carries a finding, for a readable failure.</summary>
         /// <param name="typeName">Full name of the type.</param>
         /// <returns>The reported members as text.</returns>

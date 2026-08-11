@@ -11,7 +11,7 @@ namespace Base.ToolPackage.Editor.FolderConventionValidator
     /// Walks the folders below the configured root and reports every rule of a
     /// <see cref="FolderConventionConfig"/> that is broken.
     /// </summary>
-    public static class FolderConventionScanner
+    internal static class FolderConventionScanner
     {
         private const string AssetSearchFilter = "t:Object";
         private const string AssetsRoot = "Assets";

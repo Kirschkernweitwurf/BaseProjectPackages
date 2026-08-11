@@ -8,7 +8,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
     /// column in EditorPrefs, so a layout survives restarts, and both tables of the window use the
     /// same class so they look and behave identically.
     /// </summary>
-    public sealed class AssetNamingColumnLayout
+    internal sealed class AssetNamingColumnLayout
     {
         private const float DividerGrip = 6f;
         private const float FieldInset = 2f;

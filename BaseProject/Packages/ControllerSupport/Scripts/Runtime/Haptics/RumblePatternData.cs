@@ -79,7 +79,7 @@ namespace Base.ControllerSupport.Haptics
         /// <returns>A non-looping pattern holding both motors steady.</returns>
         public static RumblePatternData Constant(float low, float high, float duration, bool useUnscaledTime = true)
             => new(duration, AnimationCurve.Constant(CurveStart, CurveEnd, Mathf.Clamp01(low)),
-                AnimationCurve.Constant(CurveStart, CurveEnd, Mathf.Clamp01(high)), loop: false, useUnscaledTime);
+                AnimationCurve.Constant(CurveStart, CurveEnd, Mathf.Clamp01(high)), false, useUnscaledTime);
 
         /// <summary>Samples both motors at a normalized time between 0 and 1.</summary>
         /// <param name="normalizedTime">Progress through the pattern, 0 to 1.</param>

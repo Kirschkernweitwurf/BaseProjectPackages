@@ -11,7 +11,7 @@ namespace Base.ToolPackage.Editor.AssetZoo.UI
     /// Dockable window for quick zoo building. Tools &gt; Asset Zoo &gt; Open Zoo Builder.
     /// The last used config is remembered, so the next session is just open and generate.
     /// </summary>
-    public class ZooEditorWindow : EditorWindow
+    internal class ZooEditorWindow : EditorWindow
     {
         private const float AuxButtonHeight = 24f;
 

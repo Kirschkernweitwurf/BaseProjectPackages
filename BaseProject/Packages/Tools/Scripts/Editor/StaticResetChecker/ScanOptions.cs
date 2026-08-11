@@ -3,7 +3,7 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
     /// <summary>
     /// Options for scanning the project for static fields that are not reset on Enter Play Mode.
     /// </summary>
-    public class ScanOptions
+    internal class ScanOptions
     {
         public string RootFolder = "Assets";
         public string[] ResetAttributes =

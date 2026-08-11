@@ -6,7 +6,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
 {
     /// <summary>Group node holding an ordered list of child groups and entries.</summary>
     [Serializable]
-    public sealed class MenuGroupNode : MenuNode
+    internal sealed class MenuGroupNode : MenuNode
     {
         [SerializeField]
         private string name = "Ungrouped";

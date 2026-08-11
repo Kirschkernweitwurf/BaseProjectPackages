@@ -10,7 +10,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Checks
     /// GetComponent, so a field that is not a component type never fills, and the same attribute on a
     /// ScriptableObject has no GameObject to search at all.
     /// </summary>
-    public sealed class AutoAssignCheck : IAttributeCheck
+    internal sealed class AutoAssignCheck : IAttributeCheck
     {
         private const string GameObjectMessage =
             "GameObject is not a component type, so the lookup never returns anything. Use Transform instead.";

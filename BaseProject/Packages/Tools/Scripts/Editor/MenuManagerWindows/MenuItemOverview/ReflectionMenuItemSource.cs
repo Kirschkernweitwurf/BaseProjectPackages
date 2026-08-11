@@ -12,7 +12,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows.MenuItemOverview
     /// Default source that scans every loaded assembly for static methods decorated with
     /// <see cref="MenuItem"/>, covering project, package and built-in Unity menu items.
     /// </summary>
-    public sealed class ReflectionMenuItemSource : IMenuItemSource
+    internal sealed class ReflectionMenuItemSource : IMenuItemSource
     {
         private const BindingFlags MethodFlags = BindingFlags.Static
             | BindingFlags.Public

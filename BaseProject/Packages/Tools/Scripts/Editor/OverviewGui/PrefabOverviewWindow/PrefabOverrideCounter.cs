@@ -9,7 +9,7 @@ namespace Base.ToolPackage.Editor.OverviewGui.PrefabOverviewWindow
     /// <summary>
     /// Counts how far a prefab variant drifted away from its base prefab.
     /// </summary>
-    public static class PrefabOverrideCounter
+    internal static class PrefabOverrideCounter
     {
         // A variant always stores its own name as a modification, which says nothing about actual drift.
         private const string NameProperty = "m_Name";

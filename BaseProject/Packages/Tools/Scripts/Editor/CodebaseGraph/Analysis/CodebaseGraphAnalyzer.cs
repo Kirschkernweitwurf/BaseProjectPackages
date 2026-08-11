@@ -27,6 +27,8 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         /// </param>
         public static void Analyze(CodebaseGraphData graph, bool includeExcludedScopes = false)
         {
+            Dictionary<TypeKey, List<TypeNodeInfo>> nested = MapNestedTypes(graph);
+
             foreach (TypeNodeInfo type in graph.Types.Values)
             {
                 // Generated output, sample fixtures and tests are not code anyone is going to clean up.
@@ -36,7 +38,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
                 foreach (MemberNodeInfo member in type.Members)
                     AnalyzeMember(member, type, graph);
 
-                AnalyzeType(type);
+                AnalyzeType(graph, type, nested);
             }
 
             HashSet<string> namespacePairs = new();
@@ -80,9 +82,11 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
                 member.Issues |= EMemberIssue.PublicButInternalOnly;
         }
 
-        private static void AnalyzeType(TypeNodeInfo type)
+        private static void AnalyzeType(CodebaseGraphData graph,
+            TypeNodeInfo type,
+            Dictionary<TypeKey, List<TypeNodeInfo>> nested)
         {
-            if (IsDeadTypeCandidate(type))
+            if (IsDeadTypeCandidate(graph, type, nested))
                 type.Issues |= PackageApi.IsSurface(type)
                     ? ETypeIssue.UnusedPublicType
                     : ETypeIssue.DeadType;
@@ -152,9 +156,18 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
                 && member.Kind != EMemberKind.EnumMember;
         }
 
-        private static bool IsDeadTypeCandidate(TypeNodeInfo type)
+        /// <summary>
+        /// Decides whether nothing reaches a type any more. Two things are deliberately not evidence of
+        /// life. A reference between a type and one nested inside it says only that they are written in
+        /// the same file, so a pair of them cannot keep each other alive. And a type whose whole job is
+        /// holding nested types has no members of its own, because every use is written against the
+        /// nested type rather than against it, so it lives exactly as long as they do.
+        /// </summary>
+        private static bool IsDeadTypeCandidate(CodebaseGraphData graph,
+            TypeNodeInfo type,
+            Dictionary<TypeKey, List<TypeNodeInfo>> nested)
         {
-            if (type.FanIn > 0 || type.IsEntryPoint)
+            if (type.IsEntryPoint || CountRealFanIn(graph, type) > 0)
                 return false;
 
             // Unity objects are wired up in scenes, prefabs and assets, none of which a code scan sees.
@@ -174,7 +187,51 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
                     return false;
             }
 
+            if (!nested.TryGetValue(type.Key, out List<TypeNodeInfo> children))
+                return true;
+
+            foreach (TypeNodeInfo child in children)
+            {
+                if (!IsDeadTypeCandidate(graph, child, nested))
+                    return false;
+            }
+
             return true;
+        }
+
+        private static int CountRealFanIn(CodebaseGraphData graph, TypeNodeInfo type)
+        {
+            int count = 0;
+
+            foreach (TypeKey source in type.Incoming.Keys)
+            {
+                if (!IsNestingPair(graph, type, source))
+                    count++;
+            }
+
+            return count;
+        }
+
+        /// <summary>Maps each type to the types declared inside it, which the dead type rule reads.</summary>
+        private static Dictionary<TypeKey, List<TypeNodeInfo>> MapNestedTypes(CodebaseGraphData graph)
+        {
+            Dictionary<TypeKey, List<TypeNodeInfo>> nested = new();
+
+            foreach (TypeNodeInfo type in graph.Types.Values)
+            {
+                if (!type.DeclaringTypeKey.IsValid)
+                    continue;
+
+                if (!nested.TryGetValue(type.DeclaringTypeKey, out List<TypeNodeInfo> children))
+                {
+                    children = new List<TypeNodeInfo>();
+                    nested[type.DeclaringTypeKey] = children;
+                }
+
+                children.Add(type);
+            }
+
+            return nested;
         }
 
         private static bool IsWriteOnly(MemberNodeInfo member)

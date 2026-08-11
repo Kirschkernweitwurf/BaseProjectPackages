@@ -3,7 +3,7 @@ using System;
 namespace Base.ToolPackage.Editor.MenuManagerWindows
 {
     /// <summary>Live scan result for one entry. Holds the delegates and defaults needed to register a menu.</summary>
-    public sealed class ResolvedMenu
+    internal sealed class ResolvedMenu
     {
         /// <summary>Kind of the entry.</summary>
         public EMenuEntryKind Kind { get; }

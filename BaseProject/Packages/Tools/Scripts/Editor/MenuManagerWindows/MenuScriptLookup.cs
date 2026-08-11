@@ -8,7 +8,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
     /// Caches the <see cref="MonoScript"/> that declares a type. Every overview source shares
     /// the same lookup rules so a static and a dynamic entry of the same type resolve alike.
     /// </summary>
-    public sealed class MenuScriptLookup
+    internal sealed class MenuScriptLookup
     {
         private readonly Dictionary<Type, MonoScript> _cache = new();
 

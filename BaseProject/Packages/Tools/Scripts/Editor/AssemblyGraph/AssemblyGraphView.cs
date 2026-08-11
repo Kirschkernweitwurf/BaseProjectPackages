@@ -7,7 +7,7 @@ using UnityEngine.UIElements;
 namespace Base.ToolPackage.Editor.AssemblyGraph
 {
     /// <summary>Renders assemblies as draggable nodes with reference edges.</summary>
-    public sealed class AssemblyGraphView : GraphView
+    internal sealed class AssemblyGraphView : GraphView
     {
         private static readonly Color UnusedEdgeColor = new(0.90f, 0.32f, 0.32f);
 

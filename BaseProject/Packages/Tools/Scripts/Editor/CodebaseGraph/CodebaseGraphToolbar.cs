@@ -23,8 +23,6 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         private const string AllAssembliesLabel = "All assemblies";
         private const string BackLabel = "Back";
         private const string BackTooltip = "Goes up one level.";
-        private const string DismissedFormat = "Dismissed ({0})";
-        private const string DismissedTooltip = "Opens the list of everything you dismissed.";
         private const string EdgeAllLabel = "Lines: All";
         private const string EdgeMutedLabel = "Lines: Muted";
         private const string EdgeNoneLabel = "Lines: None";
@@ -32,6 +30,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         private const string ExportLabel = "Export findings";
         private const string ExportScopeLabel = "Export scope";
         private const string ImportLabel = "Update dismissals";
+
         private const string LayoutDependenciesLabel = "Layout: Dependencies";
         private const string LayoutGroupedLabel = "Layout: Grouped by name";
         private const string NeighborFormat = "Neighbors: {0}";
@@ -73,7 +72,6 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         private PopupField<string> _searchScopeField;
         private PopupField<string> _neighborField;
         private ToolbarSearchField _searchField;
-        private ToolbarButton _dismissedButton;
 
         /// <summary>Builds the toolbar and wires every control to the filter behind it.</summary>
         /// <param name="filter">Filter the controls write to.</param>
@@ -126,10 +124,6 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             _searchField.SetValueWithoutNotify(_filter.Search);
             _assemblyField.SetValueWithoutNotify(_filter.AssemblyName ?? AllAssembliesLabel);
         }
-
-        /// <summary>Shows how many entries are currently dismissed.</summary>
-        /// <param name="count">Number of dismissals.</param>
-        public void SetDismissedCount(int count) => _dismissedButton.text = string.Format(DismissedFormat, count);
 
         /// <summary>Clears the search box without raising a change.</summary>
         public void ClearSearch()
@@ -221,25 +215,18 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
             _searchField = new ToolbarSearchField
             {
-                tooltip = SearchPlaceholder
+                tooltip = SearchPlaceholder,
+                style =
+                {
+                    flexGrow = 1f
+                }
             };
 
-            _searchField.style.flexGrow = 1f;
             _searchField.RegisterValueChangedCallback(OnSearchChanged);
             Add(_searchField);
         }
 
-        private void AddActions()
-        {
-            _dismissedButton = new ToolbarButton(() => _actions.OpenDismissals?.Invoke())
-            {
-                text = string.Format(DismissedFormat, 0),
-                tooltip = DismissedTooltip
-            };
-
-            Add(_dismissedButton);
-            Add(BuildReportMenu());
-        }
+        private void AddActions() => Add(BuildReportMenu());
 
         /// <summary>
         /// Gathers everything about how the graph is drawn. Layout and lines are one choice each, the

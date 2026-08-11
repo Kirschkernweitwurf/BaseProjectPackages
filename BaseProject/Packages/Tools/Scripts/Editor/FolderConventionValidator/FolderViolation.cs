@@ -4,7 +4,7 @@ namespace Base.ToolPackage.Editor.FolderConventionValidator
     /// One broken folder rule. Immutable, built by the <see cref="FolderConventionScanner"/>
     /// and only read by the window.
     /// </summary>
-    public sealed class FolderViolation
+    internal sealed class FolderViolation
     {
         /// <summary>Rule that was broken.</summary>
         public EFolderViolationType Type { get; }

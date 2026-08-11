@@ -6,7 +6,7 @@ namespace Base.ToolPackage.Editor.OrderManagement
 {
     /// <summary>Central store of all constants. Edited through the Order Manager window.</summary>
     [FilePath(FilePathValue, FilePathAttribute.Location.ProjectFolder)]
-    public sealed class OrderRegistry : ScriptableSingleton<OrderRegistry>
+    internal sealed class OrderRegistry : ScriptableSingleton<OrderRegistry>
     {
         private const string FilePathValue = "ProjectSettings/UnityConstantsOrderRegistry.asset";
 

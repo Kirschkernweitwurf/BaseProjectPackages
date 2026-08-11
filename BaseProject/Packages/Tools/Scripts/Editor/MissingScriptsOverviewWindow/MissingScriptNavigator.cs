@@ -9,7 +9,7 @@ namespace Base.ToolPackage.Editor.MissingScriptsOverviewWindow
     /// <summary>
     /// Opens, selects, and frames the object behind a missing script entry.
     /// </summary>
-    public static class MissingScriptNavigator
+    internal static class MissingScriptNavigator
     {
         /// <summary>Selects and pings the object the entry points at, opening its scene if needed.</summary>
         public static void Navigate(MissingScriptEntry entry)

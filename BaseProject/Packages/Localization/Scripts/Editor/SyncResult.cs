@@ -3,7 +3,7 @@ namespace Base.LocalizationPackage.Editor
     /// <summary>
     /// Result of a sync operation, indicating success or failure and an optional message.
     /// </summary>
-    public readonly struct SyncResult
+    internal readonly struct SyncResult
     {
         /// <summary>
         /// <c>true</c> if the sync operation succeeded, <c>false</c> if it failed.

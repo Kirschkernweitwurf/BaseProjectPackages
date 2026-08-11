@@ -14,7 +14,6 @@ namespace Base.SettingsPackage.Components
     public sealed class LanguageSetting : IntSettingComponent
     {
         [Title("Language")]
-
         [Tooltip("Locales exposed to the player, in the order they appear in the menu.")]
         [SerializeField] [NotNullOrEmpty] private Locale[] availableLocales;
 

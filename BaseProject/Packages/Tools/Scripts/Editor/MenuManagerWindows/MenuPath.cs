@@ -4,7 +4,7 @@ using System.Text;
 namespace Base.ToolPackage.Editor.MenuManagerWindows
 {
     /// <summary>Builds full menu paths from group names and the per kind root prefix.</summary>
-    public static class MenuPath
+    internal static class MenuPath
     {
         /// <summary>Fixed root that asset creation entries are always placed under.</summary>
         public const string AssetRoot = "Assets/Create";

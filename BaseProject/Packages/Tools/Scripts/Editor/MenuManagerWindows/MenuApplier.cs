@@ -8,7 +8,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
 {
     /// <summary>Registers managed entries into the editor menus. Runs on editor load and on demand.</summary>
     [InitializeOnLoad]
-    public static class MenuApplier
+    internal static class MenuApplier
     {
         private const int MaxWaitTicks = 200;
 

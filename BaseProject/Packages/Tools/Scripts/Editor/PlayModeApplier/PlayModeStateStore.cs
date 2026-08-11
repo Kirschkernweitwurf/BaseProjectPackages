@@ -9,7 +9,7 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
     /// Marks are not stored here, they live in <see cref="PlayModeMarks"/> and are meant to die with the session.
     /// </summary>
     [FilePath(StoreFilePath, FilePathAttribute.Location.ProjectFolder)]
-    public class PlayModeStateStore : ScriptableSingleton<PlayModeStateStore>
+    internal class PlayModeStateStore : ScriptableSingleton<PlayModeStateStore>
     {
         private const int MaximumHistoryEntries = 200;
         private const string StoreFilePath = "UserSettings/PlayModeSaver.asset";

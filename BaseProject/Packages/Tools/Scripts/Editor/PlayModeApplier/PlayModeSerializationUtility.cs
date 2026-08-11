@@ -13,7 +13,7 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
     /// Two things make this non trivial: Unity's own internal fields must never be overwritten,
     /// and object references are stored as session local instance ids that die with the play mode scene.
     /// </summary>
-    public static class PlayModeSerializationUtility
+    internal static class PlayModeSerializationUtility
     {
         private const int FieldDepth = 2;
 

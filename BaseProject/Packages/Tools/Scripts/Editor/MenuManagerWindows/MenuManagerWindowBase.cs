@@ -15,7 +15,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
     /// <see cref="MenuUndoStack"/> owns the history and <see cref="MenuManagerTheme"/> owns every
     /// color and style.
     /// </summary>
-    public abstract class MenuManagerWindowBase : EditorWindow
+    internal abstract class MenuManagerWindowBase : EditorWindow
     {
         protected const int MenuPriority = 0;
         private const float DividerHeight = 8f;

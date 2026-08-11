@@ -7,7 +7,7 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
     /// Lives in the store rather than in memory, because the interesting entries are written while play mode
     /// is exiting and would otherwise be lost to the domain reload before anyone could read them.
     /// </summary>
-    public static class PlayModeHistory
+    internal static class PlayModeHistory
     {
         private const string TimeFormat = "HH:mm:ss";
 

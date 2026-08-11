@@ -10,7 +10,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
     /// package layout.
     /// </summary>
     [FilePath("ProjectSettings/MenuManagerOverlay.asset", FilePathAttribute.Location.ProjectFolder)]
-    public sealed class MenuOverlay : ScriptableSingleton<MenuOverlay>
+    internal sealed class MenuOverlay : ScriptableSingleton<MenuOverlay>
     {
         private const int CurrentSchema = 3;
 

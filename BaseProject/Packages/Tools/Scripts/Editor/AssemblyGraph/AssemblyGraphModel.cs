@@ -7,7 +7,7 @@ using Assembly = UnityEditor.Compilation.Assembly;
 namespace Base.ToolPackage.Editor.AssemblyGraph
 {
     /// <summary>Scans the project and builds the assembly graph data, including unused reference detection.</summary>
-    public static class AssemblyGraphModel
+    internal static class AssemblyGraphModel
     {
         private const string PackagePathPrefix = "Packages/";
 

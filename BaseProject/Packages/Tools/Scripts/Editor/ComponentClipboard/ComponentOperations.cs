@@ -11,7 +11,7 @@ namespace Base.ToolPackage.Editor.ComponentClipboard
     /// Undo aware operations used by the <see cref="ComponentClipboardWindow"/>.
     /// All methods are safe to call with empty or null input.
     /// </summary>
-    public static class ComponentOperations
+    internal static class ComponentOperations
     {
         private const int MinimumDuplicateCount = 2;
         private const string MoveUndoName = "Reorder Components";

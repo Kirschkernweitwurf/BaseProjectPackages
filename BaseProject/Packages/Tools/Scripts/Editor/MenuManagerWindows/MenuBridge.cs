@@ -6,7 +6,7 @@ using UnityEditor;
 namespace Base.ToolPackage.Editor.MenuManagerWindows
 {
     /// <summary>Reflection bridge to Unity's internal dynamic menu API.</summary>
-    public static class MenuBridge
+    internal static class MenuBridge
     {
         private const BindingFlags Flags = BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
 

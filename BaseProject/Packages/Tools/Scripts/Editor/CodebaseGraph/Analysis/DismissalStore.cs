@@ -135,6 +135,32 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         }
 
         /// <summary>
+        /// Brings several entries back at once. Restoring them one at a time saves the file and raises
+        /// the change event on every single one, and anything listening rebuilds the very list the
+        /// caller is walking, so the loop breaks on its second step.
+        /// </summary>
+        /// <param name="ids">Stable ids of the entries.</param>
+        /// <returns>How many came back.</returns>
+        public static int RestoreMany(IEnumerable<string> ids)
+        {
+            Refresh();
+            Load();
+
+            int removed = 0;
+
+            foreach (string id in ids)
+            {
+                if (Own.Remove(id) | Tree.Remove(id))
+                    removed++;
+            }
+
+            if (removed > 0)
+                Save();
+
+            return removed;
+        }
+
+        /// <summary>
         /// Brings an entry back together with everything inside it. A namespace holds its types, a type
         /// holds its members, so this is the exact reverse of dismissing with contents.
         /// </summary>

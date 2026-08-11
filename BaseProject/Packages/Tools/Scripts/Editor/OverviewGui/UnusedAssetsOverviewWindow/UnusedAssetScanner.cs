@@ -20,7 +20,7 @@ namespace Base.ToolPackage.Editor.OverviewGui.UnusedAssetsOverviewWindow
     /// editor files, is reported. This is a heuristic, so review before deleting: assets loaded only
     /// by code or by string path cannot be detected.
     /// </summary>
-    public static class UnusedAssetScanner
+    internal static class UnusedAssetScanner
     {
         private static readonly string[] CodeExtensions =
         {

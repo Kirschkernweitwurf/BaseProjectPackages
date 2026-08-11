@@ -5,7 +5,7 @@ using UnityEditor;
 namespace Base.ToolPackage.Editor.MenuManagerWindows
 {
     /// <summary>Pure tree algorithms shared by the package registry and the project overlay.</summary>
-    public static class MenuTree
+    internal static class MenuTree
     {
         /// <summary>
         /// Priority distance that makes Unity draw a separator line.

@@ -9,7 +9,7 @@ namespace Base.ToolPackage.Editor.ExecutionOrderOverview
     /// either through the <see cref="UnityEngine.DefaultExecutionOrder"/> attribute or
     /// through the project's Script Execution Order settings.
     /// </summary>
-    public sealed class ExecutionOrderEntry
+    internal sealed class ExecutionOrderEntry
     {
         /// <summary>The script asset this entry was built from.</summary>
         public MonoScript Script { get; }
@@ -29,12 +29,6 @@ namespace Base.ToolPackage.Editor.ExecutionOrderOverview
         /// <summary>Where the script's source lives.</summary>
         public EAssetOrigin Origin { get; }
 
-        /// <summary>Order requested by the attribute, or zero when absent.</summary>
-        public int AttributeOrder { get; }
-
-        /// <summary>Order stored in the Project Settings (the script's meta file).</summary>
-        public int ProjectOrder { get; }
-
         /// <summary>
         /// Order that actually wins at runtime. The project value takes priority when it
         /// is non-zero; otherwise the attribute value is used.
@@ -42,6 +36,12 @@ namespace Base.ToolPackage.Editor.ExecutionOrderOverview
         public int EffectiveOrder => ProjectOrder != 0
             ? ProjectOrder
             : AttributeOrder;
+
+        /// <summary>Order requested by the attribute, or zero when absent.</summary>
+        private int AttributeOrder { get; }
+
+        /// <summary>Order stored in the Project Settings (the script's meta file).</summary>
+        private int ProjectOrder { get; }
 
         /// <summary>Creates an entry. <paramref name="type"/> supplies the name and namespace.</summary>
         public ExecutionOrderEntry(MonoScript script, Type type, string assetPath, EAssetOrigin origin,

@@ -4,27 +4,14 @@ using UnityEngine;
 namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot
 {
     /// <summary>Cached styles, colors and icons for the troubleshoot window. Pure presentation.</summary>
-    public sealed class AttributeTroubleshootStyles
+    internal sealed class AttributeTroubleshootStyles
     {
         private const string ErrorIcon = "console.erroricon.sml";
         private const string ScriptIcon = "cs Script Icon";
-        private const int SummaryFontSize = 12;
         private const string SuccessIcon = "TestPassed";
+        private const int SummaryFontSize = 12;
         private const int TitleFontSize = 15;
         private const string WarningIcon = "console.warnicon.sml";
-
-        private static readonly Color Success = new(0.36f, 0.76f, 0.46f);
-
-        private static readonly Color DarkHeader = new(1f, 1f, 1f, 0.05f);
-
-        private static readonly Color LightHeader = new(0f, 0f, 0f, 0.05f);
-
-        private static readonly Color SubtitleColor = new(0.5f, 0.5f, 0.5f);
-
-        private static Texture _errorTexture;
-        private static Texture _scriptTexture;
-        private static Texture _successTexture;
-        private static Texture _warningTexture;
 
         /// <summary>Subtle background behind a group header.</summary>
         public static Color Header => EditorGUIUtility.isProSkin
@@ -60,6 +47,19 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot
 
         /// <summary>Muted subtitle shown under the success title.</summary>
         public GUIStyle SuccessSubtitle { get; private set; }
+
+        private static readonly Color Success = new(0.36f, 0.76f, 0.46f);
+
+        private static readonly Color DarkHeader = new(1f, 1f, 1f, 0.05f);
+
+        private static readonly Color LightHeader = new(0f, 0f, 0f, 0.05f);
+
+        private static readonly Color SubtitleColor = new(0.5f, 0.5f, 0.5f);
+
+        private static Texture _errorTexture;
+        private static Texture _scriptTexture;
+        private static Texture _successTexture;
+        private static Texture _warningTexture;
 
         /// <summary>Builds the GUI styles once. Must run inside a GUI callback.</summary>
         public void EnsureBuilt()

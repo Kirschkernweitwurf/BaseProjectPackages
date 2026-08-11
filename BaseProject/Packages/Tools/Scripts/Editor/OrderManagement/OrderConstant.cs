@@ -5,7 +5,7 @@ namespace Base.ToolPackage.Editor.OrderManagement
 {
     /// <summary>Single named constant emitted into the generated class.</summary>
     [Serializable]
-    public sealed class OrderConstant
+    internal sealed class OrderConstant
     {
         [SerializeField]
         private string name;

@@ -28,12 +28,10 @@ namespace Base.AttributePackage.Editor
                 return "The project has no sorting layers.";
 
             if (property.propertyType == SerializedPropertyType.String)
-            {
                 return string.IsNullOrEmpty(property.stringValue)
                     || Array.IndexOf(_names, property.stringValue) >= 0
                         ? null
                         : $"Sorting layer '{property.stringValue}' does not exist.";
-            }
 
             return CurrentIndex(property, _names) >= 0
                 ? null

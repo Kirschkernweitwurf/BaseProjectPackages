@@ -105,7 +105,8 @@ namespace Base.AttributePackage.Editor
             foreach (ChildAnimatorStateMachine child in machine.stateMachines)
             {
                 if (child.stateMachine != null)
-                    Collect(child.stateMachine, prefix + AnimatorStateAttribute.LayerSeparator
+                    Collect(child.stateMachine, prefix
+                        + AnimatorStateAttribute.LayerSeparator
                         + child.stateMachine.name, paths);
             }
         }

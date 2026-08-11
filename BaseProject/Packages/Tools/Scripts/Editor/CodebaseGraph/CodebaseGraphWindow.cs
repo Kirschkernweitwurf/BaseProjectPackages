@@ -34,6 +34,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         private const string ExportScopeLabel = "Export scope";
         private const string FocusNoticeFormat = "showing {0} and its neighbors, {1} step{2} out";
         private const string MembersHeadingFormat = "Members of {0}";
+        private const string MenuPath = "Tools/Base Packages/Code/Health/Codebase Graph";
         private const string MiniMapHiddenLabel = "Minimap";
         private const string MiniMapShownLabel = "Minimap, click to hide";
         private const string MiniMapToggleClass = "minimap-toggle";
@@ -79,6 +80,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         private CodebaseGraphToolbar _toolbar;
         private CodebaseGraphView _graphView;
         private CodebaseGraphListPane _listPane;
+        private CodebaseGraphTabbedPane _tabbedPane;
         private CodebaseGraphDetailPane _detailPane;
         private CodebaseGraphBreadcrumb _breadcrumb;
         private Label _statusLabel;
@@ -99,8 +101,6 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
 #region Unity Callbacks
         private void OnDisable() => DismissalStore.Changed -= ApplyFilter;
-
-        private void OnDestroy() => CodebaseGraphDismissalsWindow.CloseIfOpen();
 
         private void CreateGUI()
         {
@@ -138,7 +138,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 #endregion
 
         /// <summary>Opens the window.</summary>
-        [DynamicMenuItem("Tools/Base Packages/Unity Editor/Project Health/Codebase Graph")]
+        [DynamicMenuItem(MenuPath)]
         public static void Open()
         {
             CodebaseGraphWindow window = GetWindow<CodebaseGraphWindow>();
@@ -151,7 +151,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
         private static void OnQuickFixRequested(GraphEntry entry, EFinding finding)
         {
-            if (CodebaseGraphQuickFix.Apply(entry, finding))
+            if (CodebaseGraphQuickFix.Apply(entry.Type, entry.Member, finding))
                 AssetDatabase.Refresh();
         }
 
@@ -189,7 +189,8 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             TwoPaneSplitView leftColumn = new(1, DefaultDetailHeight, TwoPaneSplitViewOrientation.Vertical);
 
             _listPane = new CodebaseGraphListPane(OnEntrySelected, OnEntryActivated, OnOnlyNewChanged);
-            leftColumn.Add(_listPane);
+            _tabbedPane = new CodebaseGraphTabbedPane(_listPane);
+            leftColumn.Add(_tabbedPane);
 
             _detailPane = new CodebaseGraphDetailPane(OnFocusRequested,
                 OnDrillDownRequested,
@@ -295,6 +296,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
             _graph = scanned;
             CodebaseGraphCache.Set(_graph);
+            _tabbedPane.SetGraph(_graph);
 
             _toolbar.SetAssemblies(_graph.ScannedAssemblies);
             RestoreNavigation();
@@ -429,7 +431,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             _breadcrumb.SetPath(BuildPath());
             _breadcrumb.SetFocus(BuildFocusNotice());
 
-            _toolbar.SetDismissedCount(DismissalStore.Count);
+            _tabbedPane.SetCounts();
             UpdateStatus(entries.Count);
             SaveNavigation();
         }
@@ -795,8 +797,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             Rescan = Rescan,
             Export = ExportFindings,
             Import = ImportDismissals,
-            ExportScope = ExportScope,
-            OpenDismissals = CodebaseGraphDismissalsWindow.Open
+            ExportScope = ExportScope
         };
     }
 }

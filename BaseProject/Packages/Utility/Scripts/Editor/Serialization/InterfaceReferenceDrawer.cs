@@ -9,7 +9,7 @@ using Object = UnityEngine.Object;
 namespace Base.UtilityPackage.Editor.Serialization
 {
     /// <summary>
-    /// Draws an <see cref="InterfaceReference{TInterface, TObject}"/> as a normal object field that only
+    /// Draws an <see cref="InterfaceReference{TInterface,TObject}"/> as a normal object field that only
     /// accepts objects implementing the interface. Dropping a GameObject or a component that does not
     /// implement it directly resolves the first component on that object which does, so the common case
     /// of dragging a whole GameObject works without hunting for the right component.

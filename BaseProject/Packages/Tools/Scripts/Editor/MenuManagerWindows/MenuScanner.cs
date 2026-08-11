@@ -9,7 +9,7 @@ using UnityEngine;
 namespace Base.ToolPackage.Editor.MenuManagerWindows
 {
     /// <summary>Scans the project for dynamic menu attributes and builds resolved entries.</summary>
-    public static class MenuScanner
+    internal static class MenuScanner
     {
         private const BindingFlags MethodFlags =
             BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;

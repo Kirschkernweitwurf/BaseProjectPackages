@@ -8,7 +8,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows.CreateAssetMenuOverview
     /// Order and the kind chip are pinned left, the state marker, the source badge and the
     /// manage link are pinned right, and the menu name, type and file name share the rest.
     /// </summary>
-    public readonly struct CreateAssetColumnLayout
+    internal readonly struct CreateAssetColumnLayout
     {
         /// <summary>Menu order.</summary>
         public Rect Order { get; }

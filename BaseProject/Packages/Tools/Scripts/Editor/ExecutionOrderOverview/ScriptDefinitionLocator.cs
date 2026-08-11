@@ -8,7 +8,7 @@ namespace Base.ToolPackage.Editor.ExecutionOrderOverview
     /// Finds the most relevant source line for a script: the execution-order attribute
     /// when present, otherwise the class declaration.
     /// </summary>
-    public static class ScriptDefinitionLocator
+    internal static class ScriptDefinitionLocator
     {
         private const string AttributeToken = "DefaultExecutionOrder";
         private const int ParenthesisOffset = 2;

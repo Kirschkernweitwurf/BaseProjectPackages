@@ -11,7 +11,7 @@ namespace Base.ToolPackage.Editor.MissingScriptsOverviewWindow
     /// <summary>
     /// Finds GameObjects and assets that hold missing scripts anywhere in the project.
     /// </summary>
-    public static class MissingScriptScanner
+    internal static class MissingScriptScanner
     {
         public static List<MissingScriptEntry> Scan(bool scanScenes,
             bool scanAllScenes,

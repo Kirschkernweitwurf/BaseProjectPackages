@@ -10,7 +10,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows.CreateAssetMenuOverview
     /// <see cref="CreateAssetMenuAttribute"/> found in the project, a package or one of Unity's
     /// built-in assemblies, or an entry registered through the menu manager.
     /// </summary>
-    public sealed class CreateAssetEntry
+    internal sealed class CreateAssetEntry
     {
         private const string EmptyLabel = "-";
 

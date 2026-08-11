@@ -10,7 +10,7 @@ namespace Base.ToolPackage.Editor.ComponentClipboard
     /// Instance ids are not stable across domain reloads, global object ids are.
     /// </summary>
     [Serializable]
-    public class ComponentReferenceEntry
+    internal class ComponentReferenceEntry
     {
         [SerializeField] private string propertyPath;
         [SerializeField] private string globalId;

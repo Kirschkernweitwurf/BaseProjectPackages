@@ -13,24 +13,13 @@ namespace Base.AttributePackage.Editor
     {
         private const string KeySeparator = ":";
 
-        // Handlers are shared across inspectors, so the recorded size is keyed by target and path
-        // instead of held in an instance field. Entries are removed as soon as they are consumed.
-        private static readonly Dictionary<string, int> Recorded = new();
-
         int IBeforeFieldHandler.Order => 1000;
 
         int IAfterFieldHandler.Order => -110;
 
-        public void BeforeField(in MemberContext context)
-        {
-            if (context.GetAttribute<OnArraySizeChangedAttribute>() == null)
-                return;
-
-            if (!context.Property.isArray || context.Property.propertyType == SerializedPropertyType.String)
-                return;
-
-            Recorded[KeyFor(context)] = context.Property.arraySize;
-        }
+        // Handlers are shared across inspectors, so the recorded size is keyed by target and path
+        // instead of held in an instance field. Entries are removed as soon as they are consumed.
+        private static readonly Dictionary<string, int> Recorded = new();
 
         public void AfterField(in MemberContext context)
         {
@@ -51,6 +40,17 @@ namespace Base.AttributePackage.Editor
             context.Editor.serializedObject.ApplyModifiedProperties();
             Invoke(context, attribute.Method, after);
             context.Editor.Repaint();
+        }
+
+        public void BeforeField(in MemberContext context)
+        {
+            if (context.GetAttribute<OnArraySizeChangedAttribute>() == null)
+                return;
+
+            if (!context.Property.isArray || context.Property.propertyType == SerializedPropertyType.String)
+                return;
+
+            Recorded[KeyFor(context)] = context.Property.arraySize;
         }
 
         private static string KeyFor(in MemberContext context)

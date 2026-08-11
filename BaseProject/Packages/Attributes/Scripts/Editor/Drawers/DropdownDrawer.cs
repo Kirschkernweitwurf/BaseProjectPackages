@@ -155,7 +155,7 @@ namespace Base.AttributePackage.Editor
             // The property is captured for the callback, which runs after this OnGUI call has returned.
             SerializedProperty captured = property.Copy();
 
-            SearchableDropdown menu = new(_state, label.text, labels, index =>
+            SearchableDropdown menu = new(_state, label.text, labels, onSelected: index =>
             {
                 if (index < 0 || index >= values.Count)
                     return;

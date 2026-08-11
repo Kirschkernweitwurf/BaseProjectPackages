@@ -3,7 +3,7 @@ namespace Base.ToolPackage.Editor.OverviewGui.UnusedScriptsOverviewWindow
     /// <summary>
     /// One script that looks dead, with its folder for grouping and GUID for stable reference.
     /// </summary>
-    public sealed class UnusedScriptEntry
+    internal sealed class UnusedScriptEntry
     {
         /// <summary>Asset path, for example "Assets/Runtime/OldThing.cs".</summary>
         public string Path { get; }

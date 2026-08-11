@@ -10,7 +10,7 @@ namespace Base.ToolPackage.Editor.OverviewGui.PrefabOverviewWindow
     /// Collects every prefab asset in the project, classifies it, and optionally counts the overrides
     /// of each variant.
     /// </summary>
-    public static class PrefabScanner
+    internal static class PrefabScanner
     {
         private const string OverrideProgressTitle = "Analyzing Prefab Variants";
         private const string PrefabFilter = "t:Prefab";

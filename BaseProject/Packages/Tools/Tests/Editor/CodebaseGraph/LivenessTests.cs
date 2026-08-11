@@ -24,6 +24,8 @@ namespace Base.ToolPackage.Editor.Tests
         private const string Contract = "Base.ToolPackage.Editor.Tests.Fixtures.IFixtureContract";
         private const string DeadCode = "Base.ToolPackage.Editor.Tests.Fixtures.FixtureDeadCode";
         private const string DescribeMember = "Describe";
+        private const string NestingHost = "Base.ToolPackage.Editor.Tests.Fixtures.FixtureNestingHost";
+        private const string NestingUnused = NestingHost + ".Unused";
         private const string Orphan = "Base.ToolPackage.Editor.Tests.Fixtures.IFixtureOrphan";
         private const string OrphanedMember = "Orphaned";
 
@@ -128,6 +130,28 @@ namespace Base.ToolPackage.Editor.Tests
                 Is.True,
                 $"Orphaned is implemented by nobody: {reported}");
         }
+
+        /// <summary>
+        /// A type holding only nested types is referenced by nothing, because every use names the nested
+        /// type instead, and a const inside leaves no trace at all. It is alive while they are.
+        /// </summary>
+        [Test]
+        public void TypeHoldingLiveNestedTypesIsNotReportedDead()
+        {
+            Assert.That(_probe.FindType(NestingHost),
+                Is.Not.Null,
+                "the nesting fixture was never collected");
+
+            Assert.That(_probe.HasTypeIssue(NestingHost, ETypeIssue.DeadType),
+                Is.False,
+                "the host holds a nested type that is read, so it is reachable");
+        }
+
+        /// <summary>A nested type nothing reads is dead, whatever its outer type is doing.</summary>
+        [Test]
+        public void UnusedNestedTypeIsReported() => Assert.That(_probe.HasTypeIssue(NestingUnused, ETypeIssue.DeadType),
+            Is.True,
+            $"nothing reads it: {_probe.DescribeType(NestingUnused)}");
 
         /// <summary>A tool that reports nothing passes every test above, so this one has to fail it.</summary>
         [Test]

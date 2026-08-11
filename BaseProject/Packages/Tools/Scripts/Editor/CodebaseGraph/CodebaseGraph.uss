@@ -172,6 +172,36 @@
     padding: var(--space-sm) var(--space-lg);
 }
 
+.pane-tab-row {
+    flex-direction: row;
+    background-color: var(--surface-raised);
+    border-bottom-width: 1px;
+    border-bottom-color: var(--surface-line);
+}
+
+.pane-tab {
+    flex-grow: 1;
+    background-color: rgba(0, 0, 0, 0);
+    border-width: 0;
+    border-bottom-width: 2px;
+    border-bottom-color: rgba(0, 0, 0, 0);
+    border-radius: 0;
+    color: var(--text-muted);
+    font-size: 11px;
+    margin: 0;
+    padding: var(--space-md) var(--space-sm);
+}
+
+.pane-tab:hover {
+    color: var(--text-primary);
+}
+
+.pane-tab.is-active {
+    -unity-font-style: bold;
+    border-bottom-color: var(--text-link);
+    color: var(--text-primary);
+}
+
 .pane {
     flex-grow: 1;
     background-color: var(--surface-base);
@@ -235,6 +265,46 @@
     border-radius: 3px;
 }
 
+.sort-separator {
+    width: 1px;
+    background-color: var(--surface-line);
+    margin-left: var(--space-md);
+    margin-right: var(--space-md);
+    margin-top: var(--space-xs);
+    margin-bottom: var(--space-xs);
+}
+
+.sort-row Button.only-new.is-active {
+    background-color: rgba(150, 208, 202, 0.20);
+    border-radius: 3px;
+    color: rgb(178, 218, 213);
+}
+
+.empty-state .empty-mark {
+    -unity-text-align: middle-center;
+    color: var(--text-muted);
+    font-size: 40px;
+    margin-bottom: var(--space-md);
+}
+
+.empty-state .empty-mark.is-success {
+    color: rgb(150, 200, 146);
+}
+
+.empty-state .empty-title {
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    color: var(--text-primary);
+    font-size: 14px;
+    margin-bottom: var(--space-sm);
+}
+
+.issue-heading {
+    color: var(--text-muted);
+    font-size: 11px;
+    padding: var(--space-md) var(--space-lg);
+}
+
 .list-row {
     flex-direction: column;
     justify-content: center;
@@ -275,12 +345,111 @@
     color: rgb(150, 200, 146);
 }
 
+.issue-list {
+    flex-grow: 1;
+    background-color: var(--surface-base);
+}
+
+.is-odd {
+    background-color: rgba(255, 255, 255, 0.022);
+}
+
+.issue-row.is-high {
+    border-left-color: rgba(233, 168, 162, 0.55);
+}
+
+.issue-row.is-medium {
+    border-left-color: rgba(230, 208, 166, 0.45);
+}
+
+.issue-row {
+    flex-direction: row;
+    align-items: center;
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(255, 255, 255, 0.04);
+    border-left-width: 3px;
+    border-left-color: rgba(0, 0, 0, 0);
+    padding: var(--space-md) var(--space-lg);
+}
+
+.issue-row:hover {
+    background-color: rgb(56, 56, 60);
+}
+
+.issue-row Button {
+    background-color: rgba(255, 255, 255, 0.06);
+    border-width: 1px;
+    border-color: var(--surface-line);
+    border-radius: 3px;
+    color: var(--text-primary);
+    font-size: 10px;
+    height: 22px;
+    margin-left: var(--space-md);
+    padding-left: var(--space-lg);
+    padding-right: var(--space-lg);
+}
+
+.issue-row Button:hover {
+    background-color: rgba(255, 255, 255, 0.12);
+}
+
+.issue-row Button.dismiss-button {
+    border-left-width: 3px;
+    border-left-color: rgb(150, 208, 202);
+    color: rgb(176, 216, 211);
+}
+
+.issue-severity {
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    background-color: rgba(255, 255, 255, 0.07);
+    border-radius: 3px;
+    color: var(--text-muted);
+    font-size: 9px;
+    min-width: 56px;
+    margin-right: var(--space-lg);
+    padding-top: var(--space-xs);
+    padding-bottom: var(--space-xs);
+}
+
+.issue-severity.is-high {
+    background-color: rgba(233, 168, 162, 0.18);
+    color: var(--text-danger);
+}
+
+.issue-severity.is-medium {
+    background-color: rgba(230, 208, 166, 0.16);
+    color: var(--text-guidance);
+}
+
+.issue-title {
+    -unity-font-style: bold;
+    color: var(--text-primary);
+    font-size: 12px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.issue-detail {
+    color: var(--text-muted);
+    font-size: 10px;
+    margin-top: var(--space-xs);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 .dismissal-row {
     flex-direction: row;
     align-items: center;
     padding: var(--space-md) var(--space-lg);
     border-bottom-width: 1px;
     border-bottom-color: rgba(255, 255, 255, 0.04);
+}
+
+.dismissal-row.is-odd {
+    background-color: rgba(255, 255, 255, 0.022);
 }
 
 .dismissal-row:hover {

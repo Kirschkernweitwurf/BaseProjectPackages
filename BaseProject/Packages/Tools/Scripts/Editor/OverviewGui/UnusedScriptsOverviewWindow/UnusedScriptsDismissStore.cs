@@ -10,7 +10,7 @@ namespace Base.ToolPackage.Editor.OverviewGui.UnusedScriptsOverviewWindow
     /// Remembers scripts the user chose to keep. Stored by GUID in a per-project file under
     /// ProjectSettings, so dismissals survive rescans and restarts and can be committed for the team.
     /// </summary>
-    public static class UnusedScriptsDismissStore
+    internal static class UnusedScriptsDismissStore
     {
         private const string FilePath = "ProjectSettings/UnusedScriptsDismissed.json";
 

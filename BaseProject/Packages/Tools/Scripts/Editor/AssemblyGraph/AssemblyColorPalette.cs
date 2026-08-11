@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Base.ToolPackage.Editor.AssemblyGraph
 {
     /// <summary>Assigns a stable, readable color to each assembly root name.</summary>
-    public static class AssemblyColorPalette
+    internal static class AssemblyColorPalette
     {
         private const float FallbackChannel = 0.28f;
         private const uint HueSteps = 360u;

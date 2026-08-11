@@ -8,7 +8,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot
     /// troubleshoot window picks it up automatically, no manual registration required. Checks are
     /// stateless, since one instance is shared across every scanned type.
     /// </summary>
-    public interface IAttributeCheck
+    internal interface IAttributeCheck
     {
         /// <summary>
         /// Inspects the members declared directly on the given type and appends every problem found.

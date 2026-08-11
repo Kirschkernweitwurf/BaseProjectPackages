@@ -9,7 +9,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Checks
     /// Buttons with parameters are skipped without a word, and a callback whose signature no longer
     /// matches simply stops firing, which is hard to notice from the inspector alone.
     /// </summary>
-    public sealed class MethodTargetCheck : IAttributeCheck
+    internal sealed class MethodTargetCheck : IAttributeCheck
     {
         private const string ParameterlessMessage = "The method takes parameters, so no button is drawn.";
 
@@ -52,6 +52,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Checks
             {
                 AttributeIssues.Error(issues, field, attributeType,
                     $"'{attribute.Method}' does not exist on {owner.Name}.");
+
                 return;
             }
 
@@ -72,6 +73,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Checks
             {
                 AttributeIssues.Error(issues, field, attributeType,
                     $"'{attribute.MethodName}' does not exist on {owner.Name}.");
+
                 return;
             }
 
@@ -79,6 +81,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Checks
             {
                 AttributeIssues.Error(issues, field, attributeType,
                     $"'{attribute.MethodName}' does not return bool, so the field is never validated.");
+
                 return;
             }
 
@@ -87,14 +90,13 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Checks
             {
                 AttributeIssues.Error(issues, field, attributeType,
                     $"'{attribute.MethodName}' takes more than one parameter.");
+
                 return;
             }
 
             if (parameters.Length == 1 && !parameters[0].ParameterType.IsAssignableFrom(field.FieldType))
-            {
                 AttributeIssues.Error(issues, field, attributeType,
                     $"'{attribute.MethodName}' does not accept a {field.FieldType.Name}.");
-            }
         }
 
         private static void VerifyOnValueChanged(Type owner, FieldInfo field, List<AttributeIssue> issues)
@@ -110,6 +112,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Checks
             {
                 AttributeIssues.Error(issues, field, attributeType,
                     $"'{attribute.Method}' does not exist on {owner.Name}. The callback never fires.");
+
                 return;
             }
 
@@ -121,14 +124,13 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Checks
             {
                 AttributeIssues.Error(issues, field, attributeType,
                     $"'{attribute.Method}' takes more than one parameter. The callback never fires.");
+
                 return;
             }
 
             if (!parameters[0].ParameterType.IsAssignableFrom(field.FieldType))
-            {
                 AttributeIssues.Error(issues, field, attributeType,
                     $"'{attribute.Method}' does not accept a {field.FieldType.Name}.");
-            }
         }
 
         private static void VerifyOnArraySizeChanged(Type owner, FieldInfo field, List<AttributeIssue> issues)
@@ -143,6 +145,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Checks
             {
                 AttributeIssues.Error(issues, field, attributeType,
                     $"{field.FieldType.Name} is not an array or list, so the callback never fires.");
+
                 return;
             }
 
@@ -151,6 +154,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Checks
             {
                 AttributeIssues.Error(issues, field, attributeType,
                     $"'{attribute.Method}' does not exist on {owner.Name}. The callback never fires.");
+
                 return;
             }
 
@@ -159,10 +163,8 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Checks
                 return;
 
             if (parameters.Length > 1 || parameters[0].ParameterType != typeof(int))
-            {
                 AttributeIssues.Error(issues, field, attributeType,
                     $"'{attribute.Method}' has to be parameterless or take a single int.");
-            }
         }
     }
 }

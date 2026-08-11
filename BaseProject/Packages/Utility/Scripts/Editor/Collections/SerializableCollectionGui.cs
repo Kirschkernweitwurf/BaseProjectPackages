@@ -11,6 +11,8 @@ namespace Base.UtilityPackage.Editor.Collections
     /// </summary>
     public static class SerializableCollectionGui
     {
+        /// <summary>Label of the add button.</summary>
+        public const string AddLabel = "+";
         /// <summary>Width of the add and remove buttons at the end of a row.</summary>
         public const float ButtonWidth = 22f;
 
@@ -19,9 +21,6 @@ namespace Base.UtilityPackage.Editor.Collections
 
         /// <summary>Horizontal offset applied to every row below the header.</summary>
         public const float Indent = 14f;
-
-        /// <summary>Label of the add button.</summary>
-        public const string AddLabel = "+";
 
         /// <summary>Label of the remove button.</summary>
         public const string RemoveLabel = "-";

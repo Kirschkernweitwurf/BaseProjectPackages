@@ -11,7 +11,7 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
     /// Writes a captured payload back onto an edit mode object or a prefab asset.
     /// Nothing runs automatically, every apply is triggered by the user from the Play Mode Saver window.
     /// </summary>
-    public static class PlayModeApplier
+    internal static class PlayModeApplier
     {
         private const string UndoName = "Apply Play Mode Changes";
 

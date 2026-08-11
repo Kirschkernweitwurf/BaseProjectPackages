@@ -9,13 +9,13 @@ using UnityEngine.UIElements;
 namespace Base.ToolPackage.Editor.AssemblyGraph
 {
     /// <summary>A GraphView node that represents one assembly.</summary>
-    public sealed class AssemblyGraphNode : Node
+    internal sealed class AssemblyGraphNode : Node
     {
-        public AssemblyNodeInfo Info { get; }
-
         public Port InputPort { get; }
 
         public Port OutputPort { get; }
+
+        private AssemblyNodeInfo Info { get; }
 
         private static readonly Color BodyColor = new(0.22f, 0.22f, 0.24f, 1f);
 

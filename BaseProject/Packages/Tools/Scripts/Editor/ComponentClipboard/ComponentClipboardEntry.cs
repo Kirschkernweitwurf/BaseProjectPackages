@@ -14,7 +14,7 @@ namespace Base.ToolPackage.Editor.ComponentClipboard
     /// survives domain reloads.
     /// </summary>
     [Serializable]
-    public class ComponentClipboardEntry
+    internal class ComponentClipboardEntry
     {
         [SerializeField] private string typeName;
         [SerializeField] private string json;

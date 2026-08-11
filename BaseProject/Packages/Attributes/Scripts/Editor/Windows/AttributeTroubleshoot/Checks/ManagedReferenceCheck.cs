@@ -11,7 +11,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Checks
     /// <c>[SerializeReference]</c> the field is not a managed reference and the picker draws a usage
     /// hint, and a declared type with no instantiable implementation gives an empty picker.
     /// </summary>
-    public sealed class ManagedReferenceCheck : IAttributeCheck
+    internal sealed class ManagedReferenceCheck : IAttributeCheck
     {
         private const string MissingSerializeReference =
             "The field is not marked [SerializeReference], so there is no managed reference to pick a type for.";
@@ -50,11 +50,9 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Checks
                 return;
 
             if (ManagedReferenceTypes.GetAssignable(elementType).Length == 0)
-            {
                 AttributeIssues.Warning(issues, field, attributeType,
                     $"No instantiable type implements {elementType.Name}, so the picker stays empty. "
                     + "Candidates need a public parameterless constructor.");
-            }
         }
     }
 }

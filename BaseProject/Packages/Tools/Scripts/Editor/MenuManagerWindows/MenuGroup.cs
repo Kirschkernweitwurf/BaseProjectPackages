@@ -6,7 +6,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
 {
     /// <summary>Named group of menu entries. Groups control the priority gaps that draw separator lines.</summary>
     [Serializable]
-    public sealed class MenuGroup
+    internal sealed class MenuGroup
     {
         [SerializeField]
         private string name = "Ungrouped";

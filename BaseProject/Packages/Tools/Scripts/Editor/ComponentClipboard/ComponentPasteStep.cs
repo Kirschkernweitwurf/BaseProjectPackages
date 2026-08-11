@@ -9,7 +9,7 @@ namespace Base.ToolPackage.Editor.ComponentClipboard
     /// <see cref="ComponentOperations.BuildPastePlan"/> so the window preview and the actual paste
     /// can never disagree.
     /// </summary>
-    public class ComponentPasteStep
+    internal class ComponentPasteStep
     {
         /// <summary>Clipboard entry this step pastes.</summary>
         public ComponentClipboardEntry Entry { get; }

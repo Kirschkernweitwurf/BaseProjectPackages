@@ -2,7 +2,11 @@ using Base.ToolPackage.Editor.CodebaseGraph.Model;
 
 namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
 {
-    /// <summary>One line of the findings report, with everything needed to rank and print it.</summary>
+    /// <summary>
+    /// One finding, with everything needed to rank it, print it and act on it. The report only prints,
+    /// but the findings window has to open the declaration and offer the fix, so the entry carries the
+    /// nodes it came from rather than only their names.
+    /// </summary>
     internal sealed class FindingEntry
     {
         /// <summary>Which finding this line reports.</summary>
@@ -13,6 +17,15 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
 
         /// <summary>Stable dismissal id, which doubles as the readable name.</summary>
         public string Id { get; }
+
+        /// <summary>Type the finding sits on, or the declaring type of the member.</summary>
+        public TypeNodeInfo Type { get; set; }
+
+        /// <summary>Member the finding sits on, or null when it is on the type or the namespace.</summary>
+        public MemberNodeInfo Member { get; set; }
+
+        /// <summary>Asset path and line, ready to read, or an empty string when there is none.</summary>
+        public string Location => location;
 
         /// <summary>Asset path and line, or an empty string when the script could not be resolved.</summary>
         private readonly string location;

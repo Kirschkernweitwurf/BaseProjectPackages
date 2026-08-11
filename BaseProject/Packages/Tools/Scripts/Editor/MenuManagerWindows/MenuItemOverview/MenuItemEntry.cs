@@ -9,7 +9,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows.MenuItemOverview
     /// found in the project, a package or one of Unity's built-in assemblies, or an entry
     /// registered through the menu manager.
     /// </summary>
-    public sealed class MenuItemEntry
+    internal sealed class MenuItemEntry
     {
         private const string EmptyLabel = "-";
 

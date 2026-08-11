@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Base.ToolPackage.Editor.MenuManagerWindows
 {
     /// <summary>Window to arrange dynamic asset creation entries.</summary>
-    public sealed class CreateAssetMenuManagerWindow : MenuManagerWindowBase
+    internal sealed class CreateAssetMenuManagerWindow : MenuManagerWindowBase
     {
         private const string WindowTitle = "Create Assets";
 
