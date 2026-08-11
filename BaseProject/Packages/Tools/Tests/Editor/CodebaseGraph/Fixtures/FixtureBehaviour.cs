@@ -16,6 +16,21 @@ namespace Base.ToolPackage.Editor.Tests.Fixtures
         /// <summary>Written by Unity through the generated backing field, never assigned in code.</summary>
         [field: SerializeField] public GameObject Prefab { get; private set; }
 
+        /// <summary>Runs a lambda from inside a getter, which is where the owner name is an accessor.</summary>
+        public int LambdaInAccessor
+        {
+            get
+            {
+                Func<int> step = () =>
+                {
+                    CalledFromAccessorLambda();
+                    return 1;
+                };
+
+                return step();
+            }
+        }
+
         /// <summary>A field like event, both subscribed to and raised from this same type.</summary>
         public event Action Changed;
 
@@ -40,6 +55,8 @@ namespace Base.ToolPackage.Editor.Tests.Fixtures
 
             ReadIndexer();
             CompareVectors();
+
+            Debug.Log(LambdaInAccessor);
 
             IFixtureContract contract = this;
             contract.Implicit();
@@ -77,6 +94,15 @@ namespace Base.ToolPackage.Editor.Tests.Fixtures
 
         /// <summary>Called only from inside a lambda, which the compiler moves into a hidden class.</summary>
         private void CalledFromLambda()
+        {
+        }
+
+        /// <summary>
+        /// Called only from inside a lambda that lives in a property getter. The machinery names its
+        /// owner as get_LambdaInAccessor, and only the property is ever registered, so this is the
+        /// shape where the owner lookup can fail and take every call in the lambda with it.
+        /// </summary>
+        private void CalledFromAccessorLambda()
         {
         }
 

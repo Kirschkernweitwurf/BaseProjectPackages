@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using Base.UtilityPackage.Editor;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -140,14 +141,13 @@ namespace Base.ToolPackage.Editor.MissingScriptsOverviewWindow
                             path,
                             null,
                             Path.GetFileNameWithoutExtension(path),
-                            1,
-                            true));
+                            1));
 
                         continue;
                     }
 
                     SerializedObject serialized = new(asset);
-                    SerializedProperty scriptProperty = serialized.FindProperty("m_Script");
+                    SerializedProperty scriptProperty = serialized.FindProperty(EditorConstants.ScriptPropertyName);
 
                     if (scriptProperty != null && scriptProperty.objectReferenceValue == null)
                         results.Add(new MissingScriptEntry(EMissingScriptSource.ScriptableObject,

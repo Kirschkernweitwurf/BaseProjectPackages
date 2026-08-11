@@ -20,15 +20,5 @@ namespace Base.CorePackage.Services.Shutdown
         /// Implement cleanup logic here.
         /// </summary>
         void Shutdown();
-
-        /// <summary>
-        /// Called when the handler is being registered.
-        /// </summary>
-        void Register() => ShutdownManager.Register(this);
-
-        /// <summary>
-        /// Called when the handler is being deregistered.
-        /// </summary>
-        void Deregister() => ShutdownManager.Deregister(this);
     }
 }

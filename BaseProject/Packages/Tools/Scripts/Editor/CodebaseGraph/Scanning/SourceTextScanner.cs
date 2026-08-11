@@ -156,7 +156,10 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
                 if (line.IndexOf(IgnoreMarker, StringComparison.Ordinal) < 0)
                     continue;
 
-                if (!SuppressOnLine(declared, ReadCodeBeforeMarker(line)))
+                if (!TryReadCodeBeforeMarker(line, out string code))
+                    continue;
+
+                if (!SuppressOnLine(declared, code))
                     graph.UnmatchedIgnoreMarkers.Add($"{path}:{index + 1}");
             }
         }
@@ -165,14 +168,23 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         /// Takes only the code in front of the comment. Matching the whole line would let a name
         /// mentioned inside the explanation silence a completely different member.
         /// </summary>
-        private static string ReadCodeBeforeMarker(string line)
+        private static bool TryReadCodeBeforeMarker(string line, out string code)
         {
+            code = string.Empty;
+
             int marker = line.IndexOf(IgnoreMarker, StringComparison.Ordinal);
             int comment = line.LastIndexOf(CommentStart, marker, StringComparison.Ordinal);
 
-            return comment <= 0
+            // Without a comment in front of it the word is not a marker at all, it is a string. The
+            // declaration of the marker itself is the obvious case, and it is in this very file.
+            if (comment < 0)
+                return false;
+
+            code = comment == 0
                 ? string.Empty
                 : line[..comment];
+
+            return true;
         }
 
         private static bool SuppressOnLine(List<TypeNodeInfo> declared, string code)

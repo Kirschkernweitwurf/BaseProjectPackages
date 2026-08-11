@@ -40,9 +40,31 @@
     -unity-text-align: middle-center;
 }
 
-.top-bar PopupField,
-.top-bar MaskField {
-    min-width: 130px;
+.top-bar PopupField {
+    min-width: 96px;
+    max-width: 180px;
+}
+
+/* A menu and a dropdown do the same job here, so they are given the same box rather than left to
+   inherit a flat button look that reads as a different kind of control. */
+.top-bar ToolbarMenu {
+    background-color: var(--surface-raised);
+    border-width: 1px;
+    border-color: var(--surface-line);
+    border-radius: 3px;
+    height: 20px;
+    padding-left: var(--space-lg);
+    padding-right: var(--space-md);
+    -unity-text-align: middle-left;
+    color: var(--text-primary);
+}
+
+.top-bar ToolbarMenu:hover {
+    background-color: rgb(60, 60, 64);
+}
+
+.top-bar ToolbarSearchField {
+    min-width: 140px;
 }
 
 .top-bar MaskField > Label {

@@ -8,15 +8,12 @@ namespace Base.ToolPackage.Editor.NamingConventions.Data
     /// One naming rule for a group of assets. The name check itself is reused from
     /// <see cref="NamingRule"/>, so assets and code share the same casing, prefix and pattern
     /// logic. This type adds the filters that decide which assets the rule is responsible for, the
-    /// digit count for enumerated names like "Rock_01", and the record of which fields were
-    /// changed by hand so the auto detection can refresh the rest without undoing a decision.
+    /// digit count for enumerated names like "Rock_01". The record of which fields were
+    /// changed by hand so the auto-detection can refresh the rest without undoing a decision.
     /// </summary>
     [Serializable]
     public sealed class AssetNamingRule
     {
-        private const string AnyTypeLabel = "Any Asset";
-        private const char TypeSeparator = '.';
-
         [Tooltip("Shown in the rule table and in the scan results.")]
         [field: SerializeField] public string Label { get; set; } = "New Rule";
 
@@ -46,22 +43,6 @@ namespace Base.ToolPackage.Editor.NamingConventions.Data
 
         /// <summary>True when the rule was created or changed by hand and belongs to the user.</summary>
         public bool HasUserEdits => UserCreated || editedFields.Count > 0;
-
-        /// <summary>Short type label for the rule table and the scan results.</summary>
-        public string TypeLabel
-        {
-            get
-            {
-                if (string.IsNullOrEmpty(TypeName))
-                    return AnyTypeLabel;
-
-                int separator = TypeName.LastIndexOf(TypeSeparator);
-
-                return separator < 0
-                    ? TypeName
-                    : TypeName[(separator + 1)..];
-            }
-        }
 
         /// <summary>Creates an empty rule. Needed by the serializer.</summary>
         public AssetNamingRule() { }
@@ -108,13 +89,6 @@ namespace Base.ToolPackage.Editor.NamingConventions.Data
                 return;
 
             editedFields.Add(field);
-        }
-
-        /// <summary>Forgets every edit, so the whole rule is refreshed by the next detection.</summary>
-        public void ClearEdits()
-        {
-            editedFields.Clear();
-            UserCreated = false;
         }
 
         /// <summary>

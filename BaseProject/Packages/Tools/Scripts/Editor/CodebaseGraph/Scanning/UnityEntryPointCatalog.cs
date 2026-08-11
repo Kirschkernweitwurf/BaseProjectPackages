@@ -21,6 +21,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         private const string AttributeSuffix = "Attribute";
         private const string ConstructorReason = "Called by the runtime";
         private const string EditorWindowBase = "EditorWindow";
+        private const string EditorWindowName = "EditorWindow";
         private const string EngineDrivenReason = "Found by Unity through its base type";
         private const string FormerlySerializedAsName = "FormerlySerializedAs";
         private const string SerializeFieldReason = "Written by Unity serialization";
@@ -406,6 +407,20 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
                 || parameter == typeof(string)
                 || parameter == typeof(AnimationEvent)
                 || typeof(Object).IsAssignableFrom(parameter);
+        }
+
+        /// <summary>True when the type is an editor window, which only the editor ever opens.</summary>
+        /// <param name="type">Type to test.</param>
+        /// <returns>True for an editor window.</returns>
+        public static bool IsEditorWindow(Type type)
+        {
+            for (Type current = type?.BaseType; current != null; current = current.BaseType)
+            {
+                if (current.Name == EditorWindowName)
+                    return true;
+            }
+
+            return false;
         }
 
         /// <summary>Collects the earlier names a field still answers to in existing assets.</summary>

@@ -18,9 +18,6 @@ namespace Base.ToolPackage.Editor.ComponentClipboard
         /// <summary>Serialized property path the reference belongs to.</summary>
         public string PropertyPath => propertyPath;
 
-        /// <summary>Global object id of the referenced object, empty when the reference was null.</summary>
-        public string GlobalId => globalId;
-
         /// <summary>Creates a reference entry.</summary>
         /// <param name="propertyPath">Serialized property path.</param>
         /// <param name="globalId">Global object id string, or empty for a null reference.</param>

@@ -22,6 +22,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         /// </summary>
         private const int GodClassMembers = 100;
 
+        private const int GodClassMinimumMembers = 20;
         private const int GodClassNamespaceReach = 12;
         private const float PainMaximumAbstractness = 0.2f;
         private const float PainMaximumInstability = 0.3f;
@@ -38,6 +39,15 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         public static bool IsGodClass(TypeNodeInfo type)
         {
             if (IsExempt(type))
+                return false;
+
+            // A lookup table naming thirty types in typeof reaches far and does one job. Reach alone
+            // cannot tell them apart, but size can: nothing this small holds two responsibilities.
+            // Calibrated against one case, FieldTypeCheck: ninety seven lines, a thirty entry rule
+            // table and twelve one line predicates, counting fourteen members. Twenty clears it with
+            // room. Move the number if a real god class ever lands under it, not to settle an argument
+            // about a borderline type.
+            if (type.Members.Count < GodClassMinimumMembers)
                 return false;
 
             return type.NamespaceReach > GodClassNamespaceReach
@@ -57,7 +67,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         /// <returns>True when the type is hard to change safely.</returns>
         public static bool IsHardToChange(TypeNodeInfo type)
         {
-            if (IsExempt(type))
+            if (IsExempt(type) || IsMeantToBeDependedOn(type))
                 return false;
 
             return type.FanIn >= PainMinimumFanIn
@@ -70,6 +80,18 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         /// are obvious, but a lookup table declared as an ordinary class is the same thing wearing a
         /// different hat, and is recognized by its members being almost all consts and static readonly.
         /// </summary>
+        /// <summary>
+        /// True when being depended on by everything is the whole point of the type. An attribute is
+        /// applied to other code by definition, and a key or a record carries data and no behaviour.
+        /// Telling either to put an interface in front of itself is advice nobody can act on.
+        /// <br/><br/>
+        /// Implementing an interface is deliberately not enough. An empty marker says nothing about
+        /// whether callers actually go through it, and a concrete workhorse that happens to carry one
+        /// is exactly what this finding is for.
+        /// </summary>
+        private static bool IsMeantToBeDependedOn(TypeNodeInfo type)
+            => type.IsAttribute || type.BehaviourMemberCount == 0;
+
         private static bool IsExempt(TypeNodeInfo type)
         {
             if (type.Kind == ETypeKind.Enum || type.IsStatic)

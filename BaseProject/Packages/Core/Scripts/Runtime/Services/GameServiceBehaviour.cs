@@ -11,13 +11,15 @@ namespace Base.CorePackage.Services
     /// if you override these methods in derived classes.
     /// This can easily be checked by comparing the amount of usages and overrides of these methods in your IDE.
     /// </remarks>
-    [DefaultExecutionOrder(-1)]
+    [DefaultExecutionOrder(ExecutionOrder)]
     public abstract class GameServiceBehaviour : MonoBehaviour, IGameService
     {
-#region Unity Callbacks
-        protected virtual void Awake() => ((IGameService)this).Register();
+        private const int ExecutionOrder = -1;
 
-        protected virtual void OnDestroy() => ((IGameService)this).Deregister();
+#region Unity Callbacks
+        protected virtual void Awake() => ServiceLocator.Register(GetType(), this);
+
+        protected virtual void OnDestroy() => ServiceLocator.Deregister(GetType(), this);
 #endregion
     }
 }

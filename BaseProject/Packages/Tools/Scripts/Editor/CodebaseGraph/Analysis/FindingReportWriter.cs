@@ -280,6 +280,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
                 + "test code. Published package API is ranked low and moved to the companion file.");
 
             builder.AppendLine();
+            AppendInvisible(builder, graph);
             AppendExclusions(builder, graph);
 
             builder.AppendLine();
@@ -304,6 +305,31 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         /// Lists why types were left out. An exclusion that quietly failed to happen is otherwise
         /// invisible, and the only symptom is generated code showing up in the findings.
         /// </summary>
+        /// <summary>
+        /// Says what the scan could not see. Editor assemblies are what gets compiled and read here, so
+        /// a member used only inside a player build has no caller anywhere in the code that exists, and
+        /// will be reported forever. There is no fix for that, only knowing about it.
+        /// </summary>
+        private static void AppendInvisible(StringBuilder builder, CodebaseGraphData graph)
+        {
+            builder.AppendLine("Scanned as the editor compiles it, so anything behind a define that is "
+                + "off right now is invisible. A member read only inside `#if !UNITY_EDITOR` has no "
+                + "caller here and will be reported every run. Dismiss those once. Reflection is the "
+                + "other blind spot, and the only one with no workaround.");
+
+            builder.AppendLine();
+            builder.AppendLine("Assemblies read:");
+            builder.AppendLine();
+
+            List<string> assemblies = new(graph.ScannedAssemblies);
+            assemblies.Sort(StringComparer.OrdinalIgnoreCase);
+
+            foreach (string assembly in assemblies)
+                builder.AppendLine($"- `{assembly}`");
+
+            builder.AppendLine();
+        }
+
         private static void AppendExclusions(StringBuilder builder, CodebaseGraphData graph)
         {
             Dictionary<string, int> byReason = new(StringComparer.Ordinal);
@@ -436,6 +462,11 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
                 + "generator's output, put `[CodebaseGraphIgnore]` on the type instead. That is a property "
                 + "of the type rather than of anyone's review state, it survives renaming on purpose, and "
                 + "one attribute replaces every id the type would otherwise need.");
+
+            builder.AppendLine();
+            builder.AppendLine("That attribute is matched by name, not by type, so declare it yourself in "
+                + "whichever assembly every package can already reference. Any class named "
+                + "`CodebaseGraphIgnoreAttribute` will do, and nothing needs to reference this tool.");
 
             builder.AppendLine();
             builder.AppendLine($"A same line `{IgnoreMarker}` comment is still honored for compatibility, "

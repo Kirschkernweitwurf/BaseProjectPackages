@@ -4,6 +4,7 @@ using Base.AttributePackage;
 using Base.AttributePackage.Editor;
 using Base.CorePackage.Tweening.Core.Data;
 using Base.CorePackage.Tweening.Core.Data.Profiles;
+using Base.UtilityPackage.Editor;
 using UnityEditor;
 
 namespace Base.CorePackage.Editor.Tweening
@@ -25,12 +26,6 @@ namespace Base.CorePackage.Editor.Tweening
     {
         private const string MissingAssetWarning = "No asset assigned. The fields below are used instead.";
         private const string ProfileInfo = "Values, timing and loop behavior come from this profile.";
-
-        /// <summary>
-        /// Unity's built-in script reference. Not one of our own members, so there is nothing to
-        /// derive this name from.
-        /// </summary>
-        private const string ScriptField = "m_Script";
         private const string SettingsAssetInfo = "Timing and loop behavior come from this asset.";
 
         /// <summary>
@@ -63,7 +58,7 @@ namespace Base.CorePackage.Editor.Tweening
 
         private static void DrawScript(SerializedObject serializedObject)
         {
-            SerializedProperty script = serializedObject.FindProperty(ScriptField);
+            SerializedProperty script = serializedObject.FindProperty(EditorConstants.ScriptPropertyName);
 
             if (script == null)
                 return;
@@ -215,7 +210,7 @@ namespace Base.CorePackage.Editor.Tweening
 
         private static bool IsLayoutField(Type type, string propertyName)
         {
-            if (propertyName == ScriptField)
+            if (propertyName == EditorConstants.ScriptPropertyName)
                 return true;
 
             FieldInfo field = ReflectionCache.GetField(type, propertyName);

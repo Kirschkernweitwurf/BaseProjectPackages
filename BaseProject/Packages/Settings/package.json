@@ -2,7 +2,7 @@
   "name": "com.baseprojectpackages.settings",
   "displayName": "Base Settings Package",
   "description": "A reusable, store-agnostic settings framework for Unity: typed persistable settings (bool, int, float, string, enum) driven by a registry that handles load, save, revert and reset; drop-in components for audio volume, full screen mode, resolution, quality level, VSync, language and gamepad rumble; and ready-made UI elements (toggle, slider, dropdown and multiple-choice pickers). Backed by PlayerPrefs out of the box, with a swappable store interface for file, cloud or in-memory persistence.",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "unity": "6000.3",
   "author": {
     "name": "Jonathan Alber"

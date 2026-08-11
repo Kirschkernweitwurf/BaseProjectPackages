@@ -11,6 +11,10 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
     /// navigation, selection and export, and a class that owns four unrelated jobs grows without anyone
     /// deciding to grow it. Here the rule is simple: if it writes to the filter, it lives here.
     /// <br/><br/>
+    /// Thirteen controls in a row did not fit on a laptop, so the ones that answer the same question are
+    /// gathered behind two menus. View holds everything about how the graph is drawn, Report holds
+    /// everything that reads or writes a file. What is left on the bar is what changes minute to minute.
+    /// <br/><br/>
     /// The toolbar owns the widgets and the filter values behind them. It never rebuilds anything
     /// itself, it says that something changed and lets the window decide what that costs.
     /// </summary>
@@ -19,36 +23,17 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         private const string AllAssembliesLabel = "All assemblies";
         private const string BackLabel = "Back";
         private const string BackTooltip = "Goes up one level.";
-        private const int DataFlag = 2;
         private const string DismissedFormat = "Dismissed ({0})";
         private const string DismissedTooltip = "Opens the list of everything you dismissed.";
         private const string EdgeAllLabel = "Lines: All";
         private const string EdgeMutedLabel = "Lines: Muted";
         private const string EdgeNoneLabel = "Lines: None";
         private const string EdgeSelectedLabel = "Lines: Selected";
-
-        private const string EdgeTooltip = "How many lines to draw. Muted keeps them faint until you "
-            + "click something.";
-
         private const string ExportLabel = "Export findings";
         private const string ExportScopeLabel = "Export scope";
-
-        private const string ExportScopeTooltip = "Writes one namespace or assembly to a file. Small "
-            + "enough to hand to someone working on that part alone.";
-
-        private const string ExportTooltip = "Writes the whole report to a file.";
         private const string ImportLabel = "Update dismissals";
-
-        private const string ImportTooltip = "Reads a list of dismissals back in, from the clipboard or a "
-            + "file.";
-
         private const string LayoutDependenciesLabel = "Layout: Dependencies";
         private const string LayoutGroupedLabel = "Layout: Grouped by name";
-
-        private const string LayoutTooltip = "Dependencies to understand the code. Grouped to find "
-            + "something by name.";
-
-        private const int MembersFlag = 4;
         private const string NeighborFormat = "Neighbors: {0}";
         private const int NeighborMaximum = 3;
 
@@ -56,10 +41,10 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             + "reaches. One shows what it touches directly, three follows those connections two steps "
             + "further.";
 
-        private const string PopupTextClass = "unity-base-popup-field__text";
-        private const int PrivateFlag = 1;
         private const string RefreshLabel = "Rescan";
         private const string RefreshTooltip = "Scans the project again.";
+        private const string ReportLabel = "Report";
+        private const string ReportTooltip = "Writing a report out, and reading dismissals back in.";
         private const string SearchCurrentLevelLabel = "Find: This level";
         private const string SearchEverywhereLabel = "Find: Everything";
         private const string SearchMembersLabel = "Find: Members";
@@ -72,27 +57,21 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
         private const string SearchTypesLabel = "Find: Types";
         private const string ShowDataLabel = "Fields and consts";
-        private const string ShowDataShort = "fields";
         private const string ShowMembersLabel = "Members on type nodes";
-        private const string ShowMembersShort = "members";
-        private const string ShowNoneLabel = "Show: nothing extra";
-        private const string ShowPrefix = "Show: ";
         private const string ShowPrivateLabel = "Private members";
-        private const string ShowPrivateShort = "private";
-        private const string ShowSeparator = ", ";
-        private const string ShowTooltip = "How much detail to show on each node.";
         private const string ToolbarRowClass = "top-bar";
+        private const string ViewLabel = "View";
+
+        private const string ViewTooltip = "How the graph is drawn: layout, lines and how much detail "
+            + "each node carries.";
 
         private readonly GraphFilter _filter;
         private readonly CodebaseGraphToolbarActions _actions;
 
         private PopupField<string> _assemblyField;
         private PopupField<string> _findingField;
-        private PopupField<string> _layoutField;
-        private PopupField<string> _edgeField;
         private PopupField<string> _searchScopeField;
         private PopupField<string> _neighborField;
-        private MaskField _detailField;
         private ToolbarSearchField _searchField;
         private ToolbarButton _dismissedButton;
 
@@ -116,11 +95,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         /// <param name="assemblies">Assemblies the scan covered.</param>
         public void SetAssemblies(IEnumerable<string> assemblies)
         {
-            List<string> choices = new()
-            {
-                AllAssembliesLabel
-            };
-
+            List<string> choices = new() { AllAssembliesLabel };
             choices.AddRange(assemblies);
 
             _assemblyField.choices = choices;
@@ -133,16 +108,15 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         /// <returns>True when it can be selected.</returns>
         public bool HasAssembly(string assembly) => _assemblyField.choices.Contains(assembly);
 
-        /// <summary>Pushes the filter values into the controls, after restoring them from disk.</summary>
+        /// <summary>
+        /// Pushes the filter values into the controls, after restoring them from disk. The two menus
+        /// need nothing here: they read the filter every time they open, so they cannot fall out of step
+        /// with it.
+        /// </summary>
         public void Sync()
         {
             _findingField.index = FindingCatalog.GetIndex(_filter.Finding);
-            _edgeField.index = (int)_filter.EdgeMode;
-            _layoutField.index = (int)_filter.LayoutMode;
             _searchScopeField.index = (int)_filter.SearchScope;
-
-            _detailField.SetValueWithoutNotify(ReadDetailMask());
-            UpdateDetailText();
 
             _neighborField.SetValueWithoutNotify(string.Format(NeighborFormat, _filter.Hops));
             _searchField.SetValueWithoutNotify(_filter.Search);
@@ -151,7 +125,8 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
         /// <summary>Shows how many entries are currently dismissed.</summary>
         /// <param name="count">Number of dismissals.</param>
-        public void SetDismissedCount(int count) => _dismissedButton.text = string.Format(DismissedFormat, count);
+        public void SetDismissedCount(int count)
+            => _dismissedButton.text = string.Format(DismissedFormat, count);
 
         /// <summary>Clears the search box without raising a change.</summary>
         public void ClearSearch()
@@ -187,42 +162,19 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             return choices;
         }
 
-        private static List<string> BuildLayoutChoices() => new()
-        {
-            LayoutDependenciesLabel,
-            LayoutGroupedLabel
-        };
+        private static List<string> BuildSearchScopeChoices()
+            => new()
+            {
+                SearchEverywhereLabel,
+                SearchCurrentLevelLabel,
+                SearchTypesLabel,
+                SearchMembersLabel
+            };
 
-        private static List<string> BuildEdgeChoices() => new()
-        {
-            EdgeMutedLabel,
-            EdgeAllLabel,
-            EdgeSelectedLabel,
-            EdgeNoneLabel
-        };
-
-        private static List<string> BuildSearchScopeChoices() => new()
-        {
-            SearchEverywhereLabel,
-            SearchCurrentLevelLabel,
-            SearchTypesLabel,
-            SearchMembersLabel
-        };
-
-        private static List<string> BuildDetailChoices() => new()
-        {
-            ShowPrivateLabel,
-            ShowDataLabel,
-            ShowMembersLabel
-        };
-
-        private static VisualElement BuildSpacer()
-        {
-            VisualElement spacer = new();
-            spacer.style.flexGrow = 1f;
-
-            return spacer;
-        }
+        private static DropdownMenuAction.Status ReadStatus(bool isOn)
+            => isOn
+                ? DropdownMenuAction.Status.Checked
+                : DropdownMenuAction.Status.Normal;
 
         private void Build()
         {
@@ -238,18 +190,13 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
                 tooltip = RefreshTooltip
             });
 
-            Add(BuildSpacer());
             AddFilters();
             AddActions();
         }
 
         private void AddFilters()
         {
-            _assemblyField = new PopupField<string>(new List<string>
-            {
-                AllAssembliesLabel
-            }, 0);
-
+            _assemblyField = new PopupField<string>(new List<string> { AllAssembliesLabel }, 0);
             _assemblyField.RegisterValueChangedCallback(OnAssemblyChanged);
             Add(_assemblyField);
 
@@ -257,30 +204,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             _findingField.RegisterValueChangedCallback(OnFindingChanged);
             Add(_findingField);
 
-            _layoutField = new PopupField<string>(BuildLayoutChoices(), 0)
-            {
-                tooltip = LayoutTooltip
-            };
-
-            _layoutField.RegisterValueChangedCallback(OnLayoutModeChanged);
-            Add(_layoutField);
-
-            _edgeField = new PopupField<string>(BuildEdgeChoices(), 0)
-            {
-                tooltip = EdgeTooltip
-            };
-
-            _edgeField.RegisterValueChangedCallback(OnEdgeModeChanged);
-            Add(_edgeField);
-
-            _detailField = new MaskField(BuildDetailChoices(), ReadDetailMask())
-            {
-                tooltip = ShowTooltip
-            };
-
-            _detailField.RegisterValueChangedCallback(OnDetailChanged);
-            UpdateDetailText();
-            Add(_detailField);
+            Add(BuildViewMenu());
 
             _searchScopeField = new PopupField<string>(BuildSearchScopeChoices(), 0)
             {
@@ -290,11 +214,8 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             _searchScopeField.RegisterValueChangedCallback(OnSearchScopeChanged);
             Add(_searchScopeField);
 
-            _searchField = new ToolbarSearchField
-            {
-                tooltip = SearchPlaceholder
-            };
-
+            _searchField = new ToolbarSearchField { tooltip = SearchPlaceholder };
+            _searchField.style.flexGrow = 1f;
             _searchField.RegisterValueChangedCallback(OnSearchChanged);
             Add(_searchField);
         }
@@ -308,66 +229,101 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             };
 
             Add(_dismissedButton);
-
-            Add(new ToolbarButton(() => _actions.Export?.Invoke())
-            {
-                text = ExportLabel,
-                tooltip = ExportTooltip
-            });
-
-            Add(new ToolbarButton(() => _actions.Import?.Invoke())
-            {
-                text = ImportLabel,
-                tooltip = ImportTooltip
-            });
-
-            Add(new ToolbarButton(() => _actions.ExportScope?.Invoke())
-            {
-                text = ExportScopeLabel,
-                tooltip = ExportScopeTooltip
-            });
-        }
-
-        private int ReadDetailMask()
-        {
-            int mask = 0;
-
-            if (_filter.ShowPrivate)
-                mask |= PrivateFlag;
-
-            if (_filter.ShowDataMembers)
-                mask |= DataFlag;
-
-            if (_filter.ShowMembersOnTypes)
-                mask |= MembersFlag;
-
-            return mask;
+            Add(BuildReportMenu());
         }
 
         /// <summary>
-        /// Writes what is actually switched on into the field. A mask field summarizes itself as
-        /// Nothing, Mixed or Everything, none of which tells you which three things are meant.
+        /// Gathers everything about how the graph is drawn. Layout and lines are one choice each, the
+        /// three detail switches are independent, and a separator between them says which is which
+        /// without a word of explanation.
         /// </summary>
-        private void UpdateDetailText()
+        private ToolbarMenu BuildViewMenu()
         {
-            Label text = _detailField.Q<Label>(className: PopupTextClass);
-            if (text == null)
-                return;
+            ToolbarMenu menu = new()
+            {
+                text = ViewLabel,
+                tooltip = ViewTooltip
+            };
 
-            List<string> parts = new();
+            AppendLayout(menu, LayoutDependenciesLabel, ELayoutMode.Dependencies);
+            AppendLayout(menu, LayoutGroupedLabel, ELayoutMode.Grouped);
+            menu.menu.AppendSeparator();
 
-            if (_filter.ShowPrivate)
-                parts.Add(ShowPrivateShort);
+            AppendEdge(menu, EdgeMutedLabel, EEdgeMode.Muted);
+            AppendEdge(menu, EdgeAllLabel, EEdgeMode.All);
+            AppendEdge(menu, EdgeSelectedLabel, EEdgeMode.SelectedOnly);
+            AppendEdge(menu, EdgeNoneLabel, EEdgeMode.None);
+            menu.menu.AppendSeparator();
 
-            if (_filter.ShowDataMembers)
-                parts.Add(ShowDataShort);
+            menu.menu.AppendAction(ShowPrivateLabel,
+                _ => ToggleShowPrivate(),
+                _ => ReadStatus(_filter.ShowPrivate));
 
-            if (_filter.ShowMembersOnTypes)
-                parts.Add(ShowMembersShort);
+            menu.menu.AppendAction(ShowDataLabel,
+                _ => ToggleShowData(),
+                _ => ReadStatus(_filter.ShowDataMembers));
 
-            text.text = parts.Count == 0
-                ? ShowNoneLabel
-                : $"{ShowPrefix}{string.Join(ShowSeparator, parts)}";
+            menu.menu.AppendAction(ShowMembersLabel,
+                _ => ToggleShowMembers(),
+                _ => ReadStatus(_filter.ShowMembersOnTypes));
+
+            return menu;
+        }
+
+        private ToolbarMenu BuildReportMenu()
+        {
+            ToolbarMenu menu = new()
+            {
+                text = ReportLabel,
+                tooltip = ReportTooltip
+            };
+
+            menu.menu.AppendAction(ExportLabel, _ => _actions.Export?.Invoke());
+            menu.menu.AppendAction(ExportScopeLabel, _ => _actions.ExportScope?.Invoke());
+            menu.menu.AppendSeparator();
+            menu.menu.AppendAction(ImportLabel, _ => _actions.Import?.Invoke());
+
+            return menu;
+        }
+
+        private void AppendLayout(ToolbarMenu menu, string label, ELayoutMode mode)
+            => menu.menu.AppendAction(label,
+                _ => SetLayout(mode),
+                _ => ReadStatus(_filter.LayoutMode == mode));
+
+        private void AppendEdge(ToolbarMenu menu, string label, EEdgeMode mode)
+            => menu.menu.AppendAction(label,
+                _ => SetEdge(mode),
+                _ => ReadStatus(_filter.EdgeMode == mode));
+
+        private void SetLayout(ELayoutMode mode)
+        {
+            _filter.LayoutMode = mode;
+            _actions.FilterChanged?.Invoke();
+        }
+
+        private void SetEdge(EEdgeMode mode)
+        {
+            _filter.EdgeMode = mode;
+            _actions.EdgeModeChanged?.Invoke();
+        }
+
+        private void ToggleShowPrivate()
+        {
+            _filter.ShowPrivate = !_filter.ShowPrivate;
+            _actions.FilterChanged?.Invoke();
+        }
+
+        private void ToggleShowData()
+        {
+            _filter.ShowDataMembers = !_filter.ShowDataMembers;
+            _actions.FilterChanged?.Invoke();
+        }
+
+        private void ToggleShowMembers()
+        {
+            _filter.ShowMembersOnTypes = !_filter.ShowMembersOnTypes;
+            _actions.FilterChanged?.Invoke();
         }
 
         private void OnAssemblyChanged(ChangeEvent<string> evt)
@@ -382,28 +338,6 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         private void OnFindingChanged(ChangeEvent<string> evt)
         {
             _filter.Finding = FindingCatalog.GetAt(_findingField.index);
-            _actions.FilterChanged?.Invoke();
-        }
-
-        private void OnLayoutModeChanged(ChangeEvent<string> evt)
-        {
-            _filter.LayoutMode = (ELayoutMode)_layoutField.index;
-            _actions.FilterChanged?.Invoke();
-        }
-
-        private void OnEdgeModeChanged(ChangeEvent<string> evt)
-        {
-            _filter.EdgeMode = (EEdgeMode)_edgeField.index;
-            _actions.EdgeModeChanged?.Invoke();
-        }
-
-        private void OnDetailChanged(ChangeEvent<int> evt)
-        {
-            _filter.ShowPrivate = (evt.newValue & PrivateFlag) != 0;
-            _filter.ShowDataMembers = (evt.newValue & DataFlag) != 0;
-            _filter.ShowMembersOnTypes = (evt.newValue & MembersFlag) != 0;
-
-            UpdateDetailText();
             _actions.FilterChanged?.Invoke();
         }
 

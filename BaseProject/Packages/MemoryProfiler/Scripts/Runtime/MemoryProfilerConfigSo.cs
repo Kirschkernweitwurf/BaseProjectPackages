@@ -110,11 +110,13 @@ namespace Base.MemoryProfiler
         /// <summary>Which memory categories to include in each snapshot.</summary>
         public CaptureFlags SnapshotFlags => captureFlags;
 
+#if !UNITY_EDITOR
         /// <summary>
         /// Absolute path baked at build time so a build resolves the project-relative path
         /// to the editor project folder. Empty in the editor and in committed assets.
         /// </summary>
         public string BakedStoragePath => bakedStoragePath;
+#endif
 
 #region Unity Callbacks
         // Clamped here so every editing path shares one rule, instead of each window doing its own.

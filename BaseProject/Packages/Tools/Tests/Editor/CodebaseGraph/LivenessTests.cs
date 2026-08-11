@@ -72,6 +72,15 @@ namespace Base.ToolPackage.Editor.Tests
         [Test]
         public void LambdaCallKeepsItsTargetAlive() => AssertAlive(Behaviour, "CalledFromLambda");
 
+        /// <summary>
+        /// The same, from a lambda inside a property getter. The machinery names an accessor as its
+        /// owner, and only the property is registered, so the lookup has to strip the prefix or every
+        /// call the lambda makes is dropped without a word.
+        /// </summary>
+        [Test]
+        public void AccessorLambdaCallKeepsItsTargetAlive()
+            => AssertAlive(Behaviour, "CalledFromAccessorLambda");
+
         /// <summary>An implicit interface implementation, called through the interface.</summary>
         [Test]
         public void ImplicitImplementationIsAlive() => AssertAlive(Behaviour, "Implicit");

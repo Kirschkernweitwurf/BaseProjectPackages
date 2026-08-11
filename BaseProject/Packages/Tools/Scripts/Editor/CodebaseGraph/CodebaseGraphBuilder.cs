@@ -195,7 +195,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             if (!KeyFactory.TryForType(owner, out TypeKey ownerKey))
                 return;
 
-            CompilerGeneratedNameResolver.TryGetOwnerName(container.Name, out string typeOwnerName);
+            CompilerGeneratedNameResolver.TryResolveOwnerName(container.Name, out string typeOwnerName);
 
             foreach (MethodBase method in EnumerateMethods(container))
             {
@@ -207,13 +207,36 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
                     continue;
 
                 string ownerName =
-                    CompilerGeneratedNameResolver.TryGetOwnerName(method.Name, out string fromMethod)
+                    CompilerGeneratedNameResolver.TryResolveOwnerName(method.Name, out string fromMethod)
                         ? fromMethod
                         : typeOwnerName;
 
-                if (registry.TryFindByName(ownerKey, ownerName, out MemberKey target))
+                if (TryFindOwner(registry, ownerKey, ownerName, out MemberKey target))
                     registry.Redirect(key, target);
             }
+        }
+
+        /// <summary>
+        /// Finds the member a piece of machinery belongs to. The name is tried as written first, then
+        /// with an accessor prefix stripped, because a lambda inside a property getter names get_Order
+        /// as its owner while only Order was ever registered.
+        /// <br/><br/>
+        /// The order matters and is not merely tidy. A method may be called get_Order by hand, and an
+        /// accessor is only left unregistered when a property actually owns it, so a hand written
+        /// get_Order is registered under that exact name. Stripping first would redirect its usages to
+        /// an Order property that does not exist, and every fixture would still pass, because none of
+        /// them has a method named after an accessor it does not own.
+        /// </summary>
+        private static bool TryFindOwner(MemberRegistry registry,
+            TypeKey ownerKey,
+            string ownerName,
+            out MemberKey target)
+        {
+            if (registry.TryFindByName(ownerKey, ownerName, out target))
+                return true;
+
+            return CompilerGeneratedNameResolver.TryGetAccessorOwner(ownerName, out string accessorOwner)
+                && registry.TryFindByName(ownerKey, accessorOwner, out target);
         }
 
         private static IEnumerable<MethodBase> EnumerateMethods(Type type)
@@ -268,6 +291,25 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             return Report(onProgress, progress, $"Reading method bodies {done} / {total}");
         }
 
+        /// <summary>
+        /// Marks the namespaces an editor window lives in. A public member of a type sitting beside a
+        /// window has no caller outside the project, whatever its access says, because nobody installs
+        /// a package to reach the row model of somebody else's window.
+        /// </summary>
+        private static void MarkWindowNamespaces(CodebaseGraphData graph)
+        {
+            HashSet<string> windowNamespaces = new(StringComparer.Ordinal);
+
+            foreach (TypeNodeInfo type in graph.Types.Values)
+            {
+                if (type.IsEditorWindow)
+                    windowNamespaces.Add(type.Namespace);
+            }
+
+            foreach (TypeNodeInfo type in graph.Types.Values)
+                type.IsWindowOwned = windowNamespaces.Contains(type.Namespace);
+        }
+
         private static bool IsDataMember(MemberNodeInfo member)
         {
             if (member.Kind == EMemberKind.Const || member.Kind == EMemberKind.EnumMember)
@@ -282,6 +324,8 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
             foreach (MemberNodeInfo member in graph.Members.Values)
                 member.RecomputeFanCounts(scratch);
+
+            MarkWindowNamespaces(graph);
 
             HashSet<string> namespaces = new();
 
@@ -301,6 +345,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             int size = 0;
             int abstractMembers = 0;
             int dataMembers = 0;
+            int behaviourMembers = 0;
 
             foreach (MemberNodeInfo member in type.Members)
             {
@@ -311,9 +356,13 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
                 if (IsDataMember(member))
                     dataMembers++;
+
+                if (member.Kind == EMemberKind.Method)
+                    behaviourMembers++;
             }
 
             type.IlSize = size;
+            type.BehaviourMemberCount = behaviourMembers;
             type.DataMemberShare = type.Members.Count == 0
                 ? 0f
                 : dataMembers / (float)type.Members.Count;

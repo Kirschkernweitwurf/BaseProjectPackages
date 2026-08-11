@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Base.UtilityPackage.Editor;
 using Base.UtilityPackage.Logging;
 using UnityEditor;
 using UnityEngine;
@@ -15,8 +16,6 @@ namespace Base.ToolPackage.Editor.ComponentClipboard
     [Serializable]
     public class ComponentClipboardEntry
     {
-        private const string ScriptPropertyPath = "m_Script";
-
         [SerializeField] private string typeName;
         [SerializeField] private string json;
         [SerializeField] private string displayName;
@@ -49,9 +48,6 @@ namespace Base.ToolPackage.Editor.ComponentClipboard
         /// <returns>The component type, or null when the type no longer exists.</returns>
         public Type ResolveType() => Type.GetType(typeName);
 
-        /// <summary>Returns true when the stored type can still be resolved.</summary>
-        public bool IsValid() => ResolveType() != null;
-
         /// <summary>
         /// Restores every captured object reference on the target. References that cannot be
         /// resolved are cleared, so no stale instance id survives.
@@ -68,8 +64,7 @@ namespace Base.ToolPackage.Editor.ComponentClipboard
             {
                 SerializedProperty property = serializedObject.FindProperty(reference.PropertyPath);
 
-                if (property == null
-                    || property.propertyType != SerializedPropertyType.ObjectReference)
+                if (property == null || property.propertyType != SerializedPropertyType.ObjectReference)
                     continue;
 
                 Object resolved = reference.Resolve();
@@ -97,7 +92,7 @@ namespace Base.ToolPackage.Editor.ComponentClipboard
                 if (property.propertyType != SerializedPropertyType.ObjectReference)
                     continue;
 
-                if (property.propertyPath == ScriptPropertyPath)
+                if (property.propertyPath == EditorConstants.ScriptPropertyName)
                     continue;
 
                 references.Add(new ComponentReferenceEntry(property.propertyPath, GetGlobalId(property)));

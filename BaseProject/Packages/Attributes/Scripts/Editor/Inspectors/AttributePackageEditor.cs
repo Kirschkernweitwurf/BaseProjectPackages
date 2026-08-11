@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Base.UtilityPackage.Editor;
 using UnityEditor;
 using UnityEngine;
 
@@ -16,21 +17,10 @@ namespace Base.AttributePackage.Editor
     /// </summary>
     public abstract class AttributePackageEditor : UnityEditor.Editor
     {
-        private const string ScriptPropertyPath = "m_Script";
-
         private string _activeFoldout;
         private bool _foldoutExpanded = true;
         private bool _inTitleSection;
         private bool _titleExpanded = true;
-
-        protected override void OnHeaderGUI()
-        {
-            base.OnHeaderGUI();
-
-            // The default header reserves its own block, so its rect is the last one laid out. Drawing
-            // on top of it is the only way to reach the header without reimplementing Unity's version.
-            HeaderButtonRenderer.Draw(this, GUILayoutUtility.GetLastRect());
-        }
 
         public override void OnInspectorGUI()
         {
@@ -39,6 +29,15 @@ namespace Base.AttributePackage.Editor
             serializedObject.ApplyModifiedProperties();
             NativeMemberRenderer.Draw(this);
             ButtonRenderer.Draw(this);
+        }
+
+        protected override void OnHeaderGUI()
+        {
+            base.OnHeaderGUI();
+
+            // The default header reserves its own block, so its rect is the last one laid out. Drawing
+            // on top of it is the only way to reach the header without reimplementing Unity's version.
+            HeaderButtonRenderer.Draw(this, GUILayoutUtility.GetLastRect());
         }
 
         private static void DrawScriptField(SerializedProperty scriptProperty)
@@ -146,7 +145,7 @@ namespace Base.AttributePackage.Editor
             {
                 enterChildren = false;
 
-                if (iterator.propertyPath == ScriptPropertyPath)
+                if (iterator.propertyPath == EditorConstants.ScriptPropertyName)
                     script = iterator.Copy();
                 else
                     properties.Add(iterator.Copy());
@@ -166,4 +165,4 @@ namespace Base.AttributePackage.Editor
             return expanded;
         }
     }
-}
+}

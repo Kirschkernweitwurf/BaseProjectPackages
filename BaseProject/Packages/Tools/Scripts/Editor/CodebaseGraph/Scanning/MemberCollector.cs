@@ -143,7 +143,9 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
                 typeof(Object).IsAssignableFrom(type),
                 typeof(MonoBehaviour).IsAssignableFrom(type))
             {
-                IsSealed = type.IsSealed
+                IsSealed = type.IsSealed,
+                IsAttribute = typeof(Attribute).IsAssignableFrom(type),
+                IsEditorWindow = UnityEntryPointCatalog.IsEditorWindow(type)
             };
 
             if (UnityEntryPointCatalog.TryGetEntryPointAttribute(type, out string reason)

@@ -14,6 +14,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         private const string ManyUsagesSuffix = " usages";
         private const int MinimumCycleLength = 2;
         private const int MinimumInterestingCycle = 2;
+        private const char NestingSeparator = '.';
         private const string PairSeparator = " <-> ";
         private const string SingleUsageText = "1 usage";
 
@@ -59,8 +60,12 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
             if (member.Kind == EMemberKind.SerializedField && !member.HasIncomingRead())
                 member.Issues |= EMemberIssue.SerializedNeverRead;
 
+            // A published field written by design and read from another project is unused API, not a
+            // defect. Written but never read reads as a mistake, and for a package surface it is not.
             if (IsWriteOnly(member))
-                member.Issues |= EMemberIssue.WriteOnlyField;
+                member.Issues |= PackageApi.IsSurface(member, declaring)
+                    ? EMemberIssue.UnusedPublicApi
+                    : EMemberIssue.WriteOnlyField;
 
             if (IsReadOnlyCandidate(member, graph))
                 member.Issues |= EMemberIssue.ReadOnlyCandidate;
@@ -400,6 +405,46 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
             return best;
         }
 
+        /// <summary>
+        /// True when the loop is a namespace and its own sub namespace inside one assembly. The finding
+        /// exists because a cycle blocks splitting code into separate assemblies, and nobody is ever
+        /// going to ship a sub folder as its own assembly, so there is nothing here to act on.
+        /// </summary>
+        private static bool IsFolderPair(CodebaseGraphData graph,
+            List<string> component,
+            List<string> cycle)
+        {
+            // Only when the whole tangle is that pair. Judging the shortest loop on its own would drop
+            // a real three namespace cycle whenever two of its three edges happen to be parent to child,
+            // taking the finding that mattered along with the two that did not.
+            if (component.Count != MinimumInterestingCycle || cycle.Count != MinimumInterestingCycle)
+                return false;
+
+            if (!IsUnder(cycle[0], cycle[1]) && !IsUnder(cycle[1], cycle[0]))
+                return false;
+
+            return ReadAssembly(graph, cycle[0]) == ReadAssembly(graph, cycle[1]);
+        }
+
+        private static bool IsUnder(string name, string prefix)
+            => name.StartsWith($"{prefix}{NestingSeparator}", StringComparison.Ordinal);
+
+        /// <summary>Returns the assembly a namespace lives in, or null when it is spread across more.</summary>
+        private static string ReadAssembly(CodebaseGraphData graph, string name)
+        {
+            string assembly = null;
+
+            foreach (TypeNodeInfo type in graph.Namespaces[name].Types)
+            {
+                if (assembly != null && assembly != type.AssemblyName)
+                    return null;
+
+                assembly = type.AssemblyName;
+            }
+
+            return assembly;
+        }
+
         private static string DescribeNamespaceCycle(List<string> cycle)
         {
             List<string> names = new(cycle)
@@ -559,6 +604,9 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
                 // The same reasoning as for types: only a component that is exactly the pair can be
                 // the thing a type cycle already said.
                 if (component.Count == 2 && cycle.Count == 2 && namespacePairs.Contains(BuildSortedKey(cycle)))
+                    continue;
+
+                if (IsFolderPair(graph, component, cycle))
                     continue;
 
                 string cycleId = BuildSortedKey(cycle);

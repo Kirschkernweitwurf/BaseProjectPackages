@@ -18,6 +18,12 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
             if (declaring == null || !declaring.IsPackageAssembly)
                 return false;
 
+            // A type that shares a namespace with an editor window is part of that window, not part of
+            // anything a consumer calls. Treating it as published surface hides real dead code among
+            // the genuine extension points.
+            if (declaring.IsWindowOwned)
+                return false;
+
             if (member.Access == EAccessLevel.Public)
                 return true;
 

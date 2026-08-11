@@ -9,7 +9,7 @@ namespace Base.SettingsPackage.Core
     /// register themselves and load their persisted value immediately.
     /// </summary>
     [DefaultExecutionOrder(ExecutionOrder)]
-    public class SettingsContext : GameServiceBehaviour
+    public sealed class SettingsContext : GameServiceBehaviour
     {
         // Low enough that the registry exists before any setting component registers itself in Awake.
         private const int ExecutionOrder = -98;
@@ -53,6 +53,6 @@ namespace Base.SettingsPackage.Core
         /// Creates the store the settings persist to. Override to swap
         /// <see cref="PlayerPrefsSettingsStore"/> for a file, cloud or in-memory store.
         /// </summary>
-        protected virtual ISettingsStore CreateStore() => new PlayerPrefsSettingsStore();
+        private static ISettingsStore CreateStore() => new PlayerPrefsSettingsStore();
     }
 }

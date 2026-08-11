@@ -36,6 +36,18 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Model
         /// <summary>True when no type can derive from this one.</summary>
         public bool IsSealed { get; set; }
 
+        /// <summary>True when this type is an attribute, which exists to be applied to other code.</summary>
+        public bool IsAttribute { get; set; }
+
+        /// <summary>True when this type is an editor window, which nothing outside the project opens.</summary>
+        public bool IsEditorWindow { get; set; }
+
+        /// <summary>True when this type shares a namespace with an editor window that owns it.</summary>
+        public bool IsWindowOwned { get; set; }
+
+        /// <summary>Members that are neither a constructor nor a property or event accessor.</summary>
+        public int BehaviourMemberCount { get; set; }
+
         /// <summary>True when the type derives from a Unity object.</summary>
         public bool IsUnityObject { get; }
 

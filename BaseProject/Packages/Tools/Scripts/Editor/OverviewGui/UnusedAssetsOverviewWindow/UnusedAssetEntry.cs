@@ -17,8 +17,6 @@ namespace Base.ToolPackage.Editor.OverviewGui.UnusedAssetsOverviewWindow
         /// <summary>File size in bytes.</summary>
         public long SizeBytes { get; }
 
-        public string Name => System.IO.Path.GetFileName(Path);
-
         /// <summary>Creates an entry for one asset that nothing appears to reference.</summary>
         public UnusedAssetEntry(string path, string guid, string typeName, long sizeBytes)
         {
