@@ -16,7 +16,7 @@ namespace Base.AttributePackage.Editor
         {
             if (property.propertyType != SerializedPropertyType.String)
             {
-                EditorGUI.LabelField(position, label.text, AttributeNames.Usage<ResourcesPathAttribute>("a string"));
+                LabeledField.Hint(position, label, AttributeNames.Usage<ResourcesPathAttribute>("a string"));
                 return;
             }
 
@@ -47,4 +47,4 @@ namespace Base.AttributePackage.Editor
             EditorGUI.EndProperty();
         }
     }
-}
+}

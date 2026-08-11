@@ -7,6 +7,7 @@ namespace Base.AttributePackage.Editor
     /// Draws the inspector of an <see cref="ExpandableAttribute"/> reference inline, inside a boxed and
     /// indented block below the field, so a ScriptableObject can be edited without leaving the current
     /// selection. The nested editor is cached, since recreating it every repaint leaks native objects.
+    /// The arrow that opens it is drawn by <see cref="ExpandableFoldoutHandler"/>.
     /// </summary>
     public sealed class ExpandableHandler : IAfterFieldHandler
     {
@@ -28,7 +29,7 @@ namespace Base.AttributePackage.Editor
             if (target == null)
                 return;
 
-            if (!ExpandableToggleWidget.IsExpanded(context, attribute))
+            if (!ExpandableState.IsExpanded(context, attribute))
                 return;
 
             UnityEditor.Editor editor = EmbeddedEditorCache.Get(target);

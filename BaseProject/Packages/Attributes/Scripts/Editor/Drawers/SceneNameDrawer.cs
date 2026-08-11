@@ -63,7 +63,7 @@ namespace Base.AttributePackage.Editor
         private static void DrawStringDropdown(Rect rect, SerializedProperty property, GUIContent label)
         {
             int current = Array.IndexOf(_sceneNames, property.stringValue);
-            int selected = EditorGUI.Popup(rect, label.text, current, _displayNames);
+            int selected = LabeledField.Popup(rect, label, current, _displayNames);
             if (selected >= 0 && selected < _sceneNames.Length && selected != current)
                 property.stringValue = _sceneNames[selected];
         }
@@ -74,7 +74,7 @@ namespace Base.AttributePackage.Editor
             if (current < 0 || current >= _sceneNames.Length)
                 current = -1;
 
-            int selected = EditorGUI.Popup(rect, label.text, current, _displayNames);
+            int selected = LabeledField.Popup(rect, label, current, _displayNames);
             if (selected >= 0 && selected < _sceneNames.Length && selected != current)
                 property.intValue = selected;
         }
@@ -101,4 +101,4 @@ namespace Base.AttributePackage.Editor
             _displayNames = null;
         }
     }
-}
+}

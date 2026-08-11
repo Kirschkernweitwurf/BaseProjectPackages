@@ -47,7 +47,7 @@ namespace Base.UtilityPackage.Editor.Collections
             SerializedProperty items = FindItems(property);
             if (items == null)
             {
-                EditorGUI.LabelField(position, label.text, MissingItemsMessage);
+                LabeledField.Hint(position, label, MissingItemsMessage);
                 return;
             }
 
@@ -125,4 +125,4 @@ namespace Base.UtilityPackage.Editor.Collections
                 SerializableCollectionGui.DeleteElement(items, removeAt);
         }
     }
-}
+}

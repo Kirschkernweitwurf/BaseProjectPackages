@@ -5,35 +5,24 @@ namespace Base.AttributePackage.Editor
 {
     /// <summary>
     /// Copies a <see cref="CopyButtonAttribute"/> field value to the clipboard and shows a brief
-    /// confirmation. The button is disabled while the value is empty. Inline by default, or on its own
-    /// row when the attribute sets inline to false.
+    /// confirmation. Disabled while the value is empty.
     /// </summary>
-    public sealed class CopyButtonHandler : FieldButtonHandler
+    public sealed class CopyButtonHandler : InlineFieldButtonHandler
     {
-        private const int AfterFieldOrder = 90;
-        private const float InlineButtonWidth = 46f;
+        private const float ButtonWidth = 46f;
         private const double NotifyFade = 0.4;
-        private const float RowButtonWidth = 52f;
         private const int WidgetOrder = 10;
-
-        protected override int InlineOrder => WidgetOrder;
-
-        protected override int RowOrder => AfterFieldOrder;
-
-        protected override float InlineWidth => InlineButtonWidth;
-
-        protected override float RowWidth => RowButtonWidth;
 
         private static readonly GUIContent Content = new("Copy", "Copy the value to the clipboard.");
 
         private static readonly GUIContent Notice = new("Copied");
 
-        protected override bool TryGetPlacement(in MemberContext context, out bool inline)
-        {
-            CopyButtonAttribute attribute = context.GetAttribute<CopyButtonAttribute>();
-            inline = attribute != null && attribute.Inline;
-            return attribute != null;
-        }
+        protected override int InlineOrder => WidgetOrder;
+
+        protected override float InlineWidth => ButtonWidth;
+
+        protected override bool Applies(in MemberContext context)
+            => context.GetAttribute<CopyButtonAttribute>() != null;
 
         // A string reports isArray = true in Unity because it is a char array, so we must not filter on
         // isArray. Real arrays and lists are Generic, so excluding Generic is enough.

@@ -39,7 +39,7 @@ namespace Base.AttributePackage.Editor
             bool isString = property.propertyType == SerializedPropertyType.String;
 
             int current = CurrentIndex(property, names, isString);
-            int selected = EditorGUI.Popup(rect, label.text, current, names);
+            int selected = LabeledField.Popup(rect, label, current, names);
             if (selected < 0 || selected >= names.Length || selected == current)
                 return;
 
@@ -109,4 +109,4 @@ namespace Base.AttributePackage.Editor
             return -1;
         }
     }
-}
+}

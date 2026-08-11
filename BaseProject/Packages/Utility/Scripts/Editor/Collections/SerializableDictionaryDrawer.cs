@@ -46,7 +46,7 @@ namespace Base.UtilityPackage.Editor.Collections
             SerializedProperty entries = FindEntries(property);
             if (entries == null)
             {
-                EditorGUI.LabelField(position, label.text, MissingEntriesMessage);
+                LabeledField.Hint(position, label, MissingEntriesMessage);
                 return;
             }
 
@@ -163,4 +163,4 @@ namespace Base.UtilityPackage.Editor.Collections
                 SerializableCollectionGui.DeleteElement(entries, removeAt);
         }
     }
-}
+}

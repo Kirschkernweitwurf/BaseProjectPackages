@@ -25,7 +25,7 @@ namespace Base.AttributePackage.Editor
         {
             if (property.propertyType != SerializedPropertyType.String)
             {
-                EditorGUI.LabelField(position, label.text, UsageMessage);
+                LabeledField.Hint(position, label, UsageMessage);
                 return;
             }
 
@@ -78,4 +78,4 @@ namespace Base.AttributePackage.Editor
             serializedObject.ApplyModifiedProperties();
         }
     }
-}
+}

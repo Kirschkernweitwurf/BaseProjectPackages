@@ -11,11 +11,15 @@ namespace Base.AttributePackage.Editor
     /// </summary>
     public sealed class OnArraySizeChangedHandler : IBeforeFieldHandler, IAfterFieldHandler
     {
+        private const int AfterFieldOrder = -290;
+        private const int BeforeFieldOrder = 1000;
         private const string KeySeparator = ":";
 
-        int IBeforeFieldHandler.Order => 1000;
+        int IBeforeFieldHandler.Order => BeforeFieldOrder;
 
-        int IAfterFieldHandler.Order => -110;
+        // Runs just after the change check closes and before anything draws over the row, for the same
+        // reason: applying and repainting mid-phase would move the rect out from under those handlers.
+        int IAfterFieldHandler.Order => AfterFieldOrder;
 
         // Handlers are shared across inspectors, so the recorded size is keyed by target and path
         // instead of held in an instance field. Entries are removed as soon as they are consumed.
@@ -78,4 +82,4 @@ namespace Base.AttributePackage.Editor
             method.Invoke(context.DeclaringObject, arguments);
         }
     }
-}
+}

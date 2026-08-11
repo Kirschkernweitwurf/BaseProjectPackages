@@ -47,7 +47,7 @@ namespace Base.AttributePackage.Editor
             }
 
             int current = CurrentIndex(property, _names);
-            int selected = EditorGUI.Popup(rect, label.text, current, _names);
+            int selected = LabeledField.Popup(rect, label, current, _names);
 
             if (selected < 0 || selected >= _names.Length || selected == current)
                 return;
@@ -84,4 +84,4 @@ namespace Base.AttributePackage.Editor
             return -1;
         }
     }
-}
+}

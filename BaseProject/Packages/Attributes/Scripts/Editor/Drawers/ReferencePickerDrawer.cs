@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Base.UtilityPackage.Editor.Dropdown;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
@@ -9,7 +10,7 @@ namespace Base.AttributePackage.Editor
     /// <summary>
     /// Draws a type picker above a <c>[SerializeReference]</c> field for
     /// <see cref="ReferencePickerAttribute"/>, then the fields of the chosen instance. Without this the
-    /// inspector offers no way to create or swap the concrete type of a managed reference.
+    /// inspector offers no way to create or swap the concrete type of managed reference.
     /// </summary>
     [CustomPropertyDrawer(typeof(ReferencePickerAttribute))]
     public sealed class ReferencePickerDrawer : PropertyDrawer
@@ -37,7 +38,7 @@ namespace Base.AttributePackage.Editor
         {
             if (property.propertyType != SerializedPropertyType.ManagedReference)
             {
-                EditorGUI.LabelField(position, label.text, UnsupportedMessage);
+                LabeledField.Hint(position, label, UnsupportedMessage);
                 return;
             }
 

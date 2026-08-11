@@ -1,6 +1,7 @@
 using System;
 using System.Reflection;
 using UnityEditor;
+using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace Base.AttributePackage.Editor
@@ -63,6 +64,12 @@ namespace Base.AttributePackage.Editor
         public string DisplayName => ObjectNames.NicifyVariableName(Property.name);
 
         /// <summary>
+        /// Label and tooltip for the member. Drawers that build their own header have to use this rather
+        /// than <see cref="DisplayName"/>, or the field silently loses its tooltip.
+        /// </summary>
+        public GUIContent Label => new(DisplayName, GetAttribute<TooltipAttribute>()?.tooltip);
+
+        /// <summary>
         /// Finds a sibling property by name, relative to this member's path. Resolves top-level members
         /// for top-level fields and members of the same nested object when descended.
         /// </summary>
@@ -77,4 +84,4 @@ namespace Base.AttributePackage.Editor
             return Editor.serializedObject.FindProperty(siblingPath);
         }
     }
-}
+}

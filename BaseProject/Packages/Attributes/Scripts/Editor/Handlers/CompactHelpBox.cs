@@ -11,10 +11,13 @@ namespace Base.AttributePackage.Editor
     {
         /// <summary>Height of one compact line, for PropertyDrawer height calculations.</summary>
         public const float Height = 20f;
+
         private const string ErrorHex = "#DB4C52";
         private const string ErrorIcon = "console.erroricon.sml";
 
-        private const float IconSize = 14f;
+        // The small console icons are 16 points. Drawing them at anything else resamples a
+        // point-filtered editor texture, which is what made the warning icon look chewed up.
+        private const float IconSize = 16f;
         private const string InfoHex = "#5A9BD4";
         private const string InfoIcon = "console.infoicon.sml";
         private const string NeutralHex = "#7F7F7F";
@@ -65,7 +68,7 @@ namespace Base.AttributePackage.Editor
             if (icon != null)
             {
                 Rect iconRect = new(content.x, content.y + (content.height - IconSize) * 0.5f, IconSize, IconSize);
-                GUI.DrawTexture(iconRect, icon);
+                GUI.DrawTexture(iconRect, icon, ScaleMode.ScaleToFit);
                 content = new Rect(iconRect.xMax + Padding, content.y,
                     content.xMax - iconRect.xMax - Padding, content.height);
             }
@@ -130,4 +133,4 @@ namespace Base.AttributePackage.Editor
             };
         }
     }
-}
+}

@@ -109,18 +109,6 @@ MonoBehaviour:
           createFileName: 
           overridePriority: 0
           overrideValue: 0
-    - rid: 4171306581077262478
-      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
-      data:
-        separator: 0
-        entry:
-          id: MI:Base.ToolPackage.Editor.CodebaseGraph.CodebaseGraphIssuesWindow.Open
-          path: Codebase Issues
-          enabled: 1
-          kind: 0
-          createFileName: 
-          overridePriority: 0
-          overrideValue: 0
     - rid: 5339058645413658751
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
       data:
@@ -259,6 +247,7 @@ MonoBehaviour:
         expanded: 1
         merged: 0
         children:
+        - rid: 4171306542554939516
         - rid: 5339058645413658789
         - rid: 5339058645413658790
         - rid: 5339058645413658791
@@ -273,8 +262,6 @@ MonoBehaviour:
         children:
         - rid: 5339058645413658794
         - rid: 4171306542554939503
-        - rid: 4171306542554939516
-        - rid: 4171306581077262478
         - rid: 5339058645413658802
         - rid: 4171306542554939475
         - rid: 5339058645413658793

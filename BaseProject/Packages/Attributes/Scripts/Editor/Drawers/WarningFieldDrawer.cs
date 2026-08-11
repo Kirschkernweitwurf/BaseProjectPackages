@@ -29,7 +29,7 @@ namespace Base.AttributePackage.Editor
         {
             if (!IsSupported(property))
             {
-                EditorGUI.LabelField(position, label.text, UsageMessage);
+                LabeledField.Hint(position, label, UsageMessage);
                 return;
             }
 
@@ -61,4 +61,4 @@ namespace Base.AttributePackage.Editor
         /// <summary>Draws the field itself. Complete is false while a warning is shown.</summary>
         protected abstract void DrawField(Rect rect, SerializedProperty property, GUIContent label, bool complete);
     }
-}
+}

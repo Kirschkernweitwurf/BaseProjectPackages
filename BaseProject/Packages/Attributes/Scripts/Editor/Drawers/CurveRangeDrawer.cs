@@ -13,7 +13,7 @@ namespace Base.AttributePackage.Editor
         {
             if (property.propertyType != SerializedPropertyType.AnimationCurve)
             {
-                EditorGUI.LabelField(position, label.text,
+                LabeledField.Hint(position, label,
                     AttributeNames.Usage<CurveRangeAttribute>("an AnimationCurve"));
 
                 return;
@@ -34,4 +34,4 @@ namespace Base.AttributePackage.Editor
             EditorGUI.EndProperty();
         }
     }
-}
+}

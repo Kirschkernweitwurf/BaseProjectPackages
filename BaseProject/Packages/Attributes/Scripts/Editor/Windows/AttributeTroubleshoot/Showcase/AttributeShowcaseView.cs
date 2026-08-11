@@ -9,9 +9,11 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Showcase
     public static class AttributeShowcaseView
     {
         private const string Explanation =
-            "This is a throwaway asset drawn through the normal inspector. Edit anything you like, nothing "
-            + "is saved. Header buttons are the one exception: they live in the component header, which an "
-            + "embedded inspector does not draw.";
+            "A throwaway asset drawn through the normal inspector, mirroring the attribute tester section "
+            + "for section. Edit anything, nothing is saved. Two families are missing because this is an "
+            + "asset rather than a component: the scene handles and the hierarchy auto-getters have no "
+            + "GameObject to work on. The header controls are declared but not visible, since an embedded "
+            + "inspector draws the body and not the title bar.";
 
         /// <summary>Draws the explanation and the showcase inspector.</summary>
         /// <param name="showcase">The in-memory showcase asset.</param>

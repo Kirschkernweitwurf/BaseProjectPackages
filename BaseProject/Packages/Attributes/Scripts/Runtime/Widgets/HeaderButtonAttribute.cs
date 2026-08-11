@@ -1,4 +1,5 @@
 using System;
+using JetBrains.Annotations;
 
 namespace Base.AttributePackage
 {
@@ -7,7 +8,12 @@ namespace Base.AttributePackage
     /// space and stays reachable while the component is collapsed. The decorated method has to be
     /// parameterless. Buttons are laid out right to left in declaration order.
     /// </summary>
+    /// <remarks>
+    /// <see cref="MeansImplicitUseAttribute"/> tells Rider that a decorated method is called even though
+    /// nothing in the codebase references it. Without it, every header button reads as dead code.
+    /// </remarks>
     [AttributeUsage(AttributeTargets.Method)]
+    [MeansImplicitUse(ImplicitUseKindFlags.Access)]
     public sealed class HeaderButtonAttribute : Attribute
     {
         /// <summary>Width used when none is set explicitly. Fits a short label.</summary>
@@ -28,6 +34,7 @@ namespace Base.AttributePackage
 
         /// <summary>Width of the button in pixels.</summary>
         public float Width { get; set; } = DefaultWidth;
+
 
         /// <summary>Creates the attribute with an optional custom label.</summary>
         /// <param name="label">Label shown on the button.</param>

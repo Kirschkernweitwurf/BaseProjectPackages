@@ -37,7 +37,7 @@ namespace Base.AttributePackage.Editor
             }
 
             int current = Array.IndexOf(_names, property.stringValue);
-            int selected = EditorGUI.Popup(rect, label.text, current, _names);
+            int selected = LabeledField.Popup(rect, label, current, _names);
             if (selected >= 0 && selected < _names.Length && selected != current)
                 property.stringValue = _names[selected];
         }
@@ -78,4 +78,4 @@ namespace Base.AttributePackage.Editor
             return names.ToArray();
         }
     }
-}
+}

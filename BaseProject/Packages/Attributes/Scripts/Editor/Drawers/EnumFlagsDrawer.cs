@@ -14,7 +14,7 @@ namespace Base.AttributePackage.Editor
         {
             if (property.propertyType != SerializedPropertyType.Enum)
             {
-                EditorGUI.LabelField(position, label.text, AttributeNames.Usage<EnumFlagsAttribute>("an enum"));
+                LabeledField.Hint(position, label, AttributeNames.Usage<EnumFlagsAttribute>("an enum"));
                 return;
             }
 
@@ -39,4 +39,4 @@ namespace Base.AttributePackage.Editor
             EditorGUI.EndProperty();
         }
     }
-}
+}

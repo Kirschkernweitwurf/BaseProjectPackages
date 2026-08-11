@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using Base.UtilityPackage.Editor.Dropdown;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
@@ -50,7 +51,7 @@ namespace Base.AttributePackage.Editor
         private static void DrawPopup(Rect position, SerializedProperty property, GUIContent label,
             List<object> values, string[] labels, int current)
         {
-            int selected = EditorGUI.Popup(position, label.text, current, labels);
+            int selected = LabeledField.Popup(position, label, current, labels);
             if (selected >= 0 && selected < values.Count && selected != current)
                 SetValue(property, values[selected]);
         }
@@ -63,6 +64,7 @@ namespace Base.AttributePackage.Editor
 
             return labels;
         }
+
 
         private static List<object> ResolveOptions(SerializedProperty property, string member)
         {
@@ -143,7 +145,7 @@ namespace Base.AttributePackage.Editor
         private void DrawSearchable(Rect position, SerializedProperty property, GUIContent label,
             List<object> values, string[] labels, int current)
         {
-            Rect fieldRect = EditorGUI.PrefixLabel(position, label);
+            Rect fieldRect = LabeledField.Prefix(position, label);
 
             string caption = current >= 0 && current < labels.Length
                 ? labels[current]

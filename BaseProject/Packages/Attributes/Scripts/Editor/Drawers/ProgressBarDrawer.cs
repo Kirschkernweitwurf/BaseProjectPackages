@@ -43,7 +43,7 @@ namespace Base.AttributePackage.Editor
         {
             if (!IsNumber(property))
             {
-                EditorGUI.LabelField(position, label.text,
+                LabeledField.Hint(position, label,
                     AttributeNames.Usage<ProgressBarAttribute>("an int or float"));
 
                 return;
@@ -144,4 +144,4 @@ namespace Base.AttributePackage.Editor
             ? value.ToString(WholeFormat)
             : value.ToString(FractionFormat);
     }
-}
+}

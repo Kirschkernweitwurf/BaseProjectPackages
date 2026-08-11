@@ -36,7 +36,7 @@ namespace Base.UtilityPackage.Editor
 
             string[] names = BuildNames(options);
             int index = GetCurrentIndex(property, options);
-            int newIndex = EditorGUI.Popup(position, label.text, index, names);
+            int newIndex = LabeledField.Popup(position, label, index, names);
 
             // Only write back on an actual change so repaints do not touch the SerializedObject.
             if (newIndex == index)
@@ -76,4 +76,4 @@ namespace Base.UtilityPackage.Editor
                 : foundIndex + 1;
         }
     }
-}
+}

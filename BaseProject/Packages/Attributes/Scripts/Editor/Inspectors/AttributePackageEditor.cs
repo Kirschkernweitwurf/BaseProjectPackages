@@ -11,9 +11,9 @@ namespace Base.AttributePackage.Editor
     /// Base inspector for the attribute package. Handles the serialized script field, foldout and
     /// collapsible title grouping, then delegates each member to <see cref="MemberRenderer"/> and the
     /// handler pipeline. Tab groups are drawn by <see cref="TabGroupRenderer"/>, read-only native
-    /// members and buttons by their renderers. Header buttons are drawn into the component header by
-    /// <see cref="HeaderButtonRenderer"/>. Derive concrete editors targeting MonoBehaviour and
-    /// ScriptableObject.
+    /// members and buttons by their renderers. Header buttons are not drawn from here: Unity does not
+    /// call OnHeaderGUI for component editors, so <see cref="HeaderItemInjector"/> registers them with
+    /// the header itself. Derive concrete editors targeting MonoBehaviour and ScriptableObject.
     /// </summary>
     public abstract class AttributePackageEditor : UnityEditor.Editor
     {
@@ -29,15 +29,6 @@ namespace Base.AttributePackage.Editor
             serializedObject.ApplyModifiedProperties();
             NativeMemberRenderer.Draw(this);
             ButtonRenderer.Draw(this);
-        }
-
-        protected override void OnHeaderGUI()
-        {
-            base.OnHeaderGUI();
-
-            // The default header reserves its own block, so its rect is the last one laid out. Drawing
-            // on top of it is the only way to reach the header without reimplementing Unity's version.
-            HeaderButtonRenderer.Draw(this, GUILayoutUtility.GetLastRect());
         }
 
         private static void DrawScriptField(SerializedProperty scriptProperty)
@@ -61,15 +52,17 @@ namespace Base.AttributePackage.Editor
                 SerializedProperty property = properties[index];
                 FieldInfo field = ReflectionCache.GetField(type, property.name);
 
+                // The title is opened before the tab check, so a field that carries both still gets its
+                // section header and the tab group ends up inside it rather than beside it.
+                DrawTitle(type, field);
+
                 if (ReflectionCache.GetAttribute<TabAttribute>(field) != null)
                 {
-                    ResetGroupState();
-                    index = TabGroupRenderer.Draw(properties, index, this);
+                    index = DrawTabGroup(properties, index, type);
                     continue;
                 }
 
                 index++;
-                DrawTitle(type, field);
 
                 if (_inTitleSection && !_titleExpanded)
                     continue;
@@ -81,6 +74,28 @@ namespace Base.AttributePackage.Editor
             }
         }
 
+        // A tab group ends any foldout run above it but stays inside the enclosing title section, so a
+        // collapsed section hides its tabs instead of leaving them floating on their own.
+        private int DrawTabGroup(List<SerializedProperty> properties, int index, Type type)
+        {
+            _activeFoldout = null;
+
+            if (_inTitleSection && !_titleExpanded)
+                return TabGroupRenderer.Skip(properties, index, type);
+
+            int indent = _inTitleSection
+                ? 1
+                : 0;
+
+            EditorGUI.indentLevel += indent;
+            int next = TabGroupRenderer.Draw(properties, index, this);
+            EditorGUI.indentLevel -= indent;
+
+            return next;
+        }
+
+        // Called once before the field loop. A tab group no longer resets it, because that is what made
+        // tabs escape the title section they were declared in.
         private void ResetGroupState()
         {
             _activeFoldout = null;
@@ -165,4 +180,4 @@ namespace Base.AttributePackage.Editor
             return expanded;
         }
     }
-}
+}

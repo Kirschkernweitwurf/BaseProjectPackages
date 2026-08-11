@@ -15,7 +15,7 @@ namespace Base.AttributePackage.Editor
         {
             if (property.propertyType != SerializedPropertyType.ObjectReference)
             {
-                EditorGUI.LabelField(position, label.text,
+                LabeledField.Hint(position, label,
                     AttributeNames.Usage<AudioMixerGroupAttribute>("an AudioMixerGroup field"));
 
                 return;
@@ -36,7 +36,7 @@ namespace Base.AttributePackage.Editor
             string[] names = CollectNames(groups, property, out int current);
 
             EditorGUI.BeginProperty(position, label, property);
-            int selected = EditorGUI.Popup(position, label.text, current, names);
+            int selected = LabeledField.Popup(position, label, current, names);
             if (selected >= 0 && selected < groups.Length && selected != current)
                 property.objectReferenceValue = groups[selected];
 
@@ -71,4 +71,4 @@ namespace Base.AttributePackage.Editor
                 : null;
         }
     }
-}
+}

@@ -33,7 +33,7 @@ namespace Base.AttributePackage.Editor
         {
             if (property.propertyType != SerializedPropertyType.Enum)
             {
-                EditorGUI.LabelField(position, label.text, AttributeNames.Usage<EnumToggleButtonsAttribute>("an enum"));
+                LabeledField.Hint(position, label, AttributeNames.Usage<EnumToggleButtonsAttribute>("an enum"));
                 return;
             }
 
@@ -170,4 +170,4 @@ namespace Base.AttributePackage.Editor
             return type;
         }
     }
-}
+}

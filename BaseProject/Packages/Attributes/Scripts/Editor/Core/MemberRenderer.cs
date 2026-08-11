@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Reflection;
+using Base.AttributePackage.Editor.Collections;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -9,7 +11,8 @@ namespace Base.AttributePackage.Editor
     /// <summary>
     /// Runs the per-member pipeline: visibility, enable state, before-field decorations, the field
     /// itself, then after-field handlers. Descends into nested serializable types so the same pipeline
-    /// applies at any depth, instead of handing the whole subtree to Unity's default drawing.
+    /// applies at any depth, instead of handing the whole subtree to Unity's default drawing. Arrays
+    /// carrying a collection attribute are handed to their own renderer instead of to Unity's list.
     /// </summary>
     public static class MemberRenderer
     {
@@ -53,6 +56,11 @@ namespace Base.AttributePackage.Editor
             IndentAttribute indent = context.GetAttribute<IndentAttribute>();
             int amount = indent?.Amount ?? 0;
 
+            // A member with a control in front of its label is indented one step so that control has a
+            // gutter to sit in, the same room Unity gives any other foldout arrow.
+            if (LeadingGutter.IsNeeded(context))
+                amount++;
+
             EditorGUI.indentLevel += amount;
             using (new EditorGUI.DisabledScope(!enabled))
                 DrawBody(context, field, editor);
@@ -66,6 +74,9 @@ namespace Base.AttributePackage.Editor
         private static void DrawBody(in MemberContext context, FieldInfo field, AttributePackageEditor editor)
         {
             SerializedProperty property = context.Property;
+
+            if (TryDrawCollection(context, field))
+                return;
 
             if (!CanDescend(property, field, out Type nestedType))
             {
@@ -82,6 +93,45 @@ namespace Base.AttributePackage.Editor
             EditorGUI.indentLevel++;
             DrawChildren(property, nestedType, instance, editor);
             EditorGUI.indentLevel--;
+        }
+
+        // An array is normally handed to Unity's own list drawing. [Table] and [ListDrawerSettings]
+        // replace that wholesale, so they are checked before anything else decides how to draw.
+        private static bool TryDrawCollection(in MemberContext context, FieldInfo field)
+        {
+            SerializedProperty property = context.Property;
+
+            if (!property.isArray || property.propertyType == SerializedPropertyType.String)
+                return false;
+
+            TableAttribute table = context.GetAttribute<TableAttribute>();
+            if (table != null)
+            {
+                TableRenderer.Draw(property, context.Label, ElementType(field), table,
+                    ArraySizeLimits.CanResize(context));
+                return true;
+            }
+
+            ListDrawerSettingsAttribute settings = context.GetAttribute<ListDrawerSettingsAttribute>();
+            if (settings == null)
+                return false;
+
+            ListDrawerRenderer.Draw(property, context.Label, settings, ArraySizeLimits.CanResize(context));
+            return true;
+        }
+
+        private static Type ElementType(FieldInfo field)
+        {
+            Type type = field?.FieldType;
+            if (type == null)
+                return null;
+
+            if (type.IsArray)
+                return type.GetElementType();
+
+            return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>)
+                ? type.GetGenericArguments()[0]
+                : type;
         }
 
         private static void DrawLeafField(in MemberContext context)

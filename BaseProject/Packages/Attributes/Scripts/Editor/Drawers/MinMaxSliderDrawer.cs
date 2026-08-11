@@ -14,7 +14,7 @@ namespace Base.AttributePackage.Editor
         {
             if (property.propertyType != SerializedPropertyType.Vector2)
             {
-                EditorGUI.LabelField(position, label.text, AttributeNames.Usage<MinMaxSliderAttribute>("a Vector2"));
+                LabeledField.Hint(position, label, AttributeNames.Usage<MinMaxSliderAttribute>("a Vector2"));
                 return;
             }
 
@@ -50,4 +50,4 @@ namespace Base.AttributePackage.Editor
             EditorGUI.EndProperty();
         }
     }
-}
+}

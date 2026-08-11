@@ -29,7 +29,7 @@ namespace Base.AttributePackage.Editor
         {
             if (property.propertyType != SerializedPropertyType.Float)
             {
-                EditorGUI.LabelField(position, label.text, AttributeNames.Usage<PercentageAttribute>("a float"));
+                LabeledField.Hint(position, label, AttributeNames.Usage<PercentageAttribute>("a float"));
                 return;
             }
 
@@ -65,4 +65,4 @@ namespace Base.AttributePackage.Editor
             EditorGUI.EndProperty();
         }
     }
-}
+}

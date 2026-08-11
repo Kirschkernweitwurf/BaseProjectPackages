@@ -5,30 +5,21 @@ namespace Base.AttributePackage.Editor
 {
     /// <summary>
     /// Clears a <see cref="ClearButtonAttribute"/> field. Object references reset to none and strings to
-    /// empty. Disabled while already empty. Inline by default, or on its own row when inline is false.
+    /// empty. Disabled while the field is already empty.
     /// </summary>
-    public sealed class ClearButtonHandler : FieldButtonHandler
+    public sealed class ClearButtonHandler : InlineFieldButtonHandler
     {
-        private const int AfterFieldOrder = 91;
         private const float ButtonWidth = 22f;
         private const int WidgetOrder = 30;
 
-        protected override int InlineOrder => WidgetOrder;
+        private static readonly GUIContent Content = new("\u2715", "Clear the value.");
 
-        protected override int RowOrder => AfterFieldOrder;
+        protected override int InlineOrder => WidgetOrder;
 
         protected override float InlineWidth => ButtonWidth;
 
-        protected override float RowWidth => ButtonWidth;
-
-        private static readonly GUIContent Content = new("\u2715", "Clear the value.");
-
-        protected override bool TryGetPlacement(in MemberContext context, out bool inline)
-        {
-            ClearButtonAttribute attribute = context.GetAttribute<ClearButtonAttribute>();
-            inline = attribute != null && attribute.Inline;
-            return attribute != null;
-        }
+        protected override bool Applies(in MemberContext context)
+            => context.GetAttribute<ClearButtonAttribute>() != null;
 
         protected override bool IsSupported(SerializedProperty property)
             => property.propertyType == SerializedPropertyType.ObjectReference

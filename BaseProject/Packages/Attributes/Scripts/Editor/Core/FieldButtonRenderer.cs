@@ -4,8 +4,8 @@ using UnityEngine;
 namespace Base.AttributePackage.Editor
 {
     /// <summary>
-    /// Draws the small action buttons used by the copy, clear and open widgets, both at a reserved
-    /// inline rect and, for the non-inline overload, on their own thin row below the field.
+    /// Draws the small action buttons used by the copy, clear and open widgets into their reserved
+    /// rect at the right edge of the field.
     /// </summary>
     public static class FieldButtonRenderer
     {
@@ -20,15 +20,10 @@ namespace Base.AttributePackage.Editor
 
         private static GUIStyle _style;
 
-        /// <summary>Draws a button at a fixed rect. Returns true on click.</summary>
+        /// <summary>Draws a button at a fixed rect.</summary>
+        /// <param name="rect">Where to draw it.</param>
+        /// <param name="content">Label and tooltip of the button.</param>
+        /// <returns>True on click.</returns>
         public static bool DrawAt(Rect rect, GUIContent content) => GUI.Button(rect, content, Style);
-
-        /// <summary>Draws a mini button right-aligned on its own thin row. Returns true on click.</summary>
-        public static bool DrawRight(GUIContent content, float width)
-        {
-            Rect row = EditorGUILayout.GetControlRect(false, EditorGUIUtility.singleLineHeight);
-            Rect button = new(row.xMax - width, row.y, width, row.height);
-            return GUI.Button(button, content, Style);
-        }
     }
 }

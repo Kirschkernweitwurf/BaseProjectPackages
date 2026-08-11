@@ -38,9 +38,9 @@ namespace Base.AttributePackage.Editor
 
             string[] tags = InternalEditorUtility.tags;
             int current = Array.IndexOf(tags, property.stringValue);
-            int selected = EditorGUI.Popup(rect, label.text, current, tags);
+            int selected = LabeledField.Popup(rect, label, current, tags);
             if (selected >= 0 && selected < tags.Length && selected != current)
                 property.stringValue = tags[selected];
         }
     }
-}
+}

@@ -40,10 +40,10 @@ namespace Base.AttributePackage.Editor
 
             string[] layers = InternalEditorUtility.layers;
             int current = Array.IndexOf(layers, property.stringValue);
-            int selected = EditorGUI.Popup(rect, label.text, current, layers);
+            int selected = LabeledField.Popup(rect, label, current, layers);
 
             if (selected >= 0 && selected < layers.Length && selected != current)
                 property.stringValue = layers[selected];
         }
     }
-}
+}
