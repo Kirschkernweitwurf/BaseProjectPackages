@@ -77,10 +77,13 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Checks
                 return;
             }
 
-            if (method.ReturnType != typeof(bool))
+            // A validator may return either. The result form carries its own message and severity; the
+            // bool form cannot, and falls back to the message written on the attribute.
+            if (method.ReturnType != typeof(bool) && method.ReturnType != typeof(ValidationResult))
             {
                 AttributeIssues.Error(issues, field, attributeType,
-                    $"'{attribute.MethodName}' does not return bool, so the field is never validated.");
+                    $"'{attribute.MethodName}' returns {method.ReturnType.Name}. A validator has to return "
+                    + $"bool or {nameof(ValidationResult)}, so this field is never validated.");
 
                 return;
             }

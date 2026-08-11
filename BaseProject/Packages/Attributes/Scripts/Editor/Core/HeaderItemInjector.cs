@@ -25,7 +25,7 @@ namespace Base.AttributePackage.Editor
     /// </para>
     /// </remarks>
     [InitializeOnLoad]
-    public static class HeaderItemInjector
+    internal static class HeaderItemInjector
     {
         private const BindingFlags FieldFlags = BindingFlags.NonPublic | BindingFlags.Static;
         private const string HeaderItemsField = "s_EditorHeaderItemsMethods";

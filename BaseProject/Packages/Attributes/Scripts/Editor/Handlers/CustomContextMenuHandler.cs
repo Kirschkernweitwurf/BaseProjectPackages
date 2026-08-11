@@ -14,7 +14,7 @@ namespace Base.AttributePackage.Editor
     /// public hook for adding to it from a plain handler. Copy and paste stay reachable from the label
     /// itself, which is outside the rect this claims.
     /// </remarks>
-    public sealed class CustomContextMenuHandler : IAfterFieldHandler
+    internal sealed class CustomContextMenuHandler : IAfterFieldHandler
     {
         private const int HandlerOrder = -180;
 

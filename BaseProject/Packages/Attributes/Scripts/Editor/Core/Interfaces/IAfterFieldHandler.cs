@@ -4,7 +4,7 @@ namespace Base.AttributePackage.Editor
     /// Runs after a member is drawn. Used for clamping, validation messages, constraints and previews.
     /// Handlers run in ascending <see cref="Order"/>.
     /// </summary>
-    public interface IAfterFieldHandler
+    internal interface IAfterFieldHandler
     {
         /// <summary>Run order. Lower runs first. Constraints low, validation mid, previews high.</summary>
         int Order { get; }

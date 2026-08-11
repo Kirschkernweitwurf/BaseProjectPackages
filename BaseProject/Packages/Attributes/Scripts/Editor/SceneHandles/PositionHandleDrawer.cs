@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Base.AttributePackage.Editor.SceneHandles
 {
     /// <summary>Draws a movable position gizmo for <see cref="PositionHandleAttribute"/>.</summary>
-    public sealed class PositionHandleDrawer : HandleDrawer<PositionHandleAttribute>
+    internal sealed class PositionHandleDrawer : HandleDrawer<PositionHandleAttribute>
     {
         private static readonly Vector3 LabelOffset = new(0f, 0.15f, 0f);
 

@@ -19,7 +19,7 @@ namespace Base.AttributePackage.Editor
     /// than an icon, so they are drawn extending leftwards from that slot into the empty part of the
     /// header, and a single slot is reported as consumed no matter how many were drawn.
     /// </remarks>
-    public static class HeaderItemRenderer
+    internal static class HeaderItemRenderer
     {
         /// <summary>Name of the method the header hook binds to. Kept here so the hook needs no literal.</summary>
         public const string DrawMethodName = nameof(DrawHeaderItems);

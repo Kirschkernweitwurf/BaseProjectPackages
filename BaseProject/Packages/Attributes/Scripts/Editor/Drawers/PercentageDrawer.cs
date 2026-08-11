@@ -10,7 +10,7 @@ namespace Base.AttributePackage.Editor
     /// is drawn at indent level zero so it is not pushed off screen inside indented or foldout sections.
     /// </summary>
     [CustomPropertyDrawer(typeof(PercentageAttribute))]
-    public sealed class PercentageDrawer : PropertyDrawer
+    internal sealed class PercentageDrawer : PropertyDrawer
     {
         private const float FullPercent = 100f;
         private const float Gap = 2f;
@@ -53,11 +53,11 @@ namespace Base.AttributePackage.Editor
                 ? EditorGUI.Slider(controlRect, label, percent, 0f, FullPercent)
                 : EditorGUI.FloatField(controlRect, label, percent);
 
-            // Draw the sign at indent level zero, otherwise it is shifted right and clipped in foldouts.
-            int indent = EditorGUI.indentLevel;
-            EditorGUI.indentLevel = 0;
-            EditorGUI.LabelField(signRect, SignText, SignStyle);
-            EditorGUI.indentLevel = indent;
+            // The sign sits in a rect worked out here, so the indent must not be applied to it again,
+            // and GUI.Label is used because the LabelField overload taking a string and a style reserves
+            // the label width for an empty prefix and would push the sign out of its own rect.
+            using (new NoIndentScope())
+                GUI.Label(signRect, SignText, SignStyle);
 
             if (EditorGUI.EndChangeCheck())
                 property.floatValue = Mathf.Clamp01(edited / FullPercent);
@@ -65,4 +65,4 @@ namespace Base.AttributePackage.Editor
             EditorGUI.EndProperty();
         }
     }
-}
+}

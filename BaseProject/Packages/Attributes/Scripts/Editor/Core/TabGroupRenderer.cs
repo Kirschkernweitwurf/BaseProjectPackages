@@ -11,10 +11,13 @@ namespace Base.AttributePackage.Editor
     /// tab's members below it. The selection is stored per owner type and group in
     /// <see cref="EditorPrefs"/>, as is the open state when the group asks for a foldout.
     /// </summary>
-    public static class TabGroupRenderer
+    internal static class TabGroupRenderer
     {
         private const string FoldoutKeyPrefix = "TABFOLD";
+        private const float GroupSpacing = 6f;
+        private const float IndentStep = 15f;
         private const string TabKeyPrefix = "TAB";
+        private const float ViewPadding = 24f;
 
         private static GUIStyle FoldoutStyle => _foldoutStyle ??= new GUIStyle(EditorStyles.foldout)
         {
@@ -44,8 +47,13 @@ namespace Base.AttributePackage.Editor
 
             int index = Collect(properties, startIndex, type, group, members, fields, memberTabs, tabOrder);
 
+            GUILayout.Space(GroupSpacing);
+
             if (!DrawFoldout(type, first, tabOrder))
+            {
+                GUILayout.Space(GroupSpacing);
                 return index;
+            }
 
             string selectedTab = DrawTabBar(type, group, tabOrder.ToArray());
 
@@ -58,6 +66,7 @@ namespace Base.AttributePackage.Editor
             }
 
             EditorGUILayout.EndVertical();
+            GUILayout.Space(GroupSpacing);
 
             return index;
         }
@@ -141,11 +150,18 @@ namespace Base.AttributePackage.Editor
             string key = StateKey.For(type, TabKeyPrefix, group);
             int stored = Mathf.Clamp(EditorPrefs.GetInt(key, 0), 0, tabOrder.Length - 1);
 
-            int selected = GUILayout.Toolbar(stored, tabOrder);
+            // The bar wraps rather than truncating, because a narrow inspector otherwise turns a row of
+            // readable tabs into a row of stubs that cannot be told apart.
+            int selected = WrappedToolbar.Draw(stored, tabOrder, AvailableWidth());
             if (selected != stored)
                 EditorPrefs.SetInt(key, selected);
 
             return tabOrder[selected];
         }
+
+        // The layout width of the enclosing block is not known during the layout pass, so the view width
+        // less the current indent is the closest honest estimate.
+        private static float AvailableWidth()
+            => EditorGUIUtility.currentViewWidth - EditorGUI.indentLevel * IndentStep - ViewPadding;
     }
 }

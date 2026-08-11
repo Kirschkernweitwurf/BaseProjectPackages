@@ -9,7 +9,7 @@ namespace Base.AttributePackage.Editor
     /// <see cref="AudioMixerGroupAttribute"/>.
     /// </summary>
     [CustomPropertyDrawer(typeof(AudioMixerGroupAttribute))]
-    public sealed class AudioMixerGroupDrawer : PropertyDrawer
+    internal sealed class AudioMixerGroupDrawer : PropertyDrawer
     {
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
@@ -71,4 +71,4 @@ namespace Base.AttributePackage.Editor
                 : null;
         }
     }
-}
+}

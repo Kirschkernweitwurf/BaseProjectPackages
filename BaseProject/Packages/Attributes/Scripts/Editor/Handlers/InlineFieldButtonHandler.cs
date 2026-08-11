@@ -7,7 +7,7 @@ namespace Base.AttributePackage.Editor
     /// Shared base for the small buttons that sit at the right edge of a field. Derived handlers only
     /// describe when they apply, what the button says and what a click does.
     /// </summary>
-    public abstract class InlineFieldButtonHandler : IInlineFieldWidget
+    internal abstract class InlineFieldButtonHandler : IInlineFieldWidget
     {
         /// <summary>Order within the trailing area. Lower sits closer to the field.</summary>
         protected abstract int InlineOrder { get; }

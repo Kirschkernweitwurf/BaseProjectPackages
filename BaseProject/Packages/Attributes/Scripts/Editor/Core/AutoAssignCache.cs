@@ -15,7 +15,7 @@ namespace Base.AttributePackage.Editor
     /// every repaint forever. Asset results are dropped when the project changes, scene results when the
     /// hierarchy does, and both on a domain reload.
     /// </remarks>
-    public static class AutoAssignCache
+    internal static class AutoAssignCache
     {
         private static readonly Dictionary<Type, Object> Assets = new();
 
@@ -25,7 +25,7 @@ namespace Base.AttributePackage.Editor
         {
             EditorApplication.projectChanged += Assets.Clear;
             EditorApplication.hierarchyChanged += SceneObjects.Clear;
-            AssemblyReloadEvents.beforeAssemblyReload += Clear;
+            AssemblyReloadEvents.beforeAssemblyReload += DropAll;
         }
 
         /// <summary>Returns the cached asset for the given type, running the search on first use.</summary>
@@ -41,16 +41,15 @@ namespace Base.AttributePackage.Editor
         public static Object GetSceneObject(Type type, Func<Type, Object> search)
             => Get(SceneObjects, type, search);
 
-        /// <summary>Drops everything, so the next lookup searches again.</summary>
-        public static void Clear()
+        // Presence in the dictionary means the search already ran, whatever it found. A stored null is a
+        // cached miss and stays one until the project or the hierarchy invalidates it, which is also
+        // when a deleted result would have needed re-searching anyway.
+        private static void DropAll()
         {
             Assets.Clear();
             SceneObjects.Clear();
         }
 
-        // Presence in the dictionary means the search already ran, whatever it found. A stored null is a
-        // cached miss and stays one until the project or the hierarchy invalidates it, which is also
-        // when a deleted result would have needed re-searching anyway.
         private static Object Get(Dictionary<Type, Object> cache, Type type, Func<Type, Object> search)
         {
             if (cache.TryGetValue(type, out Object cached))

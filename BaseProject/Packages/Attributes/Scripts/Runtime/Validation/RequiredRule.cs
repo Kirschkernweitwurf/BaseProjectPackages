@@ -4,7 +4,7 @@ using Object = UnityEngine.Object;
 namespace Base.AttributePackage
 {
     /// <summary>Fails when a <see cref="RequiredAttribute"/> object reference is null.</summary>
-    public sealed class RequiredRule : IValidationRule
+    internal sealed class RequiredRule : IValidationRule
     {
         /// <inheritdoc/>
         public bool IsViolated(FieldInfo field, object instance, out string reason)

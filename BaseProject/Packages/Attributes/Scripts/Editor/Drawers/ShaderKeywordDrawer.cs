@@ -13,7 +13,7 @@ namespace Base.AttributePackage.Editor
     /// editable and a compact warning below explains what is wrong.
     /// </summary>
     [CustomPropertyDrawer(typeof(ShaderKeywordAttribute))]
-    public sealed class ShaderKeywordDrawer : WarningFieldDrawer
+    internal sealed class ShaderKeywordDrawer : WarningFieldDrawer
     {
         protected override string UsageMessage => AttributeNames.Usage<ShaderKeywordAttribute>("a string");
 

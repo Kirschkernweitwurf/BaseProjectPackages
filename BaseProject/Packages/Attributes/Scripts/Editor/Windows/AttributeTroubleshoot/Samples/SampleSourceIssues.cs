@@ -11,7 +11,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Samples
     /// after the member it pointed at was renamed.
     /// </remarks>
     [TroubleshootSample]
-    public sealed class SampleSourceIssues
+    internal sealed class SampleSourceIssues
     {
         /// <summary>A float, used to show a source pointing at the wrong type.</summary>
         public float speed;

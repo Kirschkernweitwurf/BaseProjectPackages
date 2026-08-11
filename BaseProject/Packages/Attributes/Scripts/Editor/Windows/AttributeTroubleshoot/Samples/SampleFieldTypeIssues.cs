@@ -7,7 +7,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Samples
     /// attribute that quietly does nothing looks like.
     /// </summary>
     [TroubleshootSample]
-    public sealed class SampleFieldTypeIssues
+    internal sealed class SampleFieldTypeIssues
     {
         /// <summary>An int can never be null, so the requirement can never fire.</summary>
         [Required] public int requiredOnNumber;

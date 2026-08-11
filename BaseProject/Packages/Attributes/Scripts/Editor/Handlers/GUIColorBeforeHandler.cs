@@ -3,7 +3,7 @@ using UnityEngine;
 namespace Base.AttributePackage.Editor
 {
     /// <summary>Applies the background tint of <see cref="GUIColorAttribute"/> before the field draws.</summary>
-    public sealed class GUIColorBeforeHandler : IBeforeFieldHandler
+    internal sealed class GUIColorBeforeHandler : IBeforeFieldHandler
     {
         public int Order => 100;
 

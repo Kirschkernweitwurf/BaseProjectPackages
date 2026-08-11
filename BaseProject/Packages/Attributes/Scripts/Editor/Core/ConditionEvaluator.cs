@@ -9,7 +9,7 @@ namespace Base.AttributePackage.Editor
     /// Serialized siblings are read from the SerializedProperty for immediate response; other members
     /// are read from the declaring object so conditions work inside nested serializable types.
     /// </summary>
-    public static class ConditionEvaluator
+    internal static class ConditionEvaluator
     {
         /// <summary>
         /// Combines several bool members into one result. An empty member list resolves to true, so an

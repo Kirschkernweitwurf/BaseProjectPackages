@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Base.AttributePackage.Editor.SceneHandles
 {
     /// <summary>Draws a scale gizmo for <see cref="ScaleHandleAttribute"/>.</summary>
-    public sealed class ScaleHandleDrawer : HandleDrawer<ScaleHandleAttribute>
+    internal sealed class ScaleHandleDrawer : HandleDrawer<ScaleHandleAttribute>
     {
         protected override void Draw(in HandleContext context, ScaleHandleAttribute attribute)
         {

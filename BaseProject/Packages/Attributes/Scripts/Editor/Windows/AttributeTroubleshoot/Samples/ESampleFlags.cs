@@ -4,7 +4,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Samples
 {
     /// <summary>Damage types used to demonstrate the multi-select mask attribute in the showcase.</summary>
     [Flags]
-    public enum ESampleFlags : byte
+    internal enum ESampleFlags : byte
     {
         /// <summary>Nothing selected.</summary>
         None = 0,

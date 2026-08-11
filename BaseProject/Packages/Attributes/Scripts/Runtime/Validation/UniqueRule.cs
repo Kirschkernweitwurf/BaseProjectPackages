@@ -5,7 +5,7 @@ using System.Reflection;
 namespace Base.AttributePackage
 {
     /// <summary>Fails when a <see cref="UniqueAttribute"/> list contains the same entry twice.</summary>
-    public sealed class UniqueRule : IValidationRule
+    internal sealed class UniqueRule : IValidationRule
     {
         // Reused across calls. The scanner runs one rule at a time, so no state survives a check.
         private static readonly List<string> Groups = new();

@@ -7,7 +7,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Checks
     /// Enumerates the members a check inspects. Only members declared directly on the type are
     /// returned, so a field on a base class is reported once, on the base, instead of once per subclass.
     /// </summary>
-    public static class ScannedMembers
+    internal static class ScannedMembers
     {
         // Static members are excluded on purpose. The renderers and the reflection cache only look at
         // instance members, so an attribute on a static member is invisible either way.

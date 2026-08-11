@@ -24,7 +24,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Showcase
     /// attribute tester shows is here, in the same order and under the same headings.
     /// </para>
     /// </remarks>
-    public sealed class AttributeShowcase : ScriptableObject
+    internal sealed class AttributeShowcase : ScriptableObject
     {
         private const float DefaultContextValue = 10f;
         private const float FullHealth = 100f;
@@ -36,7 +36,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Showcase
         // The section colors are one pastel rainbow, evenly spaced around the hue circle and leveled to
         // the same perceived lightness, so no heading shouts louder than its neighbors and every one of
         // them stays readable on both editor skins.
-        [Title("0. Sources", "#FFB8B8", Foldout = true, DefaultExpanded = false)]
+        [Title("0. Sources", "#FFB8B8", Foldout = true, DefaultExpanded = true)]
         [InfoBox("Assign these first. The pickers further down read their options from these fields. An "
             + "asset can only reference other assets, so the Animator and the Renderer have to come from "
             + "a prefab.")]
@@ -51,7 +51,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Showcase
         /// <summary>Alternative shader source, to show the pickers accept more than a Material.</summary>
         public Renderer sourceRenderer;
 
-        [Title("1. Layout", "#F4BF92", Foldout = true, DefaultExpanded = false)]
+        [Title("1. Layout", "#F9BD96", Foldout = true, DefaultExpanded = false)]
         [InfoBox("Info boxes default to Info and sit above their field.")]
         public string infoBoxDefault = "Below a default info box";
 
@@ -122,7 +122,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Showcase
 
         [Tab("Debug", "Settings")] public string tabDebugNote = "Debug tab";
 
-        [Title("2. Conditions", "#D2CB7E", Foldout = true, DefaultExpanded = false)]
+        [Title("2. Conditions", "#DAC883", Foldout = true, DefaultExpanded = false)]
         [InfoBox("Toggle the two bools and the enum below and watch the fields under them appear, "
             + "disappear and grey out.")]
         public bool isEnabled = true;
@@ -175,7 +175,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Showcase
 
         [ReadOnlyInEditMode] public int readOnlyInEditMode = 4;
 
-        [Title("3. Validation", "#B4D47F", Foldout = true, DefaultExpanded = false)]
+        [Title("3. Validation", "#C1D07D", Foldout = true, DefaultExpanded = false)]
         [InfoBox("Clear a required field or break a rule to see the box appear under it.")]
         [Required] public Material requiredDefault;
 
@@ -225,7 +225,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Showcase
 
         [AssetOnly] public GameObject assetOnly;
 
-        [Title("4. Pickers", "#93DD85", Foldout = true, DefaultExpanded = false)]
+        [Title("4. Pickers", "#A6D881", Foldout = true, DefaultExpanded = false)]
         [InfoBox("The ones reading from section 0 fall back to a plain field and say what is missing "
             + "while their source is empty. That fallback is worth seeing once.")]
         [Tag] public string tagDefault = "Untagged";
@@ -303,7 +303,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Showcase
 
         [ShaderKeyword(nameof(sourceRenderer))] public string rendererKeyword;
 
-        [Title("5. Widgets", "#85DEA0", Foldout = true, DefaultExpanded = false)]
+        [Title("5. Widgets", "#89E086", Foldout = true, DefaultExpanded = false)]
         [InfoBox("The last dropdown has forty options, which crosses the threshold where the popup "
             + "becomes a searchable tree.")]
         [Dropdown(nameof(shortOptions))]
@@ -362,7 +362,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Showcase
         [CopyButton]
         public string clearAndCopy = "Two widgets";
 
-        [Title("6. Callbacks", "#83DBC6", Foldout = true, DefaultExpanded = false)]
+        [Title("6. Callbacks", "#85DEA6", Foldout = true, DefaultExpanded = false)]
         [InfoBox("Edit these and watch the last callback field in section 11 update.")]
         [OnValueChanged(nameof(OnTrackedChanged))]
         public int trackedValue;
@@ -373,7 +373,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Showcase
 
         [OnArraySizeChanged(nameof(OnTagsResized))] public Material[] palettes = Array.Empty<Material>();
 
-        [Title("7. References and serialization", "#8CD5E9", Foldout = true, DefaultExpanded = false)]
+        [Title("7. References and serialization", "#83DBC6", Foldout = true, DefaultExpanded = false)]
         [InfoBox("Everything Unity cannot serialize on its own, plus the two inline editors.")]
         [Expandable] public ScriptableObject expandableCollapsed;
 
@@ -431,7 +431,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Showcase
         /// <summary>A list of that nested class, since arrays take a different path.</summary>
         public List<ShowcaseNestedSettings> nestedList = new();
 
-        [Title("8. Lists and tables", "#AFC8FF", Foldout = true, DefaultExpanded = false)]
+        [Title("8. Lists and tables", "#89D6E4", Foldout = true, DefaultExpanded = false)]
         [InfoBox("Without an attribute an array keeps Unity's own drawer, including its drag handles. "
             + "These two replace it entirely, which is why reordering becomes arrow buttons.")]
         public List<string> plainList = new();
@@ -467,7 +467,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Showcase
 
         [Table] public ShowcaseTableRow[] tableArray = Array.Empty<ShowcaseTableRow>();
 
-        [Title("9. Size, toggles and widgets", "#C9C1FF", Foldout = true, DefaultExpanded = false)]
+        [Title("9. Size, toggles and widgets", "#A2CCFF", Foldout = true, DefaultExpanded = false)]
         [InfoBox("The size limits switch off the add and remove controls of the list and table drawers, "
             + "since a button that gets clamped back the moment you press it is worse than no button.")]
         [ArraySize(4)]
@@ -520,7 +520,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Showcase
         [CustomContextMenu("Reset to default", nameof(ResetContextValue))]
         public float multiContextValue = DefaultContextValue;
 
-        [Title("10. Searching auto-getters", "#E3B9FF", Foldout = true, DefaultExpanded = false)]
+        [Title("10. Searching auto-getters", "#C0C3FF", Foldout = true, DefaultExpanded = false)]
         [InfoBox("These search the project, so they only run while the field is empty and their results "
             + "are cached. Clear one to watch it refill. The hierarchy getters are not here: an asset "
             + "has no GameObject for them to search.")]
@@ -535,6 +535,173 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Showcase
 
         [GetPrefabWithComponent(typeof(Collider))] public GameObject colliderPrefab;
 
+        [Title("$" + nameof(DynamicSectionTitle), "#D4BDFF", Foldout = true, DefaultExpanded = false)]
+        [InfoBox("$" + nameof(DynamicInfo))]
+        [Tooltip("The heading above and the box under it are both computed. A string argument starting "
+            + "with a dollar names a member to read instead of carrying a literal.")]
+        public string dynamicHeadingSubject = "look up";
+
+        [Label("$" + nameof(DynamicLabel))]
+        [Tooltip("The label of this field is computed too, so it can say what the value currently means "
+            + "rather than repeating the field name.")]
+        public int dynamicLabelValue = 3;
+
+        [Label("Renamed in the inspector only")]
+        [Tooltip("A plain literal label, for the fields whose good code name and good inspector name are "
+            + "not the same word.")]
+        public string literalLabelField = "Same field, different label";
+
+        [Required("$" + nameof(DynamicRequiredMessage))]
+        [Tooltip("Clear this and the error box names the asset it is missing from.")]
+        public Material dynamicRequiredMessage;
+
+        [Required(FixAction = nameof(UseFirstMaterial), FixActionName = "Use first")]
+        [Tooltip("The error box carries a button that fills the field, for the failures whose answer is "
+            + "always the same.")]
+        public Material fixableMaterial;
+
+        [ValidateInput(nameof(ValidateTexture))]
+        [Tooltip("The validator returns a result rather than a bool, so it names which of its checks "
+            + "failed and whether that is an error or only a warning.")]
+        public Texture2D validatedTexture;
+
+        [ValidateInput(nameof(IsPositive), FixAction = nameof(MakePositive), FixActionName = "Flip")]
+        [Tooltip("A validator with a fix button of its own. Type a negative number.")]
+        public float fixableNumber = 5f;
+
+        [MinMaxSlider(0f, 50f)]
+        [Tooltip("Drives the two sliders below it, so their range moves while you drag this.")]
+        public Vector2 dynamicBounds = new(2f, 20f);
+
+        [Slider(nameof(dynamicBounds))]
+        [Tooltip("A slider taking both bounds from the Vector2 above.")]
+        public float boundedBySibling = 10f;
+
+        [Slider(0f, nameof(MaxSpeed), AutoClamp = true)]
+        [Unit(UnitAttribute.MetersPerSecond)]
+        [Tooltip("A constant lower bound and a member-driven upper one, clamped so the stored value "
+            + "cannot sit outside the range even when something else wrote it.")]
+        public float clampedSpeed = 4f;
+
+        [Unit(UnitAttribute.Meter)]
+        [Tooltip("A unit from the constant vocabulary rather than a literal.")]
+        public float lengthInMeters = 2.5f;
+
+        [Unit(UnitAttribute.Degree)]
+        [Tooltip("Degrees of arc.")]
+        public float angleInDegrees = 45f;
+
+        [Unit("bananas")]
+        [Tooltip("A free-text unit, which is the exception rather than the default.")]
+        public float customUnit = 1f;
+
+        [DisplayAsString]
+        [Tooltip("Drawn as read-only text on one line, collapsing the whole collection instead of "
+            + "keeping a foldout and a row per element.")]
+        public string[] displayedCollection =
+        {
+            "hello",
+            "world",
+            "and",
+            "so",
+            "on"
+        };
+
+        [DisplayAsString(Separator = " | ")]
+        [Tooltip("The same with a custom separator between elements.")]
+        public List<ESampleMode> displayedModes = new();
+
+        [InlineProperty]
+        [Tooltip("A nested type drawn on this row instead of behind a foldout.")]
+        public ShowcaseRange inlineRange = new();
+
+        [InlineProperty(LabelWidth = 50f)]
+        [Tooltip("The same nested type with wider child labels.")]
+        public ShowcaseRange inlineWideLabels = new();
+
+        [Tooltip("The same type without the attribute, for comparison. Three rows and a click.")]
+        public ShowcaseRange foldedRange = new();
+
+        [PreviewObject]
+        [Tooltip("A preview big enough to judge rather than a thumbnail. Assign a mesh or a prefab and "
+            + "drag inside the preview to turn it round.")]
+        public GameObject previewedPrefab;
+
+        [PreviewObject(64f, Width = 64f)]
+        [Tooltip("The same preview at an explicit size, for a texture where turning it round means "
+            + "nothing.")]
+        public Texture2D previewedTexture;
+
+        [PreviewObject(160f, Foldout = true, DefaultExpanded = false)]
+        [Tooltip("A large preview behind a foldout, so it costs nothing until you open it.")]
+        public Mesh previewedMesh;
+
+        [AssetDropdown]
+        [Tooltip("A searchable dropdown of every material in the project. The filter comes from the "
+            + "field type when none is given.")]
+        public Material dropdownMaterial;
+
+        [AssetDropdown("t:Texture2D")]
+        [Tooltip("The same with an explicit asset database filter.")]
+        public Texture2D dropdownTexture;
+
+        [Title("12. Order and layout", "#EBB6FF", Foldout = true, DefaultExpanded = false)]
+        [InfoBox("The three fields at the bottom are declared last but drawn first, because their order "
+            + "was given explicitly. Serialization order is still declaration order.")]
+        [Horizontal("dimensions")]
+        [Tooltip("First cell of a three-field row. The row ends where the group name changes.")]
+        public float width = 1f;
+
+        [Horizontal("dimensions")]
+        [Tooltip("Second cell of the same row.")]
+        public float height = 2f;
+
+        [Horizontal("dimensions")]
+        [Tooltip("Third cell of the same row.")]
+        public float depth = 3f;
+
+        [Horizontal("weighted", Weight = 3f)]
+        [Tooltip("A row where the cells are not equal. This one takes three quarters of the width.")]
+        public string weightedName = "Takes most of the row";
+
+        [Horizontal("weighted", Weight = 1f)]
+        [Tooltip("And this one the remaining quarter.")]
+        public int weightedCount = 1;
+
+        [Horizontal("unlabeled", Weight = 1f, ShowLabel = false)]
+        [Tooltip("A cell that drops its label, giving the value the whole width.")]
+        public float unlabeledFirst = 0.5f;
+
+        [Horizontal("unlabeled", Weight = 1f, ShowLabel = false)]
+        [Tooltip("The second half of that row.")]
+        public float unlabeledSecond = 1.5f;
+
+        [Tab("Loadout", "Collapsible tabs", Foldout = true, DefaultExpanded = true)]
+        [Tooltip("A tab group under its own collapsible header. Click the bold heading above the tab "
+            + "bar to fold the whole group away, tabs and all.")]
+        public string collapsibleLoadout = "Primary";
+
+        [Tab("Loadout", "Collapsible tabs")]
+        [Tooltip("Second field of the Loadout tab.")]
+        public int collapsibleAmmo = 30;
+
+        [Tab("Perks", "Collapsible tabs")]
+        [Tooltip("A second tab in the same collapsible group.")]
+        public bool collapsiblePerkEnabled = true;
+
+        [Tab("Notes", "Collapsible tabs")]
+        [Tooltip("A third tab, so the bar has enough entries to be worth folding.")]
+        public string collapsibleNote = "Anything worth remembering";
+
+        [PropertyOrder(-10)]
+        [Tooltip("Declared here, drawn at the top of the section. Lower comes first, and an unmarked "
+            + "field counts as zero.")]
+        public string pinnedToTop = "Declared last, drawn first";
+
+        [PropertyOrder(10)]
+        [Tooltip("Pushed to the bottom of the section instead.")]
+        public string pushedToBottom = "Declared first, drawn last";
+
         /// <summary>Read-only property surfaced in the inspector by its attribute.</summary>
         [ShowNativeProperty] public int SlotCount => slots.Count;
 
@@ -546,6 +713,26 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Showcase
 
         /// <summary>Drives the condition that reads a property rather than a field.</summary>
         public bool HasAdvancedSetup => isEnabled && isAdvanced;
+
+        // Read by the heading of the dynamic section, which is what makes that heading say something the
+        // reader could not already see from the fields under it.
+        private string DynamicSectionTitle => $"11. Dynamic values ({dynamicHeadingSubject})";
+
+        // Read by the info box under that heading.
+        private string DynamicInfo => $"Mode {mode}, {slots.Count} slots.";
+
+        // Read by the label of a field, so the label can say what the value currently means.
+        private string DynamicLabel => dynamicLabelValue == 1
+            ? "One item"
+            : $"{dynamicLabelValue} items";
+
+        // Read by a required message, so the box names the asset it is missing from.
+        private string DynamicRequiredMessage => $"{name} has no material assigned.";
+
+        // Upper bound of one of the sliders, to show a bound can be a property rather than a field.
+        private float MaxSpeed => isAdvanced
+            ? 20f
+            : 8f;
 
         // Palette for the two color fields. Instance rather than static on purpose: the member resolver
         // only looks at instance members, so a static source would silently find nothing.
@@ -581,7 +768,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Showcase
             }
         }
 
-        [Title("11. Native members", "#FFB1FA", Foldout = true, DefaultExpanded = false)]
+        [Title("13. Native members", "#FFB2F5", Foldout = true, DefaultExpanded = false)]
         [InfoBox("Everything below this point is drawn after the serialized fields, in declaration "
             + "order. The header controls are the one thing missing: they live in the component header, "
             + "which an embedded inspector does not draw.")]
@@ -643,6 +830,35 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Showcase
 
         private void DoubleContextValue()
             => Record($"{nameof(DoubleContextValue)} to {multiContextValue *= 2f}");
+
+        private void UseFirstMaterial()
+        {
+            fixableMaterial = material;
+            Record(nameof(UseFirstMaterial));
+        }
+
+        private void MakePositive()
+        {
+            fixableNumber = Mathf.Abs(fixableNumber);
+            Record(nameof(MakePositive));
+        }
+
+        // Returns a result rather than a bool, so it can name which check failed and choose between an
+        // error and a warning.
+        private ValidationResult ValidateTexture()
+        {
+            if (validatedTexture == null)
+                return ValidationResult.Error("No texture assigned.");
+
+            if (!validatedTexture.isReadable)
+                return ValidationResult.Warning("The texture is not readable, so it cannot be sampled.");
+
+            return ValidationResult.Valid;
+        }
+
+        private ValidationResult IsPositive() => fixableNumber >= 0f
+            ? ValidationResult.Valid
+            : ValidationResult.Error("The value has to be positive.");
 
         private bool IsEven(int value) => value % 2 == 0;
 

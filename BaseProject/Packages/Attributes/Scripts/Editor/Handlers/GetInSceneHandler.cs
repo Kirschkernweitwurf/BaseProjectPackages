@@ -9,7 +9,7 @@ namespace Base.AttributePackage.Editor
     /// Fills an empty <see cref="GetInSceneAttribute"/> field from anywhere in the open scenes. The
     /// search runs through <see cref="AutoAssignCache"/> and is dropped whenever the hierarchy changes.
     /// </summary>
-    public sealed class GetInSceneHandler : IAfterFieldHandler
+    internal sealed class GetInSceneHandler : IAfterFieldHandler
     {
         private const int HandlerOrder = 8;
 

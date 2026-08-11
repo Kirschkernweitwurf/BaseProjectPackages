@@ -40,7 +40,8 @@ namespace Base.AttributePackage.Editor
         private void DrawFields()
         {
             List<SerializedProperty> properties = CollectProperties(out SerializedProperty script);
-            if (script != null)
+
+            if (script != null && !IsScriptHidden())
                 DrawScriptField(script);
 
             Type type = target.GetType();
@@ -59,6 +60,12 @@ namespace Base.AttributePackage.Editor
                 if (ReflectionCache.GetAttribute<TabAttribute>(field) != null)
                 {
                     index = DrawTabGroup(properties, index, type);
+                    continue;
+                }
+
+                if (ReflectionCache.GetAttribute<HorizontalAttribute>(field) != null)
+                {
+                    index = DrawHorizontalRow(properties, index, type);
                     continue;
                 }
 
@@ -94,6 +101,30 @@ namespace Base.AttributePackage.Editor
             return next;
         }
 
+        // A horizontal row behaves like a tab group: it ends any foldout run above it, stays inside the
+        // enclosing title, and is skipped rather than drawn while that title is closed.
+        private int DrawHorizontalRow(List<SerializedProperty> properties, int index, Type type)
+        {
+            _activeFoldout = null;
+
+            if (_inTitleSection && !_titleExpanded)
+                return HorizontalRowRenderer.Skip(properties, index, type);
+
+            int indent = _inTitleSection
+                ? 1
+                : 0;
+
+            EditorGUI.indentLevel += indent;
+            int next = HorizontalRowRenderer.Draw(properties, index, this);
+            EditorGUI.indentLevel -= indent;
+
+            return next;
+        }
+
+        // A type opts out of the script row, so the check is on the type rather than on any field.
+        private bool IsScriptHidden()
+            => target.GetType().IsDefined(typeof(HideMonoScriptAttribute), true);
+
         // Called once before the field loop. A tab group no longer resets it, because that is what made
         // tabs escape the title section they were declared in.
         private void ResetGroupState()
@@ -114,8 +145,16 @@ namespace Base.AttributePackage.Editor
             _titleExpanded = true;
 
             if (_inTitleSection)
-                _titleExpanded = TitleRenderer.DrawCollapsible(type, title);
+                _titleExpanded = TitleRenderer.DrawCollapsible(type, title, ResolveTitle(type, title));
         }
+
+        // A collapsible title is drawn before the member pipeline reaches the field that carries it, so
+        // it resolves against the inspected object rather than through a MemberContext.
+        private string ResolveTitle(Type type, TitleAttribute title)
+            => ValueResolver.IsMemberReference(title.Title)
+                && ValueResolver.TryRead(type, target, ValueResolver.MemberName(title.Title), out object read)
+                    ? read?.ToString() ?? string.Empty
+                    : title.Title;
 
         // Returns false while the field belongs to a collapsed foldout.
         private bool UpdateFoldout(FieldInfo field)
@@ -166,6 +205,8 @@ namespace Base.AttributePackage.Editor
                     properties.Add(iterator.Copy());
             }
 
+            PropertySorter.Sort(properties, target.GetType());
+
             return properties;
         }
 
@@ -180,4 +221,4 @@ namespace Base.AttributePackage.Editor
             return expanded;
         }
     }
-}
+}

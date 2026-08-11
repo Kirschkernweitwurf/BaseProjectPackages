@@ -10,7 +10,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Samples
     /// in after the member it pointed at was renamed, which no <c>nameof</c> could reproduce.
     /// </remarks>
     [TroubleshootSample]
-    public sealed class SampleConditionIssues
+    internal sealed class SampleConditionIssues
     {
         /// <summary>A valid bool the working conditions point at.</summary>
         public bool isEnabled;

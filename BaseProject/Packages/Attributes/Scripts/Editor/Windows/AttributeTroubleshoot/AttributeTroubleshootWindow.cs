@@ -18,7 +18,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot
     /// read on a healthy project, and a live inspector of a demo asset so the attributes can be seen
     /// working rather than only described.
     /// </remarks>
-    public sealed class AttributeTroubleshootWindow : EditorWindow
+    internal sealed class AttributeTroubleshootWindow : EditorWindow
     {
         private const float BarSpacing = 4f;
         private const float ButtonHeight = 26f;

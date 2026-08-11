@@ -9,7 +9,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Showcase
     /// be named with nameof rather than a string literal, which is the whole point of that setting.
     /// </summary>
     [Serializable]
-    public sealed class ShowcaseTableRow
+    internal sealed class ShowcaseTableRow
     {
         /// <summary>Row name, used as the list label and as the widest column.</summary>
         [TableColumn(2f)] public string id = "Row";

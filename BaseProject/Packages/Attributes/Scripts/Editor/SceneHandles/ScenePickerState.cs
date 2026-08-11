@@ -6,7 +6,7 @@ namespace Base.AttributePackage.Editor.SceneHandles
     /// Remembers which field is currently waiting for a scene view click. Only one field can be armed at
     /// a time, because the next click has to belong to exactly one of them.
     /// </summary>
-    public static class ScenePickerState
+    internal static class ScenePickerState
     {
         private static int _targetId;
         private static string _propertyPath;

@@ -7,7 +7,7 @@ namespace Base.AttributePackage.Editor
     /// Draws the small action buttons used by the copy, clear and open widgets into their reserved
     /// rect at the right edge of the field.
     /// </summary>
-    public static class FieldButtonRenderer
+    internal static class FieldButtonRenderer
     {
         private const int FontSize = 10;
         private const int HorizontalPadding = 2;

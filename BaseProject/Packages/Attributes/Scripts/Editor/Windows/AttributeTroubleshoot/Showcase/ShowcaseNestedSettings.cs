@@ -8,7 +8,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Showcase
     /// and still honors the attributes on their fields.
     /// </summary>
     [Serializable]
-    public sealed class ShowcaseNestedSettings
+    internal sealed class ShowcaseNestedSettings
     {
         /// <summary>Shows that a title works inside a nested type, not only on the object itself.</summary>
         [Title("Nested block", "#83DBC6")]

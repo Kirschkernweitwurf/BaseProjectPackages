@@ -8,7 +8,7 @@ namespace Base.AttributePackage.Editor
     /// object, and only when the field type is known. Without the empty check a search would run on
     /// every repaint of every selected object, which is what makes the expensive getters affordable.
     /// </summary>
-    public static class AutoAssign
+    internal static class AutoAssign
     {
         /// <summary>Returns whether the member is an empty object reference worth searching for.</summary>
         /// <param name="context">The member currently being drawn.</param>

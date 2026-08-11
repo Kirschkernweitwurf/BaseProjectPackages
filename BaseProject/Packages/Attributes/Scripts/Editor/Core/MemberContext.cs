@@ -9,7 +9,7 @@ namespace Base.AttributePackage.Editor
     /// <summary>
     /// Everything a handler needs about a single inspected member, passed by reference.
     /// </summary>
-    public readonly struct MemberContext
+    internal readonly struct MemberContext
     {
         /// <summary>The serialized property being drawn.</summary>
         public readonly SerializedProperty Property;
@@ -39,14 +39,19 @@ namespace Base.AttributePackage.Editor
         /// <summary>The object reference value captured before the field was drawn this frame.</summary>
         public readonly Object ObjectReferenceBefore;
 
+        /// <summary>False while the member is drawn without its label, inside a horizontal cell.</summary>
+        public readonly bool ShowLabel;
+
         /// <summary>Creates a context for a single member.</summary>
+        /// <param name="showLabel">False while the member is drawn without its label.</param>
         public MemberContext(SerializedProperty property,
             FieldInfo field,
             Object target,
             Type declaringType,
             object declaringObject,
             AttributePackageEditor editor,
-            Object objectReferenceBefore)
+            Object objectReferenceBefore,
+            bool showLabel = true)
         {
             Property = property;
             Field = field;
@@ -55,19 +60,41 @@ namespace Base.AttributePackage.Editor
             DeclaringObject = declaringObject;
             Editor = editor;
             ObjectReferenceBefore = objectReferenceBefore;
+            ShowLabel = showLabel;
         }
 
         /// <summary>Returns the field attribute of the given type, or null. Cached per field.</summary>
         public T GetAttribute<T>() where T : Attribute => ReflectionCache.GetAttribute<T>(Field);
 
-        /// <summary>Human-readable label derived from the property name.</summary>
-        public string DisplayName => ObjectNames.NicifyVariableName(Property.name);
+        /// <summary>
+        /// Human-readable label for the member. A <see cref="LabelAttribute"/> replaces the name Unity
+        /// derives from the field, and a member reference in it is resolved.
+        /// </summary>
+        public string DisplayName
+        {
+            get
+            {
+                LabelAttribute label = GetAttribute<LabelAttribute>();
+
+                return label == null
+                    ? ObjectNames.NicifyVariableName(Property.name)
+                    : ValueResolver.Text(this, label.Text);
+            }
+        }
 
         /// <summary>
         /// Label and tooltip for the member. Drawers that build their own header have to use this rather
         /// than <see cref="DisplayName"/>, or the field silently loses its tooltip.
         /// </summary>
         public GUIContent Label => new(DisplayName, GetAttribute<TooltipAttribute>()?.tooltip);
+
+        /// <summary>
+        /// The label actually passed to the field. Empty inside a horizontal cell that asked to hide it,
+        /// so the value gets the whole width rather than sharing it with a label nobody needs twice.
+        /// </summary>
+        public GUIContent EffectiveLabel => ShowLabel
+            ? Label
+            : GUIContent.none;
 
         /// <summary>
         /// Finds a sibling property by name, relative to this member's path. Resolves top-level members
@@ -84,4 +111,4 @@ namespace Base.AttributePackage.Editor
             return Editor.serializedObject.FindProperty(siblingPath);
         }
     }
-}
+}

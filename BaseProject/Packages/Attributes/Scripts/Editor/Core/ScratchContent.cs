@@ -7,7 +7,7 @@ namespace Base.AttributePackage.Editor
     /// instance every repaint. The returned content is only valid until the next call and must never
     /// be stored.
     /// </summary>
-    public static class ScratchContent
+    internal static class ScratchContent
     {
         private static readonly GUIContent Content = new();
 

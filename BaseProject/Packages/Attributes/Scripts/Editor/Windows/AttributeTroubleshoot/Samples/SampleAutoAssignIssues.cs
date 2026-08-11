@@ -7,7 +7,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Samples
     /// a reference stays empty and looks like a forgotten drag instead of a broken attribute.
     /// </summary>
     [TroubleshootSample]
-    public sealed class SampleAutoAssignIssues
+    internal sealed class SampleAutoAssignIssues
     {
         /// <summary>GetComponent returns components, never the GameObject itself.</summary>
         [GetComponent] public GameObject wholeObject;

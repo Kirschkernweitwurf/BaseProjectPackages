@@ -8,7 +8,7 @@ namespace Base.AttributePackage
     /// rules, which run outside the inspector and therefore have no SerializedProperty to read from.
     /// The editor pipeline uses its own evaluator so serialized edits respond immediately.
     /// </summary>
-    public static class ConditionMembers
+    internal static class ConditionMembers
     {
         private const BindingFlags MemberFlags =
             BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy;

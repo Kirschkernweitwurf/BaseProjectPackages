@@ -8,7 +8,7 @@ namespace Base.AttributePackage.Editor
     /// Shared drawing for <see cref="TitleAttribute"/>. Used by <see cref="TitleHandler"/> for plain
     /// titles and by <see cref="AttributePackageEditor"/> for collapsible titles, so both look the same.
     /// </summary>
-    public static class TitleRenderer
+    internal static class TitleRenderer
     {
         private const string FoldoutKeyPrefix = "TITLE";
         private const float LineHeight = 1f;
@@ -29,7 +29,9 @@ namespace Base.AttributePackage.Editor
         private static GUIStyle _labelStyle;
 
         /// <summary>Draws a plain bold title with an underline.</summary>
-        public static void DrawPlain(TitleAttribute attribute)
+        /// <param name="attribute">The title to draw.</param>
+        /// <param name="title">The resolved title text.</param>
+        public static void DrawPlain(TitleAttribute attribute, string title)
         {
             bool hasColor = TryResolveColor(attribute, out Color color);
             GUILayout.Space(SpaceAbove);
@@ -38,7 +40,7 @@ namespace Base.AttributePackage.Editor
                 ? color
                 : EditorStyles.boldLabel.normal.textColor;
 
-            EditorGUILayout.LabelField(attribute.Title, LabelStyle);
+            EditorGUILayout.LabelField(title, LabelStyle);
             DrawUnderline(hasColor, color);
         }
 
@@ -46,11 +48,14 @@ namespace Base.AttributePackage.Editor
         /// Draws a collapsible bold title with an underline and returns its expanded state. The state is
         /// stored per owner type and title in <see cref="EditorPrefs"/>.
         /// </summary>
-        public static bool DrawCollapsible(Type ownerType, TitleAttribute attribute)
+        /// <param name="title">The resolved title text.</param>
+        public static bool DrawCollapsible(Type ownerType, TitleAttribute attribute, string title)
         {
             bool hasColor = TryResolveColor(attribute, out Color color);
             GUILayout.Space(SpaceAbove);
 
+            // The state key uses the authored title rather than the resolved one, so a title that
+            // computes its text does not lose its expanded state every time that text changes.
             string key = StateKey.For(ownerType, FoldoutKeyPrefix, attribute.Title);
             bool stored = EditorPrefs.GetBool(key, attribute.DefaultExpanded);
 
@@ -61,7 +66,7 @@ namespace Base.AttributePackage.Editor
                 FoldoutStyle.onNormal.textColor = color;
             }
 
-            bool expanded = EditorGUILayout.Foldout(stored, attribute.Title, true, FoldoutStyle);
+            bool expanded = EditorGUILayout.Foldout(stored, title, true, FoldoutStyle);
 
             if (hasColor)
             {

@@ -6,7 +6,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Showcase
     /// Draws the showcase asset through the real inspector pipeline, so the attributes are seen doing
     /// what they actually do rather than being described. Pure presentation.
     /// </summary>
-    public static class AttributeShowcaseView
+    internal static class AttributeShowcaseView
     {
         private const string Explanation =
             "A throwaway asset drawn through the normal inspector, mirroring the attribute tester section "

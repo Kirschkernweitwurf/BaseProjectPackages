@@ -15,7 +15,7 @@ namespace Base.AttributePackage.Editor.Collections
     /// property tree knows which fields Unity actually shows. An empty table therefore has no columns to
     /// draw yet, which is why it shows only its header until the first row exists.
     /// </remarks>
-    public static class TableRenderer
+    internal static class TableRenderer
     {
         private const string EmptyMessage = "Empty. Add a row to see the columns.";
         private const float HeaderPadding = 2f;
@@ -165,39 +165,37 @@ namespace Base.AttributePackage.Editor.Collections
             bool canResize)
         {
             // Cells are positioned from explicit rects, so the ambient indent has to be neutralized.
-            int indent = EditorGUI.indentLevel;
-            EditorGUI.indentLevel = 0;
-
-            float x = row.x;
-
-            if (attribute.ShowRowIndex)
+            using (new NoIndentScope())
             {
-                GUI.Label(new Rect(x, row.y, IndexWidth, CollectionGui.Line), index.ToString(),
-                    EditorStyles.miniLabel);
+                float x = row.x;
 
-                x += IndexWidth;
-            }
-
-            float available = AvailableWidth(row.width, attribute, canResize);
-            float totalWeight = TotalWeight();
-
-            foreach (TableColumn column in Columns)
-            {
-                float width = available * (column.Weight / totalWeight);
-                SerializedProperty cell = element.FindPropertyRelative(column.PropertyName);
-
-                if (cell != null)
+                if (attribute.ShowRowIndex)
                 {
-                    Rect cellRect = new(x + HeaderPadding, row.y, width - HeaderPadding * 2f,
-                        EditorGUI.GetPropertyHeight(cell, true));
+                    GUI.Label(new Rect(x, row.y, IndexWidth, CollectionGui.Line), index.ToString(),
+                        EditorStyles.miniLabel);
 
-                    EditorGUI.PropertyField(cellRect, cell, GUIContent.none, true);
+                    x += IndexWidth;
                 }
 
-                x += width;
-            }
+                float available = AvailableWidth(row.width, attribute, canResize);
+                float totalWeight = TotalWeight();
 
-            EditorGUI.indentLevel = indent;
+                foreach (TableColumn column in Columns)
+                {
+                    float width = available * (column.Weight / totalWeight);
+                    SerializedProperty cell = element.FindPropertyRelative(column.PropertyName);
+
+                    if (cell != null)
+                    {
+                        Rect cellRect = new(x + HeaderPadding, row.y, width - HeaderPadding * 2f,
+                            EditorGUI.GetPropertyHeight(cell, true));
+
+                        EditorGUI.PropertyField(cellRect, cell, GUIContent.none, true);
+                    }
+
+                    x += width;
+                }
+            }
 
             if (!canResize || attribute.HideRemoveButton)
                 return false;

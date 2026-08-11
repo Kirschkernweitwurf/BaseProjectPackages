@@ -12,7 +12,7 @@ namespace Base.AttributePackage
     /// Descends into nested serializable types and into arrays and lists of them. Shared by the runtime
     /// validator and the editor overview window.
     /// </summary>
-    public static class ReferenceValidationScanner
+    internal static class ReferenceValidationScanner
     {
         private const BindingFlags Flags =
             BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly;

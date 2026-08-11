@@ -8,7 +8,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Samples
     /// more than one type to offer and swapping between them can actually be seen.
     /// </summary>
     [Serializable]
-    public sealed class SampleHealAbility : ISampleAbility
+    internal sealed class SampleHealAbility : ISampleAbility
     {
         /// <summary>Health restored per use.</summary>
         [SerializeField] private int amount = 25;

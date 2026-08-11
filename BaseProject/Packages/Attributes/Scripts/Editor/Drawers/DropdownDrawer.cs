@@ -16,7 +16,7 @@ namespace Base.AttributePackage.Editor
     /// stops being usable once it no longer fits on screen.
     /// </summary>
     [CustomPropertyDrawer(typeof(DropdownAttribute))]
-    public sealed class DropdownDrawer : PropertyDrawer
+    internal sealed class DropdownDrawer : PropertyDrawer
     {
         private const string NoneLabel = "None";
         private const string NullLabel = "null";

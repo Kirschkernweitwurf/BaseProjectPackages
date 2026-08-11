@@ -8,7 +8,7 @@ namespace Base.AttributePackage.Editor.Collections
     /// renderers are shared across every inspector, and this state belongs to one field on one object.
     /// It lives only for the editor session, which is the right lifetime for a filter.
     /// </summary>
-    public sealed class ListDrawerState
+    internal sealed class ListDrawerState
     {
         private const char KeySeparator = ':';
 

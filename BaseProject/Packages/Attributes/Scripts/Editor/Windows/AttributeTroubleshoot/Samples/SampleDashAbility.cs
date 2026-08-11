@@ -5,7 +5,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Samples
 {
     /// <summary>The one implementation of <see cref="ISampleAbility"/>, used by the showcase picker.</summary>
     [Serializable]
-    public sealed class SampleDashAbility : ISampleAbility
+    internal sealed class SampleDashAbility : ISampleAbility
     {
         /// <summary>How far the dash travels.</summary>
         [SerializeField] private float distance = 4f;

@@ -10,7 +10,7 @@ namespace Base.AttributePackage.Editor
     /// <see cref="ResourcesPathAttribute"/>.
     /// </summary>
     [CustomPropertyDrawer(typeof(ResourcesPathAttribute))]
-    public sealed class ResourcesPathDrawer : PropertyDrawer
+    internal sealed class ResourcesPathDrawer : PropertyDrawer
     {
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
@@ -47,4 +47,4 @@ namespace Base.AttributePackage.Editor
             EditorGUI.EndProperty();
         }
     }
-}
+}

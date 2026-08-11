@@ -1,7 +1,7 @@
 namespace Base.AttributePackage.Editor
 {
     /// <summary>Hides the field unless the referenced enum member equals one of the given values.</summary>
-    public sealed class ShowIfEnumHandler : IVisibilityHandler
+    internal sealed class ShowIfEnumHandler : IVisibilityHandler
     {
         public bool ShouldShow(in MemberContext context)
         {

@@ -13,7 +13,7 @@ namespace Base.AttributePackage.Editor
     /// field stays editable and a compact warning below explains what is missing.
     /// </summary>
     [CustomPropertyDrawer(typeof(AnimatorStateAttribute))]
-    public sealed class AnimatorStateDrawer : WarningFieldDrawer
+    internal sealed class AnimatorStateDrawer : WarningFieldDrawer
     {
         protected override string UsageMessage => AttributeNames.Usage<AnimatorStateAttribute>("a string or int");
 
@@ -126,4 +126,4 @@ namespace Base.AttributePackage.Editor
             return -1;
         }
     }
-}
+}

@@ -4,7 +4,7 @@ namespace Base.AttributePackage.Editor
     /// Clamps <see cref="MaxAttribute"/> fields to a maximum. Applies to int and float and to each
     /// component of Vector2, Vector3, Vector2Int and Vector3Int.
     /// </summary>
-    public sealed class MaxHandler : IAfterFieldHandler
+    internal sealed class MaxHandler : IAfterFieldHandler
     {
         public int Order => 10;
 

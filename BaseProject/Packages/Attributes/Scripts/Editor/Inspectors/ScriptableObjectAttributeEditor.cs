@@ -8,5 +8,5 @@ namespace Base.AttributePackage.Editor
     /// </summary>
     [CustomEditor(typeof(ScriptableObject), true)]
     [CanEditMultipleObjects]
-    public sealed class ScriptableObjectAttributeEditor : AttributePackageEditor { }
+    internal sealed class ScriptableObjectAttributeEditor : AttributePackageEditor { }
 }

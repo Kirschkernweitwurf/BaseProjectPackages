@@ -1,7 +1,7 @@
 namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot
 {
     /// <summary>Which view the troubleshoot window is showing.</summary>
-    public enum ETroubleshootTab : byte
+    internal enum ETroubleshootTab : byte
     {
         /// <summary>Findings from the actual project.</summary>
         Project = 0,

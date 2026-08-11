@@ -8,7 +8,7 @@ namespace Base.AttributePackage
     /// validation scanner, the rule discovery and the editor member pipeline, so all three agree on
     /// where user code ends. Results are cached per type and cleared on domain reload.
     /// </summary>
-    public static class FrameworkAssemblies
+    internal static class FrameworkAssemblies
     {
         private const string CoreLibrary = "mscorlib";
         private const string MonoPrefix = "Mono.";

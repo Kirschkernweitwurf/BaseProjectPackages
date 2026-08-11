@@ -7,7 +7,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Samples
     /// type picker ends up doing nothing.
     /// </summary>
     [TroubleshootSample]
-    public sealed class SampleReferenceIssues
+    internal sealed class SampleReferenceIssues
     {
         /// <summary>Without [SerializeReference] there is no managed reference to pick a type for.</summary>
         [ReferencePicker] public ISampleAbility missingSerializeReference;

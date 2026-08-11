@@ -14,7 +14,7 @@ namespace Base.AttributePackage.Editor
     /// runs first among the after-field handlers: any handler drawing a row before it would move the
     /// rect out from under the arrow.
     /// </remarks>
-    public sealed class ExpandableFoldoutHandler : IAfterFieldHandler
+    internal sealed class ExpandableFoldoutHandler : IAfterFieldHandler
     {
         private const int HandlerOrder = -200;
 
@@ -34,7 +34,11 @@ namespace Base.AttributePackage.Editor
             Rect arrow = LeadingGutter.RectFor(row, EditorGUI.indentLevel, EditorGUIUtility.singleLineHeight);
 
             bool stored = ExpandableState.IsExpanded(context, attribute);
-            bool expanded = EditorGUI.Foldout(arrow, stored, GUIContent.none, true);
+            bool expanded;
+
+            // The gutter rect already accounts for the indent, so the control must not apply it again.
+            using (new NoIndentScope())
+                expanded = EditorGUI.Foldout(arrow, stored, GUIContent.none, true);
 
             if (expanded != stored)
                 ExpandableState.SetExpanded(context, expanded);

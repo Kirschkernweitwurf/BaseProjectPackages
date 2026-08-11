@@ -3,7 +3,7 @@ using System;
 namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Checks
 {
     /// <summary>One entry of the table that maps an attribute to the field types it can draw.</summary>
-    public readonly struct FieldTypeRule
+    internal readonly struct FieldTypeRule
     {
         /// <summary>The attribute the rule applies to.</summary>
         public readonly Type AttributeType;

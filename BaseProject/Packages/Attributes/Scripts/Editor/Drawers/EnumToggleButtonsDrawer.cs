@@ -12,7 +12,7 @@ namespace Base.AttributePackage.Editor
     /// are cached per enum type.
     /// </summary>
     [CustomPropertyDrawer(typeof(EnumToggleButtonsAttribute))]
-    public sealed class EnumToggleButtonsDrawer : PropertyDrawer
+    internal sealed class EnumToggleButtonsDrawer : PropertyDrawer
     {
         private const float ContentWidthMargin = 40f;
         private const float RowSpacing = 2f;
@@ -170,4 +170,4 @@ namespace Base.AttributePackage.Editor
             return type;
         }
     }
-}
+}

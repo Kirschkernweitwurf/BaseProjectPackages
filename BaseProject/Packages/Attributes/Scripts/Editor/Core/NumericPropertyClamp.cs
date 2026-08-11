@@ -8,7 +8,7 @@ namespace Base.AttributePackage.Editor
     /// to Vector2, Vector3, Vector2Int and Vector3Int, mirroring how Unity's own <c>[Min]</c> handles
     /// vectors. Shared by the min and max handlers, so both clamp identically.
     /// </summary>
-    public static class NumericPropertyClamp
+    internal static class NumericPropertyClamp
     {
         /// <summary>
         /// Clamps the property into the inclusive range. Pass an infinity for a side that is unbounded.

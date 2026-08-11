@@ -9,7 +9,7 @@ namespace Base.AttributePackage.Editor
     /// component of Vector2, Vector3, Vector2Int and Vector3Int. The last non-zero value per field is
     /// remembered, so a value that reaches zero returns to the side it came from and keeps its sign.
     /// </summary>
-    public sealed class NotZeroHandler : IAfterFieldHandler
+    internal sealed class NotZeroHandler : IAfterFieldHandler
     {
         public int Order => 10;
 

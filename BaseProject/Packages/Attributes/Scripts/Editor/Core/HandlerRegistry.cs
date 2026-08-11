@@ -9,7 +9,7 @@ namespace Base.AttributePackage.Editor
     /// requires no registration: create a class implementing a handler interface and it is picked up.
     /// Handlers must be stateless, since one instance is shared across all inspectors.
     /// </summary>
-    public static class HandlerRegistry
+    internal static class HandlerRegistry
     {
         /// <summary>All before-field handlers, sorted by order.</summary>
         public static IBeforeFieldHandler[] BeforeField

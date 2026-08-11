@@ -3,7 +3,7 @@ using System.Reflection;
 namespace Base.AttributePackage.Editor
 {
     /// <summary>One control in the component header, resolved once per type so repaints run no reflection.</summary>
-    public readonly struct HeaderItem
+    internal readonly struct HeaderItem
     {
         /// <summary>The member the control was declared on.</summary>
         public readonly MemberInfo Member;

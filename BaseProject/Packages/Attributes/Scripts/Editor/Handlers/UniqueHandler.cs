@@ -10,7 +10,7 @@ namespace Base.AttributePackage.Editor
     /// button that removes the repeats. A custom message collapses all groups into a single box.
     /// The button only exists while duplicates exist.
     /// </summary>
-    public sealed class UniqueHandler : IAfterFieldHandler
+    internal sealed class UniqueHandler : IAfterFieldHandler
     {
         private const float ButtonHeight = 18f;
 

@@ -7,7 +7,7 @@ namespace Base.AttributePackage.Editor.SceneHandles
     /// Draws a rotation gizmo for <see cref="RotationHandleAttribute"/>. Accepts a Quaternion field or a
     /// Vector3 field holding euler angles, since both are common ways to author a rotation.
     /// </summary>
-    public sealed class RotationHandleDrawer : HandleDrawer<RotationHandleAttribute>
+    internal sealed class RotationHandleDrawer : HandleDrawer<RotationHandleAttribute>
     {
         protected override void Draw(in HandleContext context, RotationHandleAttribute attribute)
         {

@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Base.AttributePackage.Editor
 {
     /// <summary>Auto-assigns a <see cref="GetComponentAttribute"/> field from the same GameObject.</summary>
-    public sealed class GetComponentHandler : IAfterFieldHandler
+    internal sealed class GetComponentHandler : IAfterFieldHandler
     {
         public int Order => 5;
 

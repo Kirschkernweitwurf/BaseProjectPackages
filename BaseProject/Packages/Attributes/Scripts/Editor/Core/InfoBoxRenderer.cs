@@ -7,19 +7,24 @@ namespace Base.AttributePackage.Editor
     /// serialized fields and by <see cref="NativeMemberRenderer"/> for the read-only members below them,
     /// so a box looks the same wherever it is declared.
     /// </summary>
-    public static class InfoBoxRenderer
+    internal static class InfoBoxRenderer
     {
-        /// <summary>Draws the box for the given attribute.</summary>
+        /// <summary>Draws the box for the given attribute, using its own message.</summary>
         /// <param name="attribute">The attribute to draw.</param>
-        public static void Draw(InfoBoxAttribute attribute)
+        public static void Draw(InfoBoxAttribute attribute) => Draw(attribute, attribute?.Message);
+
+        /// <summary>Draws the box for the given attribute with an already resolved message.</summary>
+        /// <param name="attribute">The attribute to draw.</param>
+        /// <param name="message">The message to show.</param>
+        public static void Draw(InfoBoxAttribute attribute, string message)
         {
             if (attribute == null)
                 return;
 
             if (attribute.Compact || attribute.HasExplicitColor)
-                CompactHelpBox.Draw(attribute.Message, attribute.Type, attribute.ColorHex, attribute.PresetColor);
+                CompactHelpBox.Draw(message, attribute.Type, attribute.ColorHex, attribute.PresetColor);
             else
-                EditorGUILayout.HelpBox(attribute.Message, ToMessageType(attribute.Type));
+                EditorGUILayout.HelpBox(message, ToMessageType(attribute.Type));
         }
 
         /// <summary>Maps the package's box type onto Unity's own.</summary>

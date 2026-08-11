@@ -5,7 +5,7 @@ using Object = UnityEngine.Object;
 namespace Base.AttributePackage.Editor
 {
     /// <summary>Draws a thumbnail for <see cref="ShowAssetPreviewAttribute"/> references.</summary>
-    public sealed class AssetPreviewHandler : IAfterFieldHandler
+    internal sealed class AssetPreviewHandler : IAfterFieldHandler
     {
         private const int MaximumSize = 512;
         private const int MinimumSize = 16;

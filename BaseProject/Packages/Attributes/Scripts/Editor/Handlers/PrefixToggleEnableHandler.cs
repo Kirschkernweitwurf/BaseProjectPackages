@@ -4,7 +4,7 @@ namespace Base.AttributePackage.Editor
     /// Greys out a <see cref="PrefixToggleAttribute"/> field while its checkbox is off, so the toggle
     /// reads as switching the value on rather than as an unrelated bool sitting next to it.
     /// </summary>
-    public sealed class PrefixToggleEnableHandler : IEnableHandler
+    internal sealed class PrefixToggleEnableHandler : IEnableHandler
     {
         public bool ShouldEnable(in MemberContext context)
         {

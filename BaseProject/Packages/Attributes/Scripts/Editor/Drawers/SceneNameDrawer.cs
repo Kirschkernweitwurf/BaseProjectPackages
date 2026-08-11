@@ -14,7 +14,7 @@ namespace Base.AttributePackage.Editor
     /// refreshed when the Build Settings change.
     /// </summary>
     [CustomPropertyDrawer(typeof(SceneNameAttribute))]
-    public sealed class SceneNameDrawer : WarningFieldDrawer
+    internal sealed class SceneNameDrawer : WarningFieldDrawer
     {
         protected override string UsageMessage => AttributeNames.Usage<SceneNameAttribute>("a string or int");
 
@@ -101,4 +101,4 @@ namespace Base.AttributePackage.Editor
             _displayNames = null;
         }
     }
-}
+}

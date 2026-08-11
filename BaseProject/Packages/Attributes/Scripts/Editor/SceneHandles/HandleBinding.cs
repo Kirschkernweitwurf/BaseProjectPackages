@@ -3,7 +3,7 @@ using System;
 namespace Base.AttributePackage.Editor.SceneHandles
 {
     /// <summary>One attribute on a field paired with the drawer that reacts to it.</summary>
-    public readonly struct HandleBinding
+    internal readonly struct HandleBinding
     {
         /// <summary>The attribute instance found on the field.</summary>
         public readonly Attribute Attribute;

@@ -8,7 +8,7 @@ namespace Base.AttributePackage.Editor
     /// Draws a multi-select mask field for <see cref="EnumFlagsAttribute"/>.
     /// </summary>
     [CustomPropertyDrawer(typeof(EnumFlagsAttribute))]
-    public sealed class EnumFlagsDrawer : PropertyDrawer
+    internal sealed class EnumFlagsDrawer : PropertyDrawer
     {
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
@@ -39,4 +39,4 @@ namespace Base.AttributePackage.Editor
             EditorGUI.EndProperty();
         }
     }
-}
+}

@@ -10,7 +10,7 @@ namespace Base.AttributePackage.Editor
     /// carrying the required component. On a GameObject field the prefab root is assigned; on a
     /// component field the component on that root is.
     /// </summary>
-    public sealed class GetPrefabWithComponentHandler : IAfterFieldHandler
+    internal sealed class GetPrefabWithComponentHandler : IAfterFieldHandler
     {
         private const int HandlerOrder = 7;
         private const string PrefabFilter = "t:Prefab";

@@ -4,7 +4,7 @@ namespace Base.AttributePackage.Editor
     /// Clamps <see cref="MinMaxAttribute"/> fields into an inclusive range. Applies to int and float
     /// and to each component of Vector2, Vector3, Vector2Int and Vector3Int.
     /// </summary>
-    public sealed class MinMaxHandler : IAfterFieldHandler
+    internal sealed class MinMaxHandler : IAfterFieldHandler
     {
         public int Order => 10;
 

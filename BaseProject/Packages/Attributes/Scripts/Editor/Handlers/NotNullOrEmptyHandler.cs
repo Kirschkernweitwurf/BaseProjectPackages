@@ -3,7 +3,7 @@ using UnityEditor;
 namespace Base.AttributePackage.Editor
 {
     /// <summary>Shows a compact error when a <see cref="NotNullOrEmptyAttribute"/> value is null or empty.</summary>
-    public sealed class NotNullOrEmptyHandler : IAfterFieldHandler
+    internal sealed class NotNullOrEmptyHandler : IAfterFieldHandler
     {
         public int Order => 20;
 
@@ -16,7 +16,7 @@ namespace Base.AttributePackage.Editor
             if (!IsNullOrEmpty(context.Property))
                 return;
 
-            CompactHelpBox.Error(attribute.Message
+            CompactHelpBox.Error(ValueResolver.Text(context, attribute.Message)
                 ?? context.DisplayName + " " + NotNullOrEmptyAttribute.DefaultReason);
         }
 

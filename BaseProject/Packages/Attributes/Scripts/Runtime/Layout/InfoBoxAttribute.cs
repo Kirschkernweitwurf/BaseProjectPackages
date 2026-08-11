@@ -33,7 +33,9 @@ namespace Base.AttributePackage
         /// <summary>True when an explicit hex or preset color was set.</summary>
         public bool HasExplicitColor => !string.IsNullOrEmpty(ColorHex) || PresetColor != EColor.Default;
 
-        /// <summary>Creates the attribute with a message plus optional type, position, compact and hex color.</summary>
+        /// <summary>
+        /// Creates the attribute with a message plus optional type, position, compact and hex color.
+        /// </summary>
         public InfoBoxAttribute(string message, EInfoBoxType type = EInfoBoxType.Info,
             EInfoBoxPosition position = EInfoBoxPosition.Above, bool compact = false, string colorHex = null)
         {

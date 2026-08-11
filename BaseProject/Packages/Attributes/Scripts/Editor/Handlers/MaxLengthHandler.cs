@@ -3,7 +3,7 @@ using UnityEditor;
 namespace Base.AttributePackage.Editor
 {
     /// <summary>Trims <see cref="MaxLengthAttribute"/> string fields to the allowed length.</summary>
-    public sealed class MaxLengthHandler : IAfterFieldHandler
+    internal sealed class MaxLengthHandler : IAfterFieldHandler
     {
         public int Order => 10;
 

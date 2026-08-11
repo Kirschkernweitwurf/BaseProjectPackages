@@ -1,7 +1,7 @@
 namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Samples
 {
     /// <summary>Enum used by the samples and the showcase to demonstrate enum-driven attributes.</summary>
-    public enum ESampleMode : byte
+    internal enum ESampleMode : byte
     {
         /// <summary>Slow movement.</summary>
         Slow = 0,

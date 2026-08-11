@@ -15,7 +15,7 @@ namespace Base.AttributePackage.Editor
     /// field stays editable and a compact warning below explains what is missing.
     /// </summary>
     [CustomPropertyDrawer(typeof(ShaderParamAttribute))]
-    public sealed class ShaderParamDrawer : WarningFieldDrawer
+    internal sealed class ShaderParamDrawer : WarningFieldDrawer
     {
         protected override string UsageMessage => AttributeNames.Usage<ShaderParamAttribute>("a string or int");
 
@@ -157,4 +157,4 @@ namespace Base.AttributePackage.Editor
             return -1;
         }
     }
-}
+}

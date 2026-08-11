@@ -9,7 +9,7 @@ namespace Base.AttributePackage.Editor
     /// and walks strictly upward, so the own GameObject is never used. Shared by the inspector handler
     /// and the batch assigner, so both resolve references identically.
     /// </summary>
-    public static class ParentComponentSearch
+    internal static class ParentComponentSearch
     {
         /// <summary>
         /// Finds the first matching object on an ancestor. With a name only ancestors of that name are

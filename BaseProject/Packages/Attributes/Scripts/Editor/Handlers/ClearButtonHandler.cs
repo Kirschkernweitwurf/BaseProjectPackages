@@ -7,7 +7,7 @@ namespace Base.AttributePackage.Editor
     /// Clears a <see cref="ClearButtonAttribute"/> field. Object references reset to none and strings to
     /// empty. Disabled while the field is already empty.
     /// </summary>
-    public sealed class ClearButtonHandler : InlineFieldButtonHandler
+    internal sealed class ClearButtonHandler : InlineFieldButtonHandler
     {
         private const float ButtonWidth = 22f;
         private const int WidgetOrder = 30;

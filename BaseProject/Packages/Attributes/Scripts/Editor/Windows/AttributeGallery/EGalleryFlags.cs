@@ -4,7 +4,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeGallery
 {
     /// <summary>Demo flags enum used by the gallery to show the mask widget.</summary>
     [Flags]
-    public enum EGalleryFlags : byte
+    internal enum EGalleryFlags : byte
     {
         /// <summary>Nothing selected.</summary>
         None = 0,

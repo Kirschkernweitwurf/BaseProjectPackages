@@ -12,7 +12,7 @@ namespace Base.AttributePackage.Editor
     /// methods and their labels are collected once per type and cached, so repaints do not run any
     /// reflection.
     /// </summary>
-    public static class ButtonRenderer
+    internal static class ButtonRenderer
     {
         private const string CancelLabel = "Cancel";
         private const string ConfirmLabel = "Confirm";

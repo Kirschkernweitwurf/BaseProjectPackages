@@ -13,7 +13,7 @@ namespace Base.AttributePackage.Editor
     /// list elements the menu also offers adding every matching component at once.
     /// </summary>
     [CustomPropertyDrawer(typeof(ComponentPickerAttribute))]
-    public sealed class ComponentPickerDrawer : PropertyDrawer
+    internal sealed class ComponentPickerDrawer : PropertyDrawer
     {
         private const string ArrayToken = ".Array.data[";
         private const float BadgeWidth = 32f;
@@ -48,7 +48,8 @@ namespace Base.AttributePackage.Editor
             if (!isBadgeVisible)
                 return;
 
-            Rect badgeRect = new(position.xMax - BadgeWidth, position.y, BadgeWidth, EditorGUIUtility.singleLineHeight);
+            Rect badgeRect = new(position.xMax - BadgeWidth, position.y, BadgeWidth,
+                EditorGUIUtility.singleLineHeight);
             DrawIndexBadge(badgeRect, property, siblings);
         }
 

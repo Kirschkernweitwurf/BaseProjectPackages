@@ -13,7 +13,7 @@ namespace Base.AttributePackage.Editor
     /// control over the field's own row run in that same phase. Closing the check after them would count
     /// a click on a foldout arrow or a prefix toggle as an edit of the field they sit in front of.
     /// </remarks>
-    public sealed class OnValueChangedHandler : IBeforeFieldHandler, IAfterFieldHandler
+    internal sealed class OnValueChangedHandler : IBeforeFieldHandler, IAfterFieldHandler
     {
         private const int AfterFieldOrder = -300;
         private const int BeforeFieldOrder = 1000;
@@ -66,4 +66,4 @@ namespace Base.AttributePackage.Editor
             method.Invoke(context.DeclaringObject, arguments);
         }
     }
-}
+}

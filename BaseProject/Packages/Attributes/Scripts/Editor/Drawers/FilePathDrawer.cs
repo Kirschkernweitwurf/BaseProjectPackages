@@ -5,7 +5,7 @@ namespace Base.AttributePackage.Editor
 {
     /// <summary>Draws a file path field with a browse button for <see cref="FilePathAttribute"/>.</summary>
     [CustomPropertyDrawer(typeof(FilePathAttribute))]
-    public sealed class FilePathDrawer : PathPickerDrawer
+    internal sealed class FilePathDrawer : PathPickerDrawer
     {
         private const string PanelTitle = "Select File";
 

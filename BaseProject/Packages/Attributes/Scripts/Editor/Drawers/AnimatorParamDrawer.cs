@@ -13,7 +13,7 @@ namespace Base.AttributePackage.Editor
     /// a compact warning below explains what is missing.
     /// </summary>
     [CustomPropertyDrawer(typeof(AnimatorParamAttribute))]
-    public sealed class AnimatorParamDrawer : WarningFieldDrawer
+    internal sealed class AnimatorParamDrawer : WarningFieldDrawer
     {
         protected override string UsageMessage => AttributeNames.Usage<AnimatorParamAttribute>("a string or int");
 
@@ -109,4 +109,4 @@ namespace Base.AttributePackage.Editor
             return -1;
         }
     }
-}
+}

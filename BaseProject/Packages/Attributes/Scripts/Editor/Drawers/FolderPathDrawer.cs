@@ -5,7 +5,7 @@ namespace Base.AttributePackage.Editor
 {
     /// <summary>Draws a folder path field with a browse button for <see cref="FolderPathAttribute"/>.</summary>
     [CustomPropertyDrawer(typeof(FolderPathAttribute))]
-    public sealed class FolderPathDrawer : PathPickerDrawer
+    internal sealed class FolderPathDrawer : PathPickerDrawer
     {
         private const string PanelTitle = "Select Folder";
 

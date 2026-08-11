@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Base.AttributePackage.Editor.SceneHandles
 {
     /// <summary>Draws a connecting line for <see cref="DrawLineAttribute"/>.</summary>
-    public sealed class DrawLineDrawer : HandleDrawer<DrawLineAttribute>
+    internal sealed class DrawLineDrawer : HandleDrawer<DrawLineAttribute>
     {
         private const float DotSpacing = 3f;
 

@@ -2,10 +2,15 @@ using UnityEditor;
 
 namespace Base.AttributePackage.Editor
 {
-    /// <summary>Shows a compact error when a <see cref="RequiredAttribute"/> reference is null.</summary>
-    public sealed class RequiredHandler : IAfterFieldHandler
+    /// <summary>
+    /// Shows a compact error when a <see cref="RequiredAttribute"/> reference is null, with a fix button
+    /// when the attribute names a repair method.
+    /// </summary>
+    internal sealed class RequiredHandler : IAfterFieldHandler
     {
-        public int Order => 20;
+        private const int HandlerOrder = 20;
+
+        public int Order => HandlerOrder;
 
         public void AfterField(in MemberContext context)
         {
@@ -19,8 +24,11 @@ namespace Base.AttributePackage.Editor
             if (context.Property.objectReferenceValue != null)
                 return;
 
-            CompactHelpBox.Error(attribute.Message
-                ?? context.DisplayName + " " + RequiredAttribute.DefaultReason);
+            string message = ValueResolver.Text(context, attribute.Message)
+                ?? context.DisplayName + " " + RequiredAttribute.DefaultReason;
+
+            FixableHelpBox.Draw(context, message, EInfoBoxType.Error, attribute.FixAction,
+                attribute.FixActionName ?? RequiredAttribute.DefaultFixLabel);
         }
     }
 }

@@ -6,7 +6,7 @@ namespace Base.AttributePackage.Editor
     /// Builds the string keys used for EditorPrefs entries and for per-field editor state, so every
     /// caller composes them the same way and keys never collide by accident.
     /// </summary>
-    public static class StateKey
+    internal static class StateKey
     {
         private const string Separator = ".";
 

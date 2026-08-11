@@ -9,7 +9,7 @@ namespace Base.AttributePackage.Editor
     /// The bar is draggable unless the attribute is marked read-only.
     /// </summary>
     [CustomPropertyDrawer(typeof(ProgressBarAttribute))]
-    public sealed class ProgressBarDrawer : PropertyDrawer
+    internal sealed class ProgressBarDrawer : PropertyDrawer
     {
         private const float FallbackMax = 1f;
         private const string FractionFormat = "0.#";
@@ -144,4 +144,4 @@ namespace Base.AttributePackage.Editor
             ? value.ToString(WholeFormat)
             : value.ToString(FractionFormat);
     }
-}
+}

@@ -10,7 +10,7 @@ namespace Base.AttributePackage.Editor
     /// repaint. For flags enums the labels map to <see cref="Values"/>, for plain enums they map to
     /// Unity's enum value index.
     /// </summary>
-    public sealed class EnumButtonLayout
+    internal sealed class EnumButtonLayout
     {
         private const float ButtonPadding = 12f;
         private const float MinimumWidth = 40f;

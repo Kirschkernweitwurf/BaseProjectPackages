@@ -7,7 +7,7 @@ namespace Base.AttributePackage.Editor
     /// Draws fields marked with <see cref="ReadOnlyAttribute"/> as disabled.
     /// </summary>
     [CustomPropertyDrawer(typeof(ReadOnlyAttribute))]
-    public sealed class ReadOnlyDrawer : PropertyDrawer
+    internal sealed class ReadOnlyDrawer : PropertyDrawer
     {
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
             => EditorGUI.GetPropertyHeight(property, label, true);

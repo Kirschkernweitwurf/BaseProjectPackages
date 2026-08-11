@@ -7,7 +7,7 @@ namespace Base.AttributePackage.Editor
     /// EditorPrefs rather than on the property, so it survives selection changes and domain reloads and
     /// so the attribute's default can be honored the first time a field is seen.
     /// </summary>
-    public static class ExpandableState
+    internal static class ExpandableState
     {
         /// <summary>Returns whether the inline inspector of the given member is open.</summary>
         /// <param name="context">The member currently being drawn.</param>

@@ -30,7 +30,9 @@ namespace Base.AttributePackage
             ReadOnly = readOnly;
         }
 
-        /// <summary>Creates the attribute with a member-driven maximum, an optional color and read-only mode.</summary>
+        /// <summary>
+        /// Creates the attribute with a member-driven maximum, an optional color and read-only mode.
+        /// </summary>
         public ProgressBarAttribute(string maxMember, EColor color = EColor.Default, bool readOnly = false)
         {
             MaxMember = maxMember;

@@ -7,7 +7,7 @@ namespace Base.AttributePackage.Editor.Collections
     /// Shared metrics, labels and small controls for the list and table renderers, so both look and
     /// behave the same and neither carries a raw number of its own.
     /// </summary>
-    public static class CollectionGui
+    internal static class CollectionGui
     {
         /// <summary>Label of the add button.</summary>
         public const string AddLabel = "+";

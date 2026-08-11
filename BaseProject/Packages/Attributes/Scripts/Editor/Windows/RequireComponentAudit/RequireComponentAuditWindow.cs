@@ -13,7 +13,7 @@ namespace Base.AttributePackage.Editor.Windows.RequireComponentAudit
     /// <see cref="GetComponentInParentAttribute"/> is ignored, since its target lives on a parent, not
     /// the same GameObject.
     /// </summary>
-    public sealed class RequireComponentAuditWindow : EditorWindow
+    internal sealed class RequireComponentAuditWindow : EditorWindow
     {
         private const string MenuPath = "Tools/Base Packages/Unity Editor/References/GetComponent Require Audit";
         private const float MinimumHeight = 200f;

@@ -7,5 +7,5 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Samples
     /// these types so they never appear as real findings, and the samples tab scans nothing else.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class)]
-    public sealed class TroubleshootSampleAttribute : Attribute { }
+    internal sealed class TroubleshootSampleAttribute : Attribute { }
 }

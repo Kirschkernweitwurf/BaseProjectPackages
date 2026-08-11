@@ -13,7 +13,7 @@ namespace Base.AttributePackage.Editor
     /// Drawing the prefix label separately avoids both, so every drawer in the package goes through here
     /// rather than reaching for the string overload again.
     /// </remarks>
-    public static class LabeledField
+    internal static class LabeledField
     {
         /// <summary>Draws a dropdown that keeps the label's tooltip.</summary>
         /// <param name="rect">The full field row.</param>
@@ -27,13 +27,8 @@ namespace Base.AttributePackage.Editor
 
             // The prefix label already consumed the indent, so the control must not apply it a second
             // time or it walks further right on every nesting level.
-            int indent = EditorGUI.indentLevel;
-            EditorGUI.indentLevel = 0;
-
-            int result = EditorGUI.Popup(field, selected, options);
-
-            EditorGUI.indentLevel = indent;
-            return result;
+            using (new NoIndentScope())
+                return EditorGUI.Popup(field, selected, options);
         }
 
         /// <summary>Draws a read-only hint in place of a value, keeping the label's tooltip.</summary>

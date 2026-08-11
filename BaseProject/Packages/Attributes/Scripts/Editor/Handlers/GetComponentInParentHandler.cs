@@ -9,7 +9,7 @@ namespace Base.AttributePackage.Editor
     /// Auto-assigns a <see cref="GetComponentInParentAttribute"/> field from the ancestors. Search
     /// starts at the parent and walks upward, so the own GameObject is never used.
     /// </summary>
-    public sealed class GetComponentInParentHandler : IAfterFieldHandler
+    internal sealed class GetComponentInParentHandler : IAfterFieldHandler
     {
         public int Order => 5;
 

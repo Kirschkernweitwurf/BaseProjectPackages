@@ -21,18 +21,23 @@ namespace Base.AttributePackage.Editor
         private static float[] _widgetWidths;
 
         /// <summary>Draws a top-level member through all handlers.</summary>
-        public static void Draw(SerializedProperty property, FieldInfo field, AttributePackageEditor editor)
-            => Draw(property, field, editor.target.GetType(), editor.target, editor);
+        /// <param name="property">The property to draw.</param>
+        /// <param name="field">The reflected field behind it.</param>
+        /// <param name="editor">The editor drawing it.</param>
+        /// <param name="showLabel">False to give the value the whole row, for a horizontal cell.</param>
+        public static void Draw(SerializedProperty property, FieldInfo field, AttributePackageEditor editor,
+            bool showLabel = true)
+            => Draw(property, field, editor.target.GetType(), editor.target, editor, showLabel);
 
         private static void Draw(SerializedProperty property, FieldInfo field, Type declaringType,
-            object declaringObject, AttributePackageEditor editor)
+            object declaringObject, AttributePackageEditor editor, bool showLabel = true)
         {
             Object before = property.propertyType == SerializedPropertyType.ObjectReference
                 ? property.objectReferenceValue
                 : null;
 
             MemberContext context =
-                new(property, field, editor.target, declaringType, declaringObject, editor, before);
+                new(property, field, editor.target, declaringType, declaringObject, editor, before, showLabel);
 
             foreach (IVisibilityHandler handler in HandlerRegistry.Visibility)
             {
@@ -84,7 +89,11 @@ namespace Base.AttributePackage.Editor
                 return;
             }
 
-            property.isExpanded = EditorGUILayout.Foldout(property.isExpanded, context.DisplayName, true);
+            // An inline property draws its children on the field's own row, so it never opens a foldout.
+            if (InlinePropertyRenderer.TryDraw(context, nestedType))
+                return;
+
+            property.isExpanded = EditorGUILayout.Foldout(property.isExpanded, context.Label, true);
             if (!property.isExpanded)
                 return;
 
@@ -149,27 +158,36 @@ namespace Base.AttributePackage.Editor
                     trailing += width + WidgetGap;
             }
 
+            GUIContent label = context.EffectiveLabel;
+
             if (trailing <= 0f)
             {
-                EditorGUILayout.PropertyField(property, true);
+                EditorGUILayout.PropertyField(property, label, true);
                 return;
             }
 
             float height = EditorGUI.GetPropertyHeight(property, true);
             Rect line = EditorGUILayout.GetControlRect(true, height);
             Rect fieldRect = new(line.x, line.y, line.width - trailing, line.height);
-            EditorGUI.PropertyField(fieldRect, property, true);
+            EditorGUI.PropertyField(fieldRect, property, label, true);
 
             float x = fieldRect.xMax + WidgetGap;
-            for (int i = 0; i < widgets.Length; i++)
-            {
-                float width = _widgetWidths[i];
-                if (width <= 0f)
-                    continue;
 
-                Rect widgetRect = new(x, line.y, width, EditorGUIUtility.singleLineHeight);
-                widgets[i].Draw(widgetRect, context);
-                x += width + WidgetGap;
+            // Every widget is handed a rect worked out here, so none of them may have the indent applied
+            // to it a second time. A widget sized to its own text loses exactly that much width and ends
+            // up with the last characters cut off.
+            using (new NoIndentScope())
+            {
+                for (int i = 0; i < widgets.Length; i++)
+                {
+                    float width = _widgetWidths[i];
+                    if (width <= 0f)
+                        continue;
+
+                    Rect widgetRect = new(x, line.y, width, EditorGUIUtility.singleLineHeight);
+                    widgets[i].Draw(widgetRect, context);
+                    x += width + WidgetGap;
+                }
             }
         }
 

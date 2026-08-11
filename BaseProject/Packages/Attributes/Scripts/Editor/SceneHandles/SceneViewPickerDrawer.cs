@@ -10,7 +10,7 @@ namespace Base.AttributePackage.Editor.SceneHandles
     /// the next click assigns whatever was hit, and the click is swallowed so the selection does not
     /// jump to the object that was just picked.
     /// </summary>
-    public sealed class SceneViewPickerDrawer : HandleDrawer<SceneViewPickerAttribute>
+    internal sealed class SceneViewPickerDrawer : HandleDrawer<SceneViewPickerAttribute>
     {
         private const string Hint = "Click an object to assign it. Escape cancels.";
 

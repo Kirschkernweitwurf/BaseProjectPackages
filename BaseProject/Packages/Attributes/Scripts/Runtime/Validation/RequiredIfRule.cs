@@ -7,7 +7,7 @@ namespace Base.AttributePackage
     /// Fails when a <see cref="RequiredIfAttribute"/> object reference is null while its condition
     /// holds, so conditional requirements appear in the overview window alongside plain ones.
     /// </summary>
-    public sealed class RequiredIfRule : IValidationRule
+    internal sealed class RequiredIfRule : IValidationRule
     {
         /// <inheritdoc/>
         public bool IsViolated(FieldInfo field, object instance, out string reason)

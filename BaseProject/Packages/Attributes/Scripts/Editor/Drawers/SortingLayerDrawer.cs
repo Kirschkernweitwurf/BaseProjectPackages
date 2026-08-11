@@ -10,7 +10,7 @@ namespace Base.AttributePackage.Editor
     /// exists is kept and reported instead of being silently replaced.
     /// </summary>
     [CustomPropertyDrawer(typeof(SortingLayerAttribute))]
-    public sealed class SortingLayerDrawer : WarningFieldDrawer
+    internal sealed class SortingLayerDrawer : WarningFieldDrawer
     {
         protected override string UsageMessage => AttributeNames.Usage<SortingLayerAttribute>("a string or int");
 
@@ -84,4 +84,4 @@ namespace Base.AttributePackage.Editor
             return -1;
         }
     }
-}
+}

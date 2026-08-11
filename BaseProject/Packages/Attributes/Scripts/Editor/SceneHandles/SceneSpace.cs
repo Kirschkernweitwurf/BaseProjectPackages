@@ -7,7 +7,7 @@ namespace Base.AttributePackage.Editor.SceneHandles
     /// in. A vector on a component almost always means a local offset, so local is the default and this
     /// is where that assumption is applied instead of being repeated in every drawer.
     /// </summary>
-    public static class SceneSpace
+    internal static class SceneSpace
     {
         private static readonly Color Fallback = new(0.35f, 0.75f, 1f);
 

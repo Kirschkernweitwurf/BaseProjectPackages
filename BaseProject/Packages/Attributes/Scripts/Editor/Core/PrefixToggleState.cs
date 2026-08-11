@@ -10,7 +10,7 @@ namespace Base.AttributePackage.Editor
     /// same type, so those members can be hidden from their own row. Cached per type, since the answer
     /// is compile-time metadata and the inspector asks it on every repaint.
     /// </summary>
-    public static class PrefixToggleState
+    internal static class PrefixToggleState
     {
         private const BindingFlags FieldFlags =
             BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;

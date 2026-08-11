@@ -11,7 +11,7 @@ namespace Base.AttributePackage.Editor
     /// still-empty fields are throttled per field, so an unassignable field does not walk the whole
     /// child hierarchy on every repaint.
     /// </summary>
-    public sealed class ChildHandler : IAfterFieldHandler
+    internal sealed class ChildHandler : IAfterFieldHandler
     {
         private const double RetryInterval = 0.5;
 

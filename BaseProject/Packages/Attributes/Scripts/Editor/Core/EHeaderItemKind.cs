@@ -1,7 +1,7 @@
 namespace Base.AttributePackage.Editor
 {
     /// <summary>What a member contributes to the component header.</summary>
-    public enum EHeaderItemKind : byte
+    internal enum EHeaderItemKind : byte
     {
         /// <summary>A clickable button that runs the method.</summary>
         Button = 0,

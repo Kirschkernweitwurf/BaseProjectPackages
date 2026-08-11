@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Base.AttributePackage.Editor
 {
     /// <summary>Snaps <see cref="PowerOfTwoAttribute"/> int fields to the nearest power of two.</summary>
-    public sealed class PowerOfTwoHandler : IAfterFieldHandler
+    internal sealed class PowerOfTwoHandler : IAfterFieldHandler
     {
         public int Order => 10;
 

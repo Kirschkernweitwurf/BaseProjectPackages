@@ -10,7 +10,7 @@ namespace Base.AttributePackage.Editor
     /// Caches which serializable types have a registered <see cref="CustomPropertyDrawer"/>. The
     /// pipeline must not descend into those types, since Unity draws them through the custom drawer.
     /// </summary>
-    public static class PropertyDrawerCache
+    internal static class PropertyDrawerCache
     {
         private const string TargetTypeField = "m_Type";
         private const string UseForChildrenField = "m_UseForChildren";

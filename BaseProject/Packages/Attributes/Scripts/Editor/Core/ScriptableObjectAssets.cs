@@ -8,7 +8,7 @@ namespace Base.AttributePackage.Editor
     /// Enumerates the ScriptableObject assets of the project. Shared by the play-mode validator and the
     /// overview window, so both look at exactly the same set.
     /// </summary>
-    public static class ScriptableObjectAssets
+    internal static class ScriptableObjectAssets
     {
         private const string AssetFilter = "t:ScriptableObject";
 

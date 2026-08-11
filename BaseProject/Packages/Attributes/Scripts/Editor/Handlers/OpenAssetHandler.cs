@@ -8,7 +8,7 @@ namespace Base.AttributePackage.Editor
     /// Opens the referenced asset for <see cref="OpenAssetAttribute"/> fields. Works on object
     /// references and on string fields holding a project asset path. Disabled when nothing is assigned.
     /// </summary>
-    public sealed class OpenAssetHandler : InlineFieldButtonHandler
+    internal sealed class OpenAssetHandler : InlineFieldButtonHandler
     {
         private const string DefaultLabel = "Open";
         private const float ButtonWidth = 46f;

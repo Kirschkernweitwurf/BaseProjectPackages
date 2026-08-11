@@ -8,7 +8,7 @@ namespace Base.AttributePackage.Editor
     /// state can be applied exactly once. A SerializedProperty has no way to say whether its expanded
     /// flag was ever set, and forcing it every repaint would make the field impossible to fold away.
     /// </summary>
-    public static class FirstDraw
+    internal static class FirstDraw
     {
         private const char KeySeparator = ':';
 

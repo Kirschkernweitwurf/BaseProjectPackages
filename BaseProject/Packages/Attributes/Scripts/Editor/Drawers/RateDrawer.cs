@@ -5,7 +5,7 @@ namespace Base.AttributePackage.Editor
 {
     /// <summary>Draws an int as a row of clickable stars for <see cref="RateAttribute"/>.</summary>
     [CustomPropertyDrawer(typeof(RateAttribute))]
-    public sealed class RateDrawer : PropertyDrawer
+    internal sealed class RateDrawer : PropertyDrawer
     {
         private const string EmptyStar = "\u2606";
         private const string FilledStar = "\u2605";
@@ -36,9 +36,14 @@ namespace Base.AttributePackage.Editor
             Rect row = LabeledField.Prefix(position, label);
             int value = Mathf.Clamp(property.intValue, rate.Min, rate.Max);
 
-            int indent = EditorGUI.indentLevel;
-            EditorGUI.indentLevel = 0;
+            using (new NoIndentScope())
+                DrawStars(row, property, rate, value);
 
+            EditorGUI.EndProperty();
+        }
+
+        private static void DrawStars(Rect row, SerializedProperty property, RateAttribute rate, int value)
+        {
             for (int star = rate.Min + 1; star <= rate.Max; star++)
             {
                 Rect starRect = new(row.x + (star - rate.Min - 1) * StarWidth, row.y, StarWidth, row.height);
@@ -54,9 +59,6 @@ namespace Base.AttributePackage.Editor
                     ? rate.Min
                     : star;
             }
-
-            EditorGUI.indentLevel = indent;
-            EditorGUI.EndProperty();
         }
     }
 }

@@ -13,7 +13,7 @@ namespace Base.AttributePackage.Editor
     /// inspector offers no way to create or swap the concrete type of managed reference.
     /// </summary>
     [CustomPropertyDrawer(typeof(ReferencePickerAttribute))]
-    public sealed class ReferencePickerDrawer : PropertyDrawer
+    internal sealed class ReferencePickerDrawer : PropertyDrawer
     {
         private const string ClearLabel = "Clear";
         private const string UnsupportedMessage = "Use [ReferencePicker] with a [SerializeReference] field.";

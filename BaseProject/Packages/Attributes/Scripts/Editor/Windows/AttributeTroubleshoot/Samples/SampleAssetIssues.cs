@@ -7,7 +7,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Samples
     /// correct in isolation but the type it sits on has no hierarchy to search.
     /// </summary>
     [TroubleshootSample]
-    public sealed class SampleAssetIssues : ScriptableObject
+    internal sealed class SampleAssetIssues : ScriptableObject
     {
         /// <summary>An asset has no GameObject, so there is nothing to call GetComponent on.</summary>
         [GetComponent] public Rigidbody body;

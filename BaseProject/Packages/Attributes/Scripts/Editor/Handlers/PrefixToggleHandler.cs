@@ -8,7 +8,7 @@ namespace Base.AttributePackage.Editor
     /// label. Runs first among the after-field handlers so the rect it draws over is still the field's
     /// own row.
     /// </summary>
-    public sealed class PrefixToggleHandler : IAfterFieldHandler
+    internal sealed class PrefixToggleHandler : IAfterFieldHandler
     {
         private const int HandlerOrder = -190;
 
@@ -28,7 +28,12 @@ namespace Base.AttributePackage.Editor
             Rect box = LeadingGutter.RectFor(row, EditorGUI.indentLevel, EditorGUIUtility.singleLineHeight);
 
             bool stored = toggle.boolValue;
-            bool value = EditorGUI.Toggle(box, stored);
+            bool value;
+
+            // The gutter rect already accounts for the indent, so letting the control apply it a second
+            // time would push the checkbox one step off its own field.
+            using (new NoIndentScope())
+                value = EditorGUI.Toggle(box, stored);
 
             if (value != stored)
                 toggle.boolValue = value;

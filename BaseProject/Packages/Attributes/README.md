@@ -40,6 +40,36 @@ Anything that takes a color accepts either a hex string or a preset from the `EC
 [Title("Combat", EColor.Red)]
 ```
 
+## Dynamic values
+
+Any string argument that could sensibly be computed accepts `"$" + nameof(Member)` instead of a literal.
+The member can be a field, a property or a parameterless method, and it is read every repaint.
+
+```csharp
+[Title("$" + nameof(SectionTitle))]
+[InfoBox("$" + nameof(Status))]
+[Label("$" + nameof(Caption))]
+[Required("$" + nameof(WhyItMatters))]
+public Material material;
+
+private string SectionTitle => $"Stats ({_level})";
+private string Status => _health > 0 ? "Alive" : "Dead";
+```
+
+Written as `"$" + nameof(X)` rather than as a bare string, so a rename still moves the reference with it.
+The `$` is what separates a reference from a literal that happens to share a member's name, and it is the
+only string-encoded part of the convention. A reference that no longer resolves falls back to showing
+itself, and the troubleshoot window reports it.
+
+Numeric bounds work the same way without the prefix, because a bound that could be a literal is passed as
+a number instead:
+
+```csharp
+[Slider(0f, nameof(MaxSpeed))] public float speed;
+[Slider(nameof(range))] public float withinRange;      // one Vector2 supplies both ends
+[MinMaxSlider(nameof(min), nameof(max))] public Vector2 band;
+```
+
 ## Layout and display
 
 ```csharp
@@ -62,6 +92,38 @@ Two read-only display helpers for things that aren't serialized:
 [ShowNonSerialized] private int _tickCount;   // shows a private runtime field, greyed out
 [ShowNativeProperty] public int Doubled => _tickCount * 2;   // shows a getter
 ```
+
+`[PropertyOrder]` moves a field in the inspector without moving it in the file. Serialization order is
+declaration order, so reordering a class to make the inspector read better is otherwise a data layout
+change for a cosmetic reason. Unmarked fields count as zero and the sort is stable, so one attribute moves
+one field.
+
+```csharp
+public float drawnSecond;
+[PropertyOrder(-1)] public float drawnFirst;
+```
+
+`[Horizontal]` lays consecutive fields sharing a group name on one row, at relative widths. The run ends
+where the name changes, so the grouping stays visible in the order the fields are written.
+
+```csharp
+[Horizontal("size")] public float width;
+[Horizontal("size")] public float height;
+
+[Horizontal("split", Weight = 3f)] public string name;
+[Horizontal("split", Weight = 1f)] public int count;
+```
+
+`[InlineProperty]` draws a nested type on the field's own row instead of behind a foldout. A type holding
+anything a row cannot contain falls back to the foldout rather than drawing something misleading.
+
+```csharp
+[InlineProperty] public Range range;              // Range  [min] [max]
+[InlineProperty(LabelWidth = 50f)] public Range wide;
+```
+
+`[Label]` replaces the label Unity derives from the field name, and `[HideMonoScript]` on a type hides the
+Script row at the top of its inspector.
 
 ## Conditional visibility
 
@@ -123,6 +185,30 @@ public bool usesCustomIcon;
 
 `[MinMax]` and `[Max]` really do reset the value: type 500 with a max of 100 and it snaps back to 100 when you commit. Both also clamp component-wise on `Vector2`, `Vector3`, `Vector2Int` and `Vector3Int`.
 
+`[ValidateInput]` methods may return a `ValidationResult` instead of a bool, which lets one validator name
+which of its checks failed and choose between an error and a warning:
+
+```csharp
+[ValidateInput(nameof(ValidateTexture))] public Texture2D tex;
+
+private ValidationResult ValidateTexture()
+{
+    if (tex == null) return ValidationResult.Error("No texture assigned.");
+    if (!tex.isReadable) return ValidationResult.Warning("The texture is not readable.");
+    return ValidationResult.Valid;
+}
+```
+
+`[Required]` and `[ValidateInput]` can also carry a fix button, for the failures whose answer is always
+the same:
+
+```csharp
+[Required(FixAction = nameof(UseSelf), FixActionName = "Use self")]
+public Transform spawnPoint;
+
+private void UseSelf() => spawnPoint = transform;
+```
+
 ## Auto-assignment
 
 Fill a reference from the hierarchy so you stop dragging things by hand. They only fill when the field is empty, so you can still override manually.
@@ -133,6 +219,16 @@ Fill a reference from the hierarchy so you stop dragging things by hand. They on
 [GetComponentInParent("Root")] public Transform root;  // named ancestor
 [Child] public Renderer renderer;                // GetComponentInChildren
 [Child("Muzzle")] public Transform muzzle;       // named descendant
+```
+
+`[RequiredGet]` is the auto-assign and the requirement in one attribute, since on a mandatory sibling
+reference they are always written together anyway. It fills the field and reports it when nothing is
+found.
+
+```csharp
+[RequiredGet] public Collider ownCollider;
+[RequiredGet(InParents = true)] public Rigidbody body;
+[RequiredGet(InChildren = true, IncludeSelf = false)] public Renderer[] childRenderers;
 ```
 
 ## Pickers and references
@@ -174,6 +270,15 @@ public Material material;
 ```
 
 `[ShaderParam]` also accepts a `Renderer` or a `Shader` field as its source.
+
+`[AssetDropdown]` replaces an object field with a searchable dropdown of matching project assets, so a
+reference can be picked by name instead of found in the Project window and dragged. The filter is the
+string the Project window search itself takes, and it is derived from the field type when omitted.
+
+```csharp
+[AssetDropdown] public Material material;
+[AssetDropdown("t:Prefab", "Assets/Enemies")] public GameObject enemy;
+```
 
 ## Editing referenced assets
 
@@ -238,6 +343,26 @@ private void OnSlotsResized(int size) { }        // fires only when the element 
 ```
 
 `[OnArraySizeChanged]` accepts a parameterless method or one taking a single int. Edits to element values that keep the count do not fire it; use `[OnValueChanged]` for those.
+
+`[Unit]` shows a unit after a numeric field from a fixed vocabulary rather than a free string, so the same
+unit is spelled the same way everywhere:
+
+```csharp
+[Unit(UnitAttribute.MetersPerSecond)] public float speed;
+[Unit(UnitAttribute.Degree)] public float angle;
+[Unit("bananas")] public float custom;            // the exception, not the default
+```
+
+`[DisplayAsString]` draws a value as read-only text on one line, collapsing a whole collection rather than
+expanding it into rows. Use it for values that are computed and `[ReadOnly]` for values authored elsewhere.
+
+`[PreviewObject]` draws a preview large enough to judge, interactive where the asset supports it:
+
+```csharp
+[PreviewObject] public GameObject prefab;                          // drag inside it to rotate
+[PreviewObject(64f, Width = 64f)] public Texture2D icon;
+[PreviewObject(160f, Foldout = true, DefaultExpanded = false)] public Mesh mesh;
+```
 
 ## Troubleshoot window
 

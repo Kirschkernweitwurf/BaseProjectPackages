@@ -7,7 +7,7 @@ namespace Base.AttributePackage.Editor
     /// control goes. The pipeline only offers trailing widgets, so anything that belongs in front of the
     /// label is drawn over the field's own row after the fact, and needs a gutter to land in.
     /// </summary>
-    public static class LeadingGutter
+    internal static class LeadingGutter
     {
         /// <summary>Width of the gutter, matching one indent step.</summary>
         public const float Width = 14f;

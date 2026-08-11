@@ -4,7 +4,7 @@ using Object = UnityEngine.Object;
 namespace Base.AttributePackage
 {
     /// <summary>A single validation problem found on an object, including the nested path to the field.</summary>
-    public readonly struct ReferenceIssue
+    internal readonly struct ReferenceIssue
     {
         /// <summary>The component or asset that owns the field. Used as log context and ping target.</summary>
         public readonly Object Owner;

@@ -9,7 +9,7 @@ namespace Base.AttributePackage.Editor.SceneHandles
     /// Discovers every <see cref="IHandleDrawer"/> and caches which fields carry handle attributes.
     /// The scene view redraws constantly, so nothing here may run reflection per frame.
     /// </summary>
-    public static class HandleRegistry
+    internal static class HandleRegistry
     {
         private const BindingFlags FieldFlags =
             BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;

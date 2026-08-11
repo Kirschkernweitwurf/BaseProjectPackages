@@ -10,7 +10,7 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
     /// Editor window that lists validation issues in the open scenes and on ScriptableObject assets, and
     /// refreshes live. Scene issues rescan often; asset issues are cached and refreshed on project change.
     /// </summary>
-    public sealed class RequiredReferenceOverviewWindow : EditorWindow
+    internal sealed class RequiredReferenceOverviewWindow : EditorWindow
     {
         private const float BarSpacing = 4f;
         private const float ButtonHeight = 26f;

@@ -6,7 +6,7 @@ using Object = UnityEngine.Object;
 namespace Base.AttributePackage
 {
     /// <summary>Fails when a <see cref="NotNullOrEmptyAttribute"/> value is null or empty.</summary>
-    public sealed class NotNullOrEmptyRule : IValidationRule
+    internal sealed class NotNullOrEmptyRule : IValidationRule
     {
         /// <inheritdoc/>
         public bool IsViolated(FieldInfo field, object instance, out string reason)

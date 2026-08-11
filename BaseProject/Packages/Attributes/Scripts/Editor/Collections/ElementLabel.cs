@@ -7,7 +7,7 @@ namespace Base.AttributePackage.Editor.Collections
     /// against. A list of configs reads far better as a column of names than as a column of
     /// "Element 0", and a filter over indices would be useless.
     /// </summary>
-    public static class ElementLabel
+    internal static class ElementLabel
     {
         private const string IndexFormat = "Element {0}";
         private const string UnnamedFormat = "Element {0} (unnamed)";

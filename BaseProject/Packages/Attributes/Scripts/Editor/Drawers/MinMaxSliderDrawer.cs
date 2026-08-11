@@ -5,7 +5,7 @@ namespace Base.AttributePackage.Editor
 {
     /// <summary>Draws a Vector2 as a min-max range slider for <see cref="MinMaxSliderAttribute"/>.</summary>
     [CustomPropertyDrawer(typeof(MinMaxSliderAttribute))]
-    public sealed class MinMaxSliderDrawer : PropertyDrawer
+    internal sealed class MinMaxSliderDrawer : PropertyDrawer
     {
         private const float FieldWidth = 50f;
         private const float Padding = 4f;
@@ -18,7 +18,12 @@ namespace Base.AttributePackage.Editor
                 return;
             }
 
-            MinMaxSliderAttribute attribute = (MinMaxSliderAttribute)this.attribute;
+            MinMaxSliderAttribute settings = (MinMaxSliderAttribute)attribute;
+            Resolve(property, settings, out float low, out float high);
+
+            // A backwards range would make the slider unusable rather than merely wrong.
+            float bottom = Mathf.Min(low, high);
+            float top = Mathf.Max(low, high);
 
             EditorGUI.BeginProperty(position, label, property);
 
@@ -34,20 +39,44 @@ namespace Base.AttributePackage.Editor
             float min = range.x;
             float max = range.y;
 
-            EditorGUI.BeginChangeCheck();
-
-            min = EditorGUI.FloatField(minRect, min);
-            EditorGUI.MinMaxSlider(sliderRect, ref min, ref max, attribute.Min, attribute.Max);
-            max = EditorGUI.FloatField(maxRect, max);
-
-            if (EditorGUI.EndChangeCheck())
+            if (settings.AutoClamp)
             {
-                min = Mathf.Clamp(min, attribute.Min, max);
-                max = Mathf.Clamp(max, min, attribute.Max);
-                property.vector2Value = new Vector2(min, max);
+                min = Mathf.Clamp(min, bottom, top);
+                max = Mathf.Clamp(max, bottom, top);
+            }
+
+            using (new NoIndentScope())
+            {
+                EditorGUI.BeginChangeCheck();
+
+                min = EditorGUI.FloatField(minRect, min);
+                EditorGUI.MinMaxSlider(sliderRect, ref min, ref max, bottom, top);
+                max = EditorGUI.FloatField(maxRect, max);
+
+                if (EditorGUI.EndChangeCheck() || settings.AutoClamp)
+                    property.vector2Value = new Vector2(Mathf.Min(min, max), Mathf.Max(min, max));
             }
 
             EditorGUI.EndProperty();
         }
+
+        private static void Resolve(SerializedProperty property, MinMaxSliderAttribute settings, out float min,
+            out float max)
+        {
+            min = settings.Min;
+            max = settings.Max;
+
+            if (!string.IsNullOrEmpty(settings.RangeMember))
+            {
+                BoundResolver.TryRange(property, settings.RangeMember, out min, out max);
+                return;
+            }
+
+            if (!string.IsNullOrEmpty(settings.MinMember))
+                BoundResolver.TryNumber(property, settings.MinMember, out min);
+
+            if (!string.IsNullOrEmpty(settings.MaxMember))
+                BoundResolver.TryNumber(property, settings.MaxMember, out max);
+        }
     }
-}
+}

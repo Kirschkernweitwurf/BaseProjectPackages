@@ -10,7 +10,7 @@ namespace Base.AttributePackage.Editor
     /// scene validator. Editor only, since it enumerates assets through the AssetDatabase.
     /// </summary>
     [InitializeOnLoad]
-    public static class ScriptableObjectValidationRunner
+    internal static class ScriptableObjectValidationRunner
     {
         static ScriptableObjectValidationRunner()
         {

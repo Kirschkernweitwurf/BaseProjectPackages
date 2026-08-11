@@ -9,7 +9,7 @@ namespace Base.AttributePackage
     /// Finds every duplicate group inside a list or array. A group holds all indices that share the same
     /// value. Shared by <see cref="UniqueRule"/> and the editor handler, so both report the same result.
     /// </summary>
-    public static class DuplicateFinder
+    internal static class DuplicateFinder
     {
         private const string GroupSeparator = "; ";
         private const string IndexSeparator = ", ";

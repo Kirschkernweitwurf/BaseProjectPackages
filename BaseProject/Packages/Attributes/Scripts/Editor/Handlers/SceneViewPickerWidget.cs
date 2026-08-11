@@ -8,7 +8,7 @@ namespace Base.AttributePackage.Editor
     /// Draws the arm button of <see cref="SceneViewPickerAttribute"/> next to the field. The scene view
     /// half lives in the handle drawer; this is only the switch that turns it on.
     /// </summary>
-    public sealed class SceneViewPickerWidget : IInlineFieldWidget
+    internal sealed class SceneViewPickerWidget : IInlineFieldWidget
     {
         private const string ArmedLabel = "\u25A0";
         private const float ButtonWidth = 22f;

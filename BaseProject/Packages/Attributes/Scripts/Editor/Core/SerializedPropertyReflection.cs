@@ -10,7 +10,7 @@ namespace Base.AttributePackage.Editor
     /// handles array and list elements. Resolves against the first target only, so nested values shown
     /// while editing multiple objects come from that one.
     /// </summary>
-    public static class SerializedPropertyReflection
+    internal static class SerializedPropertyReflection
     {
         private const string ArrayToken = "Array";
         private const string DataPrefix = "data[";

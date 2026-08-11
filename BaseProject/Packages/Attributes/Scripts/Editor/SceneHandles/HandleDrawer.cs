@@ -6,7 +6,7 @@ namespace Base.AttributePackage.Editor.SceneHandles
     /// Convenience base that removes the cast every handle drawer would otherwise repeat.
     /// </summary>
     /// <typeparam name="TAttribute">The attribute this drawer reacts to.</typeparam>
-    public abstract class HandleDrawer<TAttribute> : IHandleDrawer where TAttribute : Attribute
+    internal abstract class HandleDrawer<TAttribute> : IHandleDrawer where TAttribute : Attribute
     {
         /// <inheritdoc/>
         public Type AttributeType => typeof(TAttribute);

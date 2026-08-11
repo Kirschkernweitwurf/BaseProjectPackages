@@ -9,7 +9,7 @@ namespace Base.AttributePackage.Editor.Windows.GetComponentAssigner
     /// <see cref="GetComponentInParentAttribute"/> field on prefab assets and the open scenes, so
     /// references resolve without opening each inspector once.
     /// </summary>
-    public sealed class GetComponentAssignerWindow : EditorWindow
+    internal sealed class GetComponentAssignerWindow : EditorWindow
     {
         private const float AssignButtonHeight = 28f;
         private const string MenuPath = "Tools/Base Packages/Unity Editor/References/Assign GetComponents";

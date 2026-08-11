@@ -8,7 +8,7 @@ namespace Base.AttributePackage
     /// Fails when a <see cref="MustImplementAttribute"/> reference holds an object that does not
     /// satisfy the required types, so type violations show up in the overview window.
     /// </summary>
-    public sealed class MustImplementRule : IValidationRule
+    internal sealed class MustImplementRule : IValidationRule
     {
         /// <inheritdoc/>
         public bool IsViolated(FieldInfo field, object instance, out string reason)

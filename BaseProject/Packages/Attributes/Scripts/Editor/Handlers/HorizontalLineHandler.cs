@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Base.AttributePackage.Editor
 {
     /// <summary>Draws the separator line for <see cref="HorizontalLineAttribute"/>.</summary>
-    public sealed class HorizontalLineHandler : IBeforeFieldHandler
+    internal sealed class HorizontalLineHandler : IBeforeFieldHandler
     {
         public int Order => 10;
 

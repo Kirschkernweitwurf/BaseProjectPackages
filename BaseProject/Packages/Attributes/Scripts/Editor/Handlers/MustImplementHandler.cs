@@ -10,7 +10,7 @@ namespace Base.AttributePackage.Editor
     /// required types is resolved to a matching component on the same GameObject when possible, and
     /// otherwise reverted. A pre-existing violation is reported instead of silently cleared.
     /// </summary>
-    public sealed class MustImplementHandler : IAfterFieldHandler
+    internal sealed class MustImplementHandler : IAfterFieldHandler
     {
         public int Order => 0;
 

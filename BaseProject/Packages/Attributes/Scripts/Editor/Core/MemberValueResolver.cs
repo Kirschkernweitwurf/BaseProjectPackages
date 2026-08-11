@@ -10,7 +10,7 @@ namespace Base.AttributePackage.Editor
     /// first and readable properties second. Shared by drawers and condition evaluation, so member
     /// lookup behaves the same everywhere.
     /// </summary>
-    public static class MemberValueResolver
+    internal static class MemberValueResolver
     {
         /// <summary>
         /// Tries to read the value of a field or readable property with the given name. Returns false

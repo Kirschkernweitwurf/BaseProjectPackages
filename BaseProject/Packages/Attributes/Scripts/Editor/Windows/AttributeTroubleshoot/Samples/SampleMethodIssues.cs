@@ -9,7 +9,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Samples
     /// after the method it pointed at was renamed.
     /// </remarks>
     [TroubleshootSample]
-    public sealed class SampleMethodIssues
+    internal sealed class SampleMethodIssues
     {
         /// <summary>Points at a callback that no longer exists.</summary>
         [OnValueChanged("RenamedCallback")] public int missingCallback;

@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Base.AttributePackage.Editor.SceneHandles
 {
     /// <summary>Draws a draggable circle for <see cref="RadiusHandleAttribute"/>.</summary>
-    public sealed class RadiusHandleDrawer : HandleDrawer<RadiusHandleAttribute>
+    internal sealed class RadiusHandleDrawer : HandleDrawer<RadiusHandleAttribute>
     {
         protected override void Draw(in HandleContext context, RadiusHandleAttribute attribute)
         {

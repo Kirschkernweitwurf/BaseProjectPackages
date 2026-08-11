@@ -9,7 +9,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Checks
     /// Resolves members by name the same way the drawers and handlers do at runtime, so the window
     /// reports exactly what would fail rather than a stricter or looser approximation.
     /// </summary>
-    public static class CheckedMembers
+    internal static class CheckedMembers
     {
         /// <summary>Returns whether a field, property or method with the given name exists.</summary>
         /// <param name="owner">The type the member is looked up on.</param>

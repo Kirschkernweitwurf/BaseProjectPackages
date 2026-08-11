@@ -4,7 +4,7 @@ namespace Base.AttributePackage.Editor
     /// Opens a <see cref="StartExpandedAttribute"/> field the first time it is drawn. Only the first
     /// draw is forced, so folding it up afterwards sticks.
     /// </summary>
-    public sealed class StartExpandedHandler : IBeforeFieldHandler
+    internal sealed class StartExpandedHandler : IBeforeFieldHandler
     {
         private const int HandlerOrder = -60;
 

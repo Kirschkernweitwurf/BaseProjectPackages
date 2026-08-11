@@ -7,7 +7,7 @@ namespace Base.AttributePackage
     /// scanner, the runtime validator and the overview window pick it up automatically, no manual
     /// registration required.
     /// </summary>
-    public interface IValidationRule
+    internal interface IValidationRule
     {
         /// <summary>
         /// Returns true and a short reason when the field carries this rule's attribute and its current

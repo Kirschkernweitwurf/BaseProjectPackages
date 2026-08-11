@@ -6,7 +6,7 @@ namespace Base.AttributePackage.Editor
     /// Builds display names and usage messages for attributes from their type, so UI strings survive
     /// renames. The "Attribute" suffix is trimmed, so <see cref="TagAttribute"/> is shown as [Tag].
     /// </summary>
-    public static class AttributeNames
+    internal static class AttributeNames
     {
         private const string Suffix = "Attribute";
 

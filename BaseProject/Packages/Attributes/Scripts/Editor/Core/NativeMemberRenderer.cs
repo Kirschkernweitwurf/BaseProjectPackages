@@ -18,7 +18,7 @@ namespace Base.AttributePackage.Editor
     /// on a read-only value are: <see cref="TitleAttribute"/> to open a section and
     /// <see cref="InfoBoxAttribute"/> to explain one.
     /// </remarks>
-    public static class NativeMemberRenderer
+    internal static class NativeMemberRenderer
     {
         private const string NullText = "null";
 
@@ -45,7 +45,7 @@ namespace Base.AttributePackage.Editor
 
             foreach (FieldInfo field in GetFields(type))
             {
-                DrawDecorations(type, field, ref visible);
+                DrawDecorations(type, target, field, ref visible);
 
                 if (!visible)
                     continue;
@@ -55,7 +55,7 @@ namespace Base.AttributePackage.Editor
 
             foreach (PropertyInfo property in GetProperties(type))
             {
-                DrawDecorations(type, property, ref visible);
+                DrawDecorations(type, target, property, ref visible);
 
                 if (!visible)
                     continue;
@@ -66,21 +66,33 @@ namespace Base.AttributePackage.Editor
 
         // A collapsible title closes whatever section came before it, so the members between two titles
         // belong to the first one. That mirrors how the serialized fields above behave.
-        private static void DrawDecorations(Type type, MemberInfo member, ref bool visible)
+        private static void DrawDecorations(Type type, Object target, MemberInfo member, ref bool visible)
         {
             TitleAttribute title = member.GetCustomAttribute<TitleAttribute>();
 
             if (title != null)
             {
-                visible = !title.Foldout || TitleRenderer.DrawCollapsible(type, title);
+                string text = Resolve(type, target, title.Title);
+                visible = !title.Foldout || TitleRenderer.DrawCollapsible(type, title, text);
 
                 if (!title.Foldout)
-                    TitleRenderer.DrawPlain(title);
+                    TitleRenderer.DrawPlain(title, text);
             }
 
-            if (visible)
-                InfoBoxRenderer.Draw(member.GetCustomAttribute<InfoBoxAttribute>());
+            if (!visible)
+                return;
+
+            InfoBoxAttribute box = member.GetCustomAttribute<InfoBoxAttribute>();
+            InfoBoxRenderer.Draw(box, Resolve(type, target, box?.Message));
         }
+
+        // The native members are drawn outside the member pipeline, so there is no MemberContext to
+        // resolve against and the target stands in for it.
+        private static string Resolve(Type type, Object target, string value)
+            => ValueResolver.IsMemberReference(value)
+                && ValueResolver.TryRead(type, target, ValueResolver.MemberName(value), out object read)
+                    ? read?.ToString() ?? string.Empty
+                    : value;
 
         private static object Read(FieldInfo field, Object target)
         {

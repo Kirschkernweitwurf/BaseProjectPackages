@@ -3,7 +3,7 @@ using UnityEngine;
 namespace Base.AttributePackage.Editor
 {
     /// <summary>Resets the background tint applied by <see cref="GUIColorAttribute"/> after the field draws.</summary>
-    public sealed class GUIColorResetHandler : IAfterFieldHandler
+    internal sealed class GUIColorResetHandler : IAfterFieldHandler
     {
         public int Order => 0;
 

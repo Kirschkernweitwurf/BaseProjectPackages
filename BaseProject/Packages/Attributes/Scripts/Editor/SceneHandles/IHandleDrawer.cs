@@ -7,7 +7,7 @@ namespace Base.AttributePackage.Editor.SceneHandles
     /// <see cref="HandleRegistry"/> picks it up, the same discovery the inspector handlers use.
     /// Drawers are stateless, since one instance serves every inspected object.
     /// </summary>
-    public interface IHandleDrawer
+    internal interface IHandleDrawer
     {
         /// <summary>The attribute this drawer reacts to.</summary>
         Type AttributeType { get; }

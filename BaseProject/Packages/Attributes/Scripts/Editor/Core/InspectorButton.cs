@@ -6,7 +6,7 @@ namespace Base.AttributePackage.Editor
     /// One cached inspector button: the annotated method, its attribute and the resolved label.
     /// Built once per type by <see cref="ButtonRenderer"/>.
     /// </summary>
-    public readonly struct InspectorButton
+    internal readonly struct InspectorButton
     {
         /// <summary>The parameterless method invoked by the button.</summary>
         public readonly MethodInfo Method;

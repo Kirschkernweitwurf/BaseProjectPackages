@@ -13,7 +13,7 @@ namespace Base.AttributePackage.Editor
     /// is missing.
     /// </summary>
     [CustomPropertyDrawer(typeof(MixerParameterAttribute))]
-    public sealed class MixerParameterDrawer : WarningFieldDrawer
+    internal sealed class MixerParameterDrawer : WarningFieldDrawer
     {
         private const string ExposedParametersProperty = "m_ExposedParameters";
         private const string ParameterNameProperty = "name";
@@ -70,7 +70,8 @@ namespace Base.AttributePackage.Editor
 
             for (int i = 0; i < exposed.arraySize; i++)
             {
-                SerializedProperty name = exposed.GetArrayElementAtIndex(i).FindPropertyRelative(ParameterNameProperty);
+                SerializedProperty name = exposed.GetArrayElementAtIndex(i)
+                    .FindPropertyRelative(ParameterNameProperty);
                 if (name != null)
                     names.Add(name.stringValue);
             }
@@ -78,4 +79,4 @@ namespace Base.AttributePackage.Editor
             return names.ToArray();
         }
     }
-}
+}

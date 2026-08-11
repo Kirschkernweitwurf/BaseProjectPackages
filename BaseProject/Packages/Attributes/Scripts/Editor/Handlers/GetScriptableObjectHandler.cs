@@ -10,7 +10,7 @@ namespace Base.AttributePackage.Editor
     /// the project. The search runs through <see cref="AutoAssignCache"/>, since asking the asset
     /// database anything on every repaint is not affordable.
     /// </summary>
-    public sealed class GetScriptableObjectHandler : IAfterFieldHandler
+    internal sealed class GetScriptableObjectHandler : IAfterFieldHandler
     {
         private const int HandlerOrder = 6;
         private const string TypeFilter = "t:";

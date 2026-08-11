@@ -11,7 +11,7 @@ namespace Base.AttributePackage.Editor
     /// <see cref="ColorPaletteAttribute"/>. The currently selected swatch is outlined.
     /// </summary>
     [CustomPropertyDrawer(typeof(ColorPaletteAttribute))]
-    public sealed class ColorPaletteDrawer : WarningFieldDrawer
+    internal sealed class ColorPaletteDrawer : WarningFieldDrawer
     {
         private const float BorderWidth = 2f;
         private const float PickerWidth = 40f;
@@ -64,21 +64,19 @@ namespace Base.AttributePackage.Editor
             ColorPaletteAttribute settings = (ColorPaletteAttribute)attribute;
             Rect row = LabeledField.Prefix(rect, label);
 
-            int indent = EditorGUI.indentLevel;
-            EditorGUI.indentLevel = 0;
-
-            float x = row.x;
-
-            if (settings.AllowCustom)
+            using (new NoIndentScope())
             {
-                Rect picker = new(x, row.y, PickerWidth, row.height);
-                property.colorValue = EditorGUI.ColorField(picker, GUIContent.none, property.colorValue);
-                x = picker.xMax + SwatchGap * 2f;
+                float x = row.x;
+
+                if (settings.AllowCustom)
+                {
+                    Rect picker = new(x, row.y, PickerWidth, row.height);
+                    property.colorValue = EditorGUI.ColorField(picker, GUIContent.none, property.colorValue);
+                    x = picker.xMax + SwatchGap * 2f;
+                }
+
+                DrawSwatches(new Rect(x, row.y, row.xMax - x, row.height), property);
             }
-
-            DrawSwatches(new Rect(x, row.y, row.xMax - x, row.height), property);
-
-            EditorGUI.indentLevel = indent;
         }
 
         private void DrawSwatches(Rect area, SerializedProperty property)

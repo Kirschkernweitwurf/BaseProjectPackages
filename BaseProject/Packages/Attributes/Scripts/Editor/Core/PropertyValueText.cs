@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Base.AttributePackage.Editor
 {
     /// <summary>Converts a serialized property value to a plain text form for the clipboard.</summary>
-    public static class PropertyValueText
+    internal static class PropertyValueText
     {
         /// <summary>Returns a readable text value for the given property.</summary>
         public static string Read(SerializedProperty property)

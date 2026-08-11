@@ -10,7 +10,7 @@ namespace Base.AttributePackage.Editor.Collections
     /// add button, an optional search box, optional paging, and one row per element with reorder and
     /// remove controls.
     /// </summary>
-    public static class ListDrawerRenderer
+    internal static class ListDrawerRenderer
     {
         private const string EmptyMessage = "Empty.";
         private const string NextLabel = "\u25B6";

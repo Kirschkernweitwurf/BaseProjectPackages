@@ -10,7 +10,7 @@ namespace Base.AttributePackage
     /// registered <see cref="IValidationRule"/> set, including issues inside nested serializable types.
     /// Runs for the first scene and for every additively loaded scene. Editor and development builds only.
     /// </summary>
-    public static class RequiredReferenceValidator
+    internal static class RequiredReferenceValidator
     {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         private static readonly List<ReferenceIssue> Buffer = new();

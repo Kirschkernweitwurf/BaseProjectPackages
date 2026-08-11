@@ -1,7 +1,7 @@
 namespace Base.AttributePackage.Editor.Collections
 {
     /// <summary>One column of a table: which child property it shows, how wide, and under what header.</summary>
-    public readonly struct TableColumn
+    internal readonly struct TableColumn
     {
         /// <summary>Name of the child property this column shows.</summary>
         public readonly string PropertyName;

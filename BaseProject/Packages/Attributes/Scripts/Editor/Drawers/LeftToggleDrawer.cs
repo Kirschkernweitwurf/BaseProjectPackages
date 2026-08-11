@@ -5,7 +5,7 @@ namespace Base.AttributePackage.Editor
 {
     /// <summary>Draws a bool with the checkbox in front of the label for <see cref="LeftToggleAttribute"/>.</summary>
     [CustomPropertyDrawer(typeof(LeftToggleAttribute))]
-    public sealed class LeftToggleDrawer : PropertyDrawer
+    internal sealed class LeftToggleDrawer : PropertyDrawer
     {
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {

@@ -14,7 +14,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Showcase
     /// which is itself worth seeing: they fail by finding nothing rather than by complaining.
     /// </remarks>
     [CreateAssetMenu(fileName = "ShowcaseConfig", menuName = "Base/Showcase Config")]
-    public sealed class ShowcaseConfigAsset : ScriptableObject
+    internal sealed class ShowcaseConfigAsset : ScriptableObject
     {
         [Title("Config", "#8CD5E9")]
         [InfoBox("Shown when this asset is expanded inline from the showcase, which proves the embedded "

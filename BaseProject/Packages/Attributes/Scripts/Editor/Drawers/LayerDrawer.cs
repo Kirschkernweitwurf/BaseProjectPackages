@@ -11,7 +11,7 @@ namespace Base.AttributePackage.Editor
     /// instead of being silently replaced.
     /// </summary>
     [CustomPropertyDrawer(typeof(LayerAttribute))]
-    public sealed class LayerDrawer : WarningFieldDrawer
+    internal sealed class LayerDrawer : WarningFieldDrawer
     {
         protected override string UsageMessage => AttributeNames.Usage<LayerAttribute>("a string or int");
 
@@ -46,4 +46,4 @@ namespace Base.AttributePackage.Editor
                 property.stringValue = layers[selected];
         }
     }
-}
+}

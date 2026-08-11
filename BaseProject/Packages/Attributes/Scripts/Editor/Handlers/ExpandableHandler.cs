@@ -9,7 +9,7 @@ namespace Base.AttributePackage.Editor
     /// selection. The nested editor is cached, since recreating it every repaint leaks native objects.
     /// The arrow that opens it is drawn by <see cref="ExpandableFoldoutHandler"/>.
     /// </summary>
-    public sealed class ExpandableHandler : IAfterFieldHandler
+    internal sealed class ExpandableHandler : IAfterFieldHandler
     {
         private const float BoxPadding = 4f;
         private const int HandlerOrder = 80;

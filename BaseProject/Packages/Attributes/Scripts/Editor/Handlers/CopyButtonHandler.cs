@@ -7,7 +7,7 @@ namespace Base.AttributePackage.Editor
     /// Copies a <see cref="CopyButtonAttribute"/> field value to the clipboard and shows a brief
     /// confirmation. Disabled while the value is empty.
     /// </summary>
-    public sealed class CopyButtonHandler : InlineFieldButtonHandler
+    internal sealed class CopyButtonHandler : InlineFieldButtonHandler
     {
         private const float ButtonWidth = 46f;
         private const double NotifyFade = 0.4;

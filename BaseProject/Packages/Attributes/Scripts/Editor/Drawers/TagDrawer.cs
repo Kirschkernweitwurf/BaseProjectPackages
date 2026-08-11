@@ -11,7 +11,7 @@ namespace Base.AttributePackage.Editor
     /// points it out instead of silently replacing it.
     /// </summary>
     [CustomPropertyDrawer(typeof(TagAttribute))]
-    public sealed class TagDrawer : WarningFieldDrawer
+    internal sealed class TagDrawer : WarningFieldDrawer
     {
         protected override string UsageMessage => AttributeNames.Usage<TagAttribute>("a string");
 
@@ -43,4 +43,4 @@ namespace Base.AttributePackage.Editor
                 property.stringValue = tags[selected];
         }
     }
-}
+}

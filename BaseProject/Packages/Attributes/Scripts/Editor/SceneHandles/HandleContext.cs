@@ -10,7 +10,7 @@ namespace Base.AttributePackage.Editor.SceneHandles
     /// Everything a handle drawer needs about one field: the property to read and write, the object that
     /// owns it, and the transform the local space of the scene is measured against.
     /// </summary>
-    public readonly struct HandleContext
+    internal readonly struct HandleContext
     {
         /// <summary>The serialized property being visualized.</summary>
         public readonly SerializedProperty Property;

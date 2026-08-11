@@ -11,7 +11,7 @@ namespace Base.AttributePackage.Editor
     /// </summary>
     [CustomEditor(typeof(MonoBehaviour), true)]
     [CanEditMultipleObjects]
-    public sealed class MonoBehaviourAttributeEditor : AttributePackageEditor
+    internal sealed class MonoBehaviourAttributeEditor : AttributePackageEditor
     {
         // The inspector's own serializedObject must not be touched from OnSceneGUI. The scene view can
         // repaint while the inspector is mid-draw, which would leave two walks running over the same

@@ -9,7 +9,7 @@ namespace Base.AttributePackage.Editor
     /// frame leaks native objects and resets foldout state, so instances are cached by target and
     /// released when the target is gone or the domain reloads.
     /// </summary>
-    public static class EmbeddedEditorCache
+    internal static class EmbeddedEditorCache
     {
         private static readonly Dictionary<int, UnityEditor.Editor> Editors = new();
 

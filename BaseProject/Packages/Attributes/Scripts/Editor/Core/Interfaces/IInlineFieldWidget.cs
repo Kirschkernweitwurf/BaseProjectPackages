@@ -7,7 +7,7 @@ namespace Base.AttributePackage.Editor
     /// width for these before drawing the field, so the field is narrower and the widget gets its own
     /// clicks. This avoids the click theft that happens when a button is only painted over the field.
     /// </summary>
-    public interface IInlineFieldWidget
+    internal interface IInlineFieldWidget
     {
         /// <summary>Left-to-right order within the trailing area. Lower sits closer to the field.</summary>
         int Order { get; }

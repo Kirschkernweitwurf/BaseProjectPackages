@@ -8,7 +8,7 @@ namespace Base.AttributePackage.Editor
     /// warning below it, instead of drawing a dropdown that cannot be filled. Derived drawers decide
     /// which property types they support, what the warning says and how the field itself is drawn.
     /// </summary>
-    public abstract class WarningFieldDrawer : PropertyDrawer
+    internal abstract class WarningFieldDrawer : PropertyDrawer
     {
         private const float WarningSpacing = 2f;
 
@@ -61,4 +61,4 @@ namespace Base.AttributePackage.Editor
         /// <summary>Draws the field itself. Complete is false while a warning is shown.</summary>
         protected abstract void DrawField(Rect rect, SerializedProperty property, GUIContent label, bool complete);
     }
-}
+}

@@ -7,7 +7,7 @@ namespace Base.AttributePackage.Editor
     /// Draws a ranged, optionally tinted curve field for <see cref="CurveRangeAttribute"/>.
     /// </summary>
     [CustomPropertyDrawer(typeof(CurveRangeAttribute))]
-    public sealed class CurveRangeDrawer : PropertyDrawer
+    internal sealed class CurveRangeDrawer : PropertyDrawer
     {
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
@@ -34,4 +34,4 @@ namespace Base.AttributePackage.Editor
             EditorGUI.EndProperty();
         }
     }
-}
+}

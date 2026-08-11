@@ -1,7 +1,7 @@
 namespace Base.AttributePackage.Editor.Windows.AttributeGallery
 {
     /// <summary>Demo enum used by the gallery to show enum widgets and enum conditions.</summary>
-    public enum EGalleryMood : byte
+    internal enum EGalleryMood : byte
     {
         /// <summary>Calm mood.</summary>
         Calm = 0,

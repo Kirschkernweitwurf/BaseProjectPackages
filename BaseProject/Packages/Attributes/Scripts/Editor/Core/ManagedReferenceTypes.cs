@@ -10,7 +10,7 @@ namespace Base.AttributePackage.Editor
     /// be assigned to it. Unity exposes the declared type only as an assembly-qualified string, so it is
     /// parsed here once and the candidate list is cached per declared type.
     /// </summary>
-    public static class ManagedReferenceTypes
+    internal static class ManagedReferenceTypes
     {
         private const char TypeNameSeparator = ' ';
 

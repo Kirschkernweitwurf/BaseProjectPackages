@@ -10,7 +10,7 @@ namespace Base.AttributePackage.Editor
     /// Stores the map's GUID, so it survives renames.
     /// </summary>
     [CustomPropertyDrawer(typeof(InputActionMapReference))]
-    public sealed class InputActionMapReferenceDrawer : PropertyDrawer
+    internal sealed class InputActionMapReferenceDrawer : PropertyDrawer
     {
         private const string MissingAssetLabel = "<assign asset>";
         private const float Spacing = 4f;

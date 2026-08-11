@@ -7,7 +7,7 @@ namespace Base.AttributePackage.Editor
     /// enforces them and the collection renderers that hide their add and remove buttons cannot end up
     /// disagreeing about what the limits are.
     /// </summary>
-    public static class ArraySizeLimits
+    internal static class ArraySizeLimits
     {
         /// <summary>Returns the bounds on the given member, or false when it has none.</summary>
         /// <param name="context">The member currently being drawn.</param>

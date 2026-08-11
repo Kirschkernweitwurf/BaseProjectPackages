@@ -7,7 +7,7 @@ namespace Base.AttributePackage.Editor
     /// Draws a compact single-line notice, much smaller than a default HelpBox. Supports info, warning
     /// and error styling and an optional custom color from a hex string or an <see cref="EColor"/> preset.
     /// </summary>
-    public static class CompactHelpBox
+    internal static class CompactHelpBox
     {
         /// <summary>Height of one compact line, for PropertyDrawer height calculations.</summary>
         public const float Height = 20f;
@@ -133,4 +133,4 @@ namespace Base.AttributePackage.Editor
             };
         }
     }
-}
+}

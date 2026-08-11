@@ -8,7 +8,7 @@ namespace Base.AttributePackage.Editor
     /// Enforces <see cref="AssetOnlyAttribute"/> and <see cref="SceneObjectOnlyAttribute"/>.
     /// Reverts a newly assigned invalid reference and reports a pre-existing invalid one.
     /// </summary>
-    public sealed class ObjectConstraintHandler : IAfterFieldHandler
+    internal sealed class ObjectConstraintHandler : IAfterFieldHandler
     {
         private const string AssetOnlyMessage = "Only project assets are allowed here.";
         private const string SceneOnlyMessage = "Only scene objects are allowed here.";

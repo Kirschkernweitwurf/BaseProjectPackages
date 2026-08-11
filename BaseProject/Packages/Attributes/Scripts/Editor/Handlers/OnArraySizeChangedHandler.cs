@@ -9,7 +9,7 @@ namespace Base.AttributePackage.Editor
     /// named callback. The size before the field is drawn is recorded and compared afterwards, so edits
     /// that only change element values do not fire. The new size is applied before the callback runs.
     /// </summary>
-    public sealed class OnArraySizeChangedHandler : IBeforeFieldHandler, IAfterFieldHandler
+    internal sealed class OnArraySizeChangedHandler : IBeforeFieldHandler, IAfterFieldHandler
     {
         private const int AfterFieldOrder = -290;
         private const int BeforeFieldOrder = 1000;
@@ -82,4 +82,4 @@ namespace Base.AttributePackage.Editor
             method.Invoke(context.DeclaringObject, arguments);
         }
     }
-}
+}

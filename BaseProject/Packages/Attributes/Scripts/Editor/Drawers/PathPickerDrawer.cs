@@ -9,7 +9,7 @@ namespace Base.AttributePackage.Editor
     /// system panel is deferred to <see cref="EditorApplication.delayCall"/>, since opening it inside
     /// OnGUI clears Unity's internal property stack and corrupts the outer drawer pop.
     /// </summary>
-    public abstract class PathPickerDrawer : PropertyDrawer
+    internal abstract class PathPickerDrawer : PropertyDrawer
     {
         private const string ButtonLabel = "...";
         private const float ButtonWidth = 28f;
@@ -78,4 +78,4 @@ namespace Base.AttributePackage.Editor
             serializedObject.ApplyModifiedProperties();
         }
     }
-}
+}

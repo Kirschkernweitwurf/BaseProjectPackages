@@ -9,7 +9,7 @@ namespace Base.AttributePackage.Editor
     /// Draws the field with a button next to it for <see cref="InlineButtonAttribute"/>.
     /// </summary>
     [CustomPropertyDrawer(typeof(InlineButtonAttribute))]
-    public sealed class InlineButtonDrawer : PropertyDrawer
+    internal sealed class InlineButtonDrawer : PropertyDrawer
     {
         private const float LabelPadding = 10f;
         private const float MaxButtonWidth = 140f;

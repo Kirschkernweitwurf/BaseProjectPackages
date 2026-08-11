@@ -14,7 +14,7 @@ namespace Base.AttributePackage.Editor
     /// first draw and none afterwards.
     /// </remarks>
     [CustomPropertyDrawer(typeof(ResizableTextAreaAttribute))]
-    public sealed class ResizableTextAreaDrawer : PropertyDrawer
+    internal sealed class ResizableTextAreaDrawer : PropertyDrawer
     {
         private const float FallbackWidth = 300f;
         private const float Spacing = 2f;
@@ -42,17 +42,16 @@ namespace Base.AttributePackage.Editor
             Rect labelRect = new(position.x, position.y, position.width, EditorGUIUtility.singleLineHeight);
             EditorGUI.LabelField(labelRect, label);
 
-            Rect box = new(position.x, labelRect.yMax + Spacing, position.width,
-                position.height - labelRect.height - Spacing);
+            // Indented here rather than by the control, so the box keeps the width left after the
+            // indent instead of being shifted out of its own row.
+            Rect box = EditorGUI.IndentedRect(new Rect(position.x, labelRect.yMax + Spacing, position.width,
+                position.height - labelRect.height - Spacing));
 
             _width = box.width;
 
-            int indent = EditorGUI.indentLevel;
-            EditorGUI.indentLevel = 0;
+            using (new NoIndentScope())
+                property.stringValue = EditorGUI.TextArea(box, property.stringValue, EditorStyles.textArea);
 
-            property.stringValue = EditorGUI.TextArea(box, property.stringValue, EditorStyles.textArea);
-
-            EditorGUI.indentLevel = indent;
             EditorGUI.EndProperty();
         }
 

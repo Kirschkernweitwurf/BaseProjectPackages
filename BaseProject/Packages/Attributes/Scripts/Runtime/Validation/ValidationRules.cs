@@ -9,7 +9,7 @@ namespace Base.AttributePackage
     /// Discovers every <see cref="IValidationRule"/> implementation once and caches it. Add a new rule
     /// class with a public parameterless constructor, and it is included automatically.
     /// </summary>
-    public static class ValidationRules
+    internal static class ValidationRules
     {
         /// <summary>All discovered rules.</summary>
         public static IReadOnlyList<IValidationRule> All => _rules ??= Discover();

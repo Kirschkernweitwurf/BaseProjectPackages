@@ -17,7 +17,7 @@ namespace Base.AttributePackage.Editor.SceneHandles
     /// mid-draw, which would leave two walks running over the same object. Unity warns about exactly
     /// this, so the caller owns a second one.
     /// </remarks>
-    public static class HandleRenderer
+    internal static class HandleRenderer
     {
         /// <summary>
         /// Draws every handle of the given object. Call from an editor's OnSceneGUI, passing a

@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Base.AttributePackage.Editor.SceneHandles
 {
     /// <summary>Draws floating text for <see cref="DrawLabelAttribute"/>.</summary>
-    public sealed class DrawLabelDrawer : HandleDrawer<DrawLabelAttribute>
+    internal sealed class DrawLabelDrawer : HandleDrawer<DrawLabelAttribute>
     {
         protected override void Draw(in HandleContext context, DrawLabelAttribute attribute)
         {

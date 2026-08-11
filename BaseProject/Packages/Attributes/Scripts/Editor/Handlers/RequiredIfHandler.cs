@@ -6,7 +6,7 @@ namespace Base.AttributePackage.Editor
     /// Shows a compact error when a <see cref="RequiredIfAttribute"/> reference is null while its
     /// condition holds. Stays silent otherwise, so configurations that never use the field are quiet.
     /// </summary>
-    public sealed class RequiredIfHandler : IAfterFieldHandler
+    internal sealed class RequiredIfHandler : IAfterFieldHandler
     {
         public int Order => 20;
 
@@ -25,7 +25,7 @@ namespace Base.AttributePackage.Editor
             if (!ConditionEvaluator.ResolveAll(context, attribute.Mode, attribute.Members))
                 return;
 
-            CompactHelpBox.Error(attribute.Message
+            CompactHelpBox.Error(ValueResolver.Text(context, attribute.Message)
                 ?? context.DisplayName + " " + RequiredIfAttribute.DefaultReason);
         }
     }
