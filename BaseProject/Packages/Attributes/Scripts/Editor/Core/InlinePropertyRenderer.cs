@@ -15,7 +15,9 @@ namespace Base.AttributePackage.Editor
     /// </remarks>
     internal static class InlinePropertyRenderer
     {
-        private const float CellGap = 2f;
+        private const float CellGap = 4f;
+        private const float LabelPadding = 6f;
+        private const float MaximumLabelShare = 0.7f;
 
         // Reused between rows so the renderer allocates one list per repaint instead of one per row.
         private static readonly List<SerializedProperty> Children = new();
@@ -39,25 +41,32 @@ namespace Base.AttributePackage.Editor
             // The prefix label already consumed the indent, and each child draws its own label inside
             // its cell, so both the ambient indent and the inspector's label width are set aside here.
             float labelWidth = EditorGUIUtility.labelWidth;
-            EditorGUIUtility.labelWidth = attribute.LabelWidth;
 
             using (new NoIndentScope())
-                DrawCells(content);
+                DrawCells(content, attribute.LabelWidth);
 
             EditorGUIUtility.labelWidth = labelWidth;
 
             return true;
         }
 
-        private static void DrawCells(Rect content)
+        // Each child is measured against its own label rather than given a fixed width, so the value
+        // starts where the text ends. An explicit width on the attribute is a floor, not the answer, so
+        // a longer name is not cut off just because the default was set for a shorter one.
+        private static void DrawCells(Rect content, float minimumLabelWidth)
         {
             float width = (content.width - CellGap * (Children.Count - 1)) / Children.Count;
 
             for (int i = 0; i < Children.Count; i++)
             {
                 Rect cell = new(content.x + i * (width + CellGap), content.y, width, content.height);
+                GUIContent label = ScratchContent.For(Children[i].displayName);
 
-                EditorGUI.PropertyField(cell, Children[i], ScratchContent.For(Children[i].displayName));
+                EditorGUIUtility.labelWidth = Mathf.Clamp(
+                    EditorStyles.label.CalcSize(label).x + LabelPadding, minimumLabelWidth,
+                    width * MaximumLabelShare);
+
+                EditorGUI.PropertyField(cell, Children[i], label);
             }
         }
 

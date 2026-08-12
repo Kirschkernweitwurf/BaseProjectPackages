@@ -131,6 +131,14 @@ namespace Base.AttributePackage.Editor
         {
             SerializedProperty property = context.Property;
 
+            // A replacement handler draws the member itself, which is the only way to replace a whole
+            // collection: a property drawer is applied per element and can never remove the rows.
+            foreach (IFieldReplacementHandler handler in HandlerRegistry.FieldReplacement)
+            {
+                if (handler.TryDraw(context))
+                    return;
+            }
+
             if (TryDrawCollection(context, field))
                 return;
 

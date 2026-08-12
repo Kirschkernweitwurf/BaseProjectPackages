@@ -76,4 +76,4 @@ namespace Base.UtilityPackage.Editor
                 : foundIndex + 1;
         }
     }
-}
+}

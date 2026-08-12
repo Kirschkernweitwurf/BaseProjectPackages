@@ -16,8 +16,8 @@ namespace Base.AttributePackage.Editor.Collections
         private const string EmptyMessage = "Empty.";
         private const string NextLabel = "\u25B6";
         private const string NoMatchMessage = "Nothing matches the filter.";
-        private const string NoDragMessage = "Dragging is off while a filter or a page hides part of the "
-            + "list, because the row above is not the element above.";
+        private const string NoDragMessage = "Dragging is off while a filter hides part of the list, "
+            + "because the row above is then not the element above.";
         private const float PageButtonWidth = 24f;
         private const string PageFormat = "{0} / {1}";
         private const string PreviousLabel = "\u25C0";
@@ -76,6 +76,10 @@ namespace Base.AttributePackage.Editor.Collections
             // would appear to jump somewhere at random. The arrows switch off rather than lie.
             bool canReorder = !isFiltered && pageCount == 1 && settings.Draggable;
 
+            // A page is a contiguous window, so the row above really is the element above and dragging
+            // means what it looks like. A filter is not contiguous, so it stays off there.
+            bool canDragPage = !isFiltered && pageCount > 1 && settings.Draggable;
+
             EditorGUI.indentLevel++;
 
             // Unity's own list owns its layout: it draws every element and cannot be told to skip any.
@@ -84,13 +88,20 @@ namespace Base.AttributePackage.Editor.Collections
             // plain rows take over, because a dragged row would otherwise land somewhere the pointer
             // never went.
             if (canReorder)
+            {
                 DrawNativeRows(property, settings, canResize);
+            }
             else
-                DrawRows(property, settings, first, last, canResize);
+            {
+                DrawRows(property, settings, first, last, canResize, canDragPage);
+
+                if (canDragPage)
+                    PagedRowDrag.Apply(property);
+            }
 
             EditorGUI.indentLevel--;
 
-            if (settings.Draggable && (isFiltered || pageCount > 1))
+            if (settings.Draggable && isFiltered)
                 EditorGUILayout.LabelField(NoDragMessage, EditorStyles.centeredGreyMiniLabel);
 
             if (pageCount > 1)
@@ -170,7 +181,7 @@ namespace Base.AttributePackage.Editor.Collections
         }
 
         private static void DrawRows(SerializedProperty property, ListDrawerSettingsAttribute settings,
-            int first, int last, bool canResize)
+            int first, int last, bool canResize, bool canDrag = false)
         {
             int removeAt = -1;
 
@@ -188,7 +199,14 @@ namespace Base.AttributePackage.Editor.Collections
                 if (settings.ShowAlternatingBackground)
                     CollectionGui.DrawStripe(Stretch(row), slot - first);
 
+                if (canDrag)
+                    PagedRowDrag.DrawGrip(property, row, index);
+
                 EditorGUILayout.BeginHorizontal();
+
+                if (canDrag)
+                    GUILayout.Space(PagedRowDrag.ReservedWidth);
+
                 EditorGUILayout.PropertyField(element, new GUIContent(label), true);
 
                 if (canResize
@@ -204,6 +222,9 @@ namespace Base.AttributePackage.Editor.Collections
                 // than a list of entries.
                 GUILayout.Space(CollectionGui.RowGap);
             }
+
+            // The hand-drawn rows end flush against whatever follows, which the native list does not.
+            GUILayout.Space(CollectionGui.RowGap);
 
             // Applied after the loop so the array is never resized while it is being iterated.
             if (removeAt >= 0)

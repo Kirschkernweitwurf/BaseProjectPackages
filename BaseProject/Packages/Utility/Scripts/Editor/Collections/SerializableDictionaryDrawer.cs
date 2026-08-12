@@ -1,15 +1,22 @@
 using System.Collections.Generic;
 using Base.UtilityPackage.Collections;
 using UnityEditor;
+using UnityEditorInternal;
 using UnityEngine;
 
 namespace Base.UtilityPackage.Editor.Collections
 {
     /// <summary>
-    /// Draws a <see cref="SerializableDictionary{TKey,TValue}"/> as key-value rows instead of the
-    /// nested entry list Unity would show by default. Duplicate keys are tinted and summarized, since
-    /// the runtime dictionary silently keeps only their first occurrence.
+    /// Draws a <see cref="SerializableDictionary{TKey,TValue}"/> as key-value rows on Unity's own
+    /// reorderable list, instead of the nested entry list Unity would show by default. Duplicate keys
+    /// are tinted and summarized, since the runtime dictionary silently keeps only their first
+    /// occurrence.
     /// </summary>
+    /// <remarks>
+    /// The rows sit on the standard list because the entries are an array underneath and there was never
+    /// a reason for them to look like anything else. Drawing them by hand meant a second, slightly
+    /// different version of selection, dragging, the add and remove buttons and the empty state.
+    /// </remarks>
     [CustomPropertyDrawer(typeof(SerializableDictionary<,>), true)]
     public sealed class SerializableDictionaryDrawer : PropertyDrawer
     {
@@ -20,20 +27,21 @@ namespace Base.UtilityPackage.Editor.Collections
         // Reused across rows so the drawer allocates one list per repaint instead of one per row.
         private readonly List<SerializedProperty> _keys = new();
 
+        private HashSet<int> _duplicates = new();
+
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
             SerializedProperty entries = FindEntries(property);
             if (entries == null)
                 return SerializableCollectionGui.Line;
 
-            float height = SerializableCollectionGui.Line;
             if (!property.isExpanded)
-                return height;
+                return SerializableCollectionGui.Line;
 
             CollectKeys(entries);
 
-            for (int i = 0; i < entries.arraySize; i++)
-                height += SerializableCollectionGui.Spacing + RowHeight(entries.GetArrayElementAtIndex(i));
+            float height = SerializableCollectionGui.Line + SerializableCollectionGui.Spacing
+                + ListFor(entries).GetHeight();
 
             if (SerializableCollectionGui.FindDuplicates(_keys).Count > 0)
                 height += SerializableCollectionGui.Spacing + SerializableCollectionGui.Line * 2f;
@@ -53,13 +61,11 @@ namespace Base.UtilityPackage.Editor.Collections
             EditorGUI.BeginProperty(position, label, property);
 
             Rect header = new(position.x, position.y, position.width, SerializableCollectionGui.Line);
-            property.isExpanded = SerializableCollectionGui.DrawHeader(header, property, label, entries.arraySize);
-
-            if (SerializableCollectionGui.DrawAddButton(header))
-                entries.arraySize++;
+            property.isExpanded = SerializableCollectionGui.DrawHeader(header, property, label,
+                entries.arraySize);
 
             if (property.isExpanded)
-                DrawRows(position, entries, header.yMax);
+                DrawList(position, entries, header.yMax);
 
             EditorGUI.EndProperty();
         }
@@ -73,25 +79,21 @@ namespace Base.UtilityPackage.Editor.Collections
         private static SerializedProperty ValueOf(SerializedProperty entry)
             => entry.FindPropertyRelative(SerializableDictionaryEntry<int, int>.ValueField);
 
-        private static float RowHeight(SerializedProperty entry)
-        {
-            float key = HeightOf(KeyOf(entry));
-            float value = HeightOf(ValueOf(entry));
-
-            return Mathf.Max(key, value);
-        }
-
         private static float HeightOf(SerializedProperty property) => property == null
             ? SerializableCollectionGui.Line
             : EditorGUI.GetPropertyHeight(property, true);
 
-        // Returns true when the row's remove button was pressed.
-        private static bool DrawRow(Rect row, SerializedProperty entry)
-        {
-            float available = row.width
-                - SerializableCollectionGui.ButtonWidth
-                - SerializableCollectionGui.Gap * 2f;
+        private ReorderableList ListFor(SerializedProperty entries)
+            => SerializableListCache.Get(entries, DrawRow);
 
+        // The duplicate set is rebuilt once per draw and read here, because the row callback is handed
+        // an entry rather than its index and cannot work out on its own whether the key repeats.
+        private void DrawRow(Rect row, SerializedProperty entry)
+        {
+            if (_duplicates.Contains(entry.propertyPath.GetHashCode()))
+                SerializableCollectionGui.MarkDuplicate(row);
+
+            float available = row.width - SerializableCollectionGui.Gap;
             float keyWidth = available * KeyWeight;
             float valueWidth = available - keyWidth;
 
@@ -99,17 +101,18 @@ namespace Base.UtilityPackage.Editor.Collections
             SerializedProperty value = ValueOf(entry);
 
             if (key != null)
-                EditorGUI.PropertyField(new Rect(row.x, row.y, keyWidth, HeightOf(key)), key, GUIContent.none, true);
-
-            if (value != null)
             {
-                Rect valueRect = new(row.x + keyWidth + SerializableCollectionGui.Gap, row.y, valueWidth,
-                    HeightOf(value));
-
-                EditorGUI.PropertyField(valueRect, value, GUIContent.none, true);
+                EditorGUI.PropertyField(new Rect(row.x, row.y, keyWidth, HeightOf(key)), key,
+                    GUIContent.none, true);
             }
 
-            return SerializableCollectionGui.DrawRemoveButton(row);
+            if (value == null)
+                return;
+
+            Rect valueRect = new(row.x + keyWidth + SerializableCollectionGui.Gap, row.y, valueWidth,
+                HeightOf(value));
+
+            EditorGUI.PropertyField(valueRect, value, GUIContent.none, true);
         }
 
         private void CollectKeys(SerializedProperty entries)
@@ -118,49 +121,36 @@ namespace Base.UtilityPackage.Editor.Collections
 
             for (int i = 0; i < entries.arraySize; i++)
                 _keys.Add(KeyOf(entries.GetArrayElementAtIndex(i)));
+
+            HashSet<int> indices = SerializableCollectionGui.FindDuplicates(_keys);
+            _duplicates = new HashSet<int>();
+
+            foreach (int index in indices)
+                _duplicates.Add(entries.GetArrayElementAtIndex(index).propertyPath.GetHashCode());
         }
 
-        private void DrawRows(Rect position, SerializedProperty entries, float top)
+        private void DrawList(Rect position, SerializedProperty entries, float top)
         {
             CollectKeys(entries);
-            HashSet<int> duplicates = SerializableCollectionGui.FindDuplicates(_keys);
 
-            float x = position.x + SerializableCollectionGui.Indent;
-            float width = position.width - SerializableCollectionGui.Indent;
-            float y = top;
-            int removeAt = -1;
+            ReorderableList list = ListFor(entries);
+            Rect area = new(position.x, top + SerializableCollectionGui.Spacing, position.width,
+                list.GetHeight());
 
-            // Rows are positioned from explicit rects, so the ambient indent has to be neutralized.
             int indent = EditorGUI.indentLevel;
             EditorGUI.indentLevel = 0;
 
-            for (int i = 0; i < entries.arraySize; i++)
-            {
-                SerializedProperty entry = entries.GetArrayElementAtIndex(i);
-                y += SerializableCollectionGui.Spacing;
-
-                Rect row = new(x, y, width, RowHeight(entry));
-                if (duplicates.Contains(i))
-                    SerializableCollectionGui.MarkDuplicate(row);
-
-                if (DrawRow(row, entry))
-                    removeAt = i;
-
-                y = row.yMax;
-            }
+            list.DoList(area);
 
             EditorGUI.indentLevel = indent;
 
-            if (duplicates.Count > 0)
-            {
-                Rect warning = new(x, y + SerializableCollectionGui.Spacing, width,
-                    SerializableCollectionGui.Line * 2f);
+            if (_keys.Count == 0 || _duplicates.Count == 0)
+                return;
 
-                EditorGUI.HelpBox(warning, DuplicateMessage, MessageType.Warning);
-            }
+            Rect warning = new(position.x, area.yMax + SerializableCollectionGui.Spacing, position.width,
+                SerializableCollectionGui.Line * 2f);
 
-            if (removeAt >= 0)
-                SerializableCollectionGui.DeleteElement(entries, removeAt);
+            EditorGUI.HelpBox(warning, DuplicateMessage, MessageType.Warning);
         }
     }
-}
+}

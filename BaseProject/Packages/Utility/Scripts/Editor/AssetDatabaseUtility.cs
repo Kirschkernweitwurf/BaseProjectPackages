@@ -45,7 +45,9 @@ namespace Base.UtilityPackage.Editor
         /// The search filter. Defaults to a type filter built from <typeparamref name="T"/>.
         /// </param>
         /// <param name="folders">Optional folders to restrict the search to. Pass null to search everything.</param>
-        /// <returns>The loaded assets. Assets that fail to load are skipped, so the list never contains null.</returns>
+        /// <returns>
+        /// The loaded assets. Assets that fail to load are skipped, so the list never contains null.
+        /// </returns>
         public static List<T> LoadAll<T>(string filter = null, string[] folders = null) where T : Object
         {
             filter ??= string.Format(TypeFilterFormat, typeof(T).Name);

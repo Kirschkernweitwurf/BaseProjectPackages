@@ -14,7 +14,12 @@ namespace Base.UtilityPackage.Editor.Serialization
     /// <see cref="TypeReferenceOfBase{TBase}"/> only offers types assignable to that base, which is why
     /// no filter attribute exists.
     /// </summary>
+    // Registered for the generic subclass as well. Unity resolves a drawer for children by walking the
+    // base chain, and it does not reliably match an open generic type that way, so a list of
+    // TypeReferenceOfBase would otherwise fall back to Unity's own drawing and show the stored assembly
+    // qualified name in full.
     [CustomPropertyDrawer(typeof(TypeReference), true)]
+    [CustomPropertyDrawer(typeof(TypeReferenceOfBase<>), true)]
     public sealed class TypeReferenceDrawer : PropertyDrawer
     {
         private const string BrokenSuffix = " (missing)";

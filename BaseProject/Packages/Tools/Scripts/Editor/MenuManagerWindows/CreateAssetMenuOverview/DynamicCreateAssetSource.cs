@@ -11,8 +11,6 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows.CreateAssetMenuOverview
     /// </summary>
     internal sealed class DynamicCreateAssetSource : ICreateAssetSource
     {
-        private const string IdPrefix = "CA:";
-
         private readonly MenuScriptLookup _scripts = new();
 
         /// <inheritdoc/>
@@ -55,8 +53,8 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows.CreateAssetMenuOverview
             if (string.IsNullOrEmpty(entryId))
                 return string.Empty;
 
-            string full = entryId.StartsWith(IdPrefix, StringComparison.Ordinal)
-                ? entryId[IdPrefix.Length..]
+            string full = entryId.StartsWith(MenuEntryId.CreateAssetPrefix, StringComparison.Ordinal)
+                ? entryId[MenuEntryId.CreateAssetPrefix.Length..]
                 : entryId;
 
             int separator = full.LastIndexOf('.');

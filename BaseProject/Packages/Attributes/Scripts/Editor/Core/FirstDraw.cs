@@ -14,6 +14,12 @@ namespace Base.AttributePackage.Editor
 
         private static readonly HashSet<string> Seen = new();
 
+        // Selecting a different object does not forget the ones before it, so the set grows for as long
+        // as the session lasts. Entering play mode is the natural point to forget: an object drawn again
+        // afterwards is being looked at fresh, which is exactly when a default expanded state should
+        // apply again.
+        static FirstDraw() => EditorApplication.playModeStateChanged += _ => Seen.Clear();
+
         /// <summary>Returns true the first time it is called for a given property, false afterwards.</summary>
         /// <param name="property">The property being drawn.</param>
         /// <returns>True on the first draw only.</returns>

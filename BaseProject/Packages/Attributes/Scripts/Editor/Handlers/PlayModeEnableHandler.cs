@@ -8,6 +8,10 @@ namespace Base.AttributePackage.Editor
     /// <see cref="ReadOnlyInEditModeAttribute"/> and <see cref="EnableInPlayModeAttribute"/> while not.
     /// The two pairs are aliases of each other, so one handler covers all four.
     /// </summary>
+    /// <remarks>
+    /// One handler for all four, rather than one each. They ask the same question in two directions, and
+    /// four classes of a single line apiece cost more to read than the branch below.
+    /// </remarks>
     internal sealed class PlayModeEnableHandler : IEnableHandler
     {
         public bool ShouldEnable(in MemberContext context)

@@ -15,6 +15,7 @@ namespace Base.AttributePackage.Editor
     {
         private const string FoldoutKeyPrefix = "TABFOLD";
         private const float BarSpacing = 4f;
+        private const float ContentInset = 4f;
         private const float GroupSpacing = 6f;
         private const float IndentStep = 15f;
         private const string TabKeyPrefix = "TAB";
@@ -28,10 +29,16 @@ namespace Base.AttributePackage.Editor
         // A copy of the box style with no top padding, so the bar sits flush against the top edge of
         // the block. The original is shared by every help box in the editor and must not be edited in
         // place.
+        // No padding at all on the box. The bar has to reach both edges of the block, or the block is
+        // visibly wider than the thing it belongs to and the two stop reading as one element. The
+        // content below the bar is inset by hand instead.
         private static GUIStyle ContentStyle => _contentStyle ??= new GUIStyle(EditorStyles.helpBox)
         {
-            padding = new RectOffset(EditorStyles.helpBox.padding.left, EditorStyles.helpBox.padding.right,
-                0, EditorStyles.helpBox.padding.bottom)
+            padding = new RectOffset(0, 0, 0, 0),
+
+            // The help box style paints its background beyond its own rect, which is fine for a box that
+            // stands alone and is exactly what made this one bleed past the fields beside it.
+            overflow = new RectOffset(0, 0, 0, 0)
         };
 
         private static GUIStyle _contentStyle;
@@ -74,12 +81,23 @@ namespace Base.AttributePackage.Editor
             string selectedTab = DrawTabBar(type, group, tabOrder.ToArray());
             GUILayout.Space(BarSpacing);
 
+            // The fields are inset here rather than by the box, because the box's padding would also
+            // narrow the bar and that is what pushed the two out of alignment.
+            EditorGUILayout.BeginHorizontal();
+            GUILayout.Space(ContentInset);
+            EditorGUILayout.BeginVertical();
+
             for (int i = 0; i < members.Count; i++)
             {
                 if (memberTabs[i] == selectedTab)
                     MemberRenderer.Draw(members[i], fields[i], editor);
             }
 
+            EditorGUILayout.EndVertical();
+            GUILayout.Space(ContentInset);
+            EditorGUILayout.EndHorizontal();
+
+            GUILayout.Space(ContentInset);
             EditorGUILayout.EndVertical();
             GUILayout.Space(GroupSpacing);
 

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Base.UtilityPackage.Logging;
 using UnityEditor;
-using UnityEngine;
 
 namespace Base.ToolPackage.Editor.MenuManagerWindows
 {
@@ -116,11 +115,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
                 ? match.DefaultFileName
                 : entry.CreateFileName;
 
-            return () =>
-            {
-                ScriptableObject instance = ScriptableObject.CreateInstance(type);
-                ProjectWindowUtil.CreateAsset(instance, fileName + ".asset");
-            };
+            return () => MenuAssetCreator.Create(type, fileName);
         }
 
         private static void RemoveAll()

@@ -13,20 +13,19 @@ namespace Base.AttributePackage.Editor
     /// reflection.
     /// </summary>
     /// <remarks>
+    /// Buttons are grouped by name rather than by adjacency. Reflection does not report methods in
+    /// declaration order, so a run of consecutive entries is not a reliable block: two buttons sharing a
+    /// foldout could arrive with a third between them and the heading would be drawn twice.
+    /// <para>
     /// A method taking parameters gets a field for each above its button. Those values are editor state
     /// held by <see cref="ButtonArguments"/> rather than serialized on the object, so a one-off call
     /// costs nothing the game will ever carry.
-    /// <para>
-    /// Buttons group the same way fields do: a run of consecutive buttons sharing a row name is drawn
-    /// side by side, and a run sharing a foldout name folds away together. A button in a row cannot also
-    /// carry parameters, since the argument fields need the width the row is dividing up.
     /// </para>
     /// </remarks>
     internal static class ButtonRenderer
     {
         private const string CancelLabel = "Cancel";
         private const string ConfirmLabel = "Confirm";
-        private const string FoldoutKeyPrefix = "BUTTONS";
         private const float LargeHeightScale = 1.5f;
 
         private const BindingFlags MethodFlags =
@@ -34,71 +33,100 @@ namespace Base.AttributePackage.Editor
 
         private static readonly Dictionary<Type, InspectorButton[]> Buttons = new();
 
+        // Reused between draws so grouping does not allocate per repaint.
+        private static readonly List<string> FoldoutOrder = new();
+
+        private static readonly Dictionary<string, List<InspectorButton>> Blocks = new();
+
         /// <summary>Draws all buttons for the edited object.</summary>
         /// <param name="editor">The editor whose target owns the buttons.</param>
         public static void Draw(UnityEditor.Editor editor)
         {
             Type type = editor.target.GetType();
-            InspectorButton[] buttons = GetButtons(type);
 
-            int index = 0;
+            Group(GetButtons(type));
 
-            while (index < buttons.Length)
-                index = DrawBlock(editor, type, buttons, index);
+            foreach (string foldout in FoldoutOrder)
+                DrawBlock(editor, type, foldout, Blocks[foldout]);
         }
 
-        // A block is a run of consecutive buttons sharing a foldout, or a single button without one.
-        private static int DrawBlock(UnityEditor.Editor editor, Type type, InspectorButton[] buttons, int start)
+        // Buttons without a foldout keep their own one-entry block, so they stay where they were rather
+        // than being gathered under an empty heading.
+        private static void Group(InspectorButton[] buttons)
         {
-            string foldout = buttons[start].Attribute.Foldout;
+            FoldoutOrder.Clear();
+            Blocks.Clear();
 
-            if (string.IsNullOrEmpty(foldout))
-                return DrawRow(editor, buttons, start);
+            for (int i = 0; i < buttons.Length; i++)
+            {
+                string foldout = buttons[i].Attribute.Foldout;
+                string key = string.IsNullOrEmpty(foldout)
+                    ? i.ToString()
+                    : foldout;
 
-            int end = start;
-            while (end < buttons.Length && buttons[end].Attribute.Foldout == foldout)
-                end++;
+                if (!Blocks.TryGetValue(key, out List<InspectorButton> block))
+                {
+                    block = new List<InspectorButton>();
+                    Blocks[key] = block;
+                    FoldoutOrder.Add(key);
+                }
 
-            string key = StateKey.For(type, FoldoutKeyPrefix, foldout);
-            bool stored = EditorPrefs.GetBool(key, buttons[start].Attribute.DefaultExpanded);
-            bool expanded = EditorGUILayout.Foldout(stored, foldout, true);
+                block.Add(buttons[i]);
+            }
+        }
 
-            if (expanded != stored)
-                EditorPrefs.SetBool(key, expanded);
+        private static void DrawBlock(UnityEditor.Editor editor, Type type, string foldout,
+            List<InspectorButton> block)
+        {
+            string heading = block[0].Attribute.Foldout;
 
-            if (!expanded)
-                return end;
+            if (string.IsNullOrEmpty(heading))
+            {
+                DrawRows(editor, block);
+                return;
+            }
+
+            // The heading is drawn as a section title, so a block of buttons carries the same weight as a
+            // block of fields rather than reading as a stray foldout arrow. The title renderer owns the
+            // expanded state, keyed on the heading, so nothing is stored twice.
+            TitleAttribute title = BuildTitle(block[0].Attribute, heading);
+
+            if (!TitleRenderer.DrawCollapsible(type, title, heading))
+                return;
 
             EditorGUI.indentLevel++;
-
-            int index = start;
-            while (index < end)
-                index = DrawRow(editor, buttons, index);
-
+            DrawRows(editor, block);
             EditorGUI.indentLevel--;
-
-            return end;
         }
 
-        // A row is a run of consecutive buttons sharing a row name, or a single button without one.
-        private static int DrawRow(UnityEditor.Editor editor, InspectorButton[] buttons, int start)
+        // A row is a run of consecutive buttons sharing a row name. Adjacency is safe here because the
+        // block was already gathered by name and a row only ever pairs neighbours inside it.
+        private static void DrawRows(UnityEditor.Editor editor, List<InspectorButton> block)
         {
-            string row = buttons[start].Attribute.Row;
+            int index = 0;
+
+            while (index < block.Count)
+                index = DrawRow(editor, block, index);
+        }
+
+        private static int DrawRow(UnityEditor.Editor editor, List<InspectorButton> block, int start)
+        {
+            string row = block[start].Attribute.Row;
 
             if (string.IsNullOrEmpty(row))
             {
-                DrawOne(editor, buttons[start]);
+                DrawOne(editor, block[start]);
                 return start + 1;
             }
 
             int end = start;
-            while (end < buttons.Length && buttons[end].Attribute.Row == row)
+            while (end < block.Count && block[end].Attribute.Row == row)
                 end++;
 
             EditorGUILayout.BeginHorizontal();
 
             for (int i = start; i < end; i++)
-                DrawOne(editor, buttons[i]);
+                DrawOne(editor, block[i]);
 
             EditorGUILayout.EndHorizontal();
 
@@ -116,6 +144,20 @@ namespace Base.AttributePackage.Editor
                 if (GUILayout.Button(button.Label, GUILayout.Height(HeightOf(button))) && Confirm(button))
                     Invoke(editor, button, arguments);
             }
+        }
+
+        // The title's color is fixed at construction and each constructor takes one kind, so the choice
+        // between a hex and a preset is made here rather than by assigning afterwards.
+        private static TitleAttribute BuildTitle(ButtonAttribute attribute, string heading)
+        {
+            TitleAttribute title = string.IsNullOrEmpty(attribute.FoldoutColorHex)
+                ? new TitleAttribute(heading, attribute.FoldoutColor)
+                : new TitleAttribute(heading, attribute.FoldoutColorHex);
+
+            title.Foldout = true;
+            title.DefaultExpanded = attribute.DefaultExpanded;
+
+            return title;
         }
 
         private static float HeightOf(in InspectorButton button)

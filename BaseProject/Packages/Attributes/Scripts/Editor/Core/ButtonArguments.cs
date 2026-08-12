@@ -27,6 +27,10 @@ namespace Base.AttributePackage.Editor
 
         private static readonly Dictionary<string, object[]> Values = new();
 
+        // Keyed per property, so the table grows with every field ever touched. Play mode is the point
+        // at which none of it matters any more.
+        static ButtonArguments() => EditorApplication.playModeStateChanged += _ => Values.Clear();
+
         /// <summary>Returns whether every parameter of the method can be drawn.</summary>
         /// <param name="method">The method behind the button.</param>
         /// <returns>True when the button can be offered.</returns>

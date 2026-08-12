@@ -19,6 +19,10 @@ namespace Base.AttributePackage.Editor
 
         private static readonly Dictionary<string, double> NextAttempt = new();
 
+        // Keyed per property, so the table grows with every field ever touched. Play mode is the point
+        // at which none of it matters any more.
+        static ChildHandler() => EditorApplication.playModeStateChanged += _ => NextAttempt.Clear();
+
         public void AfterField(in MemberContext context)
         {
             ChildAttribute attribute = context.GetAttribute<ChildAttribute>();

@@ -43,7 +43,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
                     continue;
 
                 DynamicMenuItemAttribute attribute = method.GetCustomAttribute<DynamicMenuItemAttribute>();
-                string id = "MI:" + owner.FullName + "." + method.Name;
+                string id = MenuEntryId.ForMenuItem(owner, method.Name);
                 string defaultPath = string.IsNullOrWhiteSpace(attribute.DefaultPath)
                     ? "Tools/" + method.Name
                     : attribute.DefaultPath;
@@ -77,7 +77,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
                     ? type.Name
                     : attribute.FileName;
 
-                string id = "CA:" + type.FullName;
+                string id = MenuEntryId.ForCreateAsset(type);
 
                 result[id] = ResolvedMenu.CreateAsset(relative, type, fileName);
             }

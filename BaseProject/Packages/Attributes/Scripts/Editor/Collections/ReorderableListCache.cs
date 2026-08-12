@@ -24,11 +24,22 @@ namespace Base.AttributePackage.Editor.Collections
         private const float FoldoutInset = 12f;
         private const float RowPadding = 2f;
 
+        /// <summary>How far a striped row is tinted from the row beneath it.</summary>
+        private const float StripeStrength = 0.05f;
+
         private static readonly Dictionary<string, ReorderableList> Lists = new();
+
+        // The SerializedObject a cached list was built against, kept so staleness can be judged without
+        // touching the cached property. A SerializedObject is disposed when the inspector rebuilds, and
+        // every member of a property belonging to it throws from that moment on, including the equality
+        // check that would otherwise be the obvious way to ask whether the cache still applies.
+        private static readonly Dictionary<ReorderableList, SerializedObject> Owners = new();
 
         // The callbacks are built once and close over the list rather than over the settings, so both
         // are looked up per list instead of captured at construction.
         private static readonly Dictionary<ReorderableList, string> LabelMembers = new();
+
+        private static readonly Dictionary<ReorderableList, bool> Stripes = new();
 
         private static readonly Dictionary<ReorderableList, bool> Confirmations = new();
 
@@ -38,7 +49,9 @@ namespace Base.AttributePackage.Editor.Collections
         {
             Lists.Clear();
             LabelMembers.Clear();
+            Owners.Clear();
             Confirmations.Clear();
+            Stripes.Clear();
         }
 
         /// <summary>Returns the list for the given array, building it on first use.</summary>
@@ -52,14 +65,15 @@ namespace Base.AttributePackage.Editor.Collections
             string key = KeyFor(property);
 
             if (Lists.TryGetValue(key, out ReorderableList cached)
-                && cached.serializedProperty != null
-                && SerializedProperty.EqualContents(cached.serializedProperty, property))
+                && Owners.TryGetValue(cached, out SerializedObject owner)
+                && ReferenceEquals(owner, property.serializedObject))
             {
                 Configure(cached, settings, canResize);
                 return cached;
             }
 
             ReorderableList created = Build(property, settings, canResize);
+            Owners[created] = property.serializedObject;
             Lists[key] = created;
             return created;
         }
@@ -79,6 +93,33 @@ namespace Base.AttributePackage.Editor.Collections
             // empty list, which a button in the header does not.
             list.headerHeight = 0f;
             list.showDefaultBackground = true;
+
+            list.drawElementBackgroundCallback = (rect, index, active, focused) =>
+            {
+                if (index < 0 || Event.current.type != EventType.Repaint)
+                    return;
+
+                // Setting this callback replaces Unity's background entirely, selection included, so the
+                // selected row is drawn by Unity's own behaviour rather than approximated here. Doing it
+                // the other way round is what made a selected light stripe indistinguishable from an
+                // unselected one: two tints of similar strength, one on top of the other.
+                // Focused is forced. An unfocused selection is drawn in a light grey that sits within a
+                // few percent of the stripe, so clicking elsewhere in the inspector made the selected
+                // row look like an ordinary striped one. Keeping it blue costs a small lie about focus
+                // and buys a selection you can still see.
+                if (active)
+                {
+                    ReorderableList.defaultBehaviours.DrawElementBackground(rect, index, true, true, true);
+                    return;
+                }
+
+                if (!Striped(list) || index % 2 != 0)
+                    return;
+
+                EditorGUI.DrawRect(rect, EditorGUIUtility.isProSkin
+                    ? new Color(1f, 1f, 1f, StripeStrength)
+                    : new Color(0f, 0f, 0f, StripeStrength));
+            };
 
             list.elementHeightCallback = index =>
                 EditorGUI.GetPropertyHeight(list.serializedProperty.GetArrayElementAtIndex(index), true)
@@ -131,9 +172,10 @@ namespace Base.AttributePackage.Editor.Collections
             list.draggable = settings.Draggable;
             list.displayAdd = canResize && !settings.HideAddButton;
             list.displayRemove = canResize && !settings.HideRemoveButton;
-            list.showDefaultBackground = settings.ShowAlternatingBackground;
+            list.showDefaultBackground = true;
 
             LabelMembers[list] = settings.LabelMember;
+            Stripes[list] = settings.ShowAlternatingBackground;
             Confirmations[list] = settings.ConfirmDelete;
         }
 
@@ -141,6 +183,9 @@ namespace Base.AttributePackage.Editor.Collections
             => LabelMembers.TryGetValue(list, out string member)
                 ? member
                 : null;
+
+        private static bool Striped(ReorderableList list)
+            => Stripes.TryGetValue(list, out bool striped) && striped;
 
         private static bool ConfirmsRemoval(ReorderableList list)
             => Confirmations.TryGetValue(list, out bool confirms) && confirms;

@@ -14,6 +14,10 @@ namespace Base.AttributePackage.Editor
 
         private const float IndentStep = 15f;
 
+        // The same inset a left toggle gets, so a checkbox drawn in the gutter lines up with the column
+        // of labels rather than sitting hard against the edge.
+        private const float LeftPadding = 2f;
+
         /// <summary>Returns whether the member needs a gutter in front of its label.</summary>
         /// <param name="context">The member currently being drawn.</param>
         /// <returns>True when one indent step should be reserved.</returns>
@@ -29,6 +33,6 @@ namespace Base.AttributePackage.Editor
         /// <param name="height">Height of the control.</param>
         /// <returns>The rect the leading control should fill.</returns>
         public static Rect RectFor(Rect row, int indentLevel, float height)
-            => new(row.x + indentLevel * IndentStep, row.y, Width, height);
+            => new(row.x + indentLevel * IndentStep + LeftPadding, row.y, Width - LeftPadding, height);
     }
 }

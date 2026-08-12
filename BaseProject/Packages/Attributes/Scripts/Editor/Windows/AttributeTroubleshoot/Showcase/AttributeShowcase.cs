@@ -381,6 +381,11 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Showcase
 
         [OnArraySizeChanged(nameof(OnTagsResized))] public Material[] palettes = Array.Empty<Material>();
 
+        [OnCollectionChanged(nameof(BeforeOwnedChanged), nameof(AfterOwnedChanged))]
+        [Tooltip("Fires on both sides of a size change. The before half runs while the old contents are "
+            + "still there, which is what a collection that owns something needs.")]
+        public List<string> ownedItems = new();
+
         [Title("7. References and serialization", "#83DBC6", Foldout = true, DefaultExpanded = false)]
         [InfoBox("Everything Unity cannot serialize on its own, plus the two inline editors.")]
         [Expandable] public ScriptableObject expandableCollapsed;
@@ -474,6 +479,11 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Showcase
         public List<ShowcaseTableRow> tableFixedSize = new();
 
         [Table] public ShowcaseTableRow[] tableArray = Array.Empty<ShowcaseTableRow>();
+
+        [ListDrawerSettings(ShowAlternatingBackground = false)]
+        [Tooltip("Striping turned off. On by default, and worth keeping for anything longer than a "
+            + "handful of rows.")]
+        public List<string> listNoStripes = new();
 
         [Title("9. Size, toggles and widgets", "#A2CCFF", Foldout = true, DefaultExpanded = false)]
         [InfoBox("The size limits switch off the add and remove controls of the list and table drawers, "
@@ -586,22 +596,26 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Showcase
         public float boundedBySibling = 10f;
 
         [Slider(0f, nameof(MaxSpeed), AutoClamp = true)]
-        [Unit(UnitAttribute.MetersPerSecond)]
+        [Suffix(SuffixAttribute.MetersPerSecond)]
         [Tooltip("A constant lower bound and a member-driven upper one, clamped so the stored value "
             + "cannot sit outside the range even when something else wrote it.")]
         public float clampedSpeed = 4f;
 
-        [Unit(UnitAttribute.Meter)]
+        [Suffix(SuffixAttribute.Meter)]
         [Tooltip("A unit from the constant vocabulary rather than a literal.")]
         public float lengthInMeters = 2.5f;
 
-        [Unit(UnitAttribute.Degree)]
+        [Suffix(SuffixAttribute.Degree)]
         [Tooltip("Degrees of arc.")]
         public float angleInDegrees = 45f;
 
-        [Unit("bananas")]
+        [Suffix("bananas")]
         [Tooltip("A free-text unit, which is the exception rather than the default.")]
         public float customUnit = 1f;
+
+        [Indent(-1)]
+        [Tooltip("A negative amount pulls the field left instead of right, clamped at the first column.")]
+        public string pulledBack = "Pulled back out";
 
         [DisplayAsString]
         [Tooltip("Drawn as read-only text on one line, collapsing the whole collection instead of "
@@ -885,6 +899,10 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Showcase
         private void OnSlotsResized(int size) => Record($"{nameof(slots)} resized to {size}");
 
         private void OnTagsResized() => Record($"{nameof(palettes)} changed size");
+
+        private void BeforeOwnedChanged(int size) => Record($"before: {size} owned");
+
+        private void AfterOwnedChanged(int size) => Record($"after: {size} owned");
 
         // The showcase writes to a field rather than to the console, because this asset lives inside an
         // editor window and a tab that logs every time it is poked would be noise, not information.

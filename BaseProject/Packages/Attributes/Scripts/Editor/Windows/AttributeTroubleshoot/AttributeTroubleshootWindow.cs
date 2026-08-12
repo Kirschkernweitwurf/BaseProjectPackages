@@ -32,6 +32,8 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot
         private const string SampleNotice =
             "These findings come from types that are broken on purpose, so the report can be read on a "
             + "project that has nothing wrong. They are excluded from the project scan.";
+        private const string CopiedNotice = "Report copied";
+        private const string CopyLabel = "Copy";
         private const string ScanLabel = "Scan";
         private const float SearchHeight = 20f;
         private const string SearchHint = "Nothing matches the current filter.";
@@ -172,7 +174,24 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot
                 GUIUtility.ExitGUI();
             }
 
+            EditorGUILayout.Space(BarSpacing, false);
+
+            // Copying respects the errors-only toggle, because the report you want to send is almost
+            // always the one you are currently looking at.
+            using (new EditorGUI.DisabledScope(_groups.Count == 0))
+            {
+                if (GUILayout.Button(CopyLabel, GUILayout.Height(ButtonHeight),
+                        GUILayout.Width(ButtonWidth)))
+                    CopyReport();
+            }
+
             GUILayout.FlexibleSpace();
+
+            // The toggle and the search box are toolbar controls and shorter than the buttons beside
+            // them, so they are centred against the bar rather than sitting on its top edge.
+            EditorGUILayout.BeginVertical(GUILayout.Height(ButtonHeight));
+            GUILayout.FlexibleSpace();
+            EditorGUILayout.BeginHorizontal();
 
             errorsOnly = GUILayout.Toggle(errorsOnly, ErrorsOnlyLabel, EditorStyles.toolbarButton,
                 GUILayout.Width(ErrorsOnlyWidth), GUILayout.Height(SearchHeight));
@@ -182,9 +201,24 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot
             search = EditorGUILayout.TextField(search, EditorStyles.toolbarSearchField,
                 GUILayout.Width(SearchWidth), GUILayout.Height(SearchHeight));
 
+            EditorGUILayout.EndHorizontal();
+            GUILayout.FlexibleSpace();
+            EditorGUILayout.EndVertical();
+
             EditorGUILayout.Space(BarSpacing, false);
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.Space(BarSpacing);
+        }
+
+        private void CopyReport()
+        {
+            string report = AttributeReportFormatter.Build(_groups, errorsOnly);
+
+            if (string.IsNullOrEmpty(report))
+                return;
+
+            EditorGUIUtility.systemCopyBuffer = report;
+            ShowNotification(ScratchContent.For(CopiedNotice));
         }
 
         private void DrawSummary()

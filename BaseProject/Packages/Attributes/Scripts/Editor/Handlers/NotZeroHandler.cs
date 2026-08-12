@@ -15,6 +15,10 @@ namespace Base.AttributePackage.Editor
 
         private static readonly Dictionary<string, float> Previous = new();
 
+        // Keyed per property, so the table grows with every field ever touched. Play mode is the point
+        // at which none of it matters any more.
+        static NotZeroHandler() => EditorApplication.playModeStateChanged += _ => Previous.Clear();
+
         public void AfterField(in MemberContext context)
         {
             NotZeroAttribute attribute = context.GetAttribute<NotZeroAttribute>();

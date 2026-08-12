@@ -47,6 +47,19 @@ namespace Base.AttributePackage
         /// </summary>
         public bool DefaultExpanded { get; set; }
 
+        /// <summary>
+        /// Preset color of that block's heading, so a group of buttons can be given the same weight as a
+        /// section of fields. Read from whichever button of the block is found first.
+        /// </summary>
+        public EColor FoldoutColor { get; set; } = EColor.Default;
+
+        /// <summary>
+        /// HTML color of that block's heading, for example "#FFB2F0". Takes precedence over
+        /// <see cref="FoldoutColor"/>, and exists so a block can sit in a palette the presets are not
+        /// part of.
+        /// </summary>
+        public string FoldoutColorHex { get; set; }
+
         /// <summary>Creates the attribute with an optional custom label.</summary>
         /// <param name="label">Label shown on the button.</param>
         public ButtonAttribute(string label = null) => Label = label;

@@ -18,6 +18,10 @@ namespace Base.AttributePackage.Editor
         /// <summary>All visibility handlers.</summary>
         public static IVisibilityHandler[] Visibility => _visibility ??= Create<IVisibilityHandler>();
 
+        /// <summary>Handlers that draw a member themselves instead of the normal field.</summary>
+        public static IFieldReplacementHandler[] FieldReplacement
+            => _fieldReplacement ??= Create<IFieldReplacementHandler>();
+
         /// <summary>All enable handlers.</summary>
         public static IEnableHandler[] Enable => _enable ??= Create<IEnableHandler>();
 
@@ -33,6 +37,7 @@ namespace Base.AttributePackage.Editor
         private static IBeforeFieldHandler[] _beforeField;
         private static IEnableHandler[] _enable;
         private static IInlineFieldWidget[] _inlineWidgets;
+        private static IFieldReplacementHandler[] _fieldReplacement;
         private static IVisibilityHandler[] _visibility;
 
         private static T[] Create<T>()

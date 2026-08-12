@@ -11,25 +11,20 @@ namespace Base.UtilityPackage.Editor.Collections
     /// </summary>
     public static class SerializableCollectionGui
     {
-        /// <summary>Label of the add button.</summary>
-        public const string AddLabel = "+";
-        /// <summary>Width of the add and remove buttons at the end of a row.</summary>
-        public const float ButtonWidth = 22f;
-
         /// <summary>Horizontal gap between two controls in a row.</summary>
         public const float Gap = 4f;
 
-        /// <summary>Horizontal offset applied to every row below the header.</summary>
-        public const float Indent = 14f;
+        // How far the duplicate tint reaches past the row, so it reads as a band behind the whole entry
+        // rather than as a box drawn inside it.
+        private const float RowBleed = 1f;
 
-        /// <summary>Label of the remove button.</summary>
-        public const string RemoveLabel = "-";
-
-        /// <summary>Vertical gap between two rows.</summary>
         public static float Spacing => EditorGUIUtility.standardVerticalSpacing;
 
         /// <summary>Height of a single control line.</summary>
         public static float Line => EditorGUIUtility.singleLineHeight;
+
+        /// <summary>Vertical gap between two rows.</summary>
+        private static readonly Color DuplicateTint = new(1f, 0.3f, 0.3f, 0.12f);
 
         /// <summary>
         /// Returns a value that identifies the property for duplicate detection, or null when the
@@ -91,26 +86,20 @@ namespace Base.UtilityPackage.Editor.Collections
         }
 
         /// <summary>Draws a foldout header with an element count and returns the new expanded state.</summary>
+        /// <remarks>
+        /// The header takes the whole row. Adding and removing moved to the list's own footer, so there
+        /// is no longer a button up here to leave room for.
+        /// </remarks>
+        /// <param name="rect">The row the header occupies.</param>
+        /// <param name="property">The collection being drawn.</param>
+        /// <param name="label">The label and tooltip of the field.</param>
+        /// <param name="count">How many elements it holds.</param>
+        /// <returns>True while the collection is open.</returns>
         public static bool DrawHeader(Rect rect, SerializedProperty property, GUIContent label, int count)
         {
-            Rect foldoutRect = new(rect.x, rect.y, rect.width - ButtonWidth - Gap, rect.height);
             GUIContent content = new($"{label.text} ({count})", label.tooltip);
 
-            return EditorGUI.Foldout(foldoutRect, property.isExpanded, content, true);
-        }
-
-        /// <summary>Draws the add button at the right end of the header and returns true when clicked.</summary>
-        public static bool DrawAddButton(Rect rect)
-        {
-            Rect buttonRect = new(rect.xMax - ButtonWidth, rect.y, ButtonWidth, Line);
-            return GUI.Button(buttonRect, AddLabel, EditorStyles.miniButton);
-        }
-
-        /// <summary>Draws the remove button at the right end of a row and returns true when clicked.</summary>
-        public static bool DrawRemoveButton(Rect rect)
-        {
-            Rect buttonRect = new(rect.xMax - ButtonWidth, rect.y, ButtonWidth, Line);
-            return GUI.Button(buttonRect, RemoveLabel, EditorStyles.miniButton);
+            return EditorGUI.Foldout(rect, property.isExpanded, content, true);
         }
 
         /// <summary>
@@ -135,10 +124,13 @@ namespace Base.UtilityPackage.Editor.Collections
         }
 
         /// <summary>Tints the given row to mark it as a duplicate.</summary>
+        /// <param name="rect">The row to tint.</param>
         public static void MarkDuplicate(Rect rect)
         {
-            Color tint = new(1f, 0.3f, 0.3f, 0.12f);
-            EditorGUI.DrawRect(new Rect(rect.x - Gap, rect.y - 1f, rect.width + Gap * 2f, rect.height + 2f), tint);
+            Rect tinted = new(rect.x - Gap, rect.y - RowBleed, rect.width + Gap * 2f,
+                rect.height + RowBleed * 2f);
+
+            EditorGUI.DrawRect(tinted, DuplicateTint);
         }
     }
 }
