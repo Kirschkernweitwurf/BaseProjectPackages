@@ -94,26 +94,26 @@ namespace Base.AttributePackage.Editor.Windows.GetComponentAssigner
         {
             int assigned = 0;
 
-            foreach (MonoBehaviour behaviour in root.GetComponentsInChildren<MonoBehaviour>(true))
+            foreach (MonoBehaviour behavior in root.GetComponentsInChildren<MonoBehaviour>(true))
             {
-                if (behaviour != null)
-                    assigned += ProcessBehaviour(behaviour);
+                if (behavior != null)
+                    assigned += ProcessBehavior(behavior);
             }
 
             return assigned;
         }
 
-        private static int ProcessBehaviour(MonoBehaviour behaviour)
+        private static int ProcessBehavior(MonoBehaviour behavior)
         {
-            SerializedObject serializedObject = new(behaviour);
+            SerializedObject serializedObject = new(behavior);
             int assigned = 0;
 
-            foreach (FieldInfo field in ReflectionCache.AllFields(behaviour.GetType()))
+            foreach (FieldInfo field in ReflectionCache.AllFields(behavior.GetType()))
             {
                 if (!IsReferenceField(field))
                     continue;
 
-                if (TryAssign(behaviour, field, serializedObject))
+                if (TryAssign(behavior, field, serializedObject))
                     assigned++;
             }
 

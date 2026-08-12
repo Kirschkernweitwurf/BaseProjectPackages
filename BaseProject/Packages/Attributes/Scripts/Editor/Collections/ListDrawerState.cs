@@ -12,15 +12,15 @@ namespace Base.AttributePackage.Editor.Collections
     {
         private const char KeySeparator = ':';
 
-        private static readonly Dictionary<string, ListDrawerState> States = new();
-
-        private static readonly HashSet<string> Seen = new();
-
         /// <summary>Current filter text, empty when nothing is filtered.</summary>
         public string Search { get; set; } = string.Empty;
 
         /// <summary>Zero-based index of the page being shown.</summary>
         public int Page { get; set; }
+
+        private static readonly Dictionary<string, ListDrawerState> States = new();
+
+        private static readonly HashSet<string> Seen = new();
 
         /// <summary>
         /// Returns whether this is the first time the property is drawn this session. Used to apply a

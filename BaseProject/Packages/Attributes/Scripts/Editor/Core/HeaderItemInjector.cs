@@ -30,7 +30,7 @@ namespace Base.AttributePackage.Editor
         private const BindingFlags FieldFlags = BindingFlags.NonPublic | BindingFlags.Static;
         private const string HeaderItemsField = "s_EditorHeaderItemsMethods";
 
-        private static FieldInfo _headerItems;
+        private static readonly FieldInfo _headerItems;
 
         static HeaderItemInjector()
         {

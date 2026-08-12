@@ -29,8 +29,8 @@ namespace Base.AttributePackage.Editor
                 return;
 
             CustomContextMenuAttribute[] entries =
-                (CustomContextMenuAttribute[])context.Field.GetCustomAttributes(
-                    typeof(CustomContextMenuAttribute), true);
+                (CustomContextMenuAttribute[])context.Field.GetCustomAttributes(typeof(CustomContextMenuAttribute),
+                    true);
 
             if (entries.Length == 0)
                 return;
@@ -61,7 +61,7 @@ namespace Base.AttributePackage.Editor
                     continue;
                 }
 
-                menu.AddItem(new GUIContent(entry.Label), false, () =>
+                menu.AddItem(new GUIContent(entry.Label), false, func: () =>
                 {
                     // Pending inspector edits are written first, so the method sees the values the user
                     // is looking at rather than the ones from before this repaint.

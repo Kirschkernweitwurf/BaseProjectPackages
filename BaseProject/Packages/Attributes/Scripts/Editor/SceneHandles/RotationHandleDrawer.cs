@@ -25,7 +25,7 @@ namespace Base.AttributePackage.Editor.SceneHandles
             Vector3 position = SceneSpace.Anchor(context, attribute.PositionMember, attribute.Space);
 
             EditorGUI.BeginChangeCheck();
-            Quaternion rotated = UnityEditor.Handles.RotationHandle(parent * stored, position);
+            Quaternion rotated = Handles.RotationHandle(parent * stored, position);
 
             if (!EditorGUI.EndChangeCheck())
                 return;

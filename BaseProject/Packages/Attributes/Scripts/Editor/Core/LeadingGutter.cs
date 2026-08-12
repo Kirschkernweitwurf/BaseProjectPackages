@@ -17,8 +17,8 @@ namespace Base.AttributePackage.Editor
         /// <summary>Returns whether the member needs a gutter in front of its label.</summary>
         /// <param name="context">The member currently being drawn.</param>
         /// <returns>True when one indent step should be reserved.</returns>
-        public static bool IsNeeded(in MemberContext context)
-            => ExpandableState.NeedsArrow(context) || context.GetAttribute<PrefixToggleAttribute>() != null;
+        public static bool IsNeeded(in MemberContext context) => ExpandableState.NeedsArrow(context)
+            || context.GetAttribute<PrefixToggleAttribute>() != null;
 
         /// <summary>
         /// Returns the rect of the gutter for a field row. Called from an after-field handler, where the

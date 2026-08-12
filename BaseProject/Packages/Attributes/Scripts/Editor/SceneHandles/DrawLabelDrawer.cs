@@ -22,7 +22,7 @@ namespace Base.AttributePackage.Editor.SceneHandles
                 }
             };
 
-            UnityEditor.Handles.Label(position, ResolveText(context, attribute), style);
+            Handles.Label(position, ResolveText(context, attribute), style);
         }
 
         // A member wins over the constant text, so a label can show a live value rather than a caption.

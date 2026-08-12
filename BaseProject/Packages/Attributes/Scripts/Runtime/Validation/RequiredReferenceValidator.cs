@@ -26,15 +26,15 @@ namespace Base.AttributePackage
         {
             foreach (GameObject root in scene.GetRootGameObjects())
             {
-                foreach (MonoBehaviour behaviour in root.GetComponentsInChildren<MonoBehaviour>(true))
-                    Validate(behaviour);
+                foreach (MonoBehaviour behavior in root.GetComponentsInChildren<MonoBehaviour>(true))
+                    Validate(behavior);
             }
         }
 
-        private static void Validate(MonoBehaviour behaviour)
+        private static void Validate(MonoBehaviour behavior)
         {
             Buffer.Clear();
-            ReferenceValidationScanner.Collect(behaviour, Buffer);
+            ReferenceValidationScanner.Collect(behavior, Buffer);
 
             foreach (ReferenceIssue issue in Buffer)
                 CustomLogger.LogError(ValidationLog.Build(issue), issue.Owner);

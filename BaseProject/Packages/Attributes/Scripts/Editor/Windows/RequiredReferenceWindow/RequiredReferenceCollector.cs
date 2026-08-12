@@ -11,10 +11,10 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
         /// <summary>Returns one group per scene object with issues. Scene objects group by GameObject.</summary>
         public static List<RequiredReferenceGroup> CollectScene(out int total)
         {
-            MonoBehaviour[] behaviours =
+            MonoBehaviour[] behaviors =
                 Object.FindObjectsByType<MonoBehaviour>(FindObjectsInactive.Include, FindObjectsSortMode.None);
 
-            return Collect(behaviours, ResolveSceneOwner, out total);
+            return Collect(behaviors, ResolveSceneOwner, out total);
         }
 
         /// <summary>Returns one group per ScriptableObject asset with issues.</summary>

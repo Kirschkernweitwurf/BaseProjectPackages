@@ -27,6 +27,26 @@ namespace Base.AttributePackage
         /// </summary>
         public string Confirm { get; set; }
 
+        /// <summary>How tall the button is drawn. Defaults to <see cref="EButtonSize.Normal"/>.</summary>
+        public EButtonSize Size { get; set; } = EButtonSize.Normal;
+
+        /// <summary>
+        /// Optional name of a row. Consecutive buttons sharing one are drawn side by side, which is what
+        /// a pair of opposites wants: apply and revert, start and stop.
+        /// </summary>
+        public string Row { get; set; }
+
+        /// <summary>
+        /// Optional name of a collapsible block. Consecutive buttons sharing one fold away together,
+        /// which is where the debug actions belong once there are more than two of them.
+        /// </summary>
+        public string Foldout { get; set; }
+
+        /// <summary>
+        /// Whether that block starts open. Ignored while <see cref="Foldout"/> is null.
+        /// </summary>
+        public bool DefaultExpanded { get; set; }
+
         /// <summary>Creates the attribute with an optional custom label.</summary>
         /// <param name="label">Label shown on the button.</param>
         public ButtonAttribute(string label = null) => Label = label;

@@ -14,6 +14,7 @@ namespace Base.AttributePackage.Editor
     internal static class TabGroupRenderer
     {
         private const string FoldoutKeyPrefix = "TABFOLD";
+        private const float BarSpacing = 4f;
         private const float GroupSpacing = 6f;
         private const float IndentStep = 15f;
         private const string TabKeyPrefix = "TAB";
@@ -24,6 +25,16 @@ namespace Base.AttributePackage.Editor
             fontStyle = FontStyle.Bold
         };
 
+        // A copy of the box style with no top padding, so the bar sits flush against the top edge of
+        // the block. The original is shared by every help box in the editor and must not be edited in
+        // place.
+        private static GUIStyle ContentStyle => _contentStyle ??= new GUIStyle(EditorStyles.helpBox)
+        {
+            padding = new RectOffset(EditorStyles.helpBox.padding.left, EditorStyles.helpBox.padding.right,
+                0, EditorStyles.helpBox.padding.bottom)
+        };
+
+        private static GUIStyle _contentStyle;
         private static GUIStyle _foldoutStyle;
 
         /// <summary>
@@ -55,9 +66,13 @@ namespace Base.AttributePackage.Editor
                 return index;
             }
 
-            string selectedTab = DrawTabBar(type, group, tabOrder.ToArray());
+            // The bar is drawn inside the block rather than above it. Every attempt to close the seam
+            // from outside fought one spacing rule or another; there is no seam to close when the two
+            // are the same control.
+            EditorGUILayout.BeginVertical(ContentStyle);
 
-            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+            string selectedTab = DrawTabBar(type, group, tabOrder.ToArray());
+            GUILayout.Space(BarSpacing);
 
             for (int i = 0; i < members.Count; i++)
             {
@@ -96,8 +111,7 @@ namespace Base.AttributePackage.Editor
         }
 
         private static TabAttribute AttributeAt(List<SerializedProperty> properties, int index, Type type)
-            => ReflectionCache.GetAttribute<TabAttribute>(
-                ReflectionCache.GetField(type, properties[index].name));
+            => ReflectionCache.GetAttribute<TabAttribute>(ReflectionCache.GetField(type, properties[index].name));
 
         // Returns whether the group body should be drawn. A group without the foldout setting always is.
         private static bool DrawFoldout(Type type, TabAttribute attribute, List<string> tabOrder)

@@ -29,7 +29,7 @@ namespace Base.AttributePackage
         public int Max { get; set; } = Unbounded;
 
         /// <summary>True when the count cannot be changed at all.</summary>
-        public bool IsFixed => Size >= 0 || (Min >= 0 && Min == Max);
+        public bool IsFixed => Size >= 0 || Min >= 0 && Min == Max;
 
         /// <summary>Creates the attribute.</summary>
         /// <param name="size">Exact element count, or nothing to use <see cref="Min"/> and <see cref="Max"/>.</param>

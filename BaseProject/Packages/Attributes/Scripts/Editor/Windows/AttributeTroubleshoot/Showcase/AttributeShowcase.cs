@@ -5,6 +5,7 @@ using Base.UtilityPackage.Collections;
 using Base.UtilityPackage.Serialization;
 using UnityEngine;
 using UnityEngine.Audio;
+using Random = UnityEngine.Random;
 
 namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Showcase
 {
@@ -32,6 +33,13 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Showcase
         private const int MaximumRoll = 7;
         private const int MinimumRoll = 1;
         private const int OptionsPerGroup = 10;
+
+        [Title("13. Native members", "#FFB2F5", Foldout = true, DefaultExpanded = false)]
+        [InfoBox("Everything below this point is drawn after the serialized fields, in declaration "
+            + "order. The header controls are the one thing missing: they live in the component header, "
+            + "which an embedded inspector does not draw.")]
+        [ShowNonSerialized]
+        private const int RuntimeConstant = 42;
 
         // The section colors are one pastel rainbow, evenly spaced around the hue circle and leveled to
         // the same perceived lightness, so no heading shouts louder than its neighbors and every one of
@@ -451,7 +459,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Showcase
         [ListDrawerSettings(ConfirmDelete = true, LabelMember = nameof(ShowcaseTableRow.id))]
         public List<ShowcaseTableRow> listConfirmDelete = new();
 
-        [ListDrawerSettings(HideReorderButtons = true)] public List<string> listNoReorder = new();
+        [ListDrawerSettings(Draggable = false)] public List<string> listNoDrag = new();
 
         [ListDrawerSettings(HideAddButton = true, HideRemoveButton = true)]
         public List<string> listFixedSize = new();
@@ -768,13 +776,6 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Showcase
             }
         }
 
-        [Title("13. Native members", "#FFB2F5", Foldout = true, DefaultExpanded = false)]
-        [InfoBox("Everything below this point is drawn after the serialized fields, in declaration "
-            + "order. The header controls are the one thing missing: they live in the component header, "
-            + "which an embedded inspector does not draw.")]
-        [ShowNonSerialized]
-        private const int RuntimeConstant = 42;
-
         [ShowNonSerialized] private string lastCallback = "No callback yet";
 
         [ShowNonSerialized] private Vector3 runtimeVector = Vector3.forward;
@@ -825,11 +826,9 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Showcase
             Record(nameof(ResetContextValue));
         }
 
-        private void HalveContextValue()
-            => Record($"{nameof(HalveContextValue)} to {multiContextValue *= 0.5f}");
+        private void HalveContextValue() => Record($"{nameof(HalveContextValue)} to {multiContextValue *= 0.5f}");
 
-        private void DoubleContextValue()
-            => Record($"{nameof(DoubleContextValue)} to {multiContextValue *= 2f}");
+        private void DoubleContextValue() => Record($"{nameof(DoubleContextValue)} to {multiContextValue *= 2f}");
 
         private void UseFirstMaterial()
         {
@@ -875,7 +874,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Showcase
 
         private void Roll()
         {
-            inlineButtonLabeled = UnityEngine.Random.Range(MinimumRoll, MaximumRoll);
+            inlineButtonLabeled = Random.Range(MinimumRoll, MaximumRoll);
             Record($"{nameof(Roll)} rolled {inlineButtonLabeled}");
         }
 

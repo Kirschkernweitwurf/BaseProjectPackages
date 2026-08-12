@@ -57,14 +57,12 @@ namespace Base.AttributePackage.Editor.SceneHandles
         public static Vector3 Normal(Transform transform, ENormalAxis axis, ESpace space)
         {
             if (space == ESpace.World || transform == null)
-            {
                 return axis switch
                 {
                     ENormalAxis.X => Vector3.right,
                     ENormalAxis.Z => Vector3.forward,
                     _ => Vector3.up
                 };
-            }
 
             return axis switch
             {

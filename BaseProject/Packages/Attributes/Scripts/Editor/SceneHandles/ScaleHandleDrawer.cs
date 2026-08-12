@@ -15,7 +15,7 @@ namespace Base.AttributePackage.Editor.SceneHandles
             Quaternion rotation = SceneSpace.Rotation(context.Transform, ESpace.Local);
 
             EditorGUI.BeginChangeCheck();
-            Vector3 scaled = UnityEditor.Handles.ScaleHandle(context.Property.vector3Value, position, rotation,
+            Vector3 scaled = Handles.ScaleHandle(context.Property.vector3Value, position, rotation,
                 attribute.Size);
 
             if (EditorGUI.EndChangeCheck())

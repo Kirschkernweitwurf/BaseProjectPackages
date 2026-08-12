@@ -38,8 +38,10 @@ namespace Base.AttributePackage.Editor
             // reserves the inspector's label width for an empty prefix, which in a rect sized to the
             // unit itself leaves nothing to draw the unit in.
             using (new NoIndentScope())
-            using (new EditorGUI.DisabledScope(true))
-                GUI.Label(rect, attribute.Unit, EditorStyles.miniLabel);
+            {
+                using (new EditorGUI.DisabledScope(true))
+                    GUI.Label(rect, attribute.Unit, EditorStyles.miniLabel);
+            }
         }
     }
 }

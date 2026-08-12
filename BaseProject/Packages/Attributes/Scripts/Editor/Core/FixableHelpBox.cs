@@ -82,8 +82,7 @@ namespace Base.AttributePackage.Editor
             }
             catch (Exception exception)
             {
-                CustomLogger.LogError(
-                    $"{method.Name} threw while fixing the field.\n{exception}", context.Target);
+                CustomLogger.LogError($"{method.Name} threw while fixing the field.\n{exception}", context.Target);
             }
 
             EditorUtility.SetDirty(context.Target);

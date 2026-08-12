@@ -16,14 +16,14 @@ namespace Base.AttributePackage.Editor.SceneHandles
             Vector3 world = SceneSpace.ToWorld(context.Transform, context.Property.vector3Value, attribute.Space);
 
             EditorGUI.BeginChangeCheck();
-            Vector3 moved = UnityEditor.Handles.PositionHandle(world,
+            Vector3 moved = Handles.PositionHandle(world,
                 SceneSpace.Rotation(context.Transform, attribute.Space));
 
             if (EditorGUI.EndChangeCheck())
                 context.Property.vector3Value = SceneSpace.ToStored(context.Transform, moved, attribute.Space);
 
             string label = attribute.Label ?? context.DisplayName;
-            UnityEditor.Handles.Label(moved + LabelOffset, label);
+            Handles.Label(moved + LabelOffset, label);
         }
     }
 }

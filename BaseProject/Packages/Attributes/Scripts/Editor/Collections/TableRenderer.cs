@@ -44,17 +44,6 @@ namespace Base.AttributePackage.Editor.Collections
             GUIContent header = new($"{label.text} ({property.arraySize})", label.tooltip);
             property.isExpanded = EditorGUILayout.Foldout(property.isExpanded, header, true);
 
-            if (canResize
-                && !attribute.HideAddButton
-                && CollectionGui.SmallButton(
-                    GUILayoutUtility.GetRect(CollectionGui.ButtonWidth, CollectionGui.Line,
-                        GUILayout.Width(CollectionGui.ButtonWidth)),
-                    CollectionGui.AddLabel))
-            {
-                property.arraySize++;
-                property.isExpanded = true;
-            }
-
             EditorGUILayout.EndHorizontal();
 
             if (!property.isExpanded)
@@ -63,6 +52,7 @@ namespace Base.AttributePackage.Editor.Collections
             if (property.arraySize == 0)
             {
                 EditorGUILayout.LabelField(EmptyMessage, EditorStyles.centeredGreyMiniLabel);
+                DrawFooter(property, attribute, canResize);
                 return;
             }
 
@@ -76,6 +66,7 @@ namespace Base.AttributePackage.Editor.Collections
 
             DrawHeaderRow(attribute, canResize);
             DrawRows(property, attribute, canResize);
+            DrawFooter(property, attribute, canResize);
         }
 
         private static void CollectColumns(SerializedProperty element, Type elementType)
@@ -114,6 +105,36 @@ namespace Base.AttributePackage.Editor.Collections
             return field == null
                 ? null
                 : ReflectionCache.GetAttribute<TableColumnAttribute>(field);
+        }
+
+        // The same add and remove pair Unity puts under a list, for the same reasons: it works on an
+        // empty table, it sits where people look for it, and it cannot collide with the header row.
+        private static void DrawFooter(SerializedProperty property, TableAttribute attribute, bool canResize)
+        {
+            bool canAdd = canResize && !attribute.HideAddButton;
+            bool canRemove = canResize && !attribute.HideRemoveButton && property.arraySize > 0;
+
+            if (!canAdd && !canRemove)
+                return;
+
+            EditorGUILayout.BeginHorizontal();
+            GUILayout.FlexibleSpace();
+
+            if (canAdd && FooterButton(CollectionGui.AddLabel))
+                property.arraySize++;
+
+            if (canRemove && FooterButton(CollectionGui.RemoveLabel))
+                CollectionGui.DeleteElement(property, property.arraySize - 1);
+
+            EditorGUILayout.EndHorizontal();
+        }
+
+        private static bool FooterButton(string label)
+        {
+            Rect rect = GUILayoutUtility.GetRect(CollectionGui.ButtonWidth, CollectionGui.Line,
+                GUILayout.Width(CollectionGui.ButtonWidth), GUILayout.Height(CollectionGui.Line));
+
+            return CollectionGui.SmallButton(rect, label);
         }
 
         private static void DrawHeaderRow(TableAttribute attribute, bool canResize)

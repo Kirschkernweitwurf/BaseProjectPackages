@@ -38,8 +38,7 @@ namespace Base.AttributePackage.Editor
         /// <param name="type">The type being searched for.</param>
         /// <param name="search">The search to run on a cache miss.</param>
         /// <returns>The found object, or null.</returns>
-        public static Object GetSceneObject(Type type, Func<Type, Object> search)
-            => Get(SceneObjects, type, search);
+        public static Object GetSceneObject(Type type, Func<Type, Object> search) => Get(SceneObjects, type, search);
 
         // Presence in the dictionary means the search already ran, whatever it found. A stored null is a
         // cached miss and stays one until the project or the hierarchy invalidates it, which is also
@@ -53,11 +52,9 @@ namespace Base.AttributePackage.Editor
         private static Object Get(Dictionary<Type, Object> cache, Type type, Func<Type, Object> search)
         {
             if (cache.TryGetValue(type, out Object cached))
-            {
                 return cached == null
                     ? null
                     : cached;
-            }
 
             Object found = search(type);
             cache[type] = found;

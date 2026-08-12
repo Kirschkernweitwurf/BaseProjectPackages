@@ -1,5 +1,4 @@
 using System;
-using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -32,7 +31,7 @@ namespace Base.AttributePackage.Editor
                 : FindObjectsInactive.Exclude;
 
             Object found = AutoAssignCache.GetSceneObject(type,
-                searched => FindFirst(searched, inactive));
+                search: searched => FindFirst(searched, inactive));
 
             if (found != null)
                 context.Property.objectReferenceValue = found;

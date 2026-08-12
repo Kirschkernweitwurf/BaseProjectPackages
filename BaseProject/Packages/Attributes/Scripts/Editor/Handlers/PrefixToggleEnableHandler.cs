@@ -1,3 +1,5 @@
+using UnityEditor;
+
 namespace Base.AttributePackage.Editor
 {
     /// <summary>
@@ -8,7 +10,7 @@ namespace Base.AttributePackage.Editor
     {
         public bool ShouldEnable(in MemberContext context)
         {
-            UnityEditor.SerializedProperty toggle = PrefixToggleState.ResolveToggle(context);
+            SerializedProperty toggle = PrefixToggleState.ResolveToggle(context);
 
             return toggle == null || toggle.boolValue;
         }

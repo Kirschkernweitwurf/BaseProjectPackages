@@ -26,24 +26,50 @@ namespace Base.AttributePackage.Editor
         /// <param name="editor">The editor drawing it.</param>
         /// <param name="showLabel">False to give the value the whole row, for a horizontal cell.</param>
         public static void Draw(SerializedProperty property, FieldInfo field, AttributePackageEditor editor,
-            bool showLabel = true)
-            => Draw(property, field, editor.target.GetType(), editor.target, editor, showLabel);
+            bool showLabel = true) => Draw(property, field, editor.target.GetType(), editor.target, editor,
+            showLabel, false);
+
+        /// <summary>
+        /// Runs only the decorations that sit above a member, without drawing the member itself.
+        /// </summary>
+        /// <remarks>
+        /// A horizontal row uses this to lift the decorations off its first cell. An info box or a
+        /// separator spans the inspector, so leaving one inside a cell makes that cell taller than its
+        /// neighbors and pushes its own field a row out of line with them.
+        /// </remarks>
+        /// <param name="property">The member whose decorations to draw.</param>
+        /// <param name="field">The reflected field behind it.</param>
+        /// <param name="editor">The editor drawing it.</param>
+        internal static void DrawDecorations(SerializedProperty property, FieldInfo field,
+            AttributePackageEditor editor)
+        {
+            MemberContext context = CreateContext(property, field, editor.target.GetType(), editor.target,
+                editor, true);
+
+            if (!IsVisible(context))
+                return;
+
+            foreach (IBeforeFieldHandler handler in HandlerRegistry.BeforeField)
+                handler.BeforeField(context);
+        }
+
+        /// <summary>Draws a member whose decorations the caller already drew.</summary>
+        /// <param name="property">The property to draw.</param>
+        /// <param name="field">The reflected field behind it.</param>
+        /// <param name="editor">The editor drawing it.</param>
+        /// <param name="showLabel">False to give the value the whole row, for a horizontal cell.</param>
+        internal static void DrawWithoutDecorations(SerializedProperty property, FieldInfo field,
+            AttributePackageEditor editor, bool showLabel)
+            => Draw(property, field, editor.target.GetType(), editor.target, editor, showLabel, true);
 
         private static void Draw(SerializedProperty property, FieldInfo field, Type declaringType,
-            object declaringObject, AttributePackageEditor editor, bool showLabel = true)
+            object declaringObject, AttributePackageEditor editor, bool showLabel, bool skipDecorations)
         {
-            Object before = property.propertyType == SerializedPropertyType.ObjectReference
-                ? property.objectReferenceValue
-                : null;
+            MemberContext context = CreateContext(property, field, declaringType, declaringObject, editor,
+                showLabel);
 
-            MemberContext context =
-                new(property, field, editor.target, declaringType, declaringObject, editor, before, showLabel);
-
-            foreach (IVisibilityHandler handler in HandlerRegistry.Visibility)
-            {
-                if (!handler.ShouldShow(context))
-                    return;
-            }
+            if (!IsVisible(context))
+                return;
 
             bool enabled = true;
             foreach (IEnableHandler handler in HandlerRegistry.Enable)
@@ -55,8 +81,11 @@ namespace Base.AttributePackage.Editor
                 }
             }
 
-            foreach (IBeforeFieldHandler handler in HandlerRegistry.BeforeField)
-                handler.BeforeField(context);
+            if (!skipDecorations)
+            {
+                foreach (IBeforeFieldHandler handler in HandlerRegistry.BeforeField)
+                    handler.BeforeField(context);
+            }
 
             IndentAttribute indent = context.GetAttribute<IndentAttribute>();
             int amount = indent?.Amount ?? 0;
@@ -74,6 +103,28 @@ namespace Base.AttributePackage.Editor
 
             foreach (IAfterFieldHandler handler in HandlerRegistry.AfterField)
                 handler.AfterField(context);
+        }
+
+        private static MemberContext CreateContext(SerializedProperty property, FieldInfo field,
+            Type declaringType, object declaringObject, AttributePackageEditor editor, bool showLabel)
+        {
+            Object before = property.propertyType == SerializedPropertyType.ObjectReference
+                ? property.objectReferenceValue
+                : null;
+
+            return new MemberContext(property, field, editor.target, declaringType, declaringObject, editor,
+                before, showLabel);
+        }
+
+        private static bool IsVisible(in MemberContext context)
+        {
+            foreach (IVisibilityHandler handler in HandlerRegistry.Visibility)
+            {
+                if (!handler.ShouldShow(context))
+                    return false;
+            }
+
+            return true;
         }
 
         private static void DrawBody(in MemberContext context, FieldInfo field, AttributePackageEditor editor)
@@ -118,6 +169,7 @@ namespace Base.AttributePackage.Editor
             {
                 TableRenderer.Draw(property, context.Label, ElementType(field), table,
                     ArraySizeLimits.CanResize(context));
+
                 return true;
             }
 
@@ -202,7 +254,7 @@ namespace Base.AttributePackage.Editor
             {
                 enterChildren = false;
                 FieldInfo childField = ReflectionCache.GetField(declaringType, iterator.name);
-                Draw(iterator.Copy(), childField, declaringType, declaringObject, editor);
+                Draw(iterator.Copy(), childField, declaringType, declaringObject, editor, true, false);
             }
         }
 

@@ -16,15 +16,15 @@ namespace Base.AttributePackage.Editor.SceneHandles
             Vector3 from = SceneSpace.Anchor(context, attribute.FromMember, attribute.Space);
             Vector3 to = SceneSpace.ToWorld(context.Transform, context.Property.vector3Value, attribute.Space);
 
-            Color previous = UnityEditor.Handles.color;
-            UnityEditor.Handles.color = SceneSpace.Resolve(attribute.PresetColor);
+            Color previous = Handles.color;
+            Handles.color = SceneSpace.Resolve(attribute.PresetColor);
 
             if (attribute.Dotted)
-                UnityEditor.Handles.DrawDottedLine(from, to, DotSpacing);
+                Handles.DrawDottedLine(from, to, DotSpacing);
             else
-                UnityEditor.Handles.DrawLine(from, to);
+                Handles.DrawLine(from, to);
 
-            UnityEditor.Handles.color = previous;
+            Handles.color = previous;
         }
     }
 }

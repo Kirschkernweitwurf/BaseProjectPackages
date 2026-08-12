@@ -15,16 +15,16 @@ namespace Base.AttributePackage.Editor.SceneHandles
             Vector3 normal = SceneSpace.Normal(context.Transform, attribute.Axis, attribute.Space);
             Quaternion rotation = Quaternion.LookRotation(normal);
 
-            Color previous = UnityEditor.Handles.color;
-            UnityEditor.Handles.color = SceneSpace.Resolve(attribute.PresetColor);
+            Color previous = Handles.color;
+            Handles.color = SceneSpace.Resolve(attribute.PresetColor);
 
             EditorGUI.BeginChangeCheck();
-            float radius = UnityEditor.Handles.RadiusHandle(rotation, position, context.Property.floatValue);
+            float radius = Handles.RadiusHandle(rotation, position, context.Property.floatValue);
 
             if (EditorGUI.EndChangeCheck())
                 context.Property.floatValue = Mathf.Max(0f, radius);
 
-            UnityEditor.Handles.color = previous;
+            Handles.color = previous;
         }
     }
 }

@@ -22,8 +22,7 @@ namespace Base.AttributePackage.Editor
         private const string NoMatchMessage = "No asset matched the filter.";
         private const string TypeFilterFormat = "t:{0}";
 
-        protected override string UsageMessage
-            => AttributeNames.Usage<AssetDropdownAttribute>("an object reference");
+        protected override string UsageMessage => AttributeNames.Usage<AssetDropdownAttribute>("an object reference");
 
         private static readonly Dictionary<string, Object[]> Cache = new();
 
@@ -133,7 +132,7 @@ namespace Base.AttributePackage.Editor
             SerializedProperty captured = property.Copy();
             Object[] assets = _assets;
 
-            SearchableDropdown menu = new(_state, title, labels, index =>
+            SearchableDropdown menu = new(_state, title, labels, onSelected: index =>
             {
                 captured.objectReferenceValue = index <= 0
                     ? null

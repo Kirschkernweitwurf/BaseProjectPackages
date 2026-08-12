@@ -57,7 +57,7 @@ namespace Base.AttributePackage.Editor
             };
         }
 
-        /// <summary>Opens the system panel and returns the selected path, or empty when cancelled.</summary>
+        /// <summary>Opens the system panel and returns the selected path, or empty when canceled.</summary>
         protected abstract string OpenPanel();
 
         private static void Apply(SerializedObject serializedObject, string propertyPath, bool absolute,

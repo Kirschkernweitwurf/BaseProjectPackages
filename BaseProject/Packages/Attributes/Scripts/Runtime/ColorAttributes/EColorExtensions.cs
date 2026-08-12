@@ -5,45 +5,71 @@ namespace Base.AttributePackage
     /// <summary>
     /// Maps <see cref="EColor"/> values to concrete <see cref="Color"/> values.
     /// </summary>
+    /// <remarks>
+    /// The set is tuned as one family rather than picked hue by hue. Every entry sits at a similar
+    /// perceived lightness, bright enough to read against the dark editor skin and dark enough to stay
+    /// legible on the light one, and saturated enough to tell apart without any of them shouting over
+    /// its neighbors. That last part matters most: these colors end up next to each other in a single
+    /// inspector, so a palette of individually pretty colors that fight each other is worse than a
+    /// slightly duller one that does not.
+    /// </remarks>
     public static class EColorExtensions
     {
+        private static readonly Color32 Black = new(0, 0, 0, 255);
+        private static readonly Color32 Blue = new(96, 165, 250, 255);
+        private static readonly Color32 Brown = new(176, 137, 104, 255);
+        private static readonly Color32 Cyan = new(34, 211, 238, 255);
+        private static readonly Color32 Gray = new(148, 163, 184, 255);
+        private static readonly Color32 Green = new(52, 211, 153, 255);
+        private static readonly Color32 Lime = new(163, 230, 53, 255);
+        private static readonly Color32 Magenta = new(232, 121, 249, 255);
+        private static readonly Color32 Orange = new(251, 146, 60, 255);
+        private static readonly Color32 Pink = new(244, 114, 182, 255);
+        private static readonly Color32 Purple = new(167, 139, 250, 255);
+        private static readonly Color32 Red = new(248, 113, 113, 255);
+        private static readonly Color32 Teal = new(45, 212, 191, 255);
+        private static readonly Color32 White = new(241, 245, 249, 255);
+        private static readonly Color32 Yellow = new(251, 191, 36, 255);
+
         /// <summary>Returns the concrete color for the given preset.</summary>
+        /// <param name="color">The preset to resolve.</param>
+        /// <returns>The color to draw with.</returns>
         public static Color ToColor(this EColor color)
         {
             switch (color)
             {
                 case EColor.White:
-                    return Color.white;
+                    return White;
                 case EColor.Black:
-                    return Color.black;
+                    return Black;
                 case EColor.Gray:
-                    return new Color32(128, 128, 128, 255);
+                    return Gray;
                 case EColor.Red:
-                    return new Color32(231, 76, 60, 255);
+                    return Red;
                 case EColor.Orange:
-                    return new Color32(230, 126, 34, 255);
+                    return Orange;
                 case EColor.Yellow:
-                    return new Color32(241, 196, 15, 255);
+                    return Yellow;
                 case EColor.Green:
-                    return new Color32(46, 204, 113, 255);
+                    return Green;
                 case EColor.Teal:
-                    return new Color32(26, 188, 156, 255);
+                    return Teal;
                 case EColor.Cyan:
-                    return new Color32(0, 188, 212, 255);
+                    return Cyan;
                 case EColor.Blue:
-                    return new Color32(52, 152, 219, 255);
+                    return Blue;
                 case EColor.Purple:
-                    return new Color32(155, 89, 182, 255);
+                    return Purple;
                 case EColor.Pink:
-                    return new Color32(232, 67, 147, 255);
+                    return Pink;
                 case EColor.Magenta:
-                    return new Color32(255, 0, 255, 255);
+                    return Magenta;
                 case EColor.Brown:
-                    return new Color32(141, 110, 99, 255);
+                    return Brown;
                 case EColor.Lime:
-                    return new Color32(205, 220, 57, 255);
+                    return Lime;
                 default:
-                    return Color.white;
+                    return White;
             }
         }
     }

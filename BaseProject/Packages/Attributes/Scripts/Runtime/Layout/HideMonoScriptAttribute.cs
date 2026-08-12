@@ -9,6 +9,6 @@ namespace Base.AttributePackage
     /// That row exists so a broken script reference can be repaired, which is worth exactly one click
     /// every few months and costs a line of vertical space on every selection in between.
     /// </remarks>
-    [AttributeUsage(AttributeTargets.Class, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Class)]
     public sealed class HideMonoScriptAttribute : Attribute { }
 }

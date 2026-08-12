@@ -14,12 +14,12 @@ namespace Base.AttributePackage.Editor.SceneHandles
             Vector3 position = SceneSpace.Anchor(context, attribute.PositionMember, attribute.Space);
             Vector3 normal = SceneSpace.Normal(context.Transform, attribute.Axis, attribute.Space);
 
-            Color previous = UnityEditor.Handles.color;
-            UnityEditor.Handles.color = SceneSpace.Resolve(attribute.PresetColor);
+            Color previous = Handles.color;
+            Handles.color = SceneSpace.Resolve(attribute.PresetColor);
 
-            UnityEditor.Handles.DrawWireDisc(position, normal, context.Property.floatValue);
+            Handles.DrawWireDisc(position, normal, context.Property.floatValue);
 
-            UnityEditor.Handles.color = previous;
+            Handles.color = previous;
         }
     }
 }

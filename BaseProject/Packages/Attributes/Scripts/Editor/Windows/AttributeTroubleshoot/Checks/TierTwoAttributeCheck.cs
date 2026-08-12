@@ -52,10 +52,8 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Checks
             }
 
             if (attribute.Min >= 0 && attribute.Max >= 0 && attribute.Min > attribute.Max)
-            {
                 AttributeIssues.Error(issues, field, attributeType,
                     $"Min {attribute.Min} is above Max {attribute.Max}, so no count can satisfy both.");
-            }
         }
 
         private static void VerifyPrefixToggle(Type owner, FieldInfo field, List<AttributeIssue> issues)
@@ -77,10 +75,8 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Checks
             }
 
             if (toggle.FieldType != typeof(bool))
-            {
                 AttributeIssues.Error(issues, field, attributeType,
                     $"'{attribute.Member}' is a {toggle.FieldType.Name}, not a bool.");
-            }
         }
 
         private static void VerifyPalette(Type owner, FieldInfo field, List<AttributeIssue> issues)
@@ -108,16 +104,14 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Checks
             }
 
             if (!CheckedMembers.IsEnumerable(CheckedMembers.ValueTypeOf(owner, attribute.Member)))
-            {
                 AttributeIssues.Error(issues, field, attributeType,
                     $"'{attribute.Member}' is not an enumerable of colors.");
-            }
         }
 
         private static void VerifyContextMenu(Type owner, FieldInfo field, List<AttributeIssue> issues)
         {
             foreach (CustomContextMenuAttribute entry in
-                field.GetCustomAttributes<CustomContextMenuAttribute>(true))
+                     field.GetCustomAttributes<CustomContextMenuAttribute>(true))
             {
                 MethodInfo method = ReflectionCache.GetMethod(owner, entry.Method);
                 Type attributeType = typeof(CustomContextMenuAttribute);
@@ -131,10 +125,8 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Checks
                 }
 
                 if (method.GetParameters().Length > 0)
-                {
                     AttributeIssues.Error(issues, field, attributeType,
                         $"'{entry.Method}' takes parameters, so the entry is greyed out.");
-                }
             }
         }
 
@@ -164,10 +156,8 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Checks
             Type required = prefab.ComponentType ?? fieldType;
 
             if (!typeof(Component).IsAssignableFrom(required) && !required.IsInterface)
-            {
                 AttributeIssues.Error(issues, field, typeof(GetPrefabWithComponentAttribute),
                     $"{required.Name} is not a component type, so no prefab can carry it.");
-            }
         }
 
         private static void VerifyAssignable<T>(FieldInfo field, Type fieldType, Type required,
@@ -183,13 +173,9 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Checks
         private static void VerifyHeaderMembers(MethodInfo method, List<AttributeIssue> issues)
         {
             if (method.GetCustomAttribute<HeaderLabelAttribute>() != null)
-            {
                 if (method.GetParameters().Length > 0 || method.ReturnType == typeof(void))
-                {
                     AttributeIssues.Error(issues, method, typeof(HeaderLabelAttribute),
                         "A header label needs a parameterless member that returns a value to show.");
-                }
-            }
 
             HeaderDrawAttribute draw = method.GetCustomAttribute<HeaderDrawAttribute>();
             if (draw == null)
@@ -198,10 +184,8 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Checks
             ParameterInfo[] parameters = method.GetParameters();
 
             if (parameters.Length != 1 || parameters[0].ParameterType != typeof(Rect))
-            {
                 AttributeIssues.Error(issues, method, typeof(HeaderDrawAttribute),
                     "A header draw method has to take a single Rect.");
-            }
         }
     }
 }

@@ -12,11 +12,11 @@ namespace Base.AttributePackage.Editor
         private const float ButtonWidth = 22f;
         private const int WidgetOrder = 30;
 
-        private static readonly GUIContent Content = new("\u2715", "Clear the value.");
-
         protected override int InlineOrder => WidgetOrder;
 
         protected override float InlineWidth => ButtonWidth;
+
+        private static readonly GUIContent Content = new("\u2715", "Clear the value.");
 
         protected override bool Applies(in MemberContext context)
             => context.GetAttribute<ClearButtonAttribute>() != null;

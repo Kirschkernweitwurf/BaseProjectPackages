@@ -24,22 +24,35 @@ namespace Base.AttributePackage.Editor.Collections
         /// <summary>Horizontal gap between two controls in a row.</summary>
         public const float Gap = 4f;
 
-        /// <summary>Label of the move down button.</summary>
-        public const string MoveDownLabel = "\u25BC";
-
-        /// <summary>Label of the move up button.</summary>
-        public const string MoveUpLabel = "\u25B2";
-
         /// <summary>Label of the remove button.</summary>
         public const string RemoveLabel = "\u2715";
 
         /// <summary>Vertical gap left between two rows so a list does not read as one solid block.</summary>
         public const float RowGap = 3f;
 
+        /// <summary>How far a striped row is tinted from the inspector background.</summary>
+        private const float StripeStrength = 0.045f;
+
+        /// <summary>
+        /// Tints every other row of a list. The stripe is a shift from the background rather than a
+        /// fixed color, so the same constant works on both editor skins.
+        /// </summary>
+        /// <param name="rect">The row to tint.</param>
+        /// <param name="index">Position of the row in the list.</param>
+        public static void DrawStripe(Rect rect, int index)
+        {
+            if (index % 2 != 0 || Event.current.type != EventType.Repaint)
+                return;
+
+            EditorGUI.DrawRect(rect, EditorGUIUtility.isProSkin
+                ? new Color(1f, 1f, 1f, StripeStrength)
+                : new Color(0f, 0f, 0f, StripeStrength));
+        }
+
         /// <summary>Width of the reorder arrows, which need less room than a full button.</summary>
         public const float SmallButtonWidth = 18f;
 
-        private const int GlyphFontSize = 8;
+        private const int GlyphFontSize = 11;
         private const int LabelFontSize = 10;
 
         /// <summary>Height of a single control line.</summary>

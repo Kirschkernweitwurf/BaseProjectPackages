@@ -10,6 +10,8 @@ namespace Base.AttributePackage
     [AttributeUsage(AttributeTargets.Field)]
     public sealed class ScaleHandleAttribute : PropertyAttribute
     {
+        private const float DefaultSize = 1f;
+
         /// <summary>Size the gizmo is drawn at, independent of the value it edits.</summary>
         public float Size { get; set; } = DefaultSize;
 
@@ -17,7 +19,5 @@ namespace Base.AttributePackage
         /// Optional name of a Vector3 member the gizmo is drawn at. Null draws it at the transform.
         /// </summary>
         public string PositionMember { get; set; }
-
-        private const float DefaultSize = 1f;
     }
 }

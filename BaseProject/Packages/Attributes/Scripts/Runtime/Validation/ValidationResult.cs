@@ -36,8 +36,7 @@ namespace Base.AttributePackage
         /// <summary>Creates a warning: the value works, but probably not as intended.</summary>
         /// <param name="message">What to tell the user.</param>
         /// <returns>The result.</returns>
-        public static ValidationResult Warning(string message)
-            => new(EValidationSeverity.Warning, message);
+        public static ValidationResult Warning(string message) => new(EValidationSeverity.Warning, message);
 
         /// <summary>Creates an error: the value is wrong and something will break.</summary>
         /// <param name="message">What to tell the user.</param>

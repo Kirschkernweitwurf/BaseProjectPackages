@@ -32,8 +32,15 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Checks
             if (method.GetParameters().Length == 0)
                 return;
 
-            if (method.GetCustomAttribute<ButtonAttribute>() != null)
-                AttributeIssues.Error(issues, method, typeof(ButtonAttribute), ParameterlessMessage);
+            // An inspector button draws a field per parameter, so it only needs the types it can draw.
+            // A header button has no room for fields and stays parameterless.
+            if (method.GetCustomAttribute<ButtonAttribute>() != null && !ButtonArguments.IsSupported(method))
+            {
+                AttributeIssues.Error(issues, method, typeof(ButtonAttribute),
+                    "A parameter has a type the inspector cannot draw, so no button appears. Supported "
+                    + "types are the numbers, bool, string, Vector2, Vector3, Color, enums and object "
+                    + "references.");
+            }
 
             if (method.GetCustomAttribute<HeaderButtonAttribute>() != null)
                 AttributeIssues.Error(issues, method, typeof(HeaderButtonAttribute), ParameterlessMessage);

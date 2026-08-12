@@ -10,19 +10,19 @@ namespace Base.AttributePackage.Editor
     /// </summary>
     internal sealed class OpenAssetHandler : InlineFieldButtonHandler
     {
-        private const string DefaultLabel = "Open";
         private const float ButtonWidth = 46f;
+        private const string DefaultLabel = "Open";
         private const string Tooltip = "Open the asset.";
         private const int WidgetOrder = 20;
+
+        protected override int InlineOrder => WidgetOrder;
+
+        protected override float InlineWidth => ButtonWidth;
 
         private static readonly GUIContent Content = new(DefaultLabel, Tooltip);
 
         // Reused so a custom label does not allocate a new content every repaint.
         private static readonly GUIContent CustomContent = new(string.Empty, Tooltip);
-
-        protected override int InlineOrder => WidgetOrder;
-
-        protected override float InlineWidth => ButtonWidth;
 
         protected override bool Applies(in MemberContext context)
             => context.GetAttribute<OpenAssetAttribute>() != null;

@@ -21,7 +21,10 @@ namespace Base.AttributePackage.Editor
     internal static class WrappedToolbar
     {
         private const float ButtonPadding = 10f;
-        private const float RowGap = 2f;
+
+        // Rows sit flush. A gap between them would read as two separate bars rather than one that
+        // happens to wrap, which is the opposite of what wrapping is for.
+        private const float RowGap = 0f;
 
         // Reused between draws so packing a bar does not allocate per repaint. A tab bar is drawn on
         // every repaint of every inspector showing one, which is often enough for it to matter.
@@ -57,7 +60,7 @@ namespace Base.AttributePackage.Editor
                 if (picked >= 0)
                     result = picked;
 
-                if (row + 1 < RowStarts.Count)
+                if (RowGap > 0f && row + 1 < RowStarts.Count)
                     GUILayout.Space(RowGap);
             }
 

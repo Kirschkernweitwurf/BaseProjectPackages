@@ -79,6 +79,14 @@ namespace Base.AttributePackage.Editor
             }
         }
 
+        private static bool IsSelected(Color value, Color candidate) => Mathf.Approximately(value.r, candidate.r)
+            && Mathf.Approximately(value.g, candidate.g)
+            && Mathf.Approximately(value.b, candidate.b)
+            && Mathf.Approximately(value.a, candidate.a);
+
+        private static Rect Grow(Rect rect, float amount) => new(rect.x - amount, rect.y - amount,
+            rect.width + amount * 2f, rect.height + amount * 2f);
+
         private void DrawSwatches(Rect area, SerializedProperty property)
         {
             for (int i = 0; i < _palette.Count; i++)
@@ -100,14 +108,5 @@ namespace Base.AttributePackage.Editor
                     property.colorValue = _palette[i];
             }
         }
-
-        private static bool IsSelected(Color value, Color candidate)
-            => Mathf.Approximately(value.r, candidate.r)
-                && Mathf.Approximately(value.g, candidate.g)
-                && Mathf.Approximately(value.b, candidate.b)
-                && Mathf.Approximately(value.a, candidate.a);
-
-        private static Rect Grow(Rect rect, float amount)
-            => new(rect.x - amount, rect.y - amount, rect.width + amount * 2f, rect.height + amount * 2f);
     }
 }

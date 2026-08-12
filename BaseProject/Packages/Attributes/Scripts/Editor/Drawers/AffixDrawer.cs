@@ -77,7 +77,7 @@ namespace Base.AttributePackage.Editor
         }
 
         // GUI.Label rather than EditorGUI.LabelField. The LabelField overload taking a string and a
-        // style treats that string as the value half of a labelled row, so it reserves the inspector's
+        // style treats that string as the value half of a labeled row, so it reserves the inspector's
         // whole label width for an empty prefix first and draws the text in whatever is left. In a rect
         // sized to the text itself there is nothing left, which is what cut these labels down to their
         // first two characters.

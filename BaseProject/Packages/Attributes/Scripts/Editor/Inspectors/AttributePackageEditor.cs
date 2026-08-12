@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Reflection;
 using Base.UtilityPackage.Editor;
 using UnityEditor;
-using UnityEngine;
 
 namespace Base.AttributePackage.Editor
 {
@@ -122,8 +121,7 @@ namespace Base.AttributePackage.Editor
         }
 
         // A type opts out of the script row, so the check is on the type rather than on any field.
-        private bool IsScriptHidden()
-            => target.GetType().IsDefined(typeof(HideMonoScriptAttribute), true);
+        private bool IsScriptHidden() => target.GetType().IsDefined(typeof(HideMonoScriptAttribute), true);
 
         // Called once before the field loop. A tab group no longer resets it, because that is what made
         // tabs escape the title section they were declared in.
@@ -150,11 +148,10 @@ namespace Base.AttributePackage.Editor
 
         // A collapsible title is drawn before the member pipeline reaches the field that carries it, so
         // it resolves against the inspected object rather than through a MemberContext.
-        private string ResolveTitle(Type type, TitleAttribute title)
-            => ValueResolver.IsMemberReference(title.Title)
-                && ValueResolver.TryRead(type, target, ValueResolver.MemberName(title.Title), out object read)
-                    ? read?.ToString() ?? string.Empty
-                    : title.Title;
+        private string ResolveTitle(Type type, TitleAttribute title) => ValueResolver.IsMemberReference(title.Title)
+            && ValueResolver.TryRead(type, target, ValueResolver.MemberName(title.Title), out object read)
+                ? read?.ToString() ?? string.Empty
+                : title.Title;
 
         // Returns false while the field belongs to a collapsed foldout.
         private bool UpdateFoldout(FieldInfo field)

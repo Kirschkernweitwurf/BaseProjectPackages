@@ -10,11 +10,10 @@ namespace Base.AttributePackage
     [AttributeUsage(AttributeTargets.Field)]
     public sealed class ResizableTextAreaAttribute : PropertyAttribute
     {
-        /// <summary>Line count the box never shrinks below.</summary>
-        public const int DefaultMinimumLines = 3;
-
         /// <summary>Line count the box never grows beyond, after which it scrolls.</summary>
         public const int DefaultMaximumLines = 20;
+        /// <summary>Line count the box never shrinks below.</summary>
+        public const int DefaultMinimumLines = 3;
 
         /// <summary>Smallest height in lines.</summary>
         public int MinimumLines { get; }

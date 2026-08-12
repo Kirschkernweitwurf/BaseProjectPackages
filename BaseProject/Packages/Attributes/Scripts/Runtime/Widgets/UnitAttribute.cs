@@ -58,11 +58,11 @@ namespace Base.AttributePackage
         /// <summary>Meters per second squared.</summary>
         public const string MetersPerSecondSquared = "m/s\u00B2";
 
-        /// <summary>Milliseconds.</summary>
-        public const string Millisecond = "ms";
-
         /// <summary>Millimeters.</summary>
         public const string Millimeter = "mm";
+
+        /// <summary>Milliseconds.</summary>
+        public const string Millisecond = "ms";
 
         /// <summary>Moles.</summary>
         public const string Mole = "mol";

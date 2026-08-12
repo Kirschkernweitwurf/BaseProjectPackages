@@ -20,8 +20,6 @@ namespace Base.AttributePackage.Editor
     /// </remarks>
     internal static class NativeMemberRenderer
     {
-        private const string NullText = "null";
-
         // Static is included so a const can carry a section header, which is the only way to put a title
         // in front of the native members: they are drawn after the serialized fields, so no serialized
         // field is in the right place to hold one.
@@ -29,6 +27,7 @@ namespace Base.AttributePackage.Editor
             | BindingFlags.Static
             | BindingFlags.Public
             | BindingFlags.NonPublic;
+        private const string NullText = "null";
 
         private static readonly Dictionary<Type, FieldInfo[]> Fields = new();
 
@@ -88,11 +87,10 @@ namespace Base.AttributePackage.Editor
 
         // The native members are drawn outside the member pipeline, so there is no MemberContext to
         // resolve against and the target stands in for it.
-        private static string Resolve(Type type, Object target, string value)
-            => ValueResolver.IsMemberReference(value)
-                && ValueResolver.TryRead(type, target, ValueResolver.MemberName(value), out object read)
-                    ? read?.ToString() ?? string.Empty
-                    : value;
+        private static string Resolve(Type type, Object target, string value) => ValueResolver.IsMemberReference(value)
+            && ValueResolver.TryRead(type, target, ValueResolver.MemberName(value), out object read)
+                ? read?.ToString() ?? string.Empty
+                : value;
 
         private static object Read(FieldInfo field, Object target)
         {

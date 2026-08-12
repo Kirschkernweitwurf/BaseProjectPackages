@@ -13,13 +13,13 @@ namespace Base.AttributePackage.Editor
         private const double NotifyFade = 0.4;
         private const int WidgetOrder = 10;
 
-        private static readonly GUIContent Content = new("Copy", "Copy the value to the clipboard.");
-
-        private static readonly GUIContent Notice = new("Copied");
-
         protected override int InlineOrder => WidgetOrder;
 
         protected override float InlineWidth => ButtonWidth;
+
+        private static readonly GUIContent Content = new("Copy", "Copy the value to the clipboard.");
+
+        private static readonly GUIContent Notice = new("Copied");
 
         protected override bool Applies(in MemberContext context)
             => context.GetAttribute<CopyButtonAttribute>() != null;

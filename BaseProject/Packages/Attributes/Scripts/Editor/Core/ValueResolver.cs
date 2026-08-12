@@ -38,8 +38,7 @@ namespace Base.AttributePackage.Editor
         /// <summary>Returns whether the argument names a member instead of carrying a literal.</summary>
         /// <param name="value">The attribute argument.</param>
         /// <returns>True when the value is a member reference.</returns>
-        public static bool IsMemberReference(string value)
-            => !string.IsNullOrEmpty(value) && value[0] == MemberPrefix;
+        public static bool IsMemberReference(string value) => !string.IsNullOrEmpty(value) && value[0] == MemberPrefix;
 
         /// <summary>
         /// Resolves a text argument. A literal is returned as written; a member reference is read from

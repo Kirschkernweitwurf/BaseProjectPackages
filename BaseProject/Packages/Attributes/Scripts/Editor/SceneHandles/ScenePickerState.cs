@@ -8,11 +8,11 @@ namespace Base.AttributePackage.Editor.SceneHandles
     /// </summary>
     internal static class ScenePickerState
     {
-        private static int _targetId;
-        private static string _propertyPath;
-
         /// <summary>True while some field is waiting for a click.</summary>
         public static bool IsArmed => _propertyPath != null;
+
+        private static int _targetId;
+        private static string _propertyPath;
 
         /// <summary>Arms the given property, replacing whatever was armed before.</summary>
         /// <param name="property">The object reference property to fill on the next click.</param>

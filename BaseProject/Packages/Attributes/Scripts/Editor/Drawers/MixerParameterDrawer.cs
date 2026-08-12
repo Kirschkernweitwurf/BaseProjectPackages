@@ -72,6 +72,7 @@ namespace Base.AttributePackage.Editor
             {
                 SerializedProperty name = exposed.GetArrayElementAtIndex(i)
                     .FindPropertyRelative(ParameterNameProperty);
+
                 if (name != null)
                     names.Add(name.stringValue);
             }

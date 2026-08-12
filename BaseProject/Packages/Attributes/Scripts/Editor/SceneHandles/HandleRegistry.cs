@@ -14,6 +14,8 @@ namespace Base.AttributePackage.Editor.SceneHandles
         private const BindingFlags FieldFlags =
             BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
 
+        private static Dictionary<Type, IHandleDrawer> Drawers => _drawers ??= CreateDrawers();
+
         private static readonly HandleBinding[] None = Array.Empty<HandleBinding>();
 
         private static readonly Dictionary<FieldInfo, HandleBinding[]> Bindings = new();
@@ -65,8 +67,6 @@ namespace Base.AttributePackage.Editor.SceneHandles
             TypesWithHandles[type] = found;
             return found;
         }
-
-        private static Dictionary<Type, IHandleDrawer> Drawers => _drawers ??= CreateDrawers();
 
         private static Dictionary<Type, IHandleDrawer> CreateDrawers()
         {

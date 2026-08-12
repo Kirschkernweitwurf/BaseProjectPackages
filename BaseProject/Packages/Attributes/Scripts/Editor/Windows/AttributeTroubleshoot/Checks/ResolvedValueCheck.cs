@@ -23,15 +23,15 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Checks
         {
             foreach (FieldInfo field in ScannedMembers.DeclaredFields(type))
             {
-                VerifyText<TitleAttribute>(type, field, issues, attribute => attribute.Title);
-                VerifyText<InfoBoxAttribute>(type, field, issues, attribute => attribute.Message);
-                VerifyText<LabelAttribute>(type, field, issues, attribute => attribute.Text);
-                VerifyText<RequiredAttribute>(type, field, issues, attribute => attribute.Message);
-                VerifyText<RequiredIfAttribute>(type, field, issues, attribute => attribute.Message);
-                VerifyText<NotNullOrEmptyAttribute>(type, field, issues, attribute => attribute.Message);
+                VerifyText<TitleAttribute>(type, field, issues, selector: attribute => attribute.Title);
+                VerifyText<InfoBoxAttribute>(type, field, issues, selector: attribute => attribute.Message);
+                VerifyText<LabelAttribute>(type, field, issues, selector: attribute => attribute.Text);
+                VerifyText<RequiredAttribute>(type, field, issues, selector: attribute => attribute.Message);
+                VerifyText<RequiredIfAttribute>(type, field, issues, selector: attribute => attribute.Message);
+                VerifyText<NotNullOrEmptyAttribute>(type, field, issues, selector: attribute => attribute.Message);
 
-                VerifyFix<RequiredAttribute>(type, field, issues, attribute => attribute.FixAction);
-                VerifyFix<ValidateInputAttribute>(type, field, issues, attribute => attribute.FixAction);
+                VerifyFix<RequiredAttribute>(type, field, issues, selector: attribute => attribute.FixAction);
+                VerifyFix<ValidateInputAttribute>(type, field, issues, selector: attribute => attribute.FixAction);
 
                 VerifySlider(type, field, issues);
                 VerifyMinMaxSlider(type, field, issues);
@@ -85,10 +85,8 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Checks
             }
 
             if (found.GetParameters().Length > 0)
-            {
                 AttributeIssues.Error(issues, field, typeof(T),
                     $"'{method}' takes parameters, so no fix button is drawn.");
-            }
         }
 
         private static void VerifySlider(Type owner, FieldInfo field, List<AttributeIssue> issues)
@@ -160,10 +158,8 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Checks
             Type valueType = CheckedMembers.ValueTypeOf(owner, member);
 
             if (valueType != typeof(Vector2) && valueType != typeof(Vector2Int))
-            {
                 AttributeIssues.Error(issues, field, attributeType,
                     $"'{member}' is not a Vector2, so it cannot carry both bounds.");
-            }
         }
 
         // The renderer falls back to a foldout rather than drawing something a row cannot hold, so this
@@ -175,7 +171,9 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Checks
 
             Type type = field.FieldType;
 
-            if (type.IsPrimitive || type == typeof(string) || type.IsEnum
+            if (type.IsPrimitive
+                || type == typeof(string)
+                || type.IsEnum
                 || typeof(Object).IsAssignableFrom(type))
             {
                 AttributeIssues.Error(issues, field, typeof(InlinePropertyAttribute),
@@ -185,10 +183,8 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Checks
             }
 
             if (CheckedMembers.IsCollection(type))
-            {
                 AttributeIssues.Error(issues, field, typeof(InlinePropertyAttribute),
                     "A collection cannot be drawn on one row. Use [ListDrawerSettings] or [Table].");
-            }
         }
 
         private static void VerifyHorizontal(FieldInfo field, List<AttributeIssue> issues)
@@ -206,10 +202,8 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Checks
             }
 
             if (attribute.Weight <= 0f)
-            {
                 AttributeIssues.Error(issues, field, typeof(HorizontalAttribute),
                     "A weight of zero or less would give the field no width.");
-            }
         }
 
         private static void VerifyRequiredGet(FieldInfo field, List<AttributeIssue> issues)
@@ -221,7 +215,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Checks
             Type element = CheckedMembers.ElementType(field.FieldType);
             Type attributeType = typeof(RequiredGetAttribute);
 
-            if (element == null || (!typeof(Component).IsAssignableFrom(element) && !element.IsInterface))
+            if (element == null || !typeof(Component).IsAssignableFrom(element) && !element.IsInterface)
             {
                 AttributeIssues.Error(issues, field, attributeType,
                     $"{field.FieldType.Name} is not a component type, so the search can never fill it.");
@@ -230,11 +224,9 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Checks
             }
 
             if (!attribute.IncludeSelf && !attribute.InParents && !attribute.InChildren)
-            {
                 AttributeIssues.Error(issues, field, attributeType,
                     "Self is excluded and neither parents nor children are searched, so nothing is left "
                     + "to look through.");
-            }
         }
 
         private static void VerifyPreview(FieldInfo field, List<AttributeIssue> issues)
@@ -252,10 +244,8 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Checks
             }
 
             if (attribute.Height <= 0f)
-            {
                 AttributeIssues.Error(issues, field, typeof(PreviewObjectAttribute),
                     "A height of zero or less leaves the preview invisible.");
-            }
         }
 
         private static void VerifyUnit(FieldInfo field, List<AttributeIssue> issues)
@@ -265,10 +255,8 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Checks
                 return;
 
             if (string.IsNullOrEmpty(attribute.Unit))
-            {
                 AttributeIssues.Warning(issues, field, typeof(UnitAttribute),
                     "The unit is empty, so nothing is drawn.");
-            }
         }
     }
 }

@@ -50,6 +50,7 @@ namespace Base.AttributePackage.Editor
 
             Rect badgeRect = new(position.xMax - BadgeWidth, position.y, BadgeWidth,
                 EditorGUIUtility.singleLineHeight);
+
             DrawIndexBadge(badgeRect, property, siblings);
         }
 

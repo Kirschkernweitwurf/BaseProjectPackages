@@ -52,11 +52,11 @@ namespace Base.AttributePackage.Editor.SceneHandles
 
         private static void DrawHint(in HandleContext context)
         {
-            UnityEditor.Handles.BeginGUI();
+            Handles.BeginGUI();
             GUILayout.BeginArea(new Rect(HintPosition.x, HintPosition.y, HintSize.x, HintSize.y));
             EditorGUILayout.HelpBox($"{context.DisplayName}: {Hint}", MessageType.Info);
             GUILayout.EndArea();
-            UnityEditor.Handles.EndGUI();
+            Handles.EndGUI();
         }
 
         // The field may want the GameObject itself or a component on it, so the hit object is narrowed

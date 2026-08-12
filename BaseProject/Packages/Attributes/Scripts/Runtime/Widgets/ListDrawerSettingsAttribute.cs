@@ -9,8 +9,9 @@ namespace Base.AttributePackage
     /// entry stops being workable.
     /// </summary>
     /// <remarks>
-    /// Reordering is done with the arrow buttons on each row rather than by dragging, because a dragged
-    /// row has no meaning while a search filter or a page is hiding part of the list.
+    /// Rows are reordered by dragging the grip on their left. A filter or a page switches that off,
+    /// because the row above is then not the element above and a dragged row would land somewhere the
+    /// pointer never went.
     /// </remarks>
     [AttributeUsage(AttributeTargets.Field)]
     public sealed class ListDrawerSettingsAttribute : PropertyAttribute
@@ -32,8 +33,8 @@ namespace Base.AttributePackage
         /// <summary>Whether the remove buttons are hidden.</summary>
         public bool HideRemoveButton { get; set; }
 
-        /// <summary>Whether the reorder arrows are hidden, for lists whose order carries no meaning.</summary>
-        public bool HideReorderButtons { get; set; }
+        /// <summary>Whether rows can be dragged. Turn it off for a list whose order carries no meaning.</summary>
+        public bool Draggable { get; set; } = true;
 
         /// <summary>Whether removing a row asks for confirmation first.</summary>
         public bool ConfirmDelete { get; set; }
@@ -46,5 +47,11 @@ namespace Base.AttributePackage
 
         /// <summary>Whether the list starts expanded.</summary>
         public bool DefaultExpanded { get; set; } = true;
+
+        /// <summary>
+        /// Whether every other row is tinted, so a long list reads as rows rather than as one block of
+        /// text. On by default; turn it off for a short list where the striping is only noise.
+        /// </summary>
+        public bool ShowAlternatingBackground { get; set; } = true;
     }
 }
