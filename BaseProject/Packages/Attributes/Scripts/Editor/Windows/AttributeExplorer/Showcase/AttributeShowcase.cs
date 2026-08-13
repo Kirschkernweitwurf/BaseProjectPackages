@@ -258,9 +258,9 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Showcase
 
         [FolderPath(true)] public string folderPathAbsolute;
 
-        [ResourcesPath] public string resourcesPathAny;
+        [ResourcesAsset] public string resourcesPathAny;
 
-        [ResourcesPath(typeof(Texture2D))] public string resourcesPathTextures;
+        [ResourcesAsset(typeof(Texture2D))] public string resourcesPathTextures;
 
         [ComponentPicker] public Collider pickedComponent;
 
@@ -444,13 +444,13 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Showcase
 
         [ListDrawerSettings(Searchable = true)] public List<string> listSearchable = new();
 
-        [ListDrawerSettings(LabelMember = nameof(ShowcaseTableRow.id))]
+        [ListDrawerSettings]
         public List<ShowcaseTableRow> listLabeled = new();
 
-        [ListDrawerSettings(Searchable = true, LabelMember = nameof(ShowcaseTableRow.id))]
+        [ListDrawerSettings(Searchable = true)]
         public List<ShowcaseTableRow> listFull = new();
 
-        [ListDrawerSettings(ConfirmDelete = true, LabelMember = nameof(ShowcaseTableRow.id))]
+        [ListDrawerSettings(ConfirmDelete = true)]
         public List<ShowcaseTableRow> listConfirmDelete = new();
 
         [Table] public List<ShowcaseTableRow> tableDefault = new();
@@ -470,7 +470,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Showcase
         [ArraySize(Min = 2, Max = 6)] public List<string> boundedList = new();
 
         [ArraySize(3)]
-        [ListDrawerSettings(LabelMember = nameof(ShowcaseTableRow.id))]
+        [ListDrawerSettings]
         public List<ShowcaseTableRow> fixedLabeledList = new();
 
         [ArraySize(3)]

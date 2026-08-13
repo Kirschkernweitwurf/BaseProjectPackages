@@ -23,7 +23,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot.Ch
             new(typeof(TagAttribute), IsString, StringOnly),
             new(typeof(FilePathAttribute), IsString, StringOnly),
             new(typeof(FolderPathAttribute), IsString, StringOnly),
-            new(typeof(ResourcesPathAttribute), IsString, StringOnly),
+            new(typeof(ResourcesAssetAttribute), IsString, StringOnly),
             new(typeof(MaxLengthAttribute), IsString, StringOnly),
             new(typeof(SceneNameAttribute), IsStringOrInt, StringOrInt),
             new(typeof(LayerAttribute), IsStringOrInt, StringOrInt),

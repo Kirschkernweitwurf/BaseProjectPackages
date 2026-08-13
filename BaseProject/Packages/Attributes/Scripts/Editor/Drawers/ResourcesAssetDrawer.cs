@@ -8,7 +8,7 @@ namespace Base.AttributePackage.Editor
 {
     /// <summary>
     /// Draws a string field as an object picker that stores a Resources-relative path for
-    /// <see cref="ResourcesPathAttribute"/>.
+    /// <see cref="ResourcesAssetAttribute"/>.
     /// </summary>
     /// <remarks>
     /// The picker offers every asset of the type, because Unity's object picker cannot be told to show
@@ -16,8 +16,8 @@ namespace Base.AttributePackage.Editor
     /// after the fact, and refusing it silently is what made the field look broken: the picker closed,
     /// nothing changed, and nothing said why. The refusal is reported until the next valid pick.
     /// </remarks>
-    [CustomPropertyDrawer(typeof(ResourcesPathAttribute))]
-    internal sealed class ResourcesPathDrawer : PropertyDrawer
+    [CustomPropertyDrawer(typeof(ResourcesAssetAttribute))]
+    internal sealed class ResourcesAssetDrawer : PropertyDrawer
     {
         private const float Spacing = 2f;
         private const string WarningFormat = "{0} is not under a Resources folder, so it cannot be loaded "
@@ -41,11 +41,11 @@ namespace Base.AttributePackage.Editor
         {
             if (property.propertyType != SerializedPropertyType.String)
             {
-                LabeledField.Hint(position, label, AttributeNames.Usage<ResourcesPathAttribute>("a string"));
+                LabeledField.Hint(position, label, AttributeNames.Usage<ResourcesAssetAttribute>("a string"));
                 return;
             }
 
-            ResourcesPathAttribute attribute = (ResourcesPathAttribute)this.attribute;
+            ResourcesAssetAttribute attribute = (ResourcesAssetAttribute)this.attribute;
             Type type = attribute.Type ?? typeof(Object);
 
             Object current = string.IsNullOrEmpty(property.stringValue)

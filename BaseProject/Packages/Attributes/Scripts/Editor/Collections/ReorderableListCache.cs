@@ -127,7 +127,7 @@ namespace Base.AttributePackage.Editor.Collections
                 return;
 
             SerializedProperty element = list.serializedProperty.GetArrayElementAtIndex(index);
-            string label = ElementLabel.For(element, index, state.LabelMember);
+            string label = ElementLabel.For(element, index);
 
             // An element that can expand draws its own foldout arrow at the left edge of the rect, which
             // is where the drag handle already is. The inset gives the arrow its own room.
@@ -175,7 +175,7 @@ namespace Base.AttributePackage.Editor.Collections
                 return;
 
             SerializedProperty element = target.serializedProperty.GetArrayElementAtIndex(index);
-            string label = ElementLabel.For(element, index, state.LabelMember);
+            string label = ElementLabel.For(element, index);
 
             if (CollectionGui.ConfirmRemoval(label, state.ConfirmDelete))
                 CollectionGui.DeleteElement(target.serializedProperty, index);

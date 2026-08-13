@@ -12,8 +12,6 @@ namespace Base.AttributePackage.Editor.Collections
     /// </remarks>
     internal readonly struct ListEntryState
     {
-        /// <summary>Name of the field on the element to label each row with, or null.</summary>
-        public readonly string LabelMember;
 
         /// <summary>Whether removing a row asks first.</summary>
         public readonly bool ConfirmDelete;
@@ -28,7 +26,6 @@ namespace Base.AttributePackage.Editor.Collections
         /// <param name="hidden">Indices the filter is hiding this draw.</param>
         public ListEntryState(ListDrawerSettingsAttribute settings, HashSet<int> hidden)
         {
-            LabelMember = settings.LabelMember;
             ConfirmDelete = settings.ConfirmDelete;
             Striped = settings.ShowAlternatingBackground;
             _hidden = hidden;

@@ -7,6 +7,13 @@ namespace Base.AttributePackage.Editor.Collections
     /// against. A list of configs reads far better as a column of names than as a column of
     /// "Element 0", and a filter over indices would be useless.
     /// </summary>
+    /// <remarks>
+    /// The member to read is found rather than configured. Naming it was a setting for something Unity
+    /// now does by itself: its own list labels a row after the first string on the element, so a setting
+    /// that usually named that same field was asking for work to arrive at the default. The first string
+    /// child is used, and a list wanting some other field is a list whose first field is in the wrong
+    /// place.
+    /// </remarks>
     internal static class ElementLabel
     {
         private const string IndexFormat = "Element {0}";
@@ -15,11 +22,10 @@ namespace Base.AttributePackage.Editor.Collections
         /// <summary>Returns the label for one element.</summary>
         /// <param name="element">The array element.</param>
         /// <param name="index">Its position in the array.</param>
-        /// <param name="labelMember">Optional member on the element used as the label.</param>
         /// <returns>The text to show.</returns>
-        public static string For(SerializedProperty element, int index, string labelMember)
+        internal static string For(SerializedProperty element, int index)
         {
-            SerializedProperty source = Resolve(element, labelMember);
+            SerializedProperty source = Resolve(element);
 
             if (source == null)
                 return string.Format(IndexFormat, index);
@@ -31,17 +37,30 @@ namespace Base.AttributePackage.Editor.Collections
                 : text;
         }
 
-        // With no label member the element itself is the label, as long as it is a leaf. That is what
-        // makes searching a list of strings or enums work without any extra configuration; a list of
-        // structs has nothing readable to fall back to and keeps its index.
-        private static SerializedProperty Resolve(SerializedProperty element, string labelMember)
+        // A leaf element is its own label, which is what makes searching a list of strings or enums work
+        // with no configuration at all. A struct has no single value to show, so its first string child
+        // is used and anything without one keeps its index.
+        private static SerializedProperty Resolve(SerializedProperty element)
         {
-            if (!string.IsNullOrEmpty(labelMember))
-                return element.FindPropertyRelative(labelMember);
+            if (element.propertyType != SerializedPropertyType.Generic)
+                return element;
 
-            return element.propertyType == SerializedPropertyType.Generic
-                ? null
-                : element;
+            SerializedProperty child = element.Copy();
+            SerializedProperty end = element.GetEndProperty();
+
+            if (!child.NextVisible(true))
+                return null;
+
+            while (!SerializedProperty.EqualContents(child, end))
+            {
+                if (child.propertyType == SerializedPropertyType.String)
+                    return child;
+
+                if (!child.NextVisible(false))
+                    break;
+            }
+
+            return null;
         }
 
         private static string Read(SerializedProperty property)

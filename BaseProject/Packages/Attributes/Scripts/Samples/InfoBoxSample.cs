@@ -35,5 +35,9 @@ namespace Base.AttributePackage.Samples
         [InfoBox("Compact and a warning, for a caveat that does not need a paragraph.",
             EInfoBoxType.Warning, EInfoBoxPosition.Above, true)]
         public string compactWarning = "Below a compact warning";
+
+        [InfoBox("Compact, below and an error, which is the shape a failed check wants: one line, under "
+            + "the field it is about.", EInfoBoxType.Error, EInfoBoxPosition.Below, true)]
+        public string compactBelow = "Above a compact error";
     }
 }

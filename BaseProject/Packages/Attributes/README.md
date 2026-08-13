@@ -29,7 +29,7 @@ public class Enemy : MonoBehaviour
 
 Needs Unity 6000.3 or newer, the version the package manifest targets (it leans on `TypeCache` and the standard IMGUI drawer API).
 
-Either add it through the Package Manager with *Add package from git URL* or just drop the folder into your project. There are two assemblies: one for the attributes (runtime) and one for the drawing (editor only). Nothing editor gets pulled into a build.
+Either add it through the Package Manager with *Add package from git URL* or just drop the folder into your project. There are three assemblies: one for the attributes (runtime), one for the drawing (editor only), and one holding the reference samples, which is compiled only in the editor and never enters a build.
 
 ## Colors
 
@@ -240,8 +240,8 @@ found.
 [FolderPath(true)] public string absolute;
 [FilePath] public string anyFile;
 [FilePath("png")] public string texture;         // filtered by extension
-[ResourcesPath] public string res;               // picker that stores a Resources.Load path
-[ResourcesPath(typeof(GameObject))] public string prefabPath;
+[ResourcesAsset] public string res;              // picks an asset under a Resources folder
+[ResourcesAsset(typeof(GameObject))] public string prefabPath;
 [ShowAssetPreview] public Texture2D icon;        // thumbnail under the field, [ShowAssetPreview(96)] for size
 [Tag] public string tag;                         // tag dropdown, [Tag(true)] to forbid new tags
 [ComponentPicker] public Collider hit;           // drop a GameObject, it picks the matching component
@@ -259,7 +259,7 @@ public Animator animator;
 [AnimatorParam(nameof(animator))] public int paramHash;      // on an int it stores the hash instead
 
 public AudioMixer mixer;
-[MixerParameter(nameof(mixer))] public string exposedParam;  // exposed mixer parameters
+[AudioMixerParameter(nameof(mixer))] public string exposedParam;  // exposed mixer parameters
 [AudioMixerGroup(nameof(mixer))] public AudioMixerGroup group;
 
 [AnimatorState(nameof(animator))] public string state;       // "LayerName.StateName", or the hash on an int
@@ -370,11 +370,13 @@ Lists stay Unity's own list. `[ListDrawerSettings]` only tells that list what to
 callbacks, so a list with the attribute reorders, selects and resizes exactly like a list without one.
 
 ```csharp
-[ListDrawerSettings(LabelMember = nameof(Item.id))]  // name rows after a field, not "Element 0"
 [ListDrawerSettings(Searchable = true)]              // search box that hides rows whose label misses
 [ListDrawerSettings(ConfirmDelete = true)]           // removing a row asks first, naming the row
 [ListDrawerSettings(ShowAlternatingBackground = false)]  // tinting off, on by default
 ```
+
+Rows are named after the element's first string field, with nothing to configure. Unity's own list
+does the same, so a setting that named that member was work to arrive at the default.
 
 Searching hides a row by giving it a height of zero rather than by drawing a different list, so a
 filtered list is the same control with fewer rows. Dragging switches off while a filter is on, because
@@ -408,22 +410,48 @@ There is deliberately no paging, no drag toggle and no per-list add or remove sw
 would need a second implementation of a list is left out: two renderers that have to look identical
 never quite do, and the difference shows up as a layout bug rather than as a missing feature.
 
-## Troubleshoot window
+## Attributes window
 
-`Tools > Base Packages > Unity Editor > Project Health > Attribute Troubleshoot`
+`Tools > Base Packages > Unity Editor > Project Health > Attributes`
+
+One window, three tabs. It is both the documentation and the thing that tells you when an attribute is
+not doing what it reads like.
+
+### Reference
+
+One page per attribute, 98 of them, searchable and grouped. Each page carries a live sample drawn through
+the real inspector, what the sample needs before it does anything, the other ways the attribute can be
+written, and the source of the whole sample class underneath.
+
+The samples are one class per attribute, which is what lets the page draw the whole object and print the
+whole class: everything in a sample is part of the answer, including the bool a condition watches and the
+property a dropdown reads its options from. The snippet is therefore paste-and-compile by construction.
+
+Seventeen attributes need a GameObject rather than an asset, so their samples are components. Their pages
+carry a **Create in scene** button that drops a temporary copy into the open scene and selects it, which is
+the only way to see a scene handle or a component header control: handles draw for the selected object in
+the Scene view, and header controls are drawn by the real Inspector rather than by an embedded one. That
+copy is never saved with the scene.
+
+### Showcase
+
+A throwaway asset carrying one of every attribute, drawn through the real inspector. Edit anything, nothing
+is saved. Useful for seeing several attributes against each other rather than one at a time.
+
+### Troubleshoot
 
 Every drawer and handler in this package fails quietly on purpose: an attribute that cannot resolve what it
 points at falls back to the plain field so a typo never breaks the whole inspector. That is the right runtime
 behavior and a terrible way to find mistakes, because the fallback is only visible while the affected object
 happens to be selected.
 
-Press **Scan Project** and the window walks every component, ScriptableObject and serializable type and lists
-what cannot work:
+Press **Scan** and the window walks every component, ScriptableObject and serializable type and lists what
+cannot work:
 
 - a condition member that does not exist or is not a bool, which makes the condition evaluate to true forever
 - `[Dropdown]` pointing at something that is not enumerable
-- `[AnimatorParam]`, `[AnimatorState]`, `[MixerParameter]` or `[ShaderParam]` whose sibling field is missing or
-  of the wrong type, including the exact-type rule the sibling resolver applies
+- `[AnimatorParam]`, `[AnimatorState]`, `[AudioMixerParameter]` or `[ShaderParam]` whose sibling field is
+  missing or of the wrong type, including the exact-type rule the sibling resolver applies
 - an attribute on a field type its drawer cannot handle, for example `[Required]` on an int
 - `[GetComponent]`, `[Child]` or `[GetComponentInParent]` on a non-component type, on a `GameObject` field, or
   on a ScriptableObject that has no hierarchy to search
@@ -432,32 +460,21 @@ what cannot work:
   or no longer matches the expected signature
 - `[ReferencePicker]` without `[SerializeReference]`, or on a type with no instantiable implementation
 
-Click a row's header to open the script. Errors mean the attribute does nothing; warnings mean it works but not
-the way it reads.
-
-### Samples tab
+Click a row's header to open the script. Errors mean the attribute does nothing; warnings mean it works but
+not the way it reads.
 
 A healthy project produces an empty report, which is the right outcome and a useless way to learn what the
-window looks like. The **Samples** tab scans a set of types that are broken on purpose, one per family of
-mistake, and shows the report they produce. These types are excluded from the project scan, so they never
-appear as real findings.
+window looks like. The **Demo types** toggle scans a set of types that are broken on purpose, one per family
+of mistake, and shows the report they produce. Those types are never part of a project scan, and the toggle
+clears itself on every tab switch so a demo report can never be mistaken for the project's own state.
 
 They are also the test fixture: if a check stops working, its sample stops being reported.
-
-### Showcase tab
-
-A throwaway asset carrying one of every attribute, drawn through the real inspector. Edit anything, nothing is
-saved. Useful for seeing what an attribute actually looks like before reaching for it, and for checking a new
-drawer against the existing ones.
-
-Header buttons are the one thing that does not show up there. They live in the component header, which an
-embedded inspector does not draw.
 
 Adding a check is one file. Implement `IAttributeCheck` anywhere and `TypeCache` picks it up, the same way
 handlers and validation rules work.
 
-The scan is manual rather than continuous, because walking every type in the project is not cheap enough to run
-on a timer. A domain reload clears the result instead of showing a stale one.
+The scan is manual rather than continuous, because walking every type in the project is not cheap enough to
+run on a timer. A domain reload clears the result instead of showing a stale one.
 
 ## How it works, briefly
 
@@ -498,4 +515,4 @@ public sealed class EnemyEditor : AttributePackageEditor
 - Unity only lets one package own the default inspector. If you also pull in Odin, NaughtyAttributes or similar, they'll fight over it and one loses silently. Fine as long as this is your only inspector package.
 - The pipeline reaches into nested `[Serializable]` structs and classes at any depth, so validation, conditional and layout attributes work on their fields too. It stops descending in three cases, handing those to Unity's default drawing: arrays and lists (attributes on fields of list elements are skipped), types that have their own `PropertyDrawer` and Unity or framework types like `Vector3`.
 - Serialized collections live in `Base.UtilityPackage`, not here: `SerializableDictionary<,>`, `SerializableHashSet<>` and `InterfaceReference<>` each ship with their own drawer. The pipeline hands any type with a `PropertyDrawer` straight to that drawer, so their attributes are not evaluated on the inner rows.
-- A couple of drawers do real work every repaint by nature. `[MixerParameter]` reads the mixer's exposed parameters and `[AnimatorParam]` reads the controller's parameters each time. On a field or two it's nothing; don't stack a dozen of them on one object.
+- A couple of drawers do real work every repaint by nature. `[AudioMixerParameter]` reads the mixer's exposed parameters and `[AnimatorParam]` reads the controller's parameters each time. On a field or two it's nothing; don't stack a dozen of them on one object.

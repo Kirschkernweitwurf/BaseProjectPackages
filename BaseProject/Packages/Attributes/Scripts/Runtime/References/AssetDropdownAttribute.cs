@@ -12,7 +12,7 @@ namespace Base.AttributePackage
     /// window search works here. Restricting the folders is worth doing on a large project: the search
     /// runs against the whole database otherwise.
     /// <para>
-    /// Unlike <see cref="ResourcesPathAttribute"/> this stores a real object reference, so nothing has
+    /// Unlike <see cref="ResourcesAssetAttribute"/> this stores a real object reference, so nothing has
     /// to live under a Resources folder and nothing is loaded by path at runtime.
     /// </para>
     /// </remarks>

@@ -86,6 +86,10 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer
         {
             titleContent = TitleContent;
 
+            // The same reason it resets on a tab switch: a window reopening onto deliberately broken
+            // types would be read as the project's own state.
+            demoTypes = false;
+
             // The reference list highlights the row under the pointer, which only moves between events.
             // Without this the window would either miss the move or repaint on every single frame.
             wantsMouseMove = true;
@@ -166,6 +170,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer
                 return;
 
             tab = picked;
+            demoTypes = false;
             Invalidate();
 
             // The tab switch changes the layout mid-event, so this frame is abandoned rather than left to

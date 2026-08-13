@@ -27,7 +27,6 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot.Ch
                     continue;
 
                 VerifyBothPresent(field, issues);
-                VerifyLabelMember(field, issues);
                 VerifyTableElement(field, issues);
             }
         }
@@ -50,24 +49,6 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot.Ch
 
             AttributeIssues.Warning(issues, field, typeof(ListDrawerSettingsAttribute),
                 "[Table] is on the same field and takes precedence, so these settings do nothing.");
-        }
-
-        private static void VerifyLabelMember(FieldInfo field, List<AttributeIssue> issues)
-        {
-            ListDrawerSettingsAttribute attribute = field.GetCustomAttribute<ListDrawerSettingsAttribute>();
-            if (attribute == null || string.IsNullOrEmpty(attribute.LabelMember))
-                return;
-
-            Type element = CheckedMembers.ElementType(field.FieldType);
-            if (element == null)
-                return;
-
-            if (ReflectionCache.GetField(element, attribute.LabelMember) != null)
-                return;
-
-            AttributeIssues.Error(issues, field, typeof(ListDrawerSettingsAttribute),
-                $"'{attribute.LabelMember}' is not a serialized field of {element.Name}, so rows fall back "
-                + "to their index. The label has to be a field, not a property.");
         }
 
         // A table of primitives has nothing to split into columns, so it would draw as an empty grid.

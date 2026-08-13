@@ -85,8 +85,7 @@ namespace Base.AttributePackage.Editor.Collections
 
             for (int i = 0; i < property.arraySize; i++)
             {
-                string label = ElementLabel.For(property.GetArrayElementAtIndex(i), i,
-                    settings.LabelMember);
+                string label = ElementLabel.For(property.GetArrayElementAtIndex(i), i);
 
                 if (label.IndexOf(state.Search, System.StringComparison.OrdinalIgnoreCase) < 0)
                     Hidden.Add(i);

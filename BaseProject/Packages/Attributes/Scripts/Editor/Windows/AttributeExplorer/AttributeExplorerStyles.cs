@@ -64,8 +64,10 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer
         private const float HoverStrength = 0.06f;
         private const float SelectionStrength = 0.14f;
         private const float CardBorderStrength = 0.14f;
-        private const float CardFillStrength = 0.05f;
-        private const float CardHoverStrength = 0.10f;
+        private const float CardFillAlternateStrength = 0.15f;
+        private const float CardFillStrength = 0.04f;
+        private const float CardFocusedStrength = 0.20f;
+        private const float CardHoverStrength = 0.22f;
         private const float CategoryBandStrength = 0.04f;
         private const float StripeStrength = 0.025f;
 
@@ -138,8 +140,14 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer
         /// <summary>Background of a card in the category overview.</summary>
         internal Color CardFill { get; private set; }
 
+        /// <summary>Background of every other card, so a long category reads as rows.</summary>
+        internal Color CardFillAlternate { get; private set; }
+
         /// <summary>Background of a card the pointer is over.</summary>
         internal Color CardHover { get; private set; }
+
+        /// <summary>Background of the card the keyboard is on.</summary>
+        internal Color CardFocused { get; private set; }
 
         /// <summary>Band behind a category header in the list.</summary>
         internal Color CategoryBand { get; private set; }
@@ -322,6 +330,8 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer
 
             CardBorder = Tint(CardBorderStrength);
             CardFill = Tint(CardFillStrength);
+            CardFillAlternate = Tint(CardFillAlternateStrength);
+            CardFocused = Tint(CardFocusedStrength);
             CardHover = Tint(CardHoverStrength);
             CategoryBand = Tint(CategoryBandStrength);
             Hover = Tint(HoverStrength);

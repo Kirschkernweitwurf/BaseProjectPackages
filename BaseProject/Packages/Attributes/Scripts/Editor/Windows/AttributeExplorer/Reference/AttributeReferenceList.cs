@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
 using Base.AttributePackage.Samples;
 using UnityEditor;
+using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 
 namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Reference
@@ -23,19 +25,12 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Reference
     /// </remarks>
     internal sealed class AttributeReferenceList
     {
-        private const string CancelStyleName = "ToolbarSearchCancelButton";
-        private const string CancelStyleNameLegacy = "ToolbarSeachCancelButton";
-        private const string ClearTooltip = "Clear the search";
-        private const float ClearWidth = 16f;
         private const string CountFormat = "{0} of {1} attributes";
         private const float CountWidth = 34f;
         private const string NoMatchMessage = "Nothing matches.";
         private const float SearchPadding = 4f;
         private const string StatePrefix = "ReferenceCategory";
 
-        private static readonly GUIContent ClearContent = new(string.Empty, ClearTooltip);
-
-        private static GUIStyle _cancelStyle;
 
         private readonly List<AttributeSampleEntry> _matches = new();
         private readonly List<AttributeSampleRow> _rows = new();
@@ -43,10 +38,23 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Reference
         // The reused row content keeps the list from allocating one per row per repaint.
         private readonly GUIContent _rowContent = new();
 
+        // Unity's own field, which draws the magnifier and the cancel button inside the bar rather than
+        // beside it. Built on first draw rather than in a field initializer: those run inside the
+        // ScriptableObject constructor of the window that owns this, and the control claims an id, which
+        // Unity refuses that early.
+        private SearchField _searchField;
+
         private int _stripe;
 
         /// <summary>The rows as they were last drawn, headers included, in the order they appear.</summary>
         internal IReadOnlyList<AttributeSampleRow> Rows => _rows;
+
+        /// <summary>Puts the keyboard in the search box on the next draw.</summary>
+        internal void FocusSearch()
+        {
+            _searchField ??= new SearchField();
+            _searchField.SetFocus();
+        }
 
         /// <summary>Whether the named category is open.</summary>
         /// <param name="category">The category to test.</param>
@@ -84,42 +92,22 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Reference
             EditorGUILayout.LabelField(string.Format(CountFormat, shown, entries.Length), styles.Footer);
         }
 
-        // Unity spells this style differently across versions and has misspelled it in the past, so both
-        // names are tried and a missing one falls back rather than throwing.
-        private static GUIStyle CancelStyle()
-        {
-            if (_cancelStyle != null)
-                return _cancelStyle;
-
-            _cancelStyle = GUI.skin.FindStyle(CancelStyleName)
-                ?? GUI.skin.FindStyle(CancelStyleNameLegacy)
-                ?? EditorStyles.toolbarButton;
-
-            return _cancelStyle;
-        }
-
         private static string KeyFor(string category)
             => StateKey.For(typeof(AttributeReferenceList), StatePrefix, category);
 
-        private static void DrawSearchBar(AttributeReferencePane pane)
+        private void DrawSearchBar(AttributeReferencePane pane)
         {
             EditorGUILayout.BeginHorizontal(EditorStyles.toolbar);
 
-            // The search field otherwise sits hard against the window edge, where every other toolbar in
-            // the editor leaves a margin.
+            // The field otherwise sits hard against the window edge, where every other toolbar in the
+            // editor leaves a margin.
             GUILayout.Space(SearchPadding);
 
-            pane.Search = EditorGUILayout.TextField(pane.Search, EditorStyles.toolbarSearchField);
+            _searchField ??= new SearchField();
 
-            // Only shown while there is something to clear, which is what the editor's own search fields
-            // do. A permanently visible button next to an empty field is a control with nothing to do.
-            if (!string.IsNullOrEmpty(pane.Search)
-                && GUILayout.Button(ClearContent, CancelStyle(), GUILayout.Width(ClearWidth)))
-            {
-                pane.Search = string.Empty;
-                GUI.FocusControl(null);
-            }
+            pane.Search = _searchField.OnToolbarGUI(pane.Search);
 
+            GUILayout.Space(SearchPadding);
             EditorGUILayout.EndHorizontal();
         }
 
@@ -135,8 +123,29 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Reference
                 || Contains(entry.Description, search);
         }
 
-        private static bool Contains(string text, string search) => !string.IsNullOrEmpty(text)
-            && text.Contains(search, StringComparison.OrdinalIgnoreCase);
+        // Compared on letters and digits alone, so the spacing and punctuation a reader types are not
+        // held against them: "Not Null", "not-null" and "notnull" all find NotNullOrEmpty. Typing the
+        // words in the wrong order still fails, which is the line between forgiving and guessing.
+        private static bool Contains(string text, string search)
+        {
+            if (string.IsNullOrEmpty(text))
+                return false;
+
+            return Simplify(text).Contains(Simplify(search), StringComparison.Ordinal);
+        }
+
+        private static string Simplify(string text)
+        {
+            StringBuilder builder = new(text.Length);
+
+            foreach (char character in text)
+            {
+                if (char.IsLetterOrDigit(character))
+                    builder.Append(char.ToLowerInvariant(character));
+            }
+
+            return builder.ToString();
+        }
 
         private int DrawCategories(AttributeReferencePane pane, AttributeExplorerStyles styles,
             AttributeSampleEntry[] entries, bool searching)

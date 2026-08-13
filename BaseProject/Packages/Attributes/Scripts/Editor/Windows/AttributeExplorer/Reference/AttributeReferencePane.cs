@@ -49,6 +49,8 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Reference
         private const string SourceHeading = "Source";
         private const string BulletGlyph = "\u2022";
         private const float BulletWidth = 14f;
+        private const float FocusOutline = 1f;
+        private const float ScrollStep = 40f;
         private const string VariationsHeading = "Variations";
 
         private static readonly GUIContent CopiedAttributeContent = new(CopiedAttributeNotice);
@@ -60,6 +62,8 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Reference
         [SerializeField] private Vector2 contentScroll;
         [SerializeField] private string selectedTitle;
         [SerializeField] private string selectedCategory;
+        [SerializeField] private bool contentFocused;
+        [SerializeField] private int focusedCard = -1;
 
         private readonly AttributeReferenceList _list = new();
 
@@ -117,6 +121,8 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Reference
             selectedCategory = entry.CategoryName;
             _selected = entry;
             contentScroll = Vector2.zero;
+            contentFocused = false;
+            focusedCard = -1;
 
             Unfocus();
 
@@ -141,6 +147,8 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Reference
             selectedTitle = null;
             selectedCategory = category;
             contentScroll = Vector2.zero;
+            contentFocused = false;
+            focusedCard = -1;
 
             Unfocus();
             Release();
@@ -186,6 +194,9 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Reference
             _list.Draw(this, styles);
             GUILayout.EndArea();
 
+            if (contentFocused && Event.current.type == EventType.Repaint)
+                DrawOutline(content, styles.Selection);
+
             GUILayout.BeginArea(content);
             DrawContent(styles);
             GUILayout.EndArea();
@@ -220,15 +231,9 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Reference
             if (current.type != EventType.KeyDown)
                 return;
 
-            // Left and right open and close the header the keyboard is on, which is how every other tree
-            // in the editor behaves. They are left alone while a text field is being edited, where they
-            // move the caret instead.
-            bool horizontal = current.keyCode == KeyCode.LeftArrow || current.keyCode == KeyCode.RightArrow;
-
-            if (horizontal && !EditorGUIUtility.editingTextField && selectedTitle == null
-                && selectedCategory != null)
+            if (current.keyCode == KeyCode.F && (current.control || current.command))
             {
-                AttributeReferenceList.SetExpanded(selectedCategory, current.keyCode == KeyCode.RightArrow);
+                _list.FocusSearch();
 
                 current.Use();
                 Repaint();
@@ -236,12 +241,48 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Reference
                 return;
             }
 
+            if (EditorGUIUtility.editingTextField && current.keyCode != KeyCode.DownArrow)
+                return;
+
             int step = current.keyCode switch
             {
                 KeyCode.DownArrow => 1,
                 KeyCode.UpArrow => -1,
                 _ => 0
             };
+
+            // Once the keyboard is on the right pane the arrows scroll it, which is the only thing that
+            // pane can usefully do with them, and left brings the keyboard back to the list.
+            if (contentFocused)
+            {
+                if (!HandleContentKeys(current, step))
+                    return;
+
+                current.Use();
+                Repaint();
+
+                return;
+            }
+
+            if (current.keyCode == KeyCode.RightArrow && MoveRight())
+            {
+                current.Use();
+                Repaint();
+
+                return;
+            }
+
+            // Left closes the header the keyboard is on, which is how every other tree in the editor
+            // behaves and saves reaching for the mouse to fold a category away.
+            if (current.keyCode == KeyCode.LeftArrow && selectedTitle == null && selectedCategory != null)
+            {
+                AttributeReferenceList.SetExpanded(selectedCategory, false);
+
+                current.Use();
+                Repaint();
+
+                return;
+            }
 
             if (step == 0)
                 return;
@@ -253,9 +294,25 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Reference
 
             int index = CurrentRow(visible);
 
+            // Up from the top row lands in the search box, which is the only thing above the list and
+            // the thing most likely to be wanted after walking to the top of it.
+            if (index == 0 && step < 0)
+            {
+                _list.FocusSearch();
+
+                current.Use();
+                Repaint();
+
+                return;
+            }
+
             if (index < 0)
             {
-                Move(visible[0]);
+                // Nothing on screen is selected, which is where a fresh search leaves things. Landing on
+                // a header there would show a category page rather than the match that was typed for, so
+                // the first attribute is taken instead.
+                if (!MoveToFirstEntry(visible))
+                    return;
             }
             else
             {
@@ -269,6 +326,123 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Reference
 
             current.Use();
             Repaint();
+        }
+
+        // Right opens a closed header, and on anything already open it moves into the pane beside the
+        // list. A category page has cards to land on, so the keyboard lands on the first of them; an
+        // attribute page is an embedded inspector, whose controls have no handle the keyboard can be
+        // put on from out here, so there the pane itself takes focus and the arrows scroll it.
+        private bool MoveRight()
+        {
+            bool onHeader = selectedTitle == null && selectedCategory != null;
+
+            if (onHeader && !AttributeReferenceList.IsExpanded(selectedCategory))
+            {
+                AttributeReferenceList.SetExpanded(selectedCategory, true);
+                return true;
+            }
+
+            if (selectedTitle == null && selectedCategory == null)
+                return false;
+
+            contentFocused = true;
+            focusedCard = onHeader
+                ? 0
+                : -1;
+
+            Unfocus();
+
+            return true;
+        }
+
+        // Returns true when the key was consumed.
+        private bool HandleContentKeys(Event current, int step)
+        {
+            if (current.keyCode == KeyCode.LeftArrow)
+            {
+                contentFocused = false;
+                focusedCard = -1;
+
+                return true;
+            }
+
+            bool onCards = selectedTitle == null && selectedCategory != null;
+
+            if (!onCards)
+            {
+                if (step == 0)
+                    return false;
+
+                contentScroll.y = Mathf.Max(contentScroll.y + step * ScrollStep, 0f);
+
+                return true;
+            }
+
+            int count = CategoryCount();
+
+            if (count == 0)
+                return false;
+
+            if (current.keyCode == KeyCode.Return || current.keyCode == KeyCode.KeypadEnter
+                || current.keyCode == KeyCode.RightArrow)
+            {
+                OpenFocusedCard();
+                return true;
+            }
+
+            if (step == 0)
+                return false;
+
+            focusedCard = Mathf.Clamp(focusedCard + step, 0, count - 1);
+
+            return true;
+        }
+
+        private int CategoryCount()
+        {
+            int count = 0;
+
+            foreach (AttributeSampleEntry entry in AttributeSampleRegistry.All())
+            {
+                if (entry.CategoryName == selectedCategory)
+                    count++;
+            }
+
+            return count;
+        }
+
+        private void OpenFocusedCard()
+        {
+            int index = 0;
+
+            foreach (AttributeSampleEntry entry in AttributeSampleRegistry.All())
+            {
+                if (entry.CategoryName != selectedCategory)
+                    continue;
+
+                if (index == focusedCard)
+                {
+                    Select(entry);
+                    return;
+                }
+
+                index++;
+            }
+        }
+
+        private bool MoveToFirstEntry(IReadOnlyList<AttributeSampleRow> visible)
+        {
+            foreach (AttributeSampleRow row in visible)
+            {
+                if (row.IsHeader)
+                    continue;
+
+                Select(row.Entry);
+
+                return true;
+            }
+
+            return false;
         }
 
         private int CurrentRow(IReadOnlyList<AttributeSampleRow> visible)
@@ -359,19 +533,22 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Reference
             EditorGUILayout.LabelField(string.Format(CountFormat, count), styles.Section);
             GUILayout.Space(AttributeExplorerStyles.TightGap);
 
+            int row = 0;
+
             foreach (AttributeSampleEntry entry in entries)
             {
                 if (entry.CategoryName != selectedCategory)
                     continue;
 
-                DrawCategoryRow(entry, styles);
+                DrawCategoryRow(entry, styles, row);
+                row++;
             }
         }
 
         // A card per attribute: a background, a border and room inside it, so a row reads as an element
         // that can be clicked. Zebra striping was doing the separating instead, which only tells rows
         // apart and never says any of them is a thing you can press.
-        private void DrawCategoryRow(in AttributeSampleEntry entry, AttributeExplorerStyles styles)
+        private void DrawCategoryRow(in AttributeSampleEntry entry, AttributeExplorerStyles styles, int row)
         {
             string title = $"[{entry.Title}]";
             float width = _contentWidth - CardPadding * 2f;
@@ -386,9 +563,21 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Reference
 
             if (Event.current.type == EventType.Repaint)
             {
-                EditorGUI.DrawRect(card, hovered
+                bool focused = contentFocused && row == focusedCard;
+
+                Color fill = hovered
                     ? styles.CardHover
-                    : styles.CardFill);
+                    : focused
+                        ? styles.CardFocused
+                        : row % 2 == 0
+                            ? styles.CardFill
+                            : styles.CardFillAlternate;
+
+                EditorGUI.DrawRect(card, fill);
+
+                if (focused)
+                    EditorGUI.DrawRect(new Rect(card.x, card.y, AttributeExplorerStyles.SelectionBarWidth,
+                        card.height), styles.Selection);
 
                 DrawBorder(card, styles.CardBorder);
 
@@ -412,6 +601,13 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Reference
                     card.yMax - name.yMax - CardGap - CardPadding), entry.Description, styles.Bullet);
 
             GUILayout.Space(CardSpacing);
+        }
+
+        private static void DrawOutline(Rect rect, Color color)
+        {
+            Rect inset = new(rect.x, rect.y, rect.width - FocusOutline, rect.height - FocusOutline);
+
+            DrawBorder(inset, color);
         }
 
         private static void DrawBorder(Rect rect, Color color)
