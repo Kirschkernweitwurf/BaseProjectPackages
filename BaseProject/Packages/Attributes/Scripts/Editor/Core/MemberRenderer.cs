@@ -90,10 +90,10 @@ namespace Base.AttributePackage.Editor
             IndentAttribute indent = context.GetAttribute<IndentAttribute>();
             int amount = indent?.Amount ?? 0;
 
-            // A member with a control in front of its label is indented one step so that control has a
-            // gutter to sit in, the same room Unity gives any other foldout arrow.
-            if (LeadingGutter.IsNeeded(context))
-                amount++;
+            // A member with a control in front of its label gives up indent steps so that control has a
+            // gutter to sit in. An arrow needs one, the room Unity gives any other foldout; a checkbox
+            // needs two, because the second step is where the gap before the label comes from.
+            amount += LeadingGutter.StepsFor(context);
 
             EditorGUI.indentLevel += amount;
             using (new EditorGUI.DisabledScope(!enabled))

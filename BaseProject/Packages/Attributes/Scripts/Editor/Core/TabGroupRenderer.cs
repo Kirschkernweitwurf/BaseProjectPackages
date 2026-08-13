@@ -14,7 +14,8 @@ namespace Base.AttributePackage.Editor
     internal static class TabGroupRenderer
     {
         private const string FoldoutKeyPrefix = "TABFOLD";
-        private const float BarSpacing = 4f;
+        private const float BarSpacing = 8f;
+        private const float BlockOverlap = 3f;
         private const float ContentInset = 4f;
         private const float GroupSpacing = 6f;
         private const float IndentStep = 15f;
@@ -29,12 +30,15 @@ namespace Base.AttributePackage.Editor
         // A copy of the box style with no top padding, so the bar sits flush against the top edge of
         // the block. The original is shared by every help box in the editor and must not be edited in
         // place.
-        // No padding at all on the box. The bar has to reach both edges of the block, or the block is
-        // visibly wider than the thing it belongs to and the two stop reading as one element. The
-        // content below the bar is inset by hand instead.
+        // No padding and no side margins, so the block is exactly as wide as the bar above it. Anything
+        // the style adds on one side would show as the block reaching past the bar it belongs to.
         private static GUIStyle ContentStyle => _contentStyle ??= new GUIStyle(EditorStyles.helpBox)
         {
             padding = new RectOffset(0, 0, 0, 0),
+
+            // No margins either. A margin on one side only would inset the block without inseting the
+            // bar that fills it, and the two would stop being the same width.
+            margin = new RectOffset(0, 0, 0, EditorStyles.helpBox.margin.bottom),
 
             // The help box style paints its background beyond its own rect, which is fine for a box that
             // stands alone and is exactly what made this one bleed past the fields beside it.
@@ -73,16 +77,33 @@ namespace Base.AttributePackage.Editor
                 return index;
             }
 
-            // The bar is drawn inside the block rather than above it. Every attempt to close the seam
-            // from outside fought one spacing rule or another; there is no seam to close when the two
-            // are the same control.
+            // The bar's space is reserved now and the bar itself is drawn at the very end, so the block
+            // is painted first and the bar lands on top of it. Drawn the other way round, the block's
+            // background covers the bottom edge of the bar it belongs to.
+            string[] tabs = tabOrder.ToArray();
+            string key = StateKey.For(type, TabKeyPrefix, group);
+            int stored = Mathf.Clamp(EditorPrefs.GetInt(key, 0), 0, tabs.Length - 1);
+
+            int rows = WrappedToolbar.Rows(tabs, AvailableWidth());
+            Rect bar = GUILayoutUtility.GetRect(0f, rows * EditorGUIUtility.singleLineHeight,
+                EditorStyles.toolbarButton, GUILayout.ExpandWidth(true));
+
+            string selectedTab = tabs[stored];
+
+            // The layout's gap between two controls is taken back, and then a little more. Both the bar
+            // and the block have rounded corners, so meeting exactly on an edge leaves four notches
+            // where the two curves pull away from each other. Tucking the block up under the bar puts
+            // its corners behind the bar's, and the pair reads as one shape.
+            GUILayout.Space(-EditorGUIUtility.standardVerticalSpacing - BlockOverlap);
+
             EditorGUILayout.BeginVertical(ContentStyle);
 
-            string selectedTab = DrawTabBar(type, group, tabOrder.ToArray());
-            GUILayout.Space(BarSpacing);
+            // The block's top is tucked behind the bar, so the first field starts below that overlap
+            // rather than at the block's own edge.
+            GUILayout.Space(BarSpacing + BlockOverlap);
 
-            // The fields are inset here rather than by the box, because the box's padding would also
-            // narrow the bar and that is what pushed the two out of alignment.
+            // The fields are inset by hand rather than by the box style, so the block's own width stays
+            // exactly the bar's and only the contents move in from its edges.
             EditorGUILayout.BeginHorizontal();
             GUILayout.Space(ContentInset);
             EditorGUILayout.BeginVertical();
@@ -99,6 +120,15 @@ namespace Base.AttributePackage.Editor
 
             GUILayout.Space(ContentInset);
             EditorGUILayout.EndVertical();
+
+            int picked = WrappedToolbar.DrawAt(bar, stored, tabs);
+
+            if (picked != stored)
+            {
+                EditorPrefs.SetInt(key, picked);
+                GUI.changed = true;
+            }
+
             GUILayout.Space(GroupSpacing);
 
             return index;
@@ -177,22 +207,10 @@ namespace Base.AttributePackage.Editor
             return index;
         }
 
-        private static string DrawTabBar(Type type, string group, string[] tabOrder)
-        {
-            string key = StateKey.For(type, TabKeyPrefix, group);
-            int stored = Mathf.Clamp(EditorPrefs.GetInt(key, 0), 0, tabOrder.Length - 1);
-
-            // The bar wraps rather than truncating, because a narrow inspector otherwise turns a row of
-            // readable tabs into a row of stubs that cannot be told apart.
-            int selected = WrappedToolbar.Draw(stored, tabOrder, AvailableWidth());
-            if (selected != stored)
-                EditorPrefs.SetInt(key, selected);
-
-            return tabOrder[selected];
-        }
-
         // The layout width of the enclosing block is not known during the layout pass, so the view width
         // less the current indent is the closest honest estimate.
+        // The bar is drawn inside the block, so the width it wraps against is the block's content width.
+        // The block has no padding, so that is the view less the indent and the scrollbar.
         private static float AvailableWidth()
             => EditorGUIUtility.currentViewWidth - EditorGUI.indentLevel * IndentStep - ViewPadding;
     }

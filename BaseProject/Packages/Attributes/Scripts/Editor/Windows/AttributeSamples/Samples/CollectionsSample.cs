@@ -30,13 +30,23 @@ namespace Base.AttributePackage.Editor.Windows.AttributeSamples.Samples
         [Tooltip("Names each row after a field on the element instead of calling it Element 0.")]
         public List<Row> labeled = new();
 
-        [ListDrawerSettings(Searchable = true, PageSize = 4, LabelMember = nameof(Row.id))]
-        [Tooltip("A search box and a pager, which is what a genuinely long list wants.")]
+        [ListDrawerSettings(Searchable = true, LabelMember = nameof(Row.id))]
+        [Tooltip("A search box that hides the rows whose label does not match. Dragging switches off "
+            + "while it is filtering, because the row above is then not the element above.")]
         public List<Row> searchable = new();
 
         [ArraySize(3)]
         [Tooltip("Locks the element count, so the add and remove buttons disappear.")]
         public List<string> exactlyThree = new();
+
+        [ListDrawerSettings(ConfirmDelete = true, LabelMember = nameof(Row.id))]
+        [Tooltip("Removing a row asks first, naming the row it is about to delete.")]
+        public List<Row> confirmed = new();
+
+        [ListDrawerSettings(ShowAlternatingBackground = false)]
+        [Tooltip("Row tinting turned off. On by default, and worth keeping for anything longer than a "
+            + "handful of rows.")]
+        public List<string> plainRows = new();
 
         [Table] public List<Row> table = new();
     }

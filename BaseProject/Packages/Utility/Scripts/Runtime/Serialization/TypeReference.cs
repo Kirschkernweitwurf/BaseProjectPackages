@@ -41,7 +41,7 @@ namespace Base.UtilityPackage.Serialization
             {
                 typeName = value == null
                     ? string.Empty
-                    : value.AssemblyQualifiedName;
+                    : ShortName(value);
 
                 _resolved = value;
                 _isResolved = true;
@@ -70,6 +70,14 @@ namespace Base.UtilityPackage.Serialization
 
         /// <summary>Returns the referenced type name, for logs and inspectors.</summary>
         /// <returns>The short type name, or an empty marker.</returns>
+        // The full assembly qualified name carries a version, a culture and a public key token, none of
+        // which mean anything inside one project and all of which show up in full anywhere the value is
+        // drawn without its own drawer. The type and its assembly are enough for Type.GetType, and an
+        // older value written the long way still resolves.
+        private static string ShortName(Type value) => value.AssemblyQualifiedName == null
+            ? value.FullName
+            : $"{value.FullName}, {value.Assembly.GetName().Name}";
+
         public override string ToString()
         {
             Type value = Value;

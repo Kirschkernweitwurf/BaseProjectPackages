@@ -18,15 +18,6 @@ namespace Base.AttributePackage.Editor.Windows.AttributeSamples.Samples
         [Tooltip("A plain literal label, for a field whose good code name and good inspector name differ.")]
         public string internalName = "The field is still called internalName";
 
-        [DisplayAsString]
-        [Tooltip("A collection collapsed to one line of read-only text instead of a foldout and a row each.")]
-        public string[] tags =
-        {
-            "fast",
-            "armored",
-            "ranged"
-        };
-
         // A string argument starting with a dollar names a member to read. Written as "$" + nameof(X) so
         // a rename still moves the reference with it.
         private string Heading => $"Wave of {enemyCount}";

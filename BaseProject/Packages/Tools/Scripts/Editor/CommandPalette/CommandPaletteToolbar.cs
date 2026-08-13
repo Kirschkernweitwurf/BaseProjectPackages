@@ -1,3 +1,6 @@
+// The main toolbar extension API landed in Unity 6.3. On older editors the button is left out and
+// the palette is reached through the shortcut or the Tools menu.
+#if UNITY_6000_3_OR_NEWER
 using UnityEditor;
 using UnityEditor.Toolbars;
 
@@ -12,7 +15,6 @@ namespace Base.ToolPackage.Editor.CommandPalette
     {
         private const string ElementPath = "Base/Command Palette";
         private const string IconName = "d_UnityEditor.ConsoleWindow";
-        private const string Label = "Palette";
         private const string Tooltip = "Open the command palette (Ctrl+Shift+K)";
 
         /// <summary>Builds the button that opens the palette.</summary>
@@ -20,9 +22,11 @@ namespace Base.ToolPackage.Editor.CommandPalette
         [MainToolbarElement(ElementPath, defaultDockPosition = MainToolbarDockPosition.Middle)]
         private static MainToolbarElement CreatePaletteButton()
         {
-            MainToolbarContent content = new(Label, EditorGUIUtility.FindTexture(IconName), Tooltip);
+            // An empty text keeps the button icon only while still carrying the tooltip.
+            MainToolbarContent content = new(string.Empty, EditorGUIUtility.FindTexture(IconName), Tooltip);
 
             return new MainToolbarButton(content, CommandPaletteWindow.Open);
         }
     }
 }
+#endif

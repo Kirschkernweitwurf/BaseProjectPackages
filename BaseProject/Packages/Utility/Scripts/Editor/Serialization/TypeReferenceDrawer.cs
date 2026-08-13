@@ -68,6 +68,12 @@ namespace Base.UtilityPackage.Editor.Serialization
                 : NoCandidatesMessage, MessageType.Warning);
         }
 
+        // Matches what TypeReference stores, so a value written by the picker and one written in code
+        // are the same string and the dropdown finds its own selection again.
+        private static string StoredNameOf(Type type) => type.AssemblyQualifiedName == null
+            ? type.FullName
+            : $"{type.FullName}, {type.Assembly.GetName().Name}";
+
         private static string LabelFor(Type type) => string.IsNullOrEmpty(type.Namespace)
             ? type.Name
             : type.Namespace.Replace('.', '/') + "/" + type.Name;
@@ -167,7 +173,7 @@ namespace Base.UtilityPackage.Editor.Serialization
             {
                 captured.stringValue = index <= 0
                     ? string.Empty
-                    : candidates[index - 1].AssemblyQualifiedName;
+                    : StoredNameOf(candidates[index - 1]);
 
                 captured.serializedObject.ApplyModifiedProperties();
             });

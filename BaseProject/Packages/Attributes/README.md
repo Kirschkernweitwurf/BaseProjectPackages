@@ -364,6 +364,50 @@ expanding it into rows. Use it for values that are computed and `[ReadOnly]` for
 [PreviewObject(160f, Foldout = true, DefaultExpanded = false)] public Mesh mesh;
 ```
 
+## Collections
+
+Lists stay Unity's own list. `[ListDrawerSettings]` only tells that list what to do through its
+callbacks, so a list with the attribute reorders, selects and resizes exactly like a list without one.
+
+```csharp
+[ListDrawerSettings(LabelMember = nameof(Item.id))]  // name rows after a field, not "Element 0"
+[ListDrawerSettings(Searchable = true)]              // search box that hides rows whose label misses
+[ListDrawerSettings(ConfirmDelete = true)]           // removing a row asks first, naming the row
+[ListDrawerSettings(ShowAlternatingBackground = false)]  // tinting off, on by default
+```
+
+Searching hides a row by giving it a height of zero rather than by drawing a different list, so a
+filtered list is the same control with fewer rows. Dragging switches off while a filter is on, because
+the row above is then not the element above.
+
+`[Table]` draws an array of a serializable type as a grid instead: one row per element, one column per
+field, on the same list. Columns come from the first element, so an empty table shows only its header.
+`[TableColumn]` on the element's fields changes a column's relative width, its header text, or hides it.
+
+```csharp
+[Table] public List<LootEntry> loot;
+
+[Serializable]
+public sealed class LootEntry
+{
+    [TableColumn(2f)] public string id;
+    [TableColumn(Header = "Qty")] public int amount;
+    [TableColumn(Hidden = true)] public string note;
+}
+```
+
+`[ArraySize]` fixes or bounds the element count on either of them, which is what removes the add and
+remove buttons.
+
+```csharp
+[ArraySize(4)] public List<string> corners;           // exactly four
+[ArraySize(Min = 2, Max = 6)] public List<string> tiers;
+```
+
+There is deliberately no paging, no drag toggle and no per-list add or remove switch. Anything that
+would need a second implementation of a list is left out: two renderers that have to look identical
+never quite do, and the difference shows up as a layout bug rather than as a missing feature.
+
 ## Troubleshoot window
 
 `Tools > Base Packages > Unity Editor > Project Health > Attribute Troubleshoot`

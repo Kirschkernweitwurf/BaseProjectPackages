@@ -15,9 +15,6 @@ namespace Base.AttributePackage.Editor.Collections
         /// <summary>Current filter text, empty when nothing is filtered.</summary>
         public string Search { get; set; } = string.Empty;
 
-        /// <summary>Zero-based index of the page being shown.</summary>
-        public int Page { get; set; }
-
         private static readonly Dictionary<string, ListDrawerState> States = new();
 
         private static readonly HashSet<string> Seen = new();

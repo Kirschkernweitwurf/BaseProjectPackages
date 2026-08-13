@@ -19,9 +19,6 @@ namespace Base.AttributePackage
     public sealed class InlinePropertyAttribute : PropertyAttribute
     {
         /// <summary>Label width used for each child when none is given.</summary>
-        public const float DefaultChildLabelWidth = 34f;
 
-        /// <summary>Width given to each child's label inside the row.</summary>
-        public float LabelWidth { get; set; } = DefaultChildLabelWidth;
     }
 }

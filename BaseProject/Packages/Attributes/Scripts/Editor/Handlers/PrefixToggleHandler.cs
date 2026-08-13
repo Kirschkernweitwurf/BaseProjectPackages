@@ -25,7 +25,8 @@ namespace Base.AttributePackage.Editor
                 return;
 
             Rect row = GUILayoutUtility.GetLastRect();
-            Rect box = LeadingGutter.RectFor(row, EditorGUI.indentLevel, EditorGUIUtility.singleLineHeight);
+            Rect box = LeadingGutter.SquareFor(row, EditorGUI.indentLevel,
+                EditorGUIUtility.singleLineHeight);
 
             bool stored = toggle.boolValue;
             bool value;

@@ -21,6 +21,7 @@ namespace Base.UtilityPackage.Editor.Collections
     public sealed class SerializableDictionaryDrawer : PropertyDrawer
     {
         private const string DuplicateMessage = "Duplicate keys are ignored at runtime. Only the first wins.";
+        private const float FoldoutInset = 12f;
         private const float KeyWeight = 0.4f;
         private const string MissingEntriesMessage = "Serialized entry list not found.";
 
@@ -84,7 +85,13 @@ namespace Base.UtilityPackage.Editor.Collections
             : EditorGUI.GetPropertyHeight(property, true);
 
         private ReorderableList ListFor(SerializedProperty entries)
-            => SerializableListCache.Get(entries, DrawRow);
+            => SerializableListCache.Get(entries, DrawRow, RowHeight);
+
+        // The key and the value sit side by side, so the row is as tall as the taller of the two. Asking
+        // the entry for its own height sums them instead, which is what left a nested value overlapping
+        // the rows under it.
+        private static float RowHeight(SerializedProperty entry)
+            => Mathf.Max(HeightOf(KeyOf(entry)), HeightOf(ValueOf(entry)));
 
         // The duplicate set is rebuilt once per draw and read here, because the row callback is handed
         // an entry rather than its index and cannot work out on its own whether the key repeats.
@@ -100,6 +107,8 @@ namespace Base.UtilityPackage.Editor.Collections
             SerializedProperty key = KeyOf(entry);
             SerializedProperty value = ValueOf(entry);
 
+            // Each column keeps its own height, so a one-line key beside a nested value does not get
+            // stretched to match it.
             if (key != null)
             {
                 EditorGUI.PropertyField(new Rect(row.x, row.y, keyWidth, HeightOf(key)), key,
@@ -109,8 +118,15 @@ namespace Base.UtilityPackage.Editor.Collections
             if (value == null)
                 return;
 
-            Rect valueRect = new(row.x + keyWidth + SerializableCollectionGui.Gap, row.y, valueWidth,
-                HeightOf(value));
+            // A value that can expand draws its own foldout arrow at the left edge of its rect, which is
+            // where the key column ends. The inset gives the arrow room of its own instead of letting it
+            // sit on top of the field beside it.
+            float inset = value.hasVisibleChildren
+                ? FoldoutInset
+                : 0f;
+
+            Rect valueRect = new(row.x + keyWidth + SerializableCollectionGui.Gap + inset, row.y,
+                valueWidth - inset, HeightOf(value));
 
             EditorGUI.PropertyField(valueRect, value, GUIContent.none, true);
         }

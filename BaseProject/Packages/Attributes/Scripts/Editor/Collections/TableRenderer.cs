@@ -38,7 +38,7 @@ namespace Base.AttributePackage.Editor.Collections
             TableAttribute attribute, bool canResize = true)
         {
             if (ListDrawerState.IsFirstDraw(property))
-                property.isExpanded = attribute.DefaultExpanded;
+                property.isExpanded = true;
 
             EditorGUILayout.BeginHorizontal();
 
@@ -56,7 +56,7 @@ namespace Base.AttributePackage.Editor.Collections
             {
                 Columns.Clear();
                 EditorGUILayout.LabelField(EmptyMessage, EditorStyles.centeredGreyMiniLabel);
-                DrawList(property, attribute, canResize);
+                DrawList(property, canResize);
                 return;
             }
 
@@ -68,12 +68,12 @@ namespace Base.AttributePackage.Editor.Collections
                 return;
             }
 
-            DrawList(property, attribute, canResize);
+            DrawList(property, canResize);
         }
 
-        private static void DrawList(SerializedProperty property, TableAttribute attribute, bool canResize)
+        private static void DrawList(SerializedProperty property, bool canResize)
         {
-            ReorderableList list = TableListCache.Get(property, attribute, canResize);
+            ReorderableList list = TableListCache.Get(property, canResize);
             Rect rect = EditorGUI.IndentedRect(EditorGUILayout.GetControlRect(false, list.GetHeight()));
 
             using (new NoIndentScope())

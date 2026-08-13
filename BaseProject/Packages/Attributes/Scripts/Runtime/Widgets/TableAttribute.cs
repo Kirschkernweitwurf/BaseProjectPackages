@@ -13,18 +13,5 @@ namespace Base.AttributePackage
     /// relative width of a column or its header text.
     /// </remarks>
     [AttributeUsage(AttributeTargets.Field)]
-    public sealed class TableAttribute : PropertyAttribute
-    {
-        /// <summary>Whether the row index is shown in a leading column.</summary>
-        public bool ShowRowIndex { get; set; } = true;
-
-        /// <summary>Whether the add button is hidden, for tables that are filled from code.</summary>
-        public bool HideAddButton { get; set; }
-
-        /// <summary>Whether the remove buttons are hidden.</summary>
-        public bool HideRemoveButton { get; set; }
-
-        /// <summary>Whether the table starts expanded.</summary>
-        public bool DefaultExpanded { get; set; } = true;
-    }
+    public sealed class TableAttribute : PropertyAttribute { }
 }

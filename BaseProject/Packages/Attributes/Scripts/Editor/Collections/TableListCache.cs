@@ -33,16 +33,13 @@ namespace Base.AttributePackage.Editor.Collections
         // check that would otherwise be the obvious way to ask whether the cache still applies.
         private static readonly Dictionary<ReorderableList, SerializedObject> Owners = new();
 
-        private static readonly Dictionary<ReorderableList, TableAttribute> Settings = new();
-
         static TableListCache() => AssemblyReloadEvents.beforeAssemblyReload += Drop;
 
         /// <summary>Returns the list for the given table, building it on first use.</summary>
         /// <param name="property">The array being drawn.</param>
-        /// <param name="attribute">The settings that shape the table.</param>
         /// <param name="canResize">False when [ArraySize] fixes the element count.</param>
         /// <returns>The cached list, configured for this draw.</returns>
-        public static ReorderableList Get(SerializedProperty property, TableAttribute attribute, bool canResize)
+        public static ReorderableList Get(SerializedProperty property, bool canResize)
         {
             string key = property.serializedObject.targetObject.GetInstanceID() + property.propertyPath;
 
@@ -50,11 +47,11 @@ namespace Base.AttributePackage.Editor.Collections
                 && Owners.TryGetValue(cached, out SerializedObject owner)
                 && ReferenceEquals(owner, property.serializedObject))
             {
-                Configure(cached, attribute, canResize);
+                Configure(cached, canResize);
                 return cached;
             }
 
-            ReorderableList created = Build(property, attribute, canResize);
+            ReorderableList created = Build(property, canResize);
             Owners[created] = property.serializedObject;
             Lists[key] = created;
             return created;
@@ -63,60 +60,42 @@ namespace Base.AttributePackage.Editor.Collections
         private static void Drop()
         {
             Lists.Clear();
-            Settings.Clear();
             Owners.Clear();
         }
 
-        private static ReorderableList Build(SerializedProperty property, TableAttribute attribute,
-            bool canResize)
+        private static ReorderableList Build(SerializedProperty property, bool canResize)
         {
             ReorderableList list = new(property.serializedObject, property.Copy(), true, true,
-                canResize && !attribute.HideAddButton, canResize && !attribute.HideRemoveButton);
+                canResize, canResize);
 
             list.drawHeaderCallback = rect => DrawHeader(rect, list);
             list.elementHeightCallback = index => RowHeight(list, index);
             list.drawElementCallback = (rect, index, active, focused) => DrawRow(rect, list, index);
 
-            Configure(list, attribute, canResize);
+            Configure(list, canResize);
             return list;
         }
 
-        private static void Configure(ReorderableList list, TableAttribute attribute, bool canResize)
+        private static void Configure(ReorderableList list, bool canResize)
         {
-            list.displayAdd = canResize && !attribute.HideAddButton;
-            list.displayRemove = canResize && !attribute.HideRemoveButton;
+            list.displayAdd = canResize;
+            list.displayRemove = canResize;
             list.draggable = canResize;
-
-            Settings[list] = attribute;
         }
 
-        private static TableAttribute SettingsOf(ReorderableList list)
-            => Settings.TryGetValue(list, out TableAttribute attribute)
-                ? attribute
-                : null;
 
         // The header row carries the column names, laid out with the same widths the cells use, so the
         // two stay aligned however the inspector is resized.
         private static void DrawHeader(Rect rect, ReorderableList list)
         {
-            TableAttribute attribute = SettingsOf(list);
-            if (attribute == null || TableColumns.Count == 0)
+            if (TableColumns.Count == 0)
                 return;
 
-            float x = rect.x;
+            GUI.Label(new Rect(rect.x, rect.y, IndexWidth, rect.height), TableRenderer.IndexHeader,
+                EditorStyles.miniLabel);
 
-            if (attribute.ShowRowIndex)
-            {
-                GUI.Label(new Rect(x, rect.y, IndexWidth, rect.height), TableRenderer.IndexHeader,
-                    EditorStyles.miniLabel);
-
-                x += IndexWidth;
-            }
-
-            float available = rect.width - (attribute.ShowRowIndex
-                ? IndexWidth
-                : 0f);
-
+            float x = rect.x + IndexWidth;
+            float available = rect.width - IndexWidth;
             float total = TableRenderer.TotalWeight();
 
             foreach (TableColumn column in TableColumns)
@@ -151,25 +130,16 @@ namespace Base.AttributePackage.Editor.Collections
 
         private static void DrawRow(Rect rect, ReorderableList list, int index)
         {
-            TableAttribute attribute = SettingsOf(list);
-            if (attribute == null || index < 0 || index >= list.serializedProperty.arraySize)
+            if (index < 0 || index >= list.serializedProperty.arraySize)
                 return;
 
             SerializedProperty element = list.serializedProperty.GetArrayElementAtIndex(index);
-            float x = rect.x;
 
-            if (attribute.ShowRowIndex)
-            {
-                GUI.Label(new Rect(x, rect.y, IndexWidth, EditorGUIUtility.singleLineHeight),
-                    index.ToString(), EditorStyles.miniLabel);
+            GUI.Label(new Rect(rect.x, rect.y, IndexWidth, EditorGUIUtility.singleLineHeight),
+                index.ToString(), EditorStyles.miniLabel);
 
-                x += IndexWidth;
-            }
-
-            float available = rect.width - (attribute.ShowRowIndex
-                ? IndexWidth
-                : 0f);
-
+            float x = rect.x + IndexWidth;
+            float available = rect.width - IndexWidth;
             float total = TableRenderer.TotalWeight();
 
             using (new NoIndentScope())

@@ -17,11 +17,13 @@ namespace Base.ToolPackage.Editor.CommandPalette
     public sealed class CommandPaletteWindow : EditorWindow
     {
         private const string PaletteMenuPath = "Tools/Base Packages/Command Palette";
+
+        /// <summary>Width of both filter pills. They share it so the pair reads as one control.</summary>
+        private const float PillWidth = 68f;
+
         private const string Placeholder = "Search any menu.    #tag    > menu items    + create asset";
-        private const float ProjectPillWidth = 74f;
         private const string RescanFormat = "Rescanned, {0} commands";
         private const string RescanLabel = "Rescan";
-        private const float RescanPillWidth = 62f;
         private const string ResultFormat = "{0} of {1}";
         private const string SearchControlName = "BaseCommandPaletteSearch";
         private const string SearchIconName = "Search Icon";
@@ -196,8 +198,8 @@ namespace Base.ToolPackage.Editor.CommandPalette
             float pillHeight = CommandPaletteStyles.PillHeight;
             float pillY = row.y + (row.height - pillHeight) * 0.5f;
 
-            Rect rescan = new(row.xMax - RescanPillWidth, pillY, RescanPillWidth, pillHeight);
-            Rect project = new(rescan.x - gap - ProjectPillWidth, pillY, ProjectPillWidth, pillHeight);
+            Rect rescan = new(row.xMax - PillWidth, pillY, PillWidth, pillHeight);
+            Rect project = new(rescan.x - gap - PillWidth, pillY, PillWidth, pillHeight);
             Rect box = new(row.x, row.y, project.x - gap - row.x, row.height);
 
             if (_tags.IsActive)

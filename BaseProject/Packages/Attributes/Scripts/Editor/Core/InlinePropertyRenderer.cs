@@ -43,17 +43,17 @@ namespace Base.AttributePackage.Editor
             float labelWidth = EditorGUIUtility.labelWidth;
 
             using (new NoIndentScope())
-                DrawCells(content, attribute.LabelWidth);
+                DrawCells(content);
 
             EditorGUIUtility.labelWidth = labelWidth;
 
             return true;
         }
 
-        // Each child is measured against its own label rather than given a fixed width, so the value
-        // starts where the text ends. An explicit width on the attribute is a floor, not the answer, so
-        // a longer name is not cut off just because the default was set for a shorter one.
-        private static void DrawCells(Rect content, float minimumLabelWidth)
+        // Each child is measured against its own label, so the value starts where the text ends. There
+        // is no setting for this: a fixed width cannot fit both "Min" and "Maximalistic", and any number
+        // chosen for one of them is wrong for the other.
+        private static void DrawCells(Rect content)
         {
             float width = (content.width - CellGap * (Children.Count - 1)) / Children.Count;
 
@@ -62,9 +62,8 @@ namespace Base.AttributePackage.Editor
                 Rect cell = new(content.x + i * (width + CellGap), content.y, width, content.height);
                 GUIContent label = ScratchContent.For(Children[i].displayName);
 
-                EditorGUIUtility.labelWidth = Mathf.Clamp(
-                    EditorStyles.label.CalcSize(label).x + LabelPadding, minimumLabelWidth,
-                    width * MaximumLabelShare);
+                EditorGUIUtility.labelWidth = Mathf.Min(
+                    EditorStyles.label.CalcSize(label).x + LabelPadding, width * MaximumLabelShare);
 
                 EditorGUI.PropertyField(cell, Children[i], label);
             }

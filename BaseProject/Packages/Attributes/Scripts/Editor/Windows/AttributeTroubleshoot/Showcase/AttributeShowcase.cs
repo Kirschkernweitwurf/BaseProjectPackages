@@ -453,37 +453,22 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Showcase
 
         [ListDrawerSettings(Searchable = true)] public List<string> listSearchable = new();
 
-        [ListDrawerSettings(PageSize = 5)] public List<string> listPaged = new();
-
         [ListDrawerSettings(LabelMember = nameof(ShowcaseTableRow.id))]
         public List<ShowcaseTableRow> listLabeled = new();
 
-        [ListDrawerSettings(Searchable = true, PageSize = 5, LabelMember = nameof(ShowcaseTableRow.id))]
+        [ListDrawerSettings(Searchable = true, LabelMember = nameof(ShowcaseTableRow.id))]
         public List<ShowcaseTableRow> listFull = new();
 
         [ListDrawerSettings(ConfirmDelete = true, LabelMember = nameof(ShowcaseTableRow.id))]
         public List<ShowcaseTableRow> listConfirmDelete = new();
 
-        [ListDrawerSettings(Draggable = false)] public List<string> listNoDrag = new();
-
-        [ListDrawerSettings(HideAddButton = true, HideRemoveButton = true)]
-        public List<string> listFixedSize = new();
-
-        [ListDrawerSettings(DefaultExpanded = false)] public List<string> listCollapsed = new();
-
         [Table] public List<ShowcaseTableRow> tableDefault = new();
-
-        [Table(ShowRowIndex = false)] public List<ShowcaseTableRow> tableNoIndex = new();
-
-        [Table(HideAddButton = true, HideRemoveButton = true, DefaultExpanded = false)]
-        public List<ShowcaseTableRow> tableFixedSize = new();
 
         [Table] public ShowcaseTableRow[] tableArray = Array.Empty<ShowcaseTableRow>();
 
         [ListDrawerSettings(ShowAlternatingBackground = false)]
         [Tooltip("Striping turned off. On by default, and worth keeping for anything longer than a "
             + "handful of rows.")]
-        public List<string> listNoStripes = new();
 
         [Title("9. Size, toggles and widgets", "#A2CCFF", Foldout = true, DefaultExpanded = false)]
         [InfoBox("The size limits switch off the add and remove controls of the list and table drawers, "
@@ -617,27 +602,11 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Showcase
         [Tooltip("A negative amount pulls the field left instead of right, clamped at the first column.")]
         public string pulledBack = "Pulled back out";
 
-        [DisplayAsString]
-        [Tooltip("Drawn as read-only text on one line, collapsing the whole collection instead of "
-            + "keeping a foldout and a row per element.")]
-        public string[] displayedCollection =
-        {
-            "hello",
-            "world",
-            "and",
-            "so",
-            "on"
-        };
-
-        [DisplayAsString(Separator = " | ")]
-        [Tooltip("The same with a custom separator between elements.")]
-        public List<ESampleMode> displayedModes = new();
-
         [InlineProperty]
         [Tooltip("A nested type drawn on this row instead of behind a foldout.")]
         public ShowcaseRange inlineRange = new();
 
-        [InlineProperty(LabelWidth = 50f)]
+        [InlineProperty]
         [Tooltip("The same nested type with wider child labels.")]
         public ShowcaseRange inlineWideLabels = new();
 
