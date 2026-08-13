@@ -96,7 +96,11 @@ namespace Base.AttributePackage.Editor
             amount += LeadingGutter.StepsFor(context);
 
             EditorGUI.indentLevel += amount;
+
+            // The label column is widened for this one row when a renamed label would not fit in it,
+            // since Unity cuts an oversized prefix label without saying so.
             using (new EditorGUI.DisabledScope(!enabled))
+            using (new LabelWidthScope(LabelWidthScope.Required(context)))
                 DrawBody(context, field, editor);
 
             EditorGUI.indentLevel -= amount;

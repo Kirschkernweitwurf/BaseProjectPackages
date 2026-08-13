@@ -85,18 +85,6 @@ MonoBehaviour:
           createFileName: RC_RumbleConfig
           overridePriority: 0
           overrideValue: 0
-    - rid: 4171306542554939503
-      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
-      data:
-        separator: 0
-        entry:
-          id: MI:Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.AttributeTroubleshootWindow.OpenWindow
-          path: Attribute Troubleshoot
-          enabled: 1
-          kind: 0
-          createFileName: 
-          overridePriority: 0
-          overrideValue: 0
     - rid: 4171306542554939516
       type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
       data:
@@ -116,6 +104,18 @@ MonoBehaviour:
         entry:
           id: MI:Base.ToolPackage.Editor.CommandPalette.CommandPaletteWindow.Open
           path: Command Palette
+          enabled: 1
+          kind: 0
+          createFileName: 
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 4171306628888920156
+      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 0
+        entry:
+          id: MI:Base.AttributePackage.Editor.Windows.AttributeExplorer.AttributeExplorerWindow.OpenWindow
+          path: Attributes
           enabled: 1
           kind: 0
           createFileName: 
@@ -274,7 +274,7 @@ MonoBehaviour:
         merged: 0
         children:
         - rid: 5339058645413658794
-        - rid: 4171306542554939503
+        - rid: 4171306628888920156
         - rid: 5339058645413658802
         - rid: 4171306542554939475
         - rid: 5339058645413658793

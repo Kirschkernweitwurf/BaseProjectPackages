@@ -4,13 +4,14 @@ using UnityEngine;
 namespace Base.AttributePackage.Editor
 {
     /// <summary>
-    /// Draws a field with an optional prefix and suffix label for <see cref="PrefixAttribute"/> and
-    /// <see cref="SuffixAttribute"/>. Registered for both, so a field with both attributes causes Unity
-    /// to invoke this drawer twice as a chain. Only one invocation draws the labels, the other just
-    /// draws the value, which keeps each label from appearing twice.
+    /// Draws the label of a <see cref="PrefixAttribute"/> in front of the value.
     /// </summary>
+    /// <remarks>
+    /// A prefix has to be drawn before the value, so it owns the field and is a property drawer. The
+    /// suffix is a widget instead: only one drawer runs per field, and as a drawer it lost every time
+    /// the field also carried a slider or a bar.
+    /// </remarks>
     [CustomPropertyDrawer(typeof(PrefixAttribute))]
-    [CustomPropertyDrawer(typeof(SuffixAttribute))]
     internal sealed class AffixDrawer : PropertyDrawer
     {
         private const float Padding = 2f;
@@ -18,16 +19,6 @@ namespace Base.AttributePackage.Editor
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             PrefixAttribute prefix = ReflectionCache.GetAttribute<PrefixAttribute>(fieldInfo);
-            SuffixAttribute suffix = ReflectionCache.GetAttribute<SuffixAttribute>(fieldInfo);
-
-            // When both attributes are present Unity chains two invocations. The suffix invocation owns
-            // the drawing, the prefix invocation only forwards the value, so nothing is drawn twice.
-            bool ownsDrawing = attribute is SuffixAttribute || suffix == null;
-            if (!ownsDrawing)
-            {
-                EditorGUI.PropertyField(position, property, label, true);
-                return;
-            }
 
             EditorGUI.BeginProperty(position, label, property);
 
@@ -39,10 +30,8 @@ namespace Base.AttributePackage.Editor
             using (new NoIndentScope())
             {
                 valueRect = DrawPrefix(valueRect, prefix);
-                valueRect = ReserveSuffix(valueRect, suffix, out Rect suffixRect);
 
                 EditorGUI.PropertyField(valueRect, property, GUIContent.none, true);
-                DrawLabel(suffixRect, suffix?.Text);
             }
 
             EditorGUI.EndProperty();
@@ -59,20 +48,6 @@ namespace Base.AttributePackage.Editor
 
             valueRect.x += width + Padding;
             valueRect.width -= width + Padding;
-            return valueRect;
-        }
-
-        private static Rect ReserveSuffix(Rect valueRect, SuffixAttribute suffix, out Rect suffixRect)
-        {
-            if (suffix == null)
-            {
-                suffixRect = default(Rect);
-                return valueRect;
-            }
-
-            float width = EditorStyles.miniLabel.CalcSize(ScratchContent.For(suffix.Text)).x + Padding;
-            valueRect.width -= width;
-            suffixRect = new Rect(valueRect.xMax + Padding, valueRect.y, width - Padding, valueRect.height);
             return valueRect;
         }
 

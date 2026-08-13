@@ -39,6 +39,8 @@ namespace Base.AttributePackage.Editor
 
         private static readonly List<HorizontalAttribute> Settings = new();
 
+        private static float _lastMeasuredWidth;
+
         /// <summary>
         /// Draws the row starting at the given index and returns the index of the first member after it.
         /// </summary>
@@ -105,12 +107,26 @@ namespace Base.AttributePackage.Editor
             => ReflectionCache.GetAttribute<HorizontalAttribute>(
                 ReflectionCache.GetField(type, properties[index].name));
 
-        // The row is laid out from the inspector width rather than from a rect, because the width of the
-        // enclosing block is not known during the layout pass. The indent and the scrollbar are taken
-        // off, which is what stops the last cell running past the right edge inside a title section.
+        // Measured from the block the row is actually in rather than from the whole window. The two are
+        // the same in the Inspector, but not in a window that puts the inspector in a pane beside
+        // something else, where the view width is wider than the room the row has and the last cell runs
+        // off the edge.
+        //
+        // A reserved rect has no width during the layout pass, so the last measured one is reused until
+        // a repaint reports a real one. That is stale only for the frame a window is resized in.
         private static float AvailableWidth()
-            => Mathf.Max(EditorGUIUtility.currentViewWidth - EditorGUI.indentLevel * IndentStep - ViewPadding,
-                MinimumCellWidth);
+        {
+            Rect probe = GUILayoutUtility.GetRect(0f, 0f, GUILayout.ExpandWidth(true));
+
+            if (probe.width > MinimumCellWidth)
+                _lastMeasuredWidth = probe.width;
+
+            float available = _lastMeasuredWidth > 0f
+                ? _lastMeasuredWidth
+                : EditorGUIUtility.currentViewWidth;
+
+            return Mathf.Max(available - EditorGUI.indentLevel * IndentStep - ViewPadding, MinimumCellWidth);
+        }
 
         private static int Collect(List<SerializedProperty> properties, int startIndex, Type type, string group)
         {
