@@ -18,9 +18,16 @@ namespace Base.AttributePackage.Editor.Windows.AttributeSamples
     /// </remarks>
     internal static class AttributeSampleList
     {
+        private const string ClearLabel = "\u00D7";
+        private const string ClearTooltip = "Clear the search";
+        private const float ClearWidth = 22f;
+        private const float SearchPadding = 4f;
         private const string CountFormat = "{0} of {1} attributes";
         private const string NoMatchMessage = "Nothing matches.";
         private const string StatePrefix = "SAMPLECATEGORY";
+
+        // Reused between draws so filtering does not allocate a list per repaint.
+        private static readonly List<AttributeSampleEntry> Matches = new();
 
         /// <summary>Draws the list and selects into the window when a row is clicked.</summary>
         /// <param name="window">The window that owns the selection.</param>
@@ -30,9 +37,9 @@ namespace Base.AttributePackage.Editor.Windows.AttributeSamples
             AttributeSampleEntry[] entries = AttributeSampleRegistry.All();
             bool searching = !string.IsNullOrEmpty(window.Search);
 
-            EditorGUILayout.BeginHorizontal(EditorStyles.toolbar);
-            window.Search = EditorGUILayout.TextField(window.Search, EditorStyles.toolbarSearchField);
-            EditorGUILayout.EndHorizontal();
+            AttributeSampleRegistry.Visible.Clear();
+
+            DrawSearchBar(window);
 
             window.ListScroll = EditorGUILayout.BeginScrollView(window.ListScroll, styles.ListBackground);
 
@@ -46,10 +53,32 @@ namespace Base.AttributePackage.Editor.Windows.AttributeSamples
             EditorGUILayout.LabelField(string.Format(CountFormat, shown, entries.Length), styles.Footer);
         }
 
+        private static void DrawSearchBar(AttributeSampleWindow window)
+        {
+            EditorGUILayout.BeginHorizontal(EditorStyles.toolbar);
+
+            // The search field otherwise sits hard against the window edge, where every other toolbar in
+            // the editor leaves a margin.
+            GUILayout.Space(SearchPadding);
+
+            window.Search = EditorGUILayout.TextField(window.Search, EditorStyles.toolbarSearchField);
+
+            using (new EditorGUI.DisabledScope(string.IsNullOrEmpty(window.Search)))
+            {
+                if (GUILayout.Button(new GUIContent(ClearLabel, ClearTooltip),
+                        EditorStyles.toolbarButton, GUILayout.Width(ClearWidth)))
+                {
+                    window.Search = string.Empty;
+                    GUI.FocusControl(null);
+                }
+            }
+
+            EditorGUILayout.EndHorizontal();
+        }
+
         private static int DrawCategories(AttributeSampleWindow window, AttributeSampleStyles styles,
             AttributeSampleEntry[] entries, bool searching)
         {
-            List<AttributeSampleEntry> matches = new();
             int shown = 0;
             int index = 0;
 
@@ -57,35 +86,35 @@ namespace Base.AttributePackage.Editor.Windows.AttributeSamples
             {
                 string category = entries[index].Category;
 
-                matches.Clear();
+                Matches.Clear();
 
                 while (index < entries.Length && entries[index].Category == category)
                 {
-                    if (Matches(entries[index], window.Search))
-                        matches.Add(entries[index]);
+                    if (IsMatch(entries[index], window.Search))
+                        Matches.Add(entries[index]);
 
                     index++;
                 }
 
-                if (matches.Count == 0)
+                if (Matches.Count == 0)
                     continue;
 
-                shown += matches.Count;
-                DrawCategory(window, styles, category, matches, searching);
+                shown += Matches.Count;
+                DrawCategory(window, styles, category, searching);
             }
 
             return shown;
         }
 
         private static void DrawCategory(AttributeSampleWindow window, AttributeSampleStyles styles,
-            string category, List<AttributeSampleEntry> matches, bool searching)
+            string category, bool searching)
         {
             string key = StateKey.For(typeof(AttributeSampleWindow), StatePrefix, category);
             bool stored = EditorPrefs.GetBool(key, true);
             bool expanded = searching || stored;
 
             Rect header = EditorGUILayout.GetControlRect(false, AttributeSampleStyles.CategoryHeight);
-            bool clicked = EditorGUI.Foldout(header, expanded, $"{category}  ({matches.Count})", true,
+            bool clicked = EditorGUI.Foldout(header, expanded, $"{category}  ({Matches.Count})", true,
                 styles.Category);
 
             // While searching the group is forced open, so a click there would only fight the search.
@@ -95,33 +124,64 @@ namespace Base.AttributePackage.Editor.Windows.AttributeSamples
             if (!expanded)
                 return;
 
-            foreach (AttributeSampleEntry entry in matches)
-                DrawEntry(window, styles, entry);
+            for (int i = 0; i < Matches.Count; i++)
+            {
+                AttributeSampleRegistry.Visible.Add(Matches[i]);
+                DrawEntry(window, styles, Matches[i], i);
+            }
         }
 
-        // The category is searched as well as the name, so typing a topic finds everything under it.
-        private static bool Matches(in AttributeSampleEntry entry, string search)
+        // The description is searched as well as the name and the category, so a word from the
+        // explanation finds the attribute even when its name is not what you would have guessed.
+        private static bool IsMatch(in AttributeSampleEntry entry, string search)
         {
             if (string.IsNullOrEmpty(search))
                 return true;
 
-            return entry.Title.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0
-                || entry.Category.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0;
+            return Contains(entry.Title, search)
+                || Contains(entry.Category, search)
+                || Contains(entry.Description, search);
         }
 
+        private static bool Contains(string text, string search) => !string.IsNullOrEmpty(text)
+            && text.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0;
+
         private static void DrawEntry(AttributeSampleWindow window, AttributeSampleStyles styles,
-            in AttributeSampleEntry entry)
+            in AttributeSampleEntry entry, int row)
         {
             bool selected = window.IsSelected(entry);
             Rect rect = EditorGUILayout.GetControlRect(false, AttributeSampleStyles.EntryHeight);
 
-            if (selected && Event.current.type == EventType.Repaint)
-                EditorGUI.DrawRect(rect, GUI.skin.settings.selectionColor);
+            if (Event.current.type == EventType.Repaint)
+                DrawRowBackground(styles, rect, selected, row);
 
-            if (GUI.Button(rect, entry.Title, selected
+            if (GUI.Button(rect, new GUIContent(entry.Title, entry.Title), selected
                     ? styles.SelectedEntry
                     : styles.Entry))
                 window.Select(entry);
+
+            // A row the pointer is over is repainted so the highlight follows it, which a window only
+            // repainting on interaction would otherwise not do.
+            if (rect.Contains(Event.current.mousePosition))
+                window.Repaint();
+        }
+
+        private static void DrawRowBackground(AttributeSampleStyles styles, Rect rect, bool selected, int row)
+        {
+            if (selected)
+            {
+                EditorGUI.DrawRect(rect, GUI.skin.settings.selectionColor);
+                return;
+            }
+
+            if (rect.Contains(Event.current.mousePosition))
+            {
+                EditorGUI.DrawRect(rect, styles.Hover);
+                return;
+            }
+
+            if (row % 2 != 0)
+                EditorGUI.DrawRect(rect, styles.Stripe);
         }
     }
 }

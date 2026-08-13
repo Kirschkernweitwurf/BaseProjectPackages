@@ -22,14 +22,6 @@ namespace Base.AttributePackage.Editor.Windows.AttributeSamples.Samples
         [Tooltip("Locked during play, editable while stopped. The inverse of the field above.")]
         public float locked = 2f;
 
-        [ReadOnlyInPlayMode]
-        [Tooltip("The same lock under a name that reads better on a value the game writes itself.")]
-        public int readOnlyInPlay = 3;
-
-        [ReadOnlyInEditMode]
-        [Tooltip("Locked while stopped, editable during play.")]
-        public int readOnlyInEdit = 4;
-
         [DisableIf(nameof(locked))]
         [Tooltip("Greyed out while another member is true. The inverse of enable-if.")]
         public string disabledByOther = "Disabled by a sibling";

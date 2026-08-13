@@ -6,9 +6,9 @@ namespace Base.AttributePackage.Editor.Windows.AttributeSamples.Samples
     [AttributeSample("Pickers")]
     internal sealed class PickersSample : ScriptableObject
     {
-        [InfoBox("Each of these knows what the project contains, so none of them can be spelled wrong.")]
         [Tag]
-        [Tooltip("Dropdown of the project's tags, so a tag string cannot be misspelled.")]
+        [Tooltip("Shows a dropdown of the tags the project has. The value stays a string, but you pick "
+            + "it from a list instead of typing it, so it cannot be spelled wrong.")]
         public string tag = "Untagged";
 
         [Layer] public int layer;

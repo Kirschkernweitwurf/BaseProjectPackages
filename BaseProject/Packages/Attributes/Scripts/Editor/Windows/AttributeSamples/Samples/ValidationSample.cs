@@ -7,14 +7,14 @@ namespace Base.AttributePackage.Editor.Windows.AttributeSamples.Samples
     [AttributeSample("Validation")]
     internal sealed class ValidationSample : ScriptableObject
     {
-        [InfoBox("Clear a field or break a rule and the box appears under it.")]
         [Required]
-        [Tooltip("Marks a reference as mandatory. Clear it to see the error box.")]
+        [Tooltip("Marks the reference as one that has to be filled in. Clear it and an error box appears "
+            + "under the field, so a missing reference shows up before the game runs.")]
         public Material material;
 
         [Required(FixAction = nameof(UseFallback), FixActionName = "Use fallback")]
-        [Tooltip("The same requirement with a button that fixes it, since most missing "
-            + "references have one obvious answer.")]
+        [Tooltip("The same check, with a button in the error box that fills the field for you. Most "
+            + "missing references have one obvious answer, so the box can offer it.")]
         public Texture2D icon;
 
         [NotNullOrEmpty("A profile needs a name.")]

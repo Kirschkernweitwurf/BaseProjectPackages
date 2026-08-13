@@ -14,6 +14,7 @@ namespace Base.AttributePackage.Editor
     internal sealed class ColorPaletteDrawer : WarningFieldDrawer
     {
         private const float BorderWidth = 2f;
+        private const float OutlineBreathing = 3f;
         private const float PickerWidth = 40f;
         private const float SwatchGap = 2f;
         private const float SwatchWidth = 20f;
@@ -52,6 +53,12 @@ namespace Base.AttributePackage.Editor
                 ? null
                 : $"'{settings.Member}' yielded no colors.";
         }
+
+        // The selected swatch is outlined by growing it, so it reaches past the row on every side. The
+        // two horizontal sides have the row's own slack; the vertical ones need the room reserved here,
+        // and a little beyond the outline itself, or the outline lands hard against the field above and
+        // the field below instead of sitting between them.
+        protected override float VerticalPadding => BorderWidth + OutlineBreathing;
 
         protected override void DrawField(Rect rect, SerializedProperty property, GUIContent label, bool complete)
         {

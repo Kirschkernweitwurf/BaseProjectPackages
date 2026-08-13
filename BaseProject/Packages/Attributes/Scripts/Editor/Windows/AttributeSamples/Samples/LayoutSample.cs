@@ -2,29 +2,33 @@ using UnityEngine;
 
 namespace Base.AttributePackage.Editor.Windows.AttributeSamples.Samples
 {
-    /// <summary>Titles, boxes, separators and spacing.</summary>
+    /// <summary>Headings, boxes, lines and spacing.</summary>
     [AttributeSample("Layout")]
     internal sealed class LayoutSample : ScriptableObject
     {
         [Title("Movement", EColor.Cyan)]
-        [InfoBox("A title is a heading above the field that carries it. An info box explains one.")]
-        [Tooltip("An ordinary field under a title, to show what a heading separates.")]
+        [Tooltip("Puts a heading above this field. Use it to split a long component into parts, so the "
+            + "reader can find a section again instead of scanning every field.")]
         public float speed = 5f;
 
-        [Suffix(SuffixAttribute.MetersPerSecondSquared)]
-        [Tooltip("A unit written from the shared vocabulary rather than as a literal.")]
+        [InfoBox("A note to whoever edits this component next.")]
+        [Tooltip("Puts a box of text above this field, for saying something the field name cannot. "
+            + "Comes in info, warning and error, and can take a color of its own.")]
         public float acceleration = 12f;
 
-        [Title("Combat", EColor.Red)]
         [HorizontalLine(EColor.Red)]
-        [Tooltip("Sits under a colored separator line.")]
+        [Tooltip("Draws a line above this field. Use it to separate two groups of fields when neither "
+            + "of them needs a heading. The color, thickness and spacing are all yours to set.")]
         public int damage = 10;
 
-        [Indent] public float critMultiplier = 2f;
+        [Indent]
+        [Tooltip("Pushes this field one step to the right, which reads as belonging to the field above "
+            + "it. A negative number pulls it back to the left instead.")]
+        public float critMultiplier = 2f;
 
-        [Indent(-1)]
-        [InfoBox("A negative indent pulls back out again.", EInfoBoxType.None)]
-        [Tooltip("Pulled back out to the first column by a negative indent.")]
-        public bool pierces;
+        [Suffix(SuffixAttribute.MetersPerSecondSquared)]
+        [Tooltip("Adds a small label after the value, almost always a unit. The units come from a "
+            + "shared list, so the same one is spelled the same way on every field that uses it.")]
+        public float gravity = 9.81f;
     }
 }

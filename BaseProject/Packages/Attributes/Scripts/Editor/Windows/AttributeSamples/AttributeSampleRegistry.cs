@@ -25,6 +25,14 @@ namespace Base.AttributePackage.Editor.Windows.AttributeSamples
 
         private static AttributeSampleEntry[] _entries;
 
+        /// <summary>The entries the list is currently showing, in the order it shows them.</summary>
+        /// <remarks>
+        /// Filled by the list as it draws and read by the window when an arrow key moves the selection.
+        /// The window cannot work the order out for itself: which categories are open and what the
+        /// search matched are both decided while drawing.
+        /// </remarks>
+        internal static List<AttributeSampleEntry> Visible { get; } = new();
+
         /// <summary>Returns every demonstrated attribute, grouped by category.</summary>
         /// <returns>The entries in list order.</returns>
         public static AttributeSampleEntry[] All()

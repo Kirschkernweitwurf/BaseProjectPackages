@@ -35,7 +35,6 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Checks
             new(typeof(PowerOfTwoAttribute), IsInteger, "an int"),
             new(typeof(PercentageAttribute), IsFloat, "a float"),
             new(typeof(ProgressBarAttribute), IsFloatOrInteger, "a float or int"),
-            new(typeof(EnumFlagsAttribute), IsEnum, "an enum"),
             new(typeof(EnumToggleButtonsAttribute), IsEnum, "an enum"),
             new(typeof(MinMaxSliderAttribute), IsVector2, "a Vector2"),
             new(typeof(CurveRangeAttribute), IsCurve, "an AnimationCurve"),

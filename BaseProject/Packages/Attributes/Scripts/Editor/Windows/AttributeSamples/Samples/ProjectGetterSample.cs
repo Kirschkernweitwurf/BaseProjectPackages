@@ -6,8 +6,6 @@ namespace Base.AttributePackage.Editor.Windows.AttributeSamples.Samples
     [AttributeSample("References")]
     internal sealed class ProjectGetterSample : ScriptableObject
     {
-        [InfoBox("These search the project while the field is empty and cache what they find. Clear one "
-            + "to watch it refill.")]
         [GetScriptableObject]
         [Tooltip("Fills itself with the first asset of the field's own type found in the project.")]
         public ProjectGetterSample config;

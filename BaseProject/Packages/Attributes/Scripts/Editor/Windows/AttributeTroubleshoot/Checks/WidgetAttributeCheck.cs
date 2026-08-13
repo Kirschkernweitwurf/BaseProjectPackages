@@ -17,9 +17,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Checks
             foreach (FieldInfo field in ScannedMembers.DeclaredFields(type))
             {
                 VerifyArraySize(field, issues);
-                VerifyPrefixToggle(type, field, issues);
                 VerifyPalette(type, field, issues);
-                VerifyContextMenu(type, field, issues);
                 VerifyAutoGetters(field, issues);
             }
 
@@ -56,29 +54,6 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Checks
                     $"Min {attribute.Min} is above Max {attribute.Max}, so no count can satisfy both.");
         }
 
-        private static void VerifyPrefixToggle(Type owner, FieldInfo field, List<AttributeIssue> issues)
-        {
-            PrefixToggleAttribute attribute = field.GetCustomAttribute<PrefixToggleAttribute>();
-            if (attribute == null)
-                return;
-
-            Type attributeType = typeof(PrefixToggleAttribute);
-            FieldInfo toggle = ReflectionCache.GetField(owner, attribute.Member);
-
-            if (toggle == null)
-            {
-                AttributeIssues.Error(issues, field, attributeType,
-                    $"'{attribute.Member}' is not a field on {owner.Name}. The checkbox needs a serialized "
-                    + "bool it can write to, so a property or a method will not do.");
-
-                return;
-            }
-
-            if (toggle.FieldType != typeof(bool))
-                AttributeIssues.Error(issues, field, attributeType,
-                    $"'{attribute.Member}' is a {toggle.FieldType.Name}, not a bool.");
-        }
-
         private static void VerifyPalette(Type owner, FieldInfo field, List<AttributeIssue> issues)
         {
             ColorPaletteAttribute attribute = field.GetCustomAttribute<ColorPaletteAttribute>();
@@ -106,28 +81,6 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Checks
             if (!CheckedMembers.IsEnumerable(CheckedMembers.ValueTypeOf(owner, attribute.Member)))
                 AttributeIssues.Error(issues, field, attributeType,
                     $"'{attribute.Member}' is not an enumerable of colors.");
-        }
-
-        private static void VerifyContextMenu(Type owner, FieldInfo field, List<AttributeIssue> issues)
-        {
-            foreach (CustomContextMenuAttribute entry in
-                     field.GetCustomAttributes<CustomContextMenuAttribute>(true))
-            {
-                MethodInfo method = ReflectionCache.GetMethod(owner, entry.Method);
-                Type attributeType = typeof(CustomContextMenuAttribute);
-
-                if (method == null)
-                {
-                    AttributeIssues.Error(issues, field, attributeType,
-                        $"'{entry.Method}' does not exist on {owner.Name}, so the entry is greyed out.");
-
-                    continue;
-                }
-
-                if (method.GetParameters().Length > 0)
-                    AttributeIssues.Error(issues, field, attributeType,
-                        $"'{entry.Method}' takes parameters, so the entry is greyed out.");
-            }
         }
 
         // These fill an object reference, so anything else has nowhere for the result to go.

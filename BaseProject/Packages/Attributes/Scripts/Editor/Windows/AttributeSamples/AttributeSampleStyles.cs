@@ -10,33 +10,38 @@ namespace Base.AttributePackage.Editor.Windows.AttributeSamples
         internal const string EmptyMessage = "Pick an attribute on the left.";
 
         /// <summary>Height of a category header in the list.</summary>
-        internal const float CategoryHeight = 22f;
+        internal const float CategoryHeight = 24f;
 
         /// <summary>Height of one attribute row in the list.</summary>
-        internal const float EntryHeight = 20f;
+        internal const float EntryHeight = 21f;
 
         /// <summary>Width of the buttons above the source block.</summary>
         internal const float ButtonWidth = 76f;
 
         /// <summary>Gap between the two panes.</summary>
-        internal const float ColumnGap = 6f;
+        internal const float ColumnGap = 8f;
 
         /// <summary>Width of the list beside the content.</summary>
-        internal const float ListWidth = 240f;
+        internal const float ListWidth = 265f;
 
         /// <summary>Padding inside the content pane.</summary>
-        internal const float Padding = 12f;
+        internal const float Padding = 14f;
 
         /// <summary>Gap between two blocks in the content pane.</summary>
-        internal const float SectionGap = 14f;
+        internal const float SectionGap = 16f;
 
-        private const int HeadingFontSize = 18;
+        private const float HoverStrength = 0.06f;
+        private const int HeadingFontSize = 19;
         private const int SubheadingFontSize = 11;
+        private const float StripeStrength = 0.03f;
 
         /// <summary>Large name of the selected attribute.</summary>
         internal GUIStyle Heading { get; }
 
-        /// <summary>The line under it explaining what the attribute does.</summary>
+        /// <summary>The category the selected attribute belongs to, above its name.</summary>
+        internal GUIStyle Eyebrow { get; }
+
+        /// <summary>The line under the name explaining what the attribute does.</summary>
         internal GUIStyle Description { get; }
 
         /// <summary>Small heading above the preview and the source.</summary>
@@ -63,13 +68,32 @@ namespace Base.AttributePackage.Editor.Windows.AttributeSamples
         /// <summary>The attribute count under the list.</summary>
         internal GUIStyle Footer { get; }
 
+        /// <summary>Tint of a row the pointer is over.</summary>
+        internal Color Hover { get; }
+
+        /// <summary>Tint of every other row, so a long category reads as rows.</summary>
+        internal Color Stripe { get; }
+
+        /// <summary>Line between the list and the content.</summary>
+        internal Color Divider { get; }
+
         /// <summary>Builds the styles.</summary>
         internal AttributeSampleStyles()
         {
+            bool pro = EditorGUIUtility.isProSkin;
+
             Heading = new GUIStyle(EditorStyles.boldLabel)
             {
                 fontSize = HeadingFontSize,
-                margin = new RectOffset(0, 0, 0, 2)
+                margin = new RectOffset(0, 0, 0, 0)
+            };
+
+            Eyebrow = new GUIStyle(EditorStyles.miniLabel)
+            {
+                normal =
+                {
+                    textColor = EditorStyles.centeredGreyMiniLabel.normal.textColor
+                }
             };
 
             Description = new GUIStyle(EditorStyles.label)
@@ -87,18 +111,16 @@ namespace Base.AttributePackage.Editor.Windows.AttributeSamples
                 padding = new RectOffset(0, 0, 0, 2)
             };
 
-            // The category reads as a header rather than as a row: a foldout arrow, bold text, and its
-            // own band of background so the eye can skip a whole group at once.
             Category = new GUIStyle(EditorStyles.foldout)
             {
                 fontStyle = FontStyle.Bold,
-                padding = new RectOffset(18, 4, 2, 2)
+                padding = new RectOffset(18, 4, 3, 3)
             };
 
             Entry = new GUIStyle(EditorStyles.label)
             {
                 alignment = TextAnchor.MiddleLeft,
-                padding = new RectOffset(24, 6, 0, 0)
+                padding = new RectOffset(20, 6, 0, 0)
             };
 
             SelectedEntry = new GUIStyle(Entry)
@@ -114,7 +136,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeSamples
 
             Card = new GUIStyle(EditorStyles.helpBox)
             {
-                padding = new RectOffset(10, 10, 8, 8)
+                padding = new RectOffset(12, 12, 10, 10)
             };
 
             Footer = new GUIStyle(EditorStyles.miniLabel)
@@ -122,6 +144,18 @@ namespace Base.AttributePackage.Editor.Windows.AttributeSamples
                 alignment = TextAnchor.MiddleLeft,
                 padding = new RectOffset(8, 4, 0, 0)
             };
+
+            Hover = pro
+                ? new Color(1f, 1f, 1f, HoverStrength)
+                : new Color(0f, 0f, 0f, HoverStrength);
+
+            Stripe = pro
+                ? new Color(1f, 1f, 1f, StripeStrength)
+                : new Color(0f, 0f, 0f, StripeStrength);
+
+            Divider = pro
+                ? new Color(0f, 0f, 0f, 0.35f)
+                : new Color(0f, 0f, 0f, 0.15f);
 
             // Monospaced, because source read in a proportional font loses the alignment that makes a
             // stack of attributes scannable.
@@ -137,7 +171,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeSamples
 
                 wordWrap = false,
                 richText = false,
-                padding = new RectOffset(10, 10, 8, 8)
+                padding = new RectOffset(12, 12, 10, 10)
             };
         }
     }

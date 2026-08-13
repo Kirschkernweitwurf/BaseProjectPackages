@@ -1,4 +1,4 @@
-using System;
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
@@ -17,9 +17,13 @@ namespace Base.AttributePackage.Editor.Windows.AttributeSamples
     /// </remarks>
     internal sealed class AttributeSampleWindow : EditorWindow
     {
+        private const string CopiedAttributeNotice = "Attribute copied";
         private const string CopiedNotice = "Snippet copied";
-        private const string CopyLabel = "Copy";
-        private const float HeadingHeight = 24f;
+        private const string CopyAttributeLabel = "Copy attribute";
+        private const float CopyAttributeWidth = 110f;
+        private const string CopyLabel = "Copy snippet";
+        private const float DividerWidth = 1f;
+        private const float HeadingHeight = 26f;
         private const string MenuPath = "Tools/Base Packages/Unity Editor/Project Health/Attribute Samples";
         private const float MinimumWidth = 120f;
         private const string OpenLabel = "Open file";
@@ -101,11 +105,22 @@ namespace Base.AttributePackage.Editor.Windows.AttributeSamples
         {
             _styles ??= new AttributeSampleStyles();
 
+            HandleArrowKeys();
+
             EditorGUILayout.BeginHorizontal();
 
             EditorGUILayout.BeginVertical(GUILayout.Width(AttributeSampleStyles.ListWidth));
             AttributeSampleList.Draw(this, _styles);
             EditorGUILayout.EndVertical();
+
+            GUILayout.Space(AttributeSampleStyles.ColumnGap);
+
+            // A hairline between the panes, so the list reads as a sidebar rather than as the first
+            // column of the content.
+            Rect divider = GUILayoutUtility.GetRect(DividerWidth, DividerWidth, GUILayout.ExpandHeight(true));
+
+            if (Event.current.type == EventType.Repaint)
+                EditorGUI.DrawRect(divider, _styles.Divider);
 
             GUILayout.Space(AttributeSampleStyles.ColumnGap);
 
@@ -115,6 +130,43 @@ namespace Base.AttributePackage.Editor.Windows.AttributeSamples
 
             GUILayout.Space(AttributeSampleStyles.ColumnGap);
             EditorGUILayout.EndHorizontal();
+        }
+
+        // Moves through the list as it is currently shown, so a filtered or collapsed list steps over
+        // exactly the rows the reader can see.
+        private void HandleArrowKeys()
+        {
+            Event current = Event.current;
+
+            if (current.type != EventType.KeyDown)
+                return;
+
+            int step = current.keyCode switch
+            {
+                KeyCode.DownArrow => 1,
+                KeyCode.UpArrow => -1,
+                _ => 0
+            };
+
+            if (step == 0)
+                return;
+
+            List<AttributeSampleEntry> visible = AttributeSampleRegistry.Visible;
+            if (visible.Count == 0)
+                return;
+
+            int index = visible.FindIndex(entry => entry.Title == selectedTitle);
+            int next = Mathf.Clamp(index + step, 0, visible.Count - 1);
+
+            if (index >= 0 && next == index)
+                return;
+
+            Select(visible[index < 0
+                ? 0
+                : next]);
+
+            current.Use();
+            Repaint();
         }
 
         private void Release()
@@ -160,6 +212,8 @@ namespace Base.AttributePackage.Editor.Windows.AttributeSamples
 
         private void DrawHeading()
         {
+            EditorGUILayout.LabelField(_selected.Category, _styles.Eyebrow);
+
             EditorGUILayout.LabelField($"[{_selected.Title}]", _styles.Heading,
                 GUILayout.Height(HeadingHeight));
 
@@ -176,7 +230,8 @@ namespace Base.AttributePackage.Editor.Windows.AttributeSamples
         // The scroll view has no rect of its own during layout, so the width is taken from the window
         // less the list and the padding around it.
         private float ContentWidth() => Mathf.Max(position.width - AttributeSampleStyles.ListWidth
-            - AttributeSampleStyles.ColumnGap * 2f - AttributeSampleStyles.Padding * 2f, MinimumWidth);
+            - AttributeSampleStyles.ColumnGap * 3f - DividerWidth
+            - AttributeSampleStyles.Padding * 2f, MinimumWidth);
 
         // The whole sample is drawn, not just the one field. A conditional field means nothing without
         // the toggle that drives it, and cutting the object down to one row would hide exactly that.
@@ -197,7 +252,16 @@ namespace Base.AttributePackage.Editor.Windows.AttributeSamples
             EditorGUILayout.LabelField(SourceHeading, _styles.Section);
             GUILayout.FlexibleSpace();
 
-            if (GUILayout.Button(CopyLabel, EditorStyles.miniButtonLeft,
+            // The three actions sit together, because all three are things you do with what is on
+            // screen and hunting for one of them beside the title was never obvious.
+            if (GUILayout.Button(CopyAttributeLabel, EditorStyles.miniButtonLeft,
+                    GUILayout.Width(CopyAttributeWidth)))
+            {
+                EditorGUIUtility.systemCopyBuffer = $"[{_selected.Title}]";
+                ShowNotification(ScratchContent.For(CopiedAttributeNotice));
+            }
+
+            if (GUILayout.Button(CopyLabel, EditorStyles.miniButtonMid,
                     GUILayout.Width(AttributeSampleStyles.ButtonWidth)))
             {
                 EditorGUIUtility.systemCopyBuffer = _snippet;
@@ -215,8 +279,16 @@ namespace Base.AttributePackage.Editor.Windows.AttributeSamples
 
             // Selectable rather than editable: a text area is the only control that lets a reader select
             // a line, and the disabled scope stops it suggesting the file can be changed from here.
+            //
+            // Given an explicit rect rather than left to the layout. A text area that does not wrap is
+            // as wide as its longest line, and the window then refuses to be made narrower than that.
+            float width = ContentWidth();
+            float height = _styles.Source.CalcHeight(ScratchContent.For(_snippet), width);
+
+            Rect area = GUILayoutUtility.GetRect(width, height, GUILayout.ExpandWidth(false));
+
             using (new EditorGUI.DisabledScope(true))
-                EditorGUILayout.TextArea(_snippet, _styles.Source);
+                EditorGUI.TextArea(area, _snippet, _styles.Source);
 
             GUILayout.Space(AttributeSampleStyles.Padding);
         }

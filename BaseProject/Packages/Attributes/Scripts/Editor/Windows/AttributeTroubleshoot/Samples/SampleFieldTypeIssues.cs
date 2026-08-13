@@ -19,7 +19,6 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Samples
         [MinMaxSlider(0f, 10f)] public float sliderOnFloat;
 
         /// <summary>A mask field needs an enum to read the flags from.</summary>
-        [EnumFlags] public int flagsOnNumber;
 
         /// <summary>An inline inspector needs an asset reference to draw.</summary>
         [Expandable] public string expandableOnString;

@@ -6,7 +6,6 @@ namespace Base.AttributePackage.Editor.Windows.AttributeSamples.Samples
     [AttributeSample("Widgets")]
     internal sealed class InlineWidgetSample : ScriptableObject
     {
-        private const float DefaultValue = 10f;
 
         [InlineButton(nameof(Reroll), "Roll")]
         [Tooltip("A button beside the field that calls a method. With no label it falls back to the "
@@ -21,11 +20,6 @@ namespace Base.AttributePackage.Editor.Windows.AttributeSamples.Samples
         [CopyButton]
         [Tooltip("Copies the value to the clipboard, for an identifier you paste elsewhere.")]
         public string copyable = "Copy me";
-
-        [CustomContextMenu("Reset to default", nameof(ResetValue))]
-        [Tooltip("Adds an entry to the field's right-click menu. Repeatable, and a slash in the label "
-            + "nests the entry under a submenu.")]
-        public float contextValue = DefaultValue;
 
         [CurveRange(0f, 0f, 1f, 1f, EColor.Magenta)]
         [Tooltip("Locks an animation curve to a box and tints it, so a normalized curve cannot wander "
@@ -54,7 +48,5 @@ namespace Base.AttributePackage.Editor.Windows.AttributeSamples.Samples
         };
 
         private void Reroll() => damage = Random.Range(1, 7);
-
-        private void ResetValue() => contextValue = DefaultValue;
     }
 }

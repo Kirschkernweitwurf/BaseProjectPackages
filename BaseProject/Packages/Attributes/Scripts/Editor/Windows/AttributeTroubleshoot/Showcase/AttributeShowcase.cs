@@ -27,7 +27,6 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Showcase
     /// </remarks>
     internal sealed class AttributeShowcase : ScriptableObject
     {
-        private const float DefaultContextValue = 10f;
         private const float FullHealth = 100f;
         private const int LongOptionCount = 40;
         private const int MaximumRoll = 7;
@@ -178,10 +177,6 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Showcase
         [DisableInPlayMode] public float lockedInPlayMode = 2f;
 
         [ReadOnly] public string alwaysReadOnly = "Look but do not touch";
-
-        [ReadOnlyInPlayMode] public int readOnlyInPlayMode = 3;
-
-        [ReadOnlyInEditMode] public int readOnlyInEditMode = 4;
 
         [Title("3. Validation", "#C1D07D", Foldout = true, DefaultExpanded = false)]
         [InfoBox("Clear a required field or break a rule to see the box appear under it.")]
@@ -354,10 +349,6 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Showcase
         [CurveRange(0f, -1f, 5f, 1f, EColor.Magenta)]
         public AnimationCurve curveWide = AnimationCurve.EaseInOut(0f, -1f, 5f, 1f);
 
-        [EnumFlags] public ESampleFlags flags = ESampleFlags.Fire;
-
-        [EnumToggleButtons] public ESampleMode toggleButtons = ESampleMode.Normal;
-
         [InlineButton(nameof(Roll))] public int inlineButtonDefault = 1;
 
         [InlineButton(nameof(Roll), "Roll")] public int inlineButtonLabeled = 6;
@@ -491,22 +482,8 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Showcase
         [StartExpanded] public List<string> expandedList = new();
 
         /// <summary>Drives the field below it, and has no row of its own because of that.</summary>
-        public bool useCustomRange;
-
-        [PrefixToggle(nameof(useCustomRange))] public float customRange = 5f;
 
         /// <summary>Second toggle, for the object reference below.</summary>
-        public bool useOverrideIcon;
-
-        [PrefixToggle(nameof(useOverrideIcon))] public Texture2D overrideIcon;
-
-        [LeftToggle] public bool leftToggle = true;
-
-        [ResizableTextArea] public string growingText = "Type here and add lines.";
-
-        [ResizableTextArea(1, 5)] public string shortText = "Small box.";
-
-        [Rate] public int rating = 3;
 
         [Rate(1, 10)] public int difficulty = 7;
 
@@ -514,14 +491,6 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Showcase
 
         [ColorPalette(nameof(BrandColors), AllowCustom = true)]
         public Color brandOrCustom = Color.white;
-
-        [CustomContextMenu("Reset to default", nameof(ResetContextValue))]
-        public float contextValue = DefaultContextValue;
-
-        [CustomContextMenu("Scale/Halve", nameof(HalveContextValue))]
-        [CustomContextMenu("Scale/Double", nameof(DoubleContextValue))]
-        [CustomContextMenu("Reset to default", nameof(ResetContextValue))]
-        public float multiContextValue = DefaultContextValue;
 
         [Title("10. Searching auto-getters", "#C0C3FF", Foldout = true, DefaultExpanded = false)]
         [InfoBox("These search the project, so they only run while the field is empty and their results "
@@ -801,17 +770,6 @@ namespace Base.AttributePackage.Editor.Windows.AttributeTroubleshoot.Showcase
         /// <summary>Header label, read from a property.</summary>
         [HeaderLabel(Width = 90f)]
         public string HeaderState() => $"{mode} x{slots.Count}";
-
-        private void ResetContextValue()
-        {
-            contextValue = DefaultContextValue;
-            multiContextValue = DefaultContextValue;
-            Record(nameof(ResetContextValue));
-        }
-
-        private void HalveContextValue() => Record($"{nameof(HalveContextValue)} to {multiContextValue *= 0.5f}");
-
-        private void DoubleContextValue() => Record($"{nameof(DoubleContextValue)} to {multiContextValue *= 2f}");
 
         private void UseFirstMaterial()
         {

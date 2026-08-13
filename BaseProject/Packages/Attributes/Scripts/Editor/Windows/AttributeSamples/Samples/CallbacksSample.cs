@@ -9,7 +9,10 @@ namespace Base.AttributePackage.Editor.Windows.AttributeSamples.Samples
     {
         private const string Actions = "Actions";
 
-        [InfoBox("Edit a field or press a button and the log below records what happened.")]
+        [InfoBox("Edit a field or press a button below and the log at the bottom records what ran.")]
+        [Tooltip("A plain field, here only so the box above it has something to sit on.")]
+        public string readMe = "Watch the log at the bottom.";
+
         [OnValueChanged(nameof(OnSpeedChanged))]
         [Tooltip("Calls a method whenever you edit the field in the inspector.")]
         public float speed = 5f;

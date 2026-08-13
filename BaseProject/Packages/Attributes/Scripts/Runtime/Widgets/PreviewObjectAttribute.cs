@@ -18,8 +18,7 @@ namespace Base.AttributePackage
     [AttributeUsage(AttributeTargets.Field)]
     public sealed class PreviewObjectAttribute : PropertyAttribute
     {
-        /// <summary>Height used when none is given.</summary>
-        public const float DefaultHeight = 128f;
+        private const float DefaultHeight = 128f;
 
         /// <summary>Height of the preview in pixels.</summary>
         public float Height { get; }

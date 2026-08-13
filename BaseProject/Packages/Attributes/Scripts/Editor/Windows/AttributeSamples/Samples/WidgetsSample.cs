@@ -40,24 +40,10 @@ namespace Base.AttributePackage.Editor.Windows.AttributeSamples.Samples
 
         [Rate(1, 5)] public int difficulty = 3;
 
-        [EnumFlags] public EElement elements = EElement.Fire;
+        [TextArea(2, 8)]
+        [Tooltip("Unity's own text area, not one of ours. It already grows between two and eight lines "
+            + "and scrolls past that, which is why this package has nothing of its own for it.")]
+        public string notes = "Grows with what you type.";
 
-        [EnumToggleButtons] public EElement primary = EElement.Ice;
-
-        [LeftToggle]
-        [Tooltip("Puts the checkbox in front of the label instead of behind it, which reads better in a "
-            + "column of options.")]
-        public bool leftAligned = true;
-
-        [Tooltip("Drives the field below it, and has no row of its own because that field draws it as a "
-            + "checkbox in front of its own label.")]
-        public bool useCustomRange;
-
-        [PrefixToggle(nameof(useCustomRange))]
-        [Tooltip("Draws another bool as the checkbox in front of this label, which is what the "
-            + "two-field toggle-plus-value pattern always meant.")]
-        public float customRange = 5f;
-
-        [ResizableTextArea(2, 8)] public string notes = "Grows with what you type.";
     }
 }
