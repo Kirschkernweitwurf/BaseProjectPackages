@@ -1,3 +1,4 @@
+using Base.EditorUiPackage;
 using UnityEditor;
 using UnityEngine;
 
@@ -7,27 +8,27 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
     /// Cached styles, colors and icons for the required-reference window.
     /// Pure presentation.
     /// </summary>
+    /// <remarks>
+    /// Rebuilt when the editor skin changes, since the styles pin text colors that are picked for
+    /// one skin. The shared editor look comes from <see cref="EditorPalette"/>.
+    /// </remarks>
     internal sealed class RequiredReferenceStyles
     {
-        private const string AlertIcon = "console.erroricon.sml";
-        private const string ObjectIcon = "GameObject Icon";
-        private const string SuccessIcon = "TestPassed";
+        private const float HeaderStrength = 0.05f;
         private const int SummaryFontSize = 12;
         private const int TitleFontSize = 15;
 
         /// <summary>Subtle background behind a group header.</summary>
-        public static Color Header => EditorGUIUtility.isProSkin
-            ? DarkHeader
-            : LightHeader;
+        public static Color Header => EditorPalette.Tint(HeaderStrength);
 
         /// <summary>Red alert icon shown per missing reference.</summary>
-        public static Texture ErrorTexture => Resolve(ref _errorTexture, AlertIcon);
+        public static Texture ErrorTexture => EditorIcons.Error;
 
         /// <summary>Green success icon shown in the empty state.</summary>
-        public static Texture SuccessTexture => Resolve(ref _successTexture, SuccessIcon);
+        public static Texture SuccessTexture => EditorIcons.Success;
 
         /// <summary>Default object icon for a group header.</summary>
-        public static Texture ObjectTexture => Resolve(ref _objectTexture, ObjectIcon);
+        public static Texture ObjectTexture => EditorIcons.GameObject;
 
         /// <summary>Bold label for the object name in a group header.</summary>
         public GUIStyle Name { get; private set; }
@@ -48,24 +49,18 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
         public GUIStyle SuccessSubtitle { get; private set; }
 
         /// <summary>Accent used for problems.</summary>
-        public static readonly Color Accent = new(0.86f, 0.30f, 0.32f);
+        public static Color Accent => EditorPalette.Danger;
 
-        private static readonly Color Success = new(0.36f, 0.76f, 0.46f);
+        private bool _built;
+        private bool _builtForProSkin;
 
-        private static readonly Color DarkHeader = new(1f, 1f, 1f, 0.05f);
-
-        private static readonly Color LightHeader = new(0f, 0f, 0f, 0.05f);
-
-        private static readonly Color SubtitleColor = new(0.5f, 0.5f, 0.5f);
-
-        private static Texture _errorTexture;
-        private static Texture _objectTexture;
-        private static Texture _successTexture;
-
-        /// <summary>Builds the GUI styles once. Must run inside a GUI callback.</summary>
+        /// <summary>
+        /// Builds the GUI styles once, and again after the editor skin changed.
+        /// Must run inside a GUI callback.
+        /// </summary>
         public void EnsureBuilt()
         {
-            if (Name != null)
+            if (_built && _builtForProSkin == EditorGUIUtility.isProSkin)
                 return;
 
             Name = new GUIStyle(EditorStyles.boldLabel)
@@ -78,14 +73,10 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
                 alignment = TextAnchor.MiddleLeft
             };
 
-            Badge = new GUIStyle(EditorStyles.miniBoldLabel)
+            Badge = EditorStyleUtility.PinTextColor(new GUIStyle(EditorStyles.miniBoldLabel)
             {
-                alignment = TextAnchor.MiddleCenter,
-                normal =
-                {
-                    textColor = Color.white
-                }
-            };
+                alignment = TextAnchor.MiddleCenter
+            }, Color.white);
 
             Summary = new GUIStyle(EditorStyles.boldLabel)
             {
@@ -93,42 +84,20 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
                 fontSize = SummaryFontSize
             };
 
-            SuccessTitle = new GUIStyle(EditorStyles.boldLabel)
+            SuccessTitle = EditorStyleUtility.PinTextColor(new GUIStyle(EditorStyles.boldLabel)
             {
                 alignment = TextAnchor.MiddleCenter,
-                fontSize = TitleFontSize,
-                normal =
-                {
-                    textColor = Success
-                },
-                hover =
-                {
-                    textColor = Success
-                }
-            };
+                fontSize = TitleFontSize
+            }, EditorPalette.Success);
 
-            SuccessSubtitle = new GUIStyle(EditorStyles.label)
+            SuccessSubtitle = EditorStyleUtility.PinTextColor(new GUIStyle(EditorStyles.label)
             {
                 alignment = TextAnchor.MiddleCenter,
-                wordWrap = true,
-                normal =
-                {
-                    textColor = SubtitleColor
-                },
-                hover =
-                {
-                    textColor = SubtitleColor
-                }
-            };
-        }
+                wordWrap = true
+            }, EditorStyleUtility.MutedTextColor());
 
-        // Icons are only available inside a GUI callback, so they are resolved on first use.
-        private static Texture Resolve(ref Texture cached, string iconName)
-        {
-            if (cached == null)
-                cached = EditorGUIUtility.IconContent(iconName).image;
-
-            return cached;
+            _built = true;
+            _builtForProSkin = EditorGUIUtility.isProSkin;
         }
     }
 }

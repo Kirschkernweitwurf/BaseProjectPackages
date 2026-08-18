@@ -13,32 +13,28 @@ namespace Base.CorePackage.SceneManagement
     /// </summary>
     public class LoadingScreen : Menu
     {
-        [Header("Loading Screen References")]
-
+        [Title("Loading Screen References")]
         [Tooltip("The image used to display load progress via fill amount.")]
         [Required] [SerializeField] private Image progressImage;
 
         [Tooltip("The RectTransform that will spin while loading.")]
         [Required] [SerializeField] private RectTransform spinner;
 
-        [Header("Animation Settings")]
-
+        [Title("Animation Settings")]
         [Tooltip("Rotation speed for the spinner, in degrees per second.")]
         [SerializeField] private float spinnerRotationSpeed = 180f;
 
         [Tooltip("Smoothing speed for progress fill updates.")]
         [Min(0f)] [SerializeField] private float fillSmoothSpeed = 5f;
 
-        [Header("Minimum Show Time")]
-
+        [Title("Minimum Show Time")]
         [Tooltip("If enabled, the loading screen will stay visible for at least this duration.")]
         [SerializeField] private bool hasMinimumShowTime = true;
 
         [Tooltip("Minimum time (in seconds) the loading screen must remain visible.")]
         [ShowIf(nameof(hasMinimumShowTime))] [Min(0f)] [SerializeField] private float minimumShowTime = 1f;
 
-        [Header("Scene Filtering")]
-
+        [Title("Scene Filtering")]
         [Tooltip("If empty, the loading screen shows for every scene.")]
         [SceneName] [SerializeField] private string[] scenesToShowFor;
 

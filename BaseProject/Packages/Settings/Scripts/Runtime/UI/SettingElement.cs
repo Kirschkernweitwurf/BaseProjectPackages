@@ -1,8 +1,8 @@
 using System;
 using Base.AttributePackage;
-using Base.CorePackage.Services;
+using Base.ServicePackage;
 using Base.SettingsPackage.Core;
-using Base.ToolPackage.Identification;
+using Base.UtilityPackage.Identification;
 using Base.UtilityPackage.Logging;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -20,8 +20,7 @@ namespace Base.SettingsPackage.UI
         /// <summary>Raised with the title and description of the focused element.</summary>
         public static event Action<string, string> OnHoverFlavorChanged;
 
-        [Header("Setting Element")]
-
+        [Title("Setting Element")]
         [SerializeField] [NotNullOrEmpty] private string settingKey;
         [SerializeField] private LocalizedString title;
         [SerializeField] private LocalizedString description;

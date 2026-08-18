@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Base.CorePackage.Tweening.Components.System;
+using Base.TweeningPackage.Components.System;
 using UnityEngine;
 using Object = UnityEngine.Object;
 

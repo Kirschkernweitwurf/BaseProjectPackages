@@ -25,19 +25,16 @@ namespace Base.CorePackage.DebugMenu.CheatConsole
 
         [field: Required] [field: SerializeField] public TMP_InputField InputField { get; private set; }
 
-        [Header("Log")]
-
+        [Title("Log")]
         [Required] [SerializeField] private TMP_Text logText;
         [Required] [SerializeField] private ScrollRect scrollRect;
 
-        [Header("Suggestions")]
-
+        [Title("Suggestions")]
         [Required] [SerializeField] private TMP_Text suggestionPrefab;
         [Required] [SerializeField] private Transform suggestionParent;
         [Min(1)] [SerializeField] private int maxSuggestions = 5;
 
-        [Header("Colors")]
-
+        [Title("Colors")]
         [SerializeField] private Color infoColor = Color.white;
         [SerializeField] private Color warningColor = new(1f, 0.6f, 0.2f);
         [SerializeField] private Color errorColor = Color.red;

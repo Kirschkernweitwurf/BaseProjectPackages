@@ -1,0 +1,25 @@
+using System;
+using Base.AttributePackage;
+using UnityEngine;
+
+namespace Base.TweeningPackage.Core.Data.Parameters
+{
+    /// <summary>
+    /// Serializable data describing a fade tween for a CanvasGroup.
+    /// </summary>
+    [Serializable]
+    public struct FadeTweenData
+    {
+        [field: Tooltip("Target alpha value (0–1).")]
+        [field: MinMax(0f, 1f)] [field: SerializeField] public float TargetAlpha { get; private set; }
+
+        [field: Tooltip("Basic tween parameters.")]
+        [field: SerializeField] public TweenData TweenData { get; private set; }
+
+        public FadeTweenData(float targetAlpha, TweenData tweenData)
+        {
+            TargetAlpha = targetAlpha;
+            TweenData = tweenData;
+        }
+    }
+}

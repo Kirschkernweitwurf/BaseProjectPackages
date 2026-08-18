@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
 using Base.AttributePackage;
-using Base.CorePackage.Services;
-using Base.CorePackage.Tracking;
+using Base.ServicePackage;
+using Base.ServicePackage.Tracking;
 using Base.UtilityPackage.Logging;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace Base.ControllerSupport.Haptics
+namespace Base.ControllerSupportPackage.Haptics
 {
     /// <summary>
     /// Drives the gamepad motors from curve-based patterns. Requests stack in a

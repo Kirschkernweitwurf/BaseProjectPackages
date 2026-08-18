@@ -73,6 +73,7 @@ code:
 
 ## Dependencies
 
-This package builds on other Base packages for logging, timers and scene load events, plus the
-Menu Manager for its window and config asset menu entries. Make sure those are present in the
-project.
+This package builds on the Base Core package for timers and scene load events and on the Base
+Utility package for logging and the dynamic menu attributes its window and config asset menu
+entries use. Installing Core brings the Service and Tweening packages with it, so the Git
+Package Manager selects those automatically.

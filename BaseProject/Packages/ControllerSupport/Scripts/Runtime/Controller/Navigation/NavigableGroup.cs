@@ -1,14 +1,14 @@
 using System.Collections.Generic;
 using Base.AttributePackage;
-using Base.ControllerSupport.Controller.Focus;
-using Base.CorePackage.Services;
-using Base.CorePackage.Tracking;
+using Base.ControllerSupportPackage.Controller.Focus;
+using Base.ServicePackage;
+using Base.ServicePackage.Tracking;
 using Base.UtilityPackage.Logging;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace Base.ControllerSupport.Controller.Navigation
+namespace Base.ControllerSupportPackage.Controller.Navigation
 {
     /// <summary>
     /// A self-contained navigation context. Collects the <see cref="NavigableElement"/>s beneath it,

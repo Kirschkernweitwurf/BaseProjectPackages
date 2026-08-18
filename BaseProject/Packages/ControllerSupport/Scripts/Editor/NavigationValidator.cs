@@ -1,11 +1,11 @@
 using System.Collections.Generic;
-using Base.ControllerSupport.Controller.Navigation;
+using Base.ControllerSupportPackage.Controller.Navigation;
 using Base.UtilityPackage.Logging;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Base.ControllerSupport.Editor
+namespace Base.ControllerSupportPackage.Editor
 {
     /// <summary>
     /// Ensures every <see cref="Selectable"/> under a <see cref="NavigableGroup"/> carries a

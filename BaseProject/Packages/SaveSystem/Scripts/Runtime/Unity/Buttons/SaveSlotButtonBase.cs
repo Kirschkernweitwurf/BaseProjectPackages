@@ -1,10 +1,10 @@
 using System;
 using System.Threading;
 using Base.AttributePackage;
-using Base.CorePackage.Services;
 using Base.SaveSystemPackage.Core;
 using Base.SaveSystemPackage.Slots;
 using Base.SaveSystemPackage.Unity.Composition;
+using Base.ServicePackage;
 using Base.UtilityPackage.Logging;
 using UnityEngine;
 using UnityEngine.UI;

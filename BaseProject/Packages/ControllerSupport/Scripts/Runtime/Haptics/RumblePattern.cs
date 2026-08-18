@@ -1,10 +1,10 @@
 using Base.AttributePackage;
-using Base.CorePackage.Services;
-using Base.CorePackage.Tracking;
-using Base.ToolPackage.MenuManagerWindow;
+using Base.ServicePackage;
+using Base.ServicePackage.Tracking;
+using Base.UtilityPackage.Menus;
 using UnityEngine;
 
-namespace Base.ControllerSupport.Haptics
+namespace Base.ControllerSupportPackage.Haptics
 {
     /// <summary>
     /// Shared haptic asset. Author a rumble once and reference the asset everywhere it plays, so tuning

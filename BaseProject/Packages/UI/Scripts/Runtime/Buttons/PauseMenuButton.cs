@@ -2,7 +2,7 @@ using Base.AttributePackage;
 using Base.CorePackage.MenuManaging;
 using Base.CorePackage.MenuManaging.Identifier;
 using Base.CorePackage.MenuManaging.Menus;
-using Base.CorePackage.Services;
+using Base.ServicePackage;
 using UnityEngine;
 
 namespace Base.UIPackage.Buttons
@@ -12,12 +12,10 @@ namespace Base.UIPackage.Buttons
     /// </summary>
     public sealed class PauseMenuButton : CustomButton
     {
-        [Header("Identifier")]
-
+        [Title("Identifier")]
         [Required] [SerializeField] private MenuIdentifier pauseMenuIdentifier;
 
-        [Header("Icons")]
-
+        [Title("Icons")]
         [Required] [SerializeField] private Sprite pauseIcon;
         [Required] [SerializeField] private Sprite playIcon;
 

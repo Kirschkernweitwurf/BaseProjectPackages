@@ -1,6 +1,6 @@
 using System;
 using Base.AttributePackage;
-using Base.CorePackage.Tweening.Components.System;
+using Base.TweeningPackage.Components.System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,8 +13,7 @@ namespace Base.SettingsPackage.UI
     [RequireComponent(typeof(Button))]
     public sealed class SelectionIndicatorButton : MonoBehaviour
     {
-        [Header("Dependencies")]
-
+        [Title("Dependencies")]
         [SerializeField] [Required] private TweenGroup tweenGroup;
         [SerializeField] [GetComponent] private Button button;
 

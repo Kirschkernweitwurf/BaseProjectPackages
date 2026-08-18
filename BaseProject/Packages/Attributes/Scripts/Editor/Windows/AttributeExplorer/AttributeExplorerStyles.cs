@@ -1,3 +1,4 @@
+using Base.EditorUiPackage;
 using UnityEditor;
 using UnityEngine;
 
@@ -8,8 +9,9 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer
     /// </summary>
     /// <remarks>
     /// Built once rather than per repaint, and rebuilt when the editor skin changes, since every color
-    /// here is picked for one skin and the light and dark versions are not interchangeable. The
-    /// monospaced font is created rather than found, so it is destroyed again with the window.
+    /// here is picked for one skin and the light and dark versions are not interchangeable. The shared
+    /// editor look comes from <see cref="EditorPalette"/>; what stays here are the tints only a two
+    /// pane browser with cards and tabs needs.
     /// </remarks>
     internal sealed class AttributeExplorerStyles
     {
@@ -59,6 +61,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer
         private const int HeadingFontSize = 18;
         private const int PageHeadingFontSize = 22;
         private const int SectionFontSize = 12;
+        private const float LightTabStripFactor = 0.5f;
         private const float TabActiveStrength = 0.05f;
         private const float TabStripStrength = 0.10f;
         private const float HoverStrength = 0.06f;
@@ -70,15 +73,6 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer
         private const float CardHoverStrength = 0.22f;
         private const float CategoryBandStrength = 0.04f;
         private const float StripeStrength = 0.025f;
-
-        private static readonly string[] MonospacedFonts =
-        {
-            "Consolas",
-            "Menlo",
-            "Monaco",
-            "Courier New",
-            "DejaVu Sans Mono"
-        };
 
         /// <summary>A block in the content pane.</summary>
         internal GUIStyle Card { get; private set; }
@@ -173,8 +167,6 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer
         /// <summary>Background of the strip the tabs sit in.</summary>
         internal Color TabStrip { get; private set; }
 
-        private static Font _monospaced;
-
         private bool _built;
         private bool _builtForProSkin;
 
@@ -193,13 +185,11 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer
         /// <summary>Kept for symmetry with the window lifetime. There is nothing to free.</summary>
         internal void Dispose() => _built = false;
 
-        private static Color Tint(float strength) => EditorGUIUtility.isProSkin
-            ? new Color(1f, 1f, 1f, strength)
-            : new Color(0f, 0f, 0f, strength);
+        private static Color Tint(float strength) => EditorPalette.Tint(strength);
 
-        private static Color Muted() => EditorStyles.centeredGreyMiniLabel.normal.textColor;
+        private static Color Muted() => EditorStyleUtility.MutedTextColor();
 
-        private static RectOffset Uniform(int value) => new(value, value, value, value);
+        private static RectOffset Uniform(int value) => EditorStyleUtility.UniformPadding(value);
 
         private void Build()
         {
@@ -336,46 +326,22 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer
             CategoryBand = Tint(CategoryBandStrength);
             Hover = Tint(HoverStrength);
             TabActive = Tint(TabActiveStrength);
-            TabStrip = EditorGUIUtility.isProSkin
-                ? new Color(0f, 0f, 0f, TabStripStrength)
-                : new Color(0f, 0f, 0f, TabStripStrength * 0.5f);
+            TabStrip = new Color(0f, 0f, 0f, EditorGUIUtility.isProSkin
+                ? TabStripStrength
+                : TabStripStrength * LightTabStripFactor);
             Stripe = Tint(StripeStrength);
             SelectionFill = Tint(SelectionStrength);
 
-            Selection = EditorGUIUtility.isProSkin
-                ? new Color(0.35f, 0.62f, 0.94f)
-                : new Color(0.20f, 0.45f, 0.82f);
-
-            Divider = EditorGUIUtility.isProSkin
-                ? new Color(0f, 0f, 0f, 0.35f)
-                : new Color(0f, 0f, 0f, 0.15f);
+            Selection = EditorPalette.Accent;
+            Divider = EditorPalette.Divider;
 
             Source = new GUIStyle(EditorStyles.textArea)
             {
-                font = Monospaced(),
+                font = EditorFonts.Monospaced(),
                 wordWrap = false,
                 richText = false,
                 padding = Uniform(CardCornerPadding)
             };
-        }
-
-        // Monospaced, because source read in a proportional font loses the alignment that makes a stack
-        // of attributes scannable. A missing font leaves the style on the editor default.
-        //
-        // Created once for the domain and never destroyed. Destroying it with the window left every
-        // GUIStyle that had been built from it pointing at nothing, which is what Unity reports as a
-        // deleted invalid font reference on the next reload. The domain takes it with it either way.
-        private static Font Monospaced()
-        {
-            if (_monospaced != null)
-                return _monospaced;
-
-            _monospaced = Font.CreateDynamicFontFromOSFont(MonospacedFonts, EditorStyles.textArea.fontSize);
-
-            if (_monospaced != null)
-                _monospaced.hideFlags = HideFlags.HideAndDontSave;
-
-            return _monospaced;
         }
     }
 }

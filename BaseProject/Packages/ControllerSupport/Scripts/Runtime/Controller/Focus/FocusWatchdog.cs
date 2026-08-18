@@ -1,12 +1,12 @@
 using System.Collections.Generic;
-using Base.ControllerSupport.Controller.Navigation;
-using Base.ControllerSupport.InputPrompts.Devices;
-using Base.CorePackage.Services;
+using Base.ControllerSupportPackage.Controller.Navigation;
+using Base.ControllerSupportPackage.InputPrompts.Devices;
+using Base.ServicePackage;
 using Base.UtilityPackage.Logging;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace Base.ControllerSupport.Controller.Focus
+namespace Base.ControllerSupportPackage.Controller.Focus
 {
     /// <summary>
     /// Global safety net that keeps a valid selection while a gamepad is in use. When the current

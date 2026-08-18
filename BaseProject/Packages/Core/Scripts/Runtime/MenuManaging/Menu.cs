@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using Base.AttributePackage;
 using Base.CorePackage.MenuManaging.Identifier;
 using Base.CorePackage.MenuManaging.Modules;
-using Base.CorePackage.Services;
-using Base.CorePackage.Services.Shutdown;
-using Base.CorePackage.Tracking;
-using Base.CorePackage.Tweening.Components.System;
+using Base.ServicePackage;
+using Base.ServicePackage.Shutdown;
+using Base.ServicePackage.Tracking;
+using Base.TweeningPackage.Components.System;
 using Base.UtilityPackage.Logging;
 using UnityEngine;
 

@@ -1,5 +1,6 @@
+using Base.AttributePackage;
 using Base.CorePackage.CameraUtility;
-using Base.CorePackage.Services;
+using Base.ServicePackage;
 using UnityEngine;
 
 namespace Base.UIPackage.Utility
@@ -13,8 +14,7 @@ namespace Base.UIPackage.Utility
     {
         private const float MinFacingDistanceSqr = 0.001f;
 
-        [Header("Settings")]
-
+        [Title("Settings")]
         [Tooltip("Locks the billboard to rotate only around the Y axis, keeping it upright. "
             + "If unchecked, the billboard will always face the camera directly.")]
         [SerializeField] private bool lockYAxis;

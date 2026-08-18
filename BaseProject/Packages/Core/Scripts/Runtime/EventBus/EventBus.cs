@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Base.CorePackage.Services;
+using Base.ServicePackage;
 using Base.UtilityPackage.Logging;
 
 namespace Base.CorePackage.EventBus

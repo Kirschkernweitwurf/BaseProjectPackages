@@ -22,7 +22,9 @@ Drop one component into the scene, pick your settings in the inspector and you a
 ## Requirements
 
 - Unity 6000.3 or newer (uses `Awaitable`).
-- Depends on the Base Core, Tool, Utility and Attribute packages.
+- Depends on the Base Service, Utility and Attribute packages. Not on the Core package: the
+  save system needs the service locator and the shutdown pipeline, both of which live in the
+  Service package.
 
 ## Install
 

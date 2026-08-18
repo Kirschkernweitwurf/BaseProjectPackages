@@ -1,8 +1,8 @@
 using Base.AttributePackage;
-using Base.ToolPackage.MenuManagerWindow;
+using Base.UtilityPackage.Menus;
 using UnityEngine;
 
-namespace Base.ControllerSupport.Haptics
+namespace Base.ControllerSupportPackage.Haptics
 {
     /// <summary>
     /// The defaults every rumble consumer starts from. One asset per project, referenced by the

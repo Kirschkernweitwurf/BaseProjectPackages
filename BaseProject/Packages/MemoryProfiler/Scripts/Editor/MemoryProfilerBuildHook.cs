@@ -3,7 +3,7 @@ using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
 using UnityEngine;
 
-namespace Base.MemoryProfiler.Editor
+namespace Base.MemoryProfilerPackage.Editor
 {
     /// <summary>
     /// Bakes the absolute snapshot folder into the config for development builds, so a build

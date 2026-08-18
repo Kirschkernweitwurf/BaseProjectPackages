@@ -1,4 +1,4 @@
-using Base.CorePackage.Tracking;
+using Base.ServicePackage.Tracking;
 using UnityEngine.InputSystem;
 
 // ReSharper disable UnusedMember.Global

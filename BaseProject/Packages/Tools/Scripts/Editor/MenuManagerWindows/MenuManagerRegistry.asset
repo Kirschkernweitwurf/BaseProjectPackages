@@ -22,8 +22,19 @@ MonoBehaviour:
   menuItemRoot:
   - rid: 4171306542554939473
   - rid: 5339058645413658751
+  - rid: 4171306739388121289
+  - rid: 4171306739388121290
   createAssetRoot:
   - rid: 5339058662016286883
+  - rid: 4171306739388121291
+  - rid: 4171306739388121292
+  - rid: 4171306739388121293
+  - rid: 4171306739388121294
+  - rid: 4171306739388121295
+  - rid: 4171306739388121296
+  - rid: 4171306739388121297
+  - rid: 4171306739388121298
+  - rid: 4171306739388121299
   menuItemGroups: []
   createAssetGroups: []
   groups: []
@@ -119,6 +130,138 @@ MonoBehaviour:
           enabled: 1
           kind: 0
           createFileName: 
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 4171306739388121289
+      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 0
+        entry:
+          id: MI:Base.MemoryProfilerPackage.Editor.MemoryProfilerWindow.Open
+          path: Tools/Base Packages/Unity Editor/Memory Profiler Automation
+          enabled: 1
+          kind: 0
+          createFileName: 
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 4171306739388121290
+      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 0
+        entry:
+          id: MI:Base.ControllerSupportPackage.Editor.NavigationGroupsWindow.Open
+          path: Tools/Base Packages/Unity Editor/Controller Navigation Groups
+          enabled: 1
+          kind: 0
+          createFileName: 
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 4171306739388121291
+      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 0
+        entry:
+          id: CA:Base.UtilityPackage.Identification.UniqueIdScriptableObject
+          path: Scriptable Objects/Base/UniqueId/New ScriptableObject
+          enabled: 1
+          kind: 1
+          createFileName: UID_UniqueIdScriptableObject
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 4171306739388121292
+      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 0
+        entry:
+          id: CA:Base.TweeningPackage.Core.Data.Profiles.Vector3TweenProfileSo
+          path: Scriptable Objects/Base/Tweening/Profiles/New Vector3TweenProfile
+          enabled: 1
+          kind: 1
+          createFileName: TPV_Vector3TweenProfile
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 4171306739388121293
+      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 0
+        entry:
+          id: CA:Base.TweeningPackage.Core.Data.Profiles.TweenSettingsSo
+          path: Scriptable Objects/Base/Tweening/New TweenSettings
+          enabled: 1
+          kind: 1
+          createFileName: TS_TweenSettings
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 4171306739388121294
+      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 0
+        entry:
+          id: CA:Base.TweeningPackage.Core.Data.Profiles.ColorTweenProfileSo
+          path: Scriptable Objects/Base/Tweening/Profiles/New ColorTweenProfile
+          enabled: 1
+          kind: 1
+          createFileName: TPC_ColorTweenProfile
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 4171306739388121295
+      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 0
+        entry:
+          id: CA:Base.TweeningPackage.Core.Data.Profiles.FloatTweenProfileSo
+          path: Scriptable Objects/Base/Tweening/Profiles/New FloatTweenProfile
+          enabled: 1
+          kind: 1
+          createFileName: TPF_FloatTweenProfile
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 4171306739388121296
+      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 0
+        entry:
+          id: CA:Base.MemoryProfilerPackage.MemoryProfilerConfigSo
+          path: Scriptable Objects/Base/Memory Profiler/New Memory Profiler Config
+          enabled: 1
+          kind: 1
+          createFileName: MPC_MemoryProfilerConfig
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 4171306739388121297
+      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 0
+        entry:
+          id: CA:Base.ControllerSupportPackage.Haptics.RumblePattern
+          path: Scriptable Objects/Base/Input/New Rumble Pattern
+          enabled: 1
+          kind: 1
+          createFileName: RP_RumblePattern
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 4171306739388121298
+      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 0
+        entry:
+          id: CA:Base.ControllerSupportPackage.Haptics.RumbleConfig
+          path: Scriptable Objects/Base/Input/New Rumble Config
+          enabled: 1
+          kind: 1
+          createFileName: RC_RumbleConfig
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 4171306739388121299
+      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 0
+        entry:
+          id: CA:Base.ControllerSupportPackage.InputPrompts.Glyphs.InputGlyphSet
+          path: Scriptable Objects/Base/Input/New Glyph Set
+          enabled: 1
+          kind: 1
+          createFileName: IGS_GlyphSet
           overridePriority: 0
           overrideValue: 0
     - rid: 5339058645413658751

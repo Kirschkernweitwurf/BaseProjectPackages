@@ -1,10 +1,10 @@
 using System.Collections.Generic;
-using Base.ControllerSupport.Controller.Navigation;
-using Base.ToolPackage.MenuManagerWindow;
+using Base.ControllerSupportPackage.Controller.Navigation;
+using Base.UtilityPackage.Menus;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.ControllerSupport.Editor
+namespace Base.ControllerSupportPackage.Editor
 {
     /// <summary>
     /// Overview of every <see cref="NavigableGroup"/> in the loaded scenes. Lists each group with menu,

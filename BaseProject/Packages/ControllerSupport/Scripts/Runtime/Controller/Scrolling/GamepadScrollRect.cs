@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
-namespace Base.ControllerSupport.Controller.Scrolling
+namespace Base.ControllerSupportPackage.Controller.Scrolling
 {
     /// <summary>
     /// Lets a stick (typically the right stick) scroll a <see cref="ScrollRect"/> directly. Reads a

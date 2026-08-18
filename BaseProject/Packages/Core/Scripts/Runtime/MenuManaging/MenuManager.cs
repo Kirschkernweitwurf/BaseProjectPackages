@@ -1,9 +1,10 @@
 using System.Linq;
+using Base.AttributePackage;
 using Base.CorePackage.Input;
 using Base.CorePackage.MenuManaging.Identifier;
-using Base.CorePackage.Services;
-using Base.CorePackage.Services.Shutdown;
-using Base.CorePackage.Tracking;
+using Base.ServicePackage;
+using Base.ServicePackage.Shutdown;
+using Base.ServicePackage.Tracking;
 using Base.UtilityPackage.Logging;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -16,8 +17,7 @@ namespace Base.CorePackage.MenuManaging
     [DefaultExecutionOrder(-5)]
     public class MenuManager : GameServiceBehaviour, IShutdownHandler
     {
-        [Header("Back Action Settings")]
-
+        [Title("Back Action Settings")]
         [Tooltip("The menu to open when the back action is performed and no other menu is currently listening"
             + " (e.g. the Pause menu). Leave empty to disable this fallback.")]
         [SerializeField] private MenuIdentifier defaultBackMenu;

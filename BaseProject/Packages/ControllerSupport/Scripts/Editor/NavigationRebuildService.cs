@@ -1,11 +1,11 @@
 using System.Collections.Generic;
-using Base.ControllerSupport.Controller.Navigation;
+using Base.ControllerSupportPackage.Controller.Navigation;
 using Base.UtilityPackage.Logging;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 
-namespace Base.ControllerSupport.Editor
+namespace Base.ControllerSupportPackage.Editor
 {
     /// <summary>
     /// The single rebuild entry point for <see cref="NavigableGroup"/>s, used by the inspector buttons

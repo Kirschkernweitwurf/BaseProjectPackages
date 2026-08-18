@@ -82,6 +82,18 @@ A data driven replacement for hardcoded `MenuItem` and `CreateAssetMenu` paths. 
 - `Base.ToolPackage` for runtime code.
 - `Base.ToolPackage.Editor` for editor only code, scoped to the Editor platform.
 
+## Dependencies
+
+This package is a leaf: nothing in the Base set references it, so it can be installed or
+removed on its own.
+
+- `Base.UtilityPackage` for `CustomLogger`, `PersistentKey` and the dynamic menu attributes
+- `Base.AttributePackage` for the inspector attributes on its config assets
+- `Base.EditorUiPackage` for the shared look of its windows
+
+The dynamic menu attributes the Menu Manager reads live in the Utility package rather than
+here, so a package can be tagged with `[DynamicMenuItem]` without depending on this one.
+
 ## Author
 
 Jonathan Alber

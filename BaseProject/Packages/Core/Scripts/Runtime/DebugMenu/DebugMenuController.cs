@@ -1,8 +1,8 @@
 using Base.AttributePackage;
 using Base.CorePackage.Input;
 using Base.CorePackage.MenuManaging;
-using Base.CorePackage.Services;
-using Base.CorePackage.Tweening.Components.System;
+using Base.ServicePackage;
+using Base.TweeningPackage.Components.System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -17,8 +17,7 @@ namespace Base.CorePackage.DebugMenu
     public sealed class DebugMenuController : Menu
     {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-        [Header("Consoles")]
-
+        [Title("Consoles")]
         [Required] [SerializeField] private Button cheatConsoleButton;
         [Required] [SerializeField] private TweenGroup cheatConsoleTweenGroup;
         [Required] [SerializeField] private Button logConsoleButton;

@@ -1,6 +1,6 @@
-using Base.ToolPackage.Identification;
+using Base.UtilityPackage.Identification;
 
-namespace Base.ControllerSupport.Haptics
+namespace Base.ControllerSupportPackage.Haptics
 {
     /// <summary>
     /// The keys the rumble settings persist under. Owned by this package rather than by whatever writes

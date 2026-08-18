@@ -29,8 +29,7 @@ namespace Base.CorePackage.DebugMenu.LogConsole
 
         private static event Action LinesChanged;
 
-        [Header("Log")]
-
+        [Title("Log")]
         [Required] [SerializeField] private TMP_Text logText;
         [Required] [SerializeField] private ScrollRect scrollRect;
         [Required] [SerializeField] private Button clearButton;

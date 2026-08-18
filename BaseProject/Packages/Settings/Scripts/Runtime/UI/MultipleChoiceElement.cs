@@ -18,8 +18,7 @@ namespace Base.SettingsPackage.UI
     public abstract class MultipleChoiceElement<TValue, TSetting> : TypedSettingElement<TValue, TSetting>
         where TSetting : Setting<TValue>
     {
-        [Header("Multiple Choice")]
-
+        [Title("Multiple Choice")]
         [SerializeField] [Required] private Button leftButton;
         [SerializeField] [Required] private Button rightButton;
         [SerializeField] [Required] private TMP_Text valueText;

@@ -1,4 +1,4 @@
-namespace Base.ControllerSupport.InputPrompts.Devices
+namespace Base.ControllerSupportPackage.InputPrompts.Devices
 {
     /// <summary>
     /// The input device family currently driving the UI. Used to switch behavior and prompt glyphs.

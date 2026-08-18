@@ -1,8 +1,8 @@
-using Base.CorePackage.Services;
-using Base.CorePackage.Services.Shutdown;
 using Base.SaveSystemPackage.Core;
 using Base.SaveSystemPackage.Savable;
 using Base.SaveSystemPackage.Slots;
+using Base.ServicePackage;
+using Base.ServicePackage.Shutdown;
 using UnityEngine;
 
 namespace Base.SaveSystemPackage.Unity.Composition

@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UINavigation = UnityEngine.UI.Navigation;
 
-namespace Base.ControllerSupport.Controller.Navigation
+namespace Base.ControllerSupportPackage.Controller.Navigation
 {
     /// <summary>
     /// Computes and writes explicit four-way navigation across a set of <see cref="NavigableElement"/>s

@@ -11,8 +11,7 @@ namespace Base.SettingsPackage.UI
     [RequireComponent(typeof(Toggle))]
     public sealed class SettingToggle : TypedSettingElement<bool, BoolSetting>
     {
-        [Header("Toggle")]
-
+        [Title("Toggle")]
         [SerializeField] [GetComponent] private Toggle toggle;
         [SerializeField] [Required] private TMP_Text stateText;
         [SerializeField] private LocalizedString onLabel;

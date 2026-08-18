@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
 using Base.AttributePackage;
-using Base.ControllerSupport.InputPrompts.Devices;
-using Base.ToolPackage.MenuManagerWindow;
+using Base.ControllerSupportPackage.InputPrompts.Devices;
 using Base.UtilityPackage.Logging;
+using Base.UtilityPackage.Menus;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace Base.ControllerSupport.InputPrompts.Glyphs
+namespace Base.ControllerSupportPackage.InputPrompts.Glyphs
 {
     /// <summary>
     /// A set of action-to-glyph mappings for one device family. Author one asset per device type

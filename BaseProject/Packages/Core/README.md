@@ -1,8 +1,9 @@
 # Base Core Package
 
 Reusable core systems that any Unity project can build on. The package bundles
-service location, scene loading, audio, input, tweening, menus, timers, object
-pooling and debug tooling under the `Base.CorePackage` namespace.
+scene loading, audio, input, menus, timers, object pooling and debug tooling
+under the `Base.CorePackage` namespace. Service location and tweening live one
+layer down, in the Base Service and Base Tweening packages.
 
 ## Requirements
 
@@ -13,34 +14,14 @@ pooling and debug tooling under the `Base.CorePackage` namespace.
 
 The Core package uses a few sibling packages. Install them alongside it:
 
+- `Base.ServicePackage` for the `ServiceLocator`, `GameServiceBehaviour`, the shutdown
+  pipeline and the priority trackers every system here builds on
+- `Base.TweeningPackage` for the menu open and close animations, the debug menu and
+  `TweenGroupObjectPool`
 - `Base.UtilityPackage` for logging and shared helpers
 - `Base.AttributePackage` for inspector attributes such as `[Required]` and `[GetComponent]`
-- `Base.ToolPackage` for the menu manager window integration
 
 ## Systems
-
-### Services
-
-A lightweight service locator for global access to game systems.
-
-- `ServiceLocator` registers and resolves services by type. Works with
-  MonoBehaviour and plain C# services.
-- `IGameService` is the marker interface. Its default methods register and
-  deregister the service for you.
-- `GameServiceBehaviour` is a base MonoBehaviour that registers on `Awake` and
-  deregisters on `OnDestroy`.
-- `Bootstrapper` instantiates persistent and per-scene manager prefabs, driven
-  by a list of gameplay scenes.
-- `ShutdownManager` and `IShutdownHandler` give services an ordered cleanup step
-  when the application quits, before any objects are destroyed.
-
-```csharp
-public class SaveService : GameServiceBehaviour
-{
-    // Registered automatically. Resolve it anywhere:
-    // ServiceLocator.Get<SaveService>();
-}
-```
 
 ### Event Bus
 
@@ -58,22 +39,6 @@ A strongly typed in-process publish and subscribe bus.
   completion callbacks.
 - `TimerManager` advances every active timer through the Player Loop, so timers
   run without any GameObject in the scene.
-
-### Tweening
-
-A data driven tween system with runtime factories, ready-made components and
-authoring assets.
-
-- `TweenFX` provides high-level factory methods for common components.
-- `Tween`, `TweenBase`, `TweenSequence` and `TweenRunner` form the runtime core.
-- Component tweens cover transforms, renderers, images and TextMeshPro. Each
-  comes in three flavors: `FadeTween` (fixed), `FadeToTween` (captured start)
-  and `FadeByTween` (delta relative).
-- `TweenGroup` plays several tweens as one sequence or in parallel.
-- Profile assets (`FloatTweenProfileSo`, `ColorTweenProfileSo`,
-  `Vector3TweenProfileSo` and `TweenSettingsSo`) let many components share one
-  authored setup. A custom inspector hides fields that an assigned profile
-  already provides.
 
 ### Menu Managing
 
@@ -114,13 +79,11 @@ authoring assets.
 - `TweenGroupObjectPool` caches animated UI objects and plays enter and exit
   animations on activation and deactivation.
 
-### Tracking and Priority
+### Priority Trackers
 
-- `PriorityTracker` tracks items by priority, using insertion order as a
-  tiebreaker.
-- `Tracker` maps unique keys to values.
 - `CursorManager` and `TimeScaleManager` resolve cursor state and timescale from
-  competing priority requests.
+  competing priority requests, on top of the `PriorityTracker` in the Service
+  package.
 
 ### Tooltip
 

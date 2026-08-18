@@ -1,4 +1,4 @@
-using Base.CorePackage.Services.Shutdown;
+using Base.ServicePackage.Shutdown;
 
 namespace Base.CorePackage.MenuManaging.Modules
 {

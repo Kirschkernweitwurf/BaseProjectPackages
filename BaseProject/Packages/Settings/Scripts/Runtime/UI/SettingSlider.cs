@@ -17,8 +17,7 @@ namespace Base.SettingsPackage.UI
         // Sentinel that no label has been written yet, so the first value always reaches the text.
         private const int NoDisplayedValue = int.MinValue;
 
-        [Header("Slider")]
-
+        [Title("Slider")]
         [SerializeField] [GetComponent] private Slider slider;
         [SerializeField] private TMP_Text percentageText;
         [SerializeField] private Button decreaseButton;

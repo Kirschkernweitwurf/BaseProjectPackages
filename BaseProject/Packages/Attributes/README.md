@@ -31,6 +31,8 @@ Needs Unity 6000.3 or newer, the version the package manifest targets (it leans 
 
 Either add it through the Package Manager with *Add package from git URL* or just drop the folder into your project. There are three assemblies: one for the attributes (runtime), one for the drawing (editor only), and one holding the reference samples, which is compiled only in the editor and never enters a build.
 
+It needs two other Base packages, both of which sit below it and pull in nothing themselves: `Base.UtilityPackage` for logging and the serializable collections, and `Base.EditorUiPackage` for the shared look of the Attribute Explorer, Troubleshoot and Required Reference windows. Nothing else, and no third-party packages.
+
 ## Colors
 
 Anything that takes a color accepts either a hex string or a preset from the `EColor` enum, whichever you find less annoying to type:

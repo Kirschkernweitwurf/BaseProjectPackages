@@ -25,7 +25,10 @@ progress and logs a clear per-collection result.
 - A String Table Collection with a configured Google Sheets extension
   (Sheets Service Provider and Spreadsheet Id set).
 
-This package is Editor only.
+The editor tooling is the bulk of this package. It also ships one runtime component,
+`LanguageSetting`, in the optional `Base.LocalizationPackage.Settings` assembly. That
+assembly only compiles when `com.baseprojectpackages.settings` is installed, so the
+sync tooling works fine without the Settings package.
 
 ## Usage
 

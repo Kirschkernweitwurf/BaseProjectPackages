@@ -11,8 +11,7 @@ namespace Base.SettingsPackage.UI
     [RequireComponent(typeof(TMP_Dropdown))]
     public sealed class SettingDropdown : TypedSettingElement<int, IntSetting>
     {
-        [Header("Dropdown")]
-
+        [Title("Dropdown")]
         [SerializeField] [GetComponent] private TMP_Dropdown dropdown;
 
 #region Unity Callbacks

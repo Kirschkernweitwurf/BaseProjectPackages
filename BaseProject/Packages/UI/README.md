@@ -11,12 +11,16 @@ All types live under the `Base.UIPackage` namespace, split into `Buttons`,
 
 This package builds on the other Base packages and expects them to be present:
 
-- **Base.CorePackage** for the `ServiceLocator`, the `MenuManager` and menu
-  identifiers, the `SceneLoadingManager` and `GameServiceBehaviour`.
+- **Base.ServicePackage** for the `ServiceLocator` and `GameServiceBehaviour`.
+- **Base.CorePackage** for the `MenuManager` and menu identifiers and the
+  `SceneLoadingManager`.
 - **Base.AttributePackage** for the inspector attributes (`[Required]`,
   `[GetComponent]`, `[NotNullOrEmpty]`, `[SceneName]`).
 - **Base.UtilityPackage** for `CustomLogger` and the `Platform` helper.
 - **TextMeshPro** and Unity's built-in **UI (uGUI)**.
+
+Installing `Base.CorePackage` brings the Service and Tweening packages with it, so the Git
+Package Manager selects those automatically.
 
 ## Buttons
 

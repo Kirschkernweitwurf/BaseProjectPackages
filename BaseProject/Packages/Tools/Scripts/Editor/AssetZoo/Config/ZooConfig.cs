@@ -1,5 +1,6 @@
 using System.Collections.Generic;
-using Base.ToolPackage.MenuManagerWindow;
+using Base.AttributePackage;
+using Base.UtilityPackage.Menus;
 using UnityEngine;
 
 namespace Base.ToolPackage.Editor.AssetZoo.Config
@@ -11,8 +12,7 @@ namespace Base.ToolPackage.Editor.AssetZoo.Config
     [DynamicCreateAssetMenu("Scriptable Objects/Base/Asset Zoo/New Config", "ZC_ZooConfig")]
     public class ZooConfig : ScriptableObject
     {
-        [Header("Settings")]
-
+        [field: Title("Settings")]
         [Tooltip("Settings related to how prefabs are arranged in space.")]
         [field: SerializeField] public LayoutSettings Layout { get; private set; } = new();
 
@@ -22,8 +22,7 @@ namespace Base.ToolPackage.Editor.AssetZoo.Config
         [Tooltip("Settings related to filling the categories automatically from asset names.")]
         [field: SerializeField] public AutoGenerateSettings Generation { get; private set; } = new();
 
-        [Header("Content")]
-
+        [field: Title("Content")]
         [field: Tooltip("Categories of prefabs to show in the zoo. Each category gets its own row/section.")]
         [field: SerializeField] public List<ZooCategory> Categories { get; private set; } = new();
     }

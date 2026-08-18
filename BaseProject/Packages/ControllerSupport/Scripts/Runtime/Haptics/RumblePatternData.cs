@@ -2,7 +2,7 @@ using System;
 using Base.AttributePackage;
 using UnityEngine;
 
-namespace Base.ControllerSupport.Haptics
+namespace Base.ControllerSupportPackage.Haptics
 {
     /// <summary>
     /// Curve-driven description of a single haptic. Both motors are authored over normalized time, so the

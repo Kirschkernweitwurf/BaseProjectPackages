@@ -21,8 +21,7 @@ namespace Base.CorePackage.Audio.Pool
         /// </summary>
         public event Action PoolsCleared;
 
-        [Header("Setup")]
-
+        [Title("Setup")]
         [Tooltip("Parent for all pooled audio sources. Falls back to this transform when left empty.")]
         [SerializeField] private Transform poolParent;
 
@@ -32,8 +31,7 @@ namespace Base.CorePackage.Audio.Pool
         [Tooltip("If true, clears all pools when a new scene is loaded.")]
         [SerializeField] private bool isClearingPoolAfterSceneLoad;
 
-        [Header("Prefabs")]
-
+        [Title("Prefabs")]
         [Required] [SerializeField] private AudioSource audioSource2DPrefab;
         [Required] [SerializeField] private AudioSource audioSource3DPrefab;
         [Required] [SerializeField] private AudioSource audioSourceMusicPrefab;

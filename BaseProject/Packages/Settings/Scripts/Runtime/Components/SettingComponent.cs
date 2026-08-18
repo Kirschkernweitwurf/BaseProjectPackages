@@ -1,6 +1,6 @@
-using Base.CorePackage.Services;
+using Base.ServicePackage;
 using Base.SettingsPackage.Core;
-using Base.ToolPackage.Identification;
+using Base.UtilityPackage.Identification;
 using UnityEngine;
 
 namespace Base.SettingsPackage.Components

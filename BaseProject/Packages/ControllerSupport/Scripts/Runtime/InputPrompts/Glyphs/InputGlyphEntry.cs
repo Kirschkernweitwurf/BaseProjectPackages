@@ -3,7 +3,7 @@ using Base.AttributePackage;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace Base.ControllerSupport.InputPrompts.Glyphs
+namespace Base.ControllerSupportPackage.InputPrompts.Glyphs
 {
     /// <summary>
     /// Maps a single input action to its prompt glyph for one device. Holds both a sprite (for raw

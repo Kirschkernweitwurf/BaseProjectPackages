@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Base.AttributePackage;
 using Base.CorePackage.Audio.Pool;
-using Base.CorePackage.Services;
+using Base.ServicePackage;
 using Base.UtilityPackage.Logging;
 using UnityEngine;
 using UnityEngine.Pool;
@@ -23,8 +23,7 @@ namespace Base.CorePackage.Audio
     {
         private const float MinimumPitch = 0.01f;
 
-        [Header("Settings")]
-
+        [Title("Settings")]
         [Tooltip("Extra seconds added on top of the clip length before a source is released again.")]
         [Min(0f)] [SerializeField] private float minimumDelay = 0.1f;
 
@@ -34,8 +33,7 @@ namespace Base.CorePackage.Audio
         [Tooltip("Highest pitch a source can get when its container randomizes the pitch.")]
         [MinMax(0.01f, 3f)] [SerializeField] private float maxPitchInclusive = 1.05f;
 
-        [Header("Dependencies")]
-
+        [Title("Dependencies")]
         [Required] [SerializeField] private AudioPoolManager audioPoolManager;
 
         /// <summary>

@@ -2,7 +2,7 @@ using Base.AttributePackage;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Base.ControllerSupport.Controller.Navigation
+namespace Base.ControllerSupportPackage.Controller.Navigation
 {
     /// <summary>
     /// Marks a sibling <see cref="Selectable"/> as a deliberate navigation target. Only selectables that

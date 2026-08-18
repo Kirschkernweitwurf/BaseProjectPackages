@@ -18,8 +18,7 @@ namespace Base.CorePackage.ObjectPooling
         where TAsset : Object
         where TPool : BaseObjectPoolManager<TAsset, TPool>
     {
-        [Header("Pooling Settings")]
-
+        [Title("Pooling Settings")]
         [Tooltip("Prefab to instantiate when new objects are needed.")]
         [Required] [SerializeField] protected TAsset prefab;
 

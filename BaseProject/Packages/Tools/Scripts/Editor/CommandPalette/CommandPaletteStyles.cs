@@ -1,3 +1,4 @@
+using Base.EditorUiPackage;
 using UnityEditor;
 using UnityEngine;
 
@@ -7,6 +8,10 @@ namespace Base.ToolPackage.Editor.CommandPalette
     /// Every size, color and style the palette draws with. Styles are built on first use because
     /// <see cref="EditorStyles"/> is only valid inside a GUI call, and they are dropped again when
     /// the editor skin changes so the palette never keeps a dark color on a light background.
+    /// <para>
+    /// The shared editor look lives in <see cref="EditorPalette"/>; what stays here are the sizes
+    /// and colors that only mean something in a palette, such as the chip of a result kind.
+    /// </para>
     /// </summary>
     internal static class CommandPaletteStyles
     {
@@ -31,9 +36,6 @@ namespace Base.ToolPackage.Editor.CommandPalette
         /// <summary>Space between two neighboring blocks.</summary>
         public const float Gap = 8f;
 
-        /// <summary>How much a pill brightens while the mouse hovers it.</summary>
-        private const float HoverLift = 0.07f;
-
         /// <summary>Closing tag of a matched run.</summary>
         public const string MatchClose = "</color></b>";
 
@@ -47,9 +49,6 @@ namespace Base.ToolPackage.Editor.CommandPalette
 
         /// <summary>Corner radius of the pills.</summary>
         public const float PillRadius = 8f;
-
-        /// <summary>How much a pill darkens while it is held down.</summary>
-        private const float PressDrop = 0.09f;
 
         /// <summary>Height of a single result row.</summary>
         public const float RowHeight = 42f;
@@ -72,7 +71,7 @@ namespace Base.ToolPackage.Editor.CommandPalette
         public const float SeparatorGap = 5f;
 
         /// <summary>Thickness of a hairline.</summary>
-        public const float SeparatorThickness = 1f;
+        public const float SeparatorThickness = EditorMetrics.SeparatorThickness;
 
         /// <summary>Padding between the window edge and its content.</summary>
         public const float WindowPadding = 10f;
@@ -222,27 +221,26 @@ namespace Base.ToolPackage.Editor.CommandPalette
         }
 
         /// <summary>Blue accent used for the selection and the active pill.</summary>
-        public static Color AccentColor() => Pick(new Color(0.32f, 0.60f, 0.94f), new Color(0.20f, 0.48f, 0.86f));
+        public static Color AccentColor() => EditorPalette.Accent;
 
         /// <summary>Fill behind the whole window.</summary>
-        public static Color BackgroundColor()
-            => Pick(new Color(0.17f, 0.17f, 0.19f), new Color(0.83f, 0.83f, 0.85f));
+        public static Color BackgroundColor() => EditorPalette.Background;
 
         /// <summary>Border of the search box.</summary>
-        public static Color BorderColor() => Pick(new Color(1f, 1f, 1f, 0.09f), new Color(0f, 0f, 0f, 0.16f));
+        public static Color BorderColor() => EditorPalette.Border;
 
         /// <summary>Dimmed text used for secondary information.</summary>
-        public static Color DimColor() => Pick(new Color(0.56f, 0.56f, 0.61f), new Color(0.42f, 0.42f, 0.47f));
+        public static Color DimColor() => EditorPalette.DimText;
 
         /// <summary>Fill of the search box.</summary>
-        public static Color FieldColor() => Pick(new Color(0.13f, 0.13f, 0.15f), new Color(0.95f, 0.95f, 0.96f));
+        public static Color FieldColor() => EditorPalette.Field;
 
         /// <summary>Fill of a keyboard cap in the footer.</summary>
-        public static Color KeyCapColor() => Pick(new Color(1f, 1f, 1f, 0.10f), new Color(0f, 0f, 0f, 0.08f));
+        public static Color KeyCapColor() => EditorPalette.KeyCap;
 
         /// <summary>Chip color of an asset creation entry.</summary>
         public static Color NewChipColor()
-            => Pick(new Color(0.27f, 0.58f, 0.41f), new Color(0.20f, 0.52f, 0.36f));
+            => EditorPalette.Pick(new Color(0.27f, 0.58f, 0.41f), new Color(0.20f, 0.52f, 0.36f));
 
         /// <summary>Fill of a pill button in its current state.</summary>
         /// <param name="active">Whether the button is switched on.</param>
@@ -255,60 +253,39 @@ namespace Base.ToolPackage.Editor.CommandPalette
                 return Shade(AccentColor(), hover, pressed);
 
             if (pressed)
-                return Pick(new Color(1f, 1f, 1f, 0.20f), new Color(0f, 0f, 0f, 0.17f));
+                return EditorPalette.Tint(0.20f, 0.17f);
 
             return hover
-                ? Pick(new Color(1f, 1f, 1f, 0.14f), new Color(0f, 0f, 0f, 0.12f))
-                : Pick(new Color(1f, 1f, 1f, 0.08f), new Color(0f, 0f, 0f, 0.07f));
+                ? EditorPalette.Tint(0.14f, 0.12f)
+                : EditorPalette.Tint(0.08f, 0.07f);
         }
 
         /// <summary>Amber used for pins and for the tag editor.</summary>
-        public static Color PinColor() => new(0.95f, 0.75f, 0.25f);
+        public static Color PinColor() => EditorPalette.Focus;
 
         /// <summary>Fill of the row the mouse hovers.</summary>
-        public static Color RowHoverColor() => Pick(new Color(1f, 1f, 1f, 0.05f), new Color(0f, 0f, 0f, 0.05f));
+        public static Color RowHoverColor() => EditorPalette.Hover;
 
         /// <summary>Fill of the row the keyboard selection sits on.</summary>
-        public static Color RowSelectedColor()
-            => Pick(new Color(0.32f, 0.60f, 0.94f, 0.20f), new Color(0.20f, 0.48f, 0.86f, 0.16f));
+        public static Color RowSelectedColor() => EditorPalette.SelectionFill;
 
         /// <summary>Chip color of a menu item entry.</summary>
         public static Color RunChipColor()
-            => Pick(new Color(0.28f, 0.50f, 0.78f), new Color(0.24f, 0.46f, 0.76f));
+            => EditorPalette.Pick(new Color(0.28f, 0.50f, 0.78f), new Color(0.24f, 0.46f, 0.76f));
 
         /// <summary>Hairline between the blocks of the window.</summary>
-        public static Color SeparatorColor() => Pick(new Color(1f, 1f, 1f, 0.07f), new Color(0f, 0f, 0f, 0.10f));
+        public static Color SeparatorColor() => EditorPalette.Separator;
 
         /// <summary>Fill of a tag pill.</summary>
-        public static Color TagPillColor() => Pick(new Color(1f, 1f, 1f, 0.09f), new Color(0f, 0f, 0f, 0.07f));
+        public static Color TagPillColor() => EditorPalette.Tint(0.09f, 0.07f);
 
         /// <summary>Primary text color.</summary>
-        public static Color TextColor() => Pick(new Color(0.88f, 0.88f, 0.90f), new Color(0.13f, 0.13f, 0.15f));
+        public static Color TextColor() => EditorPalette.Text;
 
         private static Color Shade(Color color, bool hover, bool pressed)
-        {
-            if (pressed)
-                return new Color(color.r - PressDrop, color.g - PressDrop, color.b - PressDrop, color.a);
+            => EditorStyleUtility.Shade(color, hover, pressed);
 
-            return hover
-                ? new Color(color.r + HoverLift, color.g + HoverLift, color.b + HoverLift, color.a)
-                : color;
-        }
-
-        private static Color Pick(Color pro, Color personal) => EditorGUIUtility.isProSkin
-            ? pro
-            : personal;
-
-        // Labels inherit hover and focus colors from the editor skin, which makes plain text light
-        // up like a button. Every state is pinned to one color instead.
         private static GUIStyle Pin(GUIStyle style, Color color)
-        {
-            style.normal.textColor = color;
-            style.hover.textColor = color;
-            style.active.textColor = color;
-            style.focused.textColor = color;
-
-            return style;
-        }
+            => EditorStyleUtility.PinTextColor(style, color);
     }
 }

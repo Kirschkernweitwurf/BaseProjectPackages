@@ -1,4 +1,4 @@
-using Base.UIPackage.Utility;
+using Base.ToolPackage.AssetZoo;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -11,8 +11,15 @@ namespace Base.ToolPackage.Editor.AssetZoo.Builder
     {
         /// <summary>
         /// Creates a 3D TextMesh label with the specified properties and adds
-        /// an <see cref="EditorBillboard"/> component to make it always face the camera.
+        /// a <see cref="ZooLabelBillboard"/> component to make it always face the camera.
         /// </summary>
+        /// <param name="text">The text the label shows.</param>
+        /// <param name="parent">The transform the label is parented to.</param>
+        /// <param name="localPosition">The position of the label relative to its parent.</param>
+        /// <param name="fontSize">The font size of the generated text mesh.</param>
+        /// <param name="color">The color of the generated text mesh.</param>
+        /// <param name="worldScale">The uniform local scale applied to the label.</param>
+        /// <returns>The created label game object.</returns>
         public static GameObject CreateLabel(string text, Transform parent, Vector3 localPosition, int fontSize,
             Color color, float worldScale)
         {
@@ -36,7 +43,7 @@ namespace Base.ToolPackage.Editor.AssetZoo.Builder
                 renderer.receiveShadows = false;
             }
 
-            go.AddComponent<EditorBillboard>();
+            go.AddComponent<ZooLabelBillboard>();
 
             return go;
         }

@@ -1,11 +1,11 @@
 using Base.AttributePackage;
-using Base.ControllerSupport.Controller.Navigation;
+using Base.ControllerSupportPackage.Controller.Navigation;
 using Base.CorePackage.MenuManaging;
 using Base.CorePackage.MenuManaging.Modules;
 using Base.UtilityPackage.Logging;
 using UnityEngine;
 
-namespace Base.ControllerSupport.Controller.Integration
+namespace Base.ControllerSupportPackage.Controller.Integration
 {
     /// <summary>
     /// Bridges a <see cref="Menu"/>'s lifecycle to a <see cref="NavigableGroup"/>. Activates the group

@@ -1,9 +1,9 @@
 using System.IO;
-using Base.ToolPackage.MenuManagerWindow;
+using Base.UtilityPackage.Menus;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.MemoryProfiler.Editor
+namespace Base.MemoryProfilerPackage.Editor
 {
     /// <summary>
     /// Editor window to edit the runtime config and trigger manual captures.

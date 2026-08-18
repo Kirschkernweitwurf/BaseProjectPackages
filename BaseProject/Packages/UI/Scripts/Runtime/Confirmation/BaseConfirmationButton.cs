@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Base.AttributePackage;
-using Base.CorePackage.Services;
+using Base.ServicePackage;
 using Base.UIPackage.Buttons;
 using Base.UtilityPackage.Logging;
 using UnityEngine;

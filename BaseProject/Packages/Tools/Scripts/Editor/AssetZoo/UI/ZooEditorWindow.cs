@@ -1,7 +1,7 @@
 using Base.ToolPackage.Editor.AssetZoo.Builder;
 using Base.ToolPackage.Editor.AssetZoo.Config;
 using Base.ToolPackage.Editor.AssetZoo.Generation;
-using Base.ToolPackage.MenuManagerWindow;
+using Base.UtilityPackage.Menus;
 using UnityEditor;
 using UnityEngine;
 

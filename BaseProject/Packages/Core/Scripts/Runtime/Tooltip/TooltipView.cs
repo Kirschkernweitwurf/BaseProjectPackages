@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 using Base.AttributePackage;
-using Base.CorePackage.Services;
+using Base.ServicePackage;
 using Base.UtilityPackage.Logging;
 using TMPro;
 using UnityEngine;
@@ -22,16 +22,14 @@ namespace Base.CorePackage.Tooltip
 
         private static readonly Vector2 TopLeftPivot = new(0f, 1f);
 
-        [Header("Settings")]
-
+        [Title("Settings")]
         [Tooltip("Distance in pixels between the cursor and the tooltip.")]
         [SerializeField] private Vector2 screenOffset = new(15f, 15f);
 
         [Tooltip("Distance in pixels the tooltip keeps away from the screen edge.")]
         [Min(0f)] [SerializeField] private float edgeMargin = 8f;
 
-        [Header("References")]
-
+        [Title("References")]
         [Tooltip("Content GameObject that holds the tooltip visuals.")]
         [Required] [SerializeField] private GameObject content;
 

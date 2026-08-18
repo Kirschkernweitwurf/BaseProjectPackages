@@ -10,7 +10,7 @@ using UnityMemoryProfiler = Unity.Profiling.Memory.MemoryProfiler;
 using UnityEditor;
 #endif
 
-namespace Base.MemoryProfiler
+namespace Base.MemoryProfilerPackage
 {
     /// <summary>
     /// Runs automated memory snapshots in the editor and in development builds.

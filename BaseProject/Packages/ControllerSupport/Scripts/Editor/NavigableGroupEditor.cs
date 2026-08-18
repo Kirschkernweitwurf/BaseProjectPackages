@@ -1,9 +1,9 @@
 using Base.AttributePackage.Editor;
-using Base.ControllerSupport.Controller.Navigation;
+using Base.ControllerSupportPackage.Controller.Navigation;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.ControllerSupport.Editor
+namespace Base.ControllerSupportPackage.Editor
 {
     /// <summary>
     /// Adds "Rebuild" and "Rebuild Scene" buttons to the <see cref="NavigableGroup"/> inspector so

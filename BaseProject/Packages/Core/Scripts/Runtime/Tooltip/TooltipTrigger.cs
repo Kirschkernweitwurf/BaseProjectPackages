@@ -1,6 +1,6 @@
 using Base.AttributePackage;
-using Base.CorePackage.Services;
-using Base.CorePackage.Tracking;
+using Base.ServicePackage;
+using Base.ServicePackage.Tracking;
 using Base.UtilityPackage.Logging;
 using UnityEngine;
 using UnityEngine.EventSystems;

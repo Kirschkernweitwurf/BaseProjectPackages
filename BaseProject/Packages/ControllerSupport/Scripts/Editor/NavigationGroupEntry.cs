@@ -1,8 +1,8 @@
-using Base.ControllerSupport.Controller.Navigation;
+using Base.ControllerSupportPackage.Controller.Navigation;
 using UnityEditor;
 using Menu = Base.CorePackage.MenuManaging.Menu;
 
-namespace Base.ControllerSupport.Editor
+namespace Base.ControllerSupportPackage.Editor
 {
     /// <summary>
     /// One scanned <see cref="NavigableGroup"/> together with the <see cref="Menu"/> it sits on, its

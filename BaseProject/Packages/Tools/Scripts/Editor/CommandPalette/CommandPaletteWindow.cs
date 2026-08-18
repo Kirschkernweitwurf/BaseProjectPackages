@@ -1,4 +1,4 @@
-using Base.ToolPackage.MenuManagerWindow;
+using Base.UtilityPackage.Menus;
 using UnityEditor;
 using UnityEditor.ShortcutManagement;
 using UnityEngine;

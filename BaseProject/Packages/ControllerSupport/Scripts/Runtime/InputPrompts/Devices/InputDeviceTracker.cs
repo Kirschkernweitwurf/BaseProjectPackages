@@ -1,9 +1,9 @@
 using System;
-using Base.CorePackage.Services;
+using Base.ServicePackage;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.LowLevel;
 
-namespace Base.ControllerSupport.InputPrompts.Devices
+namespace Base.ControllerSupportPackage.InputPrompts.Devices
 {
     /// <summary>
     /// Single source of truth for the currently active input device. Listens to raw input events and

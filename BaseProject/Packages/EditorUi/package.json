@@ -1,0 +1,10 @@
+{
+  "name": "com.baseprojectpackages.editorui",
+  "displayName": "Base Editor UI Package",
+  "description": "The shared look of the Base editor windows: skin-aware color picking, the accent, stripe, hover, selection and separator colors every window strips its rows with, the metrics they lay rows out by, rounded nine-sliced backgrounds for cards, pills and buttons, badge measuring and drawing, and draggable column dividers that persist their widths. Editor only, with no dependencies, so any tool assembly can reference it.",
+  "version": "1.0.0",
+  "unity": "6000.3",
+  "author": {
+    "name": "Jonathan Alber"
+  }
+}

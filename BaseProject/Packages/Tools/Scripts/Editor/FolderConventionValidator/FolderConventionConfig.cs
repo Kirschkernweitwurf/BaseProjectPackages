@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using Base.AttributePackage;
-using Base.ToolPackage.MenuManagerWindow;
+using Base.UtilityPackage.Menus;
 using UnityEngine;
 
 namespace Base.ToolPackage.Editor.FolderConventionValidator
@@ -17,8 +17,7 @@ namespace Base.ToolPackage.Editor.FolderConventionValidator
         private const int MaxAllowedDepth = 32;
         private const int MinAllowedDepth = 1;
 
-        [Header("Scope")]
-
+        [field: Title("Scope")]
         [field: Tooltip("Folder the scan starts at. Everything below it is validated.")]
         [field: NotNullOrEmpty]
         [field: FolderPath]
@@ -35,8 +34,7 @@ namespace Base.ToolPackage.Editor.FolderConventionValidator
             "ThirdParty"
         };
 
-        [Header("Naming")]
-
+        [field: Title("Naming")]
         [field: Tooltip("Style every folder name has to match.")]
         [field: SerializeField]
         public EFolderNamingStyle NamingStyle { get; private set; } = EFolderNamingStyle.PascalCase;
@@ -59,8 +57,7 @@ namespace Base.ToolPackage.Editor.FolderConventionValidator
             "Test"
         };
 
-        [Header("Structure")]
-
+        [field: Title("Structure")]
         [field: Tooltip("How many folder levels are allowed below the root.")]
         [field: MinMax(MinAllowedDepth, MaxAllowedDepth)]
         [field: SerializeField]

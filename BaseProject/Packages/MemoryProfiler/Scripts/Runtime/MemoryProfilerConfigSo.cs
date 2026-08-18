@@ -1,8 +1,8 @@
-using Base.ToolPackage.MenuManagerWindow;
+using Base.UtilityPackage.Menus;
 using Unity.Profiling.Memory;
 using UnityEngine;
 
-namespace Base.MemoryProfiler
+namespace Base.MemoryProfilerPackage
 {
     /// <summary>
     /// Runtime configuration for automated memory profiling.

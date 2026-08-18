@@ -60,9 +60,9 @@ their localized title and description while focused and reset the focused settin
 
 1. Add a `SettingsContext` to your scene.
 2. Add setting components for what you want to persist, for example `AudioVolumeSetting`,
-   `FullScreenModeSetting`, `ResolutionSetting`, `QualityLevelSetting`, `VSyncSetting` and
-   `LanguageSetting`. Order components in the scene so dependent settings apply in the right
-   sequence (mode before resolution, VSync before quality).
+   `FullScreenModeSetting`, `ResolutionSetting`, `QualityLevelSetting` and `VSyncSetting`.
+   Order components in the scene so dependent settings apply in the right sequence
+   (mode before resolution, VSync before quality).
 3. Add the UI elements you need and set each element's setting key to match the component's
    key.
 4. Wire your input to `SettingsEvents.RaiseResetSelected` and, if you use them, to
@@ -126,15 +126,17 @@ public sealed class FileSettingsContext : SettingsContext
 - `QualityLevelSetting` stores the Unity quality level index and preserves VSync across the
   change.
 - `VSyncSetting` stores the VSync count.
-- `LanguageSetting` stores an index into a curated list of locales and applies it through the
-  Localization package.
-- `RumbleEnabledSetting` stores whether gamepad rumble is allowed and gates the `RumbleService`.
-- `RumbleIntensitySetting` stores the global rumble strength that scales every rumble request.
 
-Both rumble components take a `RumbleConfig` asset for their default and key off
-`RumbleSettingKeys`, so the component that writes a value, the service that reads it and the
-asset that seeds it cannot drift apart. Assign the same config the `RumbleService` uses. They are
-the reason this package references `Base.ControllerSupport`.
+### Components in other packages
+
+A setting that drives another package's feature ships with that feature, not here, so this
+package never has to reference it. Those assemblies only compile when this package is
+installed, through a version define on `com.baseprojectpackages.settings`.
+
+- `LanguageSetting` lives in the Localization package and applies a locale through Unity
+  Localization.
+- `RumbleEnabledSetting` and `RumbleIntensitySetting` live in the Controller Support package
+  and drive the `RumbleService`.
 
 ## Included UI elements
 
@@ -167,9 +169,10 @@ references survive the rename because the script GUIDs are unchanged.
 
 ## Dependencies
 
-- `Base.CorePackage` (service locator, object pooling, tweening)
-- `Base.ToolPackage` (`PersistentKey`)
-- `Base.UtilityPackage` (logging, math and coroutine helpers)
+- `Base.ServicePackage` (service locator, `GameServiceBehaviour`)
+- `Base.CorePackage` (object pooling)
+- `Base.TweeningPackage` (the selection indicator animation)
+- `Base.UtilityPackage` (`PersistentKey`, logging, math and coroutine helpers)
 - `Base.AttributePackage` (inspector attributes such as `[Required]`)
-- `Base.ControllerSupport` (`RumbleService`, for the rumble components only)
-- Unity Localization, TextMeshPro and Unity UI
+- Unity Localization, for the `LocalizedString` titles and labels on the UI elements
+- TextMeshPro and Unity UI

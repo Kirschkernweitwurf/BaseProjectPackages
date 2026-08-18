@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.ControllerSupport.Haptics
+namespace Base.ControllerSupportPackage.Haptics
 {
     /// <summary>
     /// One live playback owned by a single caller. Keeps its own clock, so a request that is outranked

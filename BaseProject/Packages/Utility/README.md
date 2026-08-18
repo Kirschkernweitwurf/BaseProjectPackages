@@ -30,6 +30,22 @@ folder in your `manifest.json`.
 - **`SerializableHashSet<T>`** - a set that serializes and edits in the Inspector. Implements `ISet<T>`, keeps a
   serialized item list and a runtime set in sync, and flags duplicates in its drawer.
 
+### Contracts (`Base.UtilityPackage.Contracts`)
+
+- **`IMenuResettable`** - implemented by components that should reset to a known baseline when their owning
+  menu closes. It lives here rather than next to the menu system because the two sides of the contract sit in
+  different packages: the Core package's menus call it, the Tweening package's `TweenGroup` implements it.
+
+### Identification (`Base.UtilityPackage.Identification`)
+
+- **`PersistentKey`** - a validated value type for a stable, human-authored key that survives a round trip to
+  disk. Used wherever a persisted entry has to be matched back to the code that owns it, such as a settings
+  key or a save entry. Expose one `static readonly PersistentKey` per owner as that owner's single source of
+  truth.
+- **`IUniquelyIdentifiable`** - the contract for anything carrying a regenerable unique id.
+- **`UniqueIdScriptableObject`** - a ScriptableObject that holds a GUID and can regenerate it. The Tool
+  package's editor tooling assigns and validates these project wide.
+
 ### Logging (`Base.UtilityPackage.Logging`)
 
 - **`CustomLogger`** - `Log`, `LogWarning` and `LogError` prefix each message with the calling class name,
@@ -43,6 +59,15 @@ folder in your `manifest.json`.
 - **`EDebugLogColors`** - the color set used by `Colorize`.
 - **`CustomLoggingUtils`** - `GetColor` derives a stable hex color from any name, `BuildClassTag` builds the
   styled `[ClassName]` prefix and `GetEditorMarker` returns the edit mode marker.
+
+### Menus (`Base.UtilityPackage.Menus`)
+
+- **`DynamicMenuItemAttribute`** - marks a static method as a data driven editor menu item. Path and priority
+  are managed in the Tool package's Menu Manager window instead of being hardcoded in the attribute.
+- **`DynamicCreateAssetMenuAttribute`** - the same idea for `CreateAssetMenu` entries on a ScriptableObject.
+
+Both attributes live here, at the bottom of the dependency graph, so every package can be tagged without
+depending on the Tool package that reads them.
 
 ### Root (`Base.UtilityPackage`)
 

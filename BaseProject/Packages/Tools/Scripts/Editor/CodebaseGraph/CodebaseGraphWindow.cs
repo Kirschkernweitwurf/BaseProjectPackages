@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Base.ToolPackage.Editor.CodebaseGraph.Analysis;
 using Base.ToolPackage.Editor.CodebaseGraph.Editing;
 using Base.ToolPackage.Editor.CodebaseGraph.Model;
-using Base.ToolPackage.MenuManagerWindow;
+using Base.UtilityPackage.Menus;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
