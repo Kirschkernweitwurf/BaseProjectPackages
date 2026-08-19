@@ -24,6 +24,8 @@ MonoBehaviour:
   - rid: 5339058645413658751
   - rid: 4171306739388121289
   - rid: 4171306739388121290
+  - rid: 4171306763800281287
+  - rid: 4171306763800281288
   createAssetRoot:
   - rid: 5339058662016286883
   - rid: 4171306739388121291
@@ -262,6 +264,30 @@ MonoBehaviour:
           enabled: 1
           kind: 1
           createFileName: IGS_GlyphSet
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 4171306763800281287
+      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 0
+        entry:
+          id: MI:Base.ToolPackage.Editor.AssemblyGraph.Architecture.AssemblyEdgeReportCommand.Export
+          path: Tools/Base Packages/Unity Editor/Project Health/Assembly Edge Report
+          enabled: 1
+          kind: 0
+          createFileName: 
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 4171306763800281288
+      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 0
+        entry:
+          id: MI:Base.ToolPackage.Editor.PackageDependencies.PackageDefaultsWindow.Open
+          path: Tools/Base Packages/Assets/Package Defaults
+          enabled: 1
+          kind: 0
+          createFileName: 
           overridePriority: 0
           overrideValue: 0
     - rid: 5339058645413658751
