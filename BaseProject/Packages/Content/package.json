@@ -6,9 +6,5 @@
   "unity": "6000.3",
   "author": {
     "name": "Jonathan Alber"
-  },
-  "dependencies": {
-    "com.unity.inputsystem": "1.19.0",
-    "com.unity.ugui": "2.0.0"
   }
 }
