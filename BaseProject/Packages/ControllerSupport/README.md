@@ -98,7 +98,7 @@ rumbleService.PlayBurst(low: 0.6f, high: 0.2f, duration: 0.15f, caller: this);
 
 `RumbleService` owns the player-facing state directly. `SetRumbleEnabled` gates the motors, `SetMainIntensity` scales every request and `OnRumbleEnabledChanged` lets UI follow the state. Defaults come from the `RumbleConfig` asset and `RumbleSettingKeys` holds the `PersistentKey`s both values persist under, so the component that writes a value, the service that reads it and the asset that seeds it cannot drift apart.
 
-Persisting those values is the Settings package's job, but the two components that do it ship here, in `Scripts/Runtime/Haptics/Settings`. That assembly (`Base.ControllerSupportPackage.Settings`) only compiles when `com.baseprojectpackages.settings` is installed, so this package stays usable without it. Install the Settings package if you want a rumble toggle and strength slider in your options menu, and assign both components the same `RumbleConfig` the service uses.
+Persisting those values is the Settings package's job, but the two components that do it ship here, in `Runtime/Haptics/Settings`. That assembly (`Base.ControllerSupportPackage.Settings`) only compiles when `com.baseprojectpackages.settings` is installed, so this package stays usable without it. Install the Settings package if you want a rumble toggle and strength slider in your options menu, and assign both components the same `RumbleConfig` the service uses.
 
 ## Quick Start
 

@@ -72,7 +72,7 @@ public sealed class PlayerSaveHandler : MonoBehaviour, ISavable
 }
 ```
 
-A full example lives in `Scripts/Runtime/Savable/Example`.
+A full example lives in `Runtime/Savable/Example`.
 
 ### 2. Save and load
 
