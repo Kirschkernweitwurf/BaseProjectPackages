@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Base.AttributePackage.Editor.Drawers.Core;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor
+namespace Base.AttributePackage.Editor.Drawers
 {
     /// <summary>
     /// Draws a run of consecutive <see cref="HorizontalAttribute"/> members side by side on one row, at
@@ -48,7 +49,7 @@ namespace Base.AttributePackage.Editor
         /// <param name="startIndex">Index of the first member of the row.</param>
         /// <param name="editor">The editor drawing the row.</param>
         /// <returns>The index of the first member after the row.</returns>
-        public static int Draw(List<SerializedProperty> properties, int startIndex, AttributePackageEditor editor)
+        public static int Draw(List<SerializedProperty> properties, int startIndex, UnityEditor.Editor editor)
         {
             Type type = editor.target.GetType();
             string group = AttributeAt(properties, startIndex, type).Group;
@@ -104,8 +105,8 @@ namespace Base.AttributePackage.Editor
         }
 
         private static HorizontalAttribute AttributeAt(List<SerializedProperty> properties, int index, Type type)
-            => ReflectionCache.GetAttribute<HorizontalAttribute>(
-                ReflectionCache.GetField(type, properties[index].name));
+            => ReflectionCache.GetAttribute<HorizontalAttribute>(ReflectionCache.GetField(type,
+                properties[index].name));
 
         // Measured from the block the row is actually in rather than from the whole window. The two are
         // the same in the Inspector, but not in a window that puts the inspector in a pane beside
@@ -191,7 +192,7 @@ namespace Base.AttributePackage.Editor
         // is measured against its own label instead, so the value starts where the text ends rather than
         // at a column the row never had. Capped, because a cell whose label eats it has no room left for
         // the thing the label is naming.
-        private static void DrawCell(int index, float width, AttributePackageEditor editor)
+        private static void DrawCell(int index, float width, UnityEditor.Editor editor)
         {
             float labelWidth = EditorGUIUtility.labelWidth;
 

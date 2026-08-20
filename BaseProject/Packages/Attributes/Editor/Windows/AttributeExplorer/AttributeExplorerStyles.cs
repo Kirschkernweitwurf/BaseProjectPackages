@@ -2,7 +2,7 @@ using Base.EditorUiPackage;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Windows.AttributeExplorer
+namespace Base.AttributePackage.Editor.Drawers.Windows.AttributeExplorer
 {
     /// <summary>
     /// Styles, metrics and colors for the attribute window.
@@ -15,14 +15,13 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer
     /// </remarks>
     internal sealed class AttributeExplorerStyles
     {
+        /// <summary>The eyebrow above a category name on its own page.</summary>
+        internal const string CategoryEyebrow = "Category";
         /// <summary>Height of a category header in the list.</summary>
         internal const float CategoryHeight = 22f;
 
         /// <summary>Gap between the two panes.</summary>
         internal const float ColumnGap = 8f;
-
-        /// <summary>The eyebrow above a category name on its own page.</summary>
-        internal const string CategoryEyebrow = "Category";
 
         /// <summary>Shown when nothing is selected.</summary>
         internal const string EmptyMessage = "Pick an attribute on the left.";
@@ -30,49 +29,49 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer
         /// <summary>Height of one attribute row in the list.</summary>
         internal const float EntryHeight = 20f;
 
-        /// <summary>Width of the accent bar marking the selected row.</summary>
-        internal const float SelectionBarWidth = 2f;
-
-        /// <summary>Gap between the accent bar and whatever the row draws first.</summary>
-        internal const float SelectionBarGap = 5f;
-
         /// <summary>Width of the list beside the content.</summary>
         internal const float ListWidth = 250f;
 
         /// <summary>Padding inside the content pane.</summary>
         internal const float Padding = 14f;
 
-        /// <summary>Space the vertical scrollbar of the content pane takes.</summary>
-        internal const float ScrollBarWidth = 15f;
-
         /// <summary>Height of a category name on its own page.</summary>
         internal const float PageHeadingHeight = 30f;
+
+        /// <summary>Space the vertical scrollbar of the content pane takes.</summary>
+        internal const float ScrollBarWidth = 15f;
 
         /// <summary>Gap between two blocks in the content pane.</summary>
         internal const float SectionGap = 14f;
 
+        /// <summary>Gap between the accent bar and whatever the row draws first.</summary>
+        internal const float SelectionBarGap = 5f;
+
+        /// <summary>Width of the accent bar marking the selected row.</summary>
+        internal const float SelectionBarWidth = 2f;
+
         /// <summary>Gap between two rows of the same block.</summary>
         internal const float TightGap = 4f;
+        private const float CardBorderStrength = 0.14f;
 
         private const int CardCornerPadding = 12;
-        private const int CategoryIndent = 18;
-        private const int DescriptionFontSize = 11;
-        private const int EntryIndent = 22;
-        private const int HeadingFontSize = 18;
-        private const int PageHeadingFontSize = 22;
-        private const int SectionFontSize = 12;
-        private const float LightTabStripFactor = 0.5f;
-        private const float TabActiveStrength = 0.05f;
-        private const float TabStripStrength = 0.10f;
-        private const float HoverStrength = 0.06f;
-        private const float SelectionStrength = 0.14f;
-        private const float CardBorderStrength = 0.14f;
         private const float CardFillAlternateStrength = 0.15f;
         private const float CardFillStrength = 0.04f;
         private const float CardFocusedStrength = 0.20f;
         private const float CardHoverStrength = 0.22f;
         private const float CategoryBandStrength = 0.04f;
+        private const int CategoryIndent = 18;
+        private const int DescriptionFontSize = 11;
+        private const int EntryIndent = 22;
+        private const int HeadingFontSize = 18;
+        private const float HoverStrength = 0.06f;
+        private const float LightTabStripFactor = 0.5f;
+        private const int PageHeadingFontSize = 22;
+        private const int SectionFontSize = 12;
+        private const float SelectionStrength = 0.14f;
         private const float StripeStrength = 0.025f;
+        private const float TabActiveStrength = 0.05f;
+        private const float TabStripStrength = 0.10f;
 
         /// <summary>A block in the content pane.</summary>
         internal GUIStyle Card { get; private set; }
@@ -329,6 +328,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer
             TabStrip = new Color(0f, 0f, 0f, EditorGUIUtility.isProSkin
                 ? TabStripStrength
                 : TabStripStrength * LightTabStripFactor);
+
             Stripe = Tint(StripeStrength);
             SelectionFill = Tint(SelectionStrength);
 

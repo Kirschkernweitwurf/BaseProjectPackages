@@ -6,7 +6,7 @@ using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor
+namespace Base.AttributePackage.Editor.Drawers
 {
     /// <summary>
     /// Draws a type picker above a <c>[SerializeReference]</c> field for

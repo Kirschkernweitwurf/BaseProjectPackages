@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Object = UnityEngine.Object;
 
-namespace Base.AttributePackage.Editor.Windows.GetComponentAssigner
+namespace Base.AttributePackage.Editor.Drawers.Windows.GetComponentAssigner
 {
     /// <summary>
     /// Batch assigns every empty <see cref="GetComponentAttribute"/> and

@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot.Samples
+namespace Base.AttributePackage.Editor.Drawers.Windows.AttributeExplorer.Troubleshoot.Samples
 {
     /// <summary>The one implementation of <see cref="ISampleAbility"/>, used by the showcase picker.</summary>
     [Serializable]

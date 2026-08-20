@@ -1,4 +1,6 @@
-namespace Base.AttributePackage.Editor
+using Base.AttributePackage.Editor.Drawers;
+
+namespace Base.AttributePackage.Editor.Core.Interfaces
 {
     /// <summary>
     /// Decides whether a member is editable. Any handler returning false disables the field.

@@ -2,7 +2,7 @@ using System;
 using System.Reflection;
 using UnityEditor;
 
-namespace Base.AttributePackage.Editor
+namespace Base.AttributePackage.Editor.Drawers
 {
     /// <summary>
     /// Resolves condition members (bool or enum) referenced by name from conditional attributes.

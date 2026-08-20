@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot.Checks
+namespace Base.AttributePackage.Editor.Drawers.Windows.AttributeExplorer.Troubleshoot.Checks
 {
     /// <summary>
     /// Verifies that attributes invoking a method point at one with a signature the renderer accepts.
@@ -35,12 +35,10 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot.Ch
             // An inspector button draws a field per parameter, so it only needs the types it can draw.
             // A header button has no room for fields and stays parameterless.
             if (method.GetCustomAttribute<ButtonAttribute>() != null && !ButtonArguments.IsSupported(method))
-            {
                 AttributeIssues.Error(issues, method, typeof(ButtonAttribute),
                     "A parameter has a type the inspector cannot draw, so no button appears. Supported "
                     + "types are the numbers, bool, string, Vector2, Vector3, Color, enums and object "
                     + "references.");
-            }
 
             if (method.GetCustomAttribute<HeaderButtonAttribute>() != null)
                 AttributeIssues.Error(issues, method, typeof(HeaderButtonAttribute), ParameterlessMessage);

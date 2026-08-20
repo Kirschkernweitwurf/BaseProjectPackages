@@ -1,4 +1,5 @@
 using System;
+using Base.UtilityPackage.Contracts;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -27,15 +28,17 @@ namespace Base.UtilityPackage.Serialization
         /// <summary>Name of the serialized name field. Used by the inspector drawer.</summary>
         public const string NameField = nameof(sceneName);
 
-        /// <summary>Name of the serialized path field. Used by the inspector drawer.</summary>
-        public const string PathField = nameof(scenePath);
-
         /// <summary>Build index used when the scene is not in the build settings.</summary>
         public const int NotInBuild = -1;
 
+        /// <summary>Name of the serialized path field. Used by the inspector drawer.</summary>
+        public const string PathField = nameof(scenePath);
+
         // Typed as Object rather than SceneAsset because SceneAsset lives in UnityEditor and cannot be
         // named from a runtime assembly. The drawer restricts what can be dropped in.
-        [SerializeField] private Object sceneAsset;
+        // Only ever reached through FindPropertyRelative(AssetField) in SceneReferenceDrawer, so no
+        // compiled instruction reads it and no scan can tell that anything does.
+        [SerializeField] [CodebaseGraphIgnore] private Object sceneAsset;
         [SerializeField] private string scenePath;
         [SerializeField] private string sceneName;
         [SerializeField] private int buildIndex = NotInBuild;

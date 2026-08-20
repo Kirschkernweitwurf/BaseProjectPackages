@@ -71,7 +71,10 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Model
         /// <summary>Earlier names this field answers to, from FormerlySerializedAs.</summary>
         public List<string> SerializedAliases { get; } = new();
 
-        /// <summary>True when the source line carries the ignore marker, which silences every finding.</summary>
+        /// <summary>
+        /// True when the member is deliberately out of scope, set either by a suppression attribute on
+        /// the member or by the older source line marker. Every finding on it is silenced.
+        /// </summary>
         public bool IsSuppressed { get; set; }
 
         /// <summary>Size of the compiled method body in bytes. Zero for data members.</summary>

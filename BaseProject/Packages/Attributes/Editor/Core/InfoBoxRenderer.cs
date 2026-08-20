@@ -1,7 +1,8 @@
+using Base.AttributePackage.Editor.Handlers;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor
+namespace Base.AttributePackage.Editor.Drawers
 {
     /// <summary>
     /// Shared drawing for <see cref="InfoBoxAttribute"/>. Used by <see cref="InfoBoxHandler"/> for
@@ -22,11 +23,12 @@ namespace Base.AttributePackage.Editor
         // point-filtered editor texture, which is what makes it look chewed up.
         private const float IconSize = 32f;
         private const float MinimumHeight = 40f;
+
         // A box with an icon starts at the icon, which is itself a visual left margin. A box without
         // one starts at bare text, and the same padding leaves it hard against the edge.
         private const float PaddingX = 6f;
-        private const float TextOnlyPaddingX = 10f;
         private const float PaddingY = 5f;
+        private const float TextOnlyPaddingX = 10f;
 
         private static GUIStyle _label;
 
@@ -83,9 +85,10 @@ namespace Base.AttributePackage.Editor
             Rect box = EditorGUI.IndentedRect(EditorGUILayout.GetControlRect(false, height));
             GUI.Box(box, GUIContent.none, EditorStyles.helpBox);
 
-            float x = box.x + (icon == null
-                ? TextOnlyPaddingX
-                : PaddingX);
+            float x = box.x
+                + (icon == null
+                    ? TextOnlyPaddingX
+                    : PaddingX);
 
             if (icon != null)
             {

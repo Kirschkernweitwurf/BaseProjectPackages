@@ -1,4 +1,4 @@
-using Base.AttributePackage.Editor;
+using Base.AttributePackage.Editor.Inspectors;
 using Base.TweeningPackage.Core.Data.Profiles;
 using UnityEditor;
 

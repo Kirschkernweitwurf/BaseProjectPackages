@@ -1,8 +1,10 @@
+using Base.AttributePackage.Editor.Core.Interfaces;
+using Base.AttributePackage.Editor.Drawers;
 using Base.UtilityPackage.Editor;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor
+namespace Base.AttributePackage.Editor.Handlers
 {
     /// <summary>
     /// Draws the foldout arrow in front of an <see cref="ExpandableAttribute"/> field. The arrow sits in

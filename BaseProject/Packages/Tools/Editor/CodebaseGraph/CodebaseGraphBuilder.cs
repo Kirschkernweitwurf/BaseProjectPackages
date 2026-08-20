@@ -25,6 +25,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         private const string EditorSuffix = ".Editor";
         private const string GeneratedFolderMarker = "/Generated/";
         private const string GeneratedReason = "Generated source";
+        private const string IgnoredPathReason = "Declared out of scope";
         private const float MembersProgress = 0.25f;
         private const float PathsProgress = 0.8f;
         private const int ProgressStepInterval = 100;
@@ -465,7 +466,8 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
         /// <summary>
         /// Marks types whose findings would be noise: generated output nobody edits, sample fixtures that
-        /// exist to hold broken code on purpose, and test folders.
+        /// exist to hold broken code on purpose, test folders, and anything the project has declared out
+        /// of scope by path.
         /// </summary>
         private static void ApplyScopeExclusion(TypeNodeInfo type, string outermost, ScriptIndex index)
         {
@@ -483,7 +485,16 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             {
                 type.IsExcludedFromFindings = true;
                 type.ExclusionReason = SampleReason;
+                return;
             }
+
+            // Last, because the built in rules describe what code is, and this one describes only what
+            // the project has decided not to look at.
+            if (!CodebaseGraphSettings.instance.IsIgnored(type.ScriptPath))
+                return;
+
+            type.IsExcludedFromFindings = true;
+            type.ExclusionReason = IgnoredPathReason;
         }
 
         private static bool IsGeneratedFolder(string scriptPath) => !string.IsNullOrEmpty(scriptPath)

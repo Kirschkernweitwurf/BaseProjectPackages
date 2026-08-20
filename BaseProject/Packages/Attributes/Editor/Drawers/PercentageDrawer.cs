@@ -2,7 +2,7 @@ using Base.UtilityPackage.Editor;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor
+namespace Base.AttributePackage.Editor.Drawers
 {
     /// <summary>
     /// Draws a normalized float as a percentage for <see cref="PercentageAttribute"/>. The value is

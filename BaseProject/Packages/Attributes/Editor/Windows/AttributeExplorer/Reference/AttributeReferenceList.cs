@@ -6,7 +6,7 @@ using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Reference
+namespace Base.AttributePackage.Editor.Drawers.Windows.AttributeExplorer.Reference
 {
     /// <summary>
     /// Draws the attribute list: a search box, then the attributes under collapsible category headers.
@@ -31,6 +31,9 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Reference
         private const float SearchPadding = 4f;
         private const string StatePrefix = "ReferenceCategory";
 
+        /// <summary>The rows as they were last drawn, headers included, in the order they appear.</summary>
+        internal IReadOnlyList<AttributeSampleRow> Rows => _rows;
+
 
         private readonly List<AttributeSampleEntry> _matches = new();
         private readonly List<AttributeSampleRow> _rows = new();
@@ -46,16 +49,6 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Reference
 
         private int _stripe;
 
-        /// <summary>The rows as they were last drawn, headers included, in the order they appear.</summary>
-        internal IReadOnlyList<AttributeSampleRow> Rows => _rows;
-
-        /// <summary>Puts the keyboard in the search box on the next draw.</summary>
-        internal void FocusSearch()
-        {
-            _searchField ??= new SearchField();
-            _searchField.SetFocus();
-        }
-
         /// <summary>Whether the named category is open.</summary>
         /// <param name="category">The category to test.</param>
         /// <returns>True while it is expanded.</returns>
@@ -66,6 +59,13 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Reference
         /// <param name="expanded">The new state.</param>
         internal static void SetExpanded(string category, bool expanded)
             => EditorPrefs.SetBool(KeyFor(category), expanded);
+
+        /// <summary>Puts the keyboard in the search box on the next draw.</summary>
+        internal void FocusSearch()
+        {
+            _searchField ??= new SearchField();
+            _searchField.SetFocus();
+        }
 
         /// <summary>Draws the list and selects into the pane when a row is clicked.</summary>
         /// <param name="pane">The pane that owns the selection.</param>
@@ -94,22 +94,6 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Reference
 
         private static string KeyFor(string category)
             => StateKey.For(typeof(AttributeReferenceList), StatePrefix, category);
-
-        private void DrawSearchBar(AttributeReferencePane pane)
-        {
-            EditorGUILayout.BeginHorizontal(EditorStyles.toolbar);
-
-            // The field otherwise sits hard against the window edge, where every other toolbar in the
-            // editor leaves a margin.
-            GUILayout.Space(SearchPadding);
-
-            _searchField ??= new SearchField();
-
-            pane.Search = _searchField.OnToolbarGUI(pane.Search);
-
-            GUILayout.Space(SearchPadding);
-            EditorGUILayout.EndHorizontal();
-        }
 
         // The description is searched as well as the name and the category, so a word from the
         // explanation finds the attribute even when its name is not what you would have guessed.
@@ -145,6 +129,22 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Reference
             }
 
             return builder.ToString();
+        }
+
+        private void DrawSearchBar(AttributeReferencePane pane)
+        {
+            EditorGUILayout.BeginHorizontal(EditorStyles.toolbar);
+
+            // The field otherwise sits hard against the window edge, where every other toolbar in the
+            // editor leaves a margin.
+            GUILayout.Space(SearchPadding);
+
+            _searchField ??= new SearchField();
+
+            pane.Search = _searchField.OnToolbarGUI(pane.Search);
+
+            GUILayout.Space(SearchPadding);
+            EditorGUILayout.EndHorizontal();
         }
 
         private int DrawCategories(AttributeReferencePane pane, AttributeExplorerStyles styles,
@@ -205,7 +205,8 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Reference
 
             // Clicking a header opens its page as well as folding it, since a reader who does not know
             // the name of the attribute they want starts from the category rather than from the list.
-            if (Event.current.type == EventType.MouseDown && Event.current.button == 0
+            if (Event.current.type == EventType.MouseDown
+                && Event.current.button == 0
                 && label.Contains(Event.current.mousePosition))
                 pane.SelectCategory(category);
 
@@ -254,8 +255,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Reference
             if (selected)
             {
                 EditorGUI.DrawRect(rect, styles.SelectionFill);
-                EditorGUI.DrawRect(
-                    new Rect(rect.x, rect.y, AttributeExplorerStyles.SelectionBarWidth, rect.height),
+                EditorGUI.DrawRect(new Rect(rect.x, rect.y, AttributeExplorerStyles.SelectionBarWidth, rect.height),
                     styles.Selection);
 
                 return;

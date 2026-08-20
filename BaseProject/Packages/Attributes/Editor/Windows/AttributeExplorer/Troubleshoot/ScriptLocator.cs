@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEditor;
 
-namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot
+namespace Base.AttributePackage.Editor.Drawers.Windows.AttributeExplorer.Troubleshoot
 {
     /// <summary>
     /// Finds the script asset that declares a type, so a finding can be opened in the code editor.

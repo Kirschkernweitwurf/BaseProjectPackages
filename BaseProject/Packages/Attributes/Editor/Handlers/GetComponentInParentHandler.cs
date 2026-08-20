@@ -1,9 +1,11 @@
 using System;
+using Base.AttributePackage.Editor.Core.Interfaces;
+using Base.AttributePackage.Editor.Drawers;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Base.AttributePackage.Editor
+namespace Base.AttributePackage.Editor.Handlers
 {
     /// <summary>
     /// Auto-assigns a <see cref="GetComponentInParentAttribute"/> field from the ancestors. Search

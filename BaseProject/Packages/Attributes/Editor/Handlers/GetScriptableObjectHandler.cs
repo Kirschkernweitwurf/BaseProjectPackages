@@ -1,9 +1,11 @@
 using System;
+using Base.AttributePackage.Editor.Core.Interfaces;
+using Base.AttributePackage.Editor.Drawers;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Base.AttributePackage.Editor
+namespace Base.AttributePackage.Editor.Handlers
 {
     /// <summary>
     /// Fills an empty <see cref="GetScriptableObjectAttribute"/> field with the first matching asset in

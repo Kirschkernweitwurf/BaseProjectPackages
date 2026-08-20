@@ -1,8 +1,10 @@
+using Base.AttributePackage.Editor.Core.Interfaces;
+using Base.AttributePackage.Editor.Drawers;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Base.AttributePackage.Editor
+namespace Base.AttributePackage.Editor.Handlers
 {
     /// <summary>Draws a thumbnail for <see cref="ShowAssetPreviewAttribute"/> references.</summary>
     internal sealed class AssetPreviewHandler : IAfterFieldHandler

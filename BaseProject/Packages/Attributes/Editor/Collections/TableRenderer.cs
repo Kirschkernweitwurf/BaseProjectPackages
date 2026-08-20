@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Base.AttributePackage.Editor.Drawers;
 using Base.UtilityPackage.Editor;
 using UnityEditor;
 using UnityEditorInternal;
@@ -19,8 +20,8 @@ namespace Base.AttributePackage.Editor.Collections
     /// </remarks>
     internal static class TableRenderer
     {
-        private const string EmptyMessage = "Empty. Add a row to see the columns.";
         internal const string IndexHeader = "#";
+        private const string EmptyMessage = "Empty. Add a row to see the columns.";
         private const string UnsupportedMessage = "[Table] needs an array of a serializable type.";
 
         /// <summary>
@@ -72,6 +73,21 @@ namespace Base.AttributePackage.Editor.Collections
             DrawList(property, canResize);
         }
 
+
+
+
+
+
+        internal static float TotalWeight()
+        {
+            float total = 0f;
+
+            foreach (TableColumn column in Columns)
+                total += column.Weight;
+
+            return Mathf.Max(total, 0.01f);
+        }
+
         private static void DrawList(SerializedProperty property, bool canResize)
         {
             ReorderableList list = TableListCache.Get(property, canResize);
@@ -118,21 +134,5 @@ namespace Base.AttributePackage.Editor.Collections
                 ? null
                 : ReflectionCache.GetAttribute<TableColumnAttribute>(field);
         }
-
-
-
-
-
-
-        internal static float TotalWeight()
-        {
-            float total = 0f;
-
-            foreach (TableColumn column in Columns)
-                total += column.Weight;
-
-            return Mathf.Max(total, 0.01f);
-        }
-
     }
 }

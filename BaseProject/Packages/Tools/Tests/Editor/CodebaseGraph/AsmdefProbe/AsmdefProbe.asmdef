@@ -1,0 +1,27 @@
+{
+  "name": "AsmdefProbe",
+  "rootNamespace": "AsmdefProbe",
+  "references": [
+    "GUID:f2d8f8c295391d141aef02e29987cd86"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [
+    "UNITY_INCLUDE_TESTS",
+    "BASE_CORE"
+  ],
+  "versionDefines": [
+    {
+      "name": "com.baseprojectpackages.core",
+      "expression": "1.0.0",
+      "define": "BASE_CORE"
+    }
+  ],
+  "noEngineReferences": false
+}

@@ -1,0 +1,14 @@
+{
+  "name": "com.baseprojectpackages.content",
+  "displayName": "Base Content",
+  "description": "The prefabs and configured assets the other Base packages are wired together with: the persistent, scene and gameplay manager prefabs plus the bootstrapper that instantiates them, the canvas prefabs, the confirmation menu, loading screen, tooltip and FPS readout, the cheat and log console of the debug menu, the audio source prefabs and audio containers, the menu identifier assets, and the basic text and image buttons. Everything here is composition rather than code, which is why it lives on its own: a prefab holding a component from another package needs that package installed, and gathering them in one place is what keeps every other package free to be installed without the rest.",
+  "version": "1.0.0",
+  "unity": "6000.3",
+  "author": {
+    "name": "Jonathan Alber"
+  },
+  "dependencies": {
+    "com.unity.inputsystem": "1.19.0",
+    "com.unity.ugui": "2.0.0"
+  }
+}

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot.Samples
+namespace Base.AttributePackage.Editor.Drawers.Windows.AttributeExplorer.Troubleshoot.Samples
 {
     /// <summary>
     /// Attributes sitting on field types their drawers cannot handle, so the samples tab can show what an
@@ -19,7 +19,6 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot.Sa
         [MinMaxSlider(0f, 10f)] public float sliderOnFloat;
 
         /// <summary>A mask field needs an enum to read the flags from.</summary>
-
         /// <summary>An inline inspector needs an asset reference to draw.</summary>
         [Expandable] public string expandableOnString;
 

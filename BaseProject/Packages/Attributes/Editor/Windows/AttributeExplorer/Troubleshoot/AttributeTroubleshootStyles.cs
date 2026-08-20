@@ -2,7 +2,7 @@ using Base.EditorUiPackage;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot
+namespace Base.AttributePackage.Editor.Drawers.Windows.AttributeExplorer.Troubleshoot
 {
     /// <summary>
     /// Cached styles, colors and icons for the findings list. Pure presentation.

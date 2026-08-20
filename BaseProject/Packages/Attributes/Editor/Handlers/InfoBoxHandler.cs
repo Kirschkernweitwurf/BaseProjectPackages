@@ -1,4 +1,7 @@
-namespace Base.AttributePackage.Editor
+using Base.AttributePackage.Editor.Core.Interfaces;
+using Base.AttributePackage.Editor.Drawers;
+
+namespace Base.AttributePackage.Editor.Handlers
 {
     /// <summary>Draws the box for <see cref="InfoBoxAttribute"/>, above or below, compact or full.</summary>
     internal sealed class InfoBoxHandler : IBeforeFieldHandler, IAfterFieldHandler

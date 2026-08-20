@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using UnityEditor;
 
-namespace Base.AttributePackage.Editor
+namespace Base.AttributePackage.Editor.Drawers
 {
     /// <summary>
     /// Reorders the drawn properties according to <see cref="PropertyOrderAttribute"/>.
@@ -58,8 +58,9 @@ namespace Base.AttributePackage.Editor
 
                 int end = index + 1;
 
-                while (run != null && end < properties.Count
-                    && RunKey(ReflectionCache.GetField(type, properties[end].name)) == run)
+                while (run != null
+                       && end < properties.Count
+                       && RunKey(ReflectionCache.GetField(type, properties[end].name)) == run)
                     end++;
 
                 Block block = new(index, end, Order(type, properties, index, end),

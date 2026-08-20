@@ -2,7 +2,7 @@ using Base.UtilityPackage.Editor;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor
+namespace Base.AttributePackage.Editor.Drawers
 {
     /// <summary>Draws an int as a row of clickable stars for <see cref="RateAttribute"/>.</summary>
     [CustomPropertyDrawer(typeof(RateAttribute))]

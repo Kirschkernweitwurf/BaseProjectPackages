@@ -1,4 +1,4 @@
-using Base.AttributePackage.Editor;
+using Base.AttributePackage.Editor.Inspectors;
 using Base.ToolPackage.LightingProfileApplier;
 using UnityEditor;
 using UnityEngine;

@@ -59,6 +59,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         private const string RowClass = "dismissal-row";
         private const string RowNameClass = "dismissal-name";
         private const string RowScopeClass = "dismissal-scope";
+        private const string RowTextClass = "dismissal-text";
 
         private const string ScanFirstText = "Nothing has been scanned yet, so it cannot be told which of "
             + "these still match something. Scan in the graph window to find out.";
@@ -269,13 +270,8 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             _rowCount++;
             row.EnableInClassList(StaleRowClass, entry.IsStale);
 
-            VisualElement text = new()
-            {
-                style =
-                {
-                    flexGrow = 1f
-                }
-            };
+            VisualElement text = new();
+            text.AddToClassList(RowTextClass);
 
             text.Add(GraphLabel.Build(entry.DisplayName, RowNameClass));
 

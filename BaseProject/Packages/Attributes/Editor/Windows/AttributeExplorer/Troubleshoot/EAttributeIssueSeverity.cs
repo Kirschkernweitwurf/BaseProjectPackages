@@ -1,4 +1,4 @@
-namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot
+namespace Base.AttributePackage.Editor.Drawers.Windows.AttributeExplorer.Troubleshoot
 {
     /// <summary>How badly a misconfigured attribute behaves at runtime.</summary>
     internal enum EAttributeIssueSeverity : byte

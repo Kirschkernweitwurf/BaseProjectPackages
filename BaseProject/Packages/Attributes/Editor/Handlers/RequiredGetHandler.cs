@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using Base.AttributePackage.Editor.Core.Interfaces;
+using Base.AttributePackage.Editor.Drawers;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor
+namespace Base.AttributePackage.Editor.Handlers
 {
     /// <summary>
     /// Fills a <see cref="RequiredGetAttribute"/> field from the hierarchy and reports it when the

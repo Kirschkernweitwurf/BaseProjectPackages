@@ -1,8 +1,11 @@
-namespace Base.AttributePackage.Editor
+using Base.AttributePackage.Editor.Core.Interfaces;
+using Base.AttributePackage.Editor.Drawers;
+
+namespace Base.AttributePackage.Editor.Handlers
 {
     /// <summary>
     /// Opens a <see cref="StartExpandedAttribute"/> field the first time it is drawn. Only the first
-    /// draw is forced, so folding it up afterwards sticks.
+    /// draw is forced, so folding it up afterward sticks.
     /// </summary>
     internal sealed class StartExpandedHandler : IBeforeFieldHandler
     {

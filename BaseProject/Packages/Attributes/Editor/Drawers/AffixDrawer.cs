@@ -2,7 +2,7 @@ using Base.UtilityPackage.Editor;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor
+namespace Base.AttributePackage.Editor.Drawers
 {
     /// <summary>
     /// Draws the label of a <see cref="PrefixAttribute"/> in front of the value.

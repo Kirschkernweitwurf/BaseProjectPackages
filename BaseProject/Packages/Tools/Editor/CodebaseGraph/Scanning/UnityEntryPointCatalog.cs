@@ -144,6 +144,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
             "InitializeOnLoad",
             "InitializeOnLoadMethod",
             "InlineButton",
+            "MainToolbarElement",
             "MenuItem",
             "MonoPInvokeCallback",
             "OnOpenAsset",

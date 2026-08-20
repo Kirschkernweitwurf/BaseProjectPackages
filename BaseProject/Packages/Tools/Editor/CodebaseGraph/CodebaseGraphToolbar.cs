@@ -21,6 +21,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
     internal sealed class CodebaseGraphToolbar : Toolbar
     {
         private const string AllAssembliesLabel = "All assemblies";
+        private const string AssemblyEdgeLabel = "Assembly edge report";
         private const string BackLabel = "Back";
         private const string BackTooltip = "Goes up one level.";
         private const string EdgeAllLabel = "Lines: All";
@@ -276,6 +277,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
             menu.menu.AppendAction(ExportLabel, action: _ => _actions.Export?.Invoke());
             menu.menu.AppendAction(ExportScopeLabel, action: _ => _actions.ExportScope?.Invoke());
+            menu.menu.AppendAction(AssemblyEdgeLabel, action: _ => _actions.AssemblyEdgeReport?.Invoke());
             menu.menu.AppendSeparator();
             menu.menu.AppendAction(ImportLabel, action: _ => _actions.Import?.Invoke());
 

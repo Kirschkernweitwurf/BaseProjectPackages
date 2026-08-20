@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot
+namespace Base.AttributePackage.Editor.Drawers.Windows.AttributeExplorer.Troubleshoot
 {
     /// <summary>
     /// Draws the grouped findings. Pure presentation: it reports which type the user clicked and leaves
@@ -17,8 +17,8 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot
     internal static class AttributeTroubleshootView
     {
         private const float BarWidth = 3f;
-        private const float CountWidth = 70f;
         private const string CountFormat = "{0} {1}";
+        private const float CountWidth = 70f;
         private const float GroupSpacing = 8f;
         private const float HeaderHeight = 24f;
         private const float HeaderIconSize = 16f;
@@ -176,11 +176,13 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot
 
             Scratch.text = issue.Message;
 
-            float messageWidth = Mathf.Max(EditorGUIUtility.currentViewWidth - MessageIndent * 2f
+            float messageWidth = Mathf.Max(EditorGUIUtility.currentViewWidth
+                - MessageIndent * 2f
                 - Indent, MessageIndent);
 
             float height = EditorGUIUtility.singleLineHeight
-                + styles.Message.CalcHeight(Scratch, messageWidth) + RowPadding;
+                + styles.Message.CalcHeight(Scratch, messageWidth)
+                + RowPadding;
 
             Rect rect = EditorGUILayout.GetControlRect(false, height);
 

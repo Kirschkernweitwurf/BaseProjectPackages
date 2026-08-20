@@ -1,4 +1,6 @@
-namespace Base.AttributePackage.Editor
+using Base.AttributePackage.Editor.Drawers;
+
+namespace Base.AttributePackage.Editor.Core.Interfaces
 {
     /// <summary>
     /// A handler that draws a member itself instead of letting the normal field be drawn.

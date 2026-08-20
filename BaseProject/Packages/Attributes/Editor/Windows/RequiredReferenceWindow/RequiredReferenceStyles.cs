@@ -2,7 +2,7 @@ using Base.EditorUiPackage;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
+namespace Base.AttributePackage.Editor.Drawers.Windows.RequiredReferenceWindow
 {
     /// <summary>
     /// Cached styles, colors and icons for the required-reference window.
@@ -30,6 +30,9 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
         /// <summary>Default object icon for a group header.</summary>
         public static Texture ObjectTexture => EditorIcons.GameObject;
 
+        /// <summary>Accent used for problems.</summary>
+        public static Color Accent => EditorPalette.Danger;
+
         /// <summary>Bold label for the object name in a group header.</summary>
         public GUIStyle Name { get; private set; }
 
@@ -47,9 +50,6 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
 
         /// <summary>Muted subtitle shown under the success title.</summary>
         public GUIStyle SuccessSubtitle { get; private set; }
-
-        /// <summary>Accent used for problems.</summary>
-        public static Color Accent => EditorPalette.Danger;
 
         private bool _built;
         private bool _builtForProSkin;

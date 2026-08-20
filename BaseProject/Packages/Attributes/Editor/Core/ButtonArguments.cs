@@ -5,7 +5,7 @@ using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Base.AttributePackage.Editor
+namespace Base.AttributePackage.Editor.Drawers
 {
     /// <summary>
     /// Holds and draws the arguments of a parameterized inspector button.
@@ -82,8 +82,11 @@ namespace Base.AttributePackage.Editor
 
         private static object[] Resolve(Object target, MethodInfo method, ParameterInfo[] parameters)
         {
-            string key = target.GetInstanceID() + KeySeparator + method.DeclaringType?.FullName
-                + KeySeparator + method.Name;
+            string key = target.GetInstanceID()
+                + KeySeparator
+                + method.DeclaringType?.FullName
+                + KeySeparator
+                + method.Name;
 
             if (Values.TryGetValue(key, out object[] cached) && cached.Length == parameters.Length)
                 return cached;

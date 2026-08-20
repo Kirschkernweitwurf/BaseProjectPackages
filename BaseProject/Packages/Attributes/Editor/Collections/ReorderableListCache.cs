@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Base.AttributePackage.Editor.Drawers;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
@@ -106,7 +107,7 @@ namespace Base.AttributePackage.Editor.Collections
         private static ListEntryState StateOf(ReorderableList list)
             => States.TryGetValue(list, out ListEntryState state)
                 ? state
-                : default;
+                : default(ListEntryState);
 
         private static float HeightOf(ReorderableList list, int index)
         {
@@ -180,6 +181,5 @@ namespace Base.AttributePackage.Editor.Collections
             if (CollectionGui.ConfirmRemoval(label, state.ConfirmDelete))
                 CollectionGui.DeleteElement(target.serializedProperty, index);
         }
-
     }
 }

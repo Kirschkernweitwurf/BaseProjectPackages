@@ -2,12 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Base.AttributePackage.Editor.Collections;
+using Base.AttributePackage.Editor.Core.Interfaces;
+using Base.AttributePackage.Editor.Handlers;
 using Base.UtilityPackage.Editor;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Base.AttributePackage.Editor
+namespace Base.AttributePackage.Editor.Drawers.Core
 {
     /// <summary>
     /// Runs the per-member pipeline: visibility, enable state, before-field decorations, the field
@@ -26,7 +28,7 @@ namespace Base.AttributePackage.Editor
         /// <param name="field">The reflected field behind it.</param>
         /// <param name="editor">The editor drawing it.</param>
         /// <param name="showLabel">False to give the value the whole row, for a horizontal cell.</param>
-        public static void Draw(SerializedProperty property, FieldInfo field, AttributePackageEditor editor,
+        public static void Draw(SerializedProperty property, FieldInfo field, UnityEditor.Editor editor,
             bool showLabel = true) => Draw(property, field, editor.target.GetType(), editor.target, editor,
             showLabel, false);
 
@@ -42,7 +44,7 @@ namespace Base.AttributePackage.Editor
         /// <param name="field">The reflected field behind it.</param>
         /// <param name="editor">The editor drawing it.</param>
         internal static void DrawDecorations(SerializedProperty property, FieldInfo field,
-            AttributePackageEditor editor)
+            UnityEditor.Editor editor)
         {
             MemberContext context = CreateContext(property, field, editor.target.GetType(), editor.target,
                 editor, true);
@@ -60,11 +62,11 @@ namespace Base.AttributePackage.Editor
         /// <param name="editor">The editor drawing it.</param>
         /// <param name="showLabel">False to give the value the whole row, for a horizontal cell.</param>
         internal static void DrawWithoutDecorations(SerializedProperty property, FieldInfo field,
-            AttributePackageEditor editor, bool showLabel)
-            => Draw(property, field, editor.target.GetType(), editor.target, editor, showLabel, true);
+            UnityEditor.Editor editor, bool showLabel) => Draw(property, field, editor.target.GetType(),
+            editor.target, editor, showLabel, true);
 
         private static void Draw(SerializedProperty property, FieldInfo field, Type declaringType,
-            object declaringObject, AttributePackageEditor editor, bool showLabel, bool skipDecorations)
+            object declaringObject, UnityEditor.Editor editor, bool showLabel, bool skipDecorations)
         {
             MemberContext context = CreateContext(property, field, declaringType, declaringObject, editor,
                 showLabel);
@@ -83,10 +85,8 @@ namespace Base.AttributePackage.Editor
             }
 
             if (!skipDecorations)
-            {
                 foreach (IBeforeFieldHandler handler in HandlerRegistry.BeforeField)
                     handler.BeforeField(context);
-            }
 
             IndentAttribute indent = context.GetAttribute<IndentAttribute>();
             int amount = indent?.Amount ?? 0;
@@ -101,8 +101,10 @@ namespace Base.AttributePackage.Editor
             // The label column is widened for this one row when a renamed label would not fit in it,
             // since Unity cuts an oversized prefix label without saying so.
             using (new EditorGUI.DisabledScope(!enabled))
-            using (new LabelWidthScope(LabelWidthScope.Required(context)))
-                DrawBody(context, field, editor);
+            {
+                using (new LabelWidthScope(LabelWidthScope.Required(context)))
+                    DrawBody(context, field, editor);
+            }
 
             EditorGUI.indentLevel -= amount;
 
@@ -111,7 +113,7 @@ namespace Base.AttributePackage.Editor
         }
 
         private static MemberContext CreateContext(SerializedProperty property, FieldInfo field,
-            Type declaringType, object declaringObject, AttributePackageEditor editor, bool showLabel)
+            Type declaringType, object declaringObject, UnityEditor.Editor editor, bool showLabel)
         {
             Object before = property.propertyType == SerializedPropertyType.ObjectReference
                 ? property.objectReferenceValue
@@ -132,7 +134,7 @@ namespace Base.AttributePackage.Editor
             return true;
         }
 
-        private static void DrawBody(in MemberContext context, FieldInfo field, AttributePackageEditor editor)
+        private static void DrawBody(in MemberContext context, FieldInfo field, UnityEditor.Editor editor)
         {
             SerializedProperty property = context.Property;
 
@@ -257,7 +259,7 @@ namespace Base.AttributePackage.Editor
         }
 
         private static void DrawChildren(SerializedProperty parent, Type declaringType, object declaringObject,
-            AttributePackageEditor editor)
+            UnityEditor.Editor editor)
         {
             SerializedProperty iterator = parent.Copy();
             SerializedProperty end = parent.GetEndProperty();

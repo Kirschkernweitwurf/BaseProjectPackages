@@ -15,9 +15,19 @@ namespace Base.ToolPackage.Editor.AssemblyGraph.Architecture
     /// inside a class is not a second reason for the dependency to exist. And an edge is only counted
     /// once per distinct target type, however many call sites there are, because the question a rule
     /// asks is how much of the other assembly this one actually needs.
+    /// <br/><br/>
+    /// The third decision is what an inherited interface counts as. The scan records the relation from
+    /// <c>Type.GetInterfaces</c>, which returns everything a base type carries as well as what the type
+    /// declares itself, so a subclass looks like it reaches an interface it never names. The compiler
+    /// needs no reference for that, which is why an edge built from it lands in the report's
+    /// "no declared reference" section. Those relations are dropped here rather than in the scanner,
+    /// where the full set is what keeps interface members off the dead code list.
     /// </summary>
     internal static class AssemblyEdgeRollUp
     {
+        /// <summary>How many relations a purely inherited interface leaves behind: the inheritance one.</summary>
+        private const int InheritedInterfaceRelationCount = 1;
+
         /// <summary>Rolls a scan result up to weighted assembly edges.</summary>
         /// <param name="graph">The scan result to read. A null graph yields an empty result.</param>
         /// <returns>The assembly level graph.</returns>
@@ -62,6 +72,9 @@ namespace Base.ToolPackage.Editor.AssemblyGraph.Architecture
                 if (string.Equals(source.AssemblyName, target.AssemblyName, StringComparison.Ordinal))
                     continue;
 
+                if (IsInheritedInterface(graph, source, target, usage.Value))
+                    continue;
+
                 AssemblyEdgeKey key = new(source.AssemblyName, target.AssemblyName);
 
                 if (!builders.TryGetValue(key, out EdgeBuilder builder))
@@ -75,6 +88,49 @@ namespace Base.ToolPackage.Editor.AssemblyGraph.Architecture
                     usage.Value,
                     source.IsExcludedFromFindings);
             }
+        }
+
+        /// <summary>
+        /// Whether the only thing behind this relation is an interface the source's base type already
+        /// carries. The source names nothing from the interface's assembly in that case, so the compiler
+        /// requires no reference to it and neither should a rule.
+        /// <para>
+        /// A source that uses the interface itself has more than the single inheritance relation behind
+        /// the count, which is what keeps a real usage from being dropped with the inherited one. The
+        /// case this cannot separate is a subclass that re-declares an interface its base already
+        /// implements: that names the interface and does need the reference, but leaves the same one
+        /// relation behind, so the edge is dropped. The report then agrees with the asmdef, which is
+        /// the safe direction to be wrong in.
+        /// </para>
+        /// </summary>
+        /// <param name="graph">The scan result the base type is looked up in.</param>
+        /// <param name="source">The type the relation starts at.</param>
+        /// <param name="target">The type the relation points at.</param>
+        /// <param name="usageCount">How many relations the scan recorded for this pair.</param>
+        /// <returns>True when the relation is inherited and must not become an edge.</returns>
+        private static bool IsInheritedInterface(CodebaseGraphData graph,
+            TypeNodeInfo source,
+            TypeNodeInfo target,
+            int usageCount)
+        {
+            if (target.Kind != ETypeKind.Interface)
+                return false;
+
+            if (usageCount != InheritedInterfaceRelationCount)
+                return false;
+
+            if (!source.BaseTypeKey.IsValid)
+                return false;
+
+            TypeNodeInfo baseType = graph.FindType(source.BaseTypeKey);
+
+            // A base outside the scan cannot answer the question, so the edge is kept rather than
+            // guessed away. That is the one case where an inherited interface still reaches the report.
+            if (baseType == null)
+                return false;
+
+            // The base recorded its own inherited set as well, so one hop covers the whole chain.
+            return baseType.Outgoing.ContainsKey(target.Key);
         }
 
         /// <summary>Walks outward through nested types until the type that declares them all is reached.</summary>

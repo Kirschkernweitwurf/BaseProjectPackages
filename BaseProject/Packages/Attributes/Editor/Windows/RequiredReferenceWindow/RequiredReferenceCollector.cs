@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
+namespace Base.AttributePackage.Editor.Drawers.Windows.RequiredReferenceWindow
 {
     /// <summary>Scans scene objects and ScriptableObject assets for validation issues, grouped per owner.</summary>
     internal static class RequiredReferenceCollector

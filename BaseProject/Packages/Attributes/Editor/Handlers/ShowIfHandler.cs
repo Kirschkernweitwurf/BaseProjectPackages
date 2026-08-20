@@ -1,4 +1,6 @@
-namespace Base.AttributePackage.Editor
+using Base.AttributePackage.Editor.Drawers;
+
+namespace Base.AttributePackage.Editor.Handlers
 {
     /// <summary>Hides the field unless the referenced bool members satisfy the condition mode.</summary>
     internal sealed class ShowIfHandler : IVisibilityHandler

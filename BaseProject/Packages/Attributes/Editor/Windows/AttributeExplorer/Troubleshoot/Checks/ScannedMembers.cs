@@ -1,7 +1,7 @@
 using System;
 using System.Reflection;
 
-namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot.Checks
+namespace Base.AttributePackage.Editor.Drawers.Windows.AttributeExplorer.Troubleshoot.Checks
 {
     /// <summary>
     /// Enumerates the members a check inspects. Only members declared directly on the type are

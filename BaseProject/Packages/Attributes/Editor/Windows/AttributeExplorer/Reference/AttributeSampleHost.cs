@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Reference
+namespace Base.AttributePackage.Editor.Drawers.Windows.AttributeExplorer.Reference
 {
     /// <summary>
     /// Creates and destroys the object a sample is drawn on, whichever kind of object that is.

@@ -1,6 +1,8 @@
+using Base.AttributePackage.Editor.Core.Interfaces;
+using Base.AttributePackage.Editor.Drawers;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor
+namespace Base.AttributePackage.Editor.Handlers
 {
     /// <summary>Resets the background tint applied by <see cref="GUIColorAttribute"/> after the field draws.</summary>
     internal sealed class GUIColorResetHandler : IAfterFieldHandler

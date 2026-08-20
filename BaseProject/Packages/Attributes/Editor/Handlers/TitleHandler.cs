@@ -1,4 +1,8 @@
-namespace Base.AttributePackage.Editor
+using Base.AttributePackage.Editor.Core.Interfaces;
+using Base.AttributePackage.Editor.Drawers;
+using Base.AttributePackage.Editor.Inspectors;
+
+namespace Base.AttributePackage.Editor.Handlers
 {
     /// <summary>
     /// Draws the bold title and underline for a plain <see cref="TitleAttribute"/>. Collapsible titles

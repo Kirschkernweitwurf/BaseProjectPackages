@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Base.AttributePackage.Editor.Drawers.Core;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor
+namespace Base.AttributePackage.Editor.Drawers
 {
     /// <summary>
     /// Draws a run of consecutive <see cref="TabAttribute"/> members as a tab bar with the selected
@@ -13,10 +14,10 @@ namespace Base.AttributePackage.Editor
     /// </summary>
     internal static class TabGroupRenderer
     {
-        private const string FoldoutKeyPrefix = "TABFOLD";
         private const float BarSpacing = 8f;
         private const float BlockOverlap = 3f;
         private const float ContentInset = 4f;
+        private const string FoldoutKeyPrefix = "TABFOLD";
         private const float GroupSpacing = 6f;
         private const float IndentStep = 15f;
         private const string TabKeyPrefix = "TAB";
@@ -56,7 +57,7 @@ namespace Base.AttributePackage.Editor
         /// <param name="startIndex">Index of the first member of the group.</param>
         /// <param name="editor">The editor drawing the group.</param>
         /// <returns>The index of the first member after the group.</returns>
-        public static int Draw(List<SerializedProperty> properties, int startIndex, AttributePackageEditor editor)
+        public static int Draw(List<SerializedProperty> properties, int startIndex, UnityEditor.Editor editor)
         {
             Type type = editor.target.GetType();
             TabAttribute first = AttributeAt(properties, startIndex, type);

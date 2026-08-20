@@ -1,8 +1,10 @@
 using System;
+using Base.AttributePackage.Editor.Handlers;
+using Base.AttributePackage.Editor.Inspectors;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor
+namespace Base.AttributePackage.Editor.Drawers
 {
     /// <summary>
     /// Shared drawing for <see cref="TitleAttribute"/>. Used by <see cref="TitleHandler"/> for plain

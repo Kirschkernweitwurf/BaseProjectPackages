@@ -34,5 +34,8 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
         /// <summary>Raised to write a report about one namespace or assembly.</summary>
         public Action ExportScope;
+
+        /// <summary>Raised to roll the scan up to assemblies and write that report.</summary>
+        public Action AssemblyEdgeReport;
     }
 }

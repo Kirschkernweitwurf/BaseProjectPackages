@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot
+namespace Base.AttributePackage.Editor.Drawers.Windows.AttributeExplorer.Troubleshoot
 {
     /// <summary>
     /// Turns a scan into plain text, so a report can leave the window and end up in a commit message, a
@@ -40,9 +40,15 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot
 
                     written++;
 
-                    builder.Append("- ").Append(Marker(issue.Severity)).Append(' ')
-                        .Append(issue.AttributeName).Append(" on ").Append(issue.MemberName)
-                        .Append(": ").Append(issue.Message).Append('\n');
+                    builder.Append("- ")
+                        .Append(Marker(issue.Severity))
+                        .Append(' ')
+                        .Append(issue.AttributeName)
+                        .Append(" on ")
+                        .Append(issue.MemberName)
+                        .Append(": ")
+                        .Append(issue.Message)
+                        .Append('\n');
                 }
 
                 if (written > 0)
@@ -52,9 +58,8 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot
             return builder.ToString().TrimEnd();
         }
 
-        private static string Marker(EAttributeIssueSeverity severity)
-            => severity == EAttributeIssueSeverity.Error
-                ? ErrorMarker
-                : WarningMarker;
+        private static string Marker(EAttributeIssueSeverity severity) => severity == EAttributeIssueSeverity.Error
+            ? ErrorMarker
+            : WarningMarker;
     }
 }

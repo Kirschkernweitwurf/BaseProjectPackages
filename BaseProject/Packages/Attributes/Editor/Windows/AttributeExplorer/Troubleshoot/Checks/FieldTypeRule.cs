@@ -1,6 +1,6 @@
 using System;
 
-namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot.Checks
+namespace Base.AttributePackage.Editor.Drawers.Windows.AttributeExplorer.Troubleshoot.Checks
 {
     /// <summary>One entry of the table that maps an attribute to the field types it can draw.</summary>
     internal readonly struct FieldTypeRule

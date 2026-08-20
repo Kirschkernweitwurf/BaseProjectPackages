@@ -1,7 +1,8 @@
+using Base.AttributePackage.Editor.Drawers;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor
+namespace Base.AttributePackage.Editor.Handlers
 {
     /// <summary>
     /// Copies a <see cref="CopyButtonAttribute"/> field value to the clipboard and shows a brief

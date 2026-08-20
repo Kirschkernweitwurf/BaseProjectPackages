@@ -17,6 +17,11 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
     /// It also reports which of them are packages and which are test assemblies, because a public member
     /// of a distributable package is API rather than dead code. A test fixture is not production
     /// code even though it has to be scanned so that its calls keep production code alive.
+    /// <br/><br/>
+    /// The same scope answers a second question, which is which files a text pass may read. That is not
+    /// a matter of taste: a registry or built-in package never references project code, so an identifier
+    /// in one of them can never be a use of a project member. Reading them anyway lets an unrelated word
+    /// silence a finding, and a silenced finding leaves no trace anywhere to notice it by.
     /// </summary>
     internal static class ProjectAssemblyResolver
     {
@@ -68,6 +73,32 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
                 StringComparison.OrdinalIgnoreCase));
 
             return result;
+        }
+
+        /// <summary>
+        /// Lists the source files of every assembly the scan covers, so a pass over the text reads the
+        /// same code the pass over the compiled types does.
+        /// </summary>
+        /// <returns>Project relative paths, compared without case so Windows behaves.</returns>
+        public static HashSet<string> CollectProjectSourceFiles()
+        {
+            HashSet<string> files = new(StringComparer.OrdinalIgnoreCase);
+
+            foreach (CompilationAssembly assembly in CompilationPipeline.GetAssemblies(AssembliesType.Editor))
+            {
+                if (HasUnityNamePrefix(assembly.name))
+                    continue;
+
+                string path = CompilationPipeline.GetAssemblyDefinitionFilePathFromAssemblyName(assembly.name);
+
+                if (!IsWanted(assembly.name, path))
+                    continue;
+
+                foreach (string file in assembly.sourceFiles)
+                    files.Add(file);
+            }
+
+            return files;
         }
 
         private static HashSet<string> CollectWantedNames(HashSet<string> packageAssemblies)

@@ -1,4 +1,7 @@
-namespace Base.AttributePackage.Editor
+using Base.AttributePackage.Editor.Core.Interfaces;
+using Base.AttributePackage.Editor.Drawers;
+
+namespace Base.AttributePackage.Editor.Handlers
 {
     /// <summary>Disables the field while the referenced bool members satisfy the condition mode.</summary>
     internal sealed class DisableIfHandler : IEnableHandler

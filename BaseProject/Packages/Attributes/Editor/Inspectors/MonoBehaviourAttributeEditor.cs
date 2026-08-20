@@ -2,7 +2,7 @@ using Base.AttributePackage.Editor.SceneHandles;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor
+namespace Base.AttributePackage.Editor.Inspectors
 {
     /// <summary>
     /// Applies the attribute package inspector to all MonoBehaviour types without an own editor, and

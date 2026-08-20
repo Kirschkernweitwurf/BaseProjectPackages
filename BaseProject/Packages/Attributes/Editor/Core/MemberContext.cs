@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Base.AttributePackage.Editor
+namespace Base.AttributePackage.Editor.Drawers
 {
     /// <summary>
     /// Everything a handler needs about a single inspected member, passed by reference.
@@ -34,7 +34,7 @@ namespace Base.AttributePackage.Editor
         public readonly object DeclaringObject;
 
         /// <summary>The active editor, for access to serializedObject, targets and Repaint.</summary>
-        public readonly AttributePackageEditor Editor;
+        public readonly UnityEditor.Editor Editor;
 
         /// <summary>The object reference value captured before the field was drawn this frame.</summary>
         public readonly Object ObjectReferenceBefore;
@@ -49,7 +49,7 @@ namespace Base.AttributePackage.Editor
             Object target,
             Type declaringType,
             object declaringObject,
-            AttributePackageEditor editor,
+            UnityEditor.Editor editor,
             Object objectReferenceBefore,
             bool showLabel = true)
         {

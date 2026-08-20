@@ -1,6 +1,8 @@
+using Base.AttributePackage.Editor.Core.Interfaces;
+using Base.AttributePackage.Editor.Drawers;
 using UnityEditor;
 
-namespace Base.AttributePackage.Editor
+namespace Base.AttributePackage.Editor.Handlers
 {
     /// <summary>
     /// Shows a compact error when a <see cref="RequiredAttribute"/> reference is null, with a fix button

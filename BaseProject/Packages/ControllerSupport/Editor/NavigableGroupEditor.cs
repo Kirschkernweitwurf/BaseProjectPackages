@@ -1,4 +1,4 @@
-using Base.AttributePackage.Editor;
+using Base.AttributePackage.Editor.Inspectors;
 using Base.ControllerSupportPackage.Controller.Navigation;
 using UnityEditor;
 using UnityEngine;

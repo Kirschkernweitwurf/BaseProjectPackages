@@ -1,3 +1,4 @@
+using Base.UtilityPackage.Contracts;
 using Base.UtilityPackage.Menus;
 using Unity.Profiling.Memory;
 using UnityEngine;
@@ -83,7 +84,12 @@ namespace Base.MemoryProfilerPackage
         [SerializeField] [Tooltip("Which memory categories to include in each snapshot.")]
         private CaptureFlags captureFlags = DefaultCaptureFlags;
 
-        [SerializeField] [HideInInspector]
+        // Written by MemoryProfilerBuildHook through FindProperty(BakedStoragePathField) so the editor
+        // path is baked in before a build, and read back through BakedStoragePath at runtime. Neither
+        // end names the field in code, so nothing static can see that it is used. [UsedImplicitly] is
+        // not enough here: every serialized field already counts as an entry point, so the never read
+        // finding is not gated on that and only an outright ignore clears it.
+        [SerializeField] [HideInInspector] [CodebaseGraphIgnore]
         private string bakedStoragePath;
 
         /// <summary>Main switch for all automated captures.</summary>

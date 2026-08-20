@@ -63,6 +63,7 @@ namespace Base.CorePackage.MenuManaging
 
         private readonly List<MenuIdentifier> _childMenuIdentifiers = new();
 
+        private MenuManager _menuManager;
         private Menu _parentMenu;
 
 #region Unity Callbacks
@@ -70,7 +71,7 @@ namespace Base.CorePackage.MenuManaging
         {
             ShutdownManager.Register(this);
 
-            if (ServiceLocator.TryGet(out MenuManager menuManager))
+            if (TryGetMenuManager(out MenuManager menuManager))
                 menuManager.RegisterMenu(this);
         }
 
@@ -105,7 +106,7 @@ namespace Base.CorePackage.MenuManaging
 
             ShutdownManager.Deregister(this);
 
-            if (ServiceLocator.TryGet(out MenuManager menuManager))
+            if (TryGetMenuManager(out MenuManager menuManager))
                 menuManager.DeregisterMenu(this);
 
             if (IsOpen)
@@ -152,7 +153,7 @@ namespace Base.CorePackage.MenuManaging
 
             RegisterParentMenu(parentMenuIdentifier);
 
-            if (ServiceLocator.TryGet(out MenuManager menuManager))
+            if (TryGetMenuManager(out MenuManager menuManager))
                 menuManager.RegisterOpenMenu(this, (uint)Priority, this);
 
             OnOpened();
@@ -231,6 +232,27 @@ namespace Base.CorePackage.MenuManaging
         protected virtual void OnBack() { }
 
         /// <summary>
+        /// Resolves the menu manager once and keeps it, so the six places that need it stop going
+        /// through the service locator on every call.
+        /// </summary>
+        /// <remarks>
+        /// Resolved lazily rather than in <c>Awake</c>, because a menu may wake before the manager is
+        /// registered. The null check doubles as the destroyed check: a manager torn down on scene
+        /// unload compares equal to null through Unity's operator, so the next call resolves again.
+        /// </remarks>
+        /// <param name="menuManager">The resolved manager, or <c>null</c> when none is registered.</param>
+        /// <returns><c>true</c> when a usable manager was resolved.</returns>
+        private bool TryGetMenuManager(out MenuManager menuManager)
+        {
+            if (_menuManager == null)
+                ServiceLocator.TryGet(out _menuManager);
+
+            menuManager = _menuManager;
+
+            return _menuManager != null;
+        }
+
+        /// <summary>
         /// Finds the first menu in <see cref="blockingMenus"/> that is currently open. Menus listed
         /// there own the screen while they are up, so this one must stay closed until they go away.
         /// </summary>
@@ -243,7 +265,7 @@ namespace Base.CorePackage.MenuManaging
             if (blockingMenus == null || blockingMenus.Length == 0)
                 return false;
 
-            if (!ServiceLocator.TryGet(out MenuManager menuManager))
+            if (!TryGetMenuManager(out MenuManager menuManager))
                 return false;
 
             foreach (MenuIdentifier identifier in blockingMenus)
@@ -263,7 +285,7 @@ namespace Base.CorePackage.MenuManaging
             if (parentMenuIdentifier == null)
                 return;
 
-            if (!ServiceLocator.TryGet(out MenuManager menuManager))
+            if (!TryGetMenuManager(out MenuManager menuManager))
                 return;
 
             if (!menuManager.TryGetMenu(parentMenuIdentifier, out Menu parentMenu))
@@ -278,7 +300,7 @@ namespace Base.CorePackage.MenuManaging
 
         private void CleanupMenuState(MenuIdentifier closingMenuIdentifier = null)
         {
-            bool hasMenuManager = ServiceLocator.TryGet(out MenuManager menuManager);
+            bool hasMenuManager = TryGetMenuManager(out MenuManager menuManager);
 
             // Close child menus first, they cannot outlive their parent.
             if (hasMenuManager)

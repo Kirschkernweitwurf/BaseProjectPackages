@@ -5,7 +5,7 @@ using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Base.AttributePackage.Editor
+namespace Base.AttributePackage.Editor.Drawers
 {
     /// <summary>
     /// Draws a Color field as a row of swatches read from another member, for
@@ -21,6 +21,12 @@ namespace Base.AttributePackage.Editor
         private const float SwatchWidth = 20f;
 
         protected override string UsageMessage => AttributeNames.Usage<ColorPaletteAttribute>("a Color");
+
+        // The selected swatch is outlined by growing it, so it reaches past the row on every side. The
+        // two horizontal sides have the row's own slack; the vertical ones need the room reserved here,
+        // and a little beyond the outline itself, or the outline lands hard against the field above and
+        // the field below instead of sitting between them.
+        protected override float VerticalPadding => BorderWidth + OutlineBreathing;
 
         private static readonly Color Outline = Color.white;
 
@@ -54,12 +60,6 @@ namespace Base.AttributePackage.Editor
                 ? null
                 : $"'{settings.Member}' yielded no colors.";
         }
-
-        // The selected swatch is outlined by growing it, so it reaches past the row on every side. The
-        // two horizontal sides have the row's own slack; the vertical ones need the room reserved here,
-        // and a little beyond the outline itself, or the outline lands hard against the field above and
-        // the field below instead of sitting between them.
-        protected override float VerticalPadding => BorderWidth + OutlineBreathing;
 
         protected override void DrawField(Rect rect, SerializedProperty property, GUIContent label, bool complete)
         {

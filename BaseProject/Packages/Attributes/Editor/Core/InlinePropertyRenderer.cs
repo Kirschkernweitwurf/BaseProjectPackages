@@ -4,7 +4,7 @@ using Base.UtilityPackage.Editor;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor
+namespace Base.AttributePackage.Editor.Drawers
 {
     /// <summary>
     /// Draws the children of an <see cref="InlinePropertyAttribute"/> member on the field's own row.
@@ -63,8 +63,8 @@ namespace Base.AttributePackage.Editor
                 Rect cell = new(content.x + i * (width + CellGap), content.y, width, content.height);
                 GUIContent label = ScratchContent.For(Children[i].displayName);
 
-                EditorGUIUtility.labelWidth = Mathf.Min(
-                    EditorStyles.label.CalcSize(label).x + LabelPadding, width * MaximumLabelShare);
+                EditorGUIUtility.labelWidth = Mathf.Min(EditorStyles.label.CalcSize(label).x + LabelPadding,
+                    width * MaximumLabelShare);
 
                 EditorGUI.PropertyField(cell, Children[i], label);
             }

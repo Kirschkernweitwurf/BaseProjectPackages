@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Base.ToolPackage.Editor.AssemblyGraph.Architecture;
 using Base.ToolPackage.Editor.CodebaseGraph.Analysis;
 using Base.ToolPackage.Editor.CodebaseGraph.Editing;
 using Base.ToolPackage.Editor.CodebaseGraph.Model;
@@ -722,6 +723,8 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
         private void ExportFindings() => CodebaseGraphReportIo.Export(_graph);
 
+        private void ExportAssemblyEdgeReport() => AssemblyEdgeReportCommand.Export(_graph);
+
         /// <summary>
         /// Exports whatever is currently in view. The namespace you have opened wins, then the assembly
         /// the toolbar is filtered to, because that is the order in which they narrow what is on screen.
@@ -797,7 +800,8 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             Rescan = Rescan,
             Export = ExportFindings,
             Import = ImportDismissals,
-            ExportScope = ExportScope
+            ExportScope = ExportScope,
+            AssemblyEdgeReport = ExportAssemblyEdgeReport
         };
     }
 }

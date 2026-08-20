@@ -1,4 +1,7 @@
-namespace Base.AttributePackage.Editor
+using Base.AttributePackage.Editor.Core.Interfaces;
+using Base.AttributePackage.Editor.Drawers;
+
+namespace Base.AttributePackage.Editor.Handlers
 {
     /// <summary>
     /// Clamps <see cref="MinMaxAttribute"/> fields into an inclusive range. Applies to int and float

@@ -1,6 +1,7 @@
+using Base.AttributePackage.Editor.Handlers;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor
+namespace Base.AttributePackage.Editor.Drawers
 {
     /// <summary>Hides <see cref="HideInPlayModeAttribute"/> fields while in play mode.</summary>
     internal sealed class HideInPlayModeHandler : IVisibilityHandler

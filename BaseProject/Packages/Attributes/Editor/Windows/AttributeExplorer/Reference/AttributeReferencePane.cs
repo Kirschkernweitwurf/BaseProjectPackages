@@ -1,8 +1,10 @@
+using System;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
-namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Reference
+namespace Base.AttributePackage.Editor.Drawers.Windows.AttributeExplorer.Reference
 {
     /// <summary>
     /// The reference tab: a searchable list of attributes on the left, and on the right either one
@@ -17,40 +19,40 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Reference
     /// rebuilt from the selected name.
     /// </para>
     /// </remarks>
-    [System.Serializable]
+    [Serializable]
     internal sealed class AttributeReferencePane
     {
         private const float ActionGap = 6f;
         private const float ActionHeight = 22f;
+        private const string BulletGlyph = "\u2022";
+        private const float BulletWidth = 14f;
+        private const float CardGap = 4f;
+        private const float CardPadding = 10f;
+        private const float CardSpacing = 6f;
         private const string CopiedAttributeNotice = "Attribute copied";
         private const string CopiedNotice = "Snippet copied";
         private const string CopyAttributeLabel = "Copy attribute";
         private const float CopyAttributeWidth = 118f;
         private const string CopyLabel = "Copy snippet";
         private const float CopySnippetWidth = 108f;
-        private const float CardGap = 4f;
-        private const float CardPadding = 10f;
-        private const float CardSpacing = 6f;
+        private const string CountFormat = "{0} attributes in this category";
         private const string CreateSceneLabel = "Create in scene";
         private const string CreateSceneTooltip = "Creates a temporary object carrying this sample and "
             + "selects it, so the Scene view and the component header can show what an embedded "
             + "inspector cannot. It is never saved with the scene.";
         private const float CreateSceneWidth = 118f;
-        private const string CountFormat = "{0} attributes in this category";
         private const float DividerWidth = 1f;
+        private const float FocusOutline = 1f;
         private const float HeadingHeight = 26f;
+        private const string InfoHeading = "Good to know";
         private const float MinimumWidth = 120f;
         private const float NotificationFade = 0.8f;
         private const float OpenFileWidth = 82f;
         private const string OpenLabel = "Open file";
         private const string PreviewHeading = "Live";
-        private const string InfoHeading = "Good to know";
         private const string RequirementsHeading = "Requirements";
-        private const string SourceHeading = "Source";
-        private const string BulletGlyph = "\u2022";
-        private const float BulletWidth = 14f;
-        private const float FocusOutline = 1f;
         private const float ScrollStep = 40f;
+        private const string SourceHeading = "Source";
         private const string VariationsHeading = "Variations";
 
         private static readonly GUIContent CopiedAttributeContent = new(CopiedAttributeNotice);
@@ -64,17 +66,6 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Reference
         [SerializeField] private string selectedCategory;
         [SerializeField] private bool contentFocused;
         [SerializeField] private int focusedCard = -1;
-
-        private readonly AttributeReferenceList _list = new();
-
-        private AttributeSampleEntry _selected;
-        private Object _instance;
-        private GameObject _host;
-        private UnityEditor.Editor _editor;
-        private MonoScript _script;
-        private string _snippet = string.Empty;
-        private EditorWindow _owner;
-        private float _contentWidth = MinimumWidth;
 
         /// <summary>The text the list filters by.</summary>
         internal string Search
@@ -90,12 +81,16 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Reference
             set => listScroll = value;
         }
 
-        /// <summary>Repaints the window this pane belongs to.</summary>
-        private void Repaint()
-        {
-            if (_owner != null)
-                _owner.Repaint();
-        }
+        private readonly AttributeReferenceList _list = new();
+
+        private AttributeSampleEntry _selected;
+        private Object _instance;
+        private GameObject _host;
+        private UnityEditor.Editor _editor;
+        private MonoScript _script;
+        private string _snippet = string.Empty;
+        private EditorWindow _owner;
+        private float _contentWidth = MinimumWidth;
 
         /// <summary>Whether the given attribute is the one being shown.</summary>
         /// <param name="entry">The entry to test.</param>
@@ -105,8 +100,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Reference
         /// <summary>Whether the page of the named category is the one being shown.</summary>
         /// <param name="category">The category to test.</param>
         /// <returns>True while that category is selected.</returns>
-        internal bool IsCategorySelected(string category)
-            => selectedTitle == null && selectedCategory == category;
+        internal bool IsCategorySelected(string category) => selectedTitle == null && selectedCategory == category;
 
         /// <summary>Shows the given attribute, replacing whatever was shown before.</summary>
         /// <param name="entry">The entry to show.</param>
@@ -154,15 +148,6 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Reference
             Release();
         }
 
-        // A field left mid-edit otherwise keeps the keyboard across the page change, so the next arrow
-        // key edits a value on a page nobody is looking at any more.
-        private static void Unfocus()
-        {
-            GUIUtility.keyboardControl = 0;
-            EditorGUIUtility.editingTextField = false;
-            GUI.FocusControl(null);
-        }
-
         /// <summary>Draws the whole tab into the given area.</summary>
         /// <param name="area">The area the tab owns, in window coordinates.</param>
         /// <param name="styles">The window styles.</param>
@@ -184,7 +169,8 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Reference
             Rect content = new(area.x + contentX, area.y, Mathf.Max(area.width - contentX, MinimumWidth),
                 area.height);
 
-            _contentWidth = Mathf.Max(content.width - AttributeExplorerStyles.Padding * 2f
+            _contentWidth = Mathf.Max(content.width
+                - AttributeExplorerStyles.Padding * 2f
                 - AttributeExplorerStyles.ScrollBarWidth, MinimumWidth);
 
             if (Event.current.type == EventType.Repaint)
@@ -220,6 +206,44 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Reference
             _host = null;
             _script = null;
             _snippet = string.Empty;
+        }
+
+        // A field left mid-edit otherwise keeps the keyboard across the page change, so the next arrow
+        // key edits a value on a page nobody is looking at any more.
+        private static void Unfocus()
+        {
+            GUIUtility.keyboardControl = 0;
+            EditorGUIUtility.editingTextField = false;
+            GUI.FocusControl(null);
+        }
+
+        private static void DrawOutline(Rect rect, Color color)
+        {
+            Rect inset = new(rect.x, rect.y, rect.width - FocusOutline, rect.height - FocusOutline);
+
+            DrawBorder(inset, color);
+        }
+
+        private static void DrawBorder(Rect rect, Color color)
+        {
+            EditorGUI.DrawRect(new Rect(rect.x, rect.y, rect.width, 1f), color);
+            EditorGUI.DrawRect(new Rect(rect.x, rect.yMax - 1f, rect.width, 1f), color);
+            EditorGUI.DrawRect(new Rect(rect.x, rect.y, 1f, rect.height), color);
+            EditorGUI.DrawRect(new Rect(rect.xMax - 1f, rect.y, 1f, rect.height), color);
+        }
+
+        private static MonoScript Script(Object instance) => instance switch
+        {
+            MonoBehaviour behaviour => MonoScript.FromMonoBehaviour(behaviour),
+            ScriptableObject asset => MonoScript.FromScriptableObject(asset),
+            _ => null
+        };
+
+        /// <summary>Repaints the window this pane belongs to.</summary>
+        private void Repaint()
+        {
+            if (_owner != null)
+                _owner.Repaint();
         }
 
         // Moves through the list as it is currently shown, so a filtered or collapsed list steps over
@@ -383,7 +407,8 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Reference
             if (count == 0)
                 return false;
 
-            if (current.keyCode == KeyCode.Return || current.keyCode == KeyCode.KeypadEnter
+            if (current.keyCode == KeyCode.Return
+                || current.keyCode == KeyCode.KeypadEnter
                 || current.keyCode == KeyCode.RightArrow)
             {
                 OpenFocusedCard();
@@ -603,21 +628,6 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Reference
             GUILayout.Space(CardSpacing);
         }
 
-        private static void DrawOutline(Rect rect, Color color)
-        {
-            Rect inset = new(rect.x, rect.y, rect.width - FocusOutline, rect.height - FocusOutline);
-
-            DrawBorder(inset, color);
-        }
-
-        private static void DrawBorder(Rect rect, Color color)
-        {
-            EditorGUI.DrawRect(new Rect(rect.x, rect.y, rect.width, 1f), color);
-            EditorGUI.DrawRect(new Rect(rect.x, rect.yMax - 1f, rect.width, 1f), color);
-            EditorGUI.DrawRect(new Rect(rect.x, rect.y, 1f, rect.height), color);
-            EditorGUI.DrawRect(new Rect(rect.xMax - 1f, rect.y, 1f, rect.height), color);
-        }
-
         private void DrawAttributePage(AttributeExplorerStyles styles)
         {
             DrawHeading(styles);
@@ -781,13 +791,6 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Reference
             EditorGUILayout.LabelField(text, style,
                 GUILayout.Height(style.CalcHeight(ScratchContent.For(text), _contentWidth)));
         }
-
-        private static MonoScript Script(Object instance) => instance switch
-        {
-            MonoBehaviour behaviour => MonoScript.FromMonoBehaviour(behaviour),
-            ScriptableObject asset => MonoScript.FromScriptableObject(asset),
-            _ => null
-        };
 
         private void Notify(GUIContent content)
         {

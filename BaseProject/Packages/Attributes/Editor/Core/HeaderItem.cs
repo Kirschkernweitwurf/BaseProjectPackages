@@ -1,6 +1,6 @@
 using System.Reflection;
 
-namespace Base.AttributePackage.Editor
+namespace Base.AttributePackage.Editor.Drawers
 {
     /// <summary>One control in the component header, resolved once per type so repaints run no reflection.</summary>
     internal readonly struct HeaderItem

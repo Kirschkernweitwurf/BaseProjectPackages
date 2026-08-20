@@ -2,7 +2,7 @@ using Base.UtilityPackage.Editor;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor
+namespace Base.AttributePackage.Editor.Drawers
 {
     /// <summary>
     /// Shared base for <see cref="FilePathDrawer"/> and <see cref="FolderPathDrawer"/>. Draws the

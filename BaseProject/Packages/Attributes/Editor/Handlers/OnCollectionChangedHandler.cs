@@ -1,8 +1,10 @@
 using System.Collections.Generic;
 using System.Reflection;
+using Base.AttributePackage.Editor.Core.Interfaces;
+using Base.AttributePackage.Editor.Drawers;
 using UnityEditor;
 
-namespace Base.AttributePackage.Editor
+namespace Base.AttributePackage.Editor.Handlers
 {
     /// <summary>
     /// Calls the before and after methods of <see cref="OnCollectionChangedAttribute"/> around a change
@@ -20,24 +22,13 @@ namespace Base.AttributePackage.Editor
         private const int BeforeFieldOrder = 999;
         private const string KeySeparator = ":";
 
-        // Handlers are shared across inspectors, so the recorded size is keyed by target and path rather
-        // than held in a field. Entries are removed as soon as they are consumed.
-        private static readonly Dictionary<string, int> Recorded = new();
-
         int IBeforeFieldHandler.Order => BeforeFieldOrder;
 
         int IAfterFieldHandler.Order => AfterFieldOrder;
 
-        public void BeforeField(in MemberContext context)
-        {
-            if (context.GetAttribute<OnCollectionChangedAttribute>() == null)
-                return;
-
-            if (!IsCollection(context.Property))
-                return;
-
-            Recorded[KeyFor(context)] = context.Property.arraySize;
-        }
+        // Handlers are shared across inspectors, so the recorded size is keyed by target and path rather
+        // than held in a field. Entries are removed as soon as they are consumed.
+        private static readonly Dictionary<string, int> Recorded = new();
 
         public void AfterField(in MemberContext context)
         {
@@ -67,6 +58,17 @@ namespace Base.AttributePackage.Editor
             Invoke(context, attribute.After, after);
 
             context.Editor.Repaint();
+        }
+
+        public void BeforeField(in MemberContext context)
+        {
+            if (context.GetAttribute<OnCollectionChangedAttribute>() == null)
+                return;
+
+            if (!IsCollection(context.Property))
+                return;
+
+            Recorded[KeyFor(context)] = context.Property.arraySize;
         }
 
         private static bool IsCollection(SerializedProperty property)

@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Base.AttributePackage.Editor.Drawers;
+using JetBrains.Annotations;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Base.AttributePackage.Editor
+namespace Base.AttributePackage.Editor.Core
 {
     /// <summary>
     /// Draws the controls declared by <see cref="HeaderButtonAttribute"/>,
@@ -109,8 +111,10 @@ namespace Base.AttributePackage.Editor
             return parameters.Length == 1 && parameters[0].ParameterType == typeof(Rect);
         }
 
-        // Bound by HeaderItemInjector. The signature has to match Unity's header item delegate exactly:
+        // Bound by HeaderItemInjector through DrawMethodName, so no compiled instruction calls it and a
+        // static scan reads it as dead. The signature has to match Unity's header item delegate exactly:
         // the rect is the next free slot, and returning true tells Unity that slot is taken.
+        [UsedImplicitly]
         private static bool DrawHeaderItems(Rect rect, Object[] targets)
         {
             if (rect.x < 0f || targets == null || targets.Length == 0)

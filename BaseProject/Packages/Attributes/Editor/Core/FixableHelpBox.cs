@@ -1,10 +1,11 @@
 using System;
 using System.Reflection;
+using Base.AttributePackage.Editor.Handlers;
 using Base.UtilityPackage.Logging;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor
+namespace Base.AttributePackage.Editor.Drawers
 {
     /// <summary>
     /// Draws a compact message with a button on its right that runs a repair method.

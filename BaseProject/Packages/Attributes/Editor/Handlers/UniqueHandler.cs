@@ -1,9 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using Base.AttributePackage.Editor.Core.Interfaces;
+using Base.AttributePackage.Editor.Drawers;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor
+namespace Base.AttributePackage.Editor.Handlers
 {
     /// <summary>
     /// Shows a compact error per duplicate group of a <see cref="UniqueAttribute"/> list, followed by a

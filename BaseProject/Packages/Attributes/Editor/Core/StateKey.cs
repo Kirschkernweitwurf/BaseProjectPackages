@@ -1,6 +1,6 @@
 using System;
 
-namespace Base.AttributePackage.Editor
+namespace Base.AttributePackage.Editor.Drawers
 {
     /// <summary>
     /// Builds the string keys used for EditorPrefs entries and for per-field editor state, so every

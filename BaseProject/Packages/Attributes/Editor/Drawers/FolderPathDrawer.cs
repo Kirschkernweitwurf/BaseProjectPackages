@@ -1,7 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor
+namespace Base.AttributePackage.Editor.Drawers
 {
     /// <summary>Draws a folder path field with a browse button for <see cref="FolderPathAttribute"/>.</summary>
     [CustomPropertyDrawer(typeof(FolderPathAttribute))]

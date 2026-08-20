@@ -456,11 +456,24 @@
     background-color: rgba(255, 255, 255, 0.04);
 }
 
+/* Never shrinks. A row with two buttons has to take the space from the label, not from the labels of
+   the buttons, or the text on them wraps into the row below. */
 .dismissal-row Button {
+    flex-shrink: 0;
     margin-left: var(--space-md);
     padding-left: var(--space-lg);
     padding-right: var(--space-lg);
     height: 22px;
+}
+
+/* Grows into the free space and gives it back when there is none. Unity defaults flex-shrink to 0, so
+   without this the column stays as wide as the longest id it holds and pushes the buttons out of the
+   row. The zero minimum is what lets it go below its content width, which is what the ellipsis needs. */
+.dismissal-text {
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-width: 0;
+    overflow: hidden;
 }
 
 .dismissal-row.dismissal-stale {

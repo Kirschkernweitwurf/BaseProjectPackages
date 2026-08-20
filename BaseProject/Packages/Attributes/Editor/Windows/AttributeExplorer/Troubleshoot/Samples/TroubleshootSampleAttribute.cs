@@ -1,6 +1,6 @@
 using System;
 
-namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot.Samples
+namespace Base.AttributePackage.Editor.Drawers.Windows.AttributeExplorer.Troubleshoot.Samples
 {
     /// <summary>
     /// Marks a type as a deliberately broken example for the troubleshoot window. The project scan skips

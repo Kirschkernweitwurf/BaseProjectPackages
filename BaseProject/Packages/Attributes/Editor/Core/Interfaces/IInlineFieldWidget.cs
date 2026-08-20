@@ -1,6 +1,7 @@
+using Base.AttributePackage.Editor.Drawers;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor
+namespace Base.AttributePackage.Editor.Core.Interfaces
 {
     /// <summary>
     /// Draws a small control on the field line, to the right of the value. The renderer reserves real

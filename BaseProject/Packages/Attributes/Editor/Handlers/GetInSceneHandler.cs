@@ -1,8 +1,10 @@
 using System;
+using Base.AttributePackage.Editor.Core.Interfaces;
+using Base.AttributePackage.Editor.Drawers;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Base.AttributePackage.Editor
+namespace Base.AttributePackage.Editor.Handlers
 {
     /// <summary>
     /// Fills an empty <see cref="GetInSceneAttribute"/> field from anywhere in the open scenes. The

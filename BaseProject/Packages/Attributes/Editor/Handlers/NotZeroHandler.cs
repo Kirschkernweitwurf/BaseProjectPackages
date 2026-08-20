@@ -1,8 +1,10 @@
 using System.Collections.Generic;
+using Base.AttributePackage.Editor.Core.Interfaces;
+using Base.AttributePackage.Editor.Drawers;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor
+namespace Base.AttributePackage.Editor.Handlers
 {
     /// <summary>
     /// Pushes <see cref="NotZeroAttribute"/> fields away from zero. Applies to int and float and to each

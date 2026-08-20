@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
-using Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot.Samples;
+using Base.AttributePackage.Editor.Drawers.Windows.AttributeExplorer.Troubleshoot.Samples;
 using Base.UtilityPackage.Collections;
 using Base.UtilityPackage.Serialization;
 using UnityEngine;
 using UnityEngine.Audio;
 using Random = UnityEngine.Random;
 
-namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Showcase
+namespace Base.AttributePackage.Editor.Drawers.Windows.AttributeExplorer.Showcase
 {
     /// <summary>
     /// A throwaway asset whose only job is to carry one of every attribute, so the showcase tab can draw
@@ -460,7 +460,6 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Showcase
         [ListDrawerSettings(ShowAlternatingBackground = false)]
         [Tooltip("Striping turned off. On by default, and worth keeping for anything longer than a "
             + "handful of rows.")]
-
         [Title("9. Size, toggles and widgets", "#A2CCFF", Foldout = true, DefaultExpanded = false)]
         [InfoBox("The size limits switch off the add and remove controls of the list and table drawers, "
             + "since a button that gets clamped back the moment you press it is worse than no button.")]
@@ -482,9 +481,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Showcase
         [StartExpanded] public List<string> expandedList = new();
 
         /// <summary>Drives the field below it, and has no row of its own because of that.</summary>
-
         /// <summary>Second toggle, for the object reference below.</summary>
-
         [Rate(1, 10)] public int difficulty = 7;
 
         [ColorPalette(nameof(BrandColors))] public Color brandColor = Color.white;

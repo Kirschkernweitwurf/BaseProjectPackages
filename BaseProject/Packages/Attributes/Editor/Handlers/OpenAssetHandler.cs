@@ -1,8 +1,9 @@
+using Base.AttributePackage.Editor.Drawers;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Base.AttributePackage.Editor
+namespace Base.AttributePackage.Editor.Handlers
 {
     /// <summary>
     /// Opens the referenced asset for <see cref="OpenAssetAttribute"/> fields. Works on object
@@ -24,8 +25,7 @@ namespace Base.AttributePackage.Editor
         // Reused so a custom label does not allocate a new content every repaint.
         private static readonly GUIContent CustomContent = new(string.Empty, Tooltip);
 
-        protected override bool Applies(in MemberContext context)
-            => context.GetAttribute<OpenAssetAttribute>() != null;
+        protected override bool Applies(in MemberContext context) => context.GetAttribute<OpenAssetAttribute>() != null;
 
         protected override bool IsSupported(SerializedProperty property)
             => property.propertyType == SerializedPropertyType.ObjectReference

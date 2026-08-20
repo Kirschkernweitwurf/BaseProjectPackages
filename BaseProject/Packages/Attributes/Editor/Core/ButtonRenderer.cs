@@ -5,7 +5,7 @@ using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Base.AttributePackage.Editor
+namespace Base.AttributePackage.Editor.Drawers
 {
     /// <summary>
     /// Draws inspector buttons for methods marked with <see cref="ButtonAttribute"/>. The annotated
@@ -160,10 +160,9 @@ namespace Base.AttributePackage.Editor
             return title;
         }
 
-        private static float HeightOf(in InspectorButton button)
-            => button.Attribute.Size == EButtonSize.Large
-                ? EditorGUIUtility.singleLineHeight * LargeHeightScale
-                : EditorGUIUtility.singleLineHeight;
+        private static float HeightOf(in InspectorButton button) => button.Attribute.Size == EButtonSize.Large
+            ? EditorGUIUtility.singleLineHeight * LargeHeightScale
+            : EditorGUIUtility.singleLineHeight;
 
         // The arguments are shared across a multi-object selection, because they belong to the call
         // rather than to any one of the objects it is made on.

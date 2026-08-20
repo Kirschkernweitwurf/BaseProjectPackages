@@ -2,7 +2,7 @@ using Base.UtilityPackage.Editor;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor
+namespace Base.AttributePackage.Editor.Drawers
 {
     /// <summary>Draws a Vector2 as a min-max range slider for <see cref="MinMaxSliderAttribute"/>.</summary>
     [CustomPropertyDrawer(typeof(MinMaxSliderAttribute))]

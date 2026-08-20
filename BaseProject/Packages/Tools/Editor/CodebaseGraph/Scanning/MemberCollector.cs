@@ -216,6 +216,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
 
                 ApplyAttributeEntryPoint(property, member);
                 ApplyBackingFieldSerialization(type, property.Name, member);
+                ApplySuppression(property, member);
                 Add(registry, node, member);
 
                 RedirectAccessor(getter, key, registry, accessorTokens);
@@ -252,6 +253,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
                     any.IsAbstract);
 
                 ApplyAttributeEntryPoint(declaredEvent, member);
+                ApplySuppression(declaredEvent, member);
                 Add(registry, node, member);
 
                 RedirectAccessor(adder, key, registry, accessorTokens);
@@ -305,6 +307,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
                 UnityEntryPointCatalog.CollectSerializedAliases(field, member.SerializedAliases);
 
                 ApplyAttributeEntryPoint(field, member);
+                ApplySuppression(field, member);
                 Add(registry, node, member);
             }
         }
@@ -338,6 +341,8 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
                     member.EntryPointReason = reason;
                 }
 
+                ApplyAttributeEntryPoint(constructor, member);
+                ApplySuppression(constructor, member);
                 Add(registry, node, member);
             }
         }
@@ -380,6 +385,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
                 member.IsStateReset = isReset;
                 member.IsAnimationEventSignature = UnityEntryPointCatalog.IsAnimationEventSignature(method);
 
+                ApplySuppression(method, member);
                 Add(registry, node, member);
             }
         }
@@ -484,6 +490,19 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
 
             node.IsEntryPoint = true;
             node.EntryPointReason = reason;
+        }
+
+        /// <summary>
+        /// Takes a member the author has marked as deliberately out of scope. The same attribute names
+        /// answer for a whole type and for one member of it, so an ignore attribute reads the same way
+        /// wherever it is written. The older source line marker sets the flag from its own pass.
+        /// </summary>
+        private static void ApplySuppression(MemberInfo member, MemberNodeInfo node)
+        {
+            if (!UnityEntryPointCatalog.IsSuppressed(member, out _))
+                return;
+
+            node.IsSuppressed = true;
         }
 
         private static void Add(MemberRegistry registry, TypeNodeInfo node, MemberNodeInfo member)

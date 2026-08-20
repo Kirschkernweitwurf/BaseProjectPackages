@@ -1,8 +1,7 @@
 using System;
 using UnityEditor;
-using UnityEngine;
 
-namespace Base.AttributePackage.Editor
+namespace Base.AttributePackage.Editor.Drawers
 {
     /// <summary>
     /// Widens the label column for one field when its label would otherwise be clipped.
@@ -55,7 +54,8 @@ namespace Base.AttributePackage.Editor
                 return 0f;
 
             return EditorStyles.label.CalcSize(ScratchContent.For(text)).x
-                + EditorGUI.indentLevel * IndentStep + Padding;
+                + EditorGUI.indentLevel * IndentStep
+                + Padding;
         }
 
         /// <summary>Restores the label column to what it was.</summary>

@@ -1,7 +1,9 @@
 using System.Reflection;
+using Base.AttributePackage.Editor.Core.Interfaces;
+using Base.AttributePackage.Editor.Drawers;
 using UnityEditor;
 
-namespace Base.AttributePackage.Editor
+namespace Base.AttributePackage.Editor.Handlers
 {
     /// <summary>
     /// Detects inspector edits on <see cref="OnValueChangedAttribute"/> fields and invokes the named

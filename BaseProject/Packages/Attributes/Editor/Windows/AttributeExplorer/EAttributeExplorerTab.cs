@@ -1,4 +1,4 @@
-namespace Base.AttributePackage.Editor.Windows.AttributeExplorer
+namespace Base.AttributePackage.Editor.Drawers.Windows.AttributeExplorer
 {
     /// <summary>
     /// Which view the attribute window is showing.

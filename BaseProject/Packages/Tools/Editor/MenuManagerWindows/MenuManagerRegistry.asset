@@ -28,6 +28,10 @@ MonoBehaviour:
   - rid: 4171306763800281288
   - rid: 4171306763800281302
   - rid: 4171306790334758914
+  - rid: 4171306793470787670
+  - rid: 4171306793470787671
+  - rid: 4171306793470787672
+  - rid: 4171306793470787673
   createAssetRoot:
   - rid: 5339058662016286883
   - rid: 4171306739388121291
@@ -311,6 +315,55 @@ MonoBehaviour:
         entry:
           id: MI:Base.UtilityPackage.Editor.Logging.CustomLogHandlerMenu.Toggle
           path: Tools/Base Packages/Unity Editor/Logging/Enable Custom Log Handler
+          enabled: 1
+          kind: 0
+          createFileName: 
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 4171306793470787670
+      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 0
+        entry:
+          id: MI:Base.AttributePackage.Editor.Drawers.Windows.GetComponentAssigner.GetComponentAssignerWindow.Open
+          path: Tools/Base Packages/Unity Editor/References/Assign GetComponents
+          enabled: 1
+          kind: 0
+          createFileName: 
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 4171306793470787671
+      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 0
+        entry:
+          id: MI:Base.AttributePackage.Editor.Drawers.Windows.RequiredReferenceWindow.RequiredReferenceOverviewWindow.Open
+          path: Tools/Base Packages/Unity Editor/References/Required References
+          enabled: 1
+          kind: 0
+          createFileName: 
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 4171306793470787672
+      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 0
+        entry:
+          id: MI:Base.AttributePackage.Editor.Drawers.Windows.AttributeExplorer.AttributeExplorerWindow.OpenWindow
+          path: Tools/Base Packages/Unity Editor/Project Health/Attributes
+          enabled: 1
+          kind: 0
+          createFileName: 
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 4171306793470787673
+      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 0
+        entry:
+          id: MI:Base.AttributePackage.Editor.Drawers.Windows.RequireComponentAudit.RequireComponentAuditWindow.Open
+          path: Tools/Base Packages/Unity Editor/References/GetComponent Require
+            Audit
           enabled: 1
           kind: 0
           createFileName: 

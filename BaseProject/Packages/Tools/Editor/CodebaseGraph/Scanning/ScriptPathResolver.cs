@@ -10,6 +10,12 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
     /// type whose name matches the file name, and returns nothing at all for generics, so on its own it
     /// loses every nested type, every enum sharing a file and every generic class. A text pass over the
     /// same files fills those in, and notes which files came out of a generator while it is there.
+    /// <br/><br/>
+    /// Only the files of assemblies the scan covers are read. Every script asset used to be, which meant
+    /// the text pass matched project members against the source of every installed Unity package, and a
+    /// const called Ignored was kept alive for years by an unrelated enum member of the same name in the
+    /// test framework. Nothing outside the scan can reference project code, so nothing outside it can
+    /// prove a project member is used.
     /// </summary>
     internal static class ScriptPathResolver
     {
@@ -31,14 +37,20 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
 
         private static readonly Regex TypeDeclarationRegex = new(TypeDeclarationPattern, RegexOptions.Compiled);
 
-        /// <summary>Lists every script asset in the project.</summary>
+        /// <summary>Lists every script asset belonging to an assembly the scan covers.</summary>
         /// <returns>The asset paths.</returns>
         public static List<string> CollectPaths()
         {
+            HashSet<string> inScope = ProjectAssemblyResolver.CollectProjectSourceFiles();
             List<string> paths = new();
 
             foreach (string guid in AssetDatabase.FindAssets(ScriptFilter))
-                paths.Add(AssetDatabase.GUIDToAssetPath(guid));
+            {
+                string path = AssetDatabase.GUIDToAssetPath(guid);
+
+                if (!string.IsNullOrEmpty(path) && inScope.Contains(path))
+                    paths.Add(path);
+            }
 
             return paths;
         }

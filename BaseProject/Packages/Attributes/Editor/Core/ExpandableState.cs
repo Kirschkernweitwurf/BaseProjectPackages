@@ -1,6 +1,6 @@
 using UnityEditor;
 
-namespace Base.AttributePackage.Editor
+namespace Base.AttributePackage.Editor.Drawers
 {
     /// <summary>
     /// Open state of the inline inspectors drawn by <see cref="ExpandableAttribute"/>. Stored in

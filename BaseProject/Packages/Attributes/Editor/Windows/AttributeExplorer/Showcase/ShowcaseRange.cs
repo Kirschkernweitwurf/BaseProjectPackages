@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Showcase
+namespace Base.AttributePackage.Editor.Drawers.Windows.AttributeExplorer.Showcase
 {
     /// <summary>
     /// Two-field value object, used by the showcase to show what an inline property saves: three rows

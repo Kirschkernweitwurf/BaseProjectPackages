@@ -1,7 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Windows.AttributeExplorer
+namespace Base.AttributePackage.Editor.Drawers.Windows.AttributeExplorer
 {
     /// <summary>
     /// Draws the row of tabs across the top of the window.

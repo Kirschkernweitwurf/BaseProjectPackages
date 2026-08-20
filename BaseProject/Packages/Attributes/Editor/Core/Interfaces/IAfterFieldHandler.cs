@@ -1,4 +1,6 @@
-namespace Base.AttributePackage.Editor
+using Base.AttributePackage.Editor.Drawers;
+
+namespace Base.AttributePackage.Editor.Core.Interfaces
 {
     /// <summary>
     /// Runs after a member is drawn. Used for clamping, validation messages, constraints and previews.

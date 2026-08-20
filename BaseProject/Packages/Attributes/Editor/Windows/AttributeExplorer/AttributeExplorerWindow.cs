@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
-using Base.AttributePackage.Editor.Windows.AttributeExplorer.Reference;
-using Base.AttributePackage.Editor.Windows.AttributeExplorer.Showcase;
-using Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot;
+using Base.AttributePackage.Editor.Drawers.Windows.AttributeExplorer.Reference;
+using Base.AttributePackage.Editor.Drawers.Windows.AttributeExplorer.Showcase;
+using Base.AttributePackage.Editor.Drawers.Windows.AttributeExplorer.Troubleshoot;
 using Base.UtilityPackage.Menus;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Windows.AttributeExplorer
+namespace Base.AttributePackage.Editor.Drawers.Windows.AttributeExplorer
 {
     /// <summary>
     /// One window for everything about the attribute package: a reference page per attribute, a showcase
@@ -26,6 +26,10 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer
         private const float ButtonWidth = 120f;
         private const string CopiedNotice = "Report copied";
         private const string CopyLabel = "Copy report";
+        private const string DemoLabel = "Demo types";
+        private const string DemoNotice = "Showing types that are broken on purpose, so the scan can be "
+            + "seen working on a project that has nothing wrong. These are never part of a project scan.";
+        private const float DemoWidth = 88f;
         private const string ErrorsOnlyLabel = "Errors only";
         private const float ErrorsOnlyWidth = 88f;
         private const float ListSpacing = 6f;
@@ -34,16 +38,12 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer
         private const float NotificationFade = 0.8f;
         private const string NotScannedMessage = "Not scanned yet.";
         private const string ScanLabel = "Scan";
-        private const float ShowcasePadding = 10f;
         private const float SearchHeight = 20f;
         private const string SearchHint = "Nothing matches the current filter.";
         private const float SearchWidth = 200f;
+        private const float ShowcasePadding = 10f;
         private const string SuccessMessage = "No problems found.";
         private const float TabBarHeight = 26f;
-        private const string DemoLabel = "Demo types";
-        private const string DemoNotice = "Showing types that are broken on purpose, so the scan can be "
-            + "seen working on a project that has nothing wrong. These are never part of a project scan.";
-        private const float DemoWidth = 88f;
 
         private static readonly GUIContent CopiedContent = new(CopiedNotice);
         private static readonly GUIContent TitleContent = new(AttributeExplorerInfo.WindowTitle);
@@ -55,15 +55,6 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer
         [SerializeField] private string search = string.Empty;
         [SerializeField] private Vector2 findingsScroll;
         [SerializeField] private Vector2 showcaseScroll;
-
-        private readonly AttributeExplorerStyles _styles = new();
-        private readonly AttributeTroubleshootStyles _findingStyles = new();
-
-        private List<AttributeIssueGroup> _groups = new();
-        private AttributeShowcase _showcase;
-        private bool _scanned;
-        private int _errors;
-        private int _warnings;
 
         // Created on first use and never saved, so the showcase can be edited freely without leaving
         // anything behind in the project.
@@ -80,6 +71,15 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer
                 return _showcase;
             }
         }
+
+        private readonly AttributeExplorerStyles _styles = new();
+        private readonly AttributeTroubleshootStyles _findingStyles = new();
+
+        private List<AttributeIssueGroup> _groups = new();
+        private AttributeShowcase _showcase;
+        private bool _scanned;
+        private int _errors;
+        private int _warnings;
 
 #region Unity Callbacks
         private void OnEnable()
