@@ -38,7 +38,7 @@ namespace Base.ToolPackage.Editor.CommandPalette
                 return;
 
             entries.Add(new CommandEntry(entry.Id, path, match.DeclaringType, ECommandKind.MenuItem,
-                EMenuDefinition.Dynamic, AssemblyOriginLookup.Classify(match.DeclaringType), match.Execute));
+                AssemblyOriginLookup.Classify(match.DeclaringType), match.Execute));
         }
 
         private static void TryAddCreateAsset(List<CommandEntry> entries, MenuEntry entry, string path,
@@ -55,8 +55,8 @@ namespace Base.ToolPackage.Editor.CommandPalette
                 ? match.DefaultFileName
                 : entry.CreateFileName;
 
-            entries.Add(new CommandEntry(entry.Id, path, type, ECommandKind.CreateAsset, EMenuDefinition.Dynamic,
-                AssemblyOriginLookup.Classify(type), () => MenuAssetCreator.Create(type, fileName)));
+            entries.Add(new CommandEntry(entry.Id, path, type, ECommandKind.CreateAsset,
+                AssemblyOriginLookup.Classify(type), execute: () => MenuAssetCreator.Create(type, fileName)));
         }
     }
 }

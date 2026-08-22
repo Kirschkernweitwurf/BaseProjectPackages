@@ -9,7 +9,7 @@ using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Base.AttributePackage.Editor.Drawers.Core
+namespace Base.AttributePackage.Editor.Drawers
 {
     /// <summary>
     /// Runs the per-member pipeline: visibility, enable state, before-field decorations, the field

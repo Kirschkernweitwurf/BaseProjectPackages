@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Reflection;
 using Base.AttributePackage.Editor.Core;
 using Base.AttributePackage.Editor.Drawers;
-using Base.AttributePackage.Editor.Drawers.Core;
 using Base.UtilityPackage.Editor;
 using UnityEditor;
 

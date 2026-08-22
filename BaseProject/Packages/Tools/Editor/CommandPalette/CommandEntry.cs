@@ -1,5 +1,4 @@
 using System;
-using Base.ToolPackage.Editor.MenuManagerWindows;
 using Base.ToolPackage.Editor.Shared;
 
 namespace Base.ToolPackage.Editor.CommandPalette
@@ -11,8 +10,6 @@ namespace Base.ToolPackage.Editor.CommandPalette
     internal sealed class CommandEntry
     {
         private const char PathSeparator = '/';
-
-        private readonly Action _execute;
 
         /// <summary>Stable id used to store tags and usage, independent of the current path.</summary>
         public string Id { get; }
@@ -35,22 +32,20 @@ namespace Base.ToolPackage.Editor.CommandPalette
         /// <summary>What executing the entry does.</summary>
         public ECommandKind Kind { get; }
 
-        /// <summary>Whether the entry comes from an attribute or from the menu manager.</summary>
-        public EMenuDefinition Definition { get; }
-
         /// <summary>Where the declaring code lives.</summary>
         public EAssetOrigin Origin { get; }
+
+        private readonly Action _execute;
 
         /// <summary>Creates an entry.</summary>
         /// <param name="id">Stable id used for tags and usage.</param>
         /// <param name="path">Full menu path, root segment included.</param>
         /// <param name="owner">Type that declares the command.</param>
         /// <param name="kind">What executing the entry does.</param>
-        /// <param name="definition">Whether the entry is attributed or managed.</param>
         /// <param name="origin">Where the declaring code lives.</param>
         /// <param name="execute">The action the palette runs.</param>
-        public CommandEntry(string id, string path, Type owner, ECommandKind kind, EMenuDefinition definition,
-            EAssetOrigin origin, Action execute)
+        public CommandEntry(string id, string path, Type owner, ECommandKind kind, EAssetOrigin origin,
+            Action execute)
         {
             Id = id;
             Path = path;
@@ -67,7 +62,6 @@ namespace Base.ToolPackage.Editor.CommandPalette
                 : string.Empty;
 
             Kind = kind;
-            Definition = definition;
             Origin = origin;
             _execute = execute;
         }
