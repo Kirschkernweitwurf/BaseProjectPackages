@@ -16,6 +16,9 @@ namespace Base.ControllerSupportPackage.Controller.Focus
     /// <see cref="InputDeviceTracker"/> available, restoration only runs while the gamepad is the
     /// active device, so mouse users can deselect freely. Without one, it always runs.
     /// </summary>
+    // The loop with NavigableGroup is by design. This exists to notice focus leaving a group, and a
+    // group is what it hands focus back to, so neither half means anything without the other. The
+    // same reason is written at NavigableGroup, because the tool anchors the finding on either one.
     public sealed class FocusWatchdog : GameServiceBehaviour
     {
         private readonly List<NavigableGroup> _groups = new();

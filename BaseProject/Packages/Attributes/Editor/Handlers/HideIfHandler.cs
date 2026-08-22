@@ -1,4 +1,4 @@
-using Base.AttributePackage.Editor.Handlers;
+using Base.AttributePackage.Editor.Core.Interfaces;
 
 namespace Base.AttributePackage.Editor.Drawers
 {

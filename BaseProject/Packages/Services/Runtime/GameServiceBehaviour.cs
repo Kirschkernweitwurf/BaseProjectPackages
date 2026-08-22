@@ -11,6 +11,9 @@ namespace Base.ServicePackage
     /// if you override these methods in derived classes.
     /// This can easily be checked by comparing the amount of usages and overrides of these methods in your IDE.
     /// </remarks>
+    // Load bearing on purpose. Every service in every package derives from this, and the whole class
+    // is two lines of registration that have not changed since they were written. An interface in
+    // front of it would only add a layer between a service and the locator it registers with.
     [DefaultExecutionOrder(ExecutionOrder)]
     public abstract class GameServiceBehaviour : MonoBehaviour, IGameService
     {

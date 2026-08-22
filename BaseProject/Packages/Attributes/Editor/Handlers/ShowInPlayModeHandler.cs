@@ -1,4 +1,4 @@
-using Base.AttributePackage.Editor.Drawers;
+using Base.AttributePackage.Editor.Core.Interfaces;
 using UnityEngine;
 
 namespace Base.AttributePackage.Editor.Handlers

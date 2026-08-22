@@ -51,13 +51,6 @@ namespace Base.UtilityPackage.Editor.Serialization
                 : DerivedFrom(baseType);
         }
 
-        /// <summary>Drops every cached list, so the next lookup collects again.</summary>
-        public static void Clear()
-        {
-            Constrained.Clear();
-            Unconstrained.Clear();
-        }
-
         private static Type[] DerivedFrom(Type baseType)
         {
             if (Constrained.TryGetValue(baseType, out Type[] cached))

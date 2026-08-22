@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Drawers
+namespace Base.AttributePackage.Editor
 {
     /// <summary>
     /// One reusable <see cref="GUIContent"/> for transient measuring, so drawers do not allocate a new

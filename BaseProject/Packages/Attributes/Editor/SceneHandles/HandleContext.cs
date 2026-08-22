@@ -11,6 +11,8 @@ namespace Base.AttributePackage.Editor.SceneHandles
     /// Everything a handle drawer needs about one field: the property to read and write, the object that
     /// owns it, and the transform the local space of the scene is measured against.
     /// </summary>
+    // Load bearing and concrete on purpose, for the same reason as MemberContext: it is the argument
+    // every handle drawer takes, and it only carries fields. There is no behavior here to swap.
     internal readonly struct HandleContext
     {
         /// <summary>The serialized property being visualized.</summary>

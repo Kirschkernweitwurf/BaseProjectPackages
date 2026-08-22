@@ -16,6 +16,10 @@ namespace Base.ControllerSupportPackage.Controller.Navigation
     /// active, it registers with the <see cref="FocusWatchdog"/> so its default can be restored when the
     /// gamepad loses its selection. Knows nothing about menus or any specific game layer.
     /// </summary>
+
+    // The loop with FocusWatchdog is by design. The watchdog exists to notice focus leaving a group,
+    // and a group is what it hands focus back to, so neither half means anything without the other.
+    // Breaking it would put an event or an interface between two types that always ship together.
     public sealed class NavigableGroup : MonoBehaviour
     {
         /// <summary>Serialized name of the auto activate field, for editor tooling.</summary>

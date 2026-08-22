@@ -1,8 +1,7 @@
-using Base.AttributePackage.Editor.Drawers;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Handlers
+namespace Base.AttributePackage.Editor.Drawers
 {
     /// <summary>
     /// Draws a compact single-line notice, much smaller than a default HelpBox. Supports info, warning

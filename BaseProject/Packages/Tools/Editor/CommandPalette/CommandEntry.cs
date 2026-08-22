@@ -7,9 +7,14 @@ namespace Base.ToolPackage.Editor.CommandPalette
     /// One executable entry of the command palette. Built once per index pass and never changed
     /// afterwards, so scoring a keystroke never touches the editor or the asset database.
     /// </summary>
+    // Load bearing and concrete on purpose. Built once per index pass and read on every keystroke, so
+    // it is a row of data rather than a service. There is only ever one kind of command entry, and an
+    // interface in front of it would add a call through a reference in the scoring hot path.
     internal sealed class CommandEntry
     {
         private const char PathSeparator = '/';
+
+        private readonly Action _execute;
 
         /// <summary>Stable id used to store tags and usage, independent of the current path.</summary>
         public string Id { get; }
@@ -34,8 +39,6 @@ namespace Base.ToolPackage.Editor.CommandPalette
 
         /// <summary>Where the declaring code lives.</summary>
         public EAssetOrigin Origin { get; }
-
-        private readonly Action _execute;
 
         /// <summary>Creates an entry.</summary>
         /// <param name="id">Stable id used for tags and usage.</param>

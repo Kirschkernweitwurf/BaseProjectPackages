@@ -42,7 +42,7 @@ namespace Base.ToolPackage.Editor.CommandPalette
             string fileName = attribute.fileName;
 
             return new CommandEntry(MenuEntryId.ForCreateAsset(type), path, type, ECommandKind.CreateAsset,
-                AssemblyOriginLookup.Classify(type), execute: () => MenuAssetCreator.Create(type, fileName));
+                AssemblyOriginLookup.Classify(type), () => MenuAssetCreator.Create(type, fileName));
         }
     }
 }

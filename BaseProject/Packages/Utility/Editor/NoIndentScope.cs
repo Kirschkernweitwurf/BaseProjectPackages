@@ -18,6 +18,9 @@ namespace Base.UtilityPackage.Editor
     /// everything drawn afterwards. This is also the shape Unity's own scopes use.
     /// </para>
     /// </remarks>
+    // Load bearing and concrete because it is a scope, not a service. It wraps two lines of Unity
+    // state and every editor drawer that computes its own rects needs it. There is no behavior here
+    // worth swapping out, so an interface would buy an abstraction over nothing.
     public sealed class NoIndentScope : GUI.Scope
     {
         private readonly int _indentLevel;
