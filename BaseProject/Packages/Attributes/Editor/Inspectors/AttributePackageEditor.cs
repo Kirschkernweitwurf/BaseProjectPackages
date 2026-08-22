@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Base.AttributePackage.Editor.Core;
 using Base.AttributePackage.Editor.Drawers;
 using Base.AttributePackage.Editor.Drawers.Core;
 using Base.UtilityPackage.Editor;
@@ -15,6 +16,12 @@ namespace Base.AttributePackage.Editor.Inspectors
     /// members and buttons by their renderers. Header buttons are not drawn from here: Unity does not
     /// call OnHeaderGUI for component editors, so <see cref="HeaderItemInjector"/> registers them with
     /// the header itself. Derive concrete editors targeting MonoBehaviour and ScriptableObject.
+    /// <para>
+    /// A type declaring nothing from this package is handed straight back to Unity. The registration
+    /// covers every MonoBehaviour and ScriptableObject in the project, so without this every third party
+    /// component would be rendered by this pipeline for no benefit, and any fault in it would reach the
+    /// whole project rather than the types that asked for the attributes.
+    /// </para>
     /// </summary>
     public abstract class AttributePackageEditor : UnityEditor.Editor
     {
@@ -25,6 +32,12 @@ namespace Base.AttributePackage.Editor.Inspectors
 
         public override void OnInspectorGUI()
         {
+            if (!AttributeInspectorSwitch.ShouldDraw(target.GetType()))
+            {
+                base.OnInspectorGUI();
+                return;
+            }
+
             serializedObject.Update();
             DrawFields();
             serializedObject.ApplyModifiedProperties();

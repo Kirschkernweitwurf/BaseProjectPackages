@@ -35,6 +35,12 @@ namespace Base.AttributePackage.Editor.Drawers
 
         static HeaderItemInjector()
         {
+            // The switch is read once here rather than per header draw, because Unity's list cannot be
+            // unregistered from cleanly. Flipping it takes effect on the next domain reload, which is
+            // what a switch meant for getting out of a bad interaction needs anyway.
+            if (AttributeInspectorSwitch.IsDisabled)
+                return;
+
             _headerItems = typeof(EditorGUIUtility).GetField(HeaderItemsField, FieldFlags);
 
             if (_headerItems == null)

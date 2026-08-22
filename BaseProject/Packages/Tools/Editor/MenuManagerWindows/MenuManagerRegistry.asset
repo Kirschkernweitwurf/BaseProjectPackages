@@ -22,27 +22,8 @@ MonoBehaviour:
   menuItemRoot:
   - rid: 4171306542554939473
   - rid: 5339058645413658751
-  - rid: 4171306739388121289
-  - rid: 4171306739388121290
-  - rid: 4171306763800281287
-  - rid: 4171306763800281288
-  - rid: 4171306763800281302
-  - rid: 4171306790334758914
-  - rid: 4171306793470787670
-  - rid: 4171306793470787671
-  - rid: 4171306793470787672
-  - rid: 4171306793470787673
   createAssetRoot:
   - rid: 5339058662016286883
-  - rid: 4171306739388121291
-  - rid: 4171306739388121292
-  - rid: 4171306739388121293
-  - rid: 4171306739388121294
-  - rid: 4171306739388121295
-  - rid: 4171306739388121296
-  - rid: 4171306739388121297
-  - rid: 4171306739388121298
-  - rid: 4171306739388121299
   menuItemGroups: []
   createAssetGroups: []
   groups: []
@@ -80,30 +61,6 @@ MonoBehaviour:
           createFileName: 
           overridePriority: 0
           overrideValue: 0
-    - rid: 4171306542554939478
-      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
-      data:
-        separator: 0
-        entry:
-          id: CA:Base.ControllerSupport.Haptics.RumblePattern
-          path: New Rumble Pattern
-          enabled: 1
-          kind: 1
-          createFileName: RP_RumblePattern
-          overridePriority: 0
-          overrideValue: 0
-    - rid: 4171306542554939492
-      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
-      data:
-        separator: 0
-        entry:
-          id: CA:Base.ControllerSupport.Haptics.RumbleConfig
-          path: New Rumble Config
-          enabled: 1
-          kind: 1
-          createFileName: RC_RumbleConfig
-          overridePriority: 0
-          overrideValue: 0
     - rid: 4171306542554939516
       type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
       data:
@@ -128,25 +85,13 @@ MonoBehaviour:
           createFileName: 
           overridePriority: 0
           overrideValue: 0
-    - rid: 4171306628888920156
-      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
-      data:
-        separator: 0
-        entry:
-          id: MI:Base.AttributePackage.Editor.Windows.AttributeExplorer.AttributeExplorerWindow.OpenWindow
-          path: Attributes
-          enabled: 1
-          kind: 0
-          createFileName: 
-          overridePriority: 0
-          overrideValue: 0
     - rid: 4171306739388121289
       type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
       data:
         separator: 0
         entry:
           id: MI:Base.MemoryProfilerPackage.Editor.MemoryProfilerWindow.Open
-          path: Tools/Base Packages/Unity Editor/Memory Profiler Automation
+          path: Memory Profiler Automation
           enabled: 1
           kind: 0
           createFileName: 
@@ -158,7 +103,7 @@ MonoBehaviour:
         separator: 0
         entry:
           id: MI:Base.ControllerSupportPackage.Editor.NavigationGroupsWindow.Open
-          path: Tools/Base Packages/Unity Editor/Controller Navigation Groups
+          path: Controller Navigation Groups
           enabled: 1
           kind: 0
           createFileName: 
@@ -170,7 +115,7 @@ MonoBehaviour:
         separator: 0
         entry:
           id: CA:Base.UtilityPackage.Identification.UniqueIdScriptableObject
-          path: Scriptable Objects/Base/UniqueId/New ScriptableObject
+          path: New ScriptableObject
           enabled: 1
           kind: 1
           createFileName: UID_UniqueIdScriptableObject
@@ -182,7 +127,7 @@ MonoBehaviour:
         separator: 0
         entry:
           id: CA:Base.TweeningPackage.Core.Data.Profiles.Vector3TweenProfileSo
-          path: Scriptable Objects/Base/Tweening/Profiles/New Vector3TweenProfile
+          path: New Vector3TweenProfile
           enabled: 1
           kind: 1
           createFileName: TPV_Vector3TweenProfile
@@ -194,7 +139,7 @@ MonoBehaviour:
         separator: 0
         entry:
           id: CA:Base.TweeningPackage.Core.Data.Profiles.TweenSettingsSo
-          path: Scriptable Objects/Base/Tweening/New TweenSettings
+          path: New TweenSettings
           enabled: 1
           kind: 1
           createFileName: TS_TweenSettings
@@ -206,7 +151,7 @@ MonoBehaviour:
         separator: 0
         entry:
           id: CA:Base.TweeningPackage.Core.Data.Profiles.ColorTweenProfileSo
-          path: Scriptable Objects/Base/Tweening/Profiles/New ColorTweenProfile
+          path: New ColorTweenProfile
           enabled: 1
           kind: 1
           createFileName: TPC_ColorTweenProfile
@@ -218,7 +163,7 @@ MonoBehaviour:
         separator: 0
         entry:
           id: CA:Base.TweeningPackage.Core.Data.Profiles.FloatTweenProfileSo
-          path: Scriptable Objects/Base/Tweening/Profiles/New FloatTweenProfile
+          path: New FloatTweenProfile
           enabled: 1
           kind: 1
           createFileName: TPF_FloatTweenProfile
@@ -230,7 +175,7 @@ MonoBehaviour:
         separator: 0
         entry:
           id: CA:Base.MemoryProfilerPackage.MemoryProfilerConfigSo
-          path: Scriptable Objects/Base/Memory Profiler/New Memory Profiler Config
+          path: New Memory Profiler Config
           enabled: 1
           kind: 1
           createFileName: MPC_MemoryProfilerConfig
@@ -242,7 +187,7 @@ MonoBehaviour:
         separator: 0
         entry:
           id: CA:Base.ControllerSupportPackage.Haptics.RumblePattern
-          path: Scriptable Objects/Base/Input/New Rumble Pattern
+          path: New Rumble Pattern
           enabled: 1
           kind: 1
           createFileName: RP_RumblePattern
@@ -254,7 +199,7 @@ MonoBehaviour:
         separator: 0
         entry:
           id: CA:Base.ControllerSupportPackage.Haptics.RumbleConfig
-          path: Scriptable Objects/Base/Input/New Rumble Config
+          path: New Rumble Config
           enabled: 1
           kind: 1
           createFileName: RC_RumbleConfig
@@ -266,46 +211,10 @@ MonoBehaviour:
         separator: 0
         entry:
           id: CA:Base.ControllerSupportPackage.InputPrompts.Glyphs.InputGlyphSet
-          path: Scriptable Objects/Base/Input/New Glyph Set
+          path: New Glyph Set
           enabled: 1
           kind: 1
           createFileName: IGS_GlyphSet
-          overridePriority: 0
-          overrideValue: 0
-    - rid: 4171306763800281287
-      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
-      data:
-        separator: 0
-        entry:
-          id: MI:Base.ToolPackage.Editor.AssemblyGraph.Architecture.AssemblyEdgeReportCommand.Export
-          path: Tools/Base Packages/Unity Editor/Project Health/Assembly Edge Report
-          enabled: 1
-          kind: 0
-          createFileName: 
-          overridePriority: 0
-          overrideValue: 0
-    - rid: 4171306763800281288
-      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
-      data:
-        separator: 0
-        entry:
-          id: MI:Base.ToolPackage.Editor.PackageDependencies.PackageDefaultsWindow.Open
-          path: Tools/Base Packages/Assets/Package Defaults
-          enabled: 1
-          kind: 0
-          createFileName: 
-          overridePriority: 0
-          overrideValue: 0
-    - rid: 4171306763800281302
-      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
-      data:
-        separator: 0
-        entry:
-          id: MI:Editor.PackageDependencies.PackageDefaultsWindow.Open
-          path: Tools/Update Base Packages/Package Defaults
-          enabled: 1
-          kind: 0
-          createFileName: 
           overridePriority: 0
           overrideValue: 0
     - rid: 4171306790334758914
@@ -314,7 +223,7 @@ MonoBehaviour:
         separator: 0
         entry:
           id: MI:Base.UtilityPackage.Editor.Logging.CustomLogHandlerMenu.Toggle
-          path: Tools/Base Packages/Unity Editor/Logging/Enable Custom Log Handler
+          path: Enable Custom Log Handler
           enabled: 1
           kind: 0
           createFileName: 
@@ -326,7 +235,7 @@ MonoBehaviour:
         separator: 0
         entry:
           id: MI:Base.AttributePackage.Editor.Drawers.Windows.GetComponentAssigner.GetComponentAssignerWindow.Open
-          path: Tools/Base Packages/Unity Editor/References/Assign GetComponents
+          path: Assign GetComponents
           enabled: 1
           kind: 0
           createFileName: 
@@ -338,7 +247,7 @@ MonoBehaviour:
         separator: 0
         entry:
           id: MI:Base.AttributePackage.Editor.Drawers.Windows.RequiredReferenceWindow.RequiredReferenceOverviewWindow.Open
-          path: Tools/Base Packages/Unity Editor/References/Required References
+          path: Required References
           enabled: 1
           kind: 0
           createFileName: 
@@ -350,7 +259,7 @@ MonoBehaviour:
         separator: 0
         entry:
           id: MI:Base.AttributePackage.Editor.Drawers.Windows.AttributeExplorer.AttributeExplorerWindow.OpenWindow
-          path: Tools/Base Packages/Unity Editor/Project Health/Attributes
+          path: Attributes
           enabled: 1
           kind: 0
           createFileName: 
@@ -362,13 +271,103 @@ MonoBehaviour:
         separator: 0
         entry:
           id: MI:Base.AttributePackage.Editor.Drawers.Windows.RequireComponentAudit.RequireComponentAuditWindow.Open
-          path: Tools/Base Packages/Unity Editor/References/GetComponent Require
-            Audit
+          path: GetComponent Require Audit
           enabled: 1
           kind: 0
           createFileName: 
           overridePriority: 0
           overrideValue: 0
+    - rid: 4171306838086123521
+      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 0
+        entry:
+          id: MI:Base.AttributePackage.Editor.Core.AttributeInspectorSwitchMenu.Toggle
+          path: Disable Attribute Inspector
+          enabled: 1
+          kind: 0
+          createFileName: 
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 4171306838118891520
+      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 1
+        name: UniqueId
+        expanded: 1
+        merged: 0
+        children:
+        - rid: 4171306739388121291
+    - rid: 4171306838118891521
+      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 1
+        name: Tweening
+        expanded: 1
+        merged: 0
+        children:
+        - rid: 4171306739388121293
+        - rid: 4171306838118891524
+    - rid: 4171306838118891522
+      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 1
+        name: Memory Profiler
+        expanded: 1
+        merged: 0
+        children:
+        - rid: 4171306739388121296
+    - rid: 4171306838118891523
+      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 1
+        name: Input
+        expanded: 1
+        merged: 0
+        children:
+        - rid: 4171306739388121299
+        - rid: 4171306739388121298
+        - rid: 4171306739388121297
+    - rid: 4171306838118891524
+      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 1
+        name: Profiles
+        expanded: 1
+        merged: 0
+        children:
+        - rid: 4171306739388121294
+        - rid: 4171306739388121295
+        - rid: 4171306739388121292
+    - rid: 4171306838118891525
+      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 1
+        name: Attributes
+        expanded: 1
+        merged: 0
+        children:
+        - rid: 4171306838086123521
+    - rid: 4171306838118891526
+      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 1
+        name: Logging
+        expanded: 1
+        merged: 0
+        children:
+        - rid: 4171306790334758914
+    - rid: 4171306838118891527
+      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 1
+        name: References
+        expanded: 1
+        merged: 0
+        children:
+        - rid: 4171306793470787670
+        - rid: 4171306793470787673
+        - rid: 4171306793470787671
     - rid: 5339058645413658751
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
       data:
@@ -387,6 +386,7 @@ MonoBehaviour:
         merged: 0
         children:
         - rid: 5339058645413658754
+        - rid: 4171306838118891525
         - rid: 5339058645413658755
         - rid: 4171306615483138128
         - rid: 5339058645413658756
@@ -424,11 +424,12 @@ MonoBehaviour:
         merged: 0
         children:
         - rid: 5339058645413658772
-        - rid: 5339058645413658773
-        - rid: 5339058645413658774
+        - rid: 4171306739388121290
+        - rid: 4171306838118891526
+        - rid: 4171306739388121289
         - rid: 5339058645413658775
         - rid: 5339058645413658770
-        - rid: 5339058645413658771
+        - rid: 4171306838118891527
     - rid: 5339058645413658762
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
       data:
@@ -522,21 +523,10 @@ MonoBehaviour:
         merged: 0
         children:
         - rid: 5339058645413658794
-        - rid: 4171306628888920156
+        - rid: 4171306793470787672
         - rid: 5339058645413658802
         - rid: 4171306542554939475
         - rid: 5339058645413658793
-    - rid: 5339058645413658771
-      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
-      data:
-        separator: 1
-        name: References
-        expanded: 1
-        merged: 0
-        children:
-        - rid: 5339058645413658795
-        - rid: 5339058645413658796
-        - rid: 5339058645413658797
     - rid: 5339058645413658772
       type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
       data:
@@ -544,30 +534,6 @@ MonoBehaviour:
         entry:
           id: MI:Base.ToolPackage.Editor.ComponentClipboard.ComponentClipboardWindow.Open
           path: Component Clipboard
-          enabled: 1
-          kind: 0
-          createFileName: 
-          overridePriority: 0
-          overrideValue: 0
-    - rid: 5339058645413658773
-      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
-      data:
-        separator: 0
-        entry:
-          id: MI:Base.ControllerSupport.Editor.NavigationGroupsWindow.Open
-          path: Controller Navigation Groups
-          enabled: 1
-          kind: 0
-          createFileName: 
-          overridePriority: 0
-          overrideValue: 0
-    - rid: 5339058645413658774
-      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
-      data:
-        separator: 0
-        entry:
-          id: MI:Base.MemoryProfiler.Editor.MemoryProfilerWindow.Open
-          path: Memory Profiler Automation
           enabled: 1
           kind: 0
           createFileName: 
@@ -741,42 +707,6 @@ MonoBehaviour:
           createFileName: 
           overridePriority: 0
           overrideValue: 0
-    - rid: 5339058645413658795
-      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
-      data:
-        separator: 0
-        entry:
-          id: MI:Base.AttributePackage.Editor.Windows.GetComponentAssigner.GetComponentAssignerWindow.Open
-          path: Assign GetComponents
-          enabled: 1
-          kind: 0
-          createFileName: 
-          overridePriority: 0
-          overrideValue: 0
-    - rid: 5339058645413658796
-      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
-      data:
-        separator: 0
-        entry:
-          id: MI:Base.AttributePackage.Editor.Windows.RequireComponentAudit.RequireComponentAuditWindow.Open
-          path: GetComponent Require Audit
-          enabled: 1
-          kind: 0
-          createFileName: 
-          overridePriority: 0
-          overrideValue: 0
-    - rid: 5339058645413658797
-      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
-      data:
-        separator: 0
-        entry:
-          id: MI:Base.AttributePackage.Editor.Windows.RequiredReferenceWindow.RequiredReferenceOverviewWindow.Open
-          path: Required References
-          enabled: 1
-          kind: 0
-          createFileName: 
-          overridePriority: 0
-          overrideValue: 0
     - rid: 5339058645413658798
       type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
       data:
@@ -869,13 +799,13 @@ MonoBehaviour:
         - rid: 5339058662016286886
         - rid: 5339058662016286890
         - rid: 5339058662016286894
-        - rid: 5339058662016286893
+        - rid: 4171306838118891523
         - rid: 5339058662016286888
-        - rid: 5339058662016286889
+        - rid: 4171306838118891522
         - rid: 5339058662016286892
         - rid: 5339058662016286895
-        - rid: 5339058662016286891
-        - rid: 5339058662016286887
+        - rid: 4171306838118891521
+        - rid: 4171306838118891520
     - rid: 5339058662016286886
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
       data:
@@ -885,15 +815,6 @@ MonoBehaviour:
         merged: 0
         children:
         - rid: 5339058662016286896
-    - rid: 5339058662016286887
-      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
-      data:
-        separator: 1
-        name: UniqueId
-        expanded: 0
-        merged: 0
-        children:
-        - rid: 5339058662016286897
     - rid: 5339058662016286888
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
       data:
@@ -903,15 +824,6 @@ MonoBehaviour:
         merged: 0
         children:
         - rid: 5339058662016286898
-    - rid: 5339058662016286889
-      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
-      data:
-        separator: 1
-        name: Memory Profiler
-        expanded: 0
-        merged: 0
-        children:
-        - rid: 5339058662016286899
     - rid: 5339058662016286890
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
       data:
@@ -921,16 +833,6 @@ MonoBehaviour:
         merged: 0
         children:
         - rid: 5339058662016286900
-    - rid: 5339058662016286891
-      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
-      data:
-        separator: 1
-        name: Tweening
-        expanded: 0
-        merged: 0
-        children:
-        - rid: 5339058662016286902
-        - rid: 5339058662016286901
     - rid: 5339058662016286892
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
       data:
@@ -940,17 +842,6 @@ MonoBehaviour:
         merged: 0
         children:
         - rid: 5339058662016286903
-    - rid: 5339058662016286893
-      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
-      data:
-        separator: 1
-        name: Input
-        expanded: 0
-        merged: 0
-        children:
-        - rid: 5339058662016286904
-        - rid: 4171306542554939492
-        - rid: 4171306542554939478
     - rid: 5339058662016286894
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
       data:
@@ -981,18 +872,6 @@ MonoBehaviour:
           createFileName: ZC_ZooConfig
           overridePriority: 0
           overrideValue: 0
-    - rid: 5339058662016286897
-      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
-      data:
-        separator: 0
-        entry:
-          id: CA:Base.ToolPackage.Identification.UniqueIdScriptableObject
-          path: New ScriptableObject
-          enabled: 1
-          kind: 1
-          createFileName: UID_UniqueIdScriptableObject
-          overridePriority: 0
-          overrideValue: 0
     - rid: 5339058662016286898
       type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
       data:
@@ -1003,18 +882,6 @@ MonoBehaviour:
           enabled: 1
           kind: 1
           createFileName: LP_LightingProfile
-          overridePriority: 0
-          overrideValue: 0
-    - rid: 5339058662016286899
-      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
-      data:
-        separator: 0
-        entry:
-          id: CA:Base.MemoryProfiler.MemoryProfilerConfigSo
-          path: New Memory Profiler Config
-          enabled: 1
-          kind: 1
-          createFileName: MPC_MemoryProfilerConfig
           overridePriority: 0
           overrideValue: 0
     - rid: 5339058662016286900
@@ -1029,29 +896,6 @@ MonoBehaviour:
           createFileName: AUC_AudioContainer
           overridePriority: 0
           overrideValue: 0
-    - rid: 5339058662016286901
-      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
-      data:
-        separator: 1
-        name: Profiles
-        expanded: 1
-        merged: 0
-        children:
-        - rid: 5339058662016286908
-        - rid: 5339058662016286909
-        - rid: 5339058662016286907
-    - rid: 5339058662016286902
-      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
-      data:
-        separator: 0
-        entry:
-          id: CA:Base.CorePackage.Tweening.Core.Data.Profiles.TweenSettingsSo
-          path: New TweenSettings
-          enabled: 1
-          kind: 1
-          createFileName: TS_TweenSettings
-          overridePriority: 0
-          overrideValue: 0
     - rid: 5339058662016286903
       type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
       data:
@@ -1062,18 +906,6 @@ MonoBehaviour:
           enabled: 1
           kind: 1
           createFileName: MID_MenuIdentifier
-          overridePriority: 0
-          overrideValue: 0
-    - rid: 5339058662016286904
-      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
-      data:
-        separator: 0
-        entry:
-          id: CA:Base.ControllerSupport.InputPrompts.Glyphs.InputGlyphSet
-          path: New Glyph Set
-          enabled: 1
-          kind: 1
-          createFileName: IGS_GlyphSet
           overridePriority: 0
           overrideValue: 0
     - rid: 5339058662016286905
@@ -1098,42 +930,6 @@ MonoBehaviour:
           enabled: 1
           kind: 1
           createFileName: ANRS_AssetNamingRuleSet
-          overridePriority: 0
-          overrideValue: 0
-    - rid: 5339058662016286907
-      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
-      data:
-        separator: 0
-        entry:
-          id: CA:Base.CorePackage.Tweening.Core.Data.Profiles.Vector3TweenProfileSo
-          path: New Vector3TweenProfile
-          enabled: 1
-          kind: 1
-          createFileName: TPV_Vector3TweenProfile
-          overridePriority: 0
-          overrideValue: 0
-    - rid: 5339058662016286908
-      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
-      data:
-        separator: 0
-        entry:
-          id: CA:Base.CorePackage.Tweening.Core.Data.Profiles.ColorTweenProfileSo
-          path: New ColorTweenProfile
-          enabled: 1
-          kind: 1
-          createFileName: TPC_ColorTweenProfile
-          overridePriority: 0
-          overrideValue: 0
-    - rid: 5339058662016286909
-      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
-      data:
-        separator: 0
-        entry:
-          id: CA:Base.CorePackage.Tweening.Core.Data.Profiles.FloatTweenProfileSo
-          path: New FloatTweenProfile
-          enabled: 1
-          kind: 1
-          createFileName: TPF_FloatTweenProfile
           overridePriority: 0
           overrideValue: 0
     - rid: 5339058706698469469

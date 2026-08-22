@@ -512,6 +512,51 @@ public sealed class EnemyEditor : AttributePackageEditor
 }
 ```
 
+## Turning the inspector off
+
+`Tools > Base Packages > Attributes > Disable Attribute Inspector` stops the package drawing inspectors,
+without uninstalling it. It is off by default, and the check mark shows the current state.
+
+It exists because of the reach the `[CustomEditor]` registration has. Every `MonoBehaviour` and every
+`ScriptableObject` in the project goes through this package's inspector, including third-party components
+that never asked for it, so a fault anywhere in the pipeline shows up everywhere at once. This is the way
+out that is not a git revert.
+
+**What it turns off:** the inspector pipeline. Titles, foldouts, tabs, horizontal rows, conditional
+visibility and enabling, validation messages, auto-assignment, buttons, native members. Unity's own
+inspector draws instead.
+
+**What keeps working, by design:**
+
+- **Property drawers.** Roughly thirty attributes are `PropertyDrawer`s: `[Dropdown]`, `[Slider]`,
+  `[MinMaxSlider]`, `[Layer]`, `[Tag]`, `[ProgressBar]`, `[AssetDropdown]`, `[SceneName]`,
+  `[ReferencePicker]` and the rest. Unity calls those straight from `PropertyField`, so they still render
+  when Unity draws the inspector. There is no way to route around that from here, and no reason to want
+  one: a drawer is scoped to one field of one type, so it cannot take the project down the way the global
+  registration can.
+- **Header buttons.** `[HeaderButton]` and friends are registered with Unity's component header, which
+  cannot be unregistered from cleanly. The switch is read once at load, so **header buttons disappear on
+  the next domain reload**, not immediately. Recompile or restart if you need them gone now.
+- **Scene handles.** `[DrawHandle]` and the other scene attributes draw from `OnSceneGUI`, which Unity
+  calls separately from the inspector.
+
+So the menu item means what it says: it disables the *inspector*, not the package. If you want none of it,
+uninstall the package.
+
+**Where the setting lives:** `EditorPrefs`, under `Base.AttributePackage.InspectorDisabled`. Per user and
+per machine, not committed with the project.
+
+## A type with no attributes skips the pipeline
+
+Even with the switch on, a type that declares nothing from this package is handed straight back to Unity.
+The check walks the type and its base classes once, asks whether any attribute on the type or on any of its
+members comes from the `Base.AttributePackage` assembly, and caches the answer until the next domain
+reload. Ownership is decided by assembly rather than by a list of names, so a new attribute added to the
+package is recognised with nothing to update.
+
+This is why a plain `BoxCollider` or a third-party script looks exactly like it does in a project without
+this package installed.
+
 ## Things worth knowing
 
 - Unity only lets one package own the default inspector. If you also pull in Odin, NaughtyAttributes or similar, they'll fight over it and one loses silently. Fine as long as this is your only inspector package.
