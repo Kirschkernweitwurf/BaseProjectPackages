@@ -368,6 +368,51 @@ MonoBehaviour:
         - rid: 4171306793470787670
         - rid: 4171306793470787673
         - rid: 4171306793470787671
+    - rid: 4171306840272142420
+      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 0
+        entry:
+          id: MI:Base.ToolPackage.Editor.TodoOverview.TodoOverviewWindow.Open
+          path: Todo Overview
+          enabled: 1
+          kind: 0
+          createFileName: 
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 4171306851004317782
+      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 0
+        entry:
+          id: MI:Base.ToolPackage.Editor.AudioRules.Window.AudioRulesWindow.Open
+          path: Audio Rules
+          enabled: 1
+          kind: 0
+          createFileName: 
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 4171306851004317783
+      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 0
+        entry:
+          id: CA:Base.ToolPackage.Editor.AudioRules.Data.AudioRuleSet
+          path: New Rule Set
+          enabled: 1
+          kind: 1
+          createFileName: ARS_AudioRuleSet
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 4171306851246800896
+      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 1
+        name: Audio Rules
+        expanded: 1
+        merged: 0
+        children:
+        - rid: 4171306851004317783
     - rid: 5339058645413658751
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
       data:
@@ -401,6 +446,7 @@ MonoBehaviour:
         - rid: 5339058645413659006
         - rid: 5339058645413658762
         - rid: 5339058645413658763
+        - rid: 4171306851004317782
         - rid: 5339058645413658764
         - rid: 5339058645413658765
         - rid: 5339058645413658766
@@ -514,6 +560,7 @@ MonoBehaviour:
         - rid: 5339058645413658790
         - rid: 5339058645413658791
         - rid: 5339058645413658792
+        - rid: 4171306840272142420
     - rid: 5339058645413658770
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
       data:
@@ -798,6 +845,7 @@ MonoBehaviour:
         children:
         - rid: 5339058662016286886
         - rid: 5339058662016286890
+        - rid: 4171306851246800896
         - rid: 5339058662016286894
         - rid: 4171306838118891523
         - rid: 5339058662016286888
