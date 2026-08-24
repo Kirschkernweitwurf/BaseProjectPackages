@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Drawers.Windows.AttributeExplorer.Troubleshoot
+namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot
 {
     /// <summary>
     /// Draws the grouped findings. Pure presentation: it reports which type the user clicked and leaves

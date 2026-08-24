@@ -12,6 +12,9 @@ namespace Base.SettingsPackage.UI
     public abstract class TypedSettingElement<TValue, TSetting> : SettingElement
         where TSetting : Setting<TValue>
     {
+        /// <inheritdoc/>
+        public sealed override ISetting BoundSetting => Setting;
+
         /// <summary>The bound setting, or null until <see cref="OnBound"/> has run.</summary>
         protected TSetting Setting { get; private set; }
 
@@ -37,7 +40,11 @@ namespace Base.SettingsPackage.UI
         }
 
         /// <inheritdoc/>
-        protected sealed override void ResetSetting() => Setting?.ResetToDefault();
+        /// <remarks>
+        /// Overridable because one setting can back more than one element. A rebind row shares the
+        /// single overrides setting with every other row, so it resets its own binding instead.
+        /// </remarks>
+        protected override void ResetSetting() => Setting?.ResetToDefault();
 
         /// <summary>Called once the setting is bound, so the element can show its current value.</summary>
         protected abstract void OnBound();

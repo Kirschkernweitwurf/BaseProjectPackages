@@ -1,6 +1,6 @@
 using System.Reflection;
 
-namespace Base.AttributePackage.Editor.Drawers
+namespace Base.AttributePackage.Editor.Core
 {
     /// <summary>
     /// One cached inspector button: the annotated method, its attribute and the resolved label.

@@ -1,3 +1,4 @@
+using Base.ToolPackage.Editor.BaseToolsOverview;
 using UnityEditor;
 using UnityEngine;
 
@@ -9,14 +10,17 @@ namespace Base.ToolPackage.Editor.AutoStartScene
     /// </summary>
     public class AutoStartSceneSettingsProvider : SettingsProvider
     {
+        private const string Summary = "The scene that loads when entering play mode, whichever scene is open.";
+
         private SceneAsset _startScene;
 
         private AutoStartSceneSettingsProvider(string path, SettingsScope scope = SettingsScope.Project)
             : base(path, scope) { }
 
         [SettingsProvider]
+        [BaseToolsPage(Summary)]
         public static SettingsProvider CreateSettingsProvider()
-            => new AutoStartSceneSettingsProvider("Project/Custom Tools/Auto Start Scene");
+            => new AutoStartSceneSettingsProvider("Project/Base Tools/Auto Start Scene");
 
         /// <inheritdoc/>
         public override void OnGUI(string searchContext)

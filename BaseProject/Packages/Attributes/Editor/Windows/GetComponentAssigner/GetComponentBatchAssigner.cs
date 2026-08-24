@@ -1,12 +1,13 @@
 using System;
 using System.Reflection;
+using Base.AttributePackage.Editor.Core;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Object = UnityEngine.Object;
 
-namespace Base.AttributePackage.Editor.Drawers.Windows.GetComponentAssigner
+namespace Base.AttributePackage.Editor.Windows.GetComponentAssigner
 {
     /// <summary>
     /// Batch assigns every empty <see cref="GetComponentAttribute"/> and

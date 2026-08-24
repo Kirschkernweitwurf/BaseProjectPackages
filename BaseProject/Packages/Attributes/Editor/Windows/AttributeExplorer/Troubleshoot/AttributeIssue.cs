@@ -1,4 +1,4 @@
-namespace Base.AttributePackage.Editor.Drawers.Windows.AttributeExplorer.Troubleshoot
+namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot
 {
     /// <summary>A single misconfigured attribute usage found by a check.</summary>
     internal readonly struct AttributeIssue

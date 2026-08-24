@@ -1,8 +1,8 @@
 {
   "name": "com.baseprojectpackages.content",
   "displayName": "Base Content",
-  "description": "The prefabs and configured assets the other Base packages are wired together with: the persistent, scene and gameplay manager prefabs plus the bootstrapper that instantiates them, the canvas prefabs, the confirmation menu, loading screen, tooltip and FPS readout, the cheat and log console of the debug menu, the audio source prefabs and audio containers, the menu identifier assets, and the basic text and image buttons. Everything here is composition rather than code, which is why it lives on its own: a prefab holding a component from another package needs that package installed, and gathering them in one place is what keeps every other package free to be installed without the rest.",
-  "version": "1.0.0",
+  "description": "Every prefab and configured asset the other Base packages are wired together with, kept out of the code packages so each of those stays installable on its own. Prefabs cover the persistent, scene and gameplay managers plus the bootstrapper that instantiates them, the canvases, the confirmation menu, loading screen, tooltip and FPS readout, the cheat and log console of the debug menu, the basic text and image buttons and the pooled audio sources. Assets cover the audio mixer and its groups, sample UI click and hover clips with their audio containers, the menu identifier assets and the shared UI sprites. Everything here is composition rather than code: a prefab holding a component from another package needs that package installed, and gathering them in one place is what keeps every other package free to be installed without the rest.",
+  "version": "1.0.1",
   "unity": "6000.3",
   "author": {
     "name": "Jonathan Alber"

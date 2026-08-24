@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 using Base.UtilityPackage.Identification;
 using Base.UtilityPackage.Logging;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Base.SettingsPackage.Core
 {
@@ -11,6 +13,12 @@ namespace Base.SettingsPackage.Core
     /// </summary>
     public sealed class SettingsRegistry
     {
+        /// <summary>
+        /// Raised whenever any registered setting changes, so UI that follows the whole set at once,
+        /// such as a preset button, does not have to subscribe to every setting itself.
+        /// </summary>
+        public event Action OnAnyValueChanged;
+
         /// <summary>All registered settings, in registration order.</summary>
         public IReadOnlyCollection<ISetting> Settings => _orderedSettings;
 
@@ -46,6 +54,8 @@ namespace Base.SettingsPackage.Core
 
             _settingsByKey.Add(setting.Key, setting);
             _orderedSettings.Add(setting);
+            setting.OnChanged += RaiseAnyValueChanged;
+
             return setting;
         }
 
@@ -110,5 +120,7 @@ namespace Base.SettingsPackage.Core
             foreach (ISetting setting in _orderedSettings)
                 setting.ResetToDefault();
         }
+
+        private void RaiseAnyValueChanged() => OnAnyValueChanged?.Invoke();
     }
 }

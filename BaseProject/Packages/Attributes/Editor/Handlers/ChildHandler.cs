@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
+using Base.AttributePackage.Editor.Core;
 using Base.AttributePackage.Editor.Core.Interfaces;
-using Base.AttributePackage.Editor.Drawers;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;

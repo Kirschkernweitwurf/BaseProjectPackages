@@ -77,6 +77,12 @@ A data driven replacement for hardcoded `MenuItem` and `CreateAssetMenu` paths. 
 - **Hierarchy Sorter** sorts the children of a GameObject or a whole scene alphabetically and recursively.
 - **Auto Start Scene** forces a chosen scene to load when entering Play mode and restores the previous scene on exit. It defaults to the first enabled scene in Build Settings.
 
+### Project settings
+
+- **Base Tools overview** fills the `Base Tools` node in the Project Settings, which Unity otherwise leaves blank. It lists every page registered under `Project/Base Tools`, with a description and a button that jumps there.
+- The list is built by walking the settings providers of the project, so a new page appears on its own. To give one a description, put `[BaseToolsPage("...")]` next to its `[SettingsProvider]` method. Without it the page falls back to its own search keywords.
+- Pages from other packages are picked up the same way, including the `Git Packages` page of the installer.
+
 ## Assembly definitions
 
 - `Base.ToolPackage` for runtime code.

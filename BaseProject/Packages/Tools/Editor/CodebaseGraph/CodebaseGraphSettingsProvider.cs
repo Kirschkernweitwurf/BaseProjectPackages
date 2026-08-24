@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Base.ToolPackage.Editor.BaseToolsOverview;
 using UnityEditor;
 
 namespace Base.ToolPackage.Editor.CodebaseGraph
@@ -14,12 +15,14 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             + "Example: \"/CleverClicker/\"";
 
         private const string PageLabel = "Codebase Graph";
-        private const string SettingsPath = "Project/Custom Tools/Codebase Graph";
+        private const string SettingsPath = "Project/Base Tools/Codebase Graph";
+        private const string Summary = "The paths the codebase scan leaves out of every finding.";
 
         private static SerializedObject _serializedObject;
         private static SerializedProperty _fragmentsProperty;
 
         [SettingsProvider]
+        [BaseToolsPage(Summary)]
         private static SettingsProvider Create() => new(SettingsPath, SettingsScope.Project)
         {
             label = PageLabel,

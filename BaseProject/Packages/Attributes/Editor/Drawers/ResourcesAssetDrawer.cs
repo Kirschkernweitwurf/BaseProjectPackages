@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Base.AttributePackage.Editor.Handlers;
+using Base.AttributePackage.Editor.Core;
 using Base.UtilityPackage.Editor;
 using UnityEditor;
 using UnityEngine;

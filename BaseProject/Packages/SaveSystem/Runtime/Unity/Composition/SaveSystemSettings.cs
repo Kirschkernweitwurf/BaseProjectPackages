@@ -1,6 +1,7 @@
 using System;
 using Base.AttributePackage;
 using Base.SaveSystemPackage.Encryption;
+using Base.SaveSystemPackage.Serialization;
 using Base.SaveSystemPackage.Slots;
 using UnityEngine;
 
@@ -54,6 +55,16 @@ namespace Base.SaveSystemPackage.Unity.Composition
         [field: Tooltip("Schema version. Bump it when your save data layout changes, and add a migration.")]
         [field: NotZero]
         [field: SerializeField] public int SaveVersion { get; private set; } = 1;
+
+        [field: Tooltip("Find every " + nameof(ISaveMigration) + " in the project and register it automatically. "
+            + "Turn off to hand the steps to the factory yourself.")]
+        [field: SerializeField] public bool AutoDiscoverMigrations { get; private set; } = true;
+
+        [field: Title("Backups")]
+        [field: Tooltip("How many previous saves to keep per slot, used to recover a damaged save. 0 turns "
+            + "backups off. Each save copies the previous one aside once, whatever the count.")]
+        [field: Min(0)]
+        [field: SerializeField] public int KeptBackups { get; private set; } = 2;
 
         /// <summary>Resolves the encryption mode into a concrete yes or no for the current context.</summary>
         /// <returns><c>true</c> when the next write should be encrypted.</returns>

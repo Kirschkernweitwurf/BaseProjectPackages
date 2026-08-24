@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Drawers.Windows.AttributeExplorer.Troubleshoot.Samples
+namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot.Samples
 {
     /// <summary>
     /// Polymorphic reference fields the picker cannot serve, so the samples tab can show the two ways a

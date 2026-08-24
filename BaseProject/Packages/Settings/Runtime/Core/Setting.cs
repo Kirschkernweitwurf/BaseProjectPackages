@@ -15,10 +15,16 @@ namespace Base.SettingsPackage.Core
         public event Action<T> OnValueChanged;
 
         /// <inheritdoc/>
+        public event Action OnChanged;
+
+        /// <inheritdoc/>
         public PersistentKey Key { get; }
 
         /// <summary>The value applied when nothing has been persisted yet or after a reset.</summary>
         public T DefaultValue { get; }
+
+        /// <inheritdoc/>
+        public bool IsDefault => Comparer.Equals(_value, DefaultValue);
 
         /// <summary>
         /// The current value. Assigning it raises <see cref="OnValueChanged"/>.
@@ -34,6 +40,7 @@ namespace Base.SettingsPackage.Core
 
                 _value = value;
                 OnValueChanged?.Invoke(_value);
+                OnChanged?.Invoke();
             }
         }
 
@@ -60,6 +67,7 @@ namespace Base.SettingsPackage.Core
             _value = Read(_store, DefaultValue);
             _savedValue = _value;
             OnValueChanged?.Invoke(_value);
+            OnChanged?.Invoke();
         }
 
         /// <inheritdoc/>

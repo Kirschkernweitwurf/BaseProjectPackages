@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Drawers
+namespace Base.AttributePackage.Editor.Core
 {
     /// <summary>
     /// A toolbar that wraps onto further rows instead of squeezing its buttons, drawn into a rect the

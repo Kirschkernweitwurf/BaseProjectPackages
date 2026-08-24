@@ -105,6 +105,30 @@ namespace Base.ServicePackage
         }
 
         /// <summary>
+        /// Attempts to retrieve a service that is allowed to be absent.
+        /// </summary>
+        /// <typeparam name="T">The type of the service to retrieve.</typeparam>
+        /// <param name="service">The retrieved service, or null if none is registered.</param>
+        /// <returns><c>true</c> if the service was found and is alive; otherwise, <c>false</c>.</returns>
+        /// <remarks>
+        /// Unlike <see cref="TryGet{T}"/> this logs nothing when the service is missing. Use it for an
+        /// optional dependency, where absence is a normal state rather than a bug, so a feature nobody
+        /// installed does not report itself as an error on every call.
+        /// </remarks>
+        public static bool TryGetOptional<T>(out T service) where T : class, IGameService
+        {
+            service = null;
+
+            if (!Services.TryGetValue(typeof(T), out IGameService registered)
+                || !UnityObjectUtility.IsAlive(registered))
+                return false;
+
+            service = registered as T;
+
+            return service != null;
+        }
+
+        /// <summary>
         /// Attempts to retrieve a service of the specified type.
         /// </summary>
         /// <typeparam name="T">The type of the service to retrieve.</typeparam>

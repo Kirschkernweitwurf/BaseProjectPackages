@@ -1,6 +1,6 @@
 using Base.AttributePackage.Samples;
 
-namespace Base.AttributePackage.Editor.Drawers.Windows.AttributeExplorer.Reference
+namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Reference
 {
     /// <summary>
     /// The one-line explanation shown on a category page.

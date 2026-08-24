@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
-using Base.AttributePackage.Editor.Drawers.Windows.AttributeExplorer.Reference;
-using Base.AttributePackage.Editor.Drawers.Windows.AttributeExplorer.Showcase;
-using Base.AttributePackage.Editor.Drawers.Windows.AttributeExplorer.Troubleshoot;
+using Base.AttributePackage.Editor.Windows.AttributeExplorer.Reference;
+using Base.AttributePackage.Editor.Windows.AttributeExplorer.Showcase;
+using Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot;
 using Base.UtilityPackage.Menus;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Drawers.Windows.AttributeExplorer
+namespace Base.AttributePackage.Editor.Windows.AttributeExplorer
 {
     /// <summary>
     /// One window for everything about the attribute package: a reference page per attribute, a showcase

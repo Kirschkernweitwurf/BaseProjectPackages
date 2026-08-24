@@ -2,7 +2,7 @@ using Base.EditorUiPackage;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Drawers.Windows.RequiredReferenceWindow
+namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
 {
     /// <summary>
     /// Cached styles, colors and icons for the required-reference window.

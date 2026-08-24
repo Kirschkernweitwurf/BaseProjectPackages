@@ -96,6 +96,42 @@ A strongly typed in-process publish and subscribe bus.
 
 - `CameraProvider` caches `Camera.main` and handles Unity's fake-null case.
 
+### Randomization
+
+- `IRandomSource` is the seam every helper is written against. A source only has
+  to supply raw bits; ranges, chances, shuffles and point pickers come from
+  `RandomSourceExtensions`.
+- `SeededRandom` is a reproducible generator. The same seed always replays the
+  same sequence, `Reset` rewinds it and `State` plus `Restore` save and continue
+  a run in progress. It is not affected by anything else drawing a number,
+  unlike Unity's single global sequence.
+- `UnityRandomSource.Shared` runs the same helpers on Unity's global generator
+  for cases that do not need a seed.
+- `RandomSourceExtensions` covers `Range`, `Chance`, `NextBool`, `NextSign`,
+  `NextGaussian`, `Pick`, `Shuffle`, `OnUnitCircle`, `InsideUnitCircle`,
+  `OnUnitSphere` and `InsideUnitSphere`. Integer ranges use rejection sampling,
+  so no outcome is favored by the range not dividing evenly.
+- `WeightedEntry<T>` is a serializable item and weight pair, so a weighted list
+  is authored in the inspector as `List<WeightedEntry<AudioClip>>`.
+- `WeightedTable<T>` draws from those weights in one random value and a binary
+  search. `WeightedTable<T>.TryDrawFrom` draws straight from a list for a one
+  off pick. A weight of zero switches a row off without deleting it.
+
+### Noise
+
+- `NoiseSettings` is a serializable pattern: shaping mode, frequency, octaves,
+  lacunarity, persistence, amplitude and a seed. `Evaluate` samples it along one
+  axis, on a plane or in space.
+- Perlin noise has no seed of its own, so the seed is turned into an offset into
+  the noise field. Changing the seed at runtime through `SetSeed` takes effect
+  on the next sample.
+- `ENoiseType` picks the character: `Perlin` for rolling hills, `Ridged` for
+  mountain crests, `Turbulence` for smoke and marble. All three stay inside the
+  same output range.
+- `NoiseUtility.CreateMap` fills a whole grid at once for height maps and spawn
+  masks. `NoiseUtility.Perlin3D` builds three dimensional noise out of Unity's
+  two dimensional generator, at the cost of some contrast.
+
 ### Debug Draw
 
 - `DebugDraw` draws lines, rays, arrows, boxes, wire spheres and world space

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using Object = UnityEngine.Object;
 
-namespace Base.AttributePackage.Editor.Drawers
+namespace Base.AttributePackage.Editor.Core
 {
     /// <summary>
     /// Resolves the declared type of a <c>[SerializeReference]</c> field and the concrete types that can

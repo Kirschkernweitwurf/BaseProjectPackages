@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
-using Base.AttributePackage.Editor.Drawers.Windows.AttributeExplorer.Troubleshoot.Samples;
+using Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot.Samples;
 using Base.UtilityPackage.Collections;
 using Base.UtilityPackage.Serialization;
 using UnityEngine;
 using UnityEngine.Audio;
 using Random = UnityEngine.Random;
 
-namespace Base.AttributePackage.Editor.Drawers.Windows.AttributeExplorer.Showcase
+namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Showcase
 {
     /// <summary>
     /// A throwaway asset whose only job is to carry one of every attribute, so the showcase tab can draw
@@ -434,6 +434,45 @@ namespace Base.AttributePackage.Editor.Drawers.Windows.AttributeExplorer.Showcas
 
         /// <summary>A list of that nested class, since arrays take a different path.</summary>
         public List<ShowcaseNestedSettings> nestedList = new();
+
+        /// <summary>A long of DateTime ticks as a year, month and day row with a calendar picker.</summary>
+        [Date] public long dateOnlyTicks;
+
+        /// <summary>The same tick count with the time of day row underneath it.</summary>
+        [Date(EDateDisplay.DateAndTime)] public long dateAndTimeTicks;
+
+        /// <summary>Adds a millisecond field, for values a whole second is too coarse to author.</summary>
+        [Date(EDateDisplay.DateAndTime, ShowMilliseconds = true)] public long preciseTicks;
+
+        /// <summary>Only the time of day half. The date is still in the value, just not on screen.</summary>
+        [Date(EDateDisplay.TimeOnly)] public long openingTime;
+
+        /// <summary>The attribute on a type that already says what it is, so it only narrows the rows.</summary>
+        [Date] public SerializableDateTime narrowedToDate;
+
+        /// <summary>A long of TimeSpan ticks. The button at the left flips the sign of the whole span.</summary>
+        [Time] public long cooldownTicks;
+
+        /// <summary>Every unit from days down to milliseconds.</summary>
+        [Time(ShowDays = true, ShowMilliseconds = true)] public long recordingTicks;
+
+        /// <summary>
+        /// The same duration without the day field. A hidden unit folds upward rather than being
+        /// dropped, so two days set above reads here as forty eight hours.
+        /// </summary>
+        [Time] public long foldedDuration;
+
+        /// <summary>The wrapper with no attribute, drawn by its own drawer as a date and a time row.</summary>
+        public SerializableDateTime eventStart;
+
+        /// <summary>The duration wrapper with no attribute, drawn as a signed day to second row.</summary>
+        public SerializableTimeSpan respawnDelay;
+
+        /// <summary>A list of dates, so the calendar has to write into the row it was opened from.</summary>
+        public List<SerializableDateTime> schedule = new();
+
+        /// <summary>A wrapper struct as a dictionary key, which lays out differently from a primitive.</summary>
+        public SerializableDictionary<SerializableDateTime, string> journal = new();
 
         [Title("8. Lists and tables", "#89D6E4", Foldout = true, DefaultExpanded = false)]
         [InfoBox("Without an attribute an array keeps Unity's own drawer, including its drag handles. "

@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Base.AttributePackage.Editor.Drawers.Windows.RequiredReferenceWindow
+namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
 {
     /// <summary>
     /// Editor window that lists validation issues in the open scenes and on ScriptableObject assets, and

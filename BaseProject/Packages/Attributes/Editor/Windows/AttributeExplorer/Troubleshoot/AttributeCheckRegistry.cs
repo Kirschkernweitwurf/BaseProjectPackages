@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEditor;
 
-namespace Base.AttributePackage.Editor.Drawers.Windows.AttributeExplorer.Troubleshoot
+namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot
 {
     /// <summary>
     /// Discovers and instantiates every <see cref="IAttributeCheck"/> via <see cref="TypeCache"/>, so a

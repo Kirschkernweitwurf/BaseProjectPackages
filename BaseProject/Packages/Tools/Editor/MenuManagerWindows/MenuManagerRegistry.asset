@@ -23,8 +23,14 @@ MonoBehaviour:
   - rid: 4171306542554939473
   - rid: 5339058645413658751
   - rid: 4171306879440126041
+  - rid: 4171306887588348007
+  - rid: 4171306887588348008
+  - rid: 4171306887588348009
+  - rid: 4171306887588348010
   createAssetRoot:
   - rid: 5339058662016286883
+  - rid: 4171306887588347988
+  - rid: 4171306887588347989
   menuItemGroups: []
   createAssetGroups: []
   groups: []
@@ -497,6 +503,79 @@ MonoBehaviour:
         entry:
           id: MI:Base.CorePackage.Editor.StateMachine.StateMachineMonitor.Open
           path: Tools/Base Packages/Gameplay/State Machine Monitor
+          enabled: 1
+          kind: 0
+          createFileName: 
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 4171306887588347988
+      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 0
+        entry:
+          id: CA:Base.SettingsPackage.Presets.SettingsPreset
+          path: Scriptable Objects/Base/Settings/New Settings Preset
+          enabled: 1
+          kind: 1
+          createFileName: SP_SettingsPreset
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 4171306887588347989
+      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 0
+        entry:
+          id: CA:Base.SaveSystemPackage.Unity.Autosave.AutosaveConfig
+          path: Scriptable Objects/Base/Save/New Autosave Config
+          enabled: 1
+          kind: 1
+          createFileName: AC_AutosaveConfig
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 4171306887588348007
+      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 0
+        entry:
+          id: MI:Base.AttributePackage.Editor.Windows.AttributeExplorer.AttributeExplorerWindow.OpenWindow
+          path: Tools/Base Packages/Unity Editor/Project Health/Attributes
+          enabled: 1
+          kind: 0
+          createFileName: 
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 4171306887588348008
+      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 0
+        entry:
+          id: MI:Base.AttributePackage.Editor.Windows.RequiredReferenceWindow.RequiredReferenceOverviewWindow.Open
+          path: Tools/Base Packages/Unity Editor/References/Required References
+          enabled: 1
+          kind: 0
+          createFileName: 
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 4171306887588348009
+      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 0
+        entry:
+          id: MI:Base.AttributePackage.Editor.Windows.RequireComponentAudit.RequireComponentAuditWindow.Open
+          path: Tools/Base Packages/Unity Editor/References/GetComponent Require
+            Audit
+          enabled: 1
+          kind: 0
+          createFileName: 
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 4171306887588348010
+      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 0
+        entry:
+          id: MI:Base.AttributePackage.Editor.Windows.GetComponentAssigner.GetComponentAssignerWindow.Open
+          path: Tools/Base Packages/Unity Editor/References/Assign GetComponents
           enabled: 1
           kind: 0
           createFileName: 

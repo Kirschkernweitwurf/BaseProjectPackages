@@ -1,4 +1,4 @@
-namespace Base.AttributePackage.Editor.Drawers.Windows.AttributeExplorer.Troubleshoot.Samples
+namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot.Samples
 {
     /// <summary>
     /// Demo interface with no implementation on purpose, so the reference picker has nothing to offer and

@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Text;
+using Base.SaveSystemPackage.Backup;
 using Base.SaveSystemPackage.Core;
 using Base.SaveSystemPackage.Encryption;
 using Base.SaveSystemPackage.Savable;
@@ -18,10 +20,14 @@ namespace Base.SaveSystemPackage.Unity.Composition
     public static class SaveSystemFactory
     {
         /// <summary>
-        /// Wires up storage, codec, serializer, registry and slot provider from the given settings.
+        /// Wires up storage, codec, serializer, registry, backups and slot provider from the given
+        /// settings.
         /// </summary>
         /// <param name="settings">The authored settings, or <c>null</c> to use the defaults.</param>
-        /// <param name="migrations">Steps that upgrade older saves on load.</param>
+        /// <param name="migrations">
+        /// Steps that upgrade older saves on load. <c>null</c> falls back to whatever the settings say,
+        /// which by default is every migration found in the project.
+        /// </param>
         /// <returns>Every part the game needs, ready to use.</returns>
         public static SaveSystemBundle Create(SaveSystemSettings settings,
             IReadOnlyList<ISaveMigration> migrations = null)
@@ -32,12 +38,20 @@ namespace Base.SaveSystemPackage.Unity.Composition
             ISaveSerializer serializer = new JsonUtilitySerializer(settings.PrettyPrint);
             ISaveCodec codec = BuildCodec(settings, serializer);
             ISavableRegistry registry = new SavableRegistry();
+            ISaveBackups backups = new SaveBackups(storage, settings.KeptBackups);
 
-            ISaveSystem system = new SaveSystem(storage, codec, registry, settings.SaveVersion, migrations);
+            ISaveSystem system = new SaveSystem(storage, codec, registry, settings.SaveVersion,
+                migrations ?? ResolveMigrations(settings), backups);
+
             ISaveSlotProvider slots = BuildSlotProvider(settings, system);
 
-            return new SaveSystemBundle(system, registry, slots, new SaveSlotSelection());
+            return new SaveSystemBundle(system, registry, slots, new SaveSlotSelection(), backups);
         }
+
+        private static IReadOnlyList<ISaveMigration> ResolveMigrations(SaveSystemSettings settings)
+            => settings.AutoDiscoverMigrations
+                ? SaveMigrationDiscovery.Discover()
+                : Array.Empty<ISaveMigration>();
 
         private static ISaveSlotProvider BuildSlotProvider(SaveSystemSettings settings, ISaveSystem system)
             => settings.SlotModel switch

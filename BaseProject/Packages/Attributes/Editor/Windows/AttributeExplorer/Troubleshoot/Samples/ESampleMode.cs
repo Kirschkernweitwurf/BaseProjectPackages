@@ -1,4 +1,4 @@
-namespace Base.AttributePackage.Editor.Drawers.Windows.AttributeExplorer.Troubleshoot.Samples
+namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot.Samples
 {
     /// <summary>Enum used by the samples and the showcase to demonstrate enum-driven attributes.</summary>
     internal enum ESampleMode : byte

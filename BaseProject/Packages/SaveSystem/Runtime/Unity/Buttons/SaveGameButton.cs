@@ -2,9 +2,7 @@ using System.Threading;
 using Base.AttributePackage;
 using Base.SaveSystemPackage.Model;
 using Base.SaveSystemPackage.Slots;
-using Base.SaveSystemPackage.Unity.Capture;
-using Base.SaveSystemPackage.Unity.Playtime;
-using Base.ServicePackage;
+using Base.SaveSystemPackage.Unity.Composition;
 using Base.UtilityPackage.Logging;
 using UnityEngine;
 
@@ -38,35 +36,14 @@ namespace Base.SaveSystemPackage.Unity.Buttons
                 return;
             }
 
-            ScreenshotData? screenshot = await CaptureScreenshotAsync();
+            SaveRequest request = await SaveRequestFactory.CreateAsync(slotId);
 
-            double? playtimeSeconds = ServiceLocator.TryGet(out IPlaytimeProvider playtimeProvider)
-                ? playtimeProvider.TotalSeconds
-                : null;
-
-            await Saves.SaveAsync(new SaveRequest(slotId, playtimeSeconds: playtimeSeconds, screenshot: screenshot),
-                ct);
+            await Saves.SaveAsync(request, ct);
 
             await Slots.EnforcePolicyAsync(slotId, ct);
             Selection.Select(slotId);
 
             CustomLogger.Log($"Saved game to slot '{slotId}'.", this);
-        }
-
-        private async Awaitable<ScreenshotData?> CaptureScreenshotAsync()
-        {
-            // Thumbnails are opt-in: without a capturer in the scene a save simply has no image.
-            if (!ServiceLocator.TryGet(out IScreenshotCapturer capturer))
-                return null;
-
-            Texture2D texture = await capturer.CaptureAsync();
-            if (texture == null)
-                return null;
-
-            ScreenshotData screenshot = new(texture.EncodeToPNG(), texture.width, texture.height);
-            Destroy(texture);
-
-            return screenshot;
         }
 
         private bool TryResolveTarget(out string slotId)

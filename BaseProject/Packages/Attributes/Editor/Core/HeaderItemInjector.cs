@@ -1,11 +1,11 @@
 using System;
 using System.Collections;
 using System.Reflection;
-using Base.AttributePackage.Editor.Core;
+using Base.AttributePackage.Editor.Drawers;
 using UnityEditor;
 using UnityEditorInternal;
 
-namespace Base.AttributePackage.Editor.Drawers
+namespace Base.AttributePackage.Editor.Core
 {
     /// <summary>
     /// Registers <see cref="HeaderItemRenderer"/> with Unity's component header so header controls can

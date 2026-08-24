@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Base.AttributePackage.Editor.Drawers;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Drawers
+namespace Base.AttributePackage.Editor.Core
 {
     /// <summary>
     /// Draws a run of consecutive <see cref="HorizontalAttribute"/> members side by side on one row, at

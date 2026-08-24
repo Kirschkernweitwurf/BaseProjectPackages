@@ -1,4 +1,4 @@
-namespace Base.AttributePackage.Editor.Drawers.Windows.AttributeExplorer.Reference
+namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Reference
 {
     /// <summary>
     /// One row of the list as it is currently drawn: either a category header or an attribute under one.

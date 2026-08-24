@@ -1,8 +1,9 @@
 using System;
+using Base.AttributePackage.Editor.Drawers;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Drawers
+namespace Base.AttributePackage.Editor.Core
 {
     /// <summary>
     /// Cached labels, values and sizing for one enum type drawn by

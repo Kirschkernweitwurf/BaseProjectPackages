@@ -1,0 +1,28 @@
+{
+  "name": "Base.SaveSystemPackage.Settings",
+  "rootNamespace": "Base.SaveSystemPackage.Unity.Autosave.Settings",
+  "references": [
+    "GUID:0507359db01f03f429835e7c67e9ec0a",
+    "GUID:1bb27541c4d98c341871129f271f8263",
+    "GUID:c3837597513e91f44a47d8cd91c34f68",
+    "GUID:922d81cfb9ff6984da4cb2213b66a375",
+    "GUID:197b6d0582f34e28ad8ccd70c0b1c826"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [
+    "BASE_SETTINGS"
+  ],
+  "versionDefines": [
+    {
+      "name": "com.baseprojectpackages.settings",
+      "expression": "1.0.0",
+      "define": "BASE_SETTINGS"
+    }
+  ],
+  "noEngineReferences": false
+}

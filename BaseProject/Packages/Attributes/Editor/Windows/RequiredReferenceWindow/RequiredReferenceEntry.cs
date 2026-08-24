@@ -1,4 +1,4 @@
-namespace Base.AttributePackage.Editor.Drawers.Windows.RequiredReferenceWindow
+namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
 {
     /// <summary>A single missing required reference.</summary>
     internal sealed class RequiredReferenceEntry

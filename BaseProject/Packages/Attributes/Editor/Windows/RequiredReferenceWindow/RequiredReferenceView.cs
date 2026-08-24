@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Base.AttributePackage.Editor.Drawers.Windows.RequiredReferenceWindow
+namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
 {
     /// <summary>Renders the grouped list of issues. Returns the object a click targeted.</summary>
     internal static class RequiredReferenceView

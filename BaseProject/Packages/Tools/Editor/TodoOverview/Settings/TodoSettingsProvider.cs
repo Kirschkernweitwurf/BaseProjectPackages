@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Base.ToolPackage.Editor.BaseToolsOverview;
 using UnityEditor;
 
 namespace Base.ToolPackage.Editor.TodoOverview.Settings
@@ -19,8 +20,10 @@ namespace Base.ToolPackage.Editor.TodoOverview.Settings
 
         private const string PageLabel = "Todo Overview";
         private const string ScopeHelp = "Files whose path contains one of these are never read.";
-        private const string SettingsPath = "Project/Custom Tools/Todo Overview";
+        private const string SettingsPath = "Project/Base Tools/Todo Overview";
         private const float Spacing = 6f;
+        private const string Summary = "The keywords the scan looks for, how owner and date are read out of "
+            + "an item, and the paths that are never read.";
         private const string TagsHelp = "The keywords the scan looks for, with the color each one is drawn in.";
 
         private static SerializedObject _serializedObject;
@@ -29,6 +32,7 @@ namespace Base.ToolPackage.Editor.TodoOverview.Settings
         internal static string Path => SettingsPath;
 
         [SettingsProvider]
+        [BaseToolsPage(Summary)]
         private static SettingsProvider Create() => new(SettingsPath, SettingsScope.Project)
         {
             label = PageLabel,

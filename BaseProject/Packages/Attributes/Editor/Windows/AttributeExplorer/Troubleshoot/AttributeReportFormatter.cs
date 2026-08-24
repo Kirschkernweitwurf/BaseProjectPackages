@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Base.AttributePackage.Editor.Drawers.Windows.AttributeExplorer.Troubleshoot
+namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot
 {
     /// <summary>
     /// Turns a scan into plain text, so a report can leave the window and end up in a commit message, a

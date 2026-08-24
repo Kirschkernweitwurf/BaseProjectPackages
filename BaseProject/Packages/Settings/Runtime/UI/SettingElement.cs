@@ -25,6 +25,11 @@ namespace Base.SettingsPackage.UI
         [SerializeField] private LocalizedString title;
         [SerializeField] private LocalizedString description;
 
+        /// <summary>
+        /// The setting this element is bound to, or null until <see cref="Start"/> has resolved it.
+        /// </summary>
+        public abstract ISetting BoundSetting { get; }
+
         /// <summary>Key of the setting this element binds to. Built once in <see cref="Awake"/>.</summary>
         protected PersistentKey SettingKey { get; private set; }
 
@@ -65,6 +70,12 @@ namespace Base.SettingsPackage.UI
         /// <summary>Broadcasts this element's flavor text.</summary>
         public virtual void OnSelect(BaseEventData eventData)
             => OnHoverFlavorChanged?.Invoke(title.GetLocalizedString(), description.GetLocalizedString());
+
+        /// <summary>
+        /// Resets the bound setting to its default. Public so a per-setting reset button can drive one
+        /// element on its own, next to the focus-based <see cref="SettingsEvents.RaiseResetSelected"/> path.
+        /// </summary>
+        public void ResetToDefault() => ResetSetting();
 
         /// <summary>Wires this element to its setting in the given registry.</summary>
         protected abstract void Bind(SettingsRegistry registry);

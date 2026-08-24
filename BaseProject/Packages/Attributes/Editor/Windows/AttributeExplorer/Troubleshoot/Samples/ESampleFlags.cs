@@ -1,6 +1,6 @@
 using System;
 
-namespace Base.AttributePackage.Editor.Drawers.Windows.AttributeExplorer.Troubleshoot.Samples
+namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot.Samples
 {
     /// <summary>Damage types used to demonstrate the multi-select mask attribute in the showcase.</summary>
     [Flags]

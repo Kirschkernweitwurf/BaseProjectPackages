@@ -112,6 +112,13 @@ depending on the Tool package that reads them.
   destroyed objects; `UnderlyingValue` returns the Unity object itself.
 - **`InterfaceReference<TInterface>`** - the common form that accepts any Unity object implementing the
   interface, so only the interface has to be named at the use site.
+- **`SerializableDateTime`** - a `DateTime` Unity can serialize. Unity refuses every type declared in the core
+  library, so the value is kept as its tick count and rebuilt on access. Implicitly converts both ways, so it
+  drops into any API expecting a `DateTime`. Its drawer is a year, month and day row with a calendar picker
+  plus a time of day row.
+- **`SerializableTimeSpan`** - a `TimeSpan` Unity can serialize, kept as a tick count for the same reason.
+  Exposes `Seconds` for the many Unity APIs that want a float. Its drawer is a signed day, hour, minute and
+  second row.
 
 The drawer restricts assignment to objects that implement the interface. Dropping a GameObject or a component
 that does not implement it directly resolves the first component on that object which does, so dragging a whole
@@ -121,6 +128,19 @@ prefab works without hunting for the right component.
 [SerializeField] private InterfaceReference<IDamageable> target;
 
 private void Hit() => target.Value?.TakeDamage(1);
+```
+
+Ticks and not seconds, because a float of seconds stops being able to name a single second once the value
+gets far enough from zero, which is exactly where calendar dates live. `SerializableDateTime` stores no
+`DateTimeKind`: a date typed into an inspector has no time zone behind it, and carrying one would make the
+value look authoritative about something nobody was ever asked. Convert where it actually matters.
+
+```csharp
+[SerializeField] private SerializableDateTime eventStart;
+[SerializeField] private SerializableTimeSpan cooldown;
+
+private bool IsOpen() => DateTime.Now >= eventStart.Value;
+private void Begin() => StartCoroutine(Wait(cooldown.Seconds));
 ```
 
 ### Generated (`Base.UtilityPackage.Generated`)
@@ -141,3 +161,16 @@ private void Hit() => target.Value?.TakeDamage(1);
 - **`Collections.SerializableDictionaryDrawer`** - draws key-value rows with add and remove buttons.
 - **`Collections.SerializableHashSetDrawer`** - draws a flat item list with add and remove buttons.
 - **`Serialization.InterfaceReferenceDrawer`** - draws an interface reference as a filtered object field.
+- **`Serialization.TickProperty`** - resolves the `long` tick property behind a bare field or a wrapper
+  struct, so every date and duration drawer agrees on what it was pointed at. A 32 bit integer is rejected
+  rather than widened, because ticks do not fit in one.
+- **`Serialization.TimeUnitField`** - one number cell with its unit letter, the separators between cells and
+  the row slicing math shared by the date and duration rows.
+- **`Serialization.DateTimeGui`** - draws a tick count as a date row with a calendar button and a time of day
+  row with a now button. Each row leaves the half it does not own untouched.
+- **`Serialization.TimeSpanGui`** - draws a tick count as a signed duration row. A unit that is switched off
+  keeps what it held rather than being dropped.
+- **`Serialization.CalendarPopup`** - the month grid behind the calendar button. Picking a day preserves the
+  time of day that was typed by hand.
+- **`Serialization.SerializableDateTimeDrawer`** and **`Serialization.SerializableTimeSpanDrawer`** - the
+  default drawers for the two wrapper types.

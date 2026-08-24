@@ -1,7 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Drawers
+namespace Base.AttributePackage.Editor.Core
 {
     /// <summary>
     /// Draws the small action buttons used by the copy, clear and open widgets into their reserved

@@ -1,8 +1,8 @@
 using System;
-using Base.AttributePackage.Editor.Drawers.Windows.AttributeExplorer.Troubleshoot.Samples;
+using Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot.Samples;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Drawers.Windows.AttributeExplorer.Showcase
+namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Showcase
 {
     /// <summary>
     /// Row type for the showcase list and table sections. The fields are public so the label member can

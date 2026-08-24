@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Base.AttributePackage.Editor.Core;
 
-namespace Base.AttributePackage.Editor.Drawers.Windows.AttributeExplorer.Troubleshoot
+namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot
 {
     /// <summary>
     /// Builds issue records so every check phrases its findings the same way and derives the attribute

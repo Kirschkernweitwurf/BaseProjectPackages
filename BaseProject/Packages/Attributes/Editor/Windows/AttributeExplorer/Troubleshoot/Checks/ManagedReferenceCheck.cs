@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Base.AttributePackage.Editor.Core;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Base.AttributePackage.Editor.Drawers.Windows.AttributeExplorer.Troubleshoot.Checks
+namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot.Checks
 {
     /// <summary>
     /// Verifies that polymorphic reference fields are set up so the picker can work. Without

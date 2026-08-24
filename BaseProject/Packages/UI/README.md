@@ -78,11 +78,9 @@ Small standalone components for common UI and build needs.
 
 ## Assets
 
-The package ships a few ready-made prefabs and images to get started quickly:
-
-- `Prefabs/Buttons/BasicImageButton`
-- `Prefabs/Buttons/BasicTextButton`
-- `Images/BG_60`
+This package is code only. The ready-made button prefabs and the UI images that
+used to ship here live in **Base Content**, together with the rest of the prefabs
+that wire the Base packages together. Install `Base.ContentPackage` to get them.
 
 ## Installation
 

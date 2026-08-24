@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Drawers
+namespace Base.AttributePackage.Editor.Core
 {
     /// <summary>
     /// Reserves the step of indent a foldout arrow is drawn in, and works out where in it the arrow goes.

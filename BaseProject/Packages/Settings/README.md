@@ -24,9 +24,14 @@ exist by placing components in a scene or by registering settings directly.
   resolution, quality level, VSync, language and gamepad rumble.
 - **Display** holds `DisplaySettings` (thin wrappers over Unity's display APIs) and
   `ResolutionProvider` (turns available resolutions into stable labels).
+- **Controls** holds `ControlSettings` (the service gameplay code reads look sensitivity and the
+  invert flags from), `ELookAxis` and `ControlSettingKeys`.
+- **Presets** holds `SettingsPreset`, the `SettingsPresetEntry` it is built from and the
+  `ESettingValueType` that decides which value an entry carries.
 - **UI** holds `SettingElement`, the generic `TypedSettingElement<TValue, TSetting>` and the
-  concrete widgets: toggle, slider, dropdown and the multiple-choice pickers, along with the
-  flavor-text display and the shared event hub.
+  concrete widgets: toggle, slider, dropdown, the multiple-choice pickers and the rebind row,
+  along with the preset button, the per-setting reset button, the flavor-text display and the
+  shared event hub.
 
 ## How it fits together
 
@@ -38,6 +43,12 @@ unchanged value.
 The `SettingsRegistry` holds every registered setting in registration order and drives
 `LoadAll`, `SaveAll`, `RevertAll` and `ResetAllToDefault`. Registration order matters when
 one setting must be applied before another, for example full screen mode before resolution.
+It also raises `OnAnyValueChanged` for anything that follows the whole set at once, so a preset
+button does not have to subscribe to every setting itself.
+
+Alongside the typed `OnValueChanged`, every setting raises a non-generic `OnChanged` and reports
+`IsDefault`. That is what lets the reset buttons and the preset buttons work without knowing what
+type of value they are looking at.
 
 The `SettingsContext` is a `GameServiceBehaviour` that creates the store and registry and
 exposes them through the `ServiceLocator`. It saves on destroy and offers `Save`, `Revert`,
@@ -116,6 +127,76 @@ public sealed class FileSettingsContext : SettingsContext
 }
 ```
 
+## Control settings
+
+Look sensitivity and the invert flags are plain values with nothing in this package to apply them
+to, so they are pushed into `ControlSettings`, a `GameServiceBehaviour` at execution order -97.
+Gameplay code reads from there rather than looking settings up by key:
+
+```csharp
+if (ServiceLocator.TryGet(out ControlSettings controls))
+    _lookDelta = controls.ApplyLook(rawLook);
+```
+
+`ApplyLook` multiplies by the sensitivity and flips whichever axes are inverted. The individual
+values are also exposed, and `OnControlsChanged` fires whenever one of them moves.
+
+`LookSensitivitySetting` stores a normalized 0..1 value and maps it onto a serialized multiplier
+range, so retuning the feel of the slider never touches what is on disk. `InvertLookSetting`
+handles one axis; add one per axis, and the axis picks the key.
+
+### Rebinding
+
+`RebindSetting` persists every binding override of one `InputActionAsset` as the JSON the input
+system writes itself. One setting covers the whole asset instead of one key per binding, so a
+rebind row added later needs no migration.
+
+Each row is a `RebindButton`. Clicking it listens for the next control the player presses,
+writes the result back through the `RebindSetting` and shows the new binding. Resetting a row
+clears only that binding rather than the whole shared setting.
+
+The overrides land on the asset instance the `RebindSetting` resolves, so it has to be the one the
+game actually plays with. A project whose input comes from a generated wrapper plays with that
+wrapper's clone, not with the source asset, and has to subclass and return the clone:
+
+```csharp
+public sealed class ProjectRebindSetting : RebindSetting
+{
+    protected override InputActionAsset ResolveAsset()
+        => ServiceLocator.TryGet(out ProjectInputService input)
+            ? input.Actions.asset
+            : null;
+}
+```
+
+The `InputActionReference` on a `RebindButton` only names which action is meant; the action itself
+is resolved by id against that asset, so the clone is what gets rebound.
+
+## Presets
+
+A `SettingsPreset` is a ScriptableObject holding a list of key and value pairs, for example Low,
+Medium and High. Applying one writes every entry into the matching registered setting, which runs
+that setting's own applier, so a preset carries no code and knows nothing about what it controls.
+A key that is not registered in the current scene is reported and skipped.
+
+Unity cannot serialize a value whose type is only known at runtime, so each entry names its value
+type and carries one field per supported type. Only the matching field is shown in the inspector.
+
+`SettingsPresetButton` applies a preset on click and shows whether the current values still match
+it, so a row of buttons can highlight the one the player is on and highlight none of them once
+something was tuned by hand.
+
+A preset is an action rather than a persisted value. What gets saved is the settings it wrote, so
+a player who applies High and then turns one thing down keeps that change on the next launch.
+
+## Per-setting reset
+
+`SettingElement.ResetToDefault` is public, so a reset can be driven at one element directly instead
+of going through the focus-based `SettingsEvents.RaiseResetSelected` path. `SettingResetButton`
+does exactly that: point it at an element, and it resets that element on click. It greys itself out
+while the setting already holds its default, which it follows through the registry's
+`OnAnyValueChanged`.
+
 ## Included components
 
 - `AudioVolumeSetting` stores a normalized 0..1 volume and pushes it as decibels into an
@@ -126,6 +207,10 @@ public sealed class FileSettingsContext : SettingsContext
 - `QualityLevelSetting` stores the Unity quality level index and preserves VSync across the
   change.
 - `VSyncSetting` stores the VSync count.
+- `LookSensitivitySetting` stores a normalized 0..1 sensitivity and pushes the multiplier it maps
+  to into `ControlSettings`.
+- `InvertLookSetting` stores whether one look axis is flipped. Use one per axis.
+- `RebindSetting` stores the binding overrides of one `InputActionAsset`.
 
 ### Components in other packages
 
@@ -148,6 +233,9 @@ installed, through a version define on `com.baseprojectpackages.settings`.
   options with left and right buttons and a row of selection indicators.
 - `ResolutionChoiceElement` is a string picker that fills its options from the available
   display resolutions at bind time.
+- `RebindButton` is a single rebindable row, backed by the shared `RebindSetting`.
+- `SettingsPresetButton` applies a `SettingsPreset` and shows whether it is still the active one.
+- `SettingResetButton` resets one element to its default.
 - `SettingFlavorText` shows the title and description of the focused element.
 
 ## Migrating from 1.x
@@ -174,5 +262,6 @@ references survive the rename because the script GUIDs are unchanged.
 - `Base.TweeningPackage` (the selection indicator animation)
 - `Base.UtilityPackage` (`PersistentKey`, logging, math and coroutine helpers)
 - `Base.AttributePackage` (inspector attributes such as `[Required]`)
+- Unity Input System, for the rebind setting and the rebind rows
 - Unity Localization, for the `LocalizedString` titles and labels on the UI elements
 - TextMeshPro and Unity UI

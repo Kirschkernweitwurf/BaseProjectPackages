@@ -4,7 +4,7 @@ using System.Reflection;
 using UnityEngine;
 using UnityEngine.Audio;
 
-namespace Base.AttributePackage.Editor.Drawers.Windows.AttributeExplorer.Troubleshoot.Checks
+namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot.Checks
 {
     /// <summary>
     /// Verifies that attributes reading their options from another member point at something usable.

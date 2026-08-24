@@ -1,7 +1,7 @@
 using System;
 using Base.AttributePackage.Samples;
 
-namespace Base.AttributePackage.Editor.Drawers.Windows.AttributeExplorer.Reference
+namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Reference
 {
     /// <summary>
     /// One attribute and the sample that demonstrates it.

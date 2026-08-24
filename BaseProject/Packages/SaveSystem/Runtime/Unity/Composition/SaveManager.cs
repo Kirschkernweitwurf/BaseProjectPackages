@@ -1,3 +1,4 @@
+using Base.SaveSystemPackage.Backup;
 using Base.SaveSystemPackage.Core;
 using Base.SaveSystemPackage.Savable;
 using Base.SaveSystemPackage.Slots;
@@ -28,6 +29,12 @@ namespace Base.SaveSystemPackage.Unity.Composition
         /// <summary>The slot the player currently has selected.</summary>
         public SaveSlotSelection Selection { get; private set; }
 
+        /// <summary>
+        /// The kept previous versions of each slot. Loading falls back to these on its own; this is
+        /// here for a menu that wants to list or restore one by hand.
+        /// </summary>
+        public ISaveBackups Backups { get; private set; }
+
         /// <inheritdoc/>
         public bool HasShutDown { get; private set; }
 
@@ -44,6 +51,7 @@ namespace Base.SaveSystemPackage.Unity.Composition
             Savables = bundle.Registry;
             Slots = bundle.Slots;
             Selection = bundle.Selection;
+            Backups = bundle.Backups;
         }
 
         protected override void OnDestroy()
@@ -77,6 +85,7 @@ namespace Base.SaveSystemPackage.Unity.Composition
             Savables = null;
             Slots = null;
             Selection = null;
+            Backups = null;
         }
     }
 }

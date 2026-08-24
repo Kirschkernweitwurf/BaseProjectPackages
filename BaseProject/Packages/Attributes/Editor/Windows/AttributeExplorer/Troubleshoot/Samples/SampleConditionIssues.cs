@@ -1,4 +1,4 @@
-namespace Base.AttributePackage.Editor.Drawers.Windows.AttributeExplorer.Troubleshoot.Samples
+namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot.Samples
 {
     /// <summary>
     /// Deliberately broken conditional attributes, so the samples tab can show what an unresolvable

@@ -15,6 +15,9 @@ namespace Base.SaveSystemPackage.Model
         Corrupt = 2,
 
         /// <summary>The save was written by a newer build than this one and has no migration path down.</summary>
-        VersionTooNew = 3
+        VersionTooNew = 3,
+
+        /// <summary>The live save was unreadable, so the newest intact backup was loaded instead.</summary>
+        RecoveredFromBackup = 4
     }
 }

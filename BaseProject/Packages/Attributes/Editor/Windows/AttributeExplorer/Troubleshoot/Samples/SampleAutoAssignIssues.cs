@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Drawers.Windows.AttributeExplorer.Troubleshoot.Samples
+namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot.Samples
 {
     /// <summary>
     /// Auto-assign attributes that can never fill their field, so the samples tab can show the case where

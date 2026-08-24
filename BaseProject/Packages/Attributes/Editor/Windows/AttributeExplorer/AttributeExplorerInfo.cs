@@ -1,4 +1,4 @@
-namespace Base.AttributePackage.Editor.Drawers.Windows.AttributeExplorer
+namespace Base.AttributePackage.Editor.Windows.AttributeExplorer
 {
     /// <summary>
     /// Shared menu path and title of the attribute window.

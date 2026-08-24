@@ -2,7 +2,7 @@ using Base.UtilityPackage.Menus;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Drawers.Windows.GetComponentAssigner
+namespace Base.AttributePackage.Editor.Windows.GetComponentAssigner
 {
     /// <summary>
     /// One-click tool that assigns every empty <see cref="GetComponentAttribute"/> and

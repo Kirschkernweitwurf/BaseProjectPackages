@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace Base.AttributePackage.Editor.Drawers.Windows.AttributeExplorer.Troubleshoot.Checks
+namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot.Checks
 {
     /// <summary>
     /// Verifies that conditional attributes point at members that actually resolve. An unresolved

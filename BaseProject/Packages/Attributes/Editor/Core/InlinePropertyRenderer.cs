@@ -4,7 +4,7 @@ using Base.UtilityPackage.Editor;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Drawers
+namespace Base.AttributePackage.Editor.Core
 {
     /// <summary>
     /// Draws the children of an <see cref="InlinePropertyAttribute"/> member on the field's own row.

@@ -1,8 +1,9 @@
+using Base.AttributePackage.Editor.Drawers;
 using Base.AttributePackage.Editor.Handlers;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Drawers
+namespace Base.AttributePackage.Editor.Core
 {
     /// <summary>
     /// Shared drawing for <see cref="InfoBoxAttribute"/>. Used by <see cref="InfoBoxHandler"/> for

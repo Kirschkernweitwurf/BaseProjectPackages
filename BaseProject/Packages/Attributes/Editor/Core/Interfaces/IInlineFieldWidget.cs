@@ -1,4 +1,3 @@
-using Base.AttributePackage.Editor.Drawers;
 using UnityEngine;
 
 namespace Base.AttributePackage.Editor.Core.Interfaces

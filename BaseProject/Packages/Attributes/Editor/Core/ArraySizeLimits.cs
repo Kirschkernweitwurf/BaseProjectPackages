@@ -1,6 +1,6 @@
 using UnityEditor;
 
-namespace Base.AttributePackage.Editor.Drawers
+namespace Base.AttributePackage.Editor.Core
 {
     /// <summary>
     /// Reads the bounds an <see cref="ArraySizeAttribute"/> puts on a field. Shared so the handler that

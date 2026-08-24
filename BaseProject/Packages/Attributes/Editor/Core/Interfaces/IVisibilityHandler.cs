@@ -1,4 +1,3 @@
-
 namespace Base.AttributePackage.Editor.Core.Interfaces
 {
     /// <summary>

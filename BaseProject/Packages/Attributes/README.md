@@ -320,6 +320,10 @@ private void Nuke() { }
 [EnumFlags] public MyFlags flags;                                // mask field for [Flags] enums
 [EnumToggleButtons] public MyEnum mode;                          // enum as a row of buttons
 
+[Date] public long eventStart;                                   // year, month, day plus a calendar picker
+[Date(EDateDisplay.DateAndTime)] public long lastBuilt;          // adds a time of day row under it
+[Time(ShowDays = true)] public long cooldown;                    // signed d : h : m : s duration row
+
 private string[] Options => new[] { "a", "b", "c" };
 ```
 
@@ -331,6 +335,13 @@ Buttons and the read-only native members render at the bottom of the inspector, 
 [HeaderButton("Open")] private void OpenWindow() { }
 [HeaderButton("Reset", Width = 50f, Confirm = "Reset everything?")] private void ResetAll() { }
 ```
+
+`[Date]` and `[Time]` both sit on a `long` of ticks. `[Date]` is a point in time and `[Time]` is a duration,
+and on a bare `long` the attribute is the only thing that says which, which is why they name the meaning
+rather than the layout. Both also work on the Utility package's `SerializableDateTime` and
+`SerializableTimeSpan`, where the type already says it and the attribute only narrows which fields are drawn.
+A unit that is switched off keeps what it held rather than being dropped, so a two day cooldown drawn without
+the day field reads as forty eight hours.
 
 `[Dropdown]` switches from a plain popup to a searchable tree once there are more than a handful of options, so long option lists stay usable. Options containing a slash become submenus.
 
@@ -529,8 +540,8 @@ inspector draws instead.
 **What keeps working, by design:**
 
 - **Property drawers.** Roughly thirty attributes are `PropertyDrawer`s: `[Dropdown]`, `[Slider]`,
-  `[MinMaxSlider]`, `[Layer]`, `[Tag]`, `[ProgressBar]`, `[AssetDropdown]`, `[SceneName]`,
-  `[ReferencePicker]` and the rest. Unity calls those straight from `PropertyField`, so they still render
+  `[MinMaxSlider]`, `[Layer]`, `[Tag]`, `[ProgressBar]`, `[AssetDropdown]`, `[SceneName]`, `[Date]`,
+  `[Time]`, `[ReferencePicker]` and the rest. Unity calls those straight from `PropertyField`, so they still render
   when Unity draws the inspector. There is no way to route around that from here, and no reason to want
   one: a drawer is scoped to one field of one type, so it cannot take the project down the way the global
   registration can.

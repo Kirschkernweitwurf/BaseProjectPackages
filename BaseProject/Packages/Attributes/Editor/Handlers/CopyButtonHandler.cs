@@ -1,4 +1,4 @@
-using Base.AttributePackage.Editor.Drawers;
+using Base.AttributePackage.Editor.Core;
 using UnityEditor;
 using UnityEngine;
 

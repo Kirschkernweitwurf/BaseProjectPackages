@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Base.AttributePackage.Editor.Drawers.Windows.AttributeExplorer.Reference
+namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Reference
 {
     /// <summary>
     /// Lifts the body of a sample class out of its source file.

@@ -1,5 +1,3 @@
-using Base.AttributePackage.Editor.Drawers;
-
 namespace Base.AttributePackage.Editor.Core.Interfaces
 {
     /// <summary>

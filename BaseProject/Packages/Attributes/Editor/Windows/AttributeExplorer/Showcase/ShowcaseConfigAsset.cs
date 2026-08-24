@@ -2,7 +2,7 @@
 using Base.UtilityPackage.Serialization;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Drawers.Windows.AttributeExplorer.Showcase
+namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Showcase
 {
     /// <summary>
     /// Target for the searching auto-getters in the showcase. It exists so those fields have a type that
