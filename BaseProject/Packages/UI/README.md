@@ -1,89 +1,58 @@
 # Base UI Package
 
-Reusable UI building blocks for Unity. The package bundles click-driven button
-components, an awaitable confirmation dialog and a set of small utility components
-so the same UI systems can be dropped into any project without rewriting them.
+Reusable UI building blocks: click-driven button components, an awaitable confirmation dialog and a set of small utility components, so the same UI systems drop into any project without rewriting them.
 
-All types live under the `Base.UIPackage` namespace, split into `Buttons`,
-`Confirmation` and `Utility`.
+Code only. The ready-made button prefabs and UI sprites live in `Base.ContentPackage`, together with the rest of the prefabs that wire the Base packages together.
 
-## Dependencies
+## Requirements
 
-This package builds on the other Base packages and expects them to be present:
+- Unity `6000.3` or newer
+- `com.unity.ugui` `2.0.0` and TextMeshPro
+- `Base.CorePackage` for the `MenuManager`, menu identifiers and the `SceneLoadingManager`
+- `Base.ServicePackage` for `ServiceLocator` and `GameServiceBehaviour`
+- `Base.AttributePackage` for `[Required]`, `[GetComponent]`, `[NotNullOrEmpty]` and `[SceneName]`
+- `Base.UtilityPackage` for `CustomLogger` and `Platform`
+- Assemblies: `Base.UIPackage` and `Base.UIPackage.Editor`
 
-- **Base.ServicePackage** for the `ServiceLocator` and `GameServiceBehaviour`.
-- **Base.CorePackage** for the `MenuManager` and menu identifiers and the
-  `SceneLoadingManager`.
-- **Base.AttributePackage** for the inspector attributes (`[Required]`,
-  `[GetComponent]`, `[NotNullOrEmpty]`, `[SceneName]`).
-- **Base.UtilityPackage** for `CustomLogger` and the `Platform` helper.
-- **TextMeshPro** and Unity's built-in **UI (uGUI)**.
-
-Installing `Base.CorePackage` brings the Service and Tweening packages with it, so the Git
-Package Manager selects those automatically.
+Installing `Base.CorePackage` brings the Service and Tweening packages with it, so the Git Package Manager selects those automatically.
 
 ## Buttons
 
-Every button derives from `CustomButton`, an abstract `MonoBehaviour` that
-requires a `Button` component and wires its own `OnClick` handler on `Awake`.
-Subclasses only implement the behavior they need.
+Every button derives from `CustomButton`, an abstract MonoBehaviour that requires a `Button` and wires its own `OnClick` handler on `Awake`. Subclasses only implement the behavior they need.
 
-- **CustomButton** — abstract base that hooks and unhooks the `Button.onClick`
-  listener and exposes an abstract `OnClick`.
-- **OpenMenuButton** — opens a target menu through the `MenuManager`, with an
-  optional parent menu that stays registered as its owner.
-- **CloseMenuButton** — closes a target menu if it is currently open.
-- **PauseMenuButton** — toggles the pause menu and swaps the button icon
-  between a play sprite and a pause sprite, staying in sync with
-  `PauseMenu.OnPauseStateChanged`.
-- **LoadSceneButton** — unloads all scenes and additively loads a chosen scene
-  asynchronously through the `SceneLoadingManager`.
-- **OpenLinkOnClick** — opens a URL in the default browser.
+| Component | What it does |
+|---|---|
+| `CustomButton` | Abstract base. Hooks and unhooks the `Button.onClick` listener |
+| `OpenMenuButton` | Opens a target menu through the `MenuManager`, with an optional parent menu that stays registered as its owner |
+| `CloseMenuButton` | Closes a target menu if it is currently open |
+| `PauseMenuButton` | Toggles the pause menu and swaps its icon between play and pause, following `PauseMenu.OnPauseStateChanged` |
+| `LoadSceneButton` | Unloads all scenes and additively loads a chosen scene through the `SceneLoadingManager` |
+| `OpenLinkOnClick` | Opens a URL in the default browser |
 
 ## Confirmation
 
-An asynchronous confirmation flow for actions that need the player to agree
-before they run, such as quitting or leaving a scene.
+An asynchronous flow for actions that need the player to agree before they run, such as quitting or leaving a scene.
 
-- **ConfirmationRequest** — a readonly struct holding the message and the
-  optional confirm and cancel labels.
-- **ConfirmationMenu** — the menu that shows the message, the two buttons and
-  falls back to default labels when none are given.
-- **ConfirmationService** — a `GameServiceBehaviour` that exposes an awaitable
-  `ShowConfirmationAsync`. Only one confirmation runs at a time and concurrent
-  requests are denied.
-- **BaseConfirmationButton** — abstract button that shows the confirmation box
-  and calls `OnConfirm` or `OnCancel` based on the answer.
-- **ConfirmedLoadSceneButton** — loads a scene once the player confirms.
-- **ConfirmedQuitButton** — quits the build or stops the editor once the player
-  confirms.
+`ConfirmationService` is a `GameServiceBehaviour` exposing an awaitable `ShowConfirmationAsync`. Only one confirmation runs at a time; concurrent requests are denied rather than queued. `ConfirmationRequest` carries the message and the optional confirm and cancel labels, and `ConfirmationMenu` shows them, falling back to defaults when none are given.
+
+`BaseConfirmationButton` is the abstract button that shows the prompt and calls `OnConfirm` or `OnCancel` based on the answer. `ConfirmedLoadSceneButton` and `ConfirmedQuitButton` are the two ready-made ones.
+
+```csharp
+if (!ServiceLocator.TryGet(out ConfirmationService confirmation))
+    return;
+
+bool confirmed = await confirmation.ShowConfirmationAsync(new ConfirmationRequest("Quit the game?"));
+```
 
 ## Utility
 
-Small standalone components for common UI and build needs.
+| Component | What it does |
+|---|---|
+| `Billboard` | Rotates an object to face the main camera at runtime, optionally locked to the Y axis so it stays upright |
+| `EditorBillboard` | Faces the viewing camera in play mode and the scene view, for authoring |
+| `WorldCanvasWrapper` | Assigns the main camera as the world camera of a world-space `Canvas` |
+| `FpsCounter` | Shows the current frames per second in a `TMP_Text`, hidden in release builds unless explicitly enabled |
+| `BuildVersion` | Displays the version and build number read from `version.txt` in StreamingAssets |
+| `BuildVersionProcessor` | Build step that writes the date-version and increments the build number into that file before every build |
 
-- **Billboard** — rotates an object to face the main camera at runtime, with an
-  option to lock rotation to the Y axis so it stays upright.
-- **EditorBillboard** — faces the viewing camera in both play mode and the scene
-  view, useful for authoring in the editor.
-- **WorldCanvasWrapper** — assigns the main camera as the world camera of a
-  world-space `Canvas` on `Awake`.
-- **FpsCounter** — shows the current frames per second in a `TMP_Text`, hidden
-  in release builds unless explicitly enabled.
-- **BuildVersion** — displays the version and build number read from a
-  `version.txt` in the StreamingAssets folder, with an option to hide it in
-  release builds.
-- **BuildVersionProcessor** — an `IPreprocessBuildWithReport` step that writes
-  the current version and increments the build number before every build.
-
-## Assets
-
-This package is code only. The ready-made button prefabs and the UI images that
-used to ship here live in **Base Content**, together with the rest of the prefabs
-that wire the Base packages together. Install `Base.ContentPackage` to get them.
-
-## Installation
-
-Add the package to your project through the Unity Package Manager, either from a
-Git URL or as a local package, and make sure the Base packages listed under
-[Dependencies](#dependencies) are installed as well.
+`SceneLoader` sits behind `LoadSceneButton` and `ConfirmedLoadSceneButton` as the shared resolving, awaiting and error-logging path, so both behave identically.

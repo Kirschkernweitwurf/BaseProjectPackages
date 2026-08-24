@@ -2,7 +2,7 @@
   "name": "com.baseprojectpackages.utilities",
   "displayName": "Base Utility Package",
   "description": "General-purpose runtime and editor helpers for Unity projects. Includes serializable dictionaries and a flattened 2D array, a tracked coroutine runner and a generic singleton base, class-tagged rich-text logging with an optional global log handler, safe assembly reflection, platform and build flags, prefab instantiation helpers plus audio, percentage, string, component, rotation and time-formatting utilities. Editor helpers cover asset database queries, serialized-property lookups, object-reference popups and serializable defaults. All under the Base.UtilityPackage namespace.",
-  "version": "1.6.3",
+  "version": "1.6.4",
   "unity": "6000.3",
   "author": {
     "name": "Jonathan Alber"

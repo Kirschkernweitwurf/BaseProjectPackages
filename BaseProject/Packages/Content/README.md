@@ -1,27 +1,15 @@
 # Base Content
 
-Every prefab and configured asset the other Base packages are wired together
-with. This package holds no code at all. It exists because composition and code
-pull in opposite directions: a prefab carrying an `AudioManager`, a `MenuManager`
-and a save button needs three packages installed, while each of those packages on
-its own should install into an empty project and compile. Keeping the wiring here
-is what lets that stay true.
+Every prefab and configured asset the other Base packages are wired together with. This package holds no code at all.
+
+It exists because composition and code pull in opposite directions: a prefab carrying an `AudioManager`, a `MenuManager` and a save button needs three packages installed, while each of those packages on its own should install into an empty project and compile. Keeping the wiring here is what lets that stay true.
 
 ## Requirements
 
 - Unity `6000.3` or newer
+- `Base.ControllerSupportPackage`, `Base.SaveSystemPackage`, `Base.SettingsPackage` and `Base.UiPackage`
 
-### Related Base packages
-
-Content references components and assets from most of the stack. The Git Package
-Manager selects them automatically when this package is ticked:
-
-- `Base.ControllerSupportPackage`
-- `Base.SaveSystemPackage`
-- `Base.SettingsPackage`
-- `Base.UiPackage`
-
-Those pull in Core, Services, Tweening, Attributes and Utility in turn.
+Those pull in Core, Services, Tweening, Attributes and Utility in turn. Install through the Git Package Manager rather than by pasting the Git URL: the prefabs here reference components from the other Base packages, so installing this one on its own leaves them with missing scripts.
 
 ## Layout
 
@@ -49,55 +37,26 @@ Assets/
   Sprites/             shared UI sprites
 ```
 
-## Prefabs
+## Managers and bootstrap
 
-### Managers and bootstrap
+**Bootstrapper** instantiates the three manager prefabs below. It sits in a `Resources` folder so it can be pulled into a scene or a build without a direct reference.
 
-- **Bootstrapper** instantiates the three manager prefabs below. It sits in a
-  `Resources` folder so it can be pulled into a scene or a build without a
-  direct reference.
-- **PersistentManagers** is instantiated once per session and survives scene
-  loads. It carries the services that outlive a scene.
+- **PersistentManagers** is instantiated once per session and survives scene loads. It carries the services that outlive a scene.
 - **SceneManagers** is instantiated for every scene.
-- **GameplayManagers** is instantiated only while one of the scenes configured
-  on the `Bootstrapper` is loaded.
+- **GameplayManagers** is instantiated only while one of the scenes configured on the `Bootstrapper` is loaded.
 
-### Audio
+## UI prefabs
 
-- **2D Audio Source**, **3D Audio Source**, **Music Audio Source** and
-  **UI Audio Source** are the pooled sources the `AudioManager` plays through,
-  one per `EAudioType`, each routed to its own mixer group.
+**PersistentCanvas**, **GameplayOverlayCanvas** and **GameplayWorldCanvas** are the screen space and world space canvas roots. **ConfirmationMenu** backs the awaitable confirmation dialog, **LoadingScreen** is shown by the `SceneLoadingManager` while a scene loads, and **Tooltip** is the view the `TooltipService` positions.
 
-### UI
+**DebugMenu** hosts the **CheatConsole** and the **LogConsole**, with **Suggestion** as the row the cheat console builds its autocomplete from. **BasicTextButton** and **BasicImageButton** are the starting points for menu buttons, with the click and hover audio containers already assigned. **FpsText (TMP)** is the frames per second readout.
 
-- **PersistentCanvas**, **GameplayOverlayCanvas** and **GameplayWorldCanvas**
-  are the screen space and world space canvas roots.
-- **ConfirmationMenu** backs the awaitable confirmation dialog.
-- **LoadingScreen** is shown by the `SceneLoadingManager` while a scene loads.
-- **Tooltip** is the view the `TooltipService` positions.
-- **DebugMenu** hosts the **CheatConsole** and the **LogConsole**;
-  **Suggestion** is the row the cheat console builds its autocomplete from.
-- **BasicTextButton** and **BasicImageButton** are the starting points for menu
-  buttons, with the click and hover audio containers already assigned.
-- **FpsText (TMP)** is the frames per second readout.
+## Audio
 
-## Assets
+The four pooled source prefabs (2D, 3D, Music and UI) are what the `AudioManager` plays through, one per `EAudioType`, each routed to its own group on the **AudioMixer**. `AudioVolumeSetting` from the Settings package pushes the player's volume into that mixer's exposed parameters.
 
-- **AudioMixer** with the Master, SFX, Ambience, UI and Music groups the audio
-  source prefabs route to. `AudioVolumeSetting` from the Settings package pushes
-  the player's volume into its exposed parameters.
-- **UI click and hover clips** with the matching **AUC_Click** and **AUC_Hover**
-  audio containers. These are samples meant to be replaced; the containers are
-  what the `OnEvent` audio components reference, so swapping the clips inside
-  them keeps every prefab wired.
-- **Menu identifier assets** for the confirmation menu, loading screen, debug
-  menu, cheat console, log console, main menu, pause menu and credits menu.
-  Menus are resolved by identifier rather than by name, so an identifier has to
-  exist before a menu can be opened.
-- **Sprites** used by the tooltip and menu backgrounds.
+The UI click and hover clips are samples meant to be replaced. What the prefabs reference are the **AUC_Click** and **AUC_Hover** audio containers, so swapping the clips inside them keeps every prefab wired.
 
-## Installation
+## Menu identifiers
 
-Install through the Git Package Manager rather than by pasting the Git URL. The
-prefabs here reference components from the other Base packages, so installing
-this one on its own leaves them with missing scripts.
+Identifier assets for the confirmation menu, loading screen, debug menu, cheat console, log console, main menu, pause menu and credits menu. Menus are resolved by identifier rather than by name, so an identifier has to exist before a menu can be opened.

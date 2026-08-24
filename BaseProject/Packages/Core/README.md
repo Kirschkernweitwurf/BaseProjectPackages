@@ -1,25 +1,19 @@
 # Base Core Package
 
-Reusable core systems that any Unity project can build on. The package bundles
-scene loading, audio, input, menus, timers, object pooling and debug tooling
-under the `Base.CorePackage` namespace. Service location and tweening live one
-layer down, in the Base Service and Base Tweening packages.
+Reusable core systems that any Unity project can build on: menus, audio, scene loading, input, timers, state machines, object pooling, randomization and debug tooling. Service location and tweening live one layer down, in the Base Service and Base Tweening packages.
 
 ## Requirements
 
 - Unity `6000.3` or newer
-- `com.unity.inputsystem` `1.19.0`
-
-### Related Base packages
-
-The Core package uses a few sibling packages. Install them alongside it:
-
-- `Base.ServicePackage` for the `ServiceLocator`, `GameServiceBehaviour`, the shutdown
-  pipeline and the priority trackers every system here builds on
-- `Base.TweeningPackage` for the menu open and close animations, the debug menu and
-  `TweenGroupObjectPool`
+- `com.unity.inputsystem` `1.19.0` and `com.unity.ugui` `2.0.0`
+- `Base.ServicePackage` for `ServiceLocator`, `GameServiceBehaviour`, the shutdown pipeline and the priority trackers every system here builds on
+- `Base.TweeningPackage` for the menu open and close animations, the debug menu and `TweenGroupObjectPool`
 - `Base.UtilityPackage` for logging and shared helpers
 - `Base.AttributePackage` for inspector attributes such as `[Required]` and `[GetComponent]`
+- `Base.EditorUiPackage` for the shared look of its editor windows
+- Assemblies: `Base.CorePackage`, `Base.CorePackage.Editor` and `Base.CorePackage.Tests`
+
+The manager prefabs, canvases and menu identifier assets these systems expect ship in `Base.ContentPackage`.
 
 ## Systems
 
@@ -27,144 +21,121 @@ The Core package uses a few sibling packages. Install them alongside it:
 
 A strongly typed in-process publish and subscribe bus.
 
-- `IEventBus` and `EventBus` dispatch events to every subscriber in
-  subscription order.
-- `IEvent` marks a payload. Implement it on a `readonly struct` to stay
-  allocation-free.
-- `Subscription` is a disposable token. Dispose it to unsubscribe.
+- `IEventBus` and `EventBus` dispatch events to every subscriber in subscription order.
+- `IEvent` marks a payload. Implement it on a `readonly struct` to stay allocation-free.
+- `Subscription<TEvent>` is a disposable token. Dispose it to unsubscribe.
+
+`EventBus` drops every handler on destroy, so no subscription survives a scene change by accident.
+
+### State Machine
+
+A finite state machine over an arbitrary context object. The machine does not tick itself: drive it from wherever the owning object updates, so its rate and its time scale stay under the caller's control.
+
+- `IState<TContext>` is one state. The context is handed to every call rather than captured, so one state instance can be shared between machines running over different contexts.
+- `StateBase<TContext>` is the convenience base where every hook is optional, and `DelegateState<TContext>` assembles a state from delegates for the many states that are a few lines long.
+- `StateTransition<TContext>` is one edge: a target state plus the condition that has to hold.
+- `StateChange<TContext>` is raised by `StateChanged` on every switch.
+- `StateMachineRegistry` keeps weak references to the machines currently running, which is the only thing the monitor window reads.
 
 ### Timers
 
-- `Timer` is a reusable countdown with looping, pausing, progress reporting and
-  completion callbacks.
-- `TimerManager` advances every active timer through the Player Loop, so timers
-  run without any GameObject in the scene.
+- `Timer` is a reusable countdown with looping, pausing, progress reporting and completion callbacks.
+- `TimerManager` advances every active timer through the Player Loop, so timers run without any GameObject in the scene.
 
 ### Menu Managing
 
-- `Menu` is the base class for all menus. It handles the lifecycle and the open
-  and close animations.
+- `Menu` is the base class for all menus. It handles the lifecycle and the open and close animations.
 - `MenuManager` registers menus and controls opening and closing.
-- `MenuModule` components add single concerns on top of a menu: cursor,
-  timescale, input map and child reset. Each is scoped by the menu's priority.
-- `MenuIdentifier` assets identify menus. A generated accessor class and a
-  runtime `MenuIdentifierRegistry` resolve them by name.
+- `MenuModule` components add single concerns on top of a menu: `MenuCursorModule`, `MenuTimeScaleModule`, `MenuInputMapModule` and `MenuResetModule`. Each scoped effect is applied at the menu's priority and removed again on close, so overlapping menus resolve instead of fighting.
+- `MenuIdentifier` assets identify menus. A generated accessor class and a runtime `MenuIdentifierRegistry` resolve them by name, so menus are never opened by string.
 - `PauseMenu` is a ready-to-use example.
 
 ### Scene Management
 
-- `SceneLoadingManager` loads and unloads scenes with a persistent scene that
-  stays loaded. It uses Unity's `Awaitable` for play-mode-safe async work.
-- `SceneLoadEvents` broadcasts progress and activity.
-- `LoadingScreen` reacts to those events to show a loading UI.
+- `SceneLoadingManager` loads and unloads scenes with a persistent scene that stays loaded, using `Awaitable` for play-mode-safe async work.
+- `SceneLoadEvents` broadcasts progress and activity, and `LoadingScreen` reacts to those to show a loading UI.
 
 ### Audio
 
-- `AudioManager` plays sound effects and music.
-- `AudioContainer` is a ScriptableObject holding clips and their settings.
-- Pooled audio sources per `EAudioType` keep playback allocation-light.
-- `AudioFader` tweens source volume.
-- `OnEvent` components play audio on click, hover, select or submit.
+- `AudioManager` owns the play, stop and fade API.
+- `AudioContainer` is a ScriptableObject holding clips and their playback settings.
+- Pooled audio sources per `EAudioType` keep playback allocation-light, and `AudioFader` tweens source volume.
+- `PlayAudioOnClick`, `PlayAudioOnHover`, `PlayAudioOnSelect` and `PlayAudioOnSubmit` play a container from UI events.
 
 ### Input
 
-- `InputManager` enables the highest-priority action map and disables the rest.
+- `InputManager` registers action maps with a priority and enables the highest-priority one while disabling the rest.
 - `PrioritizedInputMap` bundles a map with its `EPriority`.
-- `BaseInputActions` is the generated wrapper for the package's input asset.
+- `InputActionMapReference` serializes a reference to a map inside an asset by GUID, so it survives renames, and draws as an asset field plus a map dropdown.
+- `ProjectInputServiceBase` is the base of the project's own input service: reference counted map enabling and resolving an `InputActionMapReference` against the runtime action asset. The generated actions wrapper lives in the project, which is what the Base Package Installer's project setup creates.
+- `BaseInputActions` is the generated wrapper for this package's own input asset, covering the Permanent, UI and Cheats maps.
 
 ### Object Pooling
 
-- `BaseObjectPoolManager` is a base for global pool managers.
-- `HashSetObjectPool` is a fast pool for any GameObject or Component.
-- `TweenGroupObjectPool` caches animated UI objects and plays enter and exit
-  animations on activation and deactivation.
+- `BaseObjectPoolManager<TAsset, TPool>` is a base for global pool managers.
+- `HashSetObjectPool<T>` is a constant-time pool for any GameObject or Component.
+- `TweenGroupObjectPool<T>` caches the `TweenGroup` of every instance and plays its enter and exit animation on activation and deactivation.
 
 ### Priority Trackers
 
-- `CursorManager` and `TimeScaleManager` resolve cursor state and timescale from
-  competing priority requests, on top of the `PriorityTracker` in the Service
-  package.
+`CursorManager` and `TimeScaleManager` resolve cursor state and timescale from competing priority requests, falling back to a serialized default while nothing is requested.
 
 ### Tooltip
 
-- `TooltipService` shows the highest-priority tooltip, backed by a
-  `PriorityTracker`.
-- `TooltipTrigger` requests a tooltip while its GameObject is hovered.
-- `TooltipView` positions the tooltip so it never leaves the screen.
+`TooltipService` shows the highest-priority requested tooltip, `TooltipTrigger` requests one while its GameObject is hovered, and `TooltipView` keeps it next to the cursor without letting it leave the screen.
 
-### Camera Utility
+### Camera and raycasting
 
-- `CameraProvider` caches `Camera.main` and handles Unity's fake-null case.
+`CameraProvider` caches `Camera.main` to avoid repeated tag lookups and handles Unity's fake-null case. `RaycastUtility` provides generic, type-safe 2D ray-casting with editor-only debug ray drawing.
 
 ### Randomization
 
-- `IRandomSource` is the seam every helper is written against. A source only has
-  to supply raw bits; ranges, chances, shuffles and point pickers come from
-  `RandomSourceExtensions`.
-- `SeededRandom` is a reproducible generator. The same seed always replays the
-  same sequence, `Reset` rewinds it and `State` plus `Restore` save and continue
-  a run in progress. It is not affected by anything else drawing a number,
-  unlike Unity's single global sequence.
-- `UnityRandomSource.Shared` runs the same helpers on Unity's global generator
-  for cases that do not need a seed.
-- `RandomSourceExtensions` covers `Range`, `Chance`, `NextBool`, `NextSign`,
-  `NextGaussian`, `Pick`, `Shuffle`, `OnUnitCircle`, `InsideUnitCircle`,
-  `OnUnitSphere` and `InsideUnitSphere`. Integer ranges use rejection sampling,
-  so no outcome is favored by the range not dividing evenly.
-- `WeightedEntry<T>` is a serializable item and weight pair, so a weighted list
-  is authored in the inspector as `List<WeightedEntry<AudioClip>>`.
-- `WeightedTable<T>` draws from those weights in one random value and a binary
-  search. `WeightedTable<T>.TryDrawFrom` draws straight from a list for a one
-  off pick. A weight of zero switches a row off without deleting it.
+- `IRandomSource` is the seam every helper is written against. A source only has to supply raw bits; ranges, chances, shuffles and point pickers come from `RandomSourceExtensions`.
+- `SeededRandom` is reproducible: the same seed replays the same sequence in every session and on every platform, `Reset` rewinds it and `State` plus `Restore` save and continue a run in progress. Unlike Unity's single global sequence, it is not affected by anything else drawing a number.
+- `UnityRandomSource.Shared` runs the same helpers on Unity's global generator for cases that do not need a seed.
+- `RandomSourceExtensions` covers `Range`, `Chance`, `NextBool`, `NextSign`, `NextGaussian`, `Pick`, `Shuffle`, `OnUnitCircle`, `InsideUnitCircle`, `OnUnitSphere` and `InsideUnitSphere`. Integer ranges use rejection sampling, so no outcome is favored by the range not dividing evenly.
+- `WeightedEntry<T>` is a serializable item and weight pair, so a weighted list is authored in the inspector as `List<WeightedEntry<AudioClip>>`. `WeightedTable<T>` draws from those weights in one random value and a binary search, and `TryDrawFrom` draws straight from a list for a one-off pick. A weight of zero switches a row off without deleting it.
 
 ### Noise
 
-- `NoiseSettings` is a serializable pattern: shaping mode, frequency, octaves,
-  lacunarity, persistence, amplitude and a seed. `Evaluate` samples it along one
-  axis, on a plane or in space.
-- Perlin noise has no seed of its own, so the seed is turned into an offset into
-  the noise field. Changing the seed at runtime through `SetSeed` takes effect
-  on the next sample.
-- `ENoiseType` picks the character: `Perlin` for rolling hills, `Ridged` for
-  mountain crests, `Turbulence` for smoke and marble. All three stay inside the
-  same output range.
-- `NoiseUtility.CreateMap` fills a whole grid at once for height maps and spawn
-  masks. `NoiseUtility.Perlin3D` builds three dimensional noise out of Unity's
-  two dimensional generator, at the cost of some contrast.
+- `NoiseSettings` is a serializable pattern: shaping mode, frequency, octaves, lacunarity, persistence, amplitude and a seed. `Evaluate` samples it along one axis, on a plane or in space.
+- Perlin noise has no seed of its own, so the seed is turned into an offset into the noise field. Changing it at runtime through `SetSeed` takes effect on the next sample.
+- `ENoiseType` picks the character: `Perlin` for rolling hills, `Ridged` for mountain crests, `Turbulence` for smoke and marble. All three stay inside the same output range, so switching changes the character and not the scale.
+- `NoiseUtility.CreateMap` fills a whole grid at once for height maps and spawn masks. `Perlin3D` builds three dimensional noise out of Unity's two dimensional generator, at the cost of some contrast.
 
 ### Debug Draw
 
-- `DebugDraw` draws lines, rays, arrows, boxes, wire spheres and world space
-  text labels that also show up in a player, unlike gizmos and
-  `Debug.DrawLine`.
-- Lines render through GL after every game and scene view camera, so the
-  built-in pipeline as well as URP and HDRP are covered. Labels are drawn as
-  screen space IMGUI text.
-- Every call is compiled out of a release build, arguments included. Define
-  `BASE_DEBUG_DRAW` to keep them.
-- A duration of zero draws for one frame, anything longer counts in unscaled
-  seconds. `debugdraw_clear` and `debugdraw_enabled` control it from the cheat
-  console.
+`DebugDraw` draws lines, rays, arrows, boxes, wire spheres and world space text labels that also show up in a player, unlike gizmos and `Debug.DrawLine`. Lines render through GL after every game and scene view camera, so the built-in pipeline as well as URP and HDRP are covered; labels are drawn as screen space IMGUI text.
+
+Every call is compiled out of a release build, arguments included. Define `BASE_DEBUG_DRAW` to keep them. A duration of zero draws for one frame, anything longer counts in unscaled seconds, and `debugdraw_clear` and `debugdraw_enabled` control it from the cheat console.
 
 ### Debug Menu
 
-- `DebugMenuController` hosts a cheat console and a log console, toggled by
-  input and remembers which one was open last.
-- The cheat console discovers `[CheatCommand]` methods through
-  `CheatCommandRegistry`. `BuiltinCheatCommands` ships a default set.
-- `LogConsole` mirrors Unity's log stream, including `CustomLogger` output.
-  Capturing starts before the first scene loads so no logs are missed.
+- `DebugMenuController` hosts a cheat console and a log console, toggled by input, remembering which one was open last.
+- The cheat console discovers `[CheatCommand]` methods through `CheatCommandRegistry`, from assemblies and from scene objects. `BuiltinCheatCommands` ships a default set.
+- `LogConsoleView` mirrors Unity's log stream, `CustomLogger` output included. Capturing starts before the first scene loads, so every log is buffered even while the menu is closed.
 
-### Activation
+### Screenshots and activation
 
-- `ActivateAfterFrames` and `ActivateAfterTime` enable a target GameObject after
-  a frame count or a delay.
+`ScreenshotManager` takes and stores screenshots on input. `ActivateAfterFrames` and `ActivateAfterTime` enable a target GameObject after a frame count or a delay.
 
 ## Editor tools
 
-- Tween inspectors that hide fields covered by an assigned profile or settings
-  asset.
-- `FindUnusedAudioClips` lists AudioClips not referenced by any scene, prefab or
-  container.
-- Menu identifier generation that keeps the accessor class and the registry in
-  sync as identifier assets are added, moved or deleted.
+### State Machine Monitor
+
+Watches the `StateMachine<TContext>` instances running in play mode: the live machines on the left, the selected one drawn in the middle as boxes and curves with the current state highlighted, and underneath it what the drawing cannot carry, which is where the machine started, how long it has been where it is, and which transitions are being evaluated right now in the order they are asked.
+
+Machines are arranged into columns by distance from the start state, so a machine reads left to right in the order it can actually run, and states nothing can reach end up in a trailing column where they are visible as exactly that.
+
+### Event Bus window
+
+A live view of an event bus: every event type it currently holds handlers for and who is subscribed to each, in the order the bus would invoke them. It re-reads the bus on a timer, so a subscription appearing or going stale shows up on its own. It resolves who is behind a delegate, including lambdas, which are not compiled into the type that reads as their owner.
+
+### Other
+
+- **Find Unused Audio Clips** lists AudioClips not referenced by any scene, prefab or `AudioContainer`, and reports empty clip slots inside containers.
+- **Menu identifier generation** keeps the accessor class and the runtime registry in sync as identifier assets are added, moved or deleted. Deletion is handled separately from the other two, because by the time an `AssetPostprocessor` runs the asset is gone and its type can no longer be resolved.
+
+## Tests
+
+`Base.CorePackage.Tests` covers noise, seeded randomization, state machine lifecycle and transitions, and weighted tables. See `Tests/README.md` for how to make them appear in the Test Runner.

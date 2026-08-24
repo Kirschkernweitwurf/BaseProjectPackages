@@ -2,7 +2,7 @@
   "name": "com.baseprojectpackages.tweening",
   "displayName": "Base Tweening Package",
   "description": "A component-driven tweening system for Unity. Drop a tween component on a transform, renderer, graphic or text and drive position, rotation, scale, color, alpha, fill and text values from reusable profile assets. Groups sequence and reverse whole hierarchies for menu enter and exit animations, with per-tween delay, easing, looping and ping-pong, all editable through a custom inspector.",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "unity": "6000.3",
   "author": {
     "name": "Jonathan Alber"
