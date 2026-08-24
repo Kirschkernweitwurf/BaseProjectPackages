@@ -55,6 +55,9 @@ namespace Base.EditorUiPackage
         /// <summary>Thickness of a hairline separator.</summary>
         public const float SeparatorThickness = 1f;
 
+        /// <summary>Width of the triangle marking the column a list is sorted by.</summary>
+        public const float SortArrowWidth = 8f;
+
         /// <summary>Gap between two closely related controls.</summary>
         public const float TightGap = 4f;
     }

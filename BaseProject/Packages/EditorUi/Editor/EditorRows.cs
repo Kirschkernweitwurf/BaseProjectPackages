@@ -9,6 +9,8 @@ namespace Base.EditorUiPackage
     /// </summary>
     public static class EditorRows
     {
+        private const int SortArrowRows = 4;
+
         /// <summary>
         /// Fills a row background with the tint its current state calls for. Selection wins over
         /// hover, hover over striping, and an even row with no state is left untouched.
@@ -82,6 +84,34 @@ namespace Base.EditorUiPackage
                 EditorGUI.DrawRect(badge, fill);
 
             GUI.Label(badge, text, style);
+        }
+
+        /// <summary>
+        /// Draws the triangle that marks the column a list is sorted by, pointing up for ascending
+        /// and down for descending. Nothing is drawn for <see cref="ESortOrder.Default"/>.
+        /// </summary>
+        /// <param name="area">The area to center the triangle in. Only its left edge and height are used.</param>
+        /// <param name="order">The order the column is sorted in.</param>
+        /// <param name="color">The triangle color.</param>
+        public static void DrawSortArrow(Rect area, ESortOrder order, Color color)
+        {
+            if (Event.current.type != EventType.Repaint || order == ESortOrder.Default)
+                return;
+
+            bool isAscending = order == ESortOrder.Ascending;
+            float top = area.center.y - SortArrowRows * 0.5f;
+
+            // Stacked hairlines rather than a texture: a triangle this small stays crisp at any
+            // editor scale, and there is nothing to generate, own or release.
+            for (int step = 0; step < SortArrowRows; step++)
+            {
+                float inset = isAscending
+                    ? SortArrowRows - 1 - step
+                    : step;
+
+                EditorGUI.DrawRect(new Rect(area.x + inset, top + step,
+                    EditorMetrics.SortArrowWidth - inset * 2f, 1f), color);
+            }
         }
 
         /// <summary>

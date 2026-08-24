@@ -17,6 +17,17 @@ namespace Base.CorePackage.EventBus
         private readonly Dictionary<Type, Delegate> _handlers = new();
         private readonly Dictionary<Type, Delegate[]> _invocationListCache = new();
 
+        /// <summary>
+        /// The live handler table, keyed by event type. Each value is the multicast delegate every
+        /// subscriber of that event was combined into.
+        /// </summary>
+        /// <remarks>
+        /// A view onto the bus's own dictionary rather than a copy, so a tool reading it on a timer
+        /// allocates nothing. Internal because it exists for the window in
+        /// <c>Base.CorePackage.Editor</c> and nothing else.
+        /// </remarks>
+        internal IReadOnlyDictionary<Type, Delegate> Handlers => _handlers;
+
 #region Unity Callbacks
         protected override void OnDestroy()
         {

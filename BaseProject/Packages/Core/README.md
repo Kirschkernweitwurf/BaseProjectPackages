@@ -96,6 +96,20 @@ A strongly typed in-process publish and subscribe bus.
 
 - `CameraProvider` caches `Camera.main` and handles Unity's fake-null case.
 
+### Debug Draw
+
+- `DebugDraw` draws lines, rays, arrows, boxes, wire spheres and world space
+  text labels that also show up in a player, unlike gizmos and
+  `Debug.DrawLine`.
+- Lines render through GL after every game and scene view camera, so the
+  built-in pipeline as well as URP and HDRP are covered. Labels are drawn as
+  screen space IMGUI text.
+- Every call is compiled out of a release build, arguments included. Define
+  `BASE_DEBUG_DRAW` to keep them.
+- A duration of zero draws for one frame, anything longer counts in unscaled
+  seconds. `debugdraw_clear` and `debugdraw_enabled` control it from the cheat
+  console.
+
 ### Debug Menu
 
 - `DebugMenuController` hosts a cheat console and a log console, toggled by

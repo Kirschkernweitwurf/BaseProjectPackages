@@ -15,6 +15,22 @@ folder in your `manifest.json`.
 
 ## Runtime
 
+### Async (`Base.UtilityPackage.Async`)
+
+- **`AwaitableUtility`** - `Completed` and `FromResult<T>` hand back an already finished awaitable, for an
+  implementation that has to satisfy an async signature without doing async work. `WhenAll` waits for a whole
+  batch of running operations and reports every failure instead of only the first. `WithTimeout` runs an
+  operation under a deadline and cancels it once the deadline passes.
+- **`AwaitableExtensions`** - `Forget` awaits an operation nobody is waiting for, so a failure is logged
+  instead of swallowed and the awaitable returns to Unity's pool. `HasCompleted` reports an expected
+  cancellation as `false` rather than throwing.
+
+`WithTimeout` takes the work as a `Func<CancellationToken, Awaitable>` rather than a running awaitable. An
+`Awaitable` is pooled and can only be awaited once, so there is no safe way to cancel one from the outside
+after it was created: the instance may already have been recycled. Handing the deadline token into the
+operation is what makes a timeout actually stop the work. The same reason is why there is no `WhenAny`, since
+every version of it leaves a loser that is either canceled unsafely or never awaited at all.
+
 ### Collections (`Base.UtilityPackage.Collections`)
 
 - **`CollectionExtensions`** - `Single<T>` wraps one element as an `IEnumerable<T>` without allocating a list.

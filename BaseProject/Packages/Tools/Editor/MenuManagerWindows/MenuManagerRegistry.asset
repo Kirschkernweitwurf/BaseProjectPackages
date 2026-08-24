@@ -22,6 +22,7 @@ MonoBehaviour:
   menuItemRoot:
   - rid: 4171306542554939473
   - rid: 5339058645413658751
+  - rid: 4171306879440126041
   createAssetRoot:
   - rid: 5339058662016286883
   menuItemGroups: []
@@ -294,7 +295,7 @@ MonoBehaviour:
       data:
         separator: 1
         name: UniqueId
-        expanded: 1
+        expanded: 0
         merged: 0
         children:
         - rid: 4171306739388121291
@@ -303,17 +304,17 @@ MonoBehaviour:
       data:
         separator: 1
         name: Tweening
-        expanded: 1
+        expanded: 0
         merged: 0
         children:
-        - rid: 4171306739388121293
         - rid: 4171306838118891524
+        - rid: 4171306739388121293
     - rid: 4171306838118891522
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
       data:
         separator: 1
         name: Memory Profiler
-        expanded: 1
+        expanded: 0
         merged: 0
         children:
         - rid: 4171306739388121296
@@ -322,7 +323,7 @@ MonoBehaviour:
       data:
         separator: 1
         name: Input
-        expanded: 1
+        expanded: 0
         merged: 0
         children:
         - rid: 4171306739388121299
@@ -409,10 +410,98 @@ MonoBehaviour:
       data:
         separator: 1
         name: Audio Rules
-        expanded: 1
+        expanded: 0
         merged: 0
         children:
         - rid: 4171306851004317783
+    - rid: 4171306879374590036
+      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 0
+        entry:
+          id: MI:Base.ServicePackage.Editor.ServiceLocatorWindow.Open
+          path: Service Locator
+          enabled: 1
+          kind: 0
+          createFileName: 
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 4171306879374590037
+      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 0
+        entry:
+          id: MI:Base.CorePackage.Editor.EventBusInspector.EventBusWindow.Open
+          path: Event Bus
+          enabled: 1
+          kind: 0
+          createFileName: 
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 4171306879374590038
+      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 0
+        entry:
+          id: MI:Base.CorePackage.Editor.StateMachine.StateMachineGraphWindow.Open
+          path: State Machine Graph
+          enabled: 1
+          kind: 0
+          createFileName: 
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 4171306879374590039
+      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 0
+        entry:
+          id: CA:Base.CorePackage.StateMachine.StateMachineGraph
+          path: New State Machine Graph
+          enabled: 1
+          kind: 1
+          createFileName: SMG_StateMachineGraph
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 4171306879440126036
+      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 1
+        name: Runtime
+        expanded: 1
+        merged: 0
+        children:
+        - rid: 4171306879374590037
+        - rid: 4171306879374590036
+    - rid: 4171306879440126037
+      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 1
+        name: Gameplay
+        expanded: 1
+        merged: 0
+        children:
+        - rid: 4171306879374590038
+    - rid: 4171306879440126038
+      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 1
+        name: State Machines
+        expanded: 0
+        merged: 0
+        children:
+        - rid: 4171306879374590039
+    - rid: 4171306879440126041
+      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 0
+        entry:
+          id: MI:Base.CorePackage.Editor.StateMachine.StateMachineMonitor.Open
+          path: Tools/Base Packages/Gameplay/State Machine Monitor
+          enabled: 1
+          kind: 0
+          createFileName: 
+          overridePriority: 0
+          overrideValue: 0
     - rid: 5339058645413658751
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
       data:
@@ -434,6 +523,8 @@ MonoBehaviour:
         - rid: 4171306838118891525
         - rid: 5339058645413658755
         - rid: 4171306615483138128
+        - rid: 4171306879440126037
+        - rid: 4171306879440126036
         - rid: 5339058645413658756
     - rid: 5339058645413658754
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
@@ -852,6 +943,7 @@ MonoBehaviour:
         - rid: 4171306838118891522
         - rid: 5339058662016286892
         - rid: 5339058662016286895
+        - rid: 4171306879440126038
         - rid: 4171306838118891521
         - rid: 4171306838118891520
     - rid: 5339058662016286886
@@ -1038,8 +1130,8 @@ MonoBehaviour:
           enabled: 1
           kind: 0
           createFileName: 
-          overridePriority: 0
-          overrideValue: 0
+          overridePriority: 1
+          overrideValue: 1000
     - rid: 5339058706698469484
       type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
       data:
@@ -1050,5 +1142,5 @@ MonoBehaviour:
           enabled: 1
           kind: 0
           createFileName: 
-          overridePriority: 0
-          overrideValue: 0
+          overridePriority: 1
+          overrideValue: 1001

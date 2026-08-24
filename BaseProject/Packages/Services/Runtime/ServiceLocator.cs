@@ -17,6 +17,18 @@ namespace Base.ServicePackage
         private static readonly Dictionary<Type, IGameService> Services = new();
 
         /// <summary>
+        /// The live registration table, keyed by the type each service was filed under.
+        /// </summary>
+        /// <remarks>
+        /// A view onto the locator's own dictionary rather than a copy, so a tool reading it on a
+        /// timer allocates nothing. Internal because it exists for the window in
+        /// <c>Base.ServicePackage.Editor</c> and nothing else: gameplay code resolves services
+        /// through <see cref="TryGet{T}"/>, which reports a missing or destroyed entry and cleans
+        /// it up, neither of which a read-only view can do.
+        /// </remarks>
+        internal static IReadOnlyDictionary<Type, IGameService> Registrations => Services;
+
+        /// <summary>
         /// Adds or updates a service in the locator.
         /// </summary>
         /// <param name="type">The type the service is registered under.</param>
