@@ -612,7 +612,7 @@ namespace Base.ServicePackage.Editor
 
             if (icon == null)
             {
-                GUI.Label(cell, new GUIContent(entry.TypeName, entry.NamespaceName), _styles.Name);
+                GUI.Label(cell, new GUIContent(entry.TypeName, entry.NamespaceName), _styles.NameBold);
                 return;
             }
 
@@ -624,7 +624,7 @@ namespace Base.ServicePackage.Editor
             float offset = size + ServiceLocatorStyles.IconGap;
             Rect label = new(cell.x + offset, cell.y, Mathf.Max(0f, cell.width - offset), cell.height);
 
-            GUI.Label(label, new GUIContent(entry.TypeName, entry.NamespaceName), _styles.Name);
+            GUI.Label(label, new GUIContent(entry.TypeName, entry.NamespaceName), _styles.NameBold);
         }
 
         private void HandleRowInput(Rect row, int index, ServiceRegistrationEntry entry)

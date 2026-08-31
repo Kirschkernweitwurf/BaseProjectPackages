@@ -1,3 +1,4 @@
+using Base.EditorUiPackage;
 using Base.UtilityPackage.Menus;
 using UnityEditor;
 using UnityEngine;
@@ -7,105 +8,172 @@ namespace Base.ToolPackage.Editor.OrderManagement
     /// <summary>Editor window to manage constants and regenerate the generated file.</summary>
     public sealed class OrderManagerWindow : EditorWindow
     {
+        private const string AddLabel = "Add Constant";
+        private const float AddButtonWidth = 110f;
+        private const string CommentField = "comment";
+        private const string ConstantsField = "constants";
+        private const string ConstantsHeader = "Constants";
+        private const string Description = "Names the execution order constants the generated file is built "
+            + "from, then writes that file. Every constant becomes a named value your scripts can order "
+            + "themselves by instead of spelling a number out.";
+        private const string EmptyMessage = "No constants yet";
+        private const string EmptyHint = "Add one and it appears in the generated file the next time you "
+            + "press Generate.";
+        private const string GenerateLabel = "Generate";
+        private const float GenerateButtonHeight = 32f;
+        private const float MinWindowHeight = 320f;
+        private const float MinWindowWidth = 420f;
+        private const string MenuPath = "Tools/Base Packages/Code/Generation/Order Manager";
+        private const string NameField = "name";
+        private const int NoRemoval = -1;
+        private const string NamespaceField = "generatedNamespace";
         private const float NumberWidth = 80f;
+        private const string OutputDirectoryField = "outputDirectory";
+        private const string OutputHeader = "Output";
+        private const string RemoveLabel = "X";
         private const float RemoveWidth = 24f;
+        private const string RootClassField = "rootClassName";
+        private const string ValueField = "value";
         private const string WindowTitle = "Order Manager";
 
-        private OrderRegistry registry;
-        private SerializedObject serialized;
-        private Vector2 scroll;
+        private readonly EditorWindowStyles _styles = new();
+
+        private OrderRegistry _registry;
+        private SerializedObject _serialized;
+        private Vector2 _scroll;
 
 #region Unity Callbacks
         private void OnEnable()
         {
-            registry = OrderRegistry.instance;
-            serialized = new SerializedObject(registry);
+            _registry = OrderRegistry.instance;
+            _serialized = new SerializedObject(_registry);
         }
 
         private void OnGUI()
         {
-            if (serialized == null)
+            if (_serialized == null)
                 return;
 
-            serialized.Update();
-            scroll = EditorGUILayout.BeginScrollView(scroll);
+            _styles.EnsureBuilt();
+            _serialized.Update();
+
+            EditorWindowChrome.DrawHeader(_styles, WindowTitle, Description);
+
+            _scroll = EditorGUILayout.BeginScrollView(_scroll);
 
             DrawSettings();
-            EditorGUILayout.Space();
+            EditorGUILayout.Space(EditorMetrics.SectionGap);
             DrawConstants();
-            EditorGUILayout.Space();
-            DrawGenerateButton();
 
             EditorGUILayout.EndScrollView();
 
-            if (serialized.ApplyModifiedProperties())
-                registry.Persist();
+            EditorGUILayout.Space(EditorMetrics.ItemGap);
+            DrawGenerateButton();
+
+            if (_serialized.ApplyModifiedProperties())
+                _registry.Persist();
         }
+
+        private void OnDisable() => _styles.Dispose();
 #endregion
 
-        [DynamicMenuItem("Tools/Base Packages/Code/Generation/Order Manager")]
+        [DynamicMenuItem(MenuPath)]
         private static void Open()
         {
             OrderManagerWindow window = GetWindow<OrderManagerWindow>();
             window.titleContent = new GUIContent(WindowTitle);
-            window.minSize = new Vector2(420f, 320f);
+            window.minSize = new Vector2(MinWindowWidth, MinWindowHeight);
             window.Show();
-        }
-
-        private static void DrawConstant(SerializedProperty constants, int index)
-        {
-            SerializedProperty element = constants.GetArrayElementAtIndex(index);
-
-            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-            EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.PropertyField(element.FindPropertyRelative("name"), GUIContent.none);
-            EditorGUILayout.PropertyField(element.FindPropertyRelative("value"), GUIContent.none,
-                GUILayout.Width(NumberWidth));
-
-            if (GUILayout.Button("X", GUILayout.Width(RemoveWidth)))
-            {
-                constants.DeleteArrayElementAtIndex(index);
-                EditorGUILayout.EndHorizontal();
-                EditorGUILayout.EndVertical();
-                return;
-            }
-
-            EditorGUILayout.EndHorizontal();
-            EditorGUILayout.PropertyField(element.FindPropertyRelative("comment"));
-            EditorGUILayout.EndVertical();
         }
 
         private void DrawSettings()
         {
-            EditorGUILayout.LabelField("Output", EditorStyles.boldLabel);
-            EditorGUILayout.PropertyField(serialized.FindProperty("outputDirectory"));
-            EditorGUILayout.PropertyField(serialized.FindProperty("generatedNamespace"));
-            EditorGUILayout.PropertyField(serialized.FindProperty("rootClassName"));
+            EditorWindowChrome.DrawSectionHeader(_styles, OutputHeader);
+            EditorWindowChrome.BeginCard(_styles);
+
+            EditorGUILayout.PropertyField(_serialized.FindProperty(OutputDirectoryField));
+            EditorGUILayout.PropertyField(_serialized.FindProperty(NamespaceField));
+            EditorGUILayout.PropertyField(_serialized.FindProperty(RootClassField));
+
+            EditorWindowChrome.EndCard();
         }
 
         private void DrawConstants()
         {
-            SerializedProperty constants = serialized.FindProperty("constants");
-            EditorGUILayout.LabelField("Constants", EditorStyles.boldLabel);
+            SerializedProperty constants = _serialized.FindProperty(ConstantsField);
+
+            DrawConstantsHeader(constants);
+
+            if (constants.arraySize == 0)
+            {
+                EditorWindowChrome.DrawEmptyState(_styles, EditorIcons.Script, EmptyMessage, EmptyHint);
+                return;
+            }
+
+            // The index is collected and applied after the loop. Deleting an element while the rows are
+            // being drawn changes how many controls the pass emits, which is what IMGUI reports as a
+            // control count mismatch on the next repaint.
+            int removalIndex = NoRemoval;
 
             for (int i = 0; i < constants.arraySize; i++)
             {
-                DrawConstant(constants, i);
-                EditorGUILayout.Space();
+                if (DrawConstant(constants, i))
+                    removalIndex = i;
             }
 
-            if (GUILayout.Button("Add Constant"))
+            if (removalIndex != NoRemoval)
+                constants.DeleteArrayElementAtIndex(removalIndex);
+        }
+
+        private void DrawConstantsHeader(SerializedProperty constants)
+        {
+            EditorGUILayout.BeginHorizontal();
+
+            GUILayout.Label(ConstantsHeader, _styles.SectionHeader);
+            GUILayout.FlexibleSpace();
+
+            if (EditorWindowChrome.SecondaryButton(_styles, AddLabel, GUILayout.Width(AddButtonWidth)))
                 constants.arraySize++;
+
+            EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.Space(EditorMetrics.TightGap);
+        }
+
+        // Reports whether the row asked to be removed, so the caller can do it once the pass is over.
+        private bool DrawConstant(SerializedProperty constants, int index)
+        {
+            SerializedProperty element = constants.GetArrayElementAtIndex(index);
+
+            EditorWindowChrome.BeginCard(_styles);
+
+            EditorGUILayout.BeginHorizontal();
+
+            EditorGUILayout.PropertyField(element.FindPropertyRelative(NameField), GUIContent.none);
+            EditorGUILayout.PropertyField(element.FindPropertyRelative(ValueField), GUIContent.none,
+                GUILayout.Width(NumberWidth));
+
+            bool isRemoved = EditorWindowChrome.SecondaryButton(_styles, RemoveLabel,
+                GUILayout.Width(RemoveWidth));
+
+            EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.PropertyField(element.FindPropertyRelative(CommentField));
+
+            EditorWindowChrome.EndCard();
+
+            return isRemoved;
         }
 
         private void DrawGenerateButton()
         {
-            if (!GUILayout.Button("Generate", GUILayout.Height(32f)))
+            if (!EditorWindowChrome.PrimaryButton(_styles, GenerateLabel,
+                    GUILayout.Height(GenerateButtonHeight)))
                 return;
 
-            serialized.ApplyModifiedProperties();
-            registry.Persist();
-            OrderCodeGenerator.Generate(registry);
+            _serialized.ApplyModifiedProperties();
+            _registry.Persist();
+            OrderCodeGenerator.Generate(_registry);
         }
     }
 }

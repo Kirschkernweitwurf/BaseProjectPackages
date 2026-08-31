@@ -9,10 +9,14 @@ namespace Base.EditorUiPackage
     /// line, with a centered message when there is nothing to list.
     /// </summary>
     /// <remarks>
-    /// Everything here is what two such windows turned out to agree on down to the value. What a
+    /// Everything here is what the Base list windows turned out to agree on down to the value. What a
     /// window keeps for itself are the widths of its own columns, its minimum size, and the fills of
     /// the badges only it has a meaning for. Those go in a subclass, which may also override
     /// <see cref="Build"/> and call the base first to add styles of its own.
+    /// <para>
+    /// Every number and color comes from the active theme, so a user retunes the whole family of list
+    /// windows from the Editor UI Theme project settings page.
+    /// </para>
     /// <para>
     /// Building and releasing are inherited from <see cref="EditorStyleSet"/>: call
     /// <c>EnsureBuilt</c> at the top of <c>OnGUI</c> and <c>Dispose</c> from <c>OnDisable</c>.
@@ -21,96 +25,92 @@ namespace Base.EditorUiPackage
     public class EditorTableStyles : EditorStyleSet
     {
         /// <summary>Opacity a palette color is laid on a badge with, so the text stays readable.</summary>
-        protected const float BadgeAlpha = 0.30f;
+        public static float BadgeAlpha => EditorThemeProvider.Table.BadgeAlpha;
 
-        private const int BadgeFontSize = 10;
+        private static int BadgeFontSize => EditorThemeProvider.Table.BadgeFontSize;
 
         /// <summary>Horizontal gap between the badge column and its neighbors.</summary>
-        public const float BadgeGap = EditorMetrics.ItemGap;
+        public static float BadgeGap => EditorMetrics.ItemGap;
 
         /// <summary>Padding between the card edge and the first and last row.</summary>
-        public const int CardPadding = 4;
+        public static int CardPadding => EditorThemeProvider.Table.CardPadding;
 
-        private const float EmptyIconSize = 44f;
+        /// <summary>Edge length of the large icon above an empty state message.</summary>
+        public static float EmptyIconSize => EditorThemeProvider.Table.EmptyIconSize;
 
         /// <summary>Vertical gap between the parts of the empty state.</summary>
-        public const float EmptyLineGap = 6f;
+        public static float EmptyLineGap => EditorThemeProvider.Table.EmptyLineGap;
 
         /// <summary>Gap between a column title and the sort arrow after it.</summary>
-        public const float HeaderArrowGap = 4f;
+        public static float HeaderArrowGap => EditorThemeProvider.Table.HeaderArrowGap;
 
         /// <summary>Height of the column header strip.</summary>
-        public const float HeaderHeight = EditorMetrics.HeaderHeight;
-
-        private const float HeaderTintDark = 0.07f;
-        private const float HeaderTintLight = 0.06f;
+        public static float HeaderHeight => EditorMetrics.HeaderHeight;
 
         /// <summary>Gap between a row icon and the name next to it.</summary>
-        public const float IconGap = 3f;
+        public static float IconGap => EditorThemeProvider.Table.IconGap;
 
         /// <summary>Edge length of a small row icon.</summary>
-        public const float IconSize = 14f;
+        public static float IconSize => EditorThemeProvider.Table.IconSize;
 
         /// <summary>Smallest width the badge column takes, so short badges still line up.</summary>
-        public const float MinBadgeWidth = 78f;
-
-        private const float NeutralBadgeAlpha = 0.12f;
+        public static float MinBadgeWidth => EditorThemeProvider.Table.MinBadgeWidth;
 
         /// <summary>Outer margin around the table card.</summary>
-        public const float OuterMargin = 6f;
+        public static float OuterMargin => EditorThemeProvider.Table.OuterMargin;
 
         /// <summary>Width of the button that selects and pings a row's object.</summary>
-        public const float PingButtonWidth = 44f;
-
-        private const float PingHoverAlpha = 0.45f;
-        private const float PingRestAlpha = 0.17f;
+        public static float PingButtonWidth => EditorThemeProvider.Table.PingButtonWidth;
 
         /// <summary>Height of a single row. Taller than a plain list row, because rows carry badges.</summary>
-        public const float RowHeight = 24f;
+        public static float RowHeight => EditorThemeProvider.Table.RowHeight;
 
         /// <summary>Horizontal padding at both ends of a row.</summary>
-        public const float RowInset = EditorMetrics.RowInset;
+        public static float RowInset => EditorMetrics.RowInset;
 
         /// <summary>Width of the toolbar search field.</summary>
-        public const float SearchWidth = 190f;
+        public static float SearchWidth => EditorThemeProvider.Table.SearchWidth;
 
         /// <summary>Height of the summary bar between the toolbar and the table.</summary>
-        public const float SummaryHeight = 24f;
-
-        private const float SummaryPillAlpha = 0.26f;
+        public static float SummaryHeight => EditorThemeProvider.Table.SummaryHeight;
 
         /// <summary>Width of the toolbar buttons.</summary>
-        public const float ToolbarButtonWidth = 62f;
+        public static float ToolbarButtonWidth => EditorThemeProvider.Table.ToolbarButtonWidth;
 
         /// <summary>Fill of the badge on a row that reports a problem.</summary>
-        public static Color DangerBadgeColor => WithAlpha(EditorPalette.Danger, BadgeAlpha);
+        public static Color DangerBadgeColor => EditorPalette.WithAlpha(EditorPalette.Danger, BadgeAlpha);
 
         /// <summary>Background of the column header strip.</summary>
-        public static Color HeaderColor => EditorPalette.Tint(HeaderTintDark, HeaderTintLight);
+        public static Color HeaderColor => EditorPalette.Tint(EditorThemeProvider.Table.HeaderTintDark,
+            EditorThemeProvider.Table.HeaderTintLight);
 
         /// <summary>Fill of a badge that only carries a number or a label, with no state behind it.</summary>
-        public static Color NeutralBadgeColor => EditorPalette.Tint(NeutralBadgeAlpha);
+        public static Color NeutralBadgeColor => EditorPalette.Tint(EditorThemeProvider.Table.NeutralBadgeAlpha);
 
         /// <summary>Fill of the badge on a row that is fine.</summary>
-        public static Color OkBadgeColor => WithAlpha(EditorPalette.Success, BadgeAlpha);
+        public static Color OkBadgeColor => EditorPalette.WithAlpha(EditorPalette.Success, BadgeAlpha);
 
         /// <summary>Fill behind the ping button while the mouse is on it.</summary>
-        public static Color PingHoverColor => WithAlpha(EditorPalette.Accent, PingHoverAlpha);
+        public static Color PingHoverColor => EditorPalette.WithAlpha(EditorPalette.Accent,
+            EditorThemeProvider.Table.PingHoverAlpha);
 
         /// <summary>
         /// Fill behind the ping button at rest. The accent at low opacity, which lands on a muted
         /// slate blue over the card on either skin rather than needing a color of its own.
         /// </summary>
-        public static Color PingRestColor => WithAlpha(EditorPalette.Accent, PingRestAlpha);
+        public static Color PingRestColor => EditorPalette.WithAlpha(EditorPalette.Accent,
+            EditorThemeProvider.Table.PingRestAlpha);
 
         /// <summary>Fill of the summary pill when nothing is wrong.</summary>
-        public static Color SummaryOkColor => WithAlpha(EditorPalette.Success, SummaryPillAlpha);
+        public static Color SummaryOkColor => EditorPalette.WithAlpha(EditorPalette.Success,
+            EditorThemeProvider.Table.SummaryPillAlpha);
 
         /// <summary>Fill of the summary pill when at least one row reports a problem.</summary>
-        public static Color SummaryProblemColor => WithAlpha(EditorPalette.Danger, SummaryPillAlpha);
+        public static Color SummaryProblemColor => EditorPalette.WithAlpha(EditorPalette.Danger,
+            EditorThemeProvider.Table.SummaryPillAlpha);
 
         /// <summary>Fill of the badge on a row that is worth a second look but is not broken.</summary>
-        public static Color WarningBadgeColor => WithAlpha(EditorPalette.Warning, BadgeAlpha);
+        public static Color WarningBadgeColor => EditorPalette.WithAlpha(EditorPalette.Warning, BadgeAlpha);
 
         /// <summary>Centered label inside a pill.</summary>
         public GUIStyle Badge { get; private set; }
@@ -151,20 +151,28 @@ namespace Base.EditorUiPackage
         /// <summary>Label of the ping button while the mouse is on it.</summary>
         public GUIStyle PingHot { get; private set; }
 
+        /// <summary>Filled accent button for the one action a window is mostly opened for.</summary>
+        public GUIStyle PrimaryButton { get; private set; }
+
+        /// <summary>Filled muted button for every action next to the primary one.</summary>
+        public GUIStyle SecondaryButton { get; private set; }
+
         /// <summary>The line under the toolbar that says what the table is showing.</summary>
         public GUIStyle Summary { get; private set; }
+
+        /// <summary>
+        /// A badge fill mixed from any color at the theme's badge opacity, for a window whose
+        /// states the shared fills have no name for.
+        /// </summary>
+        /// <param name="color">The color the badge stands for.</param>
+        /// <returns>The fill to draw the badge with.</returns>
+        public static Color BadgeFill(Color color) => EditorPalette.WithAlpha(color, BadgeAlpha);
 
         /// <summary>The rectangle the empty state icon is drawn in, centered above the message.</summary>
         /// <param name="area">The area the empty state fills.</param>
         /// <returns>The icon rectangle.</returns>
         public static Rect EmptyIconRect(Rect area) => new(area.center.x - EmptyIconSize * 0.5f,
             area.center.y - EmptyIconSize, EmptyIconSize, EmptyIconSize);
-
-        /// <summary>The same color at a different opacity, which is how every badge fill is made.</summary>
-        /// <param name="color">The color from the palette.</param>
-        /// <param name="alpha">The opacity to lay it on with.</param>
-        /// <returns>The badge fill.</returns>
-        protected static Color WithAlpha(Color color, float alpha) => new(color.r, color.g, color.b, alpha);
 
         /// <inheritdoc/>
         protected override void Build()
@@ -237,6 +245,12 @@ namespace Base.EditorUiPackage
             {
                 fontStyle = FontStyle.Bold
             }, EditorPalette.Text);
+
+            PrimaryButton = EditorStyleUtility.BuildFilledButton(Textures, EditorPalette.Accent,
+                EditorPalette.AccentText, FontStyle.Bold, EditorMetrics.CardCornerRadius);
+
+            SecondaryButton = EditorStyleUtility.BuildFilledButton(Textures, EditorPalette.Secondary,
+                EditorPalette.SecondaryText, FontStyle.Normal, EditorMetrics.CardCornerRadius);
 
             Summary = EditorStyleUtility.PinTextColor(new GUIStyle(EditorStyles.miniLabel)
             {

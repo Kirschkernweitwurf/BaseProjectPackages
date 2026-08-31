@@ -14,10 +14,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
     /// </summary>
     internal sealed class AudioClipDetailsView : VisualElement
     {
-        private const string ChangedRowClass = "ar-grid-row--changed";
         private const float CurrentWidth = 150f;
-        private const string DimClass = "ar-grid-cell--dim";
-        private const string MutedRowClass = "ar-grid-row--muted";
         private const float LabelWidth = 160f;
         private const string NoRule = "Unchanged";
         private const float RuleWidth = 150f;
@@ -51,7 +48,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
             if (plan == null)
             {
                 _body.Add(Text("Select a clip to see what the rules decided for it.",
-                    "ar-detail--placeholder"));
+                    AudioRulesStyle.DetailPlaceholderClass));
 
                 return;
             }
@@ -66,7 +63,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
         {
             Label label = new(value);
 
-            label.AddToClassList("ar-detail");
+            label.AddToClassList(AudioRulesStyle.DetailClass);
 
             return label;
         }
@@ -87,7 +84,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
                 tooltip = tooltip
             };
 
-            chip.AddToClassList("ar-chip");
+            chip.AddToClassList(AudioRulesStyle.ChipClass);
 
             if (!string.IsNullOrEmpty(variant))
                 chip.AddToClassList(variant);
@@ -99,7 +96,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
         {
             VisualElement row = new();
 
-            row.AddToClassList("ar-metarow");
+            row.AddToClassList(AudioRulesStyle.MetaRowClass);
 
             return row;
         }
@@ -108,15 +105,15 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
         {
             VisualElement section = new();
 
-            section.AddToClassList("ar-section");
+            section.AddToClassList(AudioRulesStyle.SectionClass);
 
             Label label = new(title);
 
-            label.AddToClassList("ar-section__title");
+            label.AddToClassList(AudioRulesStyle.SectionTitleClass);
 
             VisualElement line = new();
 
-            line.AddToClassList("ar-section__rule");
+            line.AddToClassList(AudioRulesStyle.SectionRuleClass);
 
             section.Add(label);
             section.Add(line);
@@ -131,9 +128,9 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
                 tooltip = tooltip
             };
 
-            label.AddToClassList("ar-grid-cell");
-            label.EnableInClassList("ar-grid-cell--head", isHead);
-            label.EnableInClassList(DimClass, dim);
+            label.AddToClassList(AudioRulesStyle.GridCellClass);
+            label.EnableInClassList(AudioRulesStyle.GridCellHeadClass, isHead);
+            label.EnableInClassList(AudioRulesStyle.GridCellDimClass, dim);
 
             if (width > 0f)
                 label.style.width = width;
@@ -144,10 +141,10 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
         private static string Variant(long delta)
         {
             if (delta > 0L)
-                return "ar-chip--good";
+                return AudioRulesStyle.ChipGoodClass;
 
             return delta < 0L
-                ? "ar-chip--bad"
+                ? AudioRulesStyle.ChipBadClass
                 : null;
         }
 
@@ -156,9 +153,9 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
         {
             VisualElement row = new();
 
-            row.AddToClassList("ar-grid-row");
-            row.EnableInClassList("ar-grid-row--head", isHead);
-            row.EnableInClassList(ChangedRowClass, changed);
+            row.AddToClassList(AudioRulesStyle.GridRowClass);
+            row.EnableInClassList(AudioRulesStyle.GridRowHeadClass, isHead);
+            row.EnableInClassList(AudioRulesStyle.GridRowChangedClass, changed);
 
             row.Add(Cell(label, LabelWidth, isHead, false, null));
             row.Add(Cell(current, CurrentWidth, isHead, changed, null));
@@ -183,8 +180,8 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
 
         private void BuildHeader(AudioClipPlan plan)
         {
-            _body.Add(Text(plan.Info.Name, "ar-detail--title"));
-            _body.Add(Text(plan.Info.AssetPath, "ar-detail--path"));
+            _body.Add(Text(plan.Info.Name, AudioRulesStyle.DetailTitleClass));
+            _body.Add(Text(plan.Info.AssetPath, AudioRulesStyle.DetailPathClass));
 
             VisualElement meta = MetaRow();
 
@@ -221,12 +218,12 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
 
             foreach (string label in plan.MatchedRules)
             {
-                _body.Add(Text(label, "ar-detail--rule"));
+                _body.Add(Text(label, AudioRulesStyle.DetailRuleClass));
 
                 string reason = ReasonFor(label);
 
                 if (!string.IsNullOrEmpty(reason))
-                    _body.Add(Text(reason, "ar-detail--reason"));
+                    _body.Add(Text(reason, AudioRulesStyle.DetailReasonClass));
             }
         }
 
@@ -268,7 +265,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
             VisualElement row = Row(setting.ToString(), AudioRuleResolver.Describe(plan.Info.Current, setting),
                 AudioRuleResolver.Describe(plan.Target, setting), decided, changed, false, reason);
 
-            row.EnableInClassList(MutedRowClass, !applies);
+            row.EnableInClassList(AudioRulesStyle.GridRowMutedClass, !applies);
 
             return row;
         }

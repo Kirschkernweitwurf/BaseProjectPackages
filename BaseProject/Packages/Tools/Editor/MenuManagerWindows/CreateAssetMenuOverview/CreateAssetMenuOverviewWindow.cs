@@ -65,6 +65,8 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows.CreateAssetMenuOverview
 
         private void OnGUI()
         {
+            MenuOverviewGui.EnsureFresh();
+
             if (_needsRebuild)
                 Rebuild();
 

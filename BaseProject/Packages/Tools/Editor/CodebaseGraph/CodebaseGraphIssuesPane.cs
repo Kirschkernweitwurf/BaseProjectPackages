@@ -22,41 +22,24 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             + "found has been dismissed.";
 
         private const string ClearTitle = "All clear";
-        private const string DismissClass = "dismiss-button";
         private const string DismissLabel = "Dismiss";
         private const string DismissTooltip = "Hides this one finding. Nothing about the code changes.";
-        private const string EmptyMarkClass = "empty-mark";
         private const string EmptyScanText = "Press Scan to read the project. It takes a few seconds.";
         private const string EmptyScanTitle = "No scan yet";
-        private const string EmptyStateClass = "empty-state";
-        private const string EmptyTitleClass = "empty-title";
         private const int FilterMinimumWidth = 170;
-        private const string HeadingClass = "issue-heading";
         private const string HeadingFormat = "{0} findings: {1} high, {2} medium, {3} low";
-        private const string HighClass = "is-high";
-        private const string ListClass = "issue-list";
-        private const string MediumClass = "is-medium";
         private const string NeutralMark = "\u2013";
 
         private const string NoMatchText = "Everything found is filtered out. Clear the filter or the "
             + "search to see it.";
 
         private const string NoMatchTitle = "Nothing matches";
-        private const string OddClass = "is-odd";
         private const string OpenLabel = "Open";
         private const string OpenTooltip = "Opens the script at the declaration.";
-        private const string PaneClass = "pane";
-        private const string PlaceholderClass = "pane-placeholder";
-        private const string RowClass = "issue-row";
-        private const string RowDetailClass = "issue-detail";
         private const int RowHeight = 52;
-        private const string RowTitleClass = "issue-title";
         private const int SearchMinimumWidth = 160;
         private const string SearchTooltip = "Filters by name, file or finding.";
-        private const string SeverityClass = "issue-severity";
-        private const string SuccessClass = "is-success";
         private const string SuccessMark = "\u2713";
-        private const string ToolbarRowClass = "top-bar";
 
         /// <summary>How many findings are showing after the current filter.</summary>
         public int VisibleCount => _entries.Count;
@@ -78,10 +61,10 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         /// <summary>Builds the pane, its filter row and its list.</summary>
         public CodebaseGraphIssuesPane()
         {
-            AddToClassList(PaneClass);
+            AddToClassList(CodebaseGraphStyle.PaneClass);
             Add(BuildToolbar());
 
-            _heading = GraphLabel.Build(string.Empty, HeadingClass);
+            _heading = GraphLabel.Build(string.Empty, CodebaseGraphStyle.IssueHeadingClass);
             Add(_heading);
             Add(BuildEmptyState());
 
@@ -92,7 +75,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
                 bindItem = BindRow
             };
 
-            _list.AddToClassList(ListClass);
+            _list.AddToClassList(CodebaseGraphStyle.IssueListClass);
             _list.style.flexGrow = 1f;
             Add(_list);
 
@@ -111,7 +94,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         private static VisualElement MakeRow()
         {
             VisualElement row = new();
-            row.AddToClassList(RowClass);
+            row.AddToClassList(CodebaseGraphStyle.IssueRowClass);
 
             VisualElement text = new()
             {
@@ -121,10 +104,10 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
                 }
             };
 
-            text.Add(GraphLabel.Build(string.Empty, RowTitleClass));
-            text.Add(GraphLabel.Build(string.Empty, RowDetailClass));
+            text.Add(GraphLabel.Build(string.Empty, CodebaseGraphStyle.IssueTitleClass));
+            text.Add(GraphLabel.Build(string.Empty, CodebaseGraphStyle.IssueDetailClass));
 
-            row.Add(GraphLabel.Build(string.Empty, SeverityClass));
+            row.Add(GraphLabel.Build(string.Empty, CodebaseGraphStyle.IssueSeverityClass));
             row.Add(text);
             Button open = new()
             {
@@ -138,7 +121,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
                 tooltip = DismissTooltip
             };
 
-            dismiss.AddToClassList(DismissClass);
+            dismiss.AddToClassList(CodebaseGraphStyle.DismissButtonClass);
 
             row.Add(open);
             row.Add(dismiss);
@@ -174,11 +157,11 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         private VisualElement BuildEmptyState()
         {
             _emptyState = new VisualElement();
-            _emptyState.AddToClassList(EmptyStateClass);
+            _emptyState.AddToClassList(CodebaseGraphStyle.EmptyStateClass);
 
-            _emptyMark = GraphLabel.Build(SuccessMark, EmptyMarkClass);
-            _emptyTitle = GraphLabel.Build(string.Empty, EmptyTitleClass);
-            _emptyText = GraphLabel.Build(string.Empty, PlaceholderClass);
+            _emptyMark = GraphLabel.Build(SuccessMark, CodebaseGraphStyle.EmptyMarkClass);
+            _emptyTitle = GraphLabel.Build(string.Empty, CodebaseGraphStyle.EmptyTitleClass);
+            _emptyText = GraphLabel.Build(string.Empty, CodebaseGraphStyle.PanePlaceholderClass);
 
             _emptyState.Add(_emptyMark);
             _emptyState.Add(_emptyTitle);
@@ -190,7 +173,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         private VisualElement BuildToolbar()
         {
             Toolbar toolbar = new();
-            toolbar.AddToClassList(ToolbarRowClass);
+            toolbar.AddToClassList(CodebaseGraphStyle.TopBarClass);
 
             _findingField = new PopupField<string>(FindingCatalog.BuildChoices(), 0)
             {
@@ -300,7 +283,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
                 ? SuccessMark
                 : NeutralMark;
 
-            _emptyMark.EnableInClassList(SuccessClass, isSuccess);
+            _emptyMark.EnableInClassList(CodebaseGraphStyle.IsSuccessClass, isSuccess);
             _emptyTitle.text = title;
             _emptyText.text = text;
             _emptyState.style.display = DisplayStyle.Flex;
@@ -325,14 +308,14 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
             List<Label> labels = row.Query<Label>().ToList();
             labels[0].text = entry.Severity.ToString();
-            labels[0].EnableInClassList(HighClass, entry.Severity == ESeverity.High);
-            labels[0].EnableInClassList(MediumClass, entry.Severity == ESeverity.Medium);
+            labels[0].EnableInClassList(CodebaseGraphStyle.IsHighClass, entry.Severity == ESeverity.High);
+            labels[0].EnableInClassList(CodebaseGraphStyle.IsMediumClass, entry.Severity == ESeverity.Medium);
 
             // Striping and the left accent both come from the row, so a long list stays readable
             // without anyone having to follow a line across it.
-            row.EnableInClassList(OddClass, index % 2 == 1);
-            row.EnableInClassList(HighClass, entry.Severity == ESeverity.High);
-            row.EnableInClassList(MediumClass, entry.Severity == ESeverity.Medium);
+            row.EnableInClassList(CodebaseGraphStyle.IsOddClass, index % 2 == 1);
+            row.EnableInClassList(CodebaseGraphStyle.IsHighClass, entry.Severity == ESeverity.High);
+            row.EnableInClassList(CodebaseGraphStyle.IsMediumClass, entry.Severity == ESeverity.Medium);
             labels[1].text = $"{descriptor.Title}: {ReadName(entry)}";
             labels[2].text = entry.Location;
 

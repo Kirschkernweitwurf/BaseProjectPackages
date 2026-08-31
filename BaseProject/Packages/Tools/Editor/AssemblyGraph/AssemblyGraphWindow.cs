@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Base.EditorUiPackage;
 using Base.UtilityPackage.Menus;
 using UnityEditor;
 using UnityEditor.UIElements;
@@ -11,6 +12,17 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
     /// <summary>Editor window that visualizes project assemblies and their references.</summary>
     public sealed class AssemblyGraphWindow : EditorWindow
     {
+        private const string MenuPath = "Tools/Base Packages/Unity Editor/Project Health/Assembly Graph";
+        private const float MinWindowHeight = 420f;
+        private const float MinWindowWidth = 720f;
+        private const string MissingSheetMessage = "The assembly graph style sheet is missing, so the "
+            + "nodes are drawn unstyled.";
+
+        /// <summary>The GUID of this window's own sheet, from its meta file.</summary>
+        private const string SheetGuid = "eaf1ce2966367bf458751be0e860234d";
+
+        private const string WindowTitle = "Assembly Graph";
+
         private bool HasFocus => !string.IsNullOrEmpty(_focusedName);
 
         private AssemblyGraphView _graphView;
@@ -30,8 +42,16 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
 #region Unity Callbacks
         private void CreateGUI()
         {
-            LoadStyleSheet();
+            // The shared look first, then this window's own sheet on top of it, which only carries
+            // the GraphView pieces the shared classes cannot reach. Reload is handed over because the
+            // nodes paint their own containers, and those are only written while a node is built.
+            EditorUssTheme.Apply(rootVisualElement, Reload);
+
+            // The toolbar goes up before the sheet is attached, because that is where the status
+            // label lives and a missing sheet is reported through it.
             rootVisualElement.Add(BuildToolbar());
+
+            LoadStyleSheet();
 
             _graphView = new AssemblyGraphView(OnFocusRequested, OnNodeCleanupRequested);
             rootVisualElement.Add(_graphView);
@@ -40,12 +60,13 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
         }
 #endregion
 
-        [DynamicMenuItem("Tools/Base Packages/Unity Editor/Project Health/Assembly Graph")]
+        [DynamicMenuItem(MenuPath)]
         public static void Open()
         {
             AssemblyGraphWindow window = GetWindow<AssemblyGraphWindow>();
-            window.titleContent = new GUIContent("Assembly Graph");
-            window.minSize = new Vector2(720f, 420f);
+
+            window.titleContent = new GUIContent(WindowTitle);
+            window.minSize = new Vector2(MinWindowWidth, MinWindowHeight);
         }
 
         private static ToolbarToggle BuildToggle(string label, bool initialValue, Action<bool> onChanged)
@@ -377,18 +398,15 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
                 _statusLabel.text = $"Removed {removed} reference(s). Recompiling, press Refresh when done.";
         }
 
+        // By GUID rather than by name search, which answered with whatever file in the project
+        // happened to be called this and would style the window from a stranger's sheet.
         private void LoadStyleSheet()
         {
-            foreach (string guid in AssetDatabase.FindAssets("AssemblyGraph t:StyleSheet"))
-            {
-                string path = AssetDatabase.GUIDToAssetPath(guid);
-                StyleSheet sheet = AssetDatabase.LoadAssetAtPath<StyleSheet>(path);
-                if (sheet == null)
-                    continue;
-
-                rootVisualElement.styleSheets.Add(sheet);
+            if (EditorStyleSheets.Apply(rootVisualElement, SheetGuid))
                 return;
-            }
+
+            if (_statusLabel != null)
+                _statusLabel.text = MissingSheetMessage;
         }
     }
 }

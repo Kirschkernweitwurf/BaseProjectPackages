@@ -19,10 +19,8 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         private const int MaxRowsPerType = 14;
         private const int MaxSearchResults = 150;
         private const string MemberIdPrefix = "me:";
-        private const string MemberWord = "member";
         private const string MonoBehaviourNote = ", MonoBehaviour";
         private const string NamespaceIdPrefix = "ns:";
-        private const string PluralSuffix = "s";
         private const string StaticModifier = "static ";
         private const string SubtitleSeparator = "  \u00b7  ";
         private const string TypeIdPrefix = "ty:";
@@ -674,7 +672,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
                 ? MonoBehaviourNote
                 : string.Empty;
 
-            string members = Count(type.Members.Count, MemberWord);
+            string members = Count(type.Members.Count, CodebaseGraphStyle.MemberClass);
 
             return $"{type.Access} {BuildTypeModifier(type)}{type.Kind}{note}{SubtitleSeparator}{members}";
         }
@@ -706,7 +704,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         {
             string suffix = value == 1
                 ? string.Empty
-                : PluralSuffix;
+                : CodebaseGraphStyle.SClass;
 
             return $"{value} {singular}{suffix}";
         }

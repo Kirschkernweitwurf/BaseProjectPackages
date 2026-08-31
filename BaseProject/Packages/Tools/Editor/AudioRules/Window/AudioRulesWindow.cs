@@ -34,7 +34,8 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
         private const float DetailsHeight = 240f;
         private const string MenuPath = "Tools/Base Packages/Assets/Audio Rules";
         private const float RulesWidth = 250f;
-        private const string StyleSheetFilter = "AudioRulesWindow t:StyleSheet";
+        private const string MissingSheetMessage = "The audio rules style sheet was not found, so the "
+            + "window is drawn unstyled.";
         private const string WindowTitle = "Audio Rules";
 
         private static readonly Vector2 MinWindowSize = new(940f, 520f);
@@ -75,13 +76,6 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
             if (ruleSet == null)
                 ruleSet = AudioRuleSet.Load();
 
-            rootVisualElement.AddToClassList("ar-root");
-
-            if (!EditorGUIUtility.isProSkin)
-                rootVisualElement.AddToClassList("ar-light");
-
-            LoadStyleSheet();
-
             rootVisualElement.Add(BuildToolbar());
 
             _body = new VisualElement
@@ -97,6 +91,11 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
 
             BuildPanes();
             BindRuleSet();
+
+            // Last, so the first paint reaches the whole tree rather than only the root, and so the
+            // window keeps following the theme from here on.
+            if (!AudioRulesStyle.Apply(rootVisualElement))
+                CustomLogger.LogWarning(MissingSheetMessage, this);
         }
 
         private void OnDisable()
@@ -126,7 +125,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
         {
             Label chip = new(text);
 
-            chip.AddToClassList("ar-chip");
+            chip.AddToClassList(AudioRulesStyle.ChipClass);
 
             if (!string.IsNullOrEmpty(variant))
                 chip.AddToClassList(variant);
@@ -138,7 +137,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
         {
             Toolbar toolbar = new();
 
-            toolbar.AddToClassList("ar-toolbar");
+            toolbar.AddToClassList(AudioRulesStyle.ToolbarClass);
 
             _ruleSetField = new ObjectField
             {
@@ -147,7 +146,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
                 value = ruleSet
             };
 
-            _ruleSetField.AddToClassList("ar-ruleset");
+            _ruleSetField.AddToClassList(AudioRulesStyle.RuleSetClass);
             _ruleSetField.RegisterValueChangedCallback(evt =>
             {
                 ruleSet = evt.newValue as AudioRuleSet;
@@ -192,7 +191,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
 
             ToolbarSearchField search = new();
 
-            search.AddToClassList("ar-search");
+            search.AddToClassList(AudioRulesStyle.SearchClass);
             search.RegisterValueChangedCallback(evt =>
             {
                 _search = evt.newValue;
@@ -217,7 +216,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
                     + "inherits the default settings."
             };
 
-            target.AddToClassList("ar-target");
+            target.AddToClassList(AudioRulesStyle.TargetClass);
             target.RegisterValueChangedCallback(evt =>
             {
                 _platform = evt.newValue == DefaultTargetLabel
@@ -275,16 +274,16 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
         {
             VisualElement bar = new();
 
-            bar.AddToClassList("ar-status");
+            bar.AddToClassList(AudioRulesStyle.StatusClass);
 
             _status = new Label(string.Empty);
-            _status.AddToClassList("ar-status__text");
+            _status.AddToClassList(AudioRulesStyle.StatusTextClass);
 
             _progressFill = new VisualElement();
-            _progressFill.AddToClassList("ar-progress__fill");
+            _progressFill.AddToClassList(AudioRulesStyle.ProgressFillClass);
 
             _progress = new VisualElement();
-            _progress.AddToClassList("ar-progress");
+            _progress.AddToClassList(AudioRulesStyle.ProgressClass);
             _progress.Add(_progressFill);
             _progress.style.display = DisplayStyle.None;
 
@@ -293,28 +292,13 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
                 text = "Apply"
             };
 
-            _applyButton.AddToClassList("ar-primary");
+            _applyButton.AddToClassList(AudioRulesStyle.PrimaryClass);
 
             bar.Add(_status);
             bar.Add(_progress);
             bar.Add(_applyButton);
 
             return bar;
-        }
-
-        private void LoadStyleSheet()
-        {
-            foreach (string guid in AssetDatabase.FindAssets(StyleSheetFilter))
-            {
-                StyleSheet sheet = AssetDatabase.LoadAssetAtPath<StyleSheet>(AssetDatabase.GUIDToAssetPath(guid));
-
-                if (sheet == null)
-                    continue;
-
-                rootVisualElement.styleSheets.Add(sheet);
-
-                return;
-            }
         }
 
         private void BindRuleSet()
@@ -577,7 +561,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
             {
                 ShowMessage(AudioRulesMessageView.SuccessGlyph, "Everything matches",
                     $"All {_plans.Count} clips are imported the way the rules want them, and nothing turned up "
-                    + "in the sample data.", "ar-good", null, null);
+                    + "in the sample data.", AudioRulesStyle.GoodClass, null, null);
 
                 return;
             }
@@ -618,11 +602,11 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
 
             _clipsPane.HeaderRight.Clear();
             _clipsPane.HeaderRight.Add(Chip($"{changed.Count} to change", changed.Count > 0
-                ? "ar-chip--warn"
+                ? AudioRulesStyle.ChipWarnClass
                 : null));
 
             _clipsPane.HeaderRight.Add(Chip($"{findings} with findings", findings > 0
-                ? "ar-chip--bad"
+                ? AudioRulesStyle.ChipBadClass
                 : null));
 
             _clipsPane.HeaderRight.Add(SizeChip("Build", build));
@@ -639,8 +623,8 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
                 return Chip($"{label} unchanged", null);
 
             return Chip($"{label} {AudioRulesFormat.Delta(delta)}", delta > 0L
-                ? "ar-chip--good"
-                : "ar-chip--bad");
+                ? AudioRulesStyle.ChipGoodClass
+                : AudioRulesStyle.ChipBadClass);
         }
 
         private string TargetName() => string.IsNullOrEmpty(_platform)

@@ -8,15 +8,13 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot
     /// Cached styles, colors and icons for the findings list. Pure presentation.
     /// </summary>
     /// <remarks>
-    /// Rebuilt when the editor skin changes, since every color here is picked for one skin and the light
-    /// and dark versions are not interchangeable.
+    /// Rebuilt when the editor skin or the active theme changes, since every color here is picked for
+    /// one of them and the light and dark versions are not interchangeable.
     /// </remarks>
-    internal sealed class AttributeTroubleshootStyles
+    internal sealed class AttributeTroubleshootStyles : EditorStyleSet
     {
         private const float HeaderStrength = 0.06f;
-        private const float HoverStrength = 0.06f;
         private const float LightHeaderStrength = 0.05f;
-        private const float StripeStrength = 0.025f;
         private const int SummaryFontSize = 12;
         private const int TitleFontSize = 15;
 
@@ -68,22 +66,8 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot
         /// <summary>Large green title shown when nothing is wrong.</summary>
         internal GUIStyle SuccessTitle { get; private set; }
 
-        private bool _built;
-        private bool _builtForProSkin;
-
-        /// <summary>Builds the styles once, and again after the editor skin changed.</summary>
-        internal void EnsureBuilt()
-        {
-            if (_built && _builtForProSkin == EditorGUIUtility.isProSkin)
-                return;
-
-            Build();
-
-            _built = true;
-            _builtForProSkin = EditorGUIUtility.isProSkin;
-        }
-
-        private void Build()
+        /// <inheritdoc/>
+        protected override void Build()
         {
             Name = new GUIStyle(EditorStyles.boldLabel)
             {
@@ -124,8 +108,8 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot
                 wordWrap = true
             }, EditorStyleUtility.MutedTextColor());
 
-            Hover = EditorPalette.Tint(HoverStrength);
-            Stripe = EditorPalette.Tint(StripeStrength);
+            Hover = EditorPalette.Hover;
+            Stripe = EditorPalette.Stripe;
         }
     }
 }

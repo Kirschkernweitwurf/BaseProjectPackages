@@ -70,9 +70,6 @@ namespace Base.ToolPackage.Editor.CommandPalette
         /// <summary>Space above and below every hairline.</summary>
         public const float SeparatorGap = 5f;
 
-        /// <summary>Thickness of a hairline.</summary>
-        public const float SeparatorThickness = EditorMetrics.SeparatorThickness;
-
         /// <summary>Padding between the window edge and its content.</summary>
         public const float WindowPadding = 10f;
 
@@ -91,16 +88,18 @@ namespace Base.ToolPackage.Editor.CommandPalette
         private static GUIStyle _searchField;
         private static GUIStyle _tagLabel;
 
-        private static bool _built;
-        private static bool _builtForProSkin;
+        private static readonly EditorSkinWatch Watch = new();
+
+        /// <summary>Thickness of a hairline.</summary>
+        public static float SeparatorThickness => EditorMetrics.SeparatorThickness;
 
         /// <summary>Opening tag of a dimmed run.</summary>
-        public static string DimOpen => EditorGUIUtility.isProSkin
+        public static string DimOpen => EditorThemeProvider.IsDarkSkin
             ? "<color=#7E7E86>"
             : "<color=#87878F>";
 
         /// <summary>Opening tag of a matched run.</summary>
-        public static string MatchOpen => EditorGUIUtility.isProSkin
+        public static string MatchOpen => EditorThemeProvider.IsDarkSkin
             ? "<b><color=#7FC0FF>"
             : "<b><color=#0E4FA8>";
 
@@ -195,10 +194,10 @@ namespace Base.ToolPackage.Editor.CommandPalette
             alignment = TextAnchor.MiddleCenter
         }, PinColor());
 
-        /// <summary>Drops every cached style after a skin change. Call once per GUI pass.</summary>
+        /// <summary>Drops every cached style after a skin or theme change. Call once per GUI pass.</summary>
         public static void EnsureFresh()
         {
-            if (_built && _builtForProSkin == EditorGUIUtility.isProSkin)
+            if (!Watch.IsStale)
                 return;
 
             _badgeLabel = null;
@@ -216,8 +215,7 @@ namespace Base.ToolPackage.Editor.CommandPalette
             _searchField = null;
             _tagLabel = null;
 
-            _built = true;
-            _builtForProSkin = EditorGUIUtility.isProSkin;
+            Watch.MarkFresh();
         }
 
         /// <summary>Blue accent used for the selection and the active pill.</summary>

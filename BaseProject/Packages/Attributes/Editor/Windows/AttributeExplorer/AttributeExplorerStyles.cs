@@ -64,12 +64,9 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer
         private const int DescriptionFontSize = 11;
         private const int EntryIndent = 22;
         private const int HeadingFontSize = 18;
-        private const float HoverStrength = 0.06f;
         private const float LightTabStripFactor = 0.5f;
         private const int PageHeadingFontSize = 22;
         private const int SectionFontSize = 12;
-        private const float SelectionStrength = 0.14f;
-        private const float StripeStrength = 0.025f;
         private const float TabActiveStrength = 0.05f;
         private const float TabStripStrength = 0.10f;
 
@@ -166,23 +163,21 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer
         /// <summary>Background of the strip the tabs sit in.</summary>
         internal Color TabStrip { get; private set; }
 
-        private bool _built;
-        private bool _builtForProSkin;
+        private readonly EditorSkinWatch _watch = new();
 
-        /// <summary>Builds the styles, and rebuilds them after the editor skin changed.</summary>
+        /// <summary>Builds the styles, and rebuilds them after the skin or the theme changed.</summary>
         internal void EnsureBuilt()
         {
-            if (_built && _builtForProSkin == EditorGUIUtility.isProSkin)
+            if (!_watch.IsStale)
                 return;
 
             Build();
 
-            _built = true;
-            _builtForProSkin = EditorGUIUtility.isProSkin;
+            _watch.MarkFresh();
         }
 
         /// <summary>Kept for symmetry with the window lifetime. There is nothing to free.</summary>
-        internal void Dispose() => _built = false;
+        internal void Dispose() => _watch.Invalidate();
 
         private static Color Tint(float strength) => EditorPalette.Tint(strength);
 
@@ -323,16 +318,16 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer
             CardFocused = Tint(CardFocusedStrength);
             CardHover = Tint(CardHoverStrength);
             CategoryBand = Tint(CategoryBandStrength);
-            Hover = Tint(HoverStrength);
+            Hover = EditorPalette.Hover;
             TabActive = Tint(TabActiveStrength);
-            TabStrip = new Color(0f, 0f, 0f, EditorGUIUtility.isProSkin
+            TabStrip = new Color(0f, 0f, 0f, EditorThemeProvider.IsDarkSkin
                 ? TabStripStrength
                 : TabStripStrength * LightTabStripFactor);
 
-            Stripe = Tint(StripeStrength);
-            SelectionFill = Tint(SelectionStrength);
+            Stripe = EditorPalette.Stripe;
+            SelectionFill = EditorPalette.SelectionFill;
 
-            Selection = EditorPalette.Accent;
+            Selection = EditorPalette.Selection;
             Divider = EditorPalette.Divider;
 
             Source = new GUIStyle(EditorStyles.textArea)

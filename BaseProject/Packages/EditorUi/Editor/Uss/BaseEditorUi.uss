@@ -1,0 +1,146 @@
+/*
+ * The shared look of every Base editor window built on UI Toolkit.
+ *
+ * Shape only: sizes, radii, spacing and typography. Colors are written on top of this by
+ * EditorUssTheme from the active theme asset, so one sheet serves both editor skins and every
+ * theme instead of one sheet per skin. A window that forgets to call EditorUssTheme.Apply still
+ * gets a sane grey layout out of the fallbacks below rather than an unstyled tree.
+ */
+
+.base-root {
+    flex-grow: 1;
+    font-size: 12px;
+}
+
+.base-toolbar {
+    flex-direction: row;
+    align-items: center;
+    height: 26px;
+    padding-left: 6px;
+    padding-right: 6px;
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(0, 0, 0, 0.35);
+    background-color: rgba(255, 255, 255, 0.06);
+}
+
+.base-title {
+    -unity-font-style: bold;
+    font-size: 15px;
+    color: rgb(224, 224, 230);
+}
+
+.base-subtitle {
+    font-size: 11px;
+    white-space: normal;
+    color: rgb(143, 143, 156);
+}
+
+.base-section-header {
+    -unity-font-style: bold;
+    margin-top: 8px;
+    margin-bottom: 4px;
+}
+
+.base-card {
+    border-radius: 6px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    padding-left: 8px;
+    padding-right: 8px;
+    margin-bottom: 8px;
+    background-color: rgb(56, 56, 61);
+}
+
+.base-separator {
+    height: 1px;
+    background-color: rgba(255, 255, 255, 0.07);
+}
+
+.base-row {
+    flex-direction: row;
+    align-items: center;
+    height: 24px;
+    padding-left: 6px;
+    padding-right: 6px;
+}
+
+.base-row--alt {
+    background-color: rgba(255, 255, 255, 0.03);
+}
+
+.base-row--selected {
+    background-color: rgba(82, 153, 240, 0.2);
+}
+
+.base-badge {
+    border-radius: 8px;
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    font-size: 10px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+}
+
+.base-chip {
+    border-radius: 8px;
+    padding-left: 6px;
+    padding-right: 6px;
+    font-size: 10px;
+    -unity-text-align: middle-center;
+}
+
+.base-button {
+    border-radius: 6px;
+    height: 22px;
+    -unity-text-align: middle-center;
+}
+
+.base-button--primary {
+    -unity-font-style: bold;
+    color: rgb(255, 255, 255);
+    background-color: rgb(82, 153, 240);
+}
+
+.base-button--secondary {
+    background-color: rgb(77, 77, 84);
+}
+
+.base-dim {
+    color: rgb(143, 143, 156);
+}
+
+.base-accent {
+    color: rgb(82, 153, 240);
+}
+
+.base-success {
+    color: rgb(107, 204, 128);
+}
+
+.base-warning {
+    color: rgb(242, 166, 64);
+}
+
+.base-danger {
+    color: rgb(219, 87, 92);
+}
+
+.base-empty {
+    flex-grow: 1;
+    align-items: center;
+    justify-content: center;
+}
+
+.base-empty__title {
+    -unity-font-style: bold;
+    font-size: 15px;
+    -unity-text-align: middle-center;
+}
+
+.base-empty__hint {
+    font-size: 11px;
+    white-space: normal;
+    -unity-text-align: middle-center;
+}

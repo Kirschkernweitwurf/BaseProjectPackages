@@ -20,14 +20,9 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
     internal sealed class CodebaseGraphMiniMap : VisualElement
     {
         private const float ContentPadding = 24f;
-        private const string DotClass = "minimap-dot";
-        private const string FindingDotClass = "has-finding";
         private const long FollowIntervalMilliseconds = 16;
         private const float MapPadding = 8f;
-        private const string MiniMapClass = "minimap";
         private const float MinimumDotSize = 2f;
-        private const string SelectedDotClass = "is-selected";
-        private const string ViewBoxClass = "minimap-view";
 
         private readonly Dictionary<string, Rect> _placements = new();
         private readonly VisualElement _dots;
@@ -48,7 +43,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         {
             _graphView = graphView;
 
-            AddToClassList(MiniMapClass);
+            AddToClassList(CodebaseGraphStyle.MinimapClass);
 
             _dots = new VisualElement();
             _dots.StretchToParentSize();
@@ -56,7 +51,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             Add(_dots);
 
             _viewBox = new VisualElement();
-            _viewBox.AddToClassList(ViewBoxClass);
+            _viewBox.AddToClassList(CodebaseGraphStyle.MinimapViewClass);
             _viewBox.pickingMode = PickingMode.Ignore;
             Add(_viewBox);
 
@@ -130,8 +125,8 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         private static VisualElement BuildDot(GraphEntry entry)
         {
             VisualElement dot = new();
-            dot.AddToClassList(DotClass);
-            dot.EnableInClassList(FindingDotClass, entry.HasOpenFindings);
+            dot.AddToClassList(CodebaseGraphStyle.MinimapDotClass);
+            dot.EnableInClassList(CodebaseGraphStyle.HasFindingClass, entry.HasOpenFindings);
             dot.style.backgroundColor = GraphColorPalette.GetColor(entry.ColorSeed);
             dot.userData = entry.Id;
 
@@ -143,7 +138,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             foreach (VisualElement dot in _dots.Children())
             {
                 if (dot.userData is string id)
-                    dot.EnableInClassList(SelectedDotClass, _selected.Contains(id));
+                    dot.EnableInClassList(CodebaseGraphStyle.IsSelectedClass, _selected.Contains(id));
             }
         }
 

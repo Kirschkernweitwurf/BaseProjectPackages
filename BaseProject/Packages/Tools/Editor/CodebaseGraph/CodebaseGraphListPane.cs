@@ -11,31 +11,19 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
     /// </summary>
     internal sealed class CodebaseGraphListPane : VisualElement
     {
-        private const string ActiveSortClass = "is-active";
-        private const string BadgeClass = "row-badge";
-        private const string ClearClass = "row-clear";
         private const string ClearText = "Clear";
         private const string DetailName = "row-detail";
-        private const string DismissedClass = "row-dismissed";
         private const string DismissedText = "Dismissed";
-        private const string HeadingClass = "pane-heading";
-        private const string OnlyNewClass = "only-new";
         private const string OnlyNewLabel = "New only";
 
         private const string OnlyNewTooltip = "Shows only what this scan found and the last one did not. "
             + "Empty until you have scanned twice.";
 
-        private const string PaneClass = "pane";
-        private const string RowClass = "list-row";
         private const int RowHeight = 42;
-        private const string RowMetaClass = "list-row-meta";
-        private const string RowTitleClass = "list-row-title";
-        private const string SeparatorClass = "sort-separator";
         private const string SortByFanInLabel = "Used by";
         private const string SortByFanOutLabel = "Uses";
         private const string SortByFindingsLabel = "Findings";
         private const string SortByNameLabel = "Name";
-        private const string SortRowClass = "sort-row";
         private const string TitleName = "row-title";
 
         private readonly Action<GraphEntry> _onSelected;
@@ -64,10 +52,10 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             _onActivated = onActivated;
             _onOnlyNewChanged = onOnlyNewChanged;
 
-            AddToClassList(PaneClass);
+            AddToClassList(CodebaseGraphStyle.PaneClass);
 
             _headingLabel = new Label(string.Empty);
-            _headingLabel.AddToClassList(HeadingClass);
+            _headingLabel.AddToClassList(CodebaseGraphStyle.PaneHeadingClass);
             Add(_headingLabel);
 
             Add(BuildSortRow());
@@ -117,10 +105,10 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         private static VisualElement MakeRow()
         {
             VisualElement row = new();
-            row.AddToClassList(RowClass);
+            row.AddToClassList(CodebaseGraphStyle.ListRowClass);
 
-            row.Add(BuildRowLabel(TitleName, RowTitleClass));
-            row.Add(BuildRowLabel(DetailName, RowMetaClass));
+            row.Add(BuildRowLabel(TitleName, CodebaseGraphStyle.ListRowTitleClass));
+            row.Add(BuildRowLabel(DetailName, CodebaseGraphStyle.ListRowMetaClass));
 
             return row;
         }
@@ -128,7 +116,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         private VisualElement BuildSortRow()
         {
             VisualElement row = new();
-            row.AddToClassList(SortRowClass);
+            row.AddToClassList(CodebaseGraphStyle.SortRowClass);
 
             // Findings first and first by default, because what is wrong is why the list is open.
             row.Add(BuildSortButton(SortByFindingsLabel, ESortMode.Findings));
@@ -149,10 +137,10 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             // The four before it choose an order. This one hides rows, so a line stands between them and
             // it lights up in its own color rather than reading as a fifth way to sort.
             VisualElement separator = new();
-            separator.AddToClassList(SeparatorClass);
+            separator.AddToClassList(CodebaseGraphStyle.SortSeparatorClass);
             row.Add(separator);
 
-            _onlyNewButton.AddToClassList(OnlyNewClass);
+            _onlyNewButton.AddToClassList(CodebaseGraphStyle.OnlyNewClass);
             row.Add(_onlyNewButton);
 
             return row;
@@ -161,7 +149,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         private void ToggleOnlyNew()
         {
             _isOnlyNew = !_isOnlyNew;
-            _onlyNewButton.EnableInClassList(ActiveSortClass, _isOnlyNew);
+            _onlyNewButton.EnableInClassList(CodebaseGraphStyle.IsActiveClass, _isOnlyNew);
             _onOnlyNewChanged?.Invoke(_isOnlyNew);
         }
 
@@ -190,7 +178,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         private void HighlightSortButton()
         {
             foreach (KeyValuePair<ESortMode, Button> pair in _sortButtons)
-                pair.Value.EnableInClassList(ActiveSortClass, pair.Key == _sortMode);
+                pair.Value.EnableInClassList(CodebaseGraphStyle.IsActiveClass, pair.Key == _sortMode);
         }
 
         private void ApplySort()
@@ -254,9 +242,9 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
                 meta = $"{meta}   \u00b7   {ClearText}";
 
             detail.text = meta;
-            detail.EnableInClassList(BadgeClass, findings > 0);
-            detail.EnableInClassList(ClearClass, isClear);
-            detail.EnableInClassList(DismissedClass, findings == 0 && entry.HasDismissals);
+            detail.EnableInClassList(CodebaseGraphStyle.RowBadgeClass, findings > 0);
+            detail.EnableInClassList(CodebaseGraphStyle.RowClearClass, isClear);
+            detail.EnableInClassList(CodebaseGraphStyle.RowDismissedClass, findings == 0 && entry.HasDismissals);
         }
 
         private void OnSelectionChanged(IEnumerable<object> selection)

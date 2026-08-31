@@ -1,3 +1,4 @@
+using Base.EditorUiPackage;
 using Base.UtilityPackage.Menus;
 using UnityEditor;
 using UnityEngine;
@@ -12,6 +13,25 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
     public class PlayModeSaverWindow : EditorWindow
     {
         private const float ActionButtonWidth = 60f;
+        private const string ApplyAllLabel = "Apply All";
+        private const string ApplyLabel = "Apply";
+        private const string CapturedHeaderFormat = "Captured ({0})";
+        private const string ClearHistoryLabel = "Clear History";
+        private const string Description = "Keeps the changes you make to a component while the game runs. "
+            + "Mark a component in play mode, then apply what it captured back to the scene or the prefab "
+            + "once you stop.";
+        private const string DiscardAllLabel = "Discard All";
+        private const string DiscardLabel = "Discard";
+        private const string EditModeHint = "Enter play mode, then right click a component header and "
+            + "choose Save Play Mode Changes.";
+        private const string HistoryHeaderFormat = "History ({0})";
+        private const string MarkedHeaderFormat = "Marked ({0})";
+        private const string NothingCapturedText = "Nothing captured.";
+        private const string NothingMarkedText = "Nothing marked.";
+        private const string NothingYetText = "Nothing yet.";
+        private const string PickPrefabWarning = "Pick the destination prefab.";
+        private const string RemoveLabel = "x";
+        private const string SceneWarningFormat = "Open '{0}' to apply this.";
         private const float ActionLabelWidth = 66f;
         private const float DetailWidth = 100f;
         private const float MinimumWindowHeight = 360f;
@@ -23,32 +43,49 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
         private const string WindowMenuPath = "Tools/Base Packages/Unity Editor/Play Mode Saver";
         private const string WindowTitle = "Play Mode Saver";
 
-        private static readonly Color AppliedColor = new(0.4f, 0.85f, 0.45f);
-        private static readonly Color CapturedColor = new(0.55f, 0.75f, 1f);
-        private static readonly Color DiscardedColor = new(0.65f, 0.65f, 0.65f);
-        private static readonly Color FailedColor = new(1f, 0.45f, 0.4f);
-        private static readonly Color RowColor = new(0f, 0f, 0f, 0.1f);
-
         [SerializeField]
         private Vector2 scrollPosition;
+
+        private readonly EditorWindowStyles _styles = new();
+
+        // What each action means is the same everywhere in the Base windows, so the four colors come
+        // from the palette rather than being picked again here.
+        private static Color AppliedColor => EditorPalette.Success;
+
+        private static Color CapturedColor => EditorPalette.Accent;
+
+        private static Color DiscardedColor => EditorPalette.DimText;
+
+        private static Color FailedColor => EditorPalette.Danger;
 
 #region Unity Callbacks
         private void OnEnable() => EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
 
         private void OnGUI()
         {
+            _styles.EnsureBuilt();
+
             PlayModeStateStore store = PlayModeStateStore.instance;
 
+            EditorWindowChrome.DrawHeader(_styles, WindowTitle, Description);
+
             scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition);
+
             DrawMarks();
-            EditorGUILayout.Space();
+            EditorGUILayout.Space(EditorMetrics.SectionGap);
             DrawPayloads(store);
-            EditorGUILayout.Space();
+            EditorGUILayout.Space(EditorMetrics.SectionGap);
             DrawHistory(store);
+
             EditorGUILayout.EndScrollView();
         }
 
-        private void OnDisable() => EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
+        private void OnDisable()
+        {
+            EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
+
+            _styles.Dispose();
+        }
 #endregion
 
         [DynamicMenuItem(WindowMenuPath)]
@@ -71,20 +108,18 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
 
         private void DrawMarks()
         {
-            EditorGUILayout.LabelField($"Marked ({PlayModeMarks.Components.Count})", EditorStyles.boldLabel);
+            EditorWindowChrome.DrawSectionHeader(_styles,
+                string.Format(MarkedHeaderFormat, PlayModeMarks.Components.Count));
 
             if (!EditorApplication.isPlaying)
             {
-                EditorGUILayout.HelpBox(
-                    "Enter play mode, then right click a component header and choose Save Play Mode Changes.",
-                    MessageType.Info);
-
+                EditorGUILayout.HelpBox(EditModeHint, MessageType.Info);
                 return;
             }
 
             if (PlayModeMarks.Components.Count == 0)
             {
-                EditorGUILayout.LabelField("Nothing marked.", EditorStyles.centeredGreyMiniLabel);
+                GUILayout.Label(NothingMarkedText, _styles.EmptyHint);
                 return;
             }
 
@@ -98,10 +133,15 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
             if (component == null)
                 return;
 
-            EditorGUILayout.BeginHorizontal(EditorStyles.helpBox);
-            EditorGUILayout.LabelField(PlayModeCapturer.BuildDisplayName(component));
+            Rect row = EditorGUILayout.BeginHorizontal(GUILayout.Height(EditorTableStyles.RowHeight));
 
-            if (GUILayout.Button("x", GUILayout.Width(RemoveButtonWidth)))
+            EditorRows.DrawRowBackground(row, index);
+
+            GUILayout.Label(PlayModeCapturer.BuildDisplayName(component), _styles.Name);
+            GUILayout.FlexibleSpace();
+
+            if (EditorWindowChrome.SecondaryButton(_styles, RemoveLabel,
+                    GUILayout.Width(RemoveButtonWidth)))
                 PlayModeMarks.RemoveAt(index);
 
             EditorGUILayout.EndHorizontal();
@@ -109,18 +149,19 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
 
         private void DrawPayloads(PlayModeStateStore store)
         {
-            EditorGUILayout.LabelField($"Captured ({store.Payloads.Count})", EditorStyles.boldLabel);
+            EditorWindowChrome.DrawSectionHeader(_styles,
+                string.Format(CapturedHeaderFormat, store.Payloads.Count));
 
             if (store.Payloads.Count == 0)
             {
-                EditorGUILayout.LabelField("Nothing captured.", EditorStyles.centeredGreyMiniLabel);
+                GUILayout.Label(NothingCapturedText, _styles.EmptyHint);
                 return;
             }
 
             for (int index = store.Payloads.Count - 1; index >= 0; index--)
                 DrawPayloadRow(store, index);
 
-            EditorGUILayout.Space();
+            EditorGUILayout.Space(EditorMetrics.ItemGap);
             DrawBulkActions(store);
         }
 
@@ -128,20 +169,24 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
         {
             PlayModeSavePayload payload = store.Payloads[index];
 
-            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+            EditorWindowChrome.BeginCard(_styles);
             EditorGUILayout.BeginHorizontal();
 
-            EditorGUILayout.LabelField(payload.displayName);
+            GUILayout.Label(payload.displayName, _styles.Name);
             DrawApplyTarget(store, payload, index);
             DrawPrefabField(store, payload, index);
 
             using (new EditorGUI.DisabledScope(!PlayModeApplier.CanApply(payload)))
             {
-                if (GUILayout.Button("Apply", GUILayout.Width(ActionButtonWidth)))
+                if (EditorWindowChrome.PrimaryButton(_styles, ApplyLabel,
+                        GUILayout.Width(ActionButtonWidth)))
                     ApplySingle(store, index);
             }
 
-            if (GUILayout.Button("Discard", GUILayout.Width(ActionButtonWidth)))
+            GUILayout.Space(EditorMetrics.TightGap);
+
+            if (EditorWindowChrome.SecondaryButton(_styles, DiscardLabel,
+                    GUILayout.Width(ActionButtonWidth)))
             {
                 PlayModeHistory.Record(EPlayModeHistoryAction.Discarded, payload.displayName,
                     payload.applyTarget.ToString());
@@ -151,8 +196,10 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
             }
 
             EditorGUILayout.EndHorizontal();
+
             DrawPayloadWarning(payload);
-            EditorGUILayout.EndVertical();
+
+            EditorWindowChrome.EndCard();
         }
 
         private void DrawApplyTarget(PlayModeStateStore store, PlayModeSavePayload payload, int index)
@@ -196,23 +243,26 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
             if (payload.applyTarget == EPlayModeApplyTarget.PrefabAsset)
             {
                 if (string.IsNullOrEmpty(payload.sourcePrefabGuid))
-                    EditorGUILayout.HelpBox("Pick the destination prefab.", MessageType.Warning);
+                    EditorGUILayout.HelpBox(PickPrefabWarning, MessageType.Warning);
 
                 return;
             }
 
             if (!PlayModeApplier.CanApply(payload))
-                EditorGUILayout.HelpBox($"Open '{payload.scenePath}' to apply this.", MessageType.Warning);
+                EditorGUILayout.HelpBox(string.Format(SceneWarningFormat, payload.scenePath),
+                    MessageType.Warning);
         }
 
         private void DrawBulkActions(PlayModeStateStore store)
         {
             EditorGUILayout.BeginHorizontal();
 
-            if (GUILayout.Button("Apply All"))
+            if (EditorWindowChrome.PrimaryButton(_styles, ApplyAllLabel))
                 ApplyAll(store);
 
-            if (GUILayout.Button("Discard All"))
+            GUILayout.Space(EditorMetrics.TightGap);
+
+            if (EditorWindowChrome.SecondaryButton(_styles, DiscardAllLabel))
                 DiscardAll(store);
 
             EditorGUILayout.EndHorizontal();
@@ -220,20 +270,21 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
 
         private void DrawHistory(PlayModeStateStore store)
         {
-            EditorGUILayout.LabelField($"History ({store.History.Count})", EditorStyles.boldLabel);
+            EditorWindowChrome.DrawSectionHeader(_styles,
+                string.Format(HistoryHeaderFormat, store.History.Count));
 
             if (store.History.Count == 0)
             {
-                EditorGUILayout.LabelField("Nothing yet.", EditorStyles.centeredGreyMiniLabel);
+                GUILayout.Label(NothingYetText, _styles.EmptyHint);
                 return;
             }
 
             for (int index = store.History.Count - 1; index >= 0; index--)
                 DrawHistoryRow(store.History[index], index);
 
-            EditorGUILayout.Space();
+            EditorGUILayout.Space(EditorMetrics.ItemGap);
 
-            if (GUILayout.Button("Clear History"))
+            if (EditorWindowChrome.SecondaryButton(_styles, ClearHistoryLabel))
             {
                 store.ClearHistory();
                 store.Persist();
@@ -244,20 +295,19 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
         {
             Rect row = EditorGUILayout.BeginHorizontal();
 
-            if (Event.current.type == EventType.Repaint
-                && index % 2 == 0)
-                EditorGUI.DrawRect(row, RowColor);
+            EditorRows.DrawRowBackground(row, index);
 
-            EditorGUILayout.LabelField(entry.timestamp, EditorStyles.miniLabel, GUILayout.Width(TimestampWidth));
+            GUILayout.Label(entry.timestamp, _styles.Detail, GUILayout.Width(TimestampWidth));
 
             Color previousColor = GUI.contentColor;
-            GUI.contentColor = GetActionColor(entry.action);
-            EditorGUILayout.LabelField(entry.action.ToString(), EditorStyles.miniBoldLabel,
-                GUILayout.Width(ActionLabelWidth));
 
+            GUI.contentColor = GetActionColor(entry.action);
+            GUILayout.Label(entry.action.ToString(), _styles.Badge, GUILayout.Width(ActionLabelWidth));
             GUI.contentColor = previousColor;
-            EditorGUILayout.LabelField(entry.displayName, EditorStyles.miniLabel);
-            EditorGUILayout.LabelField(entry.detail, EditorStyles.miniLabel, GUILayout.Width(DetailWidth));
+
+            GUILayout.Label(entry.displayName, _styles.Detail);
+            GUILayout.Label(entry.detail, _styles.Detail, GUILayout.Width(DetailWidth));
+
             EditorGUILayout.EndHorizontal();
         }
 

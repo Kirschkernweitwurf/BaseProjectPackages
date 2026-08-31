@@ -8,6 +8,9 @@ namespace Base.EditorUiPackage
     /// </summary>
     public static class EditorStyleUtility
     {
+        /// <summary>Font size that leaves a style on whatever the skin it was copied from uses.</summary>
+        private const int InheritedFontSize = 0;
+
         /// <summary>
         /// Pins a style's text color across all four states.
         /// </summary>
@@ -29,6 +32,46 @@ namespace Base.EditorUiPackage
             style.focused.textColor = color;
 
             return style;
+        }
+
+        /// <summary>
+        /// A hand-drawn button: a rounded fill that brightens while hovered and darkens while
+        /// pressed, with the text pinned so it does not pick up the skin's own button colors.
+        /// </summary>
+        /// <remarks>
+        /// The three backgrounds are generated into the caller's cache, so the caller owns them and
+        /// releases them along with the rest of its styles.
+        /// </remarks>
+        /// <param name="textures">The cache the backgrounds are generated into.</param>
+        /// <param name="background">The resting fill.</param>
+        /// <param name="textColor">The label color, used in every state.</param>
+        /// <param name="fontStyle">Bold for a primary action, normal for anything else.</param>
+        /// <param name="cornerRadius">The corner radius of the fill.</param>
+        /// <param name="fontSize">The label size, or zero to keep the inherited one.</param>
+        /// <returns>The button style, or null when no cache was handed in.</returns>
+        public static GUIStyle BuildFilledButton(EditorTextureCache textures, Color background, Color textColor,
+            FontStyle fontStyle, int cornerRadius, int fontSize = InheritedFontSize)
+        {
+            if (textures == null)
+                return null;
+
+            GUIStyle style = new()
+            {
+                alignment = TextAnchor.MiddleCenter,
+                border = UniformPadding(cornerRadius),
+                fontSize = fontSize,
+                fontStyle = fontStyle
+            };
+
+            style.normal.background = textures.Rounded(background, cornerRadius);
+            style.hover.background = textures.Rounded(Shade(background, true, false), cornerRadius);
+            style.active.background = textures.Rounded(Shade(background, false, true), cornerRadius);
+
+            // A focused button keeps its resting fill, so tabbing through a window does not light
+            // one of them up as if the mouse were on it.
+            style.focused.background = style.normal.background;
+
+            return PinTextColor(style, textColor);
         }
 
         /// <summary>

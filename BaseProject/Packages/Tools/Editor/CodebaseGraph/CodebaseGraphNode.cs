@@ -18,15 +18,9 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
     /// </summary>
     internal sealed class CodebaseGraphNode : Node
     {
-        private const string AccentClass = "node-accent";
-        private const string BadgeClass = "finding-badge";
-        private const string BadgeDismissedClass = "is-dismissed";
-        private const string BadgeRowClass = "finding-row";
-        private const string ContractClass = "is-contract";
         private const string DismissCommand = "Dismiss findings here";
         private const string DismissedBadgeText = "Dismissed, findings silenced";
         private const string DismissedInsideFormat = "{0} dismissed inside";
-        private const string DismissedNodeClass = "has-dismissals";
         private const string DismissedRowTooltip = "This member has a finding that was dismissed.";
 
         private const string DismissedTooltip = "Findings here were reviewed and dismissed, so they are "
@@ -35,26 +29,11 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
         private const string DismissTreeCommand = "Dismiss findings here and inside";
         private const string DrillCommand = "Open contents";
-        private const string FindingsClass = "has-findings";
         private const string FocusCommand = "Focus on this";
-        private const string FocusedClass = "is-focused";
-        private const string GlyphClass = "node-glyph";
-        private const string MemberLevelClass = "level-member";
-        private const string MetaClass = "node-meta";
-        private const string NamespaceLevelClass = "level-namespace";
         private const string NestedFormat = "{0} more inside";
-        private const string NodeClass = "codebase-node";
         private const string OpenCommand = "Open script";
         private const string OverflowFormat = "and {0} more members";
-        private const string RowClass = "member-row";
-        private const string RowDismissedClass = "is-dismissed";
-        private const string RowFindingClass = "has-finding";
-        private const string RowGlyphClass = "member-glyph";
-        private const string RowLabelClass = "member-label";
-        private const string RowListClass = "member-list";
-        private const string SubtitleClass = "node-subtitle";
         private const string TitleLabelName = "title-label";
-        private const string TypeLevelClass = "level-type";
 
         /// <summary>The entry this node stands for.</summary>
         public GraphEntry Entry { get; }
@@ -99,21 +78,21 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             title = entry.Title;
             tooltip = BuildTooltip(entry);
 
-            AddToClassList(NodeClass);
+            AddToClassList(CodebaseGraphStyle.CodebaseNodeClass);
             AddToClassList(ResolveLevelClass(entry.Level));
             style.width = CodebaseGraphLayout.MeasureWidth(entry);
 
             if (entry.IsContract)
-                AddToClassList(ContractClass);
+                AddToClassList(CodebaseGraphStyle.IsContractClass);
 
             if (entry.HasOpenFindings)
-                AddToClassList(FindingsClass);
+                AddToClassList(CodebaseGraphStyle.HasFindingsClass);
 
             if (entry.HasDismissals)
-                AddToClassList(DismissedNodeClass);
+                AddToClassList(CodebaseGraphStyle.HasDismissalsClass);
 
             if (isFocused)
-                AddToClassList(FocusedClass);
+                AddToClassList(CodebaseGraphStyle.IsFocusedClass);
 
             ApplyColors();
             BuildGlyph();
@@ -160,31 +139,31 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             switch (level)
             {
                 case EGraphScope.Namespace:
-                    return NamespaceLevelClass;
+                    return CodebaseGraphStyle.LevelNamespaceClass;
 
                 case EGraphScope.Member:
-                    return MemberLevelClass;
+                    return CodebaseGraphStyle.LevelMemberClass;
 
                 default:
-                    return TypeLevelClass;
+                    return CodebaseGraphStyle.LevelTypeClass;
             }
         }
 
         private static VisualElement BuildRow(GraphMemberRow row)
         {
             VisualElement element = new();
-            element.AddToClassList(RowClass);
-            element.EnableInClassList(RowFindingClass, row.HasFinding);
-            element.EnableInClassList(RowDismissedClass, row.IsDismissed);
+            element.AddToClassList(CodebaseGraphStyle.MemberRowClass);
+            element.EnableInClassList(CodebaseGraphStyle.HasFindingClass, row.HasFinding);
+            element.EnableInClassList(CodebaseGraphStyle.IsDismissedClass, row.IsDismissed);
 
             if (row.IsDismissed)
                 element.tooltip = DismissedRowTooltip;
 
-            Label glyph = GraphLabel.Build(row.Glyph, RowGlyphClass);
+            Label glyph = GraphLabel.Build(row.Glyph, CodebaseGraphStyle.MemberGlyphClass);
             glyph.style.color = GraphSymbols.GetColor(row.Access);
             element.Add(glyph);
 
-            Label label = GraphLabel.Build(row.Label, RowLabelClass);
+            Label label = GraphLabel.Build(row.Label, CodebaseGraphStyle.MemberLabelClass);
             label.style.color = GraphSymbols.GetColor(row.Access);
             element.Add(label);
 
@@ -193,8 +172,8 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
         private static Label BuildDismissedBadge(string text)
         {
-            Label badge = GraphLabel.Build(text, BadgeClass);
-            badge.AddToClassList(BadgeDismissedClass);
+            Label badge = GraphLabel.Build(text, CodebaseGraphStyle.FindingBadgeClass);
+            badge.AddToClassList(CodebaseGraphStyle.IsDismissedClass);
             badge.tooltip = DismissedTooltip;
 
             return badge;
@@ -215,14 +194,14 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             titleContainer.Q<Label>(TitleLabelName).style.color = GraphColorPalette.TitleTextColor;
 
             VisualElement accent = new();
-            accent.AddToClassList(AccentClass);
+            accent.AddToClassList(CodebaseGraphStyle.NodeAccentClass);
             accent.style.backgroundColor = GraphSymbols.GetColor(Entry.Access);
             mainContainer.Insert(0, accent);
         }
 
         private void BuildGlyph()
         {
-            Label glyph = GraphLabel.Build(Entry.Glyph, GlyphClass);
+            Label glyph = GraphLabel.Build(Entry.Glyph, CodebaseGraphStyle.NodeGlyphClass);
             glyph.style.color = GraphSymbols.GetColor(Entry.Access);
             titleContainer.Insert(0, glyph);
         }
@@ -231,8 +210,8 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         {
             string meta = $"Used by {Entry.FanIn}   \u00b7   Uses {Entry.FanOut}";
 
-            extensionContainer.Add(GraphLabel.Build(Entry.Subtitle, SubtitleClass));
-            extensionContainer.Add(GraphLabel.Build(meta, MetaClass));
+            extensionContainer.Add(GraphLabel.Build(Entry.Subtitle, CodebaseGraphStyle.NodeSubtitleClass));
+            extensionContainer.Add(GraphLabel.Build(meta, CodebaseGraphStyle.NodeMetaClass));
 
             BuildRows();
             BuildBadges();
@@ -244,13 +223,14 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
                 return;
 
             VisualElement list = new();
-            list.AddToClassList(RowListClass);
+            list.AddToClassList(CodebaseGraphStyle.MemberListClass);
 
             foreach (GraphMemberRow row in Entry.Rows)
                 list.Add(BuildRow(row));
 
             if (Entry.HiddenRowCount > 0)
-                list.Add(GraphLabel.Build(string.Format(OverflowFormat, Entry.HiddenRowCount), SubtitleClass));
+                list.Add(GraphLabel.Build(string.Format(OverflowFormat, Entry.HiddenRowCount),
+                    CodebaseGraphStyle.NodeSubtitleClass));
 
             extensionContainer.Add(list);
         }
@@ -261,13 +241,15 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
                 return;
 
             VisualElement badges = new();
-            badges.AddToClassList(BadgeRowClass);
+            badges.AddToClassList(CodebaseGraphStyle.FindingRowClass);
 
             foreach (EFinding finding in Entry.Findings)
-                badges.Add(GraphLabel.Build(FindingCatalog.Describe(finding).Title, BadgeClass));
+                badges.Add(GraphLabel.Build(FindingCatalog.Describe(finding).Title,
+                    CodebaseGraphStyle.FindingBadgeClass));
 
             if (Entry.NestedFindingCount > 0)
-                badges.Add(GraphLabel.Build(string.Format(NestedFormat, Entry.NestedFindingCount), BadgeClass));
+                badges.Add(GraphLabel.Build(string.Format(NestedFormat, Entry.NestedFindingCount),
+                    CodebaseGraphStyle.FindingBadgeClass));
 
             if (Entry.IsDismissed)
                 badges.Add(BuildDismissedBadge(DismissedBadgeText));

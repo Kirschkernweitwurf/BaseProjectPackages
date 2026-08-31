@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Base.EditorUiPackage;
 using Base.UtilityPackage.Logging;
 using Base.UtilityPackage.Menus;
 using UnityEditor;
@@ -29,10 +30,33 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
     /// </remarks>
     public class StaticResetCheckerWindow : EditorWindow
     {
+        private const string CopyLabel = "Copy report";
+        private const float CopyButtonWidth = 110f;
+        private const string Description = "Finds static fields, events and auto-properties that no reset "
+            + "method touches. With Domain Reload off they keep their value between play sessions, which "
+            + "is where the state that survives a stop comes from.";
+        private const string EmptyHint = "Press Scan to read the folder above.";
+        private const string EmptyMessage = "Nothing scanned yet";
+        private const string EmptyOkMessage = "No unreset statics";
+        private const string MenuPath = "Tools/Base Packages/Code/Health/Static Reset Checker";
+        private const float MinWindowHeight = 360f;
+        private const float MinWindowWidth = 420f;
+        private const string NextLabel = "Next";
+        private const string OptionsHeader = "Options";
         private const int PageSize = 50;
+        private const string PageFormat = "Page {0} / {1}   ({2} files)";
+        private const float PageLabelWidth = 180f;
+        private const float PageButtonWidth = 70f;
         private const string PrefPrefix = "StaticResetChecker.";
+        private const string PrevLabel = "Prev";
+        private const string ResultsHeader = "Findings";
+        private const float RowHeight = 18f;
+        private const string ScanLabel = "Scan";
+        private const float ScanButtonHeight = 28f;
+        private const string WindowTitle = "Static Reset Checker";
 
         private readonly Dictionary<string, bool> _foldouts = new();
+        private readonly EditorWindowStyles _styles = new();
 
         private string _rootFolder = "Assets";
         private string _ignoreMarker = "reset-ignore";
@@ -69,13 +93,13 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
 
         private void OnGUI()
         {
-            EditorGUILayout.Space(4);
-            EditorGUILayout.LabelField("Finds static fields that are not reset on Enter Play Mode.",
-                EditorStyles.wordWrappedMiniLabel);
+            _styles.EnsureBuilt();
 
-            EditorGUILayout.Space(4);
+            EditorWindowChrome.DrawHeader(_styles, WindowTitle, Description);
 
-            using (new EditorGUILayout.VerticalScope(EditorStyles.helpBox))
+            EditorWindowChrome.DrawSectionHeader(_styles, OptionsHeader);
+            EditorWindowChrome.BeginCard(_styles);
+
             {
                 _rootFolder = EditorGUILayout.TextField("Scan folder", _rootFolder);
                 _resetAttributes = EditorGUILayout.TextField(new GUIContent("Reset attributes",
@@ -101,58 +125,52 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
                 _logToConsole = EditorGUILayout.Toggle("Also log to Console", _logToConsole);
             }
 
-            EditorGUILayout.Space(4);
-            using (new EditorGUILayout.HorizontalScope())
-            {
-                if (GUILayout.Button("Scan", GUILayout.Height(28)))
-                {
-                    SavePrefs();
-                    RunScan();
-                }
+            EditorWindowChrome.EndCard();
 
-                using (new EditorGUI.DisabledScope(!_hasScanned || _findings.Count == 0))
-                {
-                    if (GUILayout.Button("Copy report", GUILayout.Height(28), GUILayout.Width(110)))
-                        EditorGUIUtility.systemCopyBuffer = BuildReport();
-                }
-            }
+            EditorGUILayout.Space(EditorMetrics.ItemGap);
 
-            if (_hasScanned)
+            DrawActions();
+
+            if (!_hasScanned)
             {
-                EditorGUILayout.Space(4);
-                EditorGUILayout.HelpBox(_status, _findings.Count == 0
-                    ? MessageType.Info
-                    : MessageType.Warning);
+                EditorWindowChrome.DrawEmptyState(_styles, EditorIcons.Script, EmptyMessage, EmptyHint);
+                return;
             }
 
             DrawResults();
+
+            EditorWindowChrome.DrawFooter(_styles, _status);
         }
+
+        private void OnDisable() => _styles.Dispose();
 #endregion
 
-        [DynamicMenuItem("Tools/Base Packages/Code/Health/Static Reset Checker")]
+        [DynamicMenuItem(MenuPath)]
         private static void Open()
         {
-            StaticResetCheckerWindow w = GetWindow<StaticResetCheckerWindow>("Static Reset");
-            w.minSize = new Vector2(420, 360);
-            w.Show();
+            StaticResetCheckerWindow window = GetWindow<StaticResetCheckerWindow>(WindowTitle);
+
+            window.minSize = new Vector2(MinWindowWidth, MinWindowHeight);
+            window.Show();
         }
 
-        private static void OpenAt(Finding f)
+        private static void OpenAt(Finding finding)
         {
-            Object obj = AssetDatabase.LoadAssetAtPath<Object>(f.AssetPath);
-            if (obj != null)
+            Object asset = AssetDatabase.LoadAssetAtPath<Object>(finding.AssetPath);
+
+            if (asset != null)
             {
-                AssetDatabase.OpenAsset(obj, f.Line);
+                AssetDatabase.OpenAsset(asset, finding.Line);
                 return;
             }
 
-            if (!string.IsNullOrEmpty(f.AbsolutePath) && File.Exists(f.AbsolutePath))
+            if (!string.IsNullOrEmpty(finding.AbsolutePath) && File.Exists(finding.AbsolutePath))
             {
-                InternalEditorUtility.OpenFileAtLineExternal(f.AbsolutePath, f.Line, 0);
+                InternalEditorUtility.OpenFileAtLineExternal(finding.AbsolutePath, finding.Line, 0);
                 return;
             }
 
-            CustomLogger.LogWarning("Could not open " + f.AssetPath, null);
+            CustomLogger.LogWarning($"Could not open {finding.AssetPath}", null);
         }
 
         private void SavePrefs()
@@ -168,66 +186,128 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
             EditorPrefs.SetBool(PrefPrefix + "log", _logToConsole);
         }
 
+        private void DrawActions()
+        {
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                if (EditorWindowChrome.PrimaryButton(_styles, ScanLabel,
+                        GUILayout.Height(ScanButtonHeight)))
+                {
+                    SavePrefs();
+                    RunScan();
+                }
+
+                GUILayout.Space(EditorMetrics.TightGap);
+
+                using (new EditorGUI.DisabledScope(!_hasScanned || _findings.Count == 0))
+                {
+                    if (EditorWindowChrome.SecondaryButton(_styles, CopyLabel,
+                            GUILayout.Height(ScanButtonHeight), GUILayout.Width(CopyButtonWidth)))
+                        EditorGUIUtility.systemCopyBuffer = BuildReport();
+                }
+            }
+
+            EditorGUILayout.Space(EditorMetrics.ItemGap);
+        }
+
         private void DrawResults()
         {
             if (_groups.Count == 0)
+            {
+                EditorWindowChrome.DrawEmptyState(_styles, EditorIcons.Success, EmptyOkMessage, _status);
                 return;
+            }
+
+            EditorWindowChrome.DrawSectionHeader(_styles, ResultsHeader);
 
             int totalPages = Mathf.Max(1, Mathf.CeilToInt(_groups.Count / (float)PageSize));
             _page = Mathf.Clamp(_page, 0, totalPages - 1);
 
             if (totalPages > 1)
-                using (new EditorGUILayout.HorizontalScope())
-                {
-                    using (new EditorGUI.DisabledScope(_page <= 0))
-                    {
-                        if (GUILayout.Button("Prev", GUILayout.Width(70)))
-                            _page--;
-                    }
-
-                    GUILayout.FlexibleSpace();
-                    EditorGUILayout.LabelField($"Page {_page + 1} / {totalPages}   ({_groups.Count} files)",
-                        EditorStyles.miniLabel, GUILayout.Width(180));
-
-                    GUILayout.FlexibleSpace();
-
-                    using (new EditorGUI.DisabledScope(_page >= totalPages - 1))
-                    {
-                        if (GUILayout.Button("Next", GUILayout.Width(70)))
-                            _page++;
-                    }
-                }
+                DrawPager(totalPages);
 
             _scroll = EditorGUILayout.BeginScrollView(_scroll);
 
+            EditorWindowChrome.BeginCard(_styles);
+
             int start = _page * PageSize;
             int end = Mathf.Min(start + PageSize, _groups.Count);
-            for (int gi = start; gi < end; gi++)
-            {
-                IGrouping<string, Finding> group = _groups[gi];
-                string file = group.Key;
-                bool open = _foldouts.GetValueOrDefault(file, true);
+            int rowIndex = 0;
 
-                string fileTitle = $"{Path.GetFileName(file)}  ({group.Count()})";
-                open = EditorGUILayout.Foldout(open, fileTitle, true);
-                _foldouts[file] = open;
-                if (!open)
-                    continue;
+            for (int groupIndex = start; groupIndex < end; groupIndex++)
+                DrawGroup(_groups[groupIndex], ref rowIndex);
 
-                EditorGUI.indentLevel++;
-                foreach (Finding f in group.OrderBy(x => x.Line))
-                {
-                    GUIContent content = new($"L{f.Line}   {f.Name}   ({f.Kind})", f.Snippet);
-                    Rect rect = EditorGUILayout.GetControlRect(GUILayout.Height(18));
-                    if (GUI.Button(rect, content, EditorStyles.linkLabel))
-                        OpenAt(f);
-                }
-
-                EditorGUI.indentLevel--;
-                EditorGUILayout.Space(2);
-            }
+            EditorWindowChrome.EndCard();
 
             EditorGUILayout.EndScrollView();
+        }
+
+        private void DrawPager(int totalPages)
+        {
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                using (new EditorGUI.DisabledScope(_page <= 0))
+                {
+                    if (EditorWindowChrome.SecondaryButton(_styles, PrevLabel,
+                            GUILayout.Width(PageButtonWidth)))
+                        _page--;
+                }
+
+                GUILayout.FlexibleSpace();
+
+                GUILayout.Label(string.Format(PageFormat, _page + 1, totalPages, _groups.Count),
+                    _styles.Footer, GUILayout.Width(PageLabelWidth));
+
+                GUILayout.FlexibleSpace();
+
+                using (new EditorGUI.DisabledScope(_page >= totalPages - 1))
+                {
+                    if (EditorWindowChrome.SecondaryButton(_styles, NextLabel,
+                            GUILayout.Width(PageButtonWidth)))
+                        _page++;
+                }
+            }
+
+            EditorGUILayout.Space(EditorMetrics.TightGap);
+        }
+
+        // The row index runs across groups rather than restarting in each, so the striping stays
+        // continuous down the list instead of resetting at every file header.
+        private void DrawGroup(IGrouping<string, Finding> group, ref int rowIndex)
+        {
+            string file = group.Key;
+            bool isOpen = _foldouts.GetValueOrDefault(file, true);
+
+            string title = $"{Path.GetFileName(file)}  ({group.Count()})";
+
+            isOpen = EditorGUILayout.Foldout(isOpen, title, true);
+            _foldouts[file] = isOpen;
+
+            if (!isOpen)
+                return;
+
+            foreach (Finding finding in group.OrderBy(entry => entry.Line))
+            {
+                DrawFinding(finding, rowIndex);
+                rowIndex++;
+            }
+
+            EditorGUILayout.Space(EditorMetrics.TightGap);
+        }
+
+        private void DrawFinding(Finding finding, int rowIndex)
+        {
+            Rect row = EditorGUILayout.GetControlRect(GUILayout.Height(RowHeight));
+
+            EditorRows.DrawRowBackground(row, rowIndex);
+
+            Rect cell = new(row.x + EditorMetrics.Indent, row.y,
+                Mathf.Max(0f, row.width - EditorMetrics.Indent), row.height);
+
+            GUIContent content = new($"L{finding.Line}   {finding.Name}   ({finding.Kind})", finding.Snippet);
+
+            if (GUI.Button(cell, content, EditorStyles.linkLabel))
+                OpenAt(finding);
         }
 
         private void RunScan()

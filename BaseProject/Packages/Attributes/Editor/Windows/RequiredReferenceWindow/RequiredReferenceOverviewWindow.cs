@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Base.EditorUiPackage;
 using Base.UtilityPackage.Menus;
 using UnityEditor;
 using UnityEngine;
@@ -13,6 +14,9 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
     internal sealed class RequiredReferenceOverviewWindow : EditorWindow
     {
         private const float BarSpacing = 4f;
+        private const string Description = "Lists every [Required] field left empty in the open scenes "
+            + "and on ScriptableObject assets. Scene issues rescan as you work; asset issues refresh "
+            + "when the project changes.";
         private const float ButtonHeight = 26f;
         private const float ButtonWidth = 140f;
         private const float ListSpacing = 4f;
@@ -21,11 +25,19 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
         private const double MinScanInterval = 0.3;
         private const double SafetyPollInterval = 1.0;
         private const float SearchHeight = 20f;
+        private const string NoMatchFormat = "No matches for \"{0}\".";
+        private const string RefreshLabel = "Refresh";
         private const float SearchWidth = 200f;
+        private const string SummaryFormat = "{0} missing {1}.";
+        private const string SummaryOkText = "No missing references.";
 
         [SerializeField] private Vector2 scrollPosition;
         [SerializeField] private string search = string.Empty;
 
+        // Two style sets on purpose. The window chrome comes from the shared one, while the list
+        // keeps its own, because what it calls a name and a badge are not what a Base list window
+        // means by those and merging the two would have one quietly hide the other.
+        private readonly EditorWindowStyles _chrome = new();
         private readonly RequiredReferenceStyles _styles = new();
 
         private List<RequiredReferenceGroup> _groups = new();
@@ -55,10 +67,12 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
 
         private void OnGUI()
         {
+            _chrome.EnsureBuilt();
             _styles.EnsureBuilt();
 
+            EditorWindowChrome.DrawHeader(_chrome, ReferenceWindowInfo.WindowTitle, Description);
+
             DrawActionBar();
-            DrawSummary();
 
             if (_total == 0)
             {
@@ -73,11 +87,13 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
             Object clicked = RequiredReferenceView.DrawGroups(_groups, search, _styles, out bool anyShown);
 
             if (!anyShown)
-                EditorGUILayout.LabelField($"No matches for \"{search}\".", EditorStyles.centeredGreyMiniLabel);
+                GUILayout.Label(string.Format(NoMatchFormat, search), _chrome.EmptyHint);
 
             GUILayout.Space(ListSpacing);
 
             EditorGUILayout.EndScrollView();
+
+            EditorWindowChrome.DrawFooter(_chrome, BuildSummary());
 
             if (clicked != null)
                 Focus(clicked);
@@ -90,6 +106,9 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
             EditorApplication.playModeStateChanged -= OnPlayModeChanged;
             ObjectChangeEvents.changesPublished -= OnObjectChanged;
             EditorApplication.delayCall -= DeferredAssetScan;
+
+            _chrome.Dispose();
+            _styles.Dispose();
         }
 
         private void OnFocus() => MarkDirty();
@@ -132,7 +151,8 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
 
             EditorGUILayout.Space(BarSpacing, false);
 
-            if (GUILayout.Button("Refresh", GUILayout.Height(ButtonHeight), GUILayout.Width(ButtonWidth)))
+            if (EditorWindowChrome.SecondaryButton(_chrome, RefreshLabel, GUILayout.Height(ButtonHeight),
+                    GUILayout.Width(ButtonWidth)))
             {
                 _assetsDirty = true;
                 Rescan();
@@ -153,19 +173,16 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
             EditorGUILayout.Space(BarSpacing);
         }
 
-        private void DrawSummary()
+        private string BuildSummary()
         {
-            EditorGUILayout.BeginHorizontal(EditorStyles.helpBox);
+            if (_total == 0)
+                return SummaryOkText;
 
-            string message = _total == 0
-                ? "No missing references."
-                : $"{_total} missing {(_total == 1 ? "reference" : "references")}.";
+            string noun = _total == 1
+                ? "reference"
+                : "references";
 
-            GUILayout.Label(message, _styles.Summary);
-
-            GUILayout.FlexibleSpace();
-
-            EditorGUILayout.EndHorizontal();
+            return string.Format(SummaryFormat, _total, noun);
         }
 
         private void Rescan()

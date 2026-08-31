@@ -22,15 +22,8 @@ MonoBehaviour:
   menuItemRoot:
   - rid: 4171306542554939473
   - rid: 5339058645413658751
-  - rid: 4171306879440126041
-  - rid: 4171306887588348007
-  - rid: 4171306887588348008
-  - rid: 4171306887588348009
-  - rid: 4171306887588348010
   createAssetRoot:
   - rid: 5339058662016286883
-  - rid: 4171306887588347988
-  - rid: 4171306887588347989
   menuItemGroups: []
   createAssetGroups: []
   groups: []
@@ -236,54 +229,6 @@ MonoBehaviour:
           createFileName: 
           overridePriority: 0
           overrideValue: 0
-    - rid: 4171306793470787670
-      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
-      data:
-        separator: 0
-        entry:
-          id: MI:Base.AttributePackage.Editor.Drawers.Windows.GetComponentAssigner.GetComponentAssignerWindow.Open
-          path: Assign GetComponents
-          enabled: 1
-          kind: 0
-          createFileName: 
-          overridePriority: 0
-          overrideValue: 0
-    - rid: 4171306793470787671
-      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
-      data:
-        separator: 0
-        entry:
-          id: MI:Base.AttributePackage.Editor.Drawers.Windows.RequiredReferenceWindow.RequiredReferenceOverviewWindow.Open
-          path: Required References
-          enabled: 1
-          kind: 0
-          createFileName: 
-          overridePriority: 0
-          overrideValue: 0
-    - rid: 4171306793470787672
-      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
-      data:
-        separator: 0
-        entry:
-          id: MI:Base.AttributePackage.Editor.Drawers.Windows.AttributeExplorer.AttributeExplorerWindow.OpenWindow
-          path: Attributes
-          enabled: 1
-          kind: 0
-          createFileName: 
-          overridePriority: 0
-          overrideValue: 0
-    - rid: 4171306793470787673
-      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
-      data:
-        separator: 0
-        entry:
-          id: MI:Base.AttributePackage.Editor.Drawers.Windows.RequireComponentAudit.RequireComponentAuditWindow.Open
-          path: GetComponent Require Audit
-          enabled: 1
-          kind: 0
-          createFileName: 
-          overridePriority: 0
-          overrideValue: 0
     - rid: 4171306838086123521
       type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
       data:
@@ -313,8 +258,8 @@ MonoBehaviour:
         expanded: 0
         merged: 0
         children:
-        - rid: 4171306838118891524
         - rid: 4171306739388121293
+        - rid: 4171306838118891524
     - rid: 4171306838118891522
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
       data:
@@ -364,17 +309,6 @@ MonoBehaviour:
         merged: 0
         children:
         - rid: 4171306790334758914
-    - rid: 4171306838118891527
-      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
-      data:
-        separator: 1
-        name: References
-        expanded: 1
-        merged: 0
-        children:
-        - rid: 4171306793470787670
-        - rid: 4171306793470787673
-        - rid: 4171306793470787671
     - rid: 4171306840272142420
       type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
       data:
@@ -444,30 +378,6 @@ MonoBehaviour:
           createFileName: 
           overridePriority: 0
           overrideValue: 0
-    - rid: 4171306879374590038
-      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
-      data:
-        separator: 0
-        entry:
-          id: MI:Base.CorePackage.Editor.StateMachine.StateMachineGraphWindow.Open
-          path: State Machine Graph
-          enabled: 1
-          kind: 0
-          createFileName: 
-          overridePriority: 0
-          overrideValue: 0
-    - rid: 4171306879374590039
-      type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
-      data:
-        separator: 0
-        entry:
-          id: CA:Base.CorePackage.StateMachine.StateMachineGraph
-          path: New State Machine Graph
-          enabled: 1
-          kind: 1
-          createFileName: SMG_StateMachineGraph
-          overridePriority: 0
-          overrideValue: 0
     - rid: 4171306879440126036
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
       data:
@@ -478,31 +388,13 @@ MonoBehaviour:
         children:
         - rid: 4171306879374590037
         - rid: 4171306879374590036
-    - rid: 4171306879440126037
-      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
-      data:
-        separator: 1
-        name: Gameplay
-        expanded: 1
-        merged: 0
-        children:
-        - rid: 4171306879374590038
-    - rid: 4171306879440126038
-      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
-      data:
-        separator: 1
-        name: State Machines
-        expanded: 0
-        merged: 0
-        children:
-        - rid: 4171306879374590039
     - rid: 4171306879440126041
       type: {class: MenuEntryNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
       data:
         separator: 0
         entry:
           id: MI:Base.CorePackage.Editor.StateMachine.StateMachineMonitor.Open
-          path: Tools/Base Packages/Gameplay/State Machine Monitor
+          path: State Machine Monitor
           enabled: 1
           kind: 0
           createFileName: 
@@ -514,7 +406,7 @@ MonoBehaviour:
         separator: 0
         entry:
           id: CA:Base.SettingsPackage.Presets.SettingsPreset
-          path: Scriptable Objects/Base/Settings/New Settings Preset
+          path: New Settings Preset
           enabled: 1
           kind: 1
           createFileName: SP_SettingsPreset
@@ -526,7 +418,7 @@ MonoBehaviour:
         separator: 0
         entry:
           id: CA:Base.SaveSystemPackage.Unity.Autosave.AutosaveConfig
-          path: Scriptable Objects/Base/Save/New Autosave Config
+          path: New Autosave Config
           enabled: 1
           kind: 1
           createFileName: AC_AutosaveConfig
@@ -538,7 +430,7 @@ MonoBehaviour:
         separator: 0
         entry:
           id: MI:Base.AttributePackage.Editor.Windows.AttributeExplorer.AttributeExplorerWindow.OpenWindow
-          path: Tools/Base Packages/Unity Editor/Project Health/Attributes
+          path: Attributes
           enabled: 1
           kind: 0
           createFileName: 
@@ -550,7 +442,7 @@ MonoBehaviour:
         separator: 0
         entry:
           id: MI:Base.AttributePackage.Editor.Windows.RequiredReferenceWindow.RequiredReferenceOverviewWindow.Open
-          path: Tools/Base Packages/Unity Editor/References/Required References
+          path: Required References
           enabled: 1
           kind: 0
           createFileName: 
@@ -562,8 +454,7 @@ MonoBehaviour:
         separator: 0
         entry:
           id: MI:Base.AttributePackage.Editor.Windows.RequireComponentAudit.RequireComponentAuditWindow.Open
-          path: Tools/Base Packages/Unity Editor/References/GetComponent Require
-            Audit
+          path: GetComponent Require Audit
           enabled: 1
           kind: 0
           createFileName: 
@@ -575,12 +466,50 @@ MonoBehaviour:
         separator: 0
         entry:
           id: MI:Base.AttributePackage.Editor.Windows.GetComponentAssigner.GetComponentAssignerWindow.Open
-          path: Tools/Base Packages/Unity Editor/References/Assign GetComponents
+          path: Assign GetComponents
           enabled: 1
           kind: 0
           createFileName: 
           overridePriority: 0
           overrideValue: 0
+    - rid: 4171307037814161629
+      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 1
+        name: Gameplay
+        expanded: 1
+        merged: 0
+        children:
+        - rid: 4171306879440126041
+    - rid: 4171307037814161630
+      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 1
+        name: References
+        expanded: 1
+        merged: 0
+        children:
+        - rid: 4171306887588348010
+        - rid: 4171306887588348009
+        - rid: 4171306887588348008
+    - rid: 4171307037814161631
+      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 1
+        name: Settings
+        expanded: 1
+        merged: 0
+        children:
+        - rid: 4171306887588347988
+    - rid: 4171307037814161632
+      type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
+      data:
+        separator: 1
+        name: Save
+        expanded: 1
+        merged: 0
+        children:
+        - rid: 4171306887588347989
     - rid: 5339058645413658751
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
       data:
@@ -602,7 +531,7 @@ MonoBehaviour:
         - rid: 4171306838118891525
         - rid: 5339058645413658755
         - rid: 4171306615483138128
-        - rid: 4171306879440126037
+        - rid: 4171307037814161629
         - rid: 4171306879440126036
         - rid: 5339058645413658756
     - rid: 5339058645413658754
@@ -645,7 +574,7 @@ MonoBehaviour:
         - rid: 4171306739388121289
         - rid: 5339058645413658775
         - rid: 5339058645413658770
-        - rid: 4171306838118891527
+        - rid: 4171307037814161630
     - rid: 5339058645413658762
       type: {class: MenuGroupNode, ns: Base.ToolPackage.Editor.MenuManagerWindows, asm: Base.ToolPackage.Editor}
       data:
@@ -740,7 +669,7 @@ MonoBehaviour:
         merged: 0
         children:
         - rid: 5339058645413658794
-        - rid: 4171306793470787672
+        - rid: 4171306887588348007
         - rid: 5339058645413658802
         - rid: 4171306542554939475
         - rid: 5339058645413658793
@@ -1022,7 +951,8 @@ MonoBehaviour:
         - rid: 4171306838118891522
         - rid: 5339058662016286892
         - rid: 5339058662016286895
-        - rid: 4171306879440126038
+        - rid: 4171307037814161632
+        - rid: 4171307037814161631
         - rid: 4171306838118891521
         - rid: 4171306838118891520
     - rid: 5339058662016286886

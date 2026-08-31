@@ -12,14 +12,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
     /// </summary>
     internal sealed class AudioRuleListView : VisualElement
     {
-        private const string BadgeClass = "ar-badge";
-        private const string ButtonClass = "ar-tool-button";
-        private const string DangerClass = "ar-tool-button--danger";
-        private const string LabelClass = "ar-rule-label";
-        private const string OffClass = "ar-rule-row--off";
         private const float RowHeight = 22f;
-        private const string TargetClass = "ar-rule-target";
-        private const string ZeroClass = "ar-badge--zero";
 
         /// <summary>Raised when the selected rule changes.</summary>
         public event Action<AudioRule> SelectionChanged;
@@ -82,7 +75,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
         {
             VisualElement row = new();
 
-            row.AddToClassList("ar-rule-row");
+            row.AddToClassList(AudioRulesStyle.RuleRowClass);
 
             Toggle toggle = new();
 
@@ -90,17 +83,17 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
 
             Label label = new();
 
-            label.AddToClassList(LabelClass);
+            label.AddToClassList(AudioRulesStyle.RuleLabelClass);
             row.Add(label);
 
             Label count = new();
 
-            count.AddToClassList(BadgeClass);
+            count.AddToClassList(AudioRulesStyle.BadgeClass);
             row.Add(count);
 
             Label target = new();
 
-            target.AddToClassList(TargetClass);
+            target.AddToClassList(AudioRulesStyle.RuleTargetClass);
             row.Add(target);
 
             return row;
@@ -114,8 +107,8 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
                 tooltip = tooltip
             };
 
-            button.AddToClassList(ButtonClass);
-            button.EnableInClassList(DangerClass, isDanger);
+            button.AddToClassList(AudioRulesStyle.ToolButtonClass);
+            button.EnableInClassList(AudioRulesStyle.ToolButtonDangerClass, isDanger);
 
             return button;
         }
@@ -124,7 +117,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
         {
             VisualElement footer = new();
 
-            footer.AddToClassList("ar-footer");
+            footer.AddToClassList(AudioRulesStyle.FooterClass);
 
             footer.Add(ToolButton("Add", "Adds an empty rule at the end of the cascade.", AddRule, false));
             footer.Add(ToolButton("Duplicate", "Copies the selected rule, conditions and all.", DuplicateRule,
@@ -139,9 +132,9 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
         {
             AudioRule rule = _rules[index];
             Toggle toggle = element.Q<Toggle>();
-            Label label = element.Q<Label>(className: LabelClass);
-            Label target = element.Q<Label>(className: TargetClass);
-            Label count = element.Q<Label>(className: BadgeClass);
+            Label label = element.Q<Label>(className: AudioRulesStyle.RuleLabelClass);
+            Label target = element.Q<Label>(className: AudioRulesStyle.RuleTargetClass);
+            Label count = element.Q<Label>(className: AudioRulesStyle.BadgeClass);
 
             toggle.SetValueWithoutNotify(rule.Enabled);
             toggle.UnregisterCallback<ChangeEvent<bool>>(OnToggled);
@@ -156,12 +149,12 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
                 ? Visibility.Hidden
                 : Visibility.Visible;
 
-            element.EnableInClassList(OffClass, !rule.Enabled);
+            element.EnableInClassList(AudioRulesStyle.RuleRowOffClass, !rule.Enabled);
 
             _matchCounts.TryGetValue(rule.Label, out int matches);
 
             count.text = matches.ToString();
-            count.EnableInClassList(ZeroClass, matches == 0);
+            count.EnableInClassList(AudioRulesStyle.BadgeZeroClass, matches == 0);
             count.tooltip = $"Matched {matches} {AudioRulesFormat.Plural(matches, "clip", "clips")} "
                 + "in the last scan.";
         }

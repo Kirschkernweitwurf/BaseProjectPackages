@@ -59,7 +59,6 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         private const string ShowDataLabel = "Fields and consts";
         private const string ShowMembersLabel = "Members on type nodes";
         private const string ShowPrivateLabel = "Private members";
-        private const string ToolbarRowClass = "top-bar";
         private const string ViewLabel = "View";
 
         private const string ViewTooltip = "How the graph is drawn: layout, lines and how much detail "
@@ -82,7 +81,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             _filter = filter;
             _actions = actions;
 
-            AddToClassList(ToolbarRowClass);
+            AddToClassList(CodebaseGraphStyle.TopBarClass);
             Build();
         }
 

@@ -805,7 +805,7 @@ namespace Base.CorePackage.Editor.EventBusInspector
 
             Rect label = new(arrow.xMax, area.y, Mathf.Max(0f, content.xMax - arrow.xMax), area.height);
 
-            DrawLabelWithIcon(label, new GUIContent(entry.TypeName, entry.NamespaceName), _styles.Group,
+            DrawLabelWithIcon(label, new GUIContent(entry.TypeName, entry.NamespaceName), _styles.NameBold,
                 entry.HasLeaks
                     ? EditorIcons.Error
                     : null);

@@ -1,3 +1,4 @@
+using Base.EditorUiPackage;
 using UnityEditor;
 using UnityEngine;
 
@@ -6,6 +7,11 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
     /// <summary>
     /// Shared drawing helpers for the menu overview windows. Rows, chips, headers and colors
     /// live here so the menu item window and the asset creation window stay identical.
+    /// <para>
+    /// The row, header and divider colors come from <see cref="EditorPalette"/>, so these two
+    /// windows follow the active theme. What stays here are the accents that only mean something
+    /// in a menu tree, such as the hue that separates a dynamic entry from a static one.
+    /// </para>
     /// </summary>
     internal static class MenuOverviewGui
     {
@@ -16,6 +22,8 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
 
         /// <summary>Width of the accent stripe drawn at the left edge of every row.</summary>
         public const float StripeWidth = 3f;
+
+        private static readonly EditorSkinWatch Watch = new();
 
         private const float ChipInset = 3f;
 
@@ -80,9 +88,9 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
             }
         };
 
-        private static Color MissingColor => new(0.92f, 0.42f, 0.38f);
+        private static Color MissingColor => EditorPalette.Danger;
 
-        private static string DimHex => EditorGUIUtility.isProSkin
+        private static string DimHex => EditorThemeProvider.IsDarkSkin
             ? "#8C8C8C"
             : "#6B6B6B";
 
@@ -123,25 +131,53 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         public static void DrawRow(Rect row, int index, bool hover, Color accent)
         {
             if (hover)
-                EditorGUI.DrawRect(row, HoverColor());
+                EditorGUI.DrawRect(row, EditorPalette.Hover);
             else if ((index & 1) == 1)
-                EditorGUI.DrawRect(row, StripeColor());
+                EditorGUI.DrawRect(row, EditorPalette.Stripe);
 
             EditorGUI.DrawRect(new Rect(row.x, row.y, StripeWidth, row.height), accent);
+        }
+
+        /// <summary>
+        /// Drops every cached style after a skin or theme change. Call once per GUI pass, before
+        /// anything reads a style.
+        /// </summary>
+        /// <remarks>
+        /// The styles pin colors picked for one skin, and a static cache has no window lifetime to
+        /// hang a rebuild off, so the windows that draw with them have to ask.
+        /// </remarks>
+        public static void EnsureFresh()
+        {
+            if (!Watch.IsStale)
+                return;
+
+            _alertStyle = null;
+            _badgeStyle = null;
+            _chipStyle = null;
+            _countStyle = null;
+            _detailStyle = null;
+            _hintStyle = null;
+            _numberStyle = null;
+            _pathStyle = null;
+            _stateStyle = null;
+
+            Watch.MarkFresh();
         }
 
         /// <summary>Draws the column header background with a separating bottom line.</summary>
         public static void DrawHeader(Rect row)
         {
-            EditorGUI.DrawRect(row, HeaderColor());
-            EditorGUI.DrawRect(new Rect(row.x, row.yMax - 1f, row.width, 1f), LineColor());
+            EditorGUI.DrawRect(row, EditorTableStyles.HeaderColor);
+            EditorGUI.DrawRect(new Rect(row.x, row.yMax - EditorMetrics.SeparatorThickness, row.width,
+                EditorMetrics.SeparatorThickness), EditorPalette.Divider);
         }
 
         /// <summary>Draws the footer background with a separating top line.</summary>
         public static void DrawFooter(Rect row)
         {
-            EditorGUI.DrawRect(row, HeaderColor());
-            EditorGUI.DrawRect(new Rect(row.x, row.y, row.width, 1f), LineColor());
+            EditorGUI.DrawRect(row, EditorTableStyles.HeaderColor);
+            EditorGUI.DrawRect(new Rect(row.x, row.y, row.width, EditorMetrics.SeparatorThickness),
+                EditorPalette.Divider);
         }
 
         /// <summary>Draws a filled chip with centered white text.</summary>
@@ -176,20 +212,5 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
             return GUI.Button(rect, content, style);
         }
 
-        private static Color HoverColor() => EditorGUIUtility.isProSkin
-            ? new Color(1f, 1f, 1f, 0.07f)
-            : new Color(0f, 0f, 0f, 0.06f);
-
-        private static Color StripeColor() => EditorGUIUtility.isProSkin
-            ? new Color(1f, 1f, 1f, 0.03f)
-            : new Color(0f, 0f, 0f, 0.035f);
-
-        private static Color HeaderColor() => EditorGUIUtility.isProSkin
-            ? new Color(1f, 1f, 1f, 0.06f)
-            : new Color(0f, 0f, 0f, 0.08f);
-
-        private static Color LineColor() => EditorGUIUtility.isProSkin
-            ? new Color(0f, 0f, 0f, 0.35f)
-            : new Color(0f, 0f, 0f, 0.18f);
     }
 }

@@ -3,6 +3,7 @@ using Base.ToolPackage.Editor.AssemblyGraph.Architecture;
 using Base.ToolPackage.Editor.CodebaseGraph.Analysis;
 using Base.ToolPackage.Editor.CodebaseGraph.Editing;
 using Base.ToolPackage.Editor.CodebaseGraph.Model;
+using Base.UtilityPackage.Logging;
 using Base.UtilityPackage.Menus;
 using UnityEditor;
 using UnityEngine;
@@ -27,8 +28,6 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         private const string EmptyScanText = "No scan yet. Reading every compiled method body takes a few "
             + "seconds, so it does not run on its own.";
 
-        private const string EmptyStateClass = "empty-state";
-
         private const string ExportScopeHelp = "Open a namespace first, or pick an assembly in the "
             + "toolbar. Then press this again.";
 
@@ -38,19 +37,17 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         private const string MenuPath = "Tools/Base Packages/Code/Health/Codebase Graph";
         private const string MiniMapHiddenLabel = "Minimap";
         private const string MiniMapShownLabel = "Minimap, click to hide";
-        private const string MiniMapToggleClass = "minimap-toggle";
         private const float MinimumWindowHeight = 560f;
         private const float MinimumWindowWidth = 1100f;
         private const string NamespacesHeadingFormat = "Namespaces ({0})";
         private const string NamespacesSegment = "All namespaces";
-        private const string PluralSuffix = "s";
-        private const string RootClass = "codebase-graph-root";
+        private const string MissingSheetMessage = "The codebase graph style sheet was not found, so the "
+            + "window is drawn unstyled.";
         private const string ScanLabel = "Scan project";
         private const string SearchCappedHeadingFormat = "Showing {0} of {1} matches for \"{2}\"";
         private const long SearchDebounceMilliseconds = 180;
         private const string SearchHeadingFormat = "{0} matches for \"{1}\"";
         private const string SearchSegmentFormat = "Search: {0}";
-        private const string StatusBarClass = "status-bar";
         private const string TypesCappedHeadingFormat = "Types in {0}, showing {1} of {2}. Narrow the "
             + "filter to see the rest.";
 
@@ -105,8 +102,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
         private void CreateGUI()
         {
-            rootVisualElement.AddToClassList(RootClass);
-            CodebaseGraphStyle.Apply(rootVisualElement);
+            rootVisualElement.AddToClassList(CodebaseGraphStyle.CodebaseGraphRootClass);
 
             _toolbar = new CodebaseGraphToolbar(_filter, BuildToolbarActions());
             rootVisualElement.Add(_toolbar);
@@ -122,6 +118,11 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
             rootVisualElement.Add(BuildBody());
             rootVisualElement.Add(BuildStatusBar());
+
+            // After the tree exists, so the first paint reaches every element rather than only the
+            // root, and so the window follows the theme from here on.
+            if (!CodebaseGraphStyle.Apply(rootVisualElement))
+                CustomLogger.LogWarning(MissingSheetMessage, this);
 
             // The cache is dropped on every domain reload, so scanning here would mean a full project
             // wide IL walk behind a modal bar after every single script save. It waits to be asked.
@@ -231,7 +232,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         private VisualElement BuildEmptyState()
         {
             _emptyState = new VisualElement();
-            _emptyState.AddToClassList(EmptyStateClass);
+            _emptyState.AddToClassList(CodebaseGraphStyle.EmptyStateClass);
 
             _emptyLabel = new Label(EmptyScanText);
             _emptyState.Add(_emptyLabel);
@@ -250,7 +251,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
                 text = MiniMapShownLabel
             };
 
-            _miniMapButton.AddToClassList(MiniMapToggleClass);
+            _miniMapButton.AddToClassList(CodebaseGraphStyle.MinimapToggleClass);
 
             return _miniMapButton;
         }
@@ -269,7 +270,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         private VisualElement BuildStatusBar()
         {
             _statusLabel = new Label(string.Empty);
-            _statusLabel.AddToClassList(StatusBarClass);
+            _statusLabel.AddToClassList(CodebaseGraphStyle.StatusBarClass);
             return _statusLabel;
         }
 
@@ -540,7 +541,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
             string plural = _filter.Hops == 1
                 ? string.Empty
-                : PluralSuffix;
+                : CodebaseGraphStyle.SClass;
 
             return string.Format(FocusNoticeFormat, focusedName, _filter.Hops, plural);
         }

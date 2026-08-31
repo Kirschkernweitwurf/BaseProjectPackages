@@ -10,16 +10,6 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
     /// </summary>
     internal sealed class AudioRulesMessageView : VisualElement
     {
-        private const string BodyClass = "ar-empty__body";
-        private const string ButtonClass = "ar-primary";
-        private const string GlyphClass = "ar-empty__glyph";
-        private const string GoodClass = "ar-good";
-        private const string NoteGlyphClass = "ar-empty__glyph--note";
-        private const string RingClass = "ar-empty__ring";
-        private const string RootClass = "ar-empty";
-        private const string TitleClass = "ar-empty__title";
-        private const string WarnClass = "ar-warn";
-
         /// <summary>Glyph shown when there is nothing to work with yet.</summary>
         public const string NeutralGlyph = "\u266a";
 
@@ -37,17 +27,17 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
         /// <summary>Builds the panel.</summary>
         public AudioRulesMessageView()
         {
-            AddToClassList(RootClass);
+            AddToClassList(AudioRulesStyle.EmptyClass);
 
-            _ring.AddToClassList(RingClass);
-            _glyph.AddToClassList(GlyphClass);
-            _title.AddToClassList(TitleClass);
-            _body.AddToClassList(BodyClass);
+            _ring.AddToClassList(AudioRulesStyle.EmptyRingClass);
+            _glyph.AddToClassList(AudioRulesStyle.EmptyGlyphClass);
+            _title.AddToClassList(AudioRulesStyle.EmptyTitleClass);
+            _body.AddToClassList(AudioRulesStyle.EmptyBodyClass);
 
             _ring.Add(_glyph);
 
             _action = new Button(() => _onClick?.Invoke());
-            _action.AddToClassList(ButtonClass);
+            _action.AddToClassList(AudioRulesStyle.PrimaryClass);
 
             Add(_ring);
             Add(_title);
@@ -74,7 +64,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
             }
 
             // The note glyph sits low and left in its em box, so centering the label is not enough.
-            _glyph.EnableInClassList(NoteGlyphClass, glyph == NeutralGlyph);
+            _glyph.EnableInClassList(AudioRulesStyle.EmptyGlyphNoteClass, glyph == NeutralGlyph);
 
             _glyph.text = glyph;
             _title.text = title;
@@ -91,10 +81,10 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
 
         private void ClearVariants()
         {
-            _ring.RemoveFromClassList(GoodClass);
-            _ring.RemoveFromClassList(WarnClass);
-            _glyph.RemoveFromClassList(GoodClass);
-            _glyph.RemoveFromClassList(WarnClass);
+            _ring.RemoveFromClassList(AudioRulesStyle.GoodClass);
+            _ring.RemoveFromClassList(AudioRulesStyle.WarnClass);
+            _glyph.RemoveFromClassList(AudioRulesStyle.GoodClass);
+            _glyph.RemoveFromClassList(AudioRulesStyle.WarnClass);
         }
     }
 }

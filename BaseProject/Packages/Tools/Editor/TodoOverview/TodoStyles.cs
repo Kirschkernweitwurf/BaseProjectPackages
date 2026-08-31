@@ -102,17 +102,16 @@ namespace Base.ToolPackage.Editor.TodoOverview
         /// <summary>Width of the search field in the toolbar.</summary>
         internal const float SearchWidth = 180f;
 
-        /// <summary>Thickness of a hairline.</summary>
-        internal const float SeparatorThickness = EditorMetrics.SeparatorThickness;
-
         /// <summary>Space between two things that belong together, such as a title and its mark.</summary>
         internal const float TightGap = 3f;
 
         /// <summary>Height of the bar at the top of the window.</summary>
         internal const float ToolbarHeight = 30f;
 
-        private static bool _built;
-        private static bool _builtForProSkin;
+        private static readonly EditorSkinWatch Watch = new();
+
+        /// <summary>Thickness of a hairline.</summary>
+        internal static float SeparatorThickness => EditorMetrics.SeparatorThickness;
 
         /// <summary>Centered label of a button that is not the primary action.</summary>
         internal static GUIStyle Button { get; private set; }
@@ -163,13 +162,13 @@ namespace Base.ToolPackage.Editor.TodoOverview
         internal static GUIStyle SearchHint { get; private set; }
 
         /// <summary>
-        /// Builds the styles on the first pass and again after a skin change. Call at the top of
+        /// Builds the styles on the first pass and again after a skin or theme change. Call at the top of
         /// every GUI pass and skip the pass when it reports that the styles are not there yet.
         /// </summary>
         /// <returns><c>true</c> once every style is ready to draw with.</returns>
         internal static bool EnsureBuilt()
         {
-            if (_built && _builtForProSkin == EditorGUIUtility.isProSkin)
+            if (!Watch.IsStale)
                 return true;
 
             // A pass that runs while a dropdown owns the GUI has no editor styles to copy from, and
@@ -177,8 +176,7 @@ namespace Base.ToolPackage.Editor.TodoOverview
             if (!TryBuild())
                 return false;
 
-            _built = true;
-            _builtForProSkin = EditorGUIUtility.isProSkin;
+            Watch.MarkFresh();
 
             return true;
         }

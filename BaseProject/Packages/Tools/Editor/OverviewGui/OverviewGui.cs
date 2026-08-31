@@ -16,8 +16,6 @@ namespace Base.ToolPackage.Editor.OverviewGui
     /// </summary>
     public static class OverviewGui
     {
-        public const float RowHeight = EditorMetrics.RowHeight;
-
         private const float ActiveHandleAlpha = 0.35f;
         private const float BadgeTrailing = 36f;
         private const float BadgeWidth = 30f;
@@ -44,14 +42,22 @@ namespace Base.ToolPackage.Editor.OverviewGui
         private const float SuccessIconSize = 48f;
         private const int SuccessTitleFontSize = 15;
 
+        /// <summary>Bold summary line above the list.</summary>
         public static GUIStyle HeaderStyle { get; private set; }
 
+        /// <summary>Boxed strip a group of rows is headed by.</summary>
         public static GUIStyle GroupStyle { get; private set; }
 
+        /// <summary>The asset path a row is read by.</summary>
         public static GUIStyle PathStyle { get; private set; }
 
+        /// <summary>Dimmed second line of a row, for the explanation next to a path.</summary>
+        public static GUIStyle DetailStyle { get; private set; }
+
+        /// <summary>Count badge on a finding that wants attention.</summary>
         public static GUIStyle WarningBadgeStyle { get; private set; }
 
+        /// <summary>Count badge on a finding that is only informational.</summary>
         public static GUIStyle NeutralBadgeStyle { get; private set; }
 
         // Calm blue reads as stored, warning yellow matches the Unity console warning icon.
@@ -63,21 +69,23 @@ namespace Base.ToolPackage.Editor.OverviewGui
         private static readonly Color SectionUnderline = new(0f, 0f, 0f, 0.25f);
 
         private static readonly EditorTextureCache Textures = new();
+        private static readonly EditorSkinWatch Watch = new();
 
         private static GUIStyle _sectionFoldoutStyle;
         private static GUIStyle _successTitleStyle;
         private static GUIStyle _successSubtitleStyle;
         private static Texture _successTexture;
-        private static bool _ready;
-        private static bool _builtForProSkin;
+
+        /// <summary>Height of a list row.</summary>
+        public static float RowHeight => EditorMetrics.RowHeight;
 
         /// <summary>
-        /// Builds the shared styles once per domain, and again after a skin change.
+        /// Builds the shared styles once per domain, and again after a skin or theme change.
         /// Call this at the top of OnGUI.
         /// </summary>
         public static void EnsureStyles()
         {
-            if (_ready && _builtForProSkin == EditorGUIUtility.isProSkin)
+            if (!Watch.IsStale)
                 return;
 
             // The generated badge backgrounds are hidden and not saved, so the previous ones would
@@ -99,6 +107,11 @@ namespace Base.ToolPackage.Editor.OverviewGui
             {
                 alignment = TextAnchor.MiddleLeft
             };
+
+            DetailStyle = EditorStyleUtility.PinTextColor(new GUIStyle(EditorStyles.miniLabel)
+            {
+                alignment = TextAnchor.MiddleLeft
+            }, EditorPalette.DimText);
 
             _sectionFoldoutStyle = new GUIStyle(EditorStyles.foldout)
             {
@@ -122,8 +135,7 @@ namespace Base.ToolPackage.Editor.OverviewGui
 
             _successTexture = EditorGUIUtility.IconContent(SuccessIcon).image;
 
-            _ready = true;
-            _builtForProSkin = EditorGUIUtility.isProSkin;
+            Watch.MarkFresh();
         }
 
         /// <summary>Returns the badge style matching the accent.</summary>

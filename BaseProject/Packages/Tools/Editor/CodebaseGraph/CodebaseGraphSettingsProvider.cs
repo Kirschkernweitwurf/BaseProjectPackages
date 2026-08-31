@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Base.EditorUiPackage;
 using Base.ToolPackage.Editor.BaseToolsOverview;
 using UnityEditor;
 
@@ -14,9 +15,12 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             + "finding. Use it for code you did not write and are not going to fix. "
             + "Example: \"/CleverClicker/\"";
 
+        private const string IgnoredHeader = "Ignored Paths";
         private const string PageLabel = "Codebase Graph";
         private const string SettingsPath = "Project/Base Tools/Codebase Graph";
         private const string Summary = "The paths the codebase scan leaves out of every finding.";
+
+        private static readonly EditorWindowStyles Styles = new();
 
         private static SerializedObject _serializedObject;
         private static SerializedProperty _fragmentsProperty;
@@ -48,6 +52,8 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
                 _serializedObject?.Dispose();
                 _serializedObject = null;
                 _fragmentsProperty = null;
+
+                Styles.Dispose();
             },
             guiHandler = _ => DrawGui()
         };
@@ -57,13 +63,23 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             if (_serializedObject == null)
                 return;
 
+            Styles.EnsureBuilt();
+
             _serializedObject.Update();
 
+            EditorWindowChrome.DrawIntro(Styles, Summary);
+
             EditorGUILayout.HelpBox(Help, MessageType.Info);
+            EditorGUILayout.Space(EditorMetrics.ItemGap);
+
+            EditorWindowChrome.DrawSectionHeader(Styles, IgnoredHeader);
+            EditorWindowChrome.BeginCard(Styles);
 
             EditorGUI.BeginChangeCheck();
 
             EditorGUILayout.PropertyField(_fragmentsProperty, true);
+
+            EditorWindowChrome.EndCard();
 
             if (!EditorGUI.EndChangeCheck())
                 return;

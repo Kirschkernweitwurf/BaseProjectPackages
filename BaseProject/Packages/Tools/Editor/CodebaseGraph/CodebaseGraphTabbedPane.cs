@@ -15,7 +15,6 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
     /// </summary>
     internal sealed class CodebaseGraphTabbedPane : VisualElement
     {
-        private const string ActiveClass = "is-active";
         private const string DismissedFormat = "Dismissed ({0})";
         private const string DismissedTooltip = "Everything you set aside, and anything that stopped "
             + "matching the code.";
@@ -24,9 +23,6 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         private const string EntriesTooltip = "What is on screen in the graph.";
         private const string IssuesFormat = "Issues ({0})";
         private const string IssuesTooltip = "Every finding as a plain list, worst first.";
-        private const string PaneClass = "pane";
-        private const string TabClass = "pane-tab";
-        private const string TabRowClass = "pane-tab-row";
 
         private readonly CodebaseGraphListPane _entriesPane;
         private readonly CodebaseGraphIssuesPane _issuesPane;
@@ -46,10 +42,10 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             _issuesPane = new CodebaseGraphIssuesPane();
             _dismissalsPane = new CodebaseGraphDismissalsPane();
 
-            AddToClassList(PaneClass);
+            AddToClassList(CodebaseGraphStyle.PaneClass);
 
             VisualElement tabs = new();
-            tabs.AddToClassList(TabRowClass);
+            tabs.AddToClassList(CodebaseGraphStyle.PaneTabRowClass);
 
             _entriesTab = BuildTab(EntriesLabel, EntriesTooltip, action: () => Show(_entriesPane));
             _issuesTab = BuildTab(string.Format(IssuesFormat, 0), IssuesTooltip, action: () => Show(_issuesPane));
@@ -99,7 +95,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
                 tooltip = tooltip
             };
 
-            tab.AddToClassList(TabClass);
+            tab.AddToClassList(CodebaseGraphStyle.PaneTabClass);
             return tab;
         }
 
@@ -112,9 +108,9 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             _host.Add(pane);
             _shown = pane;
 
-            _entriesTab.EnableInClassList(ActiveClass, pane == _entriesPane);
-            _issuesTab.EnableInClassList(ActiveClass, pane == _issuesPane);
-            _dismissedTab.EnableInClassList(ActiveClass, pane == _dismissalsPane);
+            _entriesTab.EnableInClassList(CodebaseGraphStyle.IsActiveClass, pane == _entriesPane);
+            _issuesTab.EnableInClassList(CodebaseGraphStyle.IsActiveClass, pane == _issuesPane);
+            _dismissedTab.EnableInClassList(CodebaseGraphStyle.IsActiveClass, pane == _dismissalsPane);
         }
     }
 }

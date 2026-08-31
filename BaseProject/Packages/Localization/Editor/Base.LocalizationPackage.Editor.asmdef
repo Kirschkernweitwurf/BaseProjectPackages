@@ -3,7 +3,8 @@
   "rootNamespace": "Base.LocalizationPackage.Editor",
   "references": [
     "GUID:2e77701fe0ceda44fb763f03ee704c37",
-    "GUID:922d81cfb9ff6984da4cb2213b66a375"
+    "GUID:922d81cfb9ff6984da4cb2213b66a375",
+    "GUID:8f82a2d294e14cc5930979a4e0d686ec"
   ],
   "includePlatforms": [
     "Editor"

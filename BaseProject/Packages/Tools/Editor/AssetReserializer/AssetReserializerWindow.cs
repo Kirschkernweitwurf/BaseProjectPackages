@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Base.EditorUiPackage;
 using Base.UtilityPackage.Menus;
 using UnityEditor;
 using UnityEngine;
@@ -13,17 +14,31 @@ namespace Base.ToolPackage.Editor.AssetReserializer
     /// </summary>
     public sealed class AssetReserializerWindow : EditorWindow
     {
+        private const string ActionsHeader = "Run";
+        private const string AddFoldersLabel = "Add Selected Folders";
         private const float ButtonHeight = 28f;
+        private const string ClearFoldersLabel = "Clear Folders";
+        private const string CountLabel = "Count Matching Assets";
+        private const float CountButtonWidth = 170f;
         private const string ConfirmCancel = "Cancel";
         private const string ConfirmMessage = "This rewrites {0} asset(s) on disk using the current serializer.\n\n"
             + "The diff will be larger than the field rename alone. Make sure your work is committed first.";
         private const string ConfirmOk = "Reserialize";
         private const string ConfirmTitle = "Reserialize Assets";
+        private const string Description = "Rewrites assets with the current serializer, so a "
+            + "[FormerlySerializedAs] rename actually lands on disk. Scope the run to a few folders, "
+            + "check the count first, then commit the diff it produces.";
+        private const string KindsHeader = "Asset Kinds";
         private const string MenuPath = "Tools/Base Packages/Assets/Reserialize Assets";
         private const float MinHeight = 340f;
         private const float MinWidth = 380f;
+        private const string PrefabsLabel = "Include prefabs";
+        private const string ReserializeLabel = "Reserialize";
+        private const string ScenesLabel = "Include scenes";
+        private const string ScopeHeader = "Scope";
         private const string ScopeHint = "No folders listed, so the whole project is searched. "
             + "Add folders to keep the diff small.";
+        private const string ScriptableObjectsLabel = "Include ScriptableObjects";
         private const string WindowTitle = "Reserialize Assets";
 
         [Tooltip("Folders to search. Leave empty to search the whole project.")]
@@ -58,6 +73,8 @@ namespace Base.ToolPackage.Editor.AssetReserializer
             }
         }
 
+        private readonly EditorWindowStyles _styles = new();
+
         private SerializedObject _serialized;
         private SerializedProperty _foldersProperty;
         private Vector2 _scroll;
@@ -74,18 +91,27 @@ namespace Base.ToolPackage.Editor.AssetReserializer
 
         private void OnGUI()
         {
+            _styles.EnsureBuilt();
             _serialized.Update();
+
+            EditorWindowChrome.DrawHeader(_styles, WindowTitle, Description);
+
             _scroll = EditorGUILayout.BeginScrollView(_scroll);
 
             DrawScope();
-            EditorGUILayout.Space();
+            EditorGUILayout.Space(EditorMetrics.SectionGap);
             DrawKinds();
-            EditorGUILayout.Space();
+            EditorGUILayout.Space(EditorMetrics.SectionGap);
             DrawActions();
 
             EditorGUILayout.EndScrollView();
+
+            EditorWindowChrome.DrawFooter(_styles, _result);
+
             _serialized.ApplyModifiedProperties();
         }
+
+        private void OnDisable() => _styles.Dispose();
 #endregion
 
         [DynamicMenuItem(MenuPath)]
@@ -115,45 +141,63 @@ namespace Base.ToolPackage.Editor.AssetReserializer
 
         private void DrawScope()
         {
+            EditorWindowChrome.DrawSectionHeader(_styles, ScopeHeader);
+            EditorWindowChrome.BeginCard(_styles);
+
             EditorGUILayout.PropertyField(_foldersProperty, true);
 
             if (folders.Count == 0)
                 EditorGUILayout.HelpBox(ScopeHint, MessageType.Info);
 
+            EditorGUILayout.Space(EditorMetrics.TightGap);
+
             using (new EditorGUILayout.HorizontalScope())
             {
-                if (GUILayout.Button("Add Selected Folders"))
+                if (EditorWindowChrome.SecondaryButton(_styles, AddFoldersLabel))
                     AddSelectedFolders();
+
+                GUILayout.Space(EditorMetrics.TightGap);
 
                 using (new EditorGUI.DisabledScope(folders.Count == 0))
                 {
-                    if (GUILayout.Button("Clear Folders"))
+                    if (EditorWindowChrome.SecondaryButton(_styles, ClearFoldersLabel))
                         ClearFolders();
                 }
             }
+
+            EditorWindowChrome.EndCard();
         }
 
         private void DrawKinds()
         {
-            includePrefabs = EditorGUILayout.ToggleLeft("Include prefabs", includePrefabs);
-            includeScenes = EditorGUILayout.ToggleLeft("Include scenes", includeScenes);
-            includeScriptableObjects = EditorGUILayout.ToggleLeft("Include ScriptableObjects",
+            EditorWindowChrome.DrawSectionHeader(_styles, KindsHeader);
+            EditorWindowChrome.BeginCard(_styles);
+
+            includePrefabs = EditorGUILayout.ToggleLeft(PrefabsLabel, includePrefabs);
+            includeScenes = EditorGUILayout.ToggleLeft(ScenesLabel, includeScenes);
+            includeScriptableObjects = EditorGUILayout.ToggleLeft(ScriptableObjectsLabel,
                 includeScriptableObjects);
+
+            EditorWindowChrome.EndCard();
         }
 
         private void DrawActions()
         {
+            EditorWindowChrome.DrawSectionHeader(_styles, ActionsHeader);
+
             using (new EditorGUI.DisabledScope(Kinds == EReserializeAssetKinds.None))
+            using (new EditorGUILayout.HorizontalScope())
             {
-                if (GUILayout.Button("Count Matching Assets"))
+                if (EditorWindowChrome.SecondaryButton(_styles, CountLabel,
+                        GUILayout.Height(ButtonHeight), GUILayout.Width(CountButtonWidth)))
                     CountAssets();
 
-                if (GUILayout.Button("Reserialize", GUILayout.Height(ButtonHeight)))
+                GUILayout.Space(EditorMetrics.TightGap);
+
+                if (EditorWindowChrome.PrimaryButton(_styles, ReserializeLabel,
+                        GUILayout.Height(ButtonHeight)))
                     Reserialize();
             }
-
-            if (!string.IsNullOrEmpty(_result))
-                EditorGUILayout.HelpBox(_result, MessageType.Info);
         }
 
         private void AddSelectedFolders()

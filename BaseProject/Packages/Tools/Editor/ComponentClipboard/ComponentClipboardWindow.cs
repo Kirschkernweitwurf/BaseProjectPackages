@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Base.EditorUiPackage;
 using Base.UtilityPackage.Menus;
 using UnityEditor;
 using UnityEngine;
@@ -74,17 +75,11 @@ namespace Base.ToolPackage.Editor.ComponentClipboard
             window.minSize = new Vector2(MinWindowWidth, MinWindowHeight);
         }
 
-        private static Color GetSelectionColor() => EditorGUIUtility.isProSkin
-            ? new Color(0.24f, 0.37f, 0.59f, 1f)
-            : new Color(0.6f, 0.75f, 0.95f, 1f);
+        private static Color GetSelectionColor() => EditorPalette.SelectionFill;
 
-        private static Color GetOverwriteColor() => EditorGUIUtility.isProSkin
-            ? new Color(1f, 0.72f, 0.35f, 1f)
-            : new Color(0.75f, 0.42f, 0f, 1f);
+        private static Color GetOverwriteColor() => EditorPalette.Warning;
 
-        private static Color GetMissingColor() => EditorGUIUtility.isProSkin
-            ? new Color(1f, 0.45f, 0.4f, 1f)
-            : new Color(0.7f, 0.1f, 0.05f, 1f);
+        private static Color GetMissingColor() => EditorPalette.Danger;
 
         private static GUIContent BuildBadge(ComponentPasteStep step)
         {

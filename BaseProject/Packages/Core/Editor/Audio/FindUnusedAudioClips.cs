@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Base.CorePackage.Audio;
+using Base.EditorUiPackage;
 using Base.UtilityPackage.Editor;
 using Base.UtilityPackage.Logging;
 using Base.UtilityPackage.Menus;
@@ -19,11 +20,28 @@ namespace Base.CorePackage.Editor.Audio
     public class FindUnusedAudioClips : EditorWindow
     {
         private const string ClipsFolder = "Assets/Audio";
+        private const string ClipsHeaderFormat = "Unused Clips ({0})";
         private const string ContainersFolder = "Assets/ScriptableObjects/AudioContainer";
+        private const string DeleteAllLabel = "Delete All";
+        private const string Description = "Lists every AudioClip under the audio folder that nothing in "
+            + "the build scenes, the prefabs or an AudioContainer refers to, and the container slots that "
+            + "were left empty.";
+        private const string EmptyHint = "Press Scan to read the scenes, prefabs and containers.";
+        private const string EmptyMessage = "Nothing scanned yet";
+        private const string MenuPath = "Tools/Base Packages/Assets/Audio/Unused Audio Clips";
+        private const string NothingUnusedMessage = "No unused clips";
         private const string PrefabFilter = "t:Prefab";
+        private const string RescanLabel = "Rescan";
+        private const string ScanLabel = "Scan for Unused Audio Clips";
+        private const float ScanButtonHeight = 28f;
+        private const string SelectAllLabel = "Select All in Project";
+        private const string SelectContainersLabel = "Select Affected Containers";
+        private const string SlotsHeaderFormat = "Empty clip slots ({0})";
+        private const string WindowTitle = "Unused Audio Clips";
 
         private readonly List<AudioClip> _unusedClips = new();
         private readonly List<NullClipReference> _nullClipReferences = new();
+        private readonly EditorWindowStyles _styles = new();
 
         private Vector2 _scroll;
         private bool _hasScanned;
@@ -32,51 +50,42 @@ namespace Base.CorePackage.Editor.Audio
 #region Unity Callbacks
         private void OnGUI()
         {
-            if (GUILayout.Button(_hasScanned
-                    ? "Rescan"
-                    : "Scan for Unused Audio Clips"))
+            _styles.EnsureBuilt();
+
+            EditorWindowChrome.DrawHeader(_styles, WindowTitle, Description);
+
+            if (EditorWindowChrome.PrimaryButton(_styles, _hasScanned
+                    ? RescanLabel
+                    : ScanLabel, GUILayout.Height(ScanButtonHeight)))
                 ScanForUnusedAudioClips();
 
             if (!_hasScanned)
             {
-                EditorGUILayout.HelpBox("No scan results yet. Press Rescan to start.", MessageType.Info);
+                EditorWindowChrome.DrawEmptyState(_styles, EditorIcons.Script, EmptyMessage, EmptyHint);
                 return;
             }
 
-            EditorGUILayout.Space();
-            GUILayout.Label($"Found {_unusedClips.Count} unused clips.", EditorStyles.boldLabel);
-
-            using (new EditorGUI.DisabledScope(_unusedClips.Count == 0))
-            {
-                using (new EditorGUILayout.HorizontalScope())
-                {
-                    if (GUILayout.Button("Select All in Project"))
-                        Selection.objects = _unusedClips.Cast<Object>().ToArray();
-
-                    if (GUILayout.Button("Delete All"))
-                        DeleteUnusedClips();
-                }
-            }
-
-            EditorGUILayout.Space();
+            EditorGUILayout.Space(EditorMetrics.SectionGap);
 
             _scroll = EditorGUILayout.BeginScrollView(_scroll);
 
             DrawNullClipReferences();
 
-            EditorGUILayout.Space();
+            EditorGUILayout.Space(EditorMetrics.SectionGap);
 
-            foreach (AudioClip clip in _unusedClips)
-                EditorGUILayout.ObjectField(clip, typeof(AudioClip), false);
+            DrawUnusedClips();
 
             EditorGUILayout.EndScrollView();
         }
+
+        private void OnDisable() => _styles.Dispose();
 #endregion
 
-        [DynamicMenuItem("Tools/Base Packages/Assets/Audio/Unused Audio Clips")]
+        [DynamicMenuItem(MenuPath)]
         public static void ShowWindow()
         {
-            FindUnusedAudioClips window = GetWindow<FindUnusedAudioClips>("Unused Audio Clips Finder");
+            FindUnusedAudioClips window = GetWindow<FindUnusedAudioClips>(WindowTitle);
+
             window.ScanForUnusedAudioClips();
         }
 
@@ -225,10 +234,42 @@ namespace Base.CorePackage.Editor.Audio
         /// <summary>
         /// Draws the collapsed-by-default list of AudioContainers with empty clip slots.
         /// </summary>
+        private void DrawUnusedClips()
+        {
+            EditorWindowChrome.DrawSectionHeader(_styles,
+                string.Format(ClipsHeaderFormat, _unusedClips.Count));
+
+            if (_unusedClips.Count == 0)
+            {
+                GUILayout.Label(NothingUnusedMessage, _styles.EmptyHint);
+                return;
+            }
+
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                if (EditorWindowChrome.SecondaryButton(_styles, SelectAllLabel))
+                    Selection.objects = _unusedClips.Cast<Object>().ToArray();
+
+                GUILayout.Space(EditorMetrics.TightGap);
+
+                if (EditorWindowChrome.SecondaryButton(_styles, DeleteAllLabel))
+                    DeleteUnusedClips();
+            }
+
+            EditorGUILayout.Space(EditorMetrics.TightGap);
+
+            EditorWindowChrome.BeginCard(_styles);
+
+            foreach (AudioClip clip in _unusedClips)
+                EditorGUILayout.ObjectField(clip, typeof(AudioClip), false);
+
+            EditorWindowChrome.EndCard();
+        }
+
         private void DrawNullClipReferences()
         {
             _showNullClipReferences = EditorGUILayout.Foldout(_showNullClipReferences,
-                $"Empty clip slots ({_nullClipReferences.Count})", true);
+                string.Format(SlotsHeaderFormat, _nullClipReferences.Count), true);
 
             if (!_showNullClipReferences)
                 return;
@@ -243,21 +284,33 @@ namespace Base.CorePackage.Editor.Audio
                     return;
                 }
 
-                if (GUILayout.Button("Select Affected Containers"))
+                if (EditorWindowChrome.SecondaryButton(_styles, SelectContainersLabel))
                     Selection.objects = _nullClipReferences
                         .Select(reference => (Object)reference.Container)
                         .Distinct()
                         .ToArray();
 
-                foreach (NullClipReference reference in _nullClipReferences)
-                {
-                    using (new EditorGUILayout.HorizontalScope())
-                    {
-                        EditorGUILayout.ObjectField(reference.Container, typeof(AudioContainer), false);
-                        EditorGUILayout.LabelField(reference.Describe());
-                    }
-                }
+                EditorGUILayout.Space(EditorMetrics.TightGap);
+
+                EditorWindowChrome.BeginCard(_styles);
+
+                for (int index = 0; index < _nullClipReferences.Count; index++)
+                    DrawNullClipRow(_nullClipReferences[index], index);
+
+                EditorWindowChrome.EndCard();
             }
+        }
+
+        private void DrawNullClipRow(NullClipReference reference, int index)
+        {
+            Rect row = EditorGUILayout.BeginHorizontal(GUILayout.Height(EditorTableStyles.RowHeight));
+
+            EditorRows.DrawRowBackground(row, index);
+
+            EditorGUILayout.ObjectField(reference.Container, typeof(AudioContainer), false);
+            GUILayout.Label(reference.Describe(), _styles.Detail);
+
+            EditorGUILayout.EndHorizontal();
         }
 
         private void DeleteUnusedClips()

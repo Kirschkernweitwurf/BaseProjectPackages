@@ -1,3 +1,4 @@
+using Base.EditorUiPackage;
 using Base.UtilityPackage.Menus;
 using UnityEditor;
 using UnityEngine;
@@ -11,7 +12,16 @@ namespace Base.AttributePackage.Editor.Windows.GetComponentAssigner
     /// </summary>
     internal sealed class GetComponentAssignerWindow : EditorWindow
     {
+        private const string AssignLabel = "Assign References";
         private const float AssignButtonHeight = 28f;
+        private const string Description = "Fills in every empty [GetComponent] and "
+            + "[GetComponentInParent] field across the project, so references resolve without "
+            + "opening each inspector once.";
+        private const string NothingFoundResult = "No empty references found. Everything is already "
+            + "assigned.";
+        private const string PrefabsLabel = "Include prefab assets";
+        private const string ScenesLabel = "Include open scenes";
+        private const string ScopeHeader = "Scope";
         private const string MenuPath = "Tools/Base Packages/Unity Editor/References/Assign GetComponents";
         private const float MinimumHeight = 140f;
         private const float MinimumWidth = 300f;
@@ -20,6 +30,8 @@ namespace Base.AttributePackage.Editor.Windows.GetComponentAssigner
         [SerializeField] private bool includePrefabs = true;
         [SerializeField] private bool includeScenes = true;
 
+        private readonly EditorWindowStyles _styles = new();
+
         private string _result = string.Empty;
 
 #region Unity Callbacks
@@ -27,22 +39,31 @@ namespace Base.AttributePackage.Editor.Windows.GetComponentAssigner
 
         private void OnGUI()
         {
-            EditorGUILayout.Space();
+            _styles.EnsureBuilt();
 
-            includePrefabs = EditorGUILayout.ToggleLeft("Include prefab assets", includePrefabs);
-            includeScenes = EditorGUILayout.ToggleLeft("Include open scenes", includeScenes);
+            EditorWindowChrome.DrawHeader(_styles, WindowTitle, Description);
 
-            EditorGUILayout.Space();
+            EditorWindowChrome.DrawSectionHeader(_styles, ScopeHeader);
+            EditorWindowChrome.BeginCard(_styles);
+
+            includePrefabs = EditorGUILayout.ToggleLeft(PrefabsLabel, includePrefabs);
+            includeScenes = EditorGUILayout.ToggleLeft(ScenesLabel, includeScenes);
+
+            EditorWindowChrome.EndCard();
+
+            EditorGUILayout.Space(EditorMetrics.ItemGap);
 
             using (new EditorGUI.DisabledScope(!includePrefabs && !includeScenes))
             {
-                if (GUILayout.Button("Assign References", GUILayout.Height(AssignButtonHeight)))
+                if (EditorWindowChrome.PrimaryButton(_styles, AssignLabel,
+                        GUILayout.Height(AssignButtonHeight)))
                     Assign();
             }
 
-            if (!string.IsNullOrEmpty(_result))
-                EditorGUILayout.HelpBox(_result, MessageType.Info);
+            EditorWindowChrome.DrawFooter(_styles, _result);
         }
+
+        private void OnDisable() => _styles.Dispose();
 #endregion
 
         [DynamicMenuItem(MenuPath)]
@@ -59,7 +80,7 @@ namespace Base.AttributePackage.Editor.Windows.GetComponentAssigner
             int assigned = GetComponentBatchAssigner.Run(includePrefabs, includeScenes);
 
             _result = assigned == 0
-                ? "No empty references found. Everything is already assigned."
+                ? NothingFoundResult
                 : $"Assigned {assigned} reference(s).";
         }
     }

@@ -2,10 +2,10 @@
   "name": "Base.MemoryProfilerPackage.Editor",
   "rootNamespace": "Base.MemoryProfilerPackage.Editor",
   "references": [
-    "GUID:05347c051a8616d40b9c2f81b2df4dd9",
-    "GUID:922d81cfb9ff6984da4cb2213b66a375",
-    "GUID:f2d8f8c295391d141aef02e29987cd86"
-  ],
+        "GUID:05347c051a8616d40b9c2f81b2df4dd9",
+        "GUID:922d81cfb9ff6984da4cb2213b66a375",
+        "GUID:8f82a2d294e14cc5930979a4e0d686ec"
+    ],
   "includePlatforms": [
     "Editor"
   ],

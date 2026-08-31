@@ -5,6 +5,7 @@ using Base.UtilityPackage.Menus;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
+using Overview = Base.ToolPackage.Editor.OverviewGui.OverviewGui;
 
 namespace Base.ToolPackage.Editor.FolderConventionValidator
 {
@@ -21,7 +22,6 @@ namespace Base.ToolPackage.Editor.FolderConventionValidator
         private const string CreateLabel = "Create";
         private const float FixWidth = 60f;
         private const string GoToLabel = "Go to";
-        private const int HeaderFontSize = 12;
         private const float IconSize = 16f;
         private const float LabelOffset = 24f;
         private const string MenuPath = "Tools/Base Packages/Unity Editor/Project Health/Folder Conventions";
@@ -30,9 +30,6 @@ namespace Base.ToolPackage.Editor.FolderConventionValidator
         private const float RowPadding = 3f;
         private const float RulesPanelHeight = 260f;
         private const float SearchWidth = 200f;
-        private const float SuccessGap = 8f;
-        private const float SuccessIconSize = 48f;
-        private const int SuccessTitleFontSize = 15;
         private const string WindowTitle = "Folder Conventions";
 
         private static readonly Color EvenRowColor = new(0f, 0f, 0f, 0.06f);
@@ -46,18 +43,11 @@ namespace Base.ToolPackage.Editor.FolderConventionValidator
 
         private UnityEditor.Editor _configEditor;
         private FolderViolation _pendingFix;
-        private GUIStyle _headerStyle;
-        private GUIStyle _messageStyle;
-        private GUIStyle _pathStyle;
-        private GUIStyle _successSubtitleStyle;
-        private GUIStyle _successTitleStyle;
-        private Texture _successTexture;
         private Vector2 _rulesScroll;
         private Vector2 _scroll;
         private bool _hasScanned;
         private bool _pendingCreateConfig;
         private bool _pendingScan;
-        private bool _stylesReady;
         private int _rowIndex;
         private string _hoveredKey;
         private string _search = string.Empty;
@@ -73,7 +63,7 @@ namespace Base.ToolPackage.Editor.FolderConventionValidator
 
         private void OnGUI()
         {
-            EnsureStyles();
+            Overview.EnsureStyles();
             HandleMouseMove();
             DrawToolbar();
 
@@ -133,20 +123,6 @@ namespace Base.ToolPackage.Editor.FolderConventionValidator
         private static string Plural(int amount, string singular, string plural) => amount == 1
             ? singular
             : plural;
-
-        private static void DrawHint(string message)
-        {
-            GUILayout.FlexibleSpace();
-
-            using (new EditorGUILayout.HorizontalScope())
-            {
-                GUILayout.FlexibleSpace();
-                GUILayout.Label(message, EditorStyles.centeredGreyMiniLabel);
-                GUILayout.FlexibleSpace();
-            }
-
-            GUILayout.FlexibleSpace();
-        }
 
         private void DrawToolbar()
         {
@@ -255,7 +231,7 @@ namespace Base.ToolPackage.Editor.FolderConventionValidator
                 return;
 
             using (new EditorGUILayout.HorizontalScope(EditorStyles.helpBox))
-                GUILayout.Label(BuildSummary(filtered), _headerStyle);
+                GUILayout.Label(BuildSummary(filtered), Overview.HeaderStyle);
         }
 
         private string BuildSummary(List<FolderViolation> filtered) => _violations.Count == filtered.Count
@@ -266,19 +242,19 @@ namespace Base.ToolPackage.Editor.FolderConventionValidator
         {
             if (!_hasScanned)
             {
-                DrawHint("Press Scan to check the project folders.");
+                Overview.DrawHint("Press Scan to check the project folders.");
                 return;
             }
 
             if (_violations.Count == 0)
             {
-                DrawSuccess("Folders look clean", "Every folder follows the configured conventions.");
+                Overview.DrawSuccess("Folders look clean", "Every folder follows the configured conventions.");
                 return;
             }
 
             if (filtered.Count == 0)
             {
-                DrawHint("No results match the search.");
+                Overview.DrawHint("No results match the search.");
                 return;
             }
 
@@ -332,8 +308,9 @@ namespace Base.ToolPackage.Editor.FolderConventionValidator
             Rect actionRect = new(rect.xMax - actionsWidth - RowPadding, rect.y + RowPadding, actionsWidth,
                 rect.height - RowPadding * 2f);
 
-            GUI.Label(pathRect, new GUIContent(violation.Path, violation.Path), _pathStyle);
-            GUI.Label(messageRect, new GUIContent(violation.Message, violation.Message), _messageStyle);
+            GUI.Label(pathRect, new GUIContent(violation.Path, violation.Path), Overview.PathStyle);
+            GUI.Label(messageRect, new GUIContent(violation.Message, violation.Message),
+                Overview.DetailStyle);
             DrawAction(violation, actionRect);
 
             if (violation.IsFixable)
@@ -359,27 +336,6 @@ namespace Base.ToolPackage.Editor.FolderConventionValidator
 
             if (GUI.Button(rect, GoToLabel))
                 Navigate(violation);
-        }
-
-        private void DrawSuccess(string successTitle, string subtitle)
-        {
-            GUILayout.FlexibleSpace();
-
-            using (new EditorGUILayout.HorizontalScope())
-            {
-                GUILayout.FlexibleSpace();
-
-                GUILayout.Label(new GUIContent(_successTexture),
-                    GUILayout.Width(SuccessIconSize),
-                    GUILayout.Height(SuccessIconSize));
-
-                GUILayout.FlexibleSpace();
-            }
-
-            GUILayout.Space(SuccessGap);
-            GUILayout.Label(successTitle, _successTitleStyle);
-            GUILayout.Label(subtitle, _successSubtitleStyle);
-            GUILayout.FlexibleSpace();
         }
 
         private List<FolderViolation> Filter()
@@ -474,35 +430,5 @@ namespace Base.ToolPackage.Editor.FolderConventionValidator
                 Repaint();
         }
 
-        private void EnsureStyles()
-        {
-            if (_stylesReady)
-                return;
-
-            _headerStyle = new GUIStyle(EditorStyles.boldLabel)
-            {
-                fontSize = HeaderFontSize
-            };
-
-            _pathStyle = new GUIStyle(EditorStyles.label)
-            {
-                alignment = TextAnchor.MiddleLeft
-            };
-
-            _messageStyle = new GUIStyle(EditorStyles.miniLabel)
-            {
-                alignment = TextAnchor.MiddleLeft
-            };
-
-            _successTitleStyle = new GUIStyle(EditorStyles.boldLabel)
-            {
-                alignment = TextAnchor.MiddleCenter,
-                fontSize = SuccessTitleFontSize
-            };
-
-            _successSubtitleStyle = new GUIStyle(EditorStyles.centeredGreyMiniLabel);
-            _successTexture = EditorGUIUtility.IconContent("console.infoicon").image;
-            _stylesReady = true;
-        }
     }
 }

@@ -78,7 +78,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
         {
             VisualElement row = new();
 
-            row.AddToClassList("ar-row");
+            row.AddToClassList(AudioRulesStyle.RowClass);
             row.style.flexDirection = FlexDirection.Row;
 
             return row;
@@ -88,15 +88,15 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
         {
             VisualElement section = new();
 
-            section.AddToClassList("ar-section");
+            section.AddToClassList(AudioRulesStyle.SectionClass);
 
             Label label = new(text);
 
-            label.AddToClassList("ar-section__title");
+            label.AddToClassList(AudioRulesStyle.SectionTitleClass);
 
             VisualElement line = new();
 
-            line.AddToClassList("ar-section__rule");
+            line.AddToClassList(AudioRulesStyle.SectionRuleClass);
 
             section.Add(label);
             section.Add(line);
@@ -108,7 +108,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
         {
             VisualElement card = new();
 
-            card.AddToClassList("ar-card");
+            card.AddToClassList(AudioRulesStyle.CardClass);
 
             return card;
         }
@@ -209,7 +209,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
                     + "your head."
             };
 
-            notes.AddToClassList("ar-notes");
+            notes.AddToClassList(AudioRulesStyle.NotesClass);
             notes.RegisterValueChangedCallback(evt =>
             {
                 _rule.Notes = evt.newValue;
@@ -237,7 +237,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
                     + "always applies."
             };
 
-            match.AddToClassList("ar-match");
+            match.AddToClassList(AudioRulesStyle.MatchClass);
             match.RegisterValueChangedCallback(evt =>
             {
                 _rule.RequireAllConditions = evt.newValue == MatchAll;
@@ -268,7 +268,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
                 text = "Add Condition"
             };
 
-            add.AddToClassList("ar-add");
+            add.AddToClassList(AudioRulesStyle.AddClass);
             card.Add(add);
 
             _body.Add(card);
@@ -282,7 +282,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
 
             Label label = new(text);
 
-            label.AddToClassList("ar-conn");
+            label.AddToClassList(AudioRulesStyle.ConnClass);
 
             return label;
         }
@@ -321,7 +321,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
                 text = "\u2715"
             };
 
-            remove.AddToClassList("ar-ghost");
+            remove.AddToClassList(AudioRulesStyle.GhostClass);
             row.Add(remove);
 
             return row;
@@ -546,7 +546,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
                 tooltip = "Off, this rule leaves the setting alone."
             };
 
-            enabled.AddToClassList("ar-setting-toggle");
+            enabled.AddToClassList(AudioRulesStyle.SettingToggleClass);
 
             control.SetEnabled(isSet);
 

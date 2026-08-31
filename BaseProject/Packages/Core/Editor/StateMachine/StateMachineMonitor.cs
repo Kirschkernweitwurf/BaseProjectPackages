@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Base.CorePackage.StateMachine;
+using Base.UtilityPackage.Logging;
 using Base.UtilityPackage.Menus;
 using UnityEditor;
 using UnityEngine;
@@ -31,6 +32,8 @@ namespace Base.CorePackage.Editor.StateMachine
         private const float ListWidth = 220f;
         private const string MachineCountFormat = "{0} running";
         private const string MenuPath = "Tools/Base Packages/Gameplay/State Machine Monitor";
+        private const string MissingSheetMessage = "The state machine monitor style sheet was not found, "
+            + "so the window is drawn unstyled.";
         private const string NoMachineStatus = "Nothing to watch.";
         private const double PollInterval = 0.1d;
         private const string ShapeFormat = "{0} states, {1} transitions";
@@ -59,10 +62,14 @@ namespace Base.CorePackage.Editor.StateMachine
 
         private void CreateGUI()
         {
-            StateMachineStyle.Apply(rootVisualElement);
-
             rootVisualElement.Add(BuildPanes());
             rootVisualElement.Add(BuildStatusBar());
+
+            // After the tree exists, so the first paint reaches every element rather than only the
+            // root. The theme is polled from here on, so a color changed in the settings page lands
+            // without reopening the window.
+            if (!StateMachineStyle.Apply(rootVisualElement))
+                CustomLogger.LogWarning(MissingSheetMessage, this);
 
             Poll(true);
         }

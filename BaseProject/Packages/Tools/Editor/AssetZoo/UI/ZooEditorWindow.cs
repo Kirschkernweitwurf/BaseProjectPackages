@@ -1,3 +1,4 @@
+using Base.EditorUiPackage;
 using Base.ToolPackage.Editor.AssetZoo.Builder;
 using Base.ToolPackage.Editor.AssetZoo.Config;
 using Base.ToolPackage.Editor.AssetZoo.Generation;
@@ -13,17 +14,33 @@ namespace Base.ToolPackage.Editor.AssetZoo.UI
     /// </summary>
     internal class ZooEditorWindow : EditorWindow
     {
+        private const string AutoGenerateLabel = "Auto Generate Categories";
         private const float AuxButtonHeight = 24f;
+        private const string BuildLabel = "Build Zoo";
+        private const string ClearLabel = "Clear Zoo";
+        private const string ConfigHeader = "Config";
+        private const string ConfigLabel = "Config";
 
         private const string DefaultPath = "Tools/Base Packages/Assets/Asset Zoo/Open Zoo Builder";
         private const string LastConfigKey = "Base.AssetZoo.LastConfigGuid";
         private const float MainButtonHeight = 32f;
         private const float MinWindowHeight = 400f;
         private const float MinWindowWidth = 340f;
+        private const string ParentLabel = "Parent (optional)";
+        private const string SelectParentLabel = "Select Zoo Parent";
+        private const string SelectRootLabel = "Select Zoo Root";
+        private const string SetupHeader = "Setup";
+        private const string StartHint = "1. Create a config via Assets > Create > Asset Zoo > Zoo Config.\n"
+            + "2. Drop it in the Config field above.\n"
+            + "3. Set the search folder under Generation, hit Auto Generate, hit Build.";
+        private const string WindowTitle = "Asset Zoo Builder";
+        private const string Description = "Builds a scene full of every asset a config points at, so a "
+            + "whole library can be looked at side by side instead of one prefab at a time.";
 
         [SerializeField] private ZooConfig config;
 
         private readonly ZooBuilder _builder = new();
+        private readonly EditorWindowStyles _styles = new();
 
         private Transform _parent;
         private Vector2 _scroll;
@@ -40,82 +57,32 @@ namespace Base.ToolPackage.Editor.AssetZoo.UI
 
         private void OnGUI()
         {
-            EditorGUILayout.LabelField("Asset Zoo Builder", EditorStyles.boldLabel);
-            EditorGUILayout.Space(4);
+            _styles.EnsureBuilt();
 
-            EditorGUI.BeginChangeCheck();
-            config = (ZooConfig)EditorGUILayout.ObjectField("Config", config, typeof(ZooConfig), false);
-            _parent = (Transform)EditorGUILayout.ObjectField("Parent (optional)", _parent, typeof(Transform), true);
-            if (EditorGUI.EndChangeCheck())
-            {
-                ClearCachedEditor();
-                SaveLastConfig();
-                _hasResult = false;
-            }
+            EditorWindowChrome.DrawHeader(_styles, WindowTitle, Description);
 
-            EditorGUILayout.Space(6);
-
-            bool hasZoo = _builder.HasZoo;
-            bool hasParent = _parent != null;
-
-            using (new EditorGUI.DisabledScope(config == null))
-            {
-                if (GUILayout.Button("Auto Generate Categories", GUILayout.Height(MainButtonHeight)))
-                    AutoGenerate();
-
-                using (new EditorGUILayout.HorizontalScope())
-                {
-                    if (GUILayout.Button("Build Zoo", GUILayout.Height(MainButtonHeight)))
-                        _builder.Build(config, _parent);
-
-                    using (new EditorGUI.DisabledScope(!hasZoo))
-                    {
-                        if (GUILayout.Button("Clear Zoo", GUILayout.Height(MainButtonHeight)))
-                            _builder.Clear();
-                    }
-                }
-            }
-
-            using (new EditorGUI.DisabledScope(!hasZoo))
-            {
-                if (GUILayout.Button("Select Zoo Root", GUILayout.Height(AuxButtonHeight)))
-                    SelectZooRoot();
-            }
-
-            using (new EditorGUI.DisabledScope(!hasParent))
-            {
-                if (GUILayout.Button("Select Zoo Parent", GUILayout.Height(AuxButtonHeight)))
-                    SelectZooParent();
-            }
-
-            EditorGUILayout.Space(6);
+            DrawSetup();
+            DrawActions();
 
             if (config == null)
             {
-                EditorGUILayout.HelpBox("1. Create a config via Assets > Create > Asset Zoo > Zoo Config.\n"
-                    + "2. Drop it in the Config field above.\n"
-                    + "3. Set the search folder under Generation, hit Auto Generate, hit Build.",
-                    MessageType.Info);
-
+                EditorGUILayout.HelpBox(StartHint, MessageType.Info);
                 return;
             }
 
-            if (_hasResult)
-                EditorGUILayout.HelpBox(_lastResult.Message,
-                    _lastResult.Success
-                        ? MessageType.Info
-                        : MessageType.Warning);
+            DrawConfigEditor();
 
-            EditorGUILayout.LabelField("Config", EditorStyles.boldLabel);
-            _scroll = EditorGUILayout.BeginScrollView(_scroll);
-
-            EnsureCachedEditor();
-            _cachedConfigEditor.OnInspectorGUI();
-
-            EditorGUILayout.EndScrollView();
+            EditorWindowChrome.DrawFooter(_styles, _hasResult
+                ? _lastResult.Message
+                : null);
         }
 
-        private void OnDisable() => ClearCachedEditor();
+        private void OnDisable()
+        {
+            ClearCachedEditor();
+
+            _styles.Dispose();
+        }
 #endregion
 
         /// <summary>
@@ -135,6 +102,91 @@ namespace Base.ToolPackage.Editor.AssetZoo.UI
 
             window.config = config;
             window.SaveLastConfig();
+        }
+
+        private void DrawSetup()
+        {
+            EditorWindowChrome.DrawSectionHeader(_styles, SetupHeader);
+            EditorWindowChrome.BeginCard(_styles);
+
+            EditorGUI.BeginChangeCheck();
+
+            config = EditorGUILayout.ObjectField(ConfigLabel, config, typeof(ZooConfig), false) as ZooConfig;
+            _parent = EditorGUILayout.ObjectField(ParentLabel, _parent, typeof(Transform), true) as Transform;
+
+            if (EditorGUI.EndChangeCheck())
+            {
+                ClearCachedEditor();
+                SaveLastConfig();
+                _hasResult = false;
+            }
+
+            EditorWindowChrome.EndCard();
+        }
+
+        private void DrawActions()
+        {
+            bool hasZoo = _builder.HasZoo;
+
+            using (new EditorGUI.DisabledScope(config == null))
+            {
+                if (EditorWindowChrome.PrimaryButton(_styles, AutoGenerateLabel,
+                        GUILayout.Height(MainButtonHeight)))
+                    AutoGenerate();
+
+                EditorGUILayout.Space(EditorMetrics.TightGap);
+
+                using (new EditorGUILayout.HorizontalScope())
+                {
+                    if (EditorWindowChrome.PrimaryButton(_styles, BuildLabel,
+                            GUILayout.Height(MainButtonHeight)))
+                        _builder.Build(config, _parent);
+
+                    GUILayout.Space(EditorMetrics.TightGap);
+
+                    using (new EditorGUI.DisabledScope(!hasZoo))
+                    {
+                        if (EditorWindowChrome.SecondaryButton(_styles, ClearLabel,
+                                GUILayout.Height(MainButtonHeight)))
+                            _builder.Clear();
+                    }
+                }
+            }
+
+            EditorGUILayout.Space(EditorMetrics.TightGap);
+
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                using (new EditorGUI.DisabledScope(!hasZoo))
+                {
+                    if (EditorWindowChrome.SecondaryButton(_styles, SelectRootLabel,
+                            GUILayout.Height(AuxButtonHeight)))
+                        SelectZooRoot();
+                }
+
+                GUILayout.Space(EditorMetrics.TightGap);
+
+                using (new EditorGUI.DisabledScope(_parent == null))
+                {
+                    if (EditorWindowChrome.SecondaryButton(_styles, SelectParentLabel,
+                            GUILayout.Height(AuxButtonHeight)))
+                        SelectZooParent();
+                }
+            }
+
+            EditorGUILayout.Space(EditorMetrics.SectionGap);
+        }
+
+        private void DrawConfigEditor()
+        {
+            EditorWindowChrome.DrawSectionHeader(_styles, ConfigHeader);
+
+            _scroll = EditorGUILayout.BeginScrollView(_scroll);
+
+            EnsureCachedEditor();
+            _cachedConfigEditor.OnInspectorGUI();
+
+            EditorGUILayout.EndScrollView();
         }
 
         private void AutoGenerate()

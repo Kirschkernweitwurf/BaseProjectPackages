@@ -9,13 +9,13 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
     /// Pure presentation.
     /// </summary>
     /// <remarks>
-    /// Rebuilt when the editor skin changes, since the styles pin text colors that are picked for
-    /// one skin. The shared editor look comes from <see cref="EditorPalette"/>.
+    /// Rebuilt when the editor skin or the active theme changes, since the styles pin text colors
+    /// that are picked for one of them. The shared editor look comes from
+    /// <see cref="EditorPalette"/>.
     /// </remarks>
-    internal sealed class RequiredReferenceStyles
+    internal sealed class RequiredReferenceStyles : EditorStyleSet
     {
         private const float HeaderStrength = 0.05f;
-        private const int SummaryFontSize = 12;
         private const int TitleFontSize = 15;
 
         /// <summary>Subtle background behind a group header.</summary>
@@ -42,27 +42,15 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
         /// <summary>Centered white label used inside the count badge.</summary>
         public GUIStyle Badge { get; private set; }
 
-        /// <summary>Bold label used in the summary row under the action bar.</summary>
-        public GUIStyle Summary { get; private set; }
-
         /// <summary>Large green title shown when everything is assigned.</summary>
         public GUIStyle SuccessTitle { get; private set; }
 
         /// <summary>Muted subtitle shown under the success title.</summary>
         public GUIStyle SuccessSubtitle { get; private set; }
 
-        private bool _built;
-        private bool _builtForProSkin;
-
-        /// <summary>
-        /// Builds the GUI styles once, and again after the editor skin changed.
-        /// Must run inside a GUI callback.
-        /// </summary>
-        public void EnsureBuilt()
+        /// <inheritdoc/>
+        protected override void Build()
         {
-            if (_built && _builtForProSkin == EditorGUIUtility.isProSkin)
-                return;
-
             Name = new GUIStyle(EditorStyles.boldLabel)
             {
                 alignment = TextAnchor.MiddleLeft
@@ -78,12 +66,6 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
                 alignment = TextAnchor.MiddleCenter
             }, Color.white);
 
-            Summary = new GUIStyle(EditorStyles.boldLabel)
-            {
-                alignment = TextAnchor.MiddleLeft,
-                fontSize = SummaryFontSize
-            };
-
             SuccessTitle = EditorStyleUtility.PinTextColor(new GUIStyle(EditorStyles.boldLabel)
             {
                 alignment = TextAnchor.MiddleCenter,
@@ -95,9 +77,6 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
                 alignment = TextAnchor.MiddleCenter,
                 wordWrap = true
             }, EditorStyleUtility.MutedTextColor());
-
-            _built = true;
-            _builtForProSkin = EditorGUIUtility.isProSkin;
         }
     }
 }

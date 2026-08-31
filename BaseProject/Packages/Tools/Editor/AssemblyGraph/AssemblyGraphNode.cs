@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Base.EditorUiPackage;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEditorInternal;
@@ -17,7 +18,23 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
 
         private AssemblyNodeInfo Info { get; }
 
-        private static readonly Color BodyColor = new(0.22f, 0.22f, 0.24f, 1f);
+        private const string ActionRowClass = "action-row";
+        private const string CleanButtonClass = "clean-button";
+        private const string CleanLabel = "Remove unused";
+        private const string ClearFocusLabel = "Clear focus";
+        private const string FocusButtonClass = "focus-button";
+        private const string FocusLabel = "Focus";
+        private const string FocusTooltip = "Show only this assembly, what it references, and what "
+            + "references it.";
+        private const string GoToButtonClass = "go-to-button";
+        private const string GoToLabel = "Go to";
+        private const string IssuesClass = "has-issues";
+        private const string FocusedClass = "is-focused";
+        private const string KindLabelClass = "kind-label";
+        private const string NodeClass = "assembly-node";
+        private const string UnusedHeaderClass = "unused-header";
+        private const string UnusedHeaderFormat = "Unused references ({0})";
+        private const string UnusedLineClass = "unused-line";
 
         private readonly Action<AssemblyNodeInfo> _onFocusRequested;
         private readonly Action<AssemblyNodeInfo> _onCleanupRequested;
@@ -35,12 +52,13 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
             _onCleanupRequested = onCleanupRequested;
 
             title = info.Name;
-            AddToClassList("assembly-node");
+            AddToClassList(NodeClass);
+
             if (info.HasUnusedReferences)
-                AddToClassList("has-issues");
+                AddToClassList(IssuesClass);
 
             if (isFocused)
-                AddToClassList("is-focused");
+                AddToClassList(FocusedClass);
 
             ApplyColors();
 
@@ -63,17 +81,45 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
         }
 
         /// <summary>Paints every container opaque and tints the title bar by assembly root name.</summary>
+        /// <remarks>
+        /// Written as inline styles rather than left to the sheet, because these are the named
+        /// children GraphView builds inside a Node and nothing here can put a class on them. The
+        /// window rebuilds its nodes when the theme moves, which is what keeps these current.
+        /// </remarks>
         private void ApplyColors()
         {
-            mainContainer.style.backgroundColor = BodyColor;
-            extensionContainer.style.backgroundColor = BodyColor;
+            Color body = EditorPalette.Card;
+
+            mainContainer.style.backgroundColor = body;
+            extensionContainer.style.backgroundColor = body;
             titleContainer.style.backgroundColor = AssemblyColorPalette.GetColor(Info.RootName);
+
+            ApplyBorderColor();
+        }
+
+        // The widths come from the sheet, so only the color is decided here. Focus wins over issues:
+        // a focused node is the one the user just asked to look at.
+        private void ApplyBorderColor()
+        {
+            if (!_isFocused && !Info.HasUnusedReferences)
+                return;
+
+            Color border = _isFocused
+                ? EditorPalette.Focus
+                : EditorPalette.Danger;
+
+            style.borderTopColor = border;
+            style.borderBottomColor = border;
+            style.borderLeftColor = border;
+            style.borderRightColor = border;
         }
 
         private void BuildBody()
         {
             Label kindLabel = new(Info.Kind.ToString());
-            kindLabel.AddToClassList("kind-label");
+
+            kindLabel.AddToClassList(KindLabelClass);
+            kindLabel.AddToClassList(EditorUiClass.Dim);
             extensionContainer.Add(kindLabel);
 
             extensionContainer.Add(BuildActionRow());
@@ -82,14 +128,18 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
             if (unused.Count == 0)
                 return;
 
-            Label header = new($"Unused references ({unused.Count})");
-            header.AddToClassList("unused-header");
+            Label header = new(string.Format(UnusedHeaderFormat, unused.Count));
+
+            header.AddToClassList(UnusedHeaderClass);
+            header.AddToClassList(EditorUiClass.Danger);
             extensionContainer.Add(header);
 
             foreach (string name in unused)
             {
                 Label line = new(name);
-                line.AddToClassList("unused-line");
+
+                line.AddToClassList(UnusedLineClass);
+                line.AddToClassList(EditorUiClass.Danger);
                 extensionContainer.Add(line);
             }
 
@@ -98,35 +148,58 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
 
             Button cleanButton = new(() => _onCleanupRequested?.Invoke(Info))
             {
-                text = "Remove unused"
+                text = CleanLabel
             };
 
-            cleanButton.AddToClassList("clean-button");
+            cleanButton.AddToClassList(CleanButtonClass);
+            cleanButton.AddToClassList(EditorUiClass.Button);
+
+            // Destructive, so it takes the danger fill rather than either shared button class.
+            cleanButton.style.backgroundColor = EditorPalette.Danger;
+            cleanButton.style.color = EditorPalette.AccentText;
+
             extensionContainer.Add(cleanButton);
         }
 
         private VisualElement BuildActionRow()
         {
             VisualElement row = new();
-            row.AddToClassList("action-row");
+
+            row.AddToClassList(ActionRowClass);
 
             Button focusButton = new(() => _onFocusRequested?.Invoke(Info))
             {
                 text = _isFocused
-                    ? "Clear focus"
-                    : "Focus"
+                    ? ClearFocusLabel
+                    : FocusLabel,
+                tooltip = FocusTooltip
             };
 
-            focusButton.AddToClassList("focus-button");
-            focusButton.tooltip = "Show only this assembly, what it references, and what references it.";
+            focusButton.AddToClassList(FocusButtonClass);
+            focusButton.AddToClassList(EditorUiClass.Button);
+
+            // Amber while focused, matching the border of the node it belongs to, so the two read as
+            // one state rather than two.
+            if (_isFocused)
+            {
+                focusButton.style.backgroundColor = EditorPalette.Focus;
+                focusButton.style.color = EditorPalette.Text;
+            }
+            else
+            {
+                focusButton.AddToClassList(EditorUiClass.ButtonSecondary);
+            }
+
             row.Add(focusButton);
 
             Button goToButton = new(GoTo)
             {
-                text = "Go to"
+                text = GoToLabel
             };
 
-            goToButton.AddToClassList("go-to-button");
+            goToButton.AddToClassList(GoToButtonClass);
+            goToButton.AddToClassList(EditorUiClass.Button);
+            goToButton.AddToClassList(EditorUiClass.ButtonSecondary);
             goToButton.SetEnabled(Info.HasAsmdef);
             row.Add(goToButton);
 

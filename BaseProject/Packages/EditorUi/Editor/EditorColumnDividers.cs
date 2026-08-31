@@ -24,9 +24,6 @@ namespace Base.EditorUiPackage
 
         private int _dragging = NoDivider;
 
-        /// <summary>True while one of this table's dividers is being dragged.</summary>
-        public bool IsDragging => _dragging != NoDivider;
-
         /// <summary>
         /// Whether a point is close enough to a divider to grab it.
         /// </summary>

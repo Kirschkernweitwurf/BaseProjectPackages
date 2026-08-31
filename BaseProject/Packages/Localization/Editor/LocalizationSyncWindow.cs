@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Base.EditorUiPackage;
 using Base.UtilityPackage.Logging;
 using UnityEditor;
 using UnityEditor.Localization;
@@ -12,7 +13,8 @@ namespace Base.LocalizationPackage.Editor
     /// </summary>
     internal sealed class LocalizationSyncWindow : EditorWindow
     {
-        private const string BoxStyle = "box";
+        private const string Description = "Pulls String Table Collections down from Google Sheets, or "
+            + "pushes the project's entries back up. A push overwrites the sheet.";
         private const string HeaderLabel = "String Table Collections";
         private const float MinWindowHeight = 220f;
         private const float MinWindowWidth = 380f;
@@ -27,32 +29,47 @@ namespace Base.LocalizationPackage.Editor
         private const float SyncButtonWidth = 60f;
         private const string WindowTitle = "Localization Sync";
 
+        private readonly EditorWindowStyles _styles = new();
+
         private IReadOnlyList<StringTableCollection> _collections = Array.Empty<StringTableCollection>();
         private Vector2 _scroll;
+        private int _rowIndex;
 
 #region Unity Callbacks
         private void OnEnable() => Refresh();
 
         private void OnGUI()
         {
-            DrawHeader();
+            _styles.EnsureBuilt();
+
+            EditorWindowChrome.DrawHeader(_styles, WindowTitle, Description);
+
+            DrawCollectionsToolbar();
 
             if (_collections.Count == 0)
             {
-                EditorGUILayout.HelpBox(GoogleSheetsSync.NoCollectionsMessage, MessageType.Info);
+                EditorWindowChrome.DrawEmptyState(_styles, EditorIcons.Success, HeaderLabel,
+                    GoogleSheetsSync.NoCollectionsMessage);
                 return;
             }
 
             DrawSyncAllButtons();
-            EditorGUILayout.Space();
+            EditorGUILayout.Space(EditorMetrics.ItemGap);
 
+            _rowIndex = 0;
             _scroll = EditorGUILayout.BeginScrollView(_scroll);
+
+            EditorWindowChrome.BeginCard(_styles);
 
             foreach (StringTableCollection collection in _collections)
                 DrawCollection(collection);
 
+            EditorWindowChrome.EndCard();
+
             EditorGUILayout.EndScrollView();
         }
+
+        private void OnDisable() => _styles.Dispose();
 #endregion
 
         /// <summary>
@@ -65,30 +82,43 @@ namespace Base.LocalizationPackage.Editor
             window.minSize = new Vector2(MinWindowWidth, MinWindowHeight);
         }
 
-        private static void DrawSyncAllButtons()
+        private void DrawSyncAllButtons()
         {
             using (new EditorGUILayout.HorizontalScope())
             {
-                if (GUILayout.Button(PullAllLabel, GUILayout.Height(SyncAllButtonHeight)))
+                if (EditorWindowChrome.PrimaryButton(_styles, PullAllLabel,
+                        GUILayout.Height(SyncAllButtonHeight)))
                     GoogleSheetsSync.SyncAll(ESyncDirection.Pull);
 
-                if (GUILayout.Button(PushAllLabel, GUILayout.Height(SyncAllButtonHeight)))
+                GUILayout.Space(EditorMetrics.TightGap);
+
+                if (EditorWindowChrome.SecondaryButton(_styles, PushAllLabel,
+                        GUILayout.Height(SyncAllButtonHeight)))
                     GoogleSheetsSync.SyncAll(ESyncDirection.Push);
             }
         }
 
-        private static void DrawCollection(StringTableCollection collection)
+        // Striped by hand rather than through EditorRows, because the rows are laid out by the
+        // layout system here and the background has to be reserved before the controls go in.
+        private void DrawCollection(StringTableCollection collection)
         {
-            using (new EditorGUILayout.HorizontalScope(BoxStyle))
-            {
-                EditorGUILayout.LabelField(collection.TableCollectionName);
+            Rect row = EditorGUILayout.BeginHorizontal(GUILayout.Height(EditorTableStyles.RowHeight));
 
-                if (GUILayout.Button(PullLabel, GUILayout.Width(SyncButtonWidth)))
-                    Run(collection, ESyncDirection.Pull);
+            EditorRows.DrawRowBackground(row, _rowIndex);
+            _rowIndex++;
 
-                if (GUILayout.Button(PushLabel, GUILayout.Width(SyncButtonWidth)))
-                    Run(collection, ESyncDirection.Push);
-            }
+            GUILayout.Label(collection.TableCollectionName, _styles.Name);
+            GUILayout.FlexibleSpace();
+
+            if (EditorWindowChrome.SecondaryButton(_styles, PullLabel, GUILayout.Width(SyncButtonWidth)))
+                Run(collection, ESyncDirection.Pull);
+
+            GUILayout.Space(EditorMetrics.TightGap);
+
+            if (EditorWindowChrome.SecondaryButton(_styles, PushLabel, GUILayout.Width(SyncButtonWidth)))
+                Run(collection, ESyncDirection.Push);
+
+            EditorGUILayout.EndHorizontal();
         }
 
         private static void Run(StringTableCollection collection, ESyncDirection direction)
@@ -111,15 +141,19 @@ namespace Base.LocalizationPackage.Editor
                 collection);
         }
 
-        private void DrawHeader()
+        private void DrawCollectionsToolbar()
         {
             using (new EditorGUILayout.HorizontalScope())
             {
-                EditorGUILayout.LabelField(HeaderLabel, EditorStyles.boldLabel);
+                GUILayout.Label(HeaderLabel, _styles.SectionHeader);
+                GUILayout.FlexibleSpace();
 
-                if (GUILayout.Button(RefreshLabel, GUILayout.Width(RefreshButtonWidth)))
+                if (EditorWindowChrome.SecondaryButton(_styles, RefreshLabel,
+                        GUILayout.Width(RefreshButtonWidth)))
                     Refresh();
             }
+
+            EditorGUILayout.Space(EditorMetrics.TightGap);
         }
 
         private void Refresh() => _collections = GoogleSheetsSync.GetCollections();

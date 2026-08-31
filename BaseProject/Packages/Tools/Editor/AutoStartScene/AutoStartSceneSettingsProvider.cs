@@ -1,3 +1,4 @@
+using Base.EditorUiPackage;
 using Base.ToolPackage.Editor.BaseToolsOverview;
 using UnityEditor;
 using UnityEngine;
@@ -10,7 +11,18 @@ namespace Base.ToolPackage.Editor.AutoStartScene
     /// </summary>
     public class AutoStartSceneSettingsProvider : SettingsProvider
     {
+        private const string DefaultSceneFormat = "Using the first build scene as the default: {0}";
+        private const string EnableLabel = "Enable Auto Start";
+        private const string ExplicitSceneFormat = "Current start scene: {0}";
+        private const string Intro = "Select a scene to automatically load when entering play mode, whichever "
+            + "scene happens to be open.";
+        private const string MissingSceneMessage = "No start scene available. Add a scene to Build Settings or "
+            + "set one manually.";
+        private const string SceneLabel = "Start Scene";
+        private const string SettingsPath = "Project/Base Tools/Auto Start Scene";
         private const string Summary = "The scene that loads when entering play mode, whichever scene is open.";
+
+        private readonly EditorWindowStyles _styles = new();
 
         private SceneAsset _startScene;
 
@@ -20,46 +32,72 @@ namespace Base.ToolPackage.Editor.AutoStartScene
         [SettingsProvider]
         [BaseToolsPage(Summary)]
         public static SettingsProvider CreateSettingsProvider()
-            => new AutoStartSceneSettingsProvider("Project/Base Tools/Auto Start Scene");
+            => new AutoStartSceneSettingsProvider(SettingsPath);
 
         /// <inheritdoc/>
         public override void OnGUI(string searchContext)
         {
-            GUILayout.Label("Auto Start Scene", EditorStyles.boldLabel);
-            GUILayout.Label("Select a scene to automatically load when entering Play mode.",
-                EditorStyles.wordWrappedLabel);
+            _styles.EnsureBuilt();
 
-            GUILayout.Space(10);
+            EditorWindowChrome.DrawIntro(_styles, Intro);
 
-            // Toggle
+            EditorWindowChrome.BeginCard(_styles);
+
+            bool isEnabled = DrawEnabledToggle();
+
+            EditorGUI.BeginDisabledGroup(!isEnabled);
+
+            DrawScenePicker();
+
+            EditorGUILayout.Space(EditorMetrics.TightGap);
+
+            DrawSceneState();
+
+            EditorGUI.EndDisabledGroup();
+
+            EditorWindowChrome.EndCard();
+        }
+
+        /// <inheritdoc/>
+        public override void OnDeactivate() => _styles.Dispose();
+
+        private static bool DrawEnabledToggle()
+        {
             EditorGUI.BeginChangeCheck();
-            bool enabled = EditorGUILayout.Toggle("Enable Auto Start", AutoStartSceneSettings.IsEnabled());
+
+            bool isEnabled = EditorGUILayout.Toggle(EnableLabel, AutoStartSceneSettings.IsEnabled());
+
             if (EditorGUI.EndChangeCheck())
-                AutoStartSceneSettings.SetEnabled(enabled);
+                AutoStartSceneSettings.SetEnabled(isEnabled);
 
-            EditorGUI.BeginDisabledGroup(!enabled);
+            return isEnabled;
+        }
 
+        private void DrawScenePicker()
+        {
             EditorGUI.BeginChangeCheck();
-            _startScene = (SceneAsset)EditorGUILayout.ObjectField("Start Scene",
-                AutoStartSceneSettings.GetStartScene(), typeof(SceneAsset), false);
+
+            _startScene = EditorGUILayout.ObjectField(SceneLabel, AutoStartSceneSettings.GetStartScene(),
+                typeof(SceneAsset), false) as SceneAsset;
 
             if (EditorGUI.EndChangeCheck())
                 AutoStartSceneSettings.SetStartScene(_startScene);
+        }
 
-            GUILayout.Space(4);
-
+        private void DrawSceneState()
+        {
             if (_startScene == null)
-                EditorGUILayout.HelpBox("No start scene available."
-                    + " Add a scene to Build Settings or set one manually.", MessageType.Warning);
-            else if (AutoStartSceneSettings.HasExplicitStartScene())
-                EditorGUILayout.HelpBox($"Current Start Scene: {AssetDatabase.GetAssetPath(_startScene)}",
-                    MessageType.Info);
-            else
-                EditorGUILayout.HelpBox(
-                    $"Using first build scene as default: {AssetDatabase.GetAssetPath(_startScene)}",
-                    MessageType.Info);
+            {
+                EditorGUILayout.HelpBox(MissingSceneMessage, MessageType.Warning);
+                return;
+            }
 
-            EditorGUI.EndDisabledGroup();
+            string path = AssetDatabase.GetAssetPath(_startScene);
+            string format = AutoStartSceneSettings.HasExplicitStartScene()
+                ? ExplicitSceneFormat
+                : DefaultSceneFormat;
+
+            EditorGUILayout.HelpBox(string.Format(format, path), MessageType.Info);
         }
     }
 }

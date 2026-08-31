@@ -67,6 +67,8 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows.MenuItemOverview
 
         private void OnGUI()
         {
+            MenuOverviewGui.EnsureFresh();
+
             if (_needsRebuild)
                 Rebuild();
 

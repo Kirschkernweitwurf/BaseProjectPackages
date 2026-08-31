@@ -12,16 +12,9 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
     /// </summary>
     internal sealed class CodebaseGraphDetailPane : VisualElement
     {
-        private const string ActionClass = "finding-action";
-        private const string ActionRowClass = "action-row";
-        private const string ActionTitleClass = "finding-action-title";
         private const string ActionTitleText = "What to do";
-        private const string CardClass = "finding-card";
-        private const string CardTitleClass = "finding-card-title";
         private const string CutHintFormat = "Cheapest edge to cut: {0}";
         private const string CycleTitleText = "The others caught in this same loop";
-        private const string DismissClass = "dismiss-button";
-        private const string DismissedNoticeClass = "dismissed-notice";
 
         private const string DismissedNoticeText = "You dismissed this. It is hidden from the report. "
             + "The code has not changed.";
@@ -45,14 +38,12 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         private const string EntryPointFormat = "Reached from outside the code: {0}. That is why it is not "
             + "reported as unused.";
 
-        private const string ExplanationClass = "finding-explanation";
         private const string FixLabel = "Apply fix";
         private const string FocusLabel = "Show neighbors";
 
         private const string FocusTooltip = "Hides everything except this entry and what it connects to, "
             + "so you can read one dependency at a time. Use the Neighbors dropdown to widen the reach.";
 
-        private const string HeadingClass = "pane-heading";
         private const int MaxRelations = 12;
 
         private const string MetricsFormat = "Abstractness {0:0.00}   \u00b7   Instability {1:0.00}   "
@@ -61,15 +52,8 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         private const string MetricsTitleText = "Shape numbers";
         private const string MoreFormat = "and {0} more";
         private const string OpenLabel = "Open script";
-        private const string PaneClass = "pane";
-        private const string PartnerClass = "finding-partner";
-        private const string PlaceholderClass = "pane-placeholder";
-        private const string RelationClass = "relation-entry";
         private const string RepeatFormat = "  x{0}";
         private const string RestoreLabel = "Bring back";
-        private const string SectionTitleClass = "section-title";
-        private const string SubtitleClass = "pane-subtitle";
-        private const string ToolbarRowClass = "action-row";
         private const string UsedByTitle = "Used by";
         private const string UsesTitle = "Uses";
 
@@ -106,7 +90,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             _onDismissFinding = onDismissFinding;
             _onRestore = onRestore;
 
-            AddToClassList(PaneClass);
+            AddToClassList(CodebaseGraphStyle.PaneClass);
 
             _content = new ScrollView
             {
@@ -134,12 +118,12 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
                 return;
             }
 
-            _content.Add(GraphLabel.Build(entry.Title, HeadingClass));
-            _content.Add(GraphLabel.Build(entry.Subtitle, SubtitleClass));
+            _content.Add(GraphLabel.Build(entry.Title, CodebaseGraphStyle.PaneHeadingClass));
+            _content.Add(GraphLabel.Build(entry.Subtitle, CodebaseGraphStyle.PaneSubtitleClass));
             AppendEntryPointNote(entry);
 
             if (entry.IsDismissed)
-                _content.Add(GraphLabel.Build(DismissedNoticeText, DismissedNoticeClass));
+                _content.Add(GraphLabel.Build(DismissedNoticeText, CodebaseGraphStyle.DismissedNoticeClass));
 
             _content.Add(BuildActionRow(entry));
 
@@ -152,17 +136,18 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
         private static void AppendRelations(VisualElement parent, string title, List<string> names)
         {
-            parent.Add(GraphLabel.Build($"{title} ({names.Count})", SectionTitleClass));
+            parent.Add(GraphLabel.Build($"{title} ({names.Count})", CodebaseGraphStyle.SectionTitleClass));
 
             int shown = names.Count < MaxRelations
                 ? names.Count
                 : MaxRelations;
 
             for (int index = 0; index < shown; index++)
-                parent.Add(GraphLabel.Build(names[index], RelationClass));
+                parent.Add(GraphLabel.Build(names[index], CodebaseGraphStyle.RelationEntryClass));
 
             if (names.Count > shown)
-                parent.Add(GraphLabel.Build(string.Format(MoreFormat, names.Count - shown), RelationClass));
+                parent.Add(GraphLabel.Build(string.Format(MoreFormat, names.Count - shown),
+                    CodebaseGraphStyle.RelationEntryClass));
         }
 
         private static List<string> CollectNamespaceRelations(IEnumerable<string> names)
@@ -249,27 +234,28 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
                 : entry.Namespace?.CycleCutHint;
 
             if (!string.IsNullOrEmpty(cut))
-                card.Add(GraphLabel.Build(string.Format(CutHintFormat, cut), ActionClass));
+                card.Add(GraphLabel.Build(string.Format(CutHintFormat, cut), CodebaseGraphStyle.FindingActionClass));
 
-            card.Add(GraphLabel.Build(CycleTitleText, ActionTitleClass));
+            card.Add(GraphLabel.Build(CycleTitleText, CodebaseGraphStyle.FindingActionTitleClass));
 
             foreach (string partner in partners)
-                card.Add(GraphLabel.Build($"\u2022  {partner}", PartnerClass));
+                card.Add(GraphLabel.Build($"\u2022  {partner}", CodebaseGraphStyle.FindingPartnerClass));
         }
 
-        private void ShowPlaceholder() => _content.Add(GraphLabel.Build(EmptyText, PlaceholderClass));
+        private void ShowPlaceholder()
+            => _content.Add(GraphLabel.Build(EmptyText, CodebaseGraphStyle.PanePlaceholderClass));
 
         private void AppendMetrics(GraphEntry entry)
         {
             if (entry.Member != null || entry.Type == null)
                 return;
 
-            _content.Add(GraphLabel.Build(MetricsTitleText, SectionTitleClass));
+            _content.Add(GraphLabel.Build(MetricsTitleText, CodebaseGraphStyle.SectionTitleClass));
             _content.Add(GraphLabel.Build(string.Format(MetricsFormat,
                     entry.Type.Abstractness,
                     entry.Type.Instability,
                     entry.Type.MainSequenceDistance),
-                RelationClass));
+                CodebaseGraphStyle.RelationEntryClass));
         }
 
         private void AppendEntryPointNote(GraphEntry entry)
@@ -278,13 +264,14 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             if (string.IsNullOrEmpty(reason))
                 return;
 
-            _content.Add(GraphLabel.Build(string.Format(EntryPointFormat, reason), SubtitleClass));
+            _content.Add(GraphLabel.Build(string.Format(EntryPointFormat, reason),
+                CodebaseGraphStyle.PaneSubtitleClass));
         }
 
         private VisualElement BuildActionRow(GraphEntry entry)
         {
             VisualElement row = new();
-            row.AddToClassList(ToolbarRowClass);
+            row.AddToClassList(CodebaseGraphStyle.ActionRowClass);
 
             Button focusButton = new(() => _onFocus?.Invoke(entry))
             {
@@ -319,7 +306,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
                     text = RestoreLabel
                 };
 
-                restore.AddToClassList(DismissClass);
+                restore.AddToClassList(CodebaseGraphStyle.DismissButtonClass);
                 row.Add(restore);
 
                 return;
@@ -334,7 +321,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
                 tooltip = DismissTooltip
             };
 
-            dismiss.AddToClassList(DismissClass);
+            dismiss.AddToClassList(CodebaseGraphStyle.DismissButtonClass);
             row.Add(dismiss);
 
             if (!entry.CanDrillDown)
@@ -346,7 +333,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
                 tooltip = DismissTooltip
             };
 
-            dismissTree.AddToClassList(DismissClass);
+            dismissTree.AddToClassList(CodebaseGraphStyle.DismissButtonClass);
             row.Add(dismissTree);
         }
 
@@ -355,21 +342,21 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             FindingDescriptor descriptor = FindingCatalog.Describe(finding);
 
             VisualElement card = new();
-            card.AddToClassList(CardClass);
+            card.AddToClassList(CodebaseGraphStyle.FindingCardClass);
 
-            card.Add(GraphLabel.Build(descriptor.Title, CardTitleClass));
-            card.Add(GraphLabel.Build(descriptor.Explanation, ExplanationClass));
+            card.Add(GraphLabel.Build(descriptor.Title, CodebaseGraphStyle.FindingCardTitleClass));
+            card.Add(GraphLabel.Build(descriptor.Explanation, CodebaseGraphStyle.FindingExplanationClass));
 
             if (!string.IsNullOrEmpty(descriptor.Action))
             {
-                card.Add(GraphLabel.Build(ActionTitleText, ActionTitleClass));
-                card.Add(GraphLabel.Build(descriptor.Action, ActionClass));
+                card.Add(GraphLabel.Build(ActionTitleText, CodebaseGraphStyle.FindingActionTitleClass));
+                card.Add(GraphLabel.Build(descriptor.Action, CodebaseGraphStyle.FindingActionClass));
             }
 
             AppendCyclePartners(card, entry, finding);
 
             VisualElement actions = new();
-            actions.AddToClassList(ActionRowClass);
+            actions.AddToClassList(CodebaseGraphStyle.ActionRowClass);
 
             if (descriptor.CanQuickFix && entry.Member != null)
                 actions.Add(new Button(() => _onQuickFix?.Invoke(entry, finding))
@@ -385,7 +372,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
                 tooltip = DismissFindingTooltip
             };
 
-            dismiss.AddToClassList(DismissClass);
+            dismiss.AddToClassList(CodebaseGraphStyle.DismissButtonClass);
             actions.Add(dismiss);
             card.Add(actions);
 

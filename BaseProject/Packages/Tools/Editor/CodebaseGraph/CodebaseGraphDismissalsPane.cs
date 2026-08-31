@@ -28,17 +28,12 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         private const string EmptyText = "Nothing is dismissed. Anything you dismiss in the graph window "
             + "shows up here, and can be brought back one entry at a time.";
 
-        private const string HeadingClass = "pane-heading";
-        private const string KindTitleClass = "section-title";
         private const string MissingGroupFormat = "The thing it pointed at is gone ({0})";
 
         private const string MissingGroupText = "An id embeds the signature it was written for, so these "
             + "stopped matching when something was renamed, retyped or deleted. That is dead "
             + "configuration and can go, once you are satisfied it was a rename rather than a mistake.";
 
-        private const string OddClass = "is-odd";
-        private const string PaneClass = "pane";
-        private const string PlaceholderClass = "pane-placeholder";
         private const string RemoveAllStaleLabel = "Remove all stale";
         private const string RemoveLabel = "Remove";
         private const string ResolvedGroupFormat = "The finding no longer fires ({0})";
@@ -56,20 +51,13 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         private const string RestoreTreeTooltip = "Also brings back everything dismissed inside this one, "
             + "which is the exact reverse of dismissing with contents.";
 
-        private const string RowClass = "dismissal-row";
-        private const string RowNameClass = "dismissal-name";
-        private const string RowScopeClass = "dismissal-scope";
-        private const string RowTextClass = "dismissal-text";
-
         private const string ScanFirstText = "Nothing has been scanned yet, so it cannot be told which of "
             + "these still match something. Scan in the graph window to find out.";
 
         private const string ScopeAlone = "this entry only";
         private const string ScopeWithContents = "with everything inside";
         private const string SearchPlaceholder = "Search";
-        private const string StaleRowClass = "dismissal-stale";
         private const string SuggestionFormat = "looks like it became {0}";
-        private const string ToolbarRowClass = "top-bar";
         private const string UpdateLabel = "Update";
 
         private const string UpdateTooltip = "Points the dismissal at the member that most likely replaced "
@@ -86,11 +74,11 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         /// <summary>Builds the pane, its toolbar and its list.</summary>
         public CodebaseGraphDismissalsPane()
         {
-            AddToClassList(PaneClass);
+            AddToClassList(CodebaseGraphStyle.PaneClass);
             Add(BuildToolbar());
 
             _countLabel = new Label(string.Empty);
-            _countLabel.AddToClassList(HeadingClass);
+            _countLabel.AddToClassList(CodebaseGraphStyle.PaneHeadingClass);
             Add(_countLabel);
 
             _list = new ScrollView
@@ -138,7 +126,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         private VisualElement BuildToolbar()
         {
             Toolbar toolbar = new();
-            toolbar.AddToClassList(ToolbarRowClass);
+            toolbar.AddToClassList(CodebaseGraphStyle.TopBarClass);
 
             _restoreAllButton = new ToolbarButton(RestoreAll)
             {
@@ -183,12 +171,12 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
             if (_entries.Count == 0)
             {
-                _list.Add(GraphLabel.Build(EmptyText, PlaceholderClass));
+                _list.Add(GraphLabel.Build(EmptyText, CodebaseGraphStyle.PanePlaceholderClass));
                 return;
             }
 
             if (graph == null)
-                _list.Add(GraphLabel.Build(ScanFirstText, PlaceholderClass));
+                _list.Add(GraphLabel.Build(ScanFirstText, CodebaseGraphStyle.PanePlaceholderClass));
 
             AppendStale(EStaleReason.Missing, MissingGroupFormat, MissingGroupText);
             AppendStale(EStaleReason.Resolved, ResolvedGroupFormat, ResolvedGroupText);
@@ -201,8 +189,8 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             if (count == 0)
                 return;
 
-            _list.Add(GraphLabel.Build(string.Format(headingFormat, count), KindTitleClass));
-            _list.Add(GraphLabel.Build(explanation, PlaceholderClass));
+            _list.Add(GraphLabel.Build(string.Format(headingFormat, count), CodebaseGraphStyle.SectionTitleClass));
+            _list.Add(GraphLabel.Build(explanation, CodebaseGraphStyle.PanePlaceholderClass));
             _list.Add(new Button(() => RemoveStale(reason))
             {
                 text = RemoveAllStaleLabel
@@ -226,7 +214,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
                 if (lastKind != entry.Kind)
                 {
-                    _list.Add(GraphLabel.Build(entry.Kind.ToString(), KindTitleClass));
+                    _list.Add(GraphLabel.Build(entry.Kind.ToString(), CodebaseGraphStyle.SectionTitleClass));
                     lastKind = entry.Kind;
                 }
 
@@ -262,20 +250,20 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         private VisualElement BuildRow(DismissalEntry entry)
         {
             VisualElement row = new();
-            row.AddToClassList(RowClass);
+            row.AddToClassList(CodebaseGraphStyle.DismissalRowClass);
 
             // Counted rather than taken from an index, because headings and explanations sit between
             // the rows and would otherwise flip the stripe halfway down a group.
-            row.EnableInClassList(OddClass, _rowCount % 2 == 1);
+            row.EnableInClassList(CodebaseGraphStyle.IsOddClass, _rowCount % 2 == 1);
             _rowCount++;
-            row.EnableInClassList(StaleRowClass, entry.IsStale);
+            row.EnableInClassList(CodebaseGraphStyle.DismissalStaleClass, entry.IsStale);
 
             VisualElement text = new();
-            text.AddToClassList(RowTextClass);
+            text.AddToClassList(CodebaseGraphStyle.DismissalTextClass);
 
-            text.Add(GraphLabel.Build(entry.DisplayName, RowNameClass));
+            text.Add(GraphLabel.Build(entry.DisplayName, CodebaseGraphStyle.DismissalNameClass));
 
-            text.Add(GraphLabel.Build(BuildScopeText(entry), RowScopeClass));
+            text.Add(GraphLabel.Build(BuildScopeText(entry), CodebaseGraphStyle.DismissalScopeClass));
             row.Add(text);
 
             if (entry.IsStale)

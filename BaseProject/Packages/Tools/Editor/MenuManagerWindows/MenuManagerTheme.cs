@@ -16,11 +16,11 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
     /// </summary>
     internal static class MenuManagerTheme
     {
-        /// <summary>Horizontal offset one nesting level adds to a row.</summary>
-        public const float Indent = EditorMetrics.Indent;
-
         private const float DropLineHeight = 2f;
         private const float DropLineInset = 6f;
+
+        /// <summary>Horizontal offset one nesting level adds to a row.</summary>
+        public static float Indent => EditorMetrics.Indent;
 
         /// <summary>Bold text field used for a group name.</summary>
         public static GUIStyle Title => _title ??= new GUIStyle(EditorStyles.textField)

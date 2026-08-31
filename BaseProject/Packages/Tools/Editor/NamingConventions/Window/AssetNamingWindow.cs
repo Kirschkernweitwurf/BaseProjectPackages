@@ -110,6 +110,8 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
 
         private void OnGUI()
         {
+            AssetNamingGui.EnsureFresh();
+
             DrawToolbar();
 
             if (_ruleSet == null)

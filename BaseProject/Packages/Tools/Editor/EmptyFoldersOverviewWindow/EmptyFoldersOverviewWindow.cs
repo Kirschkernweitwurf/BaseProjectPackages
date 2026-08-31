@@ -5,6 +5,7 @@ using Base.UtilityPackage.Menus;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
+using Overview = Base.ToolPackage.Editor.OverviewGui.OverviewGui;
 
 namespace Base.ToolPackage.Editor.EmptyFoldersOverviewWindow
 {
@@ -14,10 +15,6 @@ namespace Base.ToolPackage.Editor.EmptyFoldersOverviewWindow
     public sealed class EmptyFoldersOverviewWindow : EditorWindow
     {
         private const string MenuPath = "Tools/Base Packages/Unity Editor/Project Health/Unused/Empty Folders Overview";
-        private const float RowHeight = 22f;
-        private const float SuccessGap = 8f;
-        private const float SuccessIconSize = 48f;
-        private const int SuccessTitleFontSize = 15;
 
         private readonly List<EmptyFolderEntry> _entries = new();
         private readonly List<EmptyFolderEntry> _pendingDeletes = new();
@@ -30,19 +27,10 @@ namespace Base.ToolPackage.Editor.EmptyFoldersOverviewWindow
         private bool _pendingRescan;
         private bool _pendingDeleteAll;
 
-        private GUIStyle _headerStyle;
-        private GUIStyle _pathStyle;
-        private GUIStyle _badgeStyle;
-        private GUIStyle _successTitleStyle;
-        private GUIStyle _successSubtitleStyle;
-        private Texture2D _badgeTexture;
-        private Texture _successTexture;
-        private bool _stylesReady;
-
 #region Unity Callbacks
         private void OnGUI()
         {
-            EnsureStyles();
+            Overview.EnsureStyles();
             HandleMouseMove();
 
             List<EmptyFolderEntry> filtered = _hasScanned
@@ -77,37 +65,7 @@ namespace Base.ToolPackage.Editor.EmptyFoldersOverviewWindow
             EditorGUIUtility.PingObject(folder);
         }
 
-        private static string Plural(int amount, string singular, string plural) => amount == 1
-            ? singular
-            : plural;
-
         private static GUIContent GetFolderIcon() => EditorGUIUtility.IconContent("Folder Icon");
-
-        private static Texture2D MakeSolidTexture(Color color)
-        {
-            Texture2D texture = new(1, 1)
-            {
-                hideFlags = HideFlags.HideAndDontSave
-            };
-
-            texture.SetPixel(0, 0, color);
-            texture.Apply();
-            return texture;
-        }
-
-        private static void DrawHint(string message)
-        {
-            GUILayout.FlexibleSpace();
-
-            using (new EditorGUILayout.HorizontalScope())
-            {
-                GUILayout.FlexibleSpace();
-                GUILayout.Label(message, EditorStyles.centeredGreyMiniLabel);
-                GUILayout.FlexibleSpace();
-            }
-
-            GUILayout.FlexibleSpace();
-        }
 
         private void DrawActionBar(List<EmptyFolderEntry> filtered)
         {
@@ -150,16 +108,16 @@ namespace Base.ToolPackage.Editor.EmptyFoldersOverviewWindow
             {
                 if (folders == 0)
                 {
-                    GUILayout.Label("No empty folders.", _headerStyle);
+                    GUILayout.Label("No empty folders.", Overview.HeaderStyle);
                 }
                 else
                 {
-                    string message = $"{folders} empty {Plural(folders, "folder", "folders")} found";
+                    string message = $"{folders} empty {Overview.Plural(folders, "folder", "folders")} found";
 
                     if (totalWithNested != folders)
                         message += $" ({totalWithNested} including nested)";
 
-                    GUILayout.Label(message + ".", _headerStyle);
+                    GUILayout.Label(message + ".", Overview.HeaderStyle);
                 }
             }
         }
@@ -168,19 +126,19 @@ namespace Base.ToolPackage.Editor.EmptyFoldersOverviewWindow
         {
             if (!_hasScanned)
             {
-                DrawHint("Press Scan to search the project for empty folders.");
+                Overview.DrawHint("Press Scan to search the project for empty folders.");
                 return;
             }
 
             if (_entries.Count == 0)
             {
-                DrawSuccess("No empty folders", "Every folder has content. Nothing to clean up.");
+                Overview.DrawSuccess("No empty folders", "Every folder has content. Nothing to clean up.");
                 return;
             }
 
             if (filtered.Count == 0)
             {
-                DrawHint("No results match the search.");
+                Overview.DrawHint("No results match the search.");
                 return;
             }
 
@@ -202,7 +160,7 @@ namespace Base.ToolPackage.Editor.EmptyFoldersOverviewWindow
 
         private void DrawRow(EmptyFolderEntry entry)
         {
-            Rect rect = EditorGUILayout.GetControlRect(false, RowHeight);
+            Rect rect = EditorGUILayout.GetControlRect(false, Overview.RowHeight);
             string key = entry.Path;
             bool even = _rowIndex % 2 == 0;
             _rowIndex++;
@@ -212,13 +170,7 @@ namespace Base.ToolPackage.Editor.EmptyFoldersOverviewWindow
 
             bool hovered = key == _hoveredKey;
 
-            if (Event.current.type == EventType.Repaint)
-            {
-                if (hovered)
-                    EditorGUI.DrawRect(rect, new Color(0.35f, 0.55f, 0.95f, 0.18f));
-                else if (even)
-                    EditorGUI.DrawRect(rect, new Color(0f, 0f, 0f, 0.06f));
-            }
+            Overview.DrawRowBackground(rect, hovered, even);
 
             Rect iconRect = new(rect.x + 4f, rect.y + 3f, 16f, 16f);
             GUI.Label(iconRect, GetFolderIcon());
@@ -229,13 +181,13 @@ namespace Base.ToolPackage.Editor.EmptyFoldersOverviewWindow
             Rect gotoRect = new(body.xMax - 120f, body.y + 3f, 52f, body.height - 6f);
             Rect deleteRect = new(body.xMax - 64f, body.y + 3f, 64f, body.height - 6f);
 
-            GUI.Label(labelRect, new GUIContent(entry.Path, entry.Path), _pathStyle);
+            GUI.Label(labelRect, new GUIContent(entry.Path, entry.Path), Overview.PathStyle);
 
             if (entry.NestedFolderCount > 1)
                 GUI.Label(badgeRect,
                     new GUIContent(entry.NestedFolderCount.ToString(),
                         $"Removes {entry.NestedFolderCount} folders including nested empties."),
-                    _badgeStyle);
+                    Overview.WarningBadgeStyle);
 
             if (GUI.Button(gotoRect, "Go to"))
                 Navigate(entry);
@@ -293,7 +245,7 @@ namespace Base.ToolPackage.Editor.EmptyFoldersOverviewWindow
                 return;
 
             bool confirmed = EditorUtility.DisplayDialog("Delete Empty Folders",
-                $"Delete {entries.Count} empty {Plural(entries.Count, "folder", "folders")}?",
+                $"Delete {entries.Count} empty {Overview.Plural(entries.Count, "folder", "folders")}?",
                 "Delete",
                 "Cancel");
 
@@ -335,94 +287,6 @@ namespace Base.ToolPackage.Editor.EmptyFoldersOverviewWindow
 
             if (Event.current.type == EventType.MouseMove)
                 Repaint();
-        }
-
-        private void DrawSuccess(string successTitle, string subtitle)
-        {
-            GUILayout.FlexibleSpace();
-
-            using (new EditorGUILayout.HorizontalScope())
-            {
-                GUILayout.FlexibleSpace();
-
-                GUILayout.Label(new GUIContent(_successTexture),
-                    GUILayout.Width(SuccessIconSize),
-                    GUILayout.Height(SuccessIconSize));
-
-                GUILayout.FlexibleSpace();
-            }
-
-            GUILayout.Space(SuccessGap);
-
-            GUILayout.Label(successTitle, _successTitleStyle);
-            GUILayout.Label(subtitle, _successSubtitleStyle);
-
-            GUILayout.FlexibleSpace();
-        }
-
-        private void EnsureStyles()
-        {
-            if (_stylesReady)
-                return;
-
-            _headerStyle = new GUIStyle(EditorStyles.boldLabel)
-            {
-                fontSize = 12
-            };
-
-            _pathStyle = new GUIStyle(EditorStyles.label)
-            {
-                alignment = TextAnchor.MiddleLeft
-            };
-
-            // Warning yellow, matching the Unity console warning icon, with dark text for contrast.
-            _badgeTexture = MakeSolidTexture(new Color(0.96f, 0.78f, 0.12f));
-
-            _badgeStyle = new GUIStyle(EditorStyles.miniLabel)
-            {
-                alignment = TextAnchor.MiddleCenter,
-                fontStyle = FontStyle.Bold,
-                normal =
-                {
-                    textColor = new Color(0.15f, 0.13f, 0.05f),
-                    background = _badgeTexture
-                }
-            };
-
-            Color successTitleColor = new(0.36f, 0.76f, 0.46f);
-            Color successSubtitleColor = new(0.5f, 0.5f, 0.5f);
-
-            _successTitleStyle = new GUIStyle(EditorStyles.boldLabel)
-            {
-                alignment = TextAnchor.MiddleCenter,
-                fontSize = SuccessTitleFontSize,
-                normal =
-                {
-                    textColor = successTitleColor
-                },
-                hover =
-                {
-                    textColor = successTitleColor
-                }
-            };
-
-            _successSubtitleStyle = new GUIStyle(EditorStyles.label)
-            {
-                alignment = TextAnchor.MiddleCenter,
-                wordWrap = true,
-                normal =
-                {
-                    textColor = successSubtitleColor
-                },
-                hover =
-                {
-                    textColor = successSubtitleColor
-                }
-            };
-
-            _successTexture = EditorGUIUtility.IconContent("TestPassed").image;
-
-            _stylesReady = true;
         }
     }
 }

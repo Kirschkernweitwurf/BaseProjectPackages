@@ -5,6 +5,7 @@ using System.Linq;
 using Base.UtilityPackage.Menus;
 using UnityEditor;
 using UnityEngine;
+using Overview = Base.ToolPackage.Editor.OverviewGui.OverviewGui;
 
 namespace Base.ToolPackage.Editor.MissingScriptsOverviewWindow
 {
@@ -15,10 +16,6 @@ namespace Base.ToolPackage.Editor.MissingScriptsOverviewWindow
     {
         private const string MenuPath =
             "Tools/Base Packages/Unity Editor/Project Health/Unused/Missing Scripts Overview";
-        private const float RowHeight = 22f;
-        private const float SuccessGap = 8f;
-        private const float SuccessIconSize = 48f;
-        private const int SuccessTitleFontSize = 15;
 
         private readonly List<MissingScriptEntry> _entries = new();
         private readonly Dictionary<string, bool> _foldouts = new();
@@ -32,20 +29,10 @@ namespace Base.ToolPackage.Editor.MissingScriptsOverviewWindow
         private string _hoveredKey;
         private int _rowIndex;
 
-        private GUIStyle _headerStyle;
-        private GUIStyle _groupStyle;
-        private GUIStyle _pathStyle;
-        private GUIStyle _badgeStyle;
-        private GUIStyle _successTitleStyle;
-        private GUIStyle _successSubtitleStyle;
-        private Texture2D _badgeTexture;
-        private Texture _successTexture;
-        private bool _stylesReady;
-
 #region Unity Callbacks
         private void OnGUI()
         {
-            EnsureStyles();
+            Overview.EnsureStyles();
             HandleMouseMove();
 
             DrawActionBar();
@@ -54,13 +41,14 @@ namespace Base.ToolPackage.Editor.MissingScriptsOverviewWindow
 
             if (!_hasScanned)
             {
-                DrawHint("Press Scan to search the project for missing scripts.");
+                Overview.DrawHint("Press Scan to search the project for missing scripts.");
                 return;
             }
 
             if (_entries.Count == 0)
             {
-                DrawSuccess("No missing scripts", "Every script reference is intact. Nothing to fix.");
+                Overview.DrawSuccess("No missing scripts", "Every script reference is intact. "
+                    + "Nothing to fix.");
                 return;
             }
 
@@ -68,7 +56,7 @@ namespace Base.ToolPackage.Editor.MissingScriptsOverviewWindow
 
             if (filtered.Count == 0)
             {
-                DrawHint("No results match the search.");
+                Overview.DrawHint("No results match the search.");
                 return;
             }
 
@@ -83,22 +71,6 @@ namespace Base.ToolPackage.Editor.MissingScriptsOverviewWindow
             window.titleContent = new GUIContent("Missing Scripts");
             window.minSize = new Vector2(460f, 320f);
             window.Show();
-        }
-
-        private static string Plural(int amount, string singular, string plural) => amount == 1
-            ? singular
-            : plural;
-
-        private static Texture2D MakeSolidTexture(Color color)
-        {
-            Texture2D texture = new(1, 1)
-            {
-                hideFlags = HideFlags.HideAndDontSave
-            };
-
-            texture.SetPixel(0, 0, color);
-            texture.Apply();
-            return texture;
         }
 
         private void DrawActionBar()
@@ -153,10 +125,10 @@ namespace Base.ToolPackage.Editor.MissingScriptsOverviewWindow
             {
                 string message = objects == 0
                     ? "No missing scripts."
-                    : $"{total} missing {Plural(total, "script", "scripts")} "
-                    + $"on {objects} {Plural(objects, "object", "objects")}.";
+                    : $"{total} missing {Overview.Plural(total, "script", "scripts")} "
+                    + $"on {objects} {Overview.Plural(objects, "object", "objects")}.";
 
-                GUILayout.Label(message, _headerStyle);
+                GUILayout.Label(message, Overview.HeaderStyle);
             }
         }
 
@@ -186,12 +158,13 @@ namespace Base.ToolPackage.Editor.MissingScriptsOverviewWindow
             EMissingScriptSource source = group.First().Source;
             int groupTotal = group.Sum(entry => entry.MissingCount);
 
-            using (new EditorGUILayout.HorizontalScope(_groupStyle))
+            using (new EditorGUILayout.HorizontalScope(Overview.GroupStyle))
             {
                 GUILayout.Label(GetSourceIcon(source), GUILayout.Width(18f), GUILayout.Height(16f));
                 _foldouts[key] = EditorGUILayout.Foldout(_foldouts[key], Path.GetFileName(key), true);
                 GUILayout.FlexibleSpace();
-                GUILayout.Label(groupTotal.ToString(), _badgeStyle, GUILayout.Width(30f), GUILayout.Height(16f));
+                GUILayout.Label(groupTotal.ToString(), Overview.WarningBadgeStyle, GUILayout.Width(30f),
+                    GUILayout.Height(16f));
             }
 
             if (!_foldouts[key])
@@ -203,7 +176,7 @@ namespace Base.ToolPackage.Editor.MissingScriptsOverviewWindow
 
         private void DrawRow(MissingScriptEntry entry)
         {
-            Rect rect = EditorGUILayout.GetControlRect(false, RowHeight);
+            Rect rect = EditorGUILayout.GetControlRect(false, Overview.RowHeight);
             string key = entry.AssetPath + "|" + entry.DisplayPath;
             bool even = _rowIndex % 2 == 0;
             _rowIndex++;
@@ -213,13 +186,7 @@ namespace Base.ToolPackage.Editor.MissingScriptsOverviewWindow
 
             bool hovered = key == _hoveredKey;
 
-            if (Event.current.type == EventType.Repaint)
-            {
-                if (hovered)
-                    EditorGUI.DrawRect(rect, new Color(0.35f, 0.55f, 0.95f, 0.18f));
-                else if (even)
-                    EditorGUI.DrawRect(rect, new Color(0f, 0f, 0f, 0.06f));
-            }
+            Overview.DrawRowBackground(rect, hovered, even);
 
             Rect body = new(rect.x + 22f, rect.y, rect.width - 22f, rect.height);
             Rect labelRect = new(body.x, body.y, body.width - 170f, body.height);
@@ -227,8 +194,9 @@ namespace Base.ToolPackage.Editor.MissingScriptsOverviewWindow
             Rect gotoRect = new(body.xMax - 120f, body.y + 3f, 52f, body.height - 6f);
             Rect removeRect = new(body.xMax - 64f, body.y + 3f, 64f, body.height - 6f);
 
-            GUI.Label(labelRect, new GUIContent(entry.DisplayPath, entry.AssetPath), _pathStyle);
-            GUI.Label(badgeRect, entry.MissingCount.ToString(), _badgeStyle);
+            GUI.Label(labelRect, new GUIContent(entry.DisplayPath, entry.AssetPath),
+                Overview.PathStyle);
+            GUI.Label(badgeRect, entry.MissingCount.ToString(), Overview.WarningBadgeStyle);
 
             if (GUI.Button(gotoRect, "Go to"))
                 MissingScriptNavigator.Navigate(entry);
@@ -301,44 +269,7 @@ namespace Base.ToolPackage.Editor.MissingScriptsOverviewWindow
                 Repaint();
         }
 
-        private void DrawHint(string message)
-        {
-            GUILayout.FlexibleSpace();
-
-            using (new EditorGUILayout.HorizontalScope())
-            {
-                GUILayout.FlexibleSpace();
-                GUILayout.Label(message, EditorStyles.centeredGreyMiniLabel);
-                GUILayout.FlexibleSpace();
-            }
-
-            GUILayout.FlexibleSpace();
-        }
-
-        private void DrawSuccess(string title, string subtitle)
-        {
-            GUILayout.FlexibleSpace();
-
-            using (new EditorGUILayout.HorizontalScope())
-            {
-                GUILayout.FlexibleSpace();
-
-                GUILayout.Label(new GUIContent(_successTexture),
-                    GUILayout.Width(SuccessIconSize),
-                    GUILayout.Height(SuccessIconSize));
-
-                GUILayout.FlexibleSpace();
-            }
-
-            GUILayout.Space(SuccessGap);
-
-            GUILayout.Label(title, _successTitleStyle);
-            GUILayout.Label(subtitle, _successSubtitleStyle);
-
-            GUILayout.FlexibleSpace();
-        }
-
-        private GUIContent GetSourceIcon(EMissingScriptSource source)
+        private static GUIContent GetSourceIcon(EMissingScriptSource source)
         {
             switch (source)
             {
@@ -351,77 +282,6 @@ namespace Base.ToolPackage.Editor.MissingScriptsOverviewWindow
                 default:
                     return EditorGUIUtility.IconContent("ScriptableObject Icon");
             }
-        }
-
-        private void EnsureStyles()
-        {
-            if (_stylesReady)
-                return;
-
-            _headerStyle = new GUIStyle(EditorStyles.boldLabel)
-            {
-                fontSize = 12
-            };
-
-            _groupStyle = new GUIStyle(EditorStyles.helpBox)
-            {
-                margin = new RectOffset(2, 2, 2, 0),
-                padding = new RectOffset(6, 6, 3, 3)
-            };
-
-            _pathStyle = new GUIStyle(EditorStyles.label)
-            {
-                alignment = TextAnchor.MiddleLeft
-            };
-
-            // Warning yellow, matching the Unity console warning icon, with dark text for contrast.
-            _badgeTexture = MakeSolidTexture(new Color(0.96f, 0.78f, 0.12f));
-
-            _badgeStyle = new GUIStyle(EditorStyles.miniLabel)
-            {
-                alignment = TextAnchor.MiddleCenter,
-                fontStyle = FontStyle.Bold,
-                normal =
-                {
-                    textColor = new Color(0.15f, 0.13f, 0.05f),
-                    background = _badgeTexture
-                }
-            };
-
-            Color successTitleColor = new(0.36f, 0.76f, 0.46f);
-            Color successSubtitleColor = new(0.5f, 0.5f, 0.5f);
-
-            _successTitleStyle = new GUIStyle(EditorStyles.boldLabel)
-            {
-                alignment = TextAnchor.MiddleCenter,
-                fontSize = SuccessTitleFontSize,
-                normal =
-                {
-                    textColor = successTitleColor
-                },
-                hover =
-                {
-                    textColor = successTitleColor
-                }
-            };
-
-            _successSubtitleStyle = new GUIStyle(EditorStyles.label)
-            {
-                alignment = TextAnchor.MiddleCenter,
-                wordWrap = true,
-                normal =
-                {
-                    textColor = successSubtitleColor
-                },
-                hover =
-                {
-                    textColor = successSubtitleColor
-                }
-            };
-
-            _successTexture = EditorGUIUtility.IconContent("TestPassed").image;
-
-            _stylesReady = true;
         }
     }
 }

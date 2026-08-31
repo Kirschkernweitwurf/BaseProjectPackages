@@ -49,27 +49,9 @@ namespace Base.ToolPackage.Editor.BaseToolsOverview
                 padding = new RectOffset()
             }, EditorPalette.DimText);
 
-            OpenButton = BuildOpenButton();
-        }
-
-        private GUIStyle BuildOpenButton()
-        {
-            GUIStyle style = new()
-            {
-                alignment = TextAnchor.MiddleCenter,
-                border = EditorStyleUtility.UniformPadding(EditorMetrics.CardCornerRadius),
-                fontSize = EditorStyles.miniLabel.fontSize,
-                fontStyle = FontStyle.Bold
-            };
-
-            style.normal.background = Textures.Rounded(EditorPalette.Accent, EditorMetrics.CardCornerRadius);
-            style.hover.background = Textures.Rounded(
-                EditorStyleUtility.Shade(EditorPalette.Accent, true, false), EditorMetrics.CardCornerRadius);
-            style.active.background = Textures.Rounded(
-                EditorStyleUtility.Shade(EditorPalette.Accent, false, true), EditorMetrics.CardCornerRadius);
-            style.focused.background = style.normal.background;
-
-            return EditorStyleUtility.PinTextColor(style, EditorPalette.AccentText);
+            OpenButton = EditorStyleUtility.BuildFilledButton(Textures, EditorPalette.Accent,
+                EditorPalette.AccentText, FontStyle.Bold, EditorMetrics.CardCornerRadius,
+                EditorStyles.miniLabel.fontSize);
         }
     }
 }

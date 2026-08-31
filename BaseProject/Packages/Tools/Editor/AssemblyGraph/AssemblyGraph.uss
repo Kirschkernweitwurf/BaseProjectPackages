@@ -1,19 +1,19 @@
+/*
+ * Shape only for the assembly graph: the GraphView pieces that the shared sheet cannot reach,
+ * because they are named children Unity builds inside a Node rather than elements this tool
+ * creates and can put a class on.
+ *
+ * No colors here. Everything colored is either painted from the palette in AssemblyGraphNode, or
+ * carries one of the shared base- classes and is painted by EditorUssTheme.
+ */
+
 .assembly-node > #node-border {
     border-radius: 8px;
-    background-color: rgb(56, 56, 61);
     opacity: 1;
-}
-
-.assembly-node #contents {
-    background-color: rgb(56, 56, 61);
 }
 
 .assembly-node #title {
     -unity-font-style: bold;
-}
-
-.assembly-node #title-label {
-    color: rgb(246, 246, 248);
 }
 
 .assembly-node #collapse-button {
@@ -21,7 +21,6 @@
 }
 
 .has-issues > #node-border {
-    border-color: rgb(220, 82, 82);
     border-left-width: 2px;
     border-right-width: 2px;
     border-top-width: 2px;
@@ -29,7 +28,6 @@
 }
 
 .is-focused > #node-border {
-    border-color: rgb(240, 208, 96);
     border-left-width: 3px;
     border-right-width: 3px;
     border-top-width: 3px;
@@ -39,8 +37,6 @@
 .kind-label {
     margin-left: 6px;
     margin-top: 4px;
-    font-size: 10px;
-    color: rgb(160, 160, 168);
 }
 
 .action-row {
@@ -53,32 +49,20 @@
 .focus-button,
 .go-to-button {
     flex-grow: 1;
-    height: 22px;
     margin-left: 2px;
     margin-right: 2px;
-    border-radius: 4px;
-}
-
-.is-focused .focus-button {
-    background-color: rgb(154, 128, 44);
-    color: rgb(250, 246, 232);
 }
 
 .clean-button {
-    height: 22px;
     margin-left: 6px;
     margin-right: 6px;
     margin-top: 4px;
     margin-bottom: 2px;
-    border-radius: 4px;
-    background-color: rgb(168, 62, 62);
-    color: rgb(248, 240, 240);
 }
 
 .unused-header {
     margin-left: 6px;
     margin-top: 6px;
-    color: rgb(236, 156, 156);
     -unity-font-style: bold;
 }
 
@@ -86,5 +70,4 @@
     margin-left: 14px;
     margin-right: 6px;
     font-size: 11px;
-    color: rgb(222, 168, 168);
 }

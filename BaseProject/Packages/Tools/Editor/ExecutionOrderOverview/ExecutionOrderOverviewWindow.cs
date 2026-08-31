@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Base.EditorUiPackage;
 using Base.ToolPackage.Editor.Shared;
 using Base.UtilityPackage.Menus;
 using UnityEditor;
@@ -17,6 +18,8 @@ namespace Base.ToolPackage.Editor.ExecutionOrderOverview
 
         private readonly List<ExecutionOrderEntry> _all = new();
         private readonly List<ExecutionOrderEntry> _filtered = new();
+
+        private readonly EditorSkinWatch _watch = new();
 
         private IExecutionOrderSource _source;
         private GUIStyle _orderStyle;
@@ -73,7 +76,7 @@ namespace Base.ToolPackage.Editor.ExecutionOrderOverview
 
         private void EnsureStyles()
         {
-            if (_orderStyle != null)
+            if (!_watch.IsStale)
                 return;
 
             _orderStyle = new GUIStyle(EditorStyles.boldLabel)
@@ -91,6 +94,8 @@ namespace Base.ToolPackage.Editor.ExecutionOrderOverview
             {
                 alignment = TextAnchor.MiddleRight
             };
+
+            _watch.MarkFresh();
         }
 
         private void Rebuild()
@@ -135,7 +140,7 @@ namespace Base.ToolPackage.Editor.ExecutionOrderOverview
         private void DrawHeader()
         {
             Rect row = GUILayoutUtility.GetRect(0f, RowHeight, GUILayout.ExpandWidth(true));
-            EditorGUI.DrawRect(row, new Color(0f, 0f, 0f, 0.12f));
+            EditorGUI.DrawRect(row, EditorTableStyles.HeaderColor);
 
             ExecutionOrderColumnLayout columns = new(row);
             GUIStyle style = EditorStyles.miniBoldLabel;
@@ -175,7 +180,7 @@ namespace Base.ToolPackage.Editor.ExecutionOrderOverview
             ExecutionOrderEntry entry = _filtered[index];
 
             if (index % 2 == 0)
-                EditorGUI.DrawRect(row, new Color(0f, 0f, 0f, 0.06f));
+                EditorGUI.DrawRect(row, EditorPalette.Stripe);
 
             ExecutionOrderColumnLayout columns = new(row);
 

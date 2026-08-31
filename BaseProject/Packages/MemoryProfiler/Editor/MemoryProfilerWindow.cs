@@ -1,4 +1,5 @@
 using System.IO;
+using Base.EditorUiPackage;
 using Base.UtilityPackage.Menus;
 using UnityEditor;
 using UnityEngine;
@@ -10,7 +11,23 @@ namespace Base.MemoryProfilerPackage.Editor
     /// </summary>
     public sealed class MemoryProfilerWindow : EditorWindow
     {
+        private const string ActionsHeader = "Actions";
         private const string AssetsFolder = "Assets";
+        private const string AutomationHeader = "Automation";
+        private const string CaptureLabel = "Capture Now";
+        private const float CaptureButtonHeight = 26f;
+        private const string CreateConfigLabel = "Create Config Asset";
+        private const string Description = "Captures memory snapshots on a timer or on scene load, and "
+            + "writes them where the Memory Profiler package can open them.";
+        private const string IdleState = "Idle";
+        private const string LastSnapshotLabel = "Last snapshot";
+        private const string MissingConfigMessage = "No config found in a Resources folder.";
+        private const string NoSnapshot = "None";
+        private const string OpenFolderLabel = "Open Captures Folder";
+        private const string OutputHeader = "Output";
+        private const float OpenFolderWidth = 150f;
+        private const string RunningState = "Running";
+        private const string StateLabel = "State";
         private const string ConfigFolder = ResourcesRoot + "/" + MemoryProfilerConfigSo.ResourceSubFolder;
         private const string MenuPath = "Tools/Base Packages/Unity Editor/Memory Profiler Automation";
         private const string ResourcesFolderName = "Resources";
@@ -25,6 +42,8 @@ namespace Base.MemoryProfilerPackage.Editor
         private static readonly GUIContent OnSceneLoadLabel = new("Capture On Scene Load");
         private static readonly GUIContent PrefixLabel = new("File Name Prefix");
         private static readonly GUIContent StoragePathLabel = new("Snapshot Storage Path");
+
+        private readonly EditorWindowStyles _styles = new();
 
         private SerializedObject _serializedConfig;
         private SerializedProperty _isEnabled;
@@ -44,6 +63,10 @@ namespace Base.MemoryProfilerPackage.Editor
 
         private void OnGUI()
         {
+            _styles.EnsureBuilt();
+
+            EditorWindowChrome.DrawHeader(_styles, WindowTitle, Description);
+
             if (_serializedConfig == null
                 || _serializedConfig.targetObject == null)
             {
@@ -58,10 +81,12 @@ namespace Base.MemoryProfilerPackage.Editor
 
             _serializedConfig.ApplyModifiedProperties();
 
-            EditorGUILayout.Space();
+            EditorGUILayout.Space(EditorMetrics.SectionGap);
             DrawActions();
             DrawStatus();
         }
+
+        private void OnDisable() => _styles.Dispose();
 
         private void OnInspectorUpdate()
         {
@@ -90,35 +115,45 @@ namespace Base.MemoryProfilerPackage.Editor
             EditorUtility.RevealInFinder(directory);
         }
 
-        private static void DrawActions()
+        private static string BuildStatus()
         {
+            string state = MemoryProfilerRunner.IsActive
+                ? RunningState
+                : IdleState;
+
+            string lastPath = MemoryProfilerRunner.LastSnapshotPath;
+            string snapshot = string.IsNullOrEmpty(lastPath)
+                ? NoSnapshot
+                : Path.GetFileName(lastPath);
+
+            return $"{StateLabel}: {state}    {LastSnapshotLabel}: {snapshot}";
+        }
+
+        private void DrawActions()
+        {
+            EditorWindowChrome.DrawSectionHeader(_styles, ActionsHeader);
+
             using (new EditorGUILayout.HorizontalScope())
             {
-                if (GUILayout.Button("Capture Now"))
+                if (EditorWindowChrome.PrimaryButton(_styles, CaptureLabel,
+                        GUILayout.Height(CaptureButtonHeight)))
                     MemoryProfilerRunner.CaptureNow();
 
-                if (GUILayout.Button("Open Captures Folder"))
+                GUILayout.Space(EditorMetrics.TightGap);
+
+                if (EditorWindowChrome.SecondaryButton(_styles, OpenFolderLabel,
+                        GUILayout.Height(CaptureButtonHeight), GUILayout.Width(OpenFolderWidth)))
                     OpenOutputFolder();
             }
         }
 
-        private static void DrawStatus()
-        {
-            EditorGUILayout.Space();
-            EditorGUILayout.LabelField("Status", EditorStyles.boldLabel);
-            EditorGUILayout.LabelField("State", MemoryProfilerRunner.IsActive
-                ? "Running"
-                : "Idle");
-
-            string lastPath = MemoryProfilerRunner.LastSnapshotPath;
-            EditorGUILayout.LabelField("Last Snapshot", string.IsNullOrEmpty(lastPath)
-                ? "None"
-                : Path.GetFileName(lastPath));
-        }
+        private void DrawStatus() => EditorWindowChrome.DrawFooter(_styles, BuildStatus());
 
         private void DrawAutomation()
         {
-            EditorGUILayout.LabelField("Automation", EditorStyles.boldLabel);
+            EditorWindowChrome.DrawSectionHeader(_styles, AutomationHeader);
+            EditorWindowChrome.BeginCard(_styles);
+
             EditorGUILayout.PropertyField(_isEnabled, EnabledLabel);
 
             using (new EditorGUI.DisabledScope(!_isEnabled.boolValue))
@@ -130,22 +165,29 @@ namespace Base.MemoryProfilerPackage.Editor
 
                 EditorGUILayout.PropertyField(_captureOnSceneLoad, OnSceneLoadLabel);
             }
+
+            EditorWindowChrome.EndCard();
         }
 
         private void DrawOutput()
         {
-            EditorGUILayout.Space();
-            EditorGUILayout.LabelField("Output", EditorStyles.boldLabel);
+            EditorWindowChrome.DrawSectionHeader(_styles, OutputHeader);
+            EditorWindowChrome.BeginCard(_styles);
+
             EditorGUILayout.PropertyField(_snapshotStoragePath, StoragePathLabel);
             EditorGUILayout.PropertyField(_fileNamePrefix, PrefixLabel);
             EditorGUILayout.PropertyField(_captureFlags, FlagsLabel);
+
+            EditorWindowChrome.EndCard();
         }
 
         private void DrawMissingConfig()
         {
-            EditorGUILayout.HelpBox("No config found in a Resources folder.", MessageType.Info);
+            EditorGUILayout.HelpBox(MissingConfigMessage, MessageType.Info);
+            EditorGUILayout.Space(EditorMetrics.ItemGap);
 
-            if (GUILayout.Button("Create Config Asset"))
+            if (EditorWindowChrome.PrimaryButton(_styles, CreateConfigLabel,
+                    GUILayout.Height(CaptureButtonHeight)))
                 CreateConfig();
         }
 

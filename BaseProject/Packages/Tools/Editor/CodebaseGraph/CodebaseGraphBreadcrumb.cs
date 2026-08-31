@@ -15,13 +15,6 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
     /// </summary>
     internal sealed class CodebaseGraphBreadcrumb : VisualElement
     {
-        private const string BarClass = "breadcrumb-bar";
-        private const string CurrentClass = "breadcrumb-current";
-        private const string FocusBarClass = "breadcrumb-focus";
-        private const string NoticeClass = "breadcrumb-notice";
-        private const string PathClass = "breadcrumb-path";
-        private const string SegmentClass = "breadcrumb-segment";
-        private const string SeparatorClass = "breadcrumb-separator";
         private const string SeparatorText = "\u203a";
 
         private readonly Action<int> _onSegmentClicked;
@@ -34,18 +27,18 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         public CodebaseGraphBreadcrumb(Action<int> onSegmentClicked)
         {
             _onSegmentClicked = onSegmentClicked;
-            AddToClassList(BarClass);
+            AddToClassList(CodebaseGraphStyle.BreadcrumbBarClass);
 
             _pathBar = new VisualElement();
-            _pathBar.AddToClassList(PathClass);
+            _pathBar.AddToClassList(CodebaseGraphStyle.BreadcrumbPathClass);
             Add(_pathBar);
 
             _focusBar = new VisualElement();
-            _focusBar.AddToClassList(FocusBarClass);
+            _focusBar.AddToClassList(CodebaseGraphStyle.BreadcrumbFocusClass);
             Add(_focusBar);
 
             _notice = new Label(string.Empty);
-            _notice.AddToClassList(NoticeClass);
+            _notice.AddToClassList(CodebaseGraphStyle.BreadcrumbNoticeClass);
             _focusBar.Add(_notice);
 
             SetFocus(string.Empty);
@@ -87,14 +80,14 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         private static Label BuildSeparator()
         {
             Label separator = new(SeparatorText);
-            separator.AddToClassList(SeparatorClass);
+            separator.AddToClassList(CodebaseGraphStyle.BreadcrumbSeparatorClass);
             return separator;
         }
 
         private static Label BuildCurrent(string text)
         {
             Label current = new(text);
-            current.AddToClassList(CurrentClass);
+            current.AddToClassList(CodebaseGraphStyle.BreadcrumbCurrentClass);
             return current;
         }
 
@@ -105,7 +98,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
                 text = text
             };
 
-            link.AddToClassList(SegmentClass);
+            link.AddToClassList(CodebaseGraphStyle.BreadcrumbSegmentClass);
             return link;
         }
     }

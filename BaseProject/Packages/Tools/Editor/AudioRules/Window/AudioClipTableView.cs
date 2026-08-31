@@ -14,8 +14,6 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
     /// </summary>
     internal sealed class AudioClipTableView : VisualElement
     {
-        private const string BadClass = "ar-cell--bad";
-        private const string CellClass = "ar-cell";
         private const string ColumnBuild = "build";
         private const string ColumnChannels = "channels";
         private const string ColumnCurrent = "current";
@@ -26,16 +24,10 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
         private const string ColumnRule = "rule";
         private const string ColumnRuntime = "runtime";
         private const string ColumnTarget = "target";
-        private const string DimClass = "ar-cell--dim";
-        private const string GoodClass = "ar-cell--good";
-        private const string NumberClass = "ar-cell--number";
-        private const string PillClass = "ar-pill";
-        private const string PillsClass = "ar-pills";
         private const string PlayGlyph = "\u25b6";
         private const int SortStepsPerColumn = 2;
         private const float RowHeight = 21f;
         private const string TargetArrow = "\u2192 ";
-        private const string TargetClass = "ar-cell--target";
 
         /// <summary>Raised when the selection changes, with the row that is now current.</summary>
         public event Action<AudioClipPlan> SelectionChanged;
@@ -97,7 +89,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
         {
             Label label = new();
 
-            label.AddToClassList(CellClass);
+            label.AddToClassList(AudioRulesStyle.CellClass);
 
             return label;
         }
@@ -106,7 +98,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
         {
             VisualElement row = new();
 
-            row.AddToClassList(PillsClass);
+            row.AddToClassList(AudioRulesStyle.PillsClass);
 
             return row;
         }
@@ -126,9 +118,9 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
 
         private static void Tint(Label label, long delta)
         {
-            label.EnableInClassList(GoodClass, delta > 0L);
-            label.EnableInClassList(BadClass, delta < 0L);
-            label.EnableInClassList(DimClass, delta == 0L);
+            label.EnableInClassList(AudioRulesStyle.CellGoodClass, delta > 0L);
+            label.EnableInClassList(AudioRulesStyle.CellBadClass, delta < 0L);
+            label.EnableInClassList(AudioRulesStyle.CellDimClass, delta == 0L);
         }
 
         private void BuildColumns()
@@ -149,7 +141,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
         {
             Label label = MakeLabel();
 
-            label.AddToClassList(NumberClass);
+            label.AddToClassList(AudioRulesStyle.CellNumberClass);
 
             return label;
         }
@@ -173,7 +165,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
         {
             VisualElement cell = new();
 
-            cell.AddToClassList("ar-clip-cell");
+            cell.AddToClassList(AudioRulesStyle.ClipCellClass);
 
             Button button = new()
             {
@@ -181,13 +173,13 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
                 tooltip = "Play this clip."
             };
 
-            button.AddToClassList("ar-play");
+            button.AddToClassList(AudioRulesStyle.PlayClass);
             button.clicked += () => Play(button);
 
             Label label = new();
 
-            label.AddToClassList(CellClass);
-            label.AddToClassList("ar-clip-name");
+            label.AddToClassList(AudioRulesStyle.CellClass);
+            label.AddToClassList(AudioRulesStyle.ClipNameClass);
 
             cell.Add(button);
             cell.Add(label);
@@ -204,7 +196,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
         private void BindName(VisualElement element, int index)
         {
             AudioClipPlan plan = _items[index];
-            Label label = element.Q<Label>(className: "ar-clip-name");
+            Label label = element.Q<Label>(className: AudioRulesStyle.ClipNameClass);
 
             element.Q<Button>().userData = plan;
 
@@ -226,7 +218,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
             Label label = (Label)element;
 
             label.text = AudioRulesFormat.Summary(_items[index].Info.Current);
-            label.EnableInClassList(DimClass, !_items[index].HasChanges);
+            label.EnableInClassList(AudioRulesStyle.CellDimClass, !_items[index].HasChanges);
         }
 
         private void BindTarget(VisualElement element, int index)
@@ -238,7 +230,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
                 ? TargetArrow + AudioRulesFormat.Summary(plan.Target)
                 : string.Empty;
 
-            label.EnableInClassList(TargetClass, plan.HasChanges);
+            label.EnableInClassList(AudioRulesStyle.CellTargetClass, plan.HasChanges);
             label.tooltip = plan.HasChanges
                 ? string.Join(", ", plan.Changes.Select(change => change.ToString()))
                 : string.Empty;
@@ -267,7 +259,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
 
             label.text = plan.PrimaryRule;
             label.tooltip = string.Join(" -> ", plan.MatchedRules);
-            label.AddToClassList(DimClass);
+            label.AddToClassList(AudioRulesStyle.CellDimClass);
         }
 
         private void BindFindings(VisualElement element, int index)
@@ -278,7 +270,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
             {
                 Label pill = new(Short(finding));
 
-                pill.AddToClassList(PillClass);
+                pill.AddToClassList(AudioRulesStyle.PillClass);
                 element.Add(pill);
             }
         }

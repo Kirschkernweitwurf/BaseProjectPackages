@@ -1,3 +1,4 @@
+using Base.EditorUiPackage;
 using UnityEditor;
 using UnityEngine;
 
@@ -6,6 +7,11 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
     /// <summary>
     /// Row metrics, label styles, colored section headers and the success block of the asset
     /// naming window. Pure presentation.
+    /// <para>
+    /// The striping, header and divider colors come from <see cref="EditorPalette"/>, so the window
+    /// follows the active theme. The four section accents stay here: they stand for the four
+    /// sections of this window and mean nothing anywhere else.
+    /// </para>
     /// </summary>
     internal static class AssetNamingGui
     {
@@ -103,7 +109,16 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
         public static readonly Color HistoryAccent = new(0.62f, 0.78f, 0.5f);
 
         /// <summary>Line color of column dividers and table borders.</summary>
-        public static readonly Color DividerColor = new(0f, 0f, 0f, 0.3f);
+        public static Color DividerColor => EditorPalette.Divider;
+
+        /// <summary>Zebra striping of table rows.</summary>
+        private static Color EvenRowColor => EditorPalette.Stripe;
+
+        private static Color HeaderColor => EditorTableStyles.HeaderColor;
+
+        private static Color SuccessTitleColor => EditorPalette.Success;
+
+        private static Color SuccessSubtitleColor => EditorPalette.DimText;
 
         /// <summary>Casing options, each written in the casing it stands for.</summary>
         public static readonly string[] StyleLabels =
@@ -116,12 +131,8 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
             "Pascal_Snake_Case"
         };
 
-        /// <summary>Zebra striping of table rows.</summary>
-        private static readonly Color EvenRowColor = new(0f, 0f, 0f, 0.14f);
 
-        private static readonly Color HeaderColor = new(0f, 0f, 0f, 0.2f);
-        private static readonly Color SuccessTitleColor = new(0.36f, 0.76f, 0.46f);
-        private static readonly Color SuccessSubtitleColor = new(0.5f, 0.5f, 0.5f);
+        private static readonly EditorSkinWatch Watch = new();
 
         private static GUIStyle _badgeStyle;
         private static GUIStyle _detailStyle;
@@ -145,7 +156,8 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
             {
                 EditorGUI.DrawRect(rect, new Color(accent.r, accent.g, accent.b, 0.16f));
                 EditorGUI.DrawRect(new Rect(rect.x, rect.y, StripeWidth, rect.height), accent);
-                EditorGUI.DrawRect(new Rect(rect.x, rect.yMax - 1f, rect.width, 1f), DividerColor);
+                EditorGUI.DrawRect(new Rect(rect.x, rect.yMax - EditorMetrics.SeparatorThickness,
+                rect.width, EditorMetrics.SeparatorThickness), DividerColor);
             }
 
             Rect foldoutRect = new(rect.x + 10f, rect.y + 2f, rect.width - BadgeWidth - 24f, rect.height - 4f);
@@ -183,6 +195,26 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
             return EditorGUI.Foldout(foldoutRect, expanded, $"{label}  ({count})", true, GroupStyle);
         }
 
+        /// <summary>
+        /// Drops every cached style after a skin or theme change. Call once per GUI pass, before
+        /// anything reads a style.
+        /// </summary>
+        public static void EnsureFresh()
+        {
+            if (!Watch.IsStale)
+                return;
+
+            _badgeStyle = null;
+            _detailStyle = null;
+            _foldoutStyle = null;
+            _groupStyle = null;
+            _nameStyle = null;
+            _successSubtitleStyle = null;
+            _successTitleStyle = null;
+
+            Watch.MarkFresh();
+        }
+
         /// <summary>Draws the zebra striping of a row.</summary>
         public static void DrawRowBackground(Rect row, int index)
         {
@@ -202,7 +234,8 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
                 return;
 
             EditorGUI.DrawRect(rect, HeaderColor);
-            EditorGUI.DrawRect(new Rect(rect.x, rect.yMax - 1f, rect.width, 1f), DividerColor);
+            EditorGUI.DrawRect(new Rect(rect.x, rect.yMax - EditorMetrics.SeparatorThickness,
+                rect.width, EditorMetrics.SeparatorThickness), DividerColor);
         }
 
         /// <summary>Draws the centered green block shown when there is nothing left to fix.</summary>

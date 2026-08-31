@@ -8,12 +8,6 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
     /// </summary>
     internal sealed class AudioRulesPane : VisualElement
     {
-        private const string BodyClass = "ar-pane__body";
-        private const string HeaderClass = "ar-pane__header";
-        private const string NoteClass = "ar-pane__note";
-        private const string RootClass = "ar-pane";
-        private const string TitleClass = "ar-pane__title";
-
         /// <summary>Where the content of the pane goes.</summary>
         public VisualElement Body { get; } = new();
 
@@ -27,16 +21,16 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
         /// <param name="title">The headline shown in the header.</param>
         public AudioRulesPane(string title)
         {
-            AddToClassList(RootClass);
+            AddToClassList(AudioRulesStyle.PaneClass);
 
             VisualElement header = new();
 
-            header.AddToClassList(HeaderClass);
+            header.AddToClassList(AudioRulesStyle.PaneHeaderClass);
 
             _title = new Label(title);
-            _title.AddToClassList(TitleClass);
+            _title.AddToClassList(AudioRulesStyle.PaneTitleClass);
 
-            _note.AddToClassList(NoteClass);
+            _note.AddToClassList(AudioRulesStyle.PaneNoteClass);
 
             HeaderRight.style.flexDirection = FlexDirection.Row;
             HeaderRight.style.flexGrow = 1f;
@@ -46,7 +40,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
             header.Add(_note);
             header.Add(HeaderRight);
 
-            Body.AddToClassList(BodyClass);
+            Body.AddToClassList(AudioRulesStyle.PaneBodyClass);
 
             Add(header);
             Add(Body);
