@@ -6,9 +6,10 @@ using UnityEngine;
 namespace Base.ToolPackage.Editor.CommandPalette
 {
     /// <summary>
-    /// Searchable list of every editor menu item and every asset creation entry, static or arranged
-    /// in the menu manager. Opens on a shortcut or from the main toolbar, ranks by fuzzy match over
-    /// the whole path plus tags, pins and recent use, and runs the selection on Enter.
+    /// Searchable list of every editor menu item and every asset creation entry, static or
+    /// arranged in the menu manager, plus the settings pages the project and its packages declare.
+    /// Opens on a shortcut or from the main toolbar, ranks by fuzzy match over the whole path plus
+    /// tags, pins and recent use, and runs the selection on Enter.
     /// <para>
     /// The window owns the state and routes every request through <see cref="Handle"/>, so the
     /// keyboard, the mouse and the context menu all end up in the same implementation.
@@ -21,7 +22,7 @@ namespace Base.ToolPackage.Editor.CommandPalette
         /// <summary>Width of both filter pills. They share it so the pair reads as one control.</summary>
         private const float PillWidth = 68f;
 
-        private const string Placeholder = "Search any menu.    #tag    > menu items    + create asset";
+        private const string Placeholder = "Search any menu.    #tag    > menu    + asset    @ settings";
         private const string RescanFormat = "Rescanned, {0} commands";
         private const string RescanLabel = "Rescan";
         private const string ResultFormat = "{0} of {1}";

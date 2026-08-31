@@ -274,6 +274,10 @@ namespace Base.ToolPackage.Editor.CommandPalette
         /// <summary>Hairline between the blocks of the window.</summary>
         public static Color SeparatorColor() => EditorPalette.Separator;
 
+        /// <summary>Chip color of a settings page entry.</summary>
+        public static Color SettingsChipColor()
+            => EditorPalette.Pick(new Color(0.55f, 0.36f, 0.70f), new Color(0.49f, 0.31f, 0.66f));
+
         /// <summary>Fill of a tag pill.</summary>
         public static Color TagPillColor() => EditorPalette.Tint(0.09f, 0.07f);
 

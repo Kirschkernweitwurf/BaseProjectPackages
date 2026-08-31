@@ -20,6 +20,10 @@ Most windows live under **Tools > Base Packages**, but the paths are data driven
 
 A searchable list of every editor menu item and every asset creation entry, static ones and ones arranged in the menu manager alike. Opens on a shortcut or from the main toolbar, ranks by fuzzy match over the whole path plus tags, pins and recent use, and runs the selection on Enter.
 
+Settings pages are in there too, listed under `Project Settings` and `Preferences` and opened in the right window on Enter. Only the pages the project and its packages declare; Unity's own are left out, because reading them means loading each settings asset, and Unity Search finds them with its `set:` token anyway. A page also carries its own search keywords, so a term its path does not contain can still reach it, ranked below a real path match.
+
+Type `>` to narrow to menu items, `+` to asset creation, `@` to settings pages and `#` to a tag.
+
 For a project with as many tools as this one, it is the fastest way to reach any of them, including Unity's own.
 
 ## Codebase Graph

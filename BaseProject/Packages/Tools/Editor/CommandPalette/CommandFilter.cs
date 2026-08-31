@@ -6,7 +6,7 @@ namespace Base.ToolPackage.Editor.CommandPalette
 {
     /// <summary>
     /// The parsed content of the search box. Plain words become the fuzzy term, "#tag" narrows to
-    /// a tag, "&gt;" narrows to menu items and "+" to asset creation.
+    /// a tag, "&gt;" narrows to menu items, "+" to asset creation and "@" to settings pages.
     /// </summary>
     internal readonly struct CommandFilter
     {
@@ -15,6 +15,9 @@ namespace Base.ToolPackage.Editor.CommandPalette
 
         /// <summary>Marks a token that narrows the result to menu items.</summary>
         public const char MenuItemMarker = '>';
+
+        /// <summary>Marks a token that narrows the result to settings pages.</summary>
+        public const char SettingsMarker = '@';
 
         /// <summary>Marks a token that narrows the result to a tag.</summary>
         public const char TagMarker = '#';
@@ -69,6 +72,11 @@ namespace Base.ToolPackage.Editor.CommandPalette
 
                     case CreateAssetMarker:
                         kind = ECommandKind.CreateAsset;
+                        term.Append(rest.ToLowerInvariant());
+                        break;
+
+                    case SettingsMarker:
+                        kind = ECommandKind.Settings;
                         term.Append(rest.ToLowerInvariant());
                         break;
 

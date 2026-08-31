@@ -7,6 +7,9 @@ namespace Base.ToolPackage.Editor.CommandPalette
         CreateAsset = 0,
 
         /// <summary>Invokes an editor menu item.</summary>
-        MenuItem = 1
+        MenuItem = 1,
+
+        /// <summary>Opens a page of the project settings or of the preferences.</summary>
+        Settings = 2
     }
 }

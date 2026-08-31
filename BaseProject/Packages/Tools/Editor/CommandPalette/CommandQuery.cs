@@ -7,12 +7,17 @@ namespace Base.ToolPackage.Editor.CommandPalette
     /// <summary>
     /// Filters and ranks the index for one keystroke. The fuzzy score is the base, on top of it
     /// come pinned entries, matching tags and how often and how recently a command was used.
+    /// <para>
+    /// An entry whose path does not match at all can still get in on its own search terms, at one
+    /// fixed score that lands below what a real path match earns.
+    /// </para>
     /// </summary>
     internal static class CommandQuery
     {
         private const int DayBonus = 40;
         private const int DaysPerWeek = 7;
         private const int HourBonus = 90;
+        private const int KeywordScore = 40;
         private const int MaxResults = 250;
         private const int MaxUsageBonus = 250;
         private const int PinnedBonus = 1000;
@@ -50,7 +55,15 @@ namespace Base.ToolPackage.Editor.CommandPalette
                     continue;
 
                 if (!CommandMatcher.TryMatch(entry, filter.Term, MatchBuffer, out int score))
-                    continue;
+                {
+                    if (!MatchesKeywords(entry, filter.Term))
+                        continue;
+
+                    // One flat score for every keyword hit. Where inside a keyword the term landed
+                    // says nothing worth ranking by, which is the whole of what the fuzzy score
+                    // measures, and none of it survives a match the row cannot even highlight.
+                    score = KeywordScore;
+                }
 
                 bool pinned = tags.IsPinned(entry.Id);
 
@@ -103,6 +116,15 @@ namespace Base.ToolPackage.Editor.CommandPalette
             }
 
             return true;
+        }
+
+        private static bool MatchesKeywords(CommandEntry entry, string term)
+        {
+            if (term.Length == 0
+                || entry.LowerKeywords.Length == 0)
+                return false;
+
+            return entry.LowerKeywords.IndexOf(term, StringComparison.Ordinal) >= 0;
         }
 
         private static bool StartsWithAny(IReadOnlyList<string> assigned, string prefix)

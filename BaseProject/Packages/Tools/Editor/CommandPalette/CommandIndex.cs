@@ -12,7 +12,8 @@ namespace Base.ToolPackage.Editor.CommandPalette
         {
             new MenuItemCommandSource(),
             new CreateAssetCommandSource(),
-            new DynamicMenuCommandSource()
+            new DynamicMenuCommandSource(),
+            new SettingsPageCommandSource()
         };
 
         private static List<CommandEntry> _entries;

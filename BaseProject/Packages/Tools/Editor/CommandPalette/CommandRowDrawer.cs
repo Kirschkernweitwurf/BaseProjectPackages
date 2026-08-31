@@ -27,6 +27,7 @@ namespace Base.ToolPackage.Editor.CommandPalette
         private static readonly GUIContent MenuChip = new("run", "Runs a menu item");
         private static readonly GUIContent PackageBadge = new("pkg", "This command lives in a package");
         private static readonly GUIContent PinContent = new(PinGlyph, "Pinned to the top of the results");
+        private static readonly GUIContent SettingsChip = new("set", "Opens a settings page");
 
         /// <summary>Draws one result row.</summary>
         /// <param name="row">The full row rectangle.</param>
@@ -72,6 +73,20 @@ namespace Base.ToolPackage.Editor.CommandPalette
             DrawDetail(detail, entry, tags);
         }
 
+        private static Color ChipColor(ECommandKind kind) => kind switch
+        {
+            ECommandKind.CreateAsset => CommandPaletteStyles.NewChipColor(),
+            ECommandKind.Settings => CommandPaletteStyles.SettingsChipColor(),
+            _ => CommandPaletteStyles.RunChipColor()
+        };
+
+        private static GUIContent ChipContent(ECommandKind kind) => kind switch
+        {
+            ECommandKind.CreateAsset => CreateChip,
+            ECommandKind.Settings => SettingsChip,
+            _ => MenuChip
+        };
+
         private static void DrawBackground(Rect row, bool selected, bool hover)
         {
             if (selected)
@@ -100,15 +115,8 @@ namespace Base.ToolPackage.Editor.CommandPalette
 
         private static void DrawChip(Rect rect, ECommandKind kind)
         {
-            bool isCreate = kind == ECommandKind.CreateAsset;
-
-            CommandPaletteChrome.DrawFill(rect, isCreate
-                ? CommandPaletteStyles.NewChipColor()
-                : CommandPaletteStyles.RunChipColor(), CommandPaletteStyles.PillRadius);
-
-            GUI.Label(rect, isCreate
-                ? CreateChip
-                : MenuChip, CommandPaletteStyles.ChipLabel);
+            CommandPaletteChrome.DrawFill(rect, ChipColor(kind), CommandPaletteStyles.PillRadius);
+            GUI.Label(rect, ChipContent(kind), CommandPaletteStyles.ChipLabel);
         }
 
         private static void DrawDetail(Rect rect, CommandEntry entry, IReadOnlyList<string> tags)

@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Text;
 using Base.ToolPackage.Editor.Shared;
 
 namespace Base.ToolPackage.Editor.CommandPalette
@@ -12,6 +14,10 @@ namespace Base.ToolPackage.Editor.CommandPalette
     // interface in front of it would add a call through a reference in the scoring hot path.
     internal sealed class CommandEntry
     {
+        // Keywords are matched as a single string, and this is what stops a term from bridging two
+        // of them. A term can never contain it, because the search box splits on spaces.
+        private const char KeywordSeparator = '\n';
+
         private const char PathSeparator = '/';
 
         private readonly Action _execute;
@@ -24,6 +30,17 @@ namespace Base.ToolPackage.Editor.CommandPalette
 
         /// <summary>Lowercase copy of <see cref="Path"/>, cached because every keystroke reads it.</summary>
         public string LowerPath { get; }
+
+        /// <summary>
+        /// The entry's own search terms, lowercase, whitespace removed and separated by a
+        /// character no term can contain. Empty when the entry brought none.
+        /// </summary>
+        /// <remarks>
+        /// Deliberately kept out of <see cref="Path"/>: the matcher scores a subsequence, and over
+        /// a long run of keywords almost any few letters appear in order somewhere, so every entry
+        /// carrying them would match everything. They are matched as a plain substring instead.
+        /// </remarks>
+        public string LowerKeywords { get; }
 
         /// <summary>Index of the first character of the last path segment.</summary>
         public int LeafStart { get; }
@@ -47,12 +64,14 @@ namespace Base.ToolPackage.Editor.CommandPalette
         /// <param name="kind">What executing the entry does.</param>
         /// <param name="origin">Where the declaring code lives.</param>
         /// <param name="execute">The action the palette runs.</param>
+        /// <param name="keywords">Extra terms the entry can be found by, or null when it has none.</param>
         public CommandEntry(string id, string path, Type owner, ECommandKind kind, EAssetOrigin origin,
-            Action execute)
+            Action execute, IEnumerable<string> keywords = null)
         {
             Id = id;
             Path = path;
             LowerPath = path.ToLowerInvariant();
+            LowerKeywords = BuildKeywords(keywords);
 
             int separator = path.LastIndexOf(PathSeparator);
             LeafStart = separator >= 0
@@ -71,5 +90,32 @@ namespace Base.ToolPackage.Editor.CommandPalette
 
         /// <summary>Runs the command.</summary>
         public void Execute() => _execute();
+
+        // Whitespace is dropped because the search box concatenates its tokens without any, so a
+        // typed "contact offset" arrives as one word and would never match "Contact Offset".
+        private static string BuildKeywords(IEnumerable<string> keywords)
+        {
+            if (keywords == null)
+                return string.Empty;
+
+            StringBuilder builder = new();
+
+            foreach (string keyword in keywords)
+            {
+                if (string.IsNullOrWhiteSpace(keyword))
+                    continue;
+
+                if (builder.Length > 0)
+                    builder.Append(KeywordSeparator);
+
+                foreach (char character in keyword)
+                {
+                    if (!char.IsWhiteSpace(character))
+                        builder.Append(char.ToLowerInvariant(character));
+                }
+            }
+
+            return builder.ToString();
+        }
     }
 }
