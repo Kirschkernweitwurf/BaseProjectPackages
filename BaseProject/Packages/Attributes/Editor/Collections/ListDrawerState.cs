@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using Base.AttributePackage.Editor.Core;
 using UnityEditor;
 
 namespace Base.AttributePackage.Editor.Collections
@@ -10,8 +12,6 @@ namespace Base.AttributePackage.Editor.Collections
     /// </summary>
     internal sealed class ListDrawerState
     {
-        private const char KeySeparator = ':';
-
         /// <summary>Current filter text, empty when nothing is filtered.</summary>
         public string Search { get; set; } = string.Empty;
 
@@ -25,14 +25,34 @@ namespace Base.AttributePackage.Editor.Collections
         /// </summary>
         /// <param name="property">The list property being drawn.</param>
         /// <returns>True on the first draw only.</returns>
-        public static bool IsFirstDraw(SerializedProperty property) => Seen.Add(KeyFor(property));
+        /// <remarks>
+        /// Keyed by type rather than by instance, unlike the filter state below. The expanded flag this
+        /// guards is shared by Unity across every object of a type, so a per-instance key would force it
+        /// open again on the next object and undo the fold on the one before it.
+        /// </remarks>
+        public static bool IsFirstDraw(SerializedProperty property) => Seen.Add(TypeKeyFor(property));
+
+        /// <summary>
+        /// Treats every property of the given type as never drawn, so a default expanded state is
+        /// applied once more on the next draw.
+        /// </summary>
+        /// <param name="owner">The type to forget.</param>
+        public static void Forget(Type owner)
+        {
+            if (owner == null)
+                return;
+
+            string prefix = StateKey.For(owner, string.Empty);
+
+            Seen.RemoveWhere(key => key.StartsWith(prefix, StringComparison.Ordinal));
+        }
 
         /// <summary>Returns the state belonging to the given property, creating it on first use.</summary>
         /// <param name="property">The list property being drawn.</param>
         /// <returns>The state for that property.</returns>
         public static ListDrawerState For(SerializedProperty property)
         {
-            string key = KeyFor(property);
+            string key = InstanceKeyFor(property);
 
             if (States.TryGetValue(key, out ListDrawerState state))
                 return state;
@@ -42,7 +62,11 @@ namespace Base.AttributePackage.Editor.Collections
             return state;
         }
 
-        private static string KeyFor(SerializedProperty property)
-            => property.serializedObject.targetObject.GetInstanceID() + KeySeparator + property.propertyPath;
+        // A filter is something one person typed into one field on one object, so it stays per instance.
+        private static string InstanceKeyFor(SerializedProperty property)
+            => StateKey.For(property.serializedObject.targetObject.GetInstanceID(), property.propertyPath);
+
+        private static string TypeKeyFor(SerializedProperty property)
+            => StateKey.For(property.serializedObject.targetObject.GetType(), property.propertyPath);
     }
 }

@@ -129,6 +129,10 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Reference
                 _script = Script(_instance);
             }
 
+            // A page is opened to be read, not continued, so the sample presents as authored rather
+            // than as the last reader happened to leave it.
+            SamplePreviewDefaults.Reapply(entry.SampleType);
+
             _snippet = _script == null
                 ? string.Empty
                 : AttributeSampleSource.Extract(_script.text, entry.SampleType.Name);
