@@ -11,9 +11,8 @@ The package carries no game-specific keys. The consuming project decides which s
 - `com.unity.localization` `1.5.11` for the `LocalizedString` titles and labels
 - `com.unity.ugui` `2.0.0` and TextMeshPro
 - `Base.ServicePackage` for the service locator and `GameServiceBehaviour`
-- `Base.CorePackage` for object pooling
 - `Base.TweeningPackage` for the selection indicator animation
-- `Base.UtilityPackage` for `PersistentKey`, logging and helpers
+- `Base.UtilityPackage` for `PersistentKey`, object pooling, logging and helpers
 - `Base.AttributePackage` for the inspector attributes
 - One assembly: `Base.SettingsPackage`
 

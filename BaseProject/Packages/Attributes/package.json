@@ -2,7 +2,7 @@
   "name": "com.baseprojectpackages.attributes",
   "displayName": "Base Attribute Package",
   "description": "Inspector attributes for Unity that replace the default MonoBehaviour and ScriptableObject inspectors: titles, validation, conditional fields, auto-assignment, pickers, buttons and widgets.",
-  "version": "1.6.6",
+  "version": "1.6.7",
   "unity": "6000.3",
   "author": {
     "name": "Jonathan Alber"

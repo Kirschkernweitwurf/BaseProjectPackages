@@ -1,6 +1,6 @@
 using System;
 using Base.AttributePackage;
-using Base.CorePackage.Randomization;
+using Base.UtilityPackage.Randomization;
 using UnityEngine;
 
 namespace Base.CorePackage.Noise

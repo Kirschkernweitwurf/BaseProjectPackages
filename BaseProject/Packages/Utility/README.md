@@ -59,6 +59,23 @@ The Attributes package's `[Date]` and `[Time]` narrow which fields of the two ro
 - **`FlattenedArray<T>`** is a 2D grid backed by a single 1D array, with `Width`, `Height`, `Length`, an `[x, y]` indexer, `Get`, `Set` and iteration.
 - **`CollectionExtensions`** has `Single<T>`, which wraps one element as an `IEnumerable<T>` without allocating a list, and `GetRandomElement<T>` for any `IList<T>`.
 
+## Randomization
+
+- **`IRandomSource`** is the seam every helper is written against. A source only has to supply raw bits; ranges, chances, shuffles and point pickers come from `RandomSourceExtensions`.
+- **`SeededRandom`** is reproducible: the same seed replays the same sequence in every session and on every platform, `Reset` rewinds it and `State` plus `Restore` save and continue a run in progress. Unlike Unity's single global sequence, it is not affected by anything else drawing a number.
+- **`UnityRandomSource.Shared`** runs the same helpers on Unity's global generator for cases that do not need a seed.
+- **`RandomSourceExtensions`** covers `Range`, `Chance`, `NextBool`, `NextSign`, `NextGaussian`, `Pick`, `Shuffle`, `OnUnitCircle`, `InsideUnitCircle`, `OnUnitSphere` and `InsideUnitSphere`. Integer ranges use rejection sampling, so no outcome is favored by the range not dividing evenly.
+- **`WeightedEntry<T>`** is a serializable item and weight pair, so a weighted list is authored in the inspector as `List<WeightedEntry<AudioClip>>`. `WeightedTable<T>` draws from those weights in one random value and a binary search, and `TryDrawFrom` draws straight from a list for a one-off pick. A weight of zero switches a row off without deleting it.
+
+## Timers
+
+- **`Timer`** is a reusable countdown with looping, pausing, progress reporting and completion callbacks.
+- **`TimerManager`** advances every active timer through the Player Loop, so timers run without any GameObject in the scene.
+
+## Pooling
+
+- **`HashSetObjectPool<T>`** is a constant-time pool for any GameObject or Component. The Core package's `BaseObjectPoolManager<TAsset, TPool>` and `TweenGroupObjectPool<T>` build on it.
+
 ## Contracts and menus
 
 - **`IMenuResettable`** is implemented by components that should reset to a known baseline when their owning menu closes. It lives here rather than next to the menu system because the two sides of the contract sit in different packages: the Core package's menus call it, the Tweening package's `TweenGroup` implements it.

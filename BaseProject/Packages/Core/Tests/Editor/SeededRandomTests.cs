@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Base.CorePackage.Randomization;
+using Base.UtilityPackage.Randomization;
 using NUnit.Framework;
 
 namespace Base.CorePackage.Tests

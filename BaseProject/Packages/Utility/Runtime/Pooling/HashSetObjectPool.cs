@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Base.UtilityPackage;
 using Base.UtilityPackage.Logging;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -8,7 +7,7 @@ using Object = UnityEngine.Object;
 // ReSharper disable UnusedMember.Global
 // ReSharper disable MemberCanBePrivate.Global
 
-namespace Base.CorePackage.ObjectPooling
+namespace Base.UtilityPackage.Pooling
 {
     /// <summary>
     /// A lightweight object pool based on <see cref="HashSet{T}"/>.

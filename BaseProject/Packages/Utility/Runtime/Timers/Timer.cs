@@ -5,7 +5,7 @@ using UnityEngine;
 // ReSharper disable UnusedMember.Global
 // ReSharper disable MemberCanBePrivate.Global
 
-namespace Base.CorePackage.Timers
+namespace Base.UtilityPackage.Timers
 {
     /// <summary>
     /// A reusable countdown timer driven by <see cref="TimerManager"/>.

@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using Base.AttributePackage;
-using Base.CorePackage.ObjectPooling;
 using Base.SettingsPackage.Core;
 using Base.UtilityPackage;
+using Base.UtilityPackage.Pooling;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;

@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Base.CorePackage.Randomization
+namespace Base.UtilityPackage.Randomization
 {
     /// <summary>
     /// One item together with the weight it is drawn at. Serializable, so a weighted list can be

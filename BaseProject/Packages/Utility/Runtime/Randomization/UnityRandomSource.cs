@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.CorePackage.Randomization
+namespace Base.UtilityPackage.Randomization
 {
     /// <summary>
     /// Exposes Unity's global generator as an <see cref="IRandomSource"/>, so code written against

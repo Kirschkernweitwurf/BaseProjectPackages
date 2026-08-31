@@ -8,8 +8,8 @@ Snapshots open in Unity's own Memory Profiler window, where a single capture can
 
 - Unity `6000.3` or newer
 - `com.unity.memoryprofiler` `1.1.12`
-- `Base.CorePackage` for timers and scene load events
-- `Base.UtilityPackage` for logging and the dynamic menu attributes
+- `Base.CorePackage` for scene load events
+- `Base.UtilityPackage` for timers, logging and the dynamic menu attributes
 - Assemblies: `Base.MemoryProfilerPackage` and `Base.MemoryProfilerPackage.Editor`
 
 ## Setup

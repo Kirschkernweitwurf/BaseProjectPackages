@@ -1,6 +1,6 @@
 using System;
 
-namespace Base.CorePackage.Randomization
+namespace Base.UtilityPackage.Randomization
 {
     /// <summary>
     /// A reproducible random number generator. The same seed always produces the same sequence, in

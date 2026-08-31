@@ -37,11 +37,6 @@ A finite state machine over an arbitrary context object. The machine does not ti
 - `StateChange<TContext>` is raised by `StateChanged` on every switch.
 - `StateMachineRegistry` keeps weak references to the machines currently running, which is the only thing the monitor window reads.
 
-### Timers
-
-- `Timer` is a reusable countdown with looping, pausing, progress reporting and completion callbacks.
-- `TimerManager` advances every active timer through the Player Loop, so timers run without any GameObject in the scene.
-
 ### Menu Managing
 
 - `Menu` is the base class for all menus. It handles the lifecycle and the open and close animations.
@@ -73,7 +68,7 @@ A finite state machine over an arbitrary context object. The machine does not ti
 ### Object Pooling
 
 - `BaseObjectPoolManager<TAsset, TPool>` is a base for global pool managers.
-- `HashSetObjectPool<T>` is a constant-time pool for any GameObject or Component.
+- `HashSetObjectPool<T>`, from the Utility package, is the constant-time pool both of these build on.
 - `TweenGroupObjectPool<T>` caches the `TweenGroup` of every instance and plays its enter and exit animation on activation and deactivation.
 
 ### Priority Trackers
@@ -87,14 +82,6 @@ A finite state machine over an arbitrary context object. The machine does not ti
 ### Camera and raycasting
 
 `CameraProvider` caches `Camera.main` to avoid repeated tag lookups and handles Unity's fake-null case. `RaycastUtility` provides generic, type-safe 2D ray-casting with editor-only debug ray drawing.
-
-### Randomization
-
-- `IRandomSource` is the seam every helper is written against. A source only has to supply raw bits; ranges, chances, shuffles and point pickers come from `RandomSourceExtensions`.
-- `SeededRandom` is reproducible: the same seed replays the same sequence in every session and on every platform, `Reset` rewinds it and `State` plus `Restore` save and continue a run in progress. Unlike Unity's single global sequence, it is not affected by anything else drawing a number.
-- `UnityRandomSource.Shared` runs the same helpers on Unity's global generator for cases that do not need a seed.
-- `RandomSourceExtensions` covers `Range`, `Chance`, `NextBool`, `NextSign`, `NextGaussian`, `Pick`, `Shuffle`, `OnUnitCircle`, `InsideUnitCircle`, `OnUnitSphere` and `InsideUnitSphere`. Integer ranges use rejection sampling, so no outcome is favored by the range not dividing evenly.
-- `WeightedEntry<T>` is a serializable item and weight pair, so a weighted list is authored in the inspector as `List<WeightedEntry<AudioClip>>`. `WeightedTable<T>` draws from those weights in one random value and a binary search, and `TryDrawFrom` draws straight from a list for a one-off pick. A weight of zero switches a row off without deleting it.
 
 ### Noise
 
@@ -138,4 +125,4 @@ A live view of an event bus: every event type it currently holds handlers for an
 
 ## Tests
 
-`Base.CorePackage.Tests` covers noise, seeded randomization, state machine lifecycle and transitions, and weighted tables. See `Tests/README.md` for how to make them appear in the Test Runner.
+`Base.CorePackage.Tests` covers noise, state machine lifecycle and transitions, and the randomization and weighted table helpers that now live in the Utility package. See `Tests/README.md` for how to make them appear in the Test Runner.

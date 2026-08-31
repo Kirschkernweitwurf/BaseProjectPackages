@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Base.UtilityPackage.Logging;
 using UnityEngine;
 
-namespace Base.CorePackage.Randomization
+namespace Base.UtilityPackage.Randomization
 {
     /// <summary>
     /// Everything drawn from an <see cref="IRandomSource"/>: ranges, chances, shuffles, points on

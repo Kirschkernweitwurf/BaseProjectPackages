@@ -1,4 +1,4 @@
-namespace Base.CorePackage.Randomization
+namespace Base.UtilityPackage.Randomization
 {
     /// <summary>
     /// A source of random bits. Everything this package draws goes through <see cref="NextUInt"/>,

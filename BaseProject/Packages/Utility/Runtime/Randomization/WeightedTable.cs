@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Base.UtilityPackage.Logging;
 
-namespace Base.CorePackage.Randomization
+namespace Base.UtilityPackage.Randomization
 {
     /// <summary>
     /// Draws items at a weight each, where twice the weight means twice as likely. The weights are
