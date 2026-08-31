@@ -96,7 +96,7 @@ namespace Base.EditorUiPackage
 
         /// <summary>
         /// Fill behind the ping button at rest. The accent at low opacity, which lands on a muted
-        /// slate blue over the card on either skin rather than needing a color of its own.
+        /// slate blue over the card on either editor theme rather than needing a color of its own.
         /// </summary>
         public static Color PingRestColor => EditorPalette.WithAlpha(EditorPalette.Accent,
             EditorThemeProvider.Table.PingRestAlpha);

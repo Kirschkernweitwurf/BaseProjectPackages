@@ -4,28 +4,28 @@ using UnityEngine;
 namespace Base.EditorUiPackage
 {
     /// <summary>
-    /// Draws the editable body of a theme: the colors of both skins, the layout metrics and the
+    /// Draws the editable body of a theme: the colors of both editor themes, the layout metrics and the
     /// numbers a list window is built from.
     /// </summary>
     /// <remarks>
-    /// Shared by the Editor UI Theme settings page and the inspector of a theme asset, so a theme
-    /// is edited the same way wherever it is opened from and neither has to be kept in step with the
+    /// Shared by the Editor UI Theme settings page and the inspector of a theme asset, so a theme is
+    /// edited the same way wherever it is opened from and neither has to be kept in step with the
     /// other when a value is added.
+    /// <para>
+    /// Every section starts folded. Picking a preset is what most visits are for, and four open
+    /// blocks of sixty odd fields buries everything above them.
+    /// </para>
     /// </remarks>
     public static class EditorThemeGui
     {
-        private const string DarkLabel = "Dark Skin Colors";
-        private const string DarkTooltip = "Used while the editor runs the dark skin.";
-        private const string LightLabel = "Light Skin Colors";
-        private const string LightTooltip = "Used while the editor runs the light skin.";
+        private const string DarkLabel = "Dark Editor Colors";
+        private const string DarkTooltip = "Used while Unity's Editor Theme is set to Dark.";
+        private const string FoldoutKeyPrefix = "Base.EditorUi.Theme.Section.";
+        private const string LightLabel = "Light Editor Colors";
+        private const string LightTooltip = "Used while Unity's Editor Theme is set to Light.";
         private const string MetricsLabel = "Layout";
         private const string MetricsTooltip = "Spacings, sizes and corner radii every Base window lays out by.";
-        private const string ResetLabel = "Reset To Built-in Look";
-        private const string ResetMessage = "Every color and size in this theme is replaced by the built-in look. "
-            + "This cannot be undone from here.";
-        private const string ResetNo = "Cancel";
-        private const string ResetTitle = "Reset theme";
-        private const string ResetYes = "Reset";
+        private const string SectionsHeader = "Values";
         private const string TableLabel = "List Windows";
         private const string TableTooltip = "The card, badges, ping button and toolbar of a Base list window.";
 
@@ -46,6 +46,8 @@ namespace Base.EditorUiPackage
 
             serializedObject.Update();
 
+            GUILayout.Label(SectionsHeader, EditorStyles.boldLabel);
+
             EditorGUI.BeginChangeCheck();
 
             DrawSection(serializedObject, EditorTheme.DarkColorsPropertyName, DarkContent);
@@ -63,44 +65,49 @@ namespace Base.EditorUiPackage
             return true;
         }
 
-        /// <summary>
-        /// Draws the button that puts a theme back to the built-in look, behind a confirmation.
-        /// </summary>
-        /// <param name="theme">The theme to reset.</param>
-        /// <returns>True when the theme was reset.</returns>
-        public static bool DrawResetButton(EditorTheme theme)
-        {
-            if (theme == null)
-                return false;
-
-            if (!GUILayout.Button(ResetLabel))
-                return false;
-
-            if (!EditorUtility.DisplayDialog(ResetTitle, ResetMessage, ResetYes, ResetNo))
-                return false;
-
-            Undo.RecordObject(theme, ResetTitle);
-
-            theme.ResetToDefaults();
-
-            EditorUtility.SetDirty(theme);
-            AssetDatabase.SaveAssetIfDirty(theme);
-
-            EditorThemeProvider.NotifyChanged();
-
-            return true;
-        }
-
-        private static void DrawSection(SerializedObject serializedObject, string propertyName, GUIContent label)
+        // The open state is kept per section rather than on the property, because the settings page and
+        // the asset inspector draw the same theme and should agree on what is folded away.
+        private static void DrawSection(SerializedObject serializedObject, string propertyName,
+            GUIContent label)
         {
             SerializedProperty property = serializedObject.FindProperty(propertyName);
 
             if (property == null)
                 return;
 
-            // Drawn with its children rather than field by field, so every Range and Min the data
-            // classes declare keeps working and a value added there needs no change here.
-            EditorGUILayout.PropertyField(property, label, true);
+            string key = FoldoutKeyPrefix + propertyName;
+            bool isOpen = EditorPrefs.GetBool(key, false);
+
+            EditorGUI.BeginChangeCheck();
+
+            bool wanted = EditorGUILayout.Foldout(isOpen, label, true);
+
+            if (EditorGUI.EndChangeCheck())
+                EditorPrefs.SetBool(key, wanted);
+
+            if (!wanted)
+                return;
+
+            EditorGUI.indentLevel++;
+
+            // Drawn child by child rather than as one property field, so the section's own foldout is
+            // the only one the user has to open.
+            SerializedProperty child = property.Copy();
+            SerializedProperty end = property.GetEndProperty();
+
+            if (child.NextVisible(true))
+            {
+                while (!SerializedProperty.EqualContents(child, end))
+                {
+                    EditorGUILayout.PropertyField(child, true);
+
+                    if (!child.NextVisible(false))
+                        break;
+                }
+            }
+
+            EditorGUI.indentLevel--;
+
             EditorGUILayout.Space(EditorMetrics.TightGap);
         }
     }

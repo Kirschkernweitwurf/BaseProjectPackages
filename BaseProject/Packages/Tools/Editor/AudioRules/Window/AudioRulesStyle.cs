@@ -107,9 +107,9 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
             root.AddToClassList(RootClass);
 
             // The sheet carries a light variant of its own colors as the fallback. It follows the
-            // theme's effective skin rather than Unity's, so the settings page preview shows the
-            // skin it is previewing rather than the one the editor happens to run.
-            root.EnableInClassList(LightClass, !EditorThemeProvider.IsDarkSkin);
+            // theme's effective editor theme rather than Unity's, so the settings page preview shows the
+            // editor theme it is previewing rather than the one the editor happens to run.
+            root.EnableInClassList(LightClass, !EditorThemeProvider.IsDarkMode);
 
             EditorUssTheme.Apply(root, CreatePainter());
 

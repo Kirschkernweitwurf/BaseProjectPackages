@@ -23,7 +23,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         /// <summary>Width of the accent stripe drawn at the left edge of every row.</summary>
         public const float StripeWidth = 3f;
 
-        private static readonly EditorSkinWatch Watch = new();
+        private static readonly EditorStyleWatch Watch = new();
 
         private const float ChipInset = 3f;
 
@@ -90,7 +90,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
 
         private static Color MissingColor => EditorPalette.Danger;
 
-        private static string DimHex => EditorThemeProvider.IsDarkSkin
+        private static string DimHex => EditorThemeProvider.IsDarkMode
             ? "#8C8C8C"
             : "#6B6B6B";
 
@@ -139,11 +139,11 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         }
 
         /// <summary>
-        /// Drops every cached style after a skin or theme change. Call once per GUI pass, before
+        /// Drops every cached style after either theme changes. Call once per GUI pass, before
         /// anything reads a style.
         /// </summary>
         /// <remarks>
-        /// The styles pin colors picked for one skin, and a static cache has no window lifetime to
+        /// The styles pin colors picked for one editor theme, and a static cache has no window lifetime to
         /// hang a rebuild off, so the windows that draw with them have to ask.
         /// </remarks>
         public static void EnsureFresh()

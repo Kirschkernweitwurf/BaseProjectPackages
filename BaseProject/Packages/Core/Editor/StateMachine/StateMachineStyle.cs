@@ -6,7 +6,7 @@ namespace Base.CorePackage.Editor.StateMachine
     /// <summary>
     /// The USS class names the monitor applies from code, and the one place that finds and attaches its
     /// style sheet. Everything visual lives in the sheet, so the look can be changed without touching the
-    /// views, and the light skin is a class on the root rather than a second sheet.
+    /// views, and the light editor theme is a class on the root rather than a second sheet.
     /// </summary>
     internal static class StateMachineStyle
     {
@@ -61,9 +61,9 @@ namespace Base.CorePackage.Editor.StateMachine
             root.AddToClassList(RootClass);
 
             // The sheet keeps a light variant of its own colors, which is what the window falls back
-            // to. It follows the theme's effective skin rather than Unity's, so the preview on the
+            // to. It follows the theme's effective editor theme rather than Unity's, so the preview on the
             // settings page shows the right one.
-            root.EnableInClassList(LightClass, !EditorThemeProvider.IsDarkSkin);
+            root.EnableInClassList(LightClass, !EditorThemeProvider.IsDarkMode);
 
             EditorUssTheme.Apply(root, CreatePainter());
 

@@ -19,7 +19,7 @@ namespace Base.ToolPackage.Editor.ExecutionOrderOverview
         private readonly List<ExecutionOrderEntry> _all = new();
         private readonly List<ExecutionOrderEntry> _filtered = new();
 
-        private readonly EditorSkinWatch _watch = new();
+        private readonly EditorStyleWatch _watch = new();
 
         private IExecutionOrderSource _source;
         private GUIStyle _orderStyle;

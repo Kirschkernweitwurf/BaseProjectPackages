@@ -7,7 +7,7 @@ namespace Base.ToolPackage.Editor.CommandPalette
     /// <summary>
     /// Every size, color and style the palette draws with. Styles are built on first use because
     /// <see cref="EditorStyles"/> is only valid inside a GUI call, and they are dropped again when
-    /// the editor skin changes so the palette never keeps a dark color on a light background.
+    /// the editor theme changes so the palette never keeps a dark color on a light background.
     /// <para>
     /// The shared editor look lives in <see cref="EditorPalette"/>; what stays here are the sizes
     /// and colors that only mean something in a palette, such as the chip of a result kind.
@@ -88,18 +88,18 @@ namespace Base.ToolPackage.Editor.CommandPalette
         private static GUIStyle _searchField;
         private static GUIStyle _tagLabel;
 
-        private static readonly EditorSkinWatch Watch = new();
+        private static readonly EditorStyleWatch Watch = new();
 
         /// <summary>Thickness of a hairline.</summary>
         public static float SeparatorThickness => EditorMetrics.SeparatorThickness;
 
         /// <summary>Opening tag of a dimmed run.</summary>
-        public static string DimOpen => EditorThemeProvider.IsDarkSkin
+        public static string DimOpen => EditorThemeProvider.IsDarkMode
             ? "<color=#7E7E86>"
             : "<color=#87878F>";
 
         /// <summary>Opening tag of a matched run.</summary>
-        public static string MatchOpen => EditorThemeProvider.IsDarkSkin
+        public static string MatchOpen => EditorThemeProvider.IsDarkMode
             ? "<b><color=#7FC0FF>"
             : "<b><color=#0E4FA8>";
 
@@ -194,7 +194,7 @@ namespace Base.ToolPackage.Editor.CommandPalette
             alignment = TextAnchor.MiddleCenter
         }, PinColor());
 
-        /// <summary>Drops every cached style after a skin or theme change. Call once per GUI pass.</summary>
+        /// <summary>Drops every cached style after either theme changes. Call once per GUI pass.</summary>
         public static void EnsureFresh()
         {
             if (!Watch.IsStale)

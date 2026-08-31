@@ -1,7 +1,7 @@
 namespace Base.EditorUiPackage
 {
     /// <summary>
-    /// Tracks whether a cache of styles still matches the editor skin and the theme it was built for.
+    /// Tracks whether a cache of styles still matches the editor theme and the theme it was built for.
     /// </summary>
     /// <remarks>
     /// <see cref="EditorStyleSet"/> builds on this for a style cache that is an object. A static one
@@ -15,25 +15,25 @@ namespace Base.EditorUiPackage
     /// <see cref="MarkFresh"/> once the rebuild actually finished.
     /// </para>
     /// </remarks>
-    public sealed class EditorSkinWatch
+    public sealed class EditorStyleWatch
     {
         private bool _isFresh;
-        private bool _wasProSkin;
+        private bool _wasDarkMode;
         private int _themeRevision;
 
         /// <summary>
         /// True when the styles have to be built: for the first time, because the user switched
-        /// between the dark and the light skin, or because the active theme changed since.
+        /// between the dark and the light editor theme, or because the active theme changed since.
         /// </summary>
         public bool IsStale => !_isFresh
-            || _wasProSkin != EditorThemeProvider.IsDarkSkin
+            || _wasDarkMode != EditorThemeProvider.IsDarkMode
             || _themeRevision != EditorThemeProvider.Revision;
 
-        /// <summary>Records that the styles are now built for the skin and theme currently active.</summary>
+        /// <summary>Records that the styles are now built for the editor theme and theme currently active.</summary>
         public void MarkFresh()
         {
             _isFresh = true;
-            _wasProSkin = EditorThemeProvider.IsDarkSkin;
+            _wasDarkMode = EditorThemeProvider.IsDarkMode;
             _themeRevision = EditorThemeProvider.Revision;
         }
 

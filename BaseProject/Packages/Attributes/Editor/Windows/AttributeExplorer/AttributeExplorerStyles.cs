@@ -8,8 +8,8 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer
     /// Styles, metrics and colors for the attribute window.
     /// </summary>
     /// <remarks>
-    /// Built once rather than per repaint, and rebuilt when the editor skin changes, since every color
-    /// here is picked for one skin and the light and dark versions are not interchangeable. The shared
+    /// Built once rather than per repaint, and rebuilt when the editor theme changes, since every color
+    /// here is picked for one editor theme and the light and dark versions are not interchangeable. The shared
     /// editor look comes from <see cref="EditorPalette"/>; what stays here are the tints only a two
     /// pane browser with cards and tabs needs.
     /// </remarks>
@@ -163,9 +163,9 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer
         /// <summary>Background of the strip the tabs sit in.</summary>
         internal Color TabStrip { get; private set; }
 
-        private readonly EditorSkinWatch _watch = new();
+        private readonly EditorStyleWatch _watch = new();
 
-        /// <summary>Builds the styles, and rebuilds them after the skin or the theme changed.</summary>
+        /// <summary>Builds the styles, and rebuilds them after the editor theme or the theme changed.</summary>
         internal void EnsureBuilt()
         {
             if (!_watch.IsStale)
@@ -320,7 +320,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer
             CategoryBand = Tint(CategoryBandStrength);
             Hover = EditorPalette.Hover;
             TabActive = Tint(TabActiveStrength);
-            TabStrip = new Color(0f, 0f, 0f, EditorThemeProvider.IsDarkSkin
+            TabStrip = new Color(0f, 0f, 0f, EditorThemeProvider.IsDarkMode
                 ? TabStripStrength
                 : TabStripStrength * LightTabStripFactor);
 

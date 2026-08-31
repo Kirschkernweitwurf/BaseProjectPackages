@@ -34,7 +34,7 @@ namespace Base.EditorUiPackage
         private static EditorThemeMetrics _metrics = DefaultMetrics;
         private static EditorThemeTable _table = DefaultTable;
 
-        private static bool? _skinOverride;
+        private static bool? _darkModeOverride;
         private static bool _isResolved;
         private static bool _hasResolvedTheme;
         private static int _revision;
@@ -57,24 +57,24 @@ namespace Base.EditorUiPackage
         }
 
         /// <summary>
-        /// The skin the look currently resolves against: the one the editor runs, unless an override
+        /// The editor theme the look currently resolves against: the one the editor runs, unless an override
         /// is in force.
         /// </summary>
         /// <remarks>
         /// Everything that used to branch on <see cref="EditorGUIUtility.isProSkin"/> asks this
-        /// instead, which is what lets one panel be drawn in the other skin without the rest of the
+        /// instead, which is what lets one panel be drawn in the other editor theme without the rest of the
         /// editor following it.
         /// </remarks>
-        public static bool IsDarkSkin => _skinOverride ?? EditorGUIUtility.isProSkin;
+        public static bool IsDarkMode => _darkModeOverride ?? EditorGUIUtility.isProSkin;
 
-        /// <summary>The colors of the skin the look currently resolves against.</summary>
+        /// <summary>The colors of the editor theme the look currently resolves against.</summary>
         public static EditorThemeColors Colors
         {
             get
             {
                 Resolve();
 
-                return IsDarkSkin
+                return IsDarkMode
                     ? _darkColors
                     : _lightColors;
             }
@@ -114,8 +114,9 @@ namespace Base.EditorUiPackage
         }
 
         /// <summary>
-        /// Resolves every color against one skin until <see cref="EndSkinOverride"/> is called, so a
-        /// preview can show the skin the editor is not running.
+        /// Resolves every color as though the editor were in the given mode until
+        /// <see cref="EndDarkModeOverride"/> is called,
+        /// preview can show the editor theme the editor is not running.
         /// </summary>
         /// <remarks>
         /// Only ever wrap the drawing of one panel in this, and always from a <c>finally</c>, because
@@ -123,11 +124,11 @@ namespace Base.EditorUiPackage
         /// The styles of whatever is drawn inside have to be built inside it too: a style pins its
         /// text colors when it is built, not when it is drawn.
         /// </remarks>
-        /// <param name="isDarkSkin">True to resolve against the dark skin, false for the light one.</param>
-        public static void BeginSkinOverride(bool isDarkSkin) => _skinOverride = isDarkSkin;
+        /// <param name="isDarkMode">True to resolve as dark mode, false as light mode.</param>
+        public static void BeginDarkModeOverride(bool isDarkMode) => _darkModeOverride = isDarkMode;
 
-        /// <summary>Hands the skin back to the one the editor is actually running.</summary>
-        public static void EndSkinOverride() => _skinOverride = null;
+        /// <summary>Hands the editor theme back to the one the editor is actually running.</summary>
+        public static void EndDarkModeOverride() => _darkModeOverride = null;
 
         /// <summary>
         /// Drops the cached look, so the next read resolves it again, and repaints the editor.

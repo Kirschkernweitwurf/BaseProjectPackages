@@ -5,7 +5,7 @@ namespace Base.EditorUiPackage
     /// <summary>
     /// Base class for a window's style cache. Styles have to be built inside a GUI call because
     /// <see cref="EditorStyles"/> is not valid before that, they have to be rebuilt when the user
-    /// switches between the dark and light skin, and again when the active theme changes. All three
+    /// switches between the dark and light editor theme, and again when the active theme changes. All three
     /// are handled here, so a window only implements <see cref="Build"/>.
     /// </summary>
     /// <remarks>
@@ -14,12 +14,12 @@ namespace Base.EditorUiPackage
     /// </remarks>
     public abstract class EditorStyleSet
     {
-        private readonly EditorSkinWatch _watch = new();
+        private readonly EditorStyleWatch _watch = new();
 
         /// <summary>The textures generated for this style set, released on every rebuild.</summary>
         protected EditorTextureCache Textures { get; } = new();
 
-        /// <summary>Builds the styles once, and again after a skin or theme change. Call from <c>OnGUI</c>.</summary>
+        /// <summary>Builds the styles once, and again after either theme changes. Call from <c>OnGUI</c>.</summary>
         public void EnsureBuilt()
         {
             if (!_watch.IsStale)
@@ -39,7 +39,10 @@ namespace Base.EditorUiPackage
             _watch.Invalidate();
         }
 
-        /// <summary>Creates every style of this set. Runs inside a GUI call, so skin styles are valid.</summary>
+        /// <summary>
+        /// Creates every style of this set. Runs inside a GUI call, so the editor's own styles are
+        /// valid to read from.
+        /// </summary>
         protected abstract void Build();
     }
 }

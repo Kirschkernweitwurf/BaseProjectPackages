@@ -131,8 +131,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
             "Pascal_Snake_Case"
         };
 
-
-        private static readonly EditorSkinWatch Watch = new();
+        private static readonly EditorStyleWatch Watch = new();
 
         private static GUIStyle _badgeStyle;
         private static GUIStyle _detailStyle;
@@ -196,7 +195,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
         }
 
         /// <summary>
-        /// Drops every cached style after a skin or theme change. Call once per GUI pass, before
+        /// Drops every cached style after either theme changes. Call once per GUI pass, before
         /// anything reads a style.
         /// </summary>
         public static void EnsureFresh()

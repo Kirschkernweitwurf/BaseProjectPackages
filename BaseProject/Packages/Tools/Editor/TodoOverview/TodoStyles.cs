@@ -8,7 +8,7 @@ namespace Base.ToolPackage.Editor.TodoOverview
     /// <summary>
     /// Every size, color and style the todo window draws with. Styles are built on first use because
     /// <see cref="EditorStyles"/> is only valid inside a GUI call, and they are rebuilt when the
-    /// editor skin changes so a dark color never ends up on a light background.
+    /// editor theme changes so a dark color never ends up on a light background.
     /// <para>
     /// All of them are built in one go rather than one by one on first access, because Unity swaps
     /// the editor styles out while a dropdown owns the GUI. Reading one in such a pass throws, so
@@ -108,7 +108,7 @@ namespace Base.ToolPackage.Editor.TodoOverview
         /// <summary>Height of the bar at the top of the window.</summary>
         internal const float ToolbarHeight = 30f;
 
-        private static readonly EditorSkinWatch Watch = new();
+        private static readonly EditorStyleWatch Watch = new();
 
         /// <summary>Thickness of a hairline.</summary>
         internal static float SeparatorThickness => EditorMetrics.SeparatorThickness;
@@ -162,7 +162,7 @@ namespace Base.ToolPackage.Editor.TodoOverview
         internal static GUIStyle SearchHint { get; private set; }
 
         /// <summary>
-        /// Builds the styles on the first pass and again after a skin or theme change. Call at the top of
+        /// Builds the styles on the first pass and again after either theme changes. Call at the top of
         /// every GUI pass and skip the pass when it reports that the styles are not there yet.
         /// </summary>
         /// <returns><c>true</c> once every style is ready to draw with.</returns>

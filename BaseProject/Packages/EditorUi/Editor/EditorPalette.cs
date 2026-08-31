@@ -9,7 +9,7 @@ namespace Base.EditorUiPackage
     /// badge for one specific state, still defines that itself.
     /// <para>
     /// Every value comes from the theme assigned in the Editor UI Theme project settings page, for
-    /// the editor skin that is currently active, so a window never has to branch on
+    /// the editor theme that is currently active, so a window never has to branch on
     /// <see cref="EditorGUIUtility.isProSkin"/> by hand and a user can change the whole look without
     /// touching code.
     /// </para>
@@ -80,35 +80,35 @@ namespace Base.EditorUiPackage
         public static Color Warning => EditorThemeProvider.Colors.Warning;
 
         /// <summary>
-        /// Picks the value matching the current editor skin.
+        /// Picks the value matching the current editor theme.
         /// </summary>
         /// <remarks>
         /// For the colors a window defines itself. Anything named in the palette above already
-        /// carries a value per skin and should be read from there instead.
+        /// carries a value per editor theme and should be read from there instead.
         /// </remarks>
-        /// <param name="pro">The color for the dark skin.</param>
-        /// <param name="personal">The color for the light skin.</param>
-        /// <returns>The color for the skin that is currently active.</returns>
-        public static Color Pick(Color pro, Color personal) => EditorThemeProvider.IsDarkSkin
+        /// <param name="pro">The color for the dark editor theme.</param>
+        /// <param name="personal">The color for the light editor theme.</param>
+        /// <returns>The color for the editor theme that is currently active.</returns>
+        public static Color Pick(Color pro, Color personal) => EditorThemeProvider.IsDarkMode
             ? pro
             : personal;
 
         /// <summary>
-        /// A neutral overlay that lightens on the dark skin and darkens on the light one, which is
+        /// A neutral overlay that lightens on the dark editor theme and darkens on the light one, which is
         /// how nearly every subtle background tint in an editor window is built.
         /// </summary>
-        /// <param name="proAlpha">The alpha used on the dark skin.</param>
-        /// <param name="personalAlpha">The alpha used on the light skin.</param>
-        /// <returns>The overlay color for the skin that is currently active.</returns>
-        public static Color Tint(float proAlpha, float personalAlpha) => EditorThemeProvider.IsDarkSkin
+        /// <param name="proAlpha">The alpha used on the dark editor theme.</param>
+        /// <param name="personalAlpha">The alpha used on the light editor theme.</param>
+        /// <returns>The overlay color for the editor theme that is currently active.</returns>
+        public static Color Tint(float proAlpha, float personalAlpha) => EditorThemeProvider.IsDarkMode
             ? new Color(1f, 1f, 1f, proAlpha)
             : new Color(0f, 0f, 0f, personalAlpha);
 
         /// <summary>
-        /// A neutral overlay with the same alpha on both skins.
+        /// A neutral overlay with the same alpha under either editor theme.
         /// </summary>
-        /// <param name="alpha">The alpha used on either skin.</param>
-        /// <returns>The overlay color for the skin that is currently active.</returns>
+        /// <param name="alpha">The alpha used on either editor theme.</param>
+        /// <returns>The overlay color for the editor theme that is currently active.</returns>
         public static Color Tint(float alpha) => Tint(alpha, alpha);
 
         /// <summary>

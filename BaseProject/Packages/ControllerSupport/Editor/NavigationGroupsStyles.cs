@@ -44,7 +44,7 @@ namespace Base.ControllerSupportPackage.Editor
         /// <summary>Width of the toolbar's "Refresh" button.</summary>
         public const float ToolbarButtonWidth = 60f;
 
-        private static readonly EditorSkinWatch Watch = new();
+        private static readonly EditorStyleWatch Watch = new();
 
         // The two hues the palette has no name for: a count is not a state, and a focus priority is
         // not the amber the palette reserves for a link or an override.
@@ -144,7 +144,7 @@ namespace Base.ControllerSupportPackage.Editor
         /// <returns>The width to lay the badge out with.</returns>
         public static float MeasureBadge(string text) => EditorRows.MeasureBadge(text, Badge, MinBadgeWidth);
 
-        // The styles pin colors picked for one skin, so they are dropped whenever the skin or the
+        // The styles pin colors picked for one editor theme, so they are dropped whenever the editor theme or the
         // active theme moves. Reached through the properties rather than from a window callback,
         // because a static class has no lifetime a window could hang the rebuild off.
         private static void EnsureBuilt()

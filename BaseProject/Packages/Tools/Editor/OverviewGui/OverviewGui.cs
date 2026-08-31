@@ -69,7 +69,7 @@ namespace Base.ToolPackage.Editor.OverviewGui
         private static readonly Color SectionUnderline = new(0f, 0f, 0f, 0.25f);
 
         private static readonly EditorTextureCache Textures = new();
-        private static readonly EditorSkinWatch Watch = new();
+        private static readonly EditorStyleWatch Watch = new();
 
         private static GUIStyle _sectionFoldoutStyle;
         private static GUIStyle _successTitleStyle;
@@ -80,7 +80,7 @@ namespace Base.ToolPackage.Editor.OverviewGui
         public static float RowHeight => EditorMetrics.RowHeight;
 
         /// <summary>
-        /// Builds the shared styles once per domain, and again after a skin or theme change.
+        /// Builds the shared styles once per domain, and again after either theme changes.
         /// Call this at the top of OnGUI.
         /// </summary>
         public static void EnsureStyles()
