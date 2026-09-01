@@ -3,7 +3,7 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
     /// <summary>
     /// Represents a finding of a static field that is not reset on Enter Play Mode.
     /// </summary>
-    internal class Finding
+    internal sealed class Finding
     {
         /// <summary>Project-relative path of the file, which is what pings the asset.</summary>
         internal string AssetPath;

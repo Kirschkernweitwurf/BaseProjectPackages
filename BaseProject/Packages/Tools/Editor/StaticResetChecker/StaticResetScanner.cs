@@ -14,6 +14,14 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
     /// </summary>
     internal static class StaticResetScanner
     {
+        // How far a reset method is followed into the helpers it calls. Each hop is another pass over
+        // every body found so far, and a clearing helper five calls deep is not a real shape.
+        private const int HelperExpansionDepth = 4;
+
+        // Longest declaration line kept for the report. A generated or minified line can run for
+        // thousands of characters, which the list cannot show and nobody would read anyway.
+        private const int MaxSnippetLength = 200;
+
         private static readonly HashSet<string> Modifiers = new()
         {
             "readonly",
@@ -127,36 +135,36 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
         /// Walks the project for static state that survives leaving play mode. Domain reload is
         /// disabled, so anything not cleared explicitly carries into the next session.
         /// </summary>
-        /// <param name="opt">The options the scan runs under.</param>
+        /// <param name="options">The options the scan runs under.</param>
         /// <param name="filesScanned">
         /// How many files were read, so an empty result can be told from an empty scan.
         /// </param>
         /// <returns>One finding per static that is never reset.</returns>
-        internal static List<Finding> Scan(ScanOptions opt, out int filesScanned)
+        internal static List<Finding> Scan(ScanOptions options, out int filesScanned)
         {
             List<Finding> results = new();
             filesScanned = 0;
 
-            DirectoryInfo dataDir = Directory.GetParent(Application.dataPath);
-            if (dataDir == null)
+            DirectoryInfo dataDirectory = Directory.GetParent(Application.dataPath);
+            if (dataDirectory == null)
                 throw new DirectoryNotFoundException("Could not find project root from data path: "
                     + Application.dataPath);
 
-            string projectRoot = dataDir.FullName;
-            string absRoot = Path.IsPathRooted(opt.RootFolder)
-                ? opt.RootFolder
-                : Path.Combine(projectRoot, opt.RootFolder);
+            string projectRoot = dataDirectory.FullName;
+            string absoluteRoot = Path.IsPathRooted(options.RootFolder)
+                ? options.RootFolder
+                : Path.Combine(projectRoot, options.RootFolder);
 
-            if (!Directory.Exists(absRoot))
-                throw new DirectoryNotFoundException("Folder not found: " + absRoot);
+            if (!Directory.Exists(absoluteRoot))
+                throw new DirectoryNotFoundException("Folder not found: " + absoluteRoot);
 
             PackageInfo[] packages = PackageInfo.GetAllRegisteredPackages();
 
-            foreach (string path in Directory.GetFiles(absRoot, "*.cs", SearchOption.AllDirectories))
+            foreach (string path in Directory.GetFiles(absoluteRoot, "*.cs", SearchOption.AllDirectories))
             {
-                string norm = path.Replace('\\', '/');
-                if (opt.SkipEditorFolders
-                    && norm.IndexOf("/Editor/", StringComparison.OrdinalIgnoreCase) >= 0)
+                string normalized = path.Replace('\\', '/');
+                if (options.SkipEditorFolders
+                    && normalized.IndexOf("/Editor/", StringComparison.OrdinalIgnoreCase) >= 0)
                     continue;
 
                 string source;
@@ -173,48 +181,48 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
                     continue;
 
                 filesScanned++;
-                ScanFile(source, ToAssetPath(path, packages), norm, opt, results);
+                ScanFile(source, ToAssetPath(path, packages), normalized, options, results);
             }
 
             return results
-                .GroupBy(f => f.AssetPath + "|" + f.Line + "|" + f.Name)
-                .Select(g => g.First())
+                .GroupBy(finding => finding.AssetPath + "|" + finding.Line + "|" + finding.Name)
+                .Select(group => group.First())
                 .ToList();
         }
 
-        private static void ScanFile(string source, string assetPath, string absolutePath, ScanOptions opt,
+        private static void ScanFile(string source, string assetPath, string absolutePath, ScanOptions options,
             List<Finding> results)
         {
-            Context ctx = new()
+            ScanContext context = new()
             {
                 Cleaned = CleanSource(source),
                 LineStarts = BuildLineStarts(source),
-                Opt = opt
+                Options = options
             };
 
-            foreach (Match m in Regex.Matches(ctx.Cleaned, @"\bstatic\b"))
+            foreach (Match match in Regex.Matches(context.Cleaned, @"\bstatic\b"))
             {
-                int pos = m.Index;
-                if (PrecededByWord(ctx.Cleaned, pos, "using"))
+                int position = match.Index;
+                if (PrecededByWord(context.Cleaned, position, "using"))
                     continue;
 
-                ProcessStatic(ctx, pos);
+                ProcessStatic(context, position);
             }
 
-            if (ctx.Fields.Count == 0)
+            if (context.Fields.Count == 0)
                 return;
 
-            string resetText = BuildResetSearchText(ctx);
+            string resetText = BuildResetSearchText(context);
 
-            foreach (FieldHit f in ctx.Fields)
+            foreach (FieldHit hit in context.Fields)
             {
-                bool reset = resetText.Length > 0 && Regex.IsMatch(resetText, $@"\b{Regex.Escape(f.Name)}\b");
+                bool reset = resetText.Length > 0 && Regex.IsMatch(resetText, $@"\b{Regex.Escape(hit.Name)}\b");
                 if (reset)
                     continue;
 
-                int line = LineFromIndex(ctx.LineStarts, f.Index);
-                string lineText = GetLineText(source, ctx.LineStarts, line);
-                if (!string.IsNullOrEmpty(opt.IgnoreMarker) && lineText.Contains(opt.IgnoreMarker))
+                int line = LineFromIndex(context.LineStarts, hit.Index);
+                string lineText = GetLineText(source, context.LineStarts, line);
+                if (!string.IsNullOrEmpty(options.IgnoreMarker) && lineText.Contains(options.IgnoreMarker))
                     continue;
 
                 results.Add(new Finding
@@ -222,25 +230,25 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
                     AssetPath = assetPath,
                     AbsolutePath = absolutePath,
                     Line = line,
-                    Name = f.Name,
-                    Kind = f.Kind,
+                    Name = hit.Name,
+                    Kind = hit.Kind,
                     Snippet = lineText.Trim()
                 });
             }
         }
 
-        private static string BuildResetSearchText(Context ctx)
+        private static string BuildResetSearchText(ScanContext context)
         {
-            StringBuilder sb = new();
-            foreach (string b in ctx.ResetBodies)
-                sb.Append('\n').Append(b);
+            StringBuilder builder = new();
+            foreach (string resetBody in context.ResetBodies)
+                builder.Append('\n').Append(resetBody);
 
-            if (!ctx.Opt.ExpandHelpers || ctx.ResetBodies.Count <= 0)
-                return sb.ToString();
+            if (!context.Options.ExpandHelpers || context.ResetBodies.Count <= 0)
+                return builder.ToString();
 
             HashSet<string> seen = new();
-            List<string> frontier = new(ctx.ResetBodies);
-            for (int depth = 0; depth < 4 && frontier.Count > 0; depth++)
+            List<string> frontier = new(context.ResetBodies);
+            for (int depth = 0; depth < HelperExpansionDepth && frontier.Count > 0; depth++)
             {
                 List<string> next = new();
                 foreach (string body in frontier)
@@ -248,39 +256,39 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
                     foreach (Match call in Regex.Matches(body, @"\b(\w+)\s*\("))
                     {
                         string name = call.Groups[1].Value;
-                        if (!ctx.StaticMethods.TryGetValue(name, out string item)
+                        if (!context.StaticMethods.TryGetValue(name, out string helperBody)
                             || !seen.Add(name))
                             continue;
 
-                        sb.Append('\n').Append(item);
-                        next.Add(item);
+                        builder.Append('\n').Append(helperBody);
+                        next.Add(helperBody);
                     }
                 }
 
                 frontier = next;
             }
 
-            return sb.ToString();
+            return builder.ToString();
         }
 
-        private static void ProcessStatic(Context ctx, int pos)
+        private static void ProcessStatic(ScanContext context, int position)
         {
-            string s = ctx.Cleaned;
-            int n = s.Length;
-            int i = pos + "static".Length;
+            string cleaned = context.Cleaned;
+            int length = cleaned.Length;
+            int index = position + "static".Length;
 
             int angle = 0, bracket = 0, parentheses = 0;
 
-            while (i < n)
+            while (index < length)
             {
-                char c = s[i];
+                char current = cleaned[index];
 
-                switch (c)
+                switch (current)
                 {
                     case '<':
                     {
                         angle++;
-                        i++;
+                        index++;
                         continue;
                     }
                     case '>':
@@ -288,13 +296,13 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
                         if (angle > 0)
                             angle--;
 
-                        i++;
+                        index++;
                         continue;
                     }
                     case '[':
                     {
                         bracket++;
-                        i++;
+                        index++;
                         continue;
                     }
                     case ']':
@@ -302,28 +310,28 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
                         if (bracket > 0)
                             bracket--;
 
-                        i++;
+                        index++;
                         continue;
                     }
                 }
 
                 if (angle > 0 || bracket > 0)
                 {
-                    i++;
+                    index++;
                     continue;
                 }
 
-                switch (c)
+                switch (current)
                 {
-                    case '(' when parentheses == 0 && LooksLikeMethodParen(s, i):
+                    case '(' when parentheses == 0 && LooksLikeMethodParen(cleaned, index):
                     {
-                        HandleMethod(ctx, pos, i);
+                        HandleMethod(context, position, index);
                         return;
                     }
                     case '(':
                     {
                         parentheses++;
-                        i++;
+                        index++;
                         continue;
                     }
                     case ')':
@@ -331,118 +339,118 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
                         if (parentheses > 0)
                             parentheses--;
 
-                        i++;
+                        index++;
                         continue;
                     }
                 }
 
                 if (parentheses > 0)
                 {
-                    i++;
+                    index++;
                     continue;
                 }
 
-                switch (c)
+                switch (current)
                 {
                     case '{':
                     {
-                        HandleBlockMember(ctx, pos, i);
+                        HandleBlockMember(context, position, index);
                         return;
                     }
-                    case '=' when i + 1 < n && s[i + 1] == '>':
+                    case '=' when index + 1 < length && cleaned[index + 1] == '>':
                     {
                         return;
                     }
                     case '=':
                     {
-                        int sc = FindTopLevelSemicolon(s, i + 1);
-                        EmitField(ctx, pos, s.Substring(pos, sc - pos));
+                        int semicolon = FindTopLevelSemicolon(cleaned, index + 1);
+                        EmitField(context, position, cleaned.Substring(position, semicolon - position));
                         return;
                     }
                     case ';':
                     {
-                        EmitField(ctx, pos, s.Substring(pos, i - pos));
+                        EmitField(context, position, cleaned.Substring(position, index - position));
                         return;
                     }
                     default:
                     {
-                        i++;
+                        index++;
                         break;
                     }
                 }
             }
         }
 
-        private static bool LooksLikeMethodParen(string s, int parenIndex)
+        private static bool LooksLikeMethodParen(string cleaned, int parenIndex)
         {
-            char prev = PrevNonSpace(s, parenIndex - 1);
-            if (prev == '>')
+            char previous = PrevNonSpace(cleaned, parenIndex - 1);
+            if (previous == '>')
                 return true;
 
-            string id = ReadIdentifierBefore(s, parenIndex);
-            return id != null && !IsKeyword(id);
+            string identifier = ReadIdentifierBefore(cleaned, parenIndex);
+            return identifier != null && !IsKeyword(identifier);
         }
 
-        private static void HandleMethod(Context ctx, int pos, int parenIndex)
+        private static void HandleMethod(ScanContext context, int position, int parenIndex)
         {
-            string s = ctx.Cleaned;
-            int closeParen = MatchPair(s, parenIndex, '(', ')');
-            int n = s.Length;
+            string cleaned = context.Cleaned;
+            int closeParen = MatchPair(cleaned, parenIndex, '(', ')');
+            int length = cleaned.Length;
 
-            int b = closeParen;
-            while (b < n)
+            int cursor = closeParen;
+            while (cursor < length)
             {
-                char c = s[b];
-                if (c == '{')
+                char current = cleaned[cursor];
+                if (current == '{')
                     break;
 
-                if (c == ';')
+                if (current == ';')
                     return;
 
-                if (c == '='
-                    && b + 1 < n
-                    && s[b + 1] == '>')
+                if (current == '='
+                    && cursor + 1 < length
+                    && cleaned[cursor + 1] == '>')
                     break;
 
-                b++;
+                cursor++;
             }
 
-            if (b >= n)
+            if (cursor >= length)
                 return;
 
             string body;
-            if (s[b] == '{')
+            if (cleaned[cursor] == '{')
             {
-                int end = MatchPair(s, b, '{', '}');
-                body = s.Substring(b, end - b);
+                int bodyEnd = MatchPair(cleaned, cursor, '{', '}');
+                body = cleaned.Substring(cursor, bodyEnd - cursor);
             }
             else
             {
-                int sc = FindTopLevelSemicolon(s, b + 2);
-                body = s.Substring(b + 2, Math.Max(0, sc - (b + 2)));
+                int semicolon = FindTopLevelSemicolon(cleaned, cursor + 2);
+                body = cleaned.Substring(cursor + 2, Math.Max(0, semicolon - (cursor + 2)));
             }
 
-            string name = ReadIdentifierBefore(s, parenIndex);
+            string name = ReadIdentifierBefore(cleaned, parenIndex);
             if (!string.IsNullOrEmpty(name))
-                ctx.StaticMethods.TryAdd(name, body);
+                context.StaticMethods.TryAdd(name, body);
 
-            if (IsResetMethod(ctx, pos))
-                ctx.ResetBodies.Add(body);
+            if (IsResetMethod(context, position))
+                context.ResetBodies.Add(body);
         }
 
-        private static void HandleBlockMember(Context ctx, int pos, int braceIndex)
+        private static void HandleBlockMember(ScanContext context, int position, int braceIndex)
         {
-            string s = ctx.Cleaned;
-            string head = s.Substring(pos, braceIndex - pos);
+            string cleaned = context.Cleaned;
+            string head = cleaned.Substring(position, braceIndex - position);
 
             if (Regex.IsMatch(head, @"\b(class|struct|interface|enum|record|namespace)\b"))
                 return;
 
-            if (!ctx.Opt.IncludeAutoProperties)
+            if (!context.Options.IncludeAutoProperties)
                 return;
 
-            int end = MatchPair(s, braceIndex, '{', '}');
-            string block = s.Substring(braceIndex, end - braceIndex);
+            int blockEnd = MatchPair(cleaned, braceIndex, '{', '}');
+            string block = cleaned.Substring(braceIndex, blockEnd - braceIndex);
 
             bool isAuto = Regex.IsMatch(block, @"\b(get|set|init)\s*;");
             if (!isAuto)
@@ -452,44 +460,44 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
             if (string.IsNullOrEmpty(name) || IsKeyword(name))
                 return;
 
-            ctx.Fields.Add(new FieldHit
+            context.Fields.Add(new FieldHit
             {
-                Index = AbsoluteNameIndex(pos, head, name),
+                Index = AbsoluteNameIndex(position, head, name),
                 Name = name,
                 Kind = "static property"
             });
         }
 
-        private static void EmitField(Context ctx, int pos, string full)
+        private static void EmitField(ScanContext context, int position, string declaration)
         {
-            string body = full["static".Length..];
+            string body = declaration["static".Length..];
 
             body = StripLeadingModifiers(body, out bool isEvent, out bool isReadonly);
-            if (isEvent && !ctx.Opt.IncludeEvents)
+            if (isEvent && !context.Options.IncludeEvents)
                 return;
 
-            if (isReadonly && ctx.Opt.IgnoreReadonly)
+            if (isReadonly && context.Options.IgnoreReadonly)
                 return;
 
             List<string> declarators = SplitTopLevel(body, ',');
-            for (int d = 0; d < declarators.Count; d++)
+            for (int index = 0; index < declarators.Count; index++)
             {
-                string decl = declarators[d];
-                int eq = IndexOfTopLevelAssign(decl);
-                string left = eq >= 0
-                    ? decl[..eq]
-                    : decl;
+                string declarator = declarators[index];
+                int assign = IndexOfTopLevelAssign(declarator);
+                string left = assign >= 0
+                    ? declarator[..assign]
+                    : declarator;
 
-                string name = d == 0
+                string name = index == 0
                     ? LastIdentifier(left)
                     : FirstIdentifier(left);
 
                 if (string.IsNullOrEmpty(name) || IsKeyword(name))
                     continue;
 
-                ctx.Fields.Add(new FieldHit
+                context.Fields.Add(new FieldHit
                 {
-                    Index = AbsoluteNameIndex(pos, full, name),
+                    Index = AbsoluteNameIndex(position, declaration, name),
                     Name = name,
                     Kind = isEvent
                         ? "static event"
@@ -498,66 +506,67 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
             }
         }
 
-        private static bool IsResetMethod(Context ctx, int pos)
+        private static bool IsResetMethod(ScanContext context, int position)
         {
-            string s = ctx.Cleaned;
-            int j = pos - 1;
-            while (j >= 0)
+            string cleaned = context.Cleaned;
+            int index = position - 1;
+            while (index >= 0)
             {
-                char c = s[j];
-                if (c is '}' or '{' or ';')
+                char current = cleaned[index];
+                if (current is '}' or '{' or ';')
                     break;
 
-                j--;
+                index--;
             }
 
-            string prefix = s.Substring(j + 1, pos - (j + 1));
-            foreach (string attr in ctx.Opt.ResetAttributes)
+            string prefix = cleaned.Substring(index + 1, position - (index + 1));
+            foreach (string attribute in context.Options.ResetAttributes)
             {
-                if (Regex.IsMatch(prefix, $@"\b{Regex.Escape(attr)}\b"))
+                if (Regex.IsMatch(prefix, $@"\b{Regex.Escape(attribute)}\b"))
                     return true;
             }
 
             return false;
         }
 
-        private static string CleanSource(string s)
+        private static string CleanSource(string source)
         {
-            StringBuilder sb = new(s.Length);
-            int i = 0, n = s.Length;
-            while (i < n)
+            StringBuilder builder = new(source.Length);
+            int index = 0, length = source.Length;
+            while (index < length)
             {
-                char c = s[i];
+                char current = source[index];
 
-                switch (c)
+                switch (current)
                 {
-                    case '/' when i + 1 < n && s[i + 1] == '/':
+                    case '/' when index + 1 < length && source[index + 1] == '/':
                     {
-                        while (i < n && s[i] != '\n')
+                        while (index < length && source[index] != '\n')
                         {
-                            sb.Append(' ');
-                            i++;
+                            builder.Append(' ');
+                            index++;
                         }
 
                         continue;
                     }
-                    case '/' when i + 1 < n && s[i + 1] == '*':
+                    case '/' when index + 1 < length && source[index + 1] == '*':
                     {
-                        sb.Append("  ");
-                        i += 2;
-                        while (i < n && !(s[i] == '*' && i + 1 < n && s[i + 1] == '/'))
+                        builder.Append("  ");
+                        index += 2;
+                        while (index < length
+                               && !(source[index] == '*' && index + 1 < length && source[index + 1] == '/'))
                         {
-                            sb.Append(s[i] == '\n'
+                            builder.Append(source[index] == '\n'
                                 ? '\n'
                                 : ' ');
 
-                            i++;
+                            index++;
                         }
 
-                        if (i < n)
+                        if (index < length)
                         {
-                            sb.Append("  ");
-                            i += 2;
+                            builder.Append("  ");
+                            index += 2;
                         }
 
                         continue;
@@ -565,587 +574,587 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
                     case '@':
                     case '$':
                     {
-                        int j = i;
+                        int prefixEnd = index;
                         bool verbatim = false;
-                        while (j < n && (s[j] == '@' || s[j] == '$'))
+                        while (prefixEnd < length && (source[prefixEnd] == '@' || source[prefixEnd] == '$'))
                         {
-                            if (s[j] == '@')
+                            if (source[prefixEnd] == '@')
                                 verbatim = true;
 
-                            j++;
+                            prefixEnd++;
                         }
 
-                        if (j < n && s[j] == '"')
+                        if (prefixEnd < length && source[prefixEnd] == '"')
                         {
-                            for (int k = i; k < j; k++)
-                                sb.Append(' ');
+                            for (int prefixIndex = index; prefixIndex < prefixEnd; prefixIndex++)
+                                builder.Append(' ');
 
-                            i = BlankString(s, j, verbatim, sb);
+                            index = BlankString(source, prefixEnd, verbatim, builder);
                             continue;
                         }
 
-                        sb.Append(c);
-                        i++;
+                        builder.Append(current);
+                        index++;
                         continue;
                     }
                     case '"':
-                        i = BlankString(s, i, false, sb);
+                        index = BlankString(source, index, false, builder);
                         continue;
                     case '\'':
-                        i = BlankChar(s, i, sb);
+                        index = BlankChar(source, index, builder);
                         continue;
                     default:
-                        sb.Append(c);
-                        i++;
+                        builder.Append(current);
+                        index++;
                         break;
                 }
             }
 
-            return sb.ToString();
+            return builder.ToString();
         }
 
-        private static int BlankString(string s, int i, bool verbatim, StringBuilder sb)
+        private static int BlankString(string source, int index, bool verbatim, StringBuilder builder)
         {
-            int n = s.Length;
-            sb.Append(' ');
-            i++;
-            while (i < n)
+            int length = source.Length;
+            builder.Append(' ');
+            index++;
+            while (index < length)
             {
-                char c = s[i];
+                char current = source[index];
                 if (verbatim)
                 {
-                    if (c == '"')
+                    if (current == '"')
                     {
-                        if (i + 1 < n && s[i + 1] == '"')
+                        if (index + 1 < length && source[index + 1] == '"')
                         {
-                            sb.Append("  ");
-                            i += 2;
+                            builder.Append("  ");
+                            index += 2;
                             continue;
                         }
 
-                        sb.Append(' ');
-                        i++;
-                        return i;
+                        builder.Append(' ');
+                        index++;
+                        return index;
                     }
 
-                    sb.Append(c == '\n'
+                    builder.Append(current == '\n'
                         ? '\n'
                         : ' ');
 
-                    i++;
+                    index++;
                 }
                 else
                 {
-                    switch (c)
+                    switch (current)
                     {
-                        case '\\' when i + 1 < n:
+                        case '\\' when index + 1 < length:
                         {
-                            sb.Append("  ");
-                            i += 2;
+                            builder.Append("  ");
+                            index += 2;
                             continue;
                         }
                         case '"':
                         {
-                            sb.Append(' ');
-                            i++;
-                            return i;
+                            builder.Append(' ');
+                            index++;
+                            return index;
                         }
                         case '\n':
                         {
-                            sb.Append('\n');
-                            i++;
-                            return i;
+                            builder.Append('\n');
+                            index++;
+                            return index;
                         }
                         default:
                         {
-                            sb.Append(' ');
-                            i++;
+                            builder.Append(' ');
+                            index++;
                             break;
                         }
                     }
                 }
             }
 
-            return i;
+            return index;
         }
 
-        private static int BlankChar(string s, int i, StringBuilder sb)
+        private static int BlankChar(string source, int index, StringBuilder builder)
         {
-            int n = s.Length;
-            sb.Append(' ');
-            i++;
-            while (i < n)
+            int length = source.Length;
+            builder.Append(' ');
+            index++;
+            while (index < length)
             {
-                char c = s[i];
-                switch (c)
+                char current = source[index];
+                switch (current)
                 {
-                    case '\\' when i + 1 < n:
+                    case '\\' when index + 1 < length:
                     {
-                        sb.Append("  ");
-                        i += 2;
+                        builder.Append("  ");
+                        index += 2;
                         continue;
                     }
                     case '\'':
                     {
-                        sb.Append(' ');
-                        i++;
-                        return i;
+                        builder.Append(' ');
+                        index++;
+                        return index;
                     }
                     case '\n':
                     {
-                        sb.Append('\n');
-                        i++;
-                        return i;
+                        builder.Append('\n');
+                        index++;
+                        return index;
                     }
                     default:
                     {
-                        sb.Append(' ');
-                        i++;
+                        builder.Append(' ');
+                        index++;
                         break;
                     }
                 }
             }
 
-            return i;
+            return index;
         }
 
-        private static int MatchPair(string s, int openIdx, char open, char close)
+        private static int MatchPair(string text, int openIndex, char open, char close)
         {
             int depth = 0;
-            for (int i = openIdx; i < s.Length; i++)
+            for (int index = openIndex; index < text.Length; index++)
             {
-                if (s[i] == open)
+                if (text[index] == open)
                 {
                     depth++;
                 }
-                else if (s[i] == close)
+                else if (text[index] == close)
                 {
                     depth--;
                     if (depth == 0)
-                        return i + 1;
+                        return index + 1;
                 }
             }
 
-            return s.Length;
+            return text.Length;
         }
 
-        private static int FindTopLevelSemicolon(string s, int start)
+        private static int FindTopLevelSemicolon(string text, int start)
         {
-            int p = 0, b = 0, c = 0;
-            for (int i = start; i < s.Length; i++)
+            int parenthesis = 0, bracket = 0, brace = 0;
+            for (int index = start; index < text.Length; index++)
             {
-                char ch = s[i];
-                switch (ch)
+                char current = text[index];
+                switch (current)
                 {
                     case '(':
                     {
-                        p++;
+                        parenthesis++;
                         break;
                     }
                     case ')':
                     {
-                        if (p > 0)
-                            p--;
+                        if (parenthesis > 0)
+                            parenthesis--;
 
                         break;
                     }
                     case '[':
                     {
-                        b++;
+                        bracket++;
                         break;
                     }
                     case ']':
                     {
-                        if (b > 0)
-                            b--;
+                        if (bracket > 0)
+                            bracket--;
 
                         break;
                     }
                     case '{':
                     {
-                        c++;
+                        brace++;
                         break;
                     }
                     case '}':
                     {
-                        if (c > 0)
-                            c--;
+                        if (brace > 0)
+                            brace--;
 
                         break;
                     }
                     case ';':
                     {
-                        if (p == 0
-                            && b == 0
-                            && c == 0)
-                            return i;
+                        if (parenthesis == 0
+                            && bracket == 0
+                            && brace == 0)
+                            return index;
 
                         break;
                     }
                 }
             }
 
-            return s.Length - 1;
+            return text.Length - 1;
         }
 
-        private static List<string> SplitTopLevel(string s, char sep)
+        private static List<string> SplitTopLevel(string text, char separator)
         {
-            List<string> res = new();
-            int a = 0, p = 0, b = 0, c = 0, last = 0;
-            for (int i = 0; i < s.Length; i++)
+            List<string> parts = new();
+            int angle = 0, parenthesis = 0, bracket = 0, brace = 0, segmentStart = 0;
+            for (int index = 0; index < text.Length; index++)
             {
-                char ch = s[i];
-                switch (ch)
+                char current = text[index];
+                switch (current)
                 {
                     case '<':
-                        a++;
+                        angle++;
                         break;
                     case '>':
-                        if (a > 0)
-                            a--;
+                        if (angle > 0)
+                            angle--;
 
                         break;
                     case '(':
-                        p++;
+                        parenthesis++;
                         break;
                     case ')':
-                        if (p > 0)
-                            p--;
+                        if (parenthesis > 0)
+                            parenthesis--;
 
                         break;
                     case '[':
-                        b++;
+                        bracket++;
                         break;
                     case ']':
-                        if (b > 0)
-                            b--;
+                        if (bracket > 0)
+                            bracket--;
 
                         break;
                     case '{':
-                        c++;
+                        brace++;
                         break;
                     case '}':
-                        if (c > 0)
-                            c--;
+                        if (brace > 0)
+                            brace--;
 
                         break;
                 }
 
-                if (ch != sep
-                    || a != 0
-                    || p != 0
-                    || b != 0
-                    || c != 0)
+                if (current != separator
+                    || angle != 0
+                    || parenthesis != 0
+                    || bracket != 0
+                    || brace != 0)
                     continue;
 
-                res.Add(s.Substring(last, i - last));
-                last = i + 1;
+                parts.Add(text.Substring(segmentStart, index - segmentStart));
+                segmentStart = index + 1;
             }
 
-            res.Add(s[last..]);
-            return res;
+            parts.Add(text[segmentStart..]);
+            return parts;
         }
 
-        private static int IndexOfTopLevelAssign(string s)
+        private static int IndexOfTopLevelAssign(string text)
         {
-            int a = 0, p = 0, b = 0, c = 0;
-            for (int i = 0; i < s.Length; i++)
+            int angle = 0, parenthesis = 0, bracket = 0, brace = 0;
+            for (int index = 0; index < text.Length; index++)
             {
-                char ch = s[i];
-                switch (ch)
+                char current = text[index];
+                switch (current)
                 {
                     case '<':
                     {
-                        a++;
+                        angle++;
                         break;
                     }
                     case '>':
                     {
-                        if (a > 0)
-                            a--;
+                        if (angle > 0)
+                            angle--;
 
                         break;
                     }
                     case '(':
                     {
-                        p++;
+                        parenthesis++;
                         break;
                     }
                     case ')':
                     {
-                        if (p > 0)
-                            p--;
+                        if (parenthesis > 0)
+                            parenthesis--;
 
                         break;
                     }
                     case '[':
                     {
-                        b++;
+                        bracket++;
                         break;
                     }
                     case ']':
                     {
-                        if (b > 0)
-                            b--;
+                        if (bracket > 0)
+                            bracket--;
 
                         break;
                     }
                     case '{':
                     {
-                        c++;
+                        brace++;
                         break;
                     }
                     case '}':
                     {
-                        if (c > 0)
-                            c--;
+                        if (brace > 0)
+                            brace--;
 
                         break;
                     }
                 }
 
-                if (ch != '='
-                    || a != 0
-                    || p != 0
-                    || b != 0
-                    || c != 0)
+                if (current != '='
+                    || angle != 0
+                    || parenthesis != 0
+                    || bracket != 0
+                    || brace != 0)
                     continue;
 
-                char nx = i + 1 < s.Length
-                    ? s[i + 1]
+                char next = index + 1 < text.Length
+                    ? text[index + 1]
                     : '\0';
 
-                char pv = i > 0
-                    ? s[i - 1]
+                char previous = index > 0
+                    ? text[index - 1]
                     : '\0';
 
-                if (nx == '>'
-                    || nx == '='
-                    || pv == '='
-                    || pv == '!'
-                    || pv == '<'
-                    || pv == '>'
-                    || pv == '+'
-                    || pv == '-'
-                    || pv == '*'
-                    || pv == '/'
-                    || pv == '%'
-                    || pv == '&'
-                    || pv == '|'
-                    || pv == '^')
+                if (next == '>'
+                    || next == '='
+                    || previous == '='
+                    || previous == '!'
+                    || previous == '<'
+                    || previous == '>'
+                    || previous == '+'
+                    || previous == '-'
+                    || previous == '*'
+                    || previous == '/'
+                    || previous == '%'
+                    || previous == '&'
+                    || previous == '|'
+                    || previous == '^')
                     continue;
 
-                return i;
+                return index;
             }
 
             return -1;
         }
 
-        private static string StripLeadingModifiers(string s, out bool isEvent, out bool isReadonly)
+        private static string StripLeadingModifiers(string text, out bool isEvent, out bool isReadonly)
         {
             isEvent = false;
             isReadonly = false;
             while (true)
             {
-                int i = 0;
-                while (i < s.Length && char.IsWhiteSpace(s[i]))
-                    i++;
+                int index = 0;
+                while (index < text.Length && char.IsWhiteSpace(text[index]))
+                    index++;
 
-                int start = i;
-                while (i < s.Length && (char.IsLetterOrDigit(s[i]) || s[i] == '_'))
-                    i++;
+                int start = index;
+                while (index < text.Length && (char.IsLetterOrDigit(text[index]) || text[index] == '_'))
+                    index++;
 
-                if (i == start)
+                if (index == start)
                     break;
 
-                string tok = s.Substring(start, i - start);
-                if (!Modifiers.Contains(tok))
+                string token = text.Substring(start, index - start);
+                if (!Modifiers.Contains(token))
                     break;
 
-                if (tok == "event")
+                if (token == "event")
                     isEvent = true;
 
-                if (tok == "readonly")
+                if (token == "readonly")
                     isReadonly = true;
 
-                s = s[i..];
+                text = text[index..];
             }
 
-            return s;
+            return text;
         }
 
-        private static string LastIdentifier(string s)
+        private static string LastIdentifier(string text)
         {
-            s = s.TrimEnd();
-            int j = s.Length - 1;
-            if (j < 0 || !(char.IsLetterOrDigit(s[j]) || s[j] == '_'))
+            text = text.TrimEnd();
+            int end = text.Length - 1;
+            if (end < 0 || !(char.IsLetterOrDigit(text[end]) || text[end] == '_'))
                 return null;
 
-            int k = j;
-            while (k >= 0 && (char.IsLetterOrDigit(s[k]) || s[k] == '_'))
-                k--;
+            int start = end;
+            while (start >= 0 && (char.IsLetterOrDigit(text[start]) || text[start] == '_'))
+                start--;
 
-            return s.Substring(k + 1, j - k);
+            return text.Substring(start + 1, end - start);
         }
 
-        private static string FirstIdentifier(string s)
+        private static string FirstIdentifier(string text)
         {
-            int i = 0;
-            while (i < s.Length && !(char.IsLetterOrDigit(s[i]) || s[i] == '_'))
-                i++;
+            int index = 0;
+            while (index < text.Length && !(char.IsLetterOrDigit(text[index]) || text[index] == '_'))
+                index++;
 
-            int st = i;
-            while (i < s.Length && (char.IsLetterOrDigit(s[i]) || s[i] == '_'))
-                i++;
+            int start = index;
+            while (index < text.Length && (char.IsLetterOrDigit(text[index]) || text[index] == '_'))
+                index++;
 
-            return i > st
-                ? s.Substring(st, i - st)
+            return index > start
+                ? text.Substring(start, index - start)
                 : null;
         }
 
-        private static string ReadIdentifierBefore(string s, int index)
+        private static string ReadIdentifierBefore(string text, int index)
         {
-            int i = index - 1;
-            while (i >= 0 && char.IsWhiteSpace(s[i]))
-                i--;
+            int cursor = index - 1;
+            while (cursor >= 0 && char.IsWhiteSpace(text[cursor]))
+                cursor--;
 
-            if (i >= 0 && s[i] == '>')
+            if (cursor >= 0 && text[cursor] == '>')
             {
                 int depth = 0;
-                while (i >= 0)
+                while (cursor >= 0)
                 {
-                    if (s[i] == '>')
+                    if (text[cursor] == '>')
                     {
                         depth++;
                     }
-                    else if (s[i] == '<')
+                    else if (text[cursor] == '<')
                     {
                         depth--;
                         if (depth == 0)
                         {
-                            i--;
+                            cursor--;
                             break;
                         }
                     }
 
-                    i--;
+                    cursor--;
                 }
 
-                while (i >= 0 && char.IsWhiteSpace(s[i]))
-                    i--;
+                while (cursor >= 0 && char.IsWhiteSpace(text[cursor]))
+                    cursor--;
             }
 
-            int end = i + 1, k = i;
-            while (k >= 0 && (char.IsLetterOrDigit(s[k]) || s[k] == '_'))
-                k--;
+            int end = cursor + 1, start = cursor;
+            while (start >= 0 && (char.IsLetterOrDigit(text[start]) || text[start] == '_'))
+                start--;
 
-            return end - (k + 1) > 0
-                ? s.Substring(k + 1, end - (k + 1))
+            return end - (start + 1) > 0
+                ? text.Substring(start + 1, end - (start + 1))
                 : null;
         }
 
-        private static char PrevNonSpace(string s, int idx)
+        private static char PrevNonSpace(string text, int index)
         {
-            while (idx >= 0 && char.IsWhiteSpace(s[idx]))
-                idx--;
+            while (index >= 0 && char.IsWhiteSpace(text[index]))
+                index--;
 
-            return idx >= 0
-                ? s[idx]
+            return index >= 0
+                ? text[index]
                 : '\0';
         }
 
-        private static bool PrecededByWord(string s, int pos, string word)
+        private static bool PrecededByWord(string text, int position, string word)
         {
-            int i = pos - 1;
-            while (i >= 0 && char.IsWhiteSpace(s[i]))
-                i--;
+            int cursor = position - 1;
+            while (cursor >= 0 && char.IsWhiteSpace(text[cursor]))
+                cursor--;
 
-            int end = i + 1, k = i;
-            while (k >= 0 && (char.IsLetterOrDigit(s[k]) || s[k] == '_'))
-                k--;
+            int end = cursor + 1, start = cursor;
+            while (start >= 0 && (char.IsLetterOrDigit(text[start]) || text[start] == '_'))
+                start--;
 
-            return end - (k + 1) > 0 && s.Substring(k + 1, end - (k + 1)) == word;
+            return end - (start + 1) > 0 && text.Substring(start + 1, end - (start + 1)) == word;
         }
 
-        private static int AbsoluteNameIndex(int pos, string text, string name)
+        private static int AbsoluteNameIndex(int position, string text, string name)
         {
             MatchCollection matches = Regex.Matches(text, $@"\b{Regex.Escape(name)}\b");
             return matches.Count > 0
-                ? pos + matches[^1].Index
-                : pos;
+                ? position + matches[^1].Index
+                : position;
         }
 
-        private static bool IsKeyword(string s) => Keywords.Contains(s);
+        private static bool IsKeyword(string word) => Keywords.Contains(word);
 
-        private static int[] BuildLineStarts(string s)
+        private static int[] BuildLineStarts(string source)
         {
-            List<int> list = new()
+            List<int> starts = new()
             {
                 0
             };
 
-            for (int i = 0; i < s.Length; i++)
+            for (int index = 0; index < source.Length; index++)
             {
-                if (s[i] == '\n')
-                    list.Add(i + 1);
+                if (source[index] == '\n')
+                    starts.Add(index + 1);
             }
 
-            return list.ToArray();
+            return starts.ToArray();
         }
 
         private static int LineFromIndex(int[] lineStarts, int index)
         {
-            int lo = 0, hi = lineStarts.Length - 1, ans = 0;
-            while (lo <= hi)
+            int low = 0, high = lineStarts.Length - 1, found = 0;
+            while (low <= high)
             {
-                int mid = (lo + hi) / 2;
+                int mid = (low + high) / 2;
                 if (lineStarts[mid] <= index)
                 {
-                    ans = mid;
-                    lo = mid + 1;
+                    found = mid;
+                    low = mid + 1;
                 }
                 else
                 {
-                    hi = mid - 1;
+                    high = mid - 1;
                 }
             }
 
-            return ans + 1;
+            return found + 1;
         }
 
-        private static string GetLineText(string source, int[] lineStarts, int line1Based)
+        private static string GetLineText(string source, int[] lineStarts, int lineNumber)
         {
-            int idx = line1Based - 1;
-            if (idx < 0 || idx >= lineStarts.Length)
+            int index = lineNumber - 1;
+            if (index < 0 || index >= lineStarts.Length)
                 return string.Empty;
 
-            int start = lineStarts[idx];
-            int end = idx + 1 < lineStarts.Length
-                ? lineStarts[idx + 1]
+            int start = lineStarts[index];
+            int end = index + 1 < lineStarts.Length
+                ? lineStarts[index + 1]
                 : source.Length;
 
             string text = source.Substring(start, end - start).TrimEnd('\r', '\n');
-            return text.Length > 200
-                ? text[..200]
+            return text.Length > MaxSnippetLength
+                ? text[..MaxSnippetLength]
                 : text;
         }
 
         private static string ToAssetPath(string absolute, PackageInfo[] packages)
         {
-            string abs = absolute.Replace('\\', '/');
+            string path = absolute.Replace('\\', '/');
             string dataPath = Application.dataPath.Replace('\\', '/');
-            if (abs.StartsWith(dataPath, StringComparison.OrdinalIgnoreCase))
-                return "Assets" + abs[dataPath.Length..];
+            if (path.StartsWith(dataPath, StringComparison.OrdinalIgnoreCase))
+                return "Assets" + path[dataPath.Length..];
 
             foreach (PackageInfo package in packages)
             {
                 string resolved = package.resolvedPath.Replace('\\', '/').TrimEnd('/');
                 if (resolved.Length > 0
-                    && abs.StartsWith(resolved + "/", StringComparison.OrdinalIgnoreCase))
-                    return package.assetPath + abs[resolved.Length..];
+                    && path.StartsWith(resolved + "/", StringComparison.OrdinalIgnoreCase))
+                    return package.assetPath + path[resolved.Length..];
             }
 
-            return abs;
+            return path;
         }
     }
 }

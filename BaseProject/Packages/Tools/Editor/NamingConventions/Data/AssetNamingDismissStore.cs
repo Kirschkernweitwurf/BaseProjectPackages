@@ -1,8 +1,5 @@
-using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using UnityEngine;
+using Base.ToolPackage.Editor.Shared;
 
 namespace Base.ToolPackage.Editor.NamingConventions.Data
 {
@@ -11,88 +8,35 @@ namespace Base.ToolPackage.Editor.NamingConventions.Data
     /// per-project file under ProjectSettings, so dismissals survive rescans, renames and restarts
     /// and can be committed for the team.
     /// </summary>
+    /// <remarks>
+    /// A named front for one <see cref="GuidDismissStore"/>, which owns the reading, writing and
+    /// error handling. Only the part of that API this window uses is exposed, so the file name stays
+    /// in one place and the window keeps calling the store it already knows.
+    /// </remarks>
     internal static class AssetNamingDismissStore
     {
         private const string FilePath = "ProjectSettings/AssetNamingDismissed.json";
 
-        private static HashSet<string> Guids => _guids ??= Load();
-
-        private static HashSet<string> _guids;
+        private static readonly GuidDismissStore Store = new(FilePath);
 
         /// <summary>True when the asset was dismissed.</summary>
-        public static bool IsDismissed(string guid) => !string.IsNullOrEmpty(guid) && Guids.Contains(guid);
+        /// <param name="guid">GUID of the asset to test.</param>
+        /// <returns>True when future scans should skip it.</returns>
+        internal static bool IsDismissed(string guid) => Store.IsDismissed(guid);
 
         /// <summary>Excludes the asset from future scans.</summary>
-        public static void Dismiss(string guid)
-        {
-            if (string.IsNullOrEmpty(guid))
-                return;
-
-            if (Guids.Add(guid))
-                Save();
-        }
+        /// <param name="guid">GUID of the asset to dismiss.</param>
+        internal static void Dismiss(string guid) => Store.Dismiss(guid);
 
         /// <summary>Brings the asset back into future scans.</summary>
-        public static void Restore(string guid)
-        {
-            if (string.IsNullOrEmpty(guid))
-                return;
-
-            if (Guids.Remove(guid))
-                Save();
-        }
+        /// <param name="guid">GUID of the asset to restore.</param>
+        internal static void Restore(string guid) => Store.Restore(guid);
 
         /// <summary>Drops every dismissal.</summary>
-        public static void Clear()
-        {
-            if (Guids.Count == 0)
-                return;
-
-            Guids.Clear();
-            Save();
-        }
+        internal static void Clear() => Store.Clear();
 
         /// <summary>Snapshot of the dismissed GUIDs, safe to iterate while dismissing or restoring.</summary>
-        public static IReadOnlyList<string> GetAll() => Guids.ToList();
-
-        private static HashSet<string> Load()
-        {
-            if (!File.Exists(FilePath))
-                return new HashSet<string>();
-
-            try
-            {
-                Data data = JsonUtility.FromJson<Data>(File.ReadAllText(FilePath));
-
-                return data?.guids != null
-                    ? new HashSet<string>(data.guids)
-                    : new HashSet<string>();
-            }
-            catch
-            {
-                // A broken file only loses the dismissals, so starting fresh beats blocking the tool.
-                return new HashSet<string>();
-            }
-        }
-
-        private static void Save()
-        {
-            Data data = new()
-            {
-                guids = Guids.ToList()
-            };
-
-            File.WriteAllText(FilePath, JsonUtility.ToJson(data, true));
-        }
-
-        [Serializable]
-        private sealed class Data
-        {
-            /// <summary>
-            /// The dismissed assets. A list rather than a set because JsonUtility cannot serialize one;
-            /// it becomes a set again on load.
-            /// </summary>
-            public List<string> guids = new();
-        }
+        /// <returns>A copy of the dismissed GUIDs.</returns>
+        internal static IReadOnlyList<string> GetAll() => Store.GetAll();
     }
 }

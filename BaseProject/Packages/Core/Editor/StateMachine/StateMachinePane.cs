@@ -11,8 +11,9 @@ namespace Base.CorePackage.Editor.StateMachine
         /// <summary>Where the content of the pane goes.</summary>
         internal VisualElement Body { get; } = new();
 
-        /// <summary>The row of the header right of the title, for chips.</summary>
-        internal VisualElement HeaderRight { get; } = new();
+        // A growing row pinned to the right of the title. Nothing sits in it yet; it is what pushes
+        // the title left and keeps the header from collapsing onto its content.
+        private readonly VisualElement _headerRight = new();
 
         private readonly Label _note = new();
         private readonly Label _title;
@@ -31,23 +32,19 @@ namespace Base.CorePackage.Editor.StateMachine
 
             _note.AddToClassList(StateMachineStyle.PaneNoteClass);
 
-            HeaderRight.style.flexDirection = FlexDirection.Row;
-            HeaderRight.style.flexGrow = 1f;
-            HeaderRight.style.justifyContent = Justify.FlexEnd;
+            _headerRight.style.flexDirection = FlexDirection.Row;
+            _headerRight.style.flexGrow = 1f;
+            _headerRight.style.justifyContent = Justify.FlexEnd;
 
             header.Add(_title);
             header.Add(_note);
-            header.Add(HeaderRight);
+            header.Add(_headerRight);
 
             Body.AddToClassList(StateMachineStyle.PaneBodyClass);
 
             Add(header);
             Add(Body);
         }
-
-        /// <summary>Changes the headline.</summary>
-        /// <param name="title">The new headline.</param>
-        internal void SetTitle(string title) => _title.text = title;
 
         /// <summary>Sets the quiet line next to the title, used for counts.</summary>
         /// <param name="text">The note, or an empty string to hide it.</param>

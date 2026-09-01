@@ -64,7 +64,7 @@ namespace Base.AttributePackage.Editor.SceneHandles
 
             if (bindings.Length > 0)
             {
-                HandleContext context = new(property, field, target, transform, declaringType, declaringObject);
+                HandleContext context = new(property, field, transform, declaringType, declaringObject);
 
                 foreach (HandleBinding binding in bindings)
                     binding.Drawer.Draw(context, binding.Attribute);

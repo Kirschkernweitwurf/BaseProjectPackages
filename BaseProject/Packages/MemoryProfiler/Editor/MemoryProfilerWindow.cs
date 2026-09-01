@@ -9,7 +9,7 @@ namespace Base.MemoryProfilerPackage.Editor
     /// <summary>
     /// Editor window to edit the runtime config and trigger manual captures.
     /// </summary>
-    public sealed class MemoryProfilerWindow : EditorWindow
+    internal sealed class MemoryProfilerWindow : EditorWindow
     {
         private const string ActionsHeader = "Actions";
         private const string AssetsFolder = "Assets";

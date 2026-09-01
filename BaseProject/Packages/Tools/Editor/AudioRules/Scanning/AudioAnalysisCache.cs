@@ -76,15 +76,6 @@ namespace Base.ToolPackage.Editor.AudioRules.Scanning
             }
         }
 
-        /// <summary>Throws the cache away so the next deep pass reads every file again.</summary>
-        internal static void Clear()
-        {
-            Entries.Clear();
-            _isDirty = true;
-
-            Flush();
-        }
-
         private static Dictionary<string, Entry> Load()
         {
             Dictionary<string, Entry> loaded = new();

@@ -33,10 +33,6 @@ namespace Base.AttributePackage.Editor.Core
 
         private static GUIStyle _label;
 
-        /// <summary>Draws the box for the given attribute, using its own message.</summary>
-        /// <param name="attribute">The attribute to draw.</param>
-        internal static void Draw(InfoBoxAttribute attribute) => Draw(attribute, attribute?.Message);
-
         /// <summary>Draws the box for the given attribute with an already resolved message.</summary>
         /// <param name="attribute">The attribute to draw.</param>
         /// <param name="message">The message to show.</param>
@@ -52,24 +48,6 @@ namespace Base.AttributePackage.Editor.Core
             }
 
             DrawBox(message, attribute.Type);
-        }
-
-        /// <summary>Maps the package's box type onto Unity's own.</summary>
-        /// <param name="type">The box type to map.</param>
-        /// <returns>The matching message type.</returns>
-        internal static MessageType ToMessageType(EInfoBoxType type)
-        {
-            switch (type)
-            {
-                case EInfoBoxType.Info:
-                    return MessageType.Info;
-                case EInfoBoxType.Warning:
-                    return MessageType.Warning;
-                case EInfoBoxType.Error:
-                    return MessageType.Error;
-                default:
-                    return MessageType.None;
-            }
         }
 
         private static void DrawBox(string message, EInfoBoxType type)

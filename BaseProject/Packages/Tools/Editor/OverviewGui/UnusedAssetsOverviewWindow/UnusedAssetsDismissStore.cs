@@ -1,8 +1,5 @@
-using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using UnityEngine;
+using Base.ToolPackage.Editor.Shared;
 
 namespace Base.ToolPackage.Editor.OverviewGui.UnusedAssetsOverviewWindow
 {
@@ -10,104 +7,42 @@ namespace Base.ToolPackage.Editor.OverviewGui.UnusedAssetsOverviewWindow
     /// Remembers assets the user chose to keep. Stored by GUID in a per-project file under
     /// ProjectSettings, so dismissals survive rescans and restarts and can be committed for the team.
     /// </summary>
+    /// <remarks>
+    /// A named front for one <see cref="GuidDismissStore"/>, which owns the reading, writing and
+    /// error handling. Only the part of that API this window uses is exposed, so the file name stays
+    /// in one place and the window keeps calling the store it already knows.
+    /// </remarks>
     internal static class UnusedAssetsDismissStore
     {
         private const string FilePath = "ProjectSettings/UnusedAssetsDismissed.json";
 
+        private static readonly GuidDismissStore Store = new(FilePath);
+
         /// <summary>How many assets are currently dismissed, shown beside the clear button.</summary>
-        internal static int Count => Guids.Count;
+        internal static int Count => Store.Count;
 
-        private static HashSet<string> Guids => _guids ??= Load();
+        /// <summary>True when the asset was dismissed.</summary>
+        /// <param name="guid">GUID of the asset to test.</param>
+        /// <returns>True when future scans should skip it.</returns>
+        internal static bool IsDismissed(string guid) => Store.IsDismissed(guid);
 
-        private static HashSet<string> _guids;
+        /// <summary>Excludes the asset from future scans.</summary>
+        /// <param name="guid">GUID of the asset to dismiss.</param>
+        internal static void Dismiss(string guid) => Store.Dismiss(guid);
 
-        /// <summary>True when the entry was dismissed.</summary>
-        internal static bool IsDismissed(string guid) => !string.IsNullOrEmpty(guid) && Guids.Contains(guid);
+        /// <summary>Excludes every given asset from future scans in one write.</summary>
+        /// <param name="guids">GUIDs of the assets to dismiss. Empty entries are skipped.</param>
+        internal static void DismissRange(IEnumerable<string> guids) => Store.DismissRange(guids);
 
-        /// <summary>Excludes the entry from future scans.</summary>
-        internal static void Dismiss(string guid)
-        {
-            if (string.IsNullOrEmpty(guid))
-                return;
+        /// <summary>Brings the asset back into future scans.</summary>
+        /// <param name="guid">GUID of the asset to restore.</param>
+        internal static void Restore(string guid) => Store.Restore(guid);
 
-            if (Guids.Add(guid))
-                Save();
-        }
-
-        /// <summary>Excludes every given entry from future scans in one write.</summary>
-        internal static void DismissRange(IEnumerable<string> guids)
-        {
-            bool changed = false;
-
-            foreach (string guid in guids)
-            {
-                if (!string.IsNullOrEmpty(guid) && Guids.Add(guid))
-                    changed = true;
-            }
-
-            if (changed)
-                Save();
-        }
-
-        /// <summary>Brings the entry back into future scans.</summary>
-        internal static void Restore(string guid)
-        {
-            if (string.IsNullOrEmpty(guid))
-                return;
-
-            if (Guids.Remove(guid))
-                Save();
-        }
-
-        /// <summary>Clears every dismissal.</summary>
-        internal static void Clear()
-        {
-            if (Guids.Count == 0)
-                return;
-
-            Guids.Clear();
-            Save();
-        }
+        /// <summary>Drops every dismissal.</summary>
+        internal static void Clear() => Store.Clear();
 
         /// <summary>Snapshot of the dismissed GUIDs, safe to iterate while dismissing or restoring.</summary>
-        internal static IReadOnlyList<string> GetAll() => Guids.ToList();
-
-        private static HashSet<string> Load()
-        {
-            if (!File.Exists(FilePath))
-                return new HashSet<string>();
-
-            try
-            {
-                Data data = JsonUtility.FromJson<Data>(File.ReadAllText(FilePath));
-                return data?.guids != null
-                    ? new HashSet<string>(data.guids)
-                    : new HashSet<string>();
-            }
-            catch
-            {
-                return new HashSet<string>();
-            }
-        }
-
-        private static void Save()
-        {
-            Data data = new()
-            {
-                guids = Guids.ToList()
-            };
-
-            File.WriteAllText(FilePath, JsonUtility.ToJson(data, true));
-        }
-
-        [Serializable]
-        private sealed class Data
-        {
-            /// <summary>
-            /// The dismissed assets. A list rather than a set because JsonUtility cannot serialize
-            /// one; it becomes a set again on load.
-            /// </summary>
-            public List<string> guids = new();
-        }
+        /// <returns>A copy of the dismissed GUIDs.</returns>
+        internal static IReadOnlyList<string> GetAll() => Store.GetAll();
     }
 }

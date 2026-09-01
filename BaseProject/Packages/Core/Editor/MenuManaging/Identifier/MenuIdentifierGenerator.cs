@@ -14,7 +14,7 @@ namespace Base.CorePackage.Editor.MenuManaging.Identifier
     /// Editor utility that scans the project for all <see cref="MenuIdentifier"/> assets and generates
     /// a static accessor class for them, as well as a registry asset for runtime resolution.
     /// </summary>
-    public static class MenuIdentifierGenerator
+    internal static class MenuIdentifierGenerator
     {
         private const string DefaultRegistryDirectory = "Assets/Generated/Resources";
         private const string GeneratedClassName = "MenuIdentifiers";
@@ -30,7 +30,7 @@ namespace Base.CorePackage.Editor.MenuManaging.Identifier
         /// Rebuilds the registry asset and the generated accessor class from the identifiers in the project.
         /// </summary>
         [DynamicMenuItem(RegenerateMenuPath)]
-        public static void Regenerate()
+        internal static void Regenerate()
         {
             MenuIdentifier[] identifiers = LoadAllIdentifiers();
 

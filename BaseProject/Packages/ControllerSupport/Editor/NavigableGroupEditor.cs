@@ -12,7 +12,7 @@ namespace Base.ControllerSupportPackage.Editor
     /// full overview lives in the <see cref="NavigationGroupsWindow"/>.
     /// </summary>
     [CustomEditor(typeof(NavigableGroup))]
-    public sealed class NavigableGroupEditor : AttributePackageEditor
+    internal sealed class NavigableGroupEditor : AttributePackageEditor
     {
         private const string RebuildLabel = "Rebuild";
         private const string RebuildSceneLabel = "Rebuild Scene";

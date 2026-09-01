@@ -1,4 +1,3 @@
-using System;
 using Object = UnityEngine.Object;
 
 namespace Base.AttributePackage
@@ -12,18 +11,17 @@ namespace Base.AttributePackage
         /// <summary>Dotted path from the owner to the field, for example "level1.level2.field".</summary>
         internal readonly string Path;
 
-        /// <summary>The declared type of the field.</summary>
-        internal readonly Type FieldType;
-
         /// <summary>Short reason the field is invalid, for example "is required".</summary>
         internal readonly string Reason;
 
         /// <summary>Creates an issue record.</summary>
-        public ReferenceIssue(Object owner, string path, Type fieldType, string reason)
+        /// <param name="owner">The component or asset that owns the field.</param>
+        /// <param name="path">Dotted path from the owner to the field.</param>
+        /// <param name="reason">Short reason the field is invalid.</param>
+        internal ReferenceIssue(Object owner, string path, string reason)
         {
             Owner = owner;
             Path = path;
-            FieldType = fieldType;
             Reason = reason;
         }
     }

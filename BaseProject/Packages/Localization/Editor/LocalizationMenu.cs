@@ -6,7 +6,7 @@ namespace Base.LocalizationPackage.Editor
     /// Adds menu items to the Unity Editor for syncing String Table
     /// Collections with Google Sheets and opening the sync window.
     /// </summary>
-    public static class LocalizationMenu
+    internal static class LocalizationMenu
     {
         private const string Root = "Tools/Base Packages/Assets/Localization/";
 

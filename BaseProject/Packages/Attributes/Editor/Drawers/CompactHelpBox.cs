@@ -29,9 +29,6 @@ namespace Base.AttributePackage.Editor.Drawers
 
         private static GUIStyle _label;
 
-        /// <summary>Draws a compact info line.</summary>
-        internal static void Info(string message) => Draw(message, EInfoBoxType.Info);
-
         /// <summary>Draws a compact warning line.</summary>
         internal static void Warning(string message) => Draw(message, EInfoBoxType.Warning);
 
@@ -48,16 +45,14 @@ namespace Base.AttributePackage.Editor.Drawers
         internal static void Draw(string message, EInfoBoxType type, string hex, EColor preset)
             => Draw(message, type, Resolve(hex, preset, DefaultColor(type)));
 
-        /// <summary>Draws a compact line for the given type with an explicit color.</summary>
-        internal static void Draw(string message, EInfoBoxType type, Color color)
-            => Draw(EditorGUILayout.GetControlRect(false, Height), message, type, color);
-
         /// <summary>Draws a compact line into the given rect, for use inside PropertyDrawers.</summary>
         internal static void Draw(Rect rect, string message, EInfoBoxType type)
             => Draw(rect, message, type, DefaultColor(type));
 
-        /// <summary>Draws a compact line into the given rect with an explicit color.</summary>
-        internal static void Draw(Rect rect, string message, EInfoBoxType type, Color color)
+        private static void Draw(string message, EInfoBoxType type, Color color)
+            => Draw(EditorGUILayout.GetControlRect(false, Height), message, type, color);
+
+        private static void Draw(Rect rect, string message, EInfoBoxType type, Color color)
         {
             Build();
 

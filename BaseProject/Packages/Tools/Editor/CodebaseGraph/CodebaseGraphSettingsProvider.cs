@@ -73,13 +73,10 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             EditorGUILayout.Space(EditorMetrics.ItemGap);
 
             EditorWindowChrome.DrawSectionHeader(Styles, IgnoredHeader);
-            EditorWindowChrome.BeginCard(Styles);
 
             EditorGUI.BeginChangeCheck();
 
             EditorGUILayout.PropertyField(_fragmentsProperty, true);
-
-            EditorWindowChrome.EndCard();
 
             if (!EditorGUI.EndChangeCheck())
                 return;

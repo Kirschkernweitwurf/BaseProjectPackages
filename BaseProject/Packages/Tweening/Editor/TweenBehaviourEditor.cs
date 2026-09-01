@@ -11,7 +11,7 @@ namespace Base.TweeningPackage.Editor
     /// </summary>
     [CanEditMultipleObjects]
     [CustomEditor(typeof(TweenBehaviourBase), true)]
-    public sealed class TweenBehaviourEditor : AttributePackageEditor
+    internal sealed class TweenBehaviourEditor : AttributePackageEditor
     {
         public override void OnInspectorGUI() => TweenInspectorLayout.Draw(this);
     }

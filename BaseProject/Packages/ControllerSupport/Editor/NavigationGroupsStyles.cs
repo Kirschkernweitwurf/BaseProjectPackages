@@ -16,6 +16,8 @@ namespace Base.ControllerSupportPackage.Editor
     /// </summary>
     internal static class NavigationGroupsStyles
     {
+        private const int BadgeFontSize = 10;
+
         /// <summary>Height of a row button.</summary>
         internal const float ButtonHeight = 18f;
 
@@ -24,6 +26,8 @@ namespace Base.ControllerSupportPackage.Editor
 
         /// <summary>Width of the "Fix" button.</summary>
         internal const float FixButtonWidth = 40f;
+
+        private const float IssueRowAlpha = 0.06f;
 
         /// <summary>Smallest width any badge column takes.</summary>
         internal const float MinBadgeWidth = 64f;
@@ -39,15 +43,20 @@ namespace Base.ControllerSupportPackage.Editor
 
         /// <summary>Width of the toolbar's "Refresh" button.</summary>
         internal const float ToolbarButtonWidth = 60f;
-        private const int BadgeFontSize = 10;
 
-        private const float IssueRowAlpha = 0.06f;
+        private static readonly EditorStyleWatch Watch = new();
+
+        // The two hues the palette has no name for: a count is not a state, and a focus priority is
+        // not the amber the palette reserves for a link or an override.
+        private static readonly Color ElementsHue = new(0.70f, 0.45f, 0.95f);
+        private static readonly Color PriorityHue = new(0.35f, 0.55f, 0.95f);
+
+        private static GUIStyle _badge;
+        private static GUIStyle _header;
+        private static GUIStyle _name;
 
         /// <summary>Horizontal gap between two badges or buttons.</summary>
         internal static float BadgeGap => EditorMetrics.TightGap;
-
-        /// <summary>Height of a badge.</summary>
-        internal static float BadgeHeight => EditorMetrics.BadgeHeight;
 
         /// <summary>Height of the column header strip.</summary>
         internal static float HeaderHeight => EditorMetrics.HeaderHeight;
@@ -126,17 +135,6 @@ namespace Base.ControllerSupportPackage.Editor
 
         /// <summary>Badge color of a value that breaks a menu rule.</summary>
         internal static Color WarningBadgeColor => EditorTableStyles.WarningBadgeColor;
-
-        private static readonly EditorStyleWatch Watch = new();
-
-        // The two hues the palette has no name for: a count is not a state, and a focus priority is
-        // not the amber the palette reserves for a link or an override.
-        private static readonly Color ElementsHue = new(0.70f, 0.45f, 0.95f);
-        private static readonly Color PriorityHue = new(0.35f, 0.55f, 0.95f);
-
-        private static GUIStyle _badge;
-        private static GUIStyle _header;
-        private static GUIStyle _name;
 
         /// <summary>Width a badge needs for the given text, never below the shared minimum.</summary>
         /// <param name="text">The badge text to measure.</param>

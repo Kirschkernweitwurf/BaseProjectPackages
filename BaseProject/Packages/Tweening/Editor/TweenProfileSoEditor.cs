@@ -10,7 +10,7 @@ namespace Base.TweeningPackage.Editor
     /// </summary>
     [CanEditMultipleObjects]
     [CustomEditor(typeof(TweenProfileSo), true)]
-    public sealed class TweenProfileSoEditor : AttributePackageEditor
+    internal sealed class TweenProfileSoEditor : AttributePackageEditor
     {
         public override void OnInspectorGUI() => TweenInspectorLayout.Draw(this);
     }

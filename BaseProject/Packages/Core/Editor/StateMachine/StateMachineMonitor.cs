@@ -17,7 +17,7 @@ namespace Base.CorePackage.Editor.StateMachine
     /// authoring it, which is what keeps the picture from ever disagreeing with what actually runs.
     /// </para>
     /// </summary>
-    public sealed class StateMachineMonitor : EditorWindow
+    internal sealed class StateMachineMonitor : EditorWindow
     {
         private const float DetailsHeight = 220f;
         private const string DetailsPaneTitle = "DETAILS";
@@ -79,7 +79,7 @@ namespace Base.CorePackage.Editor.StateMachine
 
         /// <summary>Opens or focuses the window.</summary>
         [DynamicMenuItem(MenuPath)]
-        public static void Open()
+        internal static void Open()
         {
             StateMachineMonitor window = GetWindow<StateMachineMonitor>();
 

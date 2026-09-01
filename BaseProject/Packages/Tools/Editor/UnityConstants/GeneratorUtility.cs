@@ -135,36 +135,6 @@ namespace Base.ToolPackage.Editor.UnityConstants
         }
 
         /// <summary>
-        /// Converts an arbitrary string to a valid C# identifier by replacing invalid characters with underscores,
-        /// prefixing with an underscore if it starts with a digit, and prefixing with "@" if it matches a C# keyword.
-        /// </summary>
-        internal static string ToValidIdentifier(string raw)
-        {
-            if (string.IsNullOrEmpty(raw))
-                return "_";
-
-            StringBuilder sb = new();
-            foreach (char c in raw)
-            {
-                sb.Append(char.IsLetterOrDigit(c)
-                    ? c
-                    : '_');
-            }
-
-            string result = sb.ToString();
-
-            // C# names cannot start with a digit.
-            if (char.IsDigit(result[0]))
-                result = "_" + result;
-
-            // Avoid clashing with C# keywords (e.g. "default", "object").
-            if (Keywords.Contains(result))
-                result = "@" + result;
-
-            return result;
-        }
-
-        /// <summary>
         /// Converts a raw string to a valid C# identifier and ensures it's
         /// unique within the given set by appending a numeric suffix if needed.
         /// </summary>
@@ -184,5 +154,31 @@ namespace Base.ToolPackage.Editor.UnityConstants
 
         /// <summary>Escapes backslashes and quotes so the value is safe inside a generated string literal.</summary>
         internal static string Escape(string value) => value.Replace("\\", @"\\").Replace("\"", "\\\"");
+
+        // Every character a C# identifier cannot carry becomes an underscore. A leading digit and a
+        // name that reads as a keyword both need a prefix, which is why the result is checked twice.
+        private static string ToValidIdentifier(string raw)
+        {
+            if (string.IsNullOrEmpty(raw))
+                return "_";
+
+            StringBuilder sb = new();
+            foreach (char c in raw)
+            {
+                sb.Append(char.IsLetterOrDigit(c)
+                    ? c
+                    : '_');
+            }
+
+            string result = sb.ToString();
+
+            if (char.IsDigit(result[0]))
+                result = "_" + result;
+
+            if (Keywords.Contains(result))
+                result = "@" + result;
+
+            return result;
+        }
     }
 }

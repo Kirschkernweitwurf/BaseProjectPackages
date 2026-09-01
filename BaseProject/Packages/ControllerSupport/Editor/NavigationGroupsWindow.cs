@@ -15,7 +15,7 @@ namespace Base.ControllerSupportPackage.Editor
     /// with the per row Fix button, never silently. Each badge column uses one shared width, the widest
     /// text in that column, so rows align into clean scannable columns and nothing ever clips.
     /// </summary>
-    public sealed class NavigationGroupsWindow : EditorWindow
+    internal sealed class NavigationGroupsWindow : EditorWindow
     {
         private const string ActionsHeader = "Actions";
         private const string CancelLabel = "Cancel";
@@ -88,7 +88,7 @@ namespace Base.ControllerSupportPackage.Editor
 
         /// <summary>Opens the window and rescans the loaded scenes.</summary>
         [DynamicMenuItem(MenuPath)]
-        public static void Open()
+        internal static void Open()
         {
             NavigationGroupsWindow window = GetWindow<NavigationGroupsWindow>(WindowTitle);
             window.Refresh();

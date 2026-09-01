@@ -38,8 +38,9 @@ namespace Base.AttributePackage.Editor.Core
             return created;
         }
 
-        /// <summary>Destroys every cached editor.</summary>
-        internal static void Clear()
+        // Cached editors are native objects. Left alone they survive the reload as leaked instances
+        // pointing at targets that no longer exist, so the cache empties itself before every reload.
+        private static void Clear()
         {
             foreach (UnityEditor.Editor editor in Editors.Values)
             {

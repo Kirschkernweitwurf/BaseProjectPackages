@@ -14,9 +14,6 @@ namespace Base.ToolPackage.Editor.AudioRules.Scanning
     {
         private const string TypeFilterPrefix = "t:";
 
-        /// <summary>How many clips a container was found for.</summary>
-        internal int ReferencedClips => _categoryByGuid.Count;
-
         private readonly Dictionary<string, string> _categoryByGuid = new();
         private readonly HashSet<string> _loopingGuids = new();
 

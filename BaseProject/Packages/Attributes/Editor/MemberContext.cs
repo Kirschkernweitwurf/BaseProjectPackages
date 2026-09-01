@@ -43,12 +43,13 @@ namespace Base.AttributePackage.Editor
         /// <summary>The object reference value captured before the field was drawn this frame.</summary>
         internal readonly Object ObjectReferenceBefore;
 
-        /// <summary>False while the member is drawn without its label, inside a horizontal cell.</summary>
-        internal readonly bool ShowLabel;
+        // Only EffectiveLabel reads this. A drawer that wants to know asks for the label it should
+        // pass rather than for the flag behind it.
+        private readonly bool _showLabel;
 
         /// <summary>Creates a context for a single member.</summary>
         /// <param name="showLabel">False while the member is drawn without its label.</param>
-        public MemberContext(SerializedProperty property,
+        internal MemberContext(SerializedProperty property,
             FieldInfo field,
             Object target,
             Type declaringType,
@@ -64,7 +65,7 @@ namespace Base.AttributePackage.Editor
             DeclaringObject = declaringObject;
             Editor = editor;
             ObjectReferenceBefore = objectReferenceBefore;
-            ShowLabel = showLabel;
+            _showLabel = showLabel;
         }
 
         /// <summary>Returns the field attribute of the given type, or null. Cached per field.</summary>
@@ -96,7 +97,7 @@ namespace Base.AttributePackage.Editor
         /// The label actually passed to the field. Empty inside a horizontal cell that asked to hide it,
         /// so the value gets the whole width rather than sharing it with a label nobody needs twice.
         /// </summary>
-        internal GUIContent EffectiveLabel => ShowLabel
+        internal GUIContent EffectiveLabel => _showLabel
             ? Label
             : GUIContent.none;
 

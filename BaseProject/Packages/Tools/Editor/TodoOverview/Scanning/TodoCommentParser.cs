@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
-using Base.ToolPackage.Editor.Shared;
 using Base.ToolPackage.Editor.TodoOverview.Model;
 
 namespace Base.ToolPackage.Editor.TodoOverview.Scanning
@@ -43,7 +42,6 @@ namespace Base.ToolPackage.Editor.TodoOverview.Scanning
         {
             List<CommentLine> comments = CommentReader.Read(source);
             string fileName = Path.GetFileName(assetPath);
-            EAssetOrigin origin = AssetOriginResolver.Classify(assetPath);
 
             for (int i = 0; i < comments.Count; i++)
             {
@@ -60,7 +58,7 @@ namespace Base.ToolPackage.Editor.TodoOverview.Scanning
                 TodoMetadata metadata = TodoMetadataParser.Parse(head, patterns);
 
                 results.Add(new TodoEntry(patterns.Resolve(match.Value), metadata.Message, details, metadata,
-                    assetPath, fileName, comment.Line, keywordColumn, continued + 1, origin));
+                    assetPath, fileName, comment.Line, keywordColumn, continued + 1));
 
                 // The lines that were swallowed must not start an item of their own.
                 i += continued;

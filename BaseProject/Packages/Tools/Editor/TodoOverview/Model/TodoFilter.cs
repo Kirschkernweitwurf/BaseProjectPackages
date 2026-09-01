@@ -82,17 +82,5 @@ namespace Base.ToolPackage.Editor.TodoOverview.Model
             if (!_hiddenKeywords.Add(keyword))
                 _hiddenKeywords.Remove(keyword);
         }
-
-        /// <summary>Clears the search text, the owner, the date filter and every hidden keyword.</summary>
-        internal void Reset()
-        {
-            _hiddenKeywords.Clear();
-
-            Search = string.Empty;
-            Owner = AnyOwner;
-            OverdueOnly = false;
-            Sort = DefaultSort;
-            Descending = false;
-        }
     }
 }

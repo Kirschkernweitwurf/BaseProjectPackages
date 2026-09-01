@@ -94,8 +94,9 @@ namespace Base.ToolPackage.Editor.TodoOverview.Settings
         }
 
         // One block per thing being configured: a header, the sentence that explains it, then the
-        // fields in a card. Before this the page was one column of help boxes and lists with nothing
-        // marking where one setting ended and the next began.
+        // fields. No card behind them: this page is a guest in Unity's settings window and cannot
+        // theme the tree, the search bar or the pane it sits in, so a themed panel in the middle of
+        // it reads as a patch rather than as a match.
         private static void DrawSection(string header, string help, params string[] propertyNames)
         {
             EditorWindowChrome.DrawSectionHeader(Styles, header);
@@ -103,14 +104,10 @@ namespace Base.ToolPackage.Editor.TodoOverview.Settings
             EditorGUILayout.HelpBox(help, MessageType.Info);
             EditorGUILayout.Space(EditorMetrics.TightGap);
 
-            EditorWindowChrome.BeginCard(Styles);
-
             foreach (string propertyName in propertyNames)
                 DrawProperty(propertyName);
 
-            EditorWindowChrome.EndCard();
-
-            EditorGUILayout.Space(EditorMetrics.ItemGap);
+            EditorGUILayout.Space(EditorMetrics.SectionGap);
         }
 
         private static void DrawProperty(string propertyName)

@@ -67,24 +67,6 @@ namespace Base.ToolPackage.Editor.AudioRules.Scanning
                 AudioMemoryEstimator.EstimateBuildBytes(info, target));
         }
 
-        /// <summary>True when the two values differ in the given setting.</summary>
-        /// <param name="current">What the clip has today.</param>
-        /// <param name="target">What the rules want.</param>
-        /// <param name="setting">The setting to compare.</param>
-        /// <returns>True when applying would change something.</returns>
-        internal static bool Differs(AudioSettingValues current, AudioSettingValues target, EAudioSetting setting)
-            => setting switch
-            {
-                EAudioSetting.CompressionFormat => current.CompressionFormat != target.CompressionFormat,
-                EAudioSetting.ForceToMono => current.ForceToMono != target.ForceToMono,
-                EAudioSetting.LoadInBackground => current.LoadInBackground != target.LoadInBackground,
-                EAudioSetting.LoadType => current.LoadType != target.LoadType,
-                EAudioSetting.PreloadAudioData => current.PreloadAudioData != target.PreloadAudioData,
-                EAudioSetting.Quality => DiffersInQuality(current, target),
-                EAudioSetting.SampleRate => DiffersInSampleRate(current, target),
-                _ => false
-            };
-
         /// <summary>The value a setting holds, formatted for the table and the details pane.</summary>
         /// <param name="values">The settings to read.</param>
         /// <param name="setting">The setting to describe.</param>
@@ -128,6 +110,21 @@ namespace Base.ToolPackage.Editor.AudioRules.Scanning
 
         // The quality slider only reaches a lossy encoder, so comparing it on PCM or ADPCM would
         // report a difference that changes nothing in the build.
+        // A setting nobody compares yet falls through to false, so adding one to the enum without a
+        // case here understates the change rather than reporting a difference that was never checked.
+        private static bool Differs(AudioSettingValues current, AudioSettingValues target, EAudioSetting setting)
+            => setting switch
+            {
+                EAudioSetting.CompressionFormat => current.CompressionFormat != target.CompressionFormat,
+                EAudioSetting.ForceToMono => current.ForceToMono != target.ForceToMono,
+                EAudioSetting.LoadInBackground => current.LoadInBackground != target.LoadInBackground,
+                EAudioSetting.LoadType => current.LoadType != target.LoadType,
+                EAudioSetting.PreloadAudioData => current.PreloadAudioData != target.PreloadAudioData,
+                EAudioSetting.Quality => DiffersInQuality(current, target),
+                EAudioSetting.SampleRate => DiffersInSampleRate(current, target),
+                _ => false
+            };
+
         private static bool DiffersInQuality(AudioSettingValues current, AudioSettingValues target)
         {
             if (!IsLossy(target.CompressionFormat))

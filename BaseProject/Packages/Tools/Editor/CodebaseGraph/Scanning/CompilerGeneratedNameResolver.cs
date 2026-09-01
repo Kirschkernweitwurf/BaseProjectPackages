@@ -34,30 +34,6 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         internal static bool IsGeneratedName(string name)
             => !string.IsNullOrEmpty(name) && name.IndexOf(OpenBracket) >= 0;
 
-        /// <summary>Extracts the name of the member a generated name belongs to.</summary>
-        /// <param name="name">Generated type or member name.</param>
-        /// <param name="ownerName">The owning member name when one is encoded.</param>
-        /// <returns>True when an owner name could be read.</returns>
-        internal static bool TryGetOwnerName(string name, out string ownerName)
-        {
-            ownerName = null;
-            if (string.IsNullOrEmpty(name))
-                return false;
-
-            int open = name.IndexOf(OpenBracket);
-            if (open < 0)
-                return false;
-
-            // The brackets nest. An iterator inside a getter is named <<get_Order>b__1_0>d, so taking
-            // the first closing bracket would cut the name in half and leave something meaningless.
-            int close = FindMatchingBracket(name, open);
-            if (close <= open + 1)
-                return false;
-
-            ownerName = name.Substring(open + 1, close - open - 1);
-            return !string.IsNullOrEmpty(ownerName);
-        }
-
         /// <summary>
         /// Reads the written member a generated name finally belongs to. One unwrap is not always
         /// enough: an async lambda or an iterator inside a property getter nests its machinery, so the
@@ -126,6 +102,26 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
                 return false;
 
             return TryGetOwnerName(fieldName, out propertyName);
+        }
+
+        // One unwrap of a generated name. The brackets nest: an iterator inside a getter is named
+        // <<get_Order>b__1_0>d, so taking the first closing bracket would cut the name in half.
+        private static bool TryGetOwnerName(string name, out string ownerName)
+        {
+            ownerName = null;
+            if (string.IsNullOrEmpty(name))
+                return false;
+
+            int open = name.IndexOf(OpenBracket);
+            if (open < 0)
+                return false;
+
+            int close = FindMatchingBracket(name, open);
+            if (close <= open + 1)
+                return false;
+
+            ownerName = name.Substring(open + 1, close - open - 1);
+            return !string.IsNullOrEmpty(ownerName);
         }
 
         private static int FindMatchingBracket(string name, int open)

@@ -99,6 +99,12 @@ namespace Base.EditorUiPackage
         /// <remarks>
         /// Always pair with <see cref="EndCard"/>. The card is a layout group, so an early return
         /// between the two leaves the GUI unbalanced for the rest of the pass.
+        /// <para>
+        /// For a window that owns its whole frame. A project settings page does not: the tree, the
+        /// search bar and the pane it draws into all belong to Unity, so a themed panel in the middle
+        /// of one reads as a patch over the editor rather than as part of it. Those pages use the
+        /// headers and the intro from here and leave their fields on the editor's own background.
+        /// </para>
         /// </remarks>
         /// <param name="styles">The built chrome styles.</param>
         public static void BeginCard(EditorWindowStyles styles)

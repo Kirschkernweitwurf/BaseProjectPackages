@@ -17,7 +17,7 @@ namespace Base.CorePackage.Editor.Audio
     /// anywhere in the project (scenes, prefabs, or AudioContainer assets).
     /// Also reports empty clip slots found in AudioContainer assets.
     /// </summary>
-    public class FindUnusedAudioClips : EditorWindow
+    internal class FindUnusedAudioClips : EditorWindow
     {
         private const string ClipsFolder = "Assets/Audio";
         private const string ClipsHeaderFormat = "Unused Clips ({0})";
@@ -83,7 +83,7 @@ namespace Base.CorePackage.Editor.Audio
 
         /// <summary>Opens the window and scans immediately, so it never opens on an empty list.</summary>
         [DynamicMenuItem(MenuPath)]
-        public static void ShowWindow()
+        internal static void ShowWindow()
         {
             FindUnusedAudioClips window = GetWindow<FindUnusedAudioClips>(WindowTitle);
 
@@ -343,10 +343,10 @@ namespace Base.CorePackage.Editor.Audio
             /// <summary>
             /// Index used when the container holds no clips at all.
             /// </summary>
-            public const int NoClipsIndex = -1;
+            internal const int NoClipsIndex = -1;
 
             /// <summary>The container the empty slot was found in.</summary>
-            public readonly AudioContainer Container;
+            internal readonly AudioContainer Container;
 
             private readonly int index;
 
@@ -355,7 +355,7 @@ namespace Base.CorePackage.Editor.Audio
             /// <param name="index">
             /// The slot's position, or <see cref="NoClipsIndex"/> when the container holds no clips.
             /// </param>
-            public NullClipReference(AudioContainer container, int index)
+            internal NullClipReference(AudioContainer container, int index)
             {
                 Container = container;
                 this.index = index;
@@ -364,7 +364,7 @@ namespace Base.CorePackage.Editor.Audio
             /// <summary>
             /// Returns a readable description of the empty slot.
             /// </summary>
-            public string Describe() => index == NoClipsIndex
+            internal string Describe() => index == NoClipsIndex
                 ? $"{nameof(AudioContainer.Clips)} is empty"
                 : $"{nameof(AudioContainer.Clips)}[{index}] is not assigned";
         }

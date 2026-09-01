@@ -17,9 +17,6 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
         private const string StopMethodName = "StopAllPreviewClips";
         private const string UtilTypeName = "UnityEditor.AudioUtil,UnityEditor";
 
-        /// <summary>True when the editor still exposes the preview methods this uses.</summary>
-        internal static bool IsAvailable => PlayMethod != null;
-
         private static MethodInfo PlayMethod => _playMethod ??= FindMethod(PlayMethodName);
 
         private static MethodInfo StopMethod => _stopMethod ??= FindMethod(StopMethodName);
@@ -27,9 +24,16 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
         private static MethodInfo _playMethod;
         private static MethodInfo _stopMethod;
 
-        /// <summary>Plays a clip from the start, stopping whatever was playing before.</summary>
-        /// <param name="clip">The clip to play.</param>
-        internal static void Play(AudioClip clip)
+        /// <summary>Plays the clip at the given path.</summary>
+        /// <param name="assetPath">Project relative path of the clip.</param>
+        internal static void Play(string assetPath) => Play(AssetDatabase.LoadAssetAtPath<AudioClip>(assetPath));
+
+        /// <summary>Stops every preview the editor is playing.</summary>
+        internal static void Stop() => StopMethod?.Invoke(null, Array.Empty<object>());
+
+        // Stopping first is what makes a second click restart rather than layer. The method lookup can
+        // come back empty on a future editor, which costs the preview and nothing else.
+        private static void Play(AudioClip clip)
         {
             if (clip == null)
                 return;
@@ -46,13 +50,6 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
                 false
             });
         }
-
-        /// <summary>Plays the clip at the given path.</summary>
-        /// <param name="assetPath">Project relative path of the clip.</param>
-        internal static void Play(string assetPath) => Play(AssetDatabase.LoadAssetAtPath<AudioClip>(assetPath));
-
-        /// <summary>Stops every preview the editor is playing.</summary>
-        internal static void Stop() => StopMethod?.Invoke(null, Array.Empty<object>());
 
         private static MethodInfo FindMethod(string name)
         {

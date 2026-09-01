@@ -1,5 +1,4 @@
 using System;
-using Base.ToolPackage.Editor.Shared;
 
 namespace Base.ToolPackage.Editor.TodoOverview.Model
 {
@@ -33,9 +32,6 @@ namespace Base.ToolPackage.Editor.TodoOverview.Model
         /// <summary>Project relative path of the file the item sits in.</summary>
         internal string AssetPath { get; }
 
-        /// <summary>File name of <see cref="AssetPath"/>, which is what the row shows.</summary>
-        internal string FileName { get; }
-
         /// <summary>One based line number of the keyword.</summary>
         internal int Line { get; }
 
@@ -44,9 +40,6 @@ namespace Base.ToolPackage.Editor.TodoOverview.Model
 
         /// <summary>How many source lines the item spans, including the keyword's own line.</summary>
         internal int LineCount { get; }
-
-        /// <summary>Where the file the item sits in comes from.</summary>
-        internal EAssetOrigin Origin { get; }
 
         /// <summary>File name and line, precomputed because it is drawn on every repaint.</summary>
         internal string Location { get; }
@@ -64,9 +57,8 @@ namespace Base.ToolPackage.Editor.TodoOverview.Model
         /// <param name="line">One based line number of the keyword.</param>
         /// <param name="column">Zero based column of the keyword.</param>
         /// <param name="lineCount">How many source lines the item spans.</param>
-        /// <param name="origin">Where the file comes from.</param>
         internal TodoEntry(string keyword, string message, string details, TodoMetadata metadata, string assetPath,
-            string fileName, int line, int column, int lineCount, EAssetOrigin origin)
+            string fileName, int line, int column, int lineCount)
         {
             Keyword = keyword;
             Message = message;
@@ -75,11 +67,9 @@ namespace Base.ToolPackage.Editor.TodoOverview.Model
             Date = metadata.Date;
             RawDate = metadata.RawDate;
             AssetPath = assetPath;
-            FileName = fileName;
             Line = line;
             Column = column;
             LineCount = lineCount;
-            Origin = origin;
             Location = fileName + LineSeparator + line;
 
             SearchText = string.Concat(keyword, Space, message, Space, details, Space, metadata.Owner, Space,

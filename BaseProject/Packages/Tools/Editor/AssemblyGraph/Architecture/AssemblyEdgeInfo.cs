@@ -25,9 +25,6 @@ namespace Base.ToolPackage.Editor.AssemblyGraph.Architecture
         /// <summary>Full names of the distinct target types this edge exists for, sorted.</summary>
         internal IReadOnlyList<string> TargetTypeNames { get; }
 
-        /// <summary>Full names of the distinct source types that reach across the edge, sorted.</summary>
-        internal IReadOnlyList<string> SourceTypeNames { get; }
-
         /// <summary>Number of member level usages behind the edge, which is what the scan counted.</summary>
         internal int UsageCount { get; }
 
@@ -44,18 +41,15 @@ namespace Base.ToolPackage.Editor.AssemblyGraph.Architecture
         /// <summary>Creates a finished edge.</summary>
         /// <param name="key">Identity of the edge.</param>
         /// <param name="targetTypeNames">Distinct target types, already sorted.</param>
-        /// <param name="sourceTypeNames">Distinct source types, already sorted.</param>
         /// <param name="usageCount">Number of member level usages behind the edge.</param>
         /// <param name="isEntirelyExcluded">Whether every source type is generated, sample or test code.</param>
-        public AssemblyEdgeInfo(AssemblyEdgeKey key,
+        internal AssemblyEdgeInfo(AssemblyEdgeKey key,
             IReadOnlyList<string> targetTypeNames,
-            IReadOnlyList<string> sourceTypeNames,
             int usageCount,
             bool isEntirelyExcluded)
         {
             Key = key;
             TargetTypeNames = targetTypeNames;
-            SourceTypeNames = sourceTypeNames;
             UsageCount = usageCount;
             IsEntirelyExcluded = isEntirelyExcluded;
         }

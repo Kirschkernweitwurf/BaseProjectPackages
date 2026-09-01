@@ -39,14 +39,19 @@ namespace Base.AttributePackage.Editor.Core
             return mode == EConditionMode.All;
         }
 
-        /// <summary>
-        /// Resolves a bool member: a serialized bool sibling, a bool field, a bool property or a
-        /// parameterless bool method. Returns true when the member cannot be resolved.
-        /// </summary>
+        /// <summary>Resolves the current value of an enum field or property, or null.</summary>
         /// <param name="context">The member currently being drawn.</param>
-        /// <param name="member">Name of the bool member to evaluate.</param>
-        /// <returns>The value of the member, or true when it cannot be resolved.</returns>
-        internal static bool ResolveBool(in MemberContext context, string member)
+        /// <param name="member">Name of the enum member to evaluate.</param>
+        /// <returns>The boxed enum value, or null when it cannot be resolved.</returns>
+        internal static object ResolveEnum(in MemberContext context, string member) => MemberValueResolver.TryResolve(
+            context.DeclaringType, context.DeclaringObject, member,
+            out object value)
+            ? value
+            : null;
+
+        // A serialized sibling is read from the property rather than by reflection, so a condition
+        // reacts to a value the user is still typing instead of to the last applied one.
+        private static bool ResolveBool(in MemberContext context, string member)
         {
             SerializedProperty property = context.FindSiblingProperty(member);
             if (property != null && property.propertyType == SerializedPropertyType.Boolean)
@@ -71,15 +76,5 @@ namespace Base.AttributePackage.Editor.Core
 
             return true;
         }
-
-        /// <summary>Resolves the current value of an enum field or property, or null.</summary>
-        /// <param name="context">The member currently being drawn.</param>
-        /// <param name="member">Name of the enum member to evaluate.</param>
-        /// <returns>The boxed enum value, or null when it cannot be resolved.</returns>
-        internal static object ResolveEnum(in MemberContext context, string member) => MemberValueResolver.TryResolve(
-            context.DeclaringType, context.DeclaringObject, member,
-            out object value)
-            ? value
-            : null;
     }
 }

@@ -41,8 +41,6 @@ namespace Base.ToolPackage.Editor.AutoStartScene
 
             EditorWindowChrome.DrawIntro(_styles, Intro);
 
-            EditorWindowChrome.BeginCard(_styles);
-
             bool isEnabled = DrawEnabledToggle();
 
             EditorGUI.BeginDisabledGroup(!isEnabled);
@@ -54,8 +52,6 @@ namespace Base.ToolPackage.Editor.AutoStartScene
             DrawSceneState();
 
             EditorGUI.EndDisabledGroup();
-
-            EditorWindowChrome.EndCard();
         }
 
         /// <inheritdoc/>

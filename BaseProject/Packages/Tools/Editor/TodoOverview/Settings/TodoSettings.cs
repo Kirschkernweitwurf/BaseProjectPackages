@@ -59,16 +59,6 @@ namespace Base.ToolPackage.Editor.TodoOverview.Settings
             }
         }
 
-        /// <summary>The file types that are read, lower case and with their dot.</summary>
-        internal IReadOnlyList<string> FileExtensions
-        {
-            get
-            {
-                EnsureSeeded();
-                return fileExtensions;
-            }
-        }
-
         /// <summary>The patterns that read the responsible person and the date out of an item.</summary>
         internal IReadOnlyList<string> MetadataPatterns
         {

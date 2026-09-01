@@ -12,11 +12,6 @@ namespace Base.ToolPackage.Editor.AudioRules.Scanning
         /// <summary>Label the default settings are shown with in the target dropdown.</summary>
         internal const string DefaultLabel = "Default";
 
-        /// <summary>True when the target is the default settings rather than a platform.</summary>
-        /// <param name="platform">The target, empty for the default settings.</param>
-        /// <returns>True for the default target.</returns>
-        internal static bool IsDefault(string platform) => string.IsNullOrWhiteSpace(platform);
-
         /// <summary>
         /// The settings that are in effect for a target. A platform without its own override
         /// inherits the default settings, which is what the importer does at build time too.
@@ -49,11 +44,8 @@ namespace Base.ToolPackage.Editor.AudioRules.Scanning
             importer.SetOverrideSampleSettings(platform, settings);
         }
 
-        /// <summary>True when the target carries its own override rather than inheriting.</summary>
-        /// <param name="importer">The importer to read.</param>
-        /// <param name="platform">The target, empty for the default settings.</param>
-        /// <returns>True when an override exists.</returns>
-        internal static bool HasOverride(AudioImporter importer, string platform)
-            => !IsDefault(platform) && importer.ContainsSampleSettingsOverride(platform);
+        // An empty target name stands for the default settings, which live behind their own importer
+        // property rather than behind the override calls every named platform goes through.
+        private static bool IsDefault(string platform) => string.IsNullOrWhiteSpace(platform);
     }
 }

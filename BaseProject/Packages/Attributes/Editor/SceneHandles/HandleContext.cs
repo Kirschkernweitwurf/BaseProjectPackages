@@ -2,7 +2,6 @@ using System;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace Base.AttributePackage.Editor.SceneHandles
 {
@@ -21,17 +20,13 @@ namespace Base.AttributePackage.Editor.SceneHandles
         /// <summary>The reflected field behind the property.</summary>
         internal readonly FieldInfo Field;
 
-        /// <summary>The inspected Unity object.</summary>
-        internal readonly Object Target;
-
         /// <summary>The transform local space is measured against, or null for an asset.</summary>
         internal readonly Transform Transform;
 
-        /// <summary>The type that declares <see cref="Field"/>.</summary>
-        internal readonly Type DeclaringType;
-
-        /// <summary>The managed instance that owns <see cref="Field"/>.</summary>
-        internal readonly object DeclaringObject;
+        // Only the sibling lookups below read these, and they read them together. A drawer that needs
+        // the inspected object takes it from the property's serialized object instead.
+        private readonly Type _declaringType;
+        private readonly object _declaringObject;
 
         /// <summary>Human-readable label derived from the property name.</summary>
         internal string DisplayName => ObjectNames.NicifyVariableName(Property.name);
@@ -39,19 +34,17 @@ namespace Base.AttributePackage.Editor.SceneHandles
         /// <summary>Creates a context for one field.</summary>
         /// <param name="property">The serialized property being visualized.</param>
         /// <param name="field">The reflected field behind the property.</param>
-        /// <param name="target">The inspected Unity object.</param>
         /// <param name="transform">The transform local space is measured against.</param>
         /// <param name="declaringType">The type that declares the field.</param>
         /// <param name="declaringObject">The managed instance that owns the field.</param>
-        public HandleContext(SerializedProperty property, FieldInfo field, Object target, Transform transform,
+        internal HandleContext(SerializedProperty property, FieldInfo field, Transform transform,
             Type declaringType, object declaringObject)
         {
             Property = property;
             Field = field;
-            Target = target;
             Transform = transform;
-            DeclaringType = declaringType;
-            DeclaringObject = declaringObject;
+            _declaringType = declaringType;
+            _declaringObject = declaringObject;
         }
 
         /// <summary>
@@ -75,7 +68,7 @@ namespace Base.AttributePackage.Editor.SceneHandles
                 return true;
             }
 
-            if (!MemberValueResolver.TryResolve(DeclaringType, DeclaringObject, member, out object resolved))
+            if (!MemberValueResolver.TryResolve(_declaringType, _declaringObject, member, out object resolved))
                 return false;
 
             if (resolved is not Vector3 vector)
@@ -96,7 +89,7 @@ namespace Base.AttributePackage.Editor.SceneHandles
             if (string.IsNullOrEmpty(member))
                 return false;
 
-            if (!MemberValueResolver.TryResolve(DeclaringType, DeclaringObject, member, out object resolved))
+            if (!MemberValueResolver.TryResolve(_declaringType, _declaringObject, member, out object resolved))
                 return false;
 
             text = resolved?.ToString() ?? string.Empty;

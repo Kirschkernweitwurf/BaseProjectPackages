@@ -28,7 +28,7 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
     /// <remarks>
     /// To suppress a false positive, add the ignore marker as a comment on the field line (e.g. "reset-ignore").
     /// </remarks>
-    internal class StaticResetCheckerWindow : EditorWindow
+    internal sealed class StaticResetCheckerWindow : EditorWindow
     {
         private const float CopyButtonWidth = 110f;
         private const string CopyLabel = "Copy report";
@@ -314,14 +314,14 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
         {
             try
             {
-                ScanOptions opt = new()
+                ScanOptions options = new()
                 {
                     RootFolder = string.IsNullOrWhiteSpace(_rootFolder)
                         ? "Assets"
                         : _rootFolder.Trim(),
                     ResetAttributes = _resetAttributes.Split(',')
-                        .Select(s => s.Trim())
-                        .Where(s => s.Length > 0)
+                        .Select(attribute => attribute.Trim())
+                        .Where(attribute => attribute.Length > 0)
                         .ToArray(),
                     IgnoreMarker = _ignoreMarker,
                     IncludeEvents = _includeEvents,
@@ -331,8 +331,8 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
                     IgnoreReadonly = _ignoreReadonly
                 };
 
-                _findings = StaticResetScanner.Scan(opt, out _filesScanned);
-                _groups = _findings.GroupBy(f => f.AssetPath).OrderBy(g => g.Key).ToList();
+                _findings = StaticResetScanner.Scan(options, out _filesScanned);
+                _groups = _findings.GroupBy(finding => finding.AssetPath).OrderBy(group => group.Key).ToList();
                 _page = 0;
                 _hasScanned = true;
 
@@ -348,28 +348,30 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
                             ? "\n" + BuildReport()
                             : string.Empty), null);
             }
-            catch (Exception e)
+            catch (Exception exception)
             {
+                // Deliberately broad: the scan reads arbitrary files off disk, and every way that can
+                // fail has the same answer, which is to show the message and leave the list empty.
                 _hasScanned = true;
                 _findings = new List<Finding>();
                 _groups = new List<IGrouping<string, Finding>>();
                 _page = 0;
-                _status = "Scan failed: " + e.Message;
-                CustomLogger.LogError($"Scan failed: {e}", null);
+                _status = "Scan failed: " + exception.Message;
+                CustomLogger.LogError($"Scan failed: {exception}", null);
             }
         }
 
         private string BuildReport()
         {
-            StringBuilder sb = new();
+            StringBuilder builder = new();
             foreach (IGrouping<string, Finding> group in _groups)
             {
-                sb.AppendLine(group.Key);
-                foreach (Finding f in group.OrderBy(x => x.Line))
-                    sb.AppendLine($"  L{f.Line}  {f.Name}  ({f.Kind})");
+                builder.AppendLine(group.Key);
+                foreach (Finding finding in group.OrderBy(entry => entry.Line))
+                    builder.AppendLine($"  L{finding.Line}  {finding.Name}  ({finding.Kind})");
             }
 
-            return sb.ToString();
+            return builder.ToString();
         }
     }
 }

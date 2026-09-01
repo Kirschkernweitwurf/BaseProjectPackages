@@ -21,10 +21,10 @@ namespace Base.AttributePackage.Editor.Core
     /// not a git revert. It is off by default, so nothing changes for anyone who never touches it.
     /// </para>
     /// </summary>
-    public static class AttributeInspectorSwitch
+    internal static class AttributeInspectorSwitch
     {
         /// <summary>The editor preference the switch is stored under. Per user, per machine.</summary>
-        public const string DisabledPreferenceKey = "Base.AttributePackage.InspectorDisabled";
+        internal const string DisabledPreferenceKey = "Base.AttributePackage.InspectorDisabled";
 
         private const BindingFlags MemberFlags = BindingFlags.Instance
             | BindingFlags.Static
@@ -33,7 +33,7 @@ namespace Base.AttributePackage.Editor.Core
             | BindingFlags.DeclaredOnly;
 
         /// <summary>Whether the package's inspector is switched off for this user.</summary>
-        public static bool IsDisabled
+        internal static bool IsDisabled
         {
             get => EditorPrefs.GetBool(DisabledPreferenceKey, false);
             set => EditorPrefs.SetBool(DisabledPreferenceKey, value);
@@ -51,7 +51,7 @@ namespace Base.AttributePackage.Editor.Core
         /// </summary>
         /// <param name="type">The inspected type.</param>
         /// <returns><c>true</c> when the switch is on and the type declares an attribute of ours.</returns>
-        public static bool ShouldDraw(Type type)
+        internal static bool ShouldDraw(Type type)
         {
             if (IsDisabled)
                 return false;

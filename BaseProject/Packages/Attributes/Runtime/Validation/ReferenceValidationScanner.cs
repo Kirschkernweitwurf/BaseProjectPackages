@@ -46,7 +46,7 @@ namespace Base.AttributePackage
                 foreach (IValidationRule rule in ValidationRules.All)
                 {
                     if (rule.IsViolated(field, instance, out string reason))
-                        results.Add(new ReferenceIssue(owner, path, field.FieldType, reason));
+                        results.Add(new ReferenceIssue(owner, path, reason));
                 }
 
                 Type fieldType = field.FieldType;
