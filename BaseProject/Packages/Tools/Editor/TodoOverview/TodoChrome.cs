@@ -46,6 +46,20 @@ namespace Base.ToolPackage.Editor.TodoOverview
         }
 
         /// <summary>
+        /// Fills the given rectangle with the color of a line between two columns, which the theme
+        /// keeps apart from the hairline between two blocks because this one can be grabbed.
+        /// </summary>
+        /// <param name="line">The area of the line.</param>
+        internal static void DrawDivider(Rect line)
+        {
+            if (Event.current.type != EventType.Repaint)
+                return;
+
+            GUI.DrawTexture(line, Texture2D.whiteTexture, ScaleMode.StretchToFill, true, NoAspect,
+                EditorPalette.Divider, NoBorder, NoRadius);
+        }
+
+        /// <summary>
         /// Draws a small triangle pointing down, used on the dropdowns and on the column the list is
         /// sorted by. Built from stacked lines so it needs no font glyph and no texture.
         /// </summary>
@@ -206,7 +220,7 @@ namespace Base.ToolPackage.Editor.TodoOverview
                 : TodoStyles.MutedChipColor();
 
             GUIStyle style = active
-                ? TodoStyles.Chip
+                ? TodoStyles.ChipStyle(color)
                 : TodoStyles.MutedChip;
 
             return DrawButton(rect, content, fill, style, TodoStyles.ChipRadius);

@@ -24,6 +24,9 @@ namespace Base.ToolPackage.Editor.TodoOverview.Settings
         /// <summary>The serialized name of the continuation mode, for the settings page.</summary>
         internal const string ContinuationPropertyName = nameof(continuation);
 
+        /// <summary>The serialized name of the date notation choice, for the settings page.</summary>
+        internal const string DateDisplayPropertyName = nameof(dateDisplay);
+
         /// <summary>The serialized name of the date format list, for the settings page.</summary>
         internal const string DateFormatsPropertyName = nameof(dateFormats);
 
@@ -46,6 +49,7 @@ namespace Base.ToolPackage.Editor.TodoOverview.Settings
         [SerializeField] private List<string> metadataPatterns = new();
         [SerializeField] private List<string> dateFormats = new();
         [SerializeField] private ETodoContinuation continuation;
+        [SerializeField] private ETodoDateDisplay dateDisplay;
         [SerializeField] private bool caseSensitive;
         [SerializeField] private bool includePackages;
 
@@ -76,6 +80,16 @@ namespace Base.ToolPackage.Editor.TodoOverview.Settings
             {
                 EnsureSeeded();
                 return dateFormats;
+            }
+        }
+
+        /// <summary>The notation every date is shown in, whatever notation it was written in.</summary>
+        internal ETodoDateDisplay DateDisplay
+        {
+            get
+            {
+                EnsureSeeded();
+                return dateDisplay;
             }
         }
 
@@ -189,6 +203,7 @@ namespace Base.ToolPackage.Editor.TodoOverview.Settings
                 dateFormats.AddRange(TodoDefaults.CreateDateFormats());
 
             continuation = TodoDefaults.Continuation;
+            dateDisplay = TodoDefaults.DateDisplay;
             seeded = true;
 
             Save(true);

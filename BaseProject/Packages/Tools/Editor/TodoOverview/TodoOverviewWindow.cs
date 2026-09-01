@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Base.EditorUiPackage;
 using Base.ToolPackage.Editor.TodoOverview.Model;
 using Base.ToolPackage.Editor.TodoOverview.Scanning;
 using Base.ToolPackage.Editor.TodoOverview.Settings;
@@ -97,6 +98,10 @@ namespace Base.ToolPackage.Editor.TodoOverview
         private void OnGUI()
         {
             EnsureInitialized();
+
+            // Before the style guard rather than after it, so a pass that gives up still leaves the
+            // window in the theme's color instead of flashing the editor's own grey.
+            DrawBackground();
 
             // Unity hands out no editor styles while a dropdown owns the GUI, so such a pass draws
             // nothing rather than throwing on every style it touches.
@@ -263,6 +268,18 @@ namespace Base.ToolPackage.Editor.TodoOverview
             _selected = null;
         }
 
+        // Nothing under the toolbar had a fill of its own, so the rows, the striping and the space
+        // below the last row were all sitting on whatever grey the editor paints a window. The stripe
+        // is a three percent white wash, which is a tint of what is behind it rather than a color, so
+        // it only reads as the theme once the theme is what it is washing over.
+        private void DrawBackground()
+        {
+            if (Event.current.type != EventType.Repaint)
+                return;
+
+            EditorGUI.DrawRect(new Rect(0f, 0f, position.width, position.height), EditorPalette.Background);
+        }
+
         private void DrawToolbar()
         {
             Rect bar = GUILayoutUtility.GetRect(0f, TodoStyles.ToolbarHeight, GUILayout.ExpandWidth(true));
@@ -297,7 +314,7 @@ namespace Base.ToolPackage.Editor.TodoOverview
         {
             _searchRect = rect;
 
-            TodoChrome.DrawFill(rect, TodoStyles.ControlColor(), TodoStyles.ButtonRadius);
+            TodoChrome.DrawFill(rect, TodoStyles.FieldColor(), TodoStyles.ButtonRadius);
 
             GUI.SetNextControlName(SearchControl);
 
@@ -421,7 +438,7 @@ namespace Base.ToolPackage.Editor.TodoOverview
                 : TodoStyles.ControlColor();
 
             GUIStyle style = settings.IncludePackages
-                ? TodoStyles.Chip
+                ? TodoStyles.AccentLabel
                 : TodoStyles.Button;
 
             if (!TodoChrome.DrawButton(rect, PackagesContent, fill, style, TodoStyles.ButtonRadius))
@@ -602,7 +619,8 @@ namespace Base.ToolPackage.Editor.TodoOverview
             Color color = _palette.Of(entry.Keyword);
 
             TodoChrome.DrawBand(_columns.BandRect(row), color);
-            TodoChrome.DrawPill(_columns.KeywordRect(row), new GUIContent(entry.Keyword), color, TodoStyles.Chip);
+            TodoChrome.DrawPill(_columns.KeywordRect(row), new GUIContent(entry.Keyword), color,
+                TodoStyles.ChipStyle(color));
 
             GUI.Label(_columns.MessageRect(row), MessageContent(entry), TodoStyles.Message);
             GUI.Label(_columns.OwnerRect(row), entry.Owner, TodoStyles.Owner);
@@ -620,8 +638,10 @@ namespace Base.ToolPackage.Editor.TodoOverview
 
             ETodoDateState state = TodoDateParser.Resolve(entry.Date);
 
-            TodoChrome.DrawPill(rect, new GUIContent(entry.RawDate), TodoStyles.DateColor(state),
-                TodoStyles.DateStyle(state));
+            // The raw text moves to the tooltip rather than being dropped, so the notation the comment
+            // was written in is still there to check when a date looks wrong.
+            TodoChrome.DrawPill(rect, new GUIContent(TodoDateLabel.Of(entry), entry.RawDate),
+                TodoStyles.DateColor(state), TodoStyles.DateStyle(state));
         }
 
         private void DrawHeaderRow(Rect row, TodoGroup group)

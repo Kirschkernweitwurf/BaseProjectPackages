@@ -122,11 +122,18 @@ namespace Base.ToolPackage.Editor.CommandPalette
             alignment = TextAnchor.MiddleLeft
         }, DimColor());
 
-        /// <summary>Centered white label inside a colored chip.</summary>
+        /// <summary>Centered label inside a chip, for a chip whose fill is dark.</summary>
         internal static GUIStyle ChipLabel => _chipLabel ??= Pin(new GUIStyle(EditorStyles.miniBoldLabel)
         {
             alignment = TextAnchor.MiddleCenter
-        }, Color.white);
+        }, TextColor());
+
+        /// <summary>Centered label inside a chip, for a chip whose fill is bright.</summary>
+        internal static GUIStyle ChipLabelOnBright => _chipLabelOnBright ??= Pin(
+            new GUIStyle(EditorStyles.miniBoldLabel)
+            {
+                alignment = TextAnchor.MiddleCenter
+            }, EditorPalette.AccentText);
 
         /// <summary>Centered label inside a tag pill.</summary>
         internal static GUIStyle TagLabel => _tagLabel ??= Pin(new GUIStyle(EditorStyles.miniLabel)
@@ -181,6 +188,7 @@ namespace Base.ToolPackage.Editor.CommandPalette
 
         private static GUIStyle _badgeLabel;
         private static GUIStyle _chipLabel;
+        private static GUIStyle _chipLabelOnBright;
         private static GUIStyle _countLabel;
         private static GUIStyle _detailLabel;
         private static GUIStyle _emptyLabel;
@@ -202,6 +210,7 @@ namespace Base.ToolPackage.Editor.CommandPalette
 
             _badgeLabel = null;
             _chipLabel = null;
+            _chipLabelOnBright = null;
             _countLabel = null;
             _detailLabel = null;
             _emptyLabel = null;
@@ -234,8 +243,7 @@ namespace Base.ToolPackage.Editor.CommandPalette
         internal static Color KeyCapColor() => EditorPalette.KeyCap;
 
         /// <summary>Chip color of an asset creation entry.</summary>
-        internal static Color NewChipColor()
-            => EditorPalette.Pick(new Color(0.27f, 0.58f, 0.41f), new Color(0.20f, 0.52f, 0.36f));
+        internal static Color NewChipColor() => EditorSwatches.Green;
 
         /// <summary>Fill of a pill button in its current state.</summary>
         /// <param name="active">Whether the button is switched on.</param>
@@ -265,15 +273,24 @@ namespace Base.ToolPackage.Editor.CommandPalette
         internal static Color RowSelectedColor() => EditorPalette.SelectionFill;
 
         /// <summary>Chip color of a menu item entry.</summary>
-        internal static Color RunChipColor()
-            => EditorPalette.Pick(new Color(0.28f, 0.50f, 0.78f), new Color(0.24f, 0.46f, 0.76f));
+        internal static Color RunChipColor() => EditorSwatches.Blue;
 
         /// <summary>Hairline between the blocks of the window.</summary>
         internal static Color SeparatorColor() => EditorPalette.Separator;
 
         /// <summary>Chip color of a settings page entry.</summary>
-        internal static Color SettingsChipColor()
-            => EditorPalette.Pick(new Color(0.55f, 0.36f, 0.70f), new Color(0.49f, 0.31f, 0.66f));
+        internal static Color SettingsChipColor() => EditorSwatches.Violet;
+
+        /// <summary>
+        /// The chip label that stays readable on a given fill. The chip colors are mid bright and
+        /// swap direction between the editor themes, so neither of the two text colors works on all
+        /// of them and the choice has to be made per fill.
+        /// </summary>
+        /// <param name="fill">The color the chip is filled with.</param>
+        /// <returns>The style to draw the chip's label with.</returns>
+        internal static GUIStyle ChipLabelFor(Color fill) => EditorPalette.TextOn(fill) == EditorPalette.AccentText
+            ? ChipLabelOnBright
+            : ChipLabel;
 
         /// <summary>Fill of a tag pill.</summary>
         internal static Color TagPillColor() => EditorPalette.Tint(0.09f, 0.07f);

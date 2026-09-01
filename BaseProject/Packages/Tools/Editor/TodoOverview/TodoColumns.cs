@@ -162,7 +162,7 @@ namespace Base.ToolPackage.Editor.TodoOverview
         private static float DividerX(float edge) => edge + TodoStyles.Gap * 0.5f;
 
         private static void DrawGuide(float x, Rect area)
-            => TodoChrome.DrawSeparator(new Rect(x, area.y, TodoStyles.SeparatorThickness, area.height));
+            => TodoChrome.DrawDivider(new Rect(x, area.y, TodoStyles.SeparatorThickness, area.height));
 
         private static Rect Line(Rect row, float x, float width)
         {

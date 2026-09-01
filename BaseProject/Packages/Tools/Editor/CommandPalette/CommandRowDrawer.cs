@@ -115,8 +115,10 @@ namespace Base.ToolPackage.Editor.CommandPalette
 
         private static void DrawChip(Rect rect, ECommandKind kind)
         {
-            CommandPaletteChrome.DrawFill(rect, ChipColor(kind), CommandPaletteStyles.PillRadius);
-            GUI.Label(rect, ChipContent(kind), CommandPaletteStyles.ChipLabel);
+            Color fill = ChipColor(kind);
+
+            CommandPaletteChrome.DrawFill(rect, fill, CommandPaletteStyles.PillRadius);
+            GUI.Label(rect, ChipContent(kind), CommandPaletteStyles.ChipLabelFor(fill));
         }
 
         private static void DrawDetail(Rect rect, CommandEntry entry, IReadOnlyList<string> tags)

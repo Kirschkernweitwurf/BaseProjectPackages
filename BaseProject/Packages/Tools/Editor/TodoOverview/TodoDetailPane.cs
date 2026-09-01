@@ -62,7 +62,7 @@ namespace Base.ToolPackage.Editor.TodoOverview
             Rect keyword = new(header.x, header.center.y - TodoStyles.ChipHeight * 0.5f, TodoStyles.ChipWidth,
                 TodoStyles.ChipHeight);
 
-            TodoChrome.DrawPill(keyword, new GUIContent(entry.Keyword), accent, TodoStyles.Chip);
+            TodoChrome.DrawPill(keyword, new GUIContent(entry.Keyword), accent, TodoStyles.ChipStyle(accent));
 
             float left = DrawButtons(header, entry);
 
@@ -90,7 +90,7 @@ namespace Base.ToolPackage.Editor.TodoOverview
 
             button.x -= ButtonWidth + TodoStyles.TightGap;
 
-            if (TodoChrome.DrawButton(button, OpenContent, TodoStyles.AccentColor(), TodoStyles.Chip,
+            if (TodoChrome.DrawButton(button, OpenContent, TodoStyles.AccentColor(), TodoStyles.AccentLabel,
                     TodoStyles.ButtonRadius))
                 TodoNavigator.Open(entry);
 

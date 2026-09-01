@@ -112,10 +112,13 @@ namespace Base.ToolPackage.Editor.TodoOverview
         /// <summary>Thickness of a hairline.</summary>
         internal static float SeparatorThickness => EditorMetrics.SeparatorThickness;
 
+        /// <summary>Label of a pill or button whose fill is bright, chosen by <see cref="ChipStyle"/>.</summary>
+        internal static GUIStyle AccentLabel { get; private set; }
+
         /// <summary>Centered label of a button that is not the primary action.</summary>
         internal static GUIStyle Button { get; private set; }
 
-        /// <summary>Centered label inside a colored pill.</summary>
+        /// <summary>Label of a pill whose fill is dark, chosen by <see cref="ChipStyle"/>.</summary>
         internal static GUIStyle Chip { get; private set; }
 
         /// <summary>Centered label of a section's item count.</summary>
@@ -188,23 +191,42 @@ namespace Base.ToolPackage.Editor.TodoOverview
 
         /// <summary>Fill of a control that can be clicked but is not the primary action.</summary>
         /// <returns>The control fill color.</returns>
-        internal static Color ControlColor() => EditorPalette.Tint(0.14f, 0.12f);
+        internal static Color ControlColor() => EditorPalette.Secondary;
+
+        /// <summary>Fill of the search box, which is an input rather than a button.</summary>
+        /// <returns>The field fill color.</returns>
+        internal static Color FieldColor() => EditorPalette.Field;
 
         /// <summary>Fill of a pill whose keyword is currently filtered out.</summary>
         /// <returns>The muted fill color.</returns>
-        internal static Color MutedChipColor() => EditorPalette.Tint(0.10f, 0.09f);
+        internal static Color MutedChipColor() => EditorPalette.KeyCap;
 
         /// <summary>Fill behind the toolbar, the detail panel and the section headers.</summary>
         /// <returns>The panel fill color.</returns>
-        internal static Color PanelColor() => EditorPalette.Tint(0.07f, 0.05f);
+        internal static Color PanelColor() => EditorPalette.Card;
+
+        /// <summary>
+        /// The label style that stays readable on a given fill.
+        /// </summary>
+        /// <remarks>
+        /// A theme carries exactly one pair of text colors meant to sit on something: the primary one
+        /// for a dark surface and the on-accent one for a bright surface, which swap round between the
+        /// dark and light editor themes. Whichever of the two is further from the fill in brightness
+        /// is the readable one, so a keyword color the user picked gets a legible label without the
+        /// theme needing to know it exists.
+        /// </remarks>
+        /// <param name="fill">The color the label is drawn on top of.</param>
+        /// <returns>The style to draw the label with.</returns>
+        internal static GUIStyle ChipStyle(Color fill) => EditorPalette.TextOn(fill) == EditorPalette.AccentText
+            ? AccentLabel
+            : Chip;
 
         /// <summary>Color a date pill is drawn in.</summary>
         /// <param name="state">Where the date sits relative to today.</param>
         /// <returns>The fill color of the pill.</returns>
         internal static Color DateColor(ETodoDateState state) => state switch
         {
-            ETodoDateState.Overdue => EditorPalette.Pick(new Color(0.80f, 0.30f, 0.30f),
-                new Color(0.74f, 0.22f, 0.22f)),
+            ETodoDateState.Overdue => EditorPalette.Danger,
             ETodoDateState.Today => EditorPalette.Focus,
             _ => MutedChipColor()
         };
@@ -214,8 +236,8 @@ namespace Base.ToolPackage.Editor.TodoOverview
         /// <returns>The style the date is drawn with.</returns>
         internal static GUIStyle DateStyle(ETodoDateState state) => state switch
         {
-            ETodoDateState.Overdue => Chip,
-            ETodoDateState.Today => Chip,
+            ETodoDateState.Overdue => ChipStyle(DateColor(state)),
+            ETodoDateState.Today => ChipStyle(DateColor(state)),
             _ => MutedChip
         };
 
@@ -237,15 +259,23 @@ namespace Base.ToolPackage.Editor.TodoOverview
 
         private static void Build()
         {
+            AccentLabel = Pin(new GUIStyle(EditorStyles.miniBoldLabel)
+            {
+                alignment = TextAnchor.MiddleCenter
+            }, EditorPalette.AccentText);
+
             Button = Pin(new GUIStyle(EditorStyles.miniLabel)
             {
                 alignment = TextAnchor.MiddleCenter
-            }, EditorPalette.Text);
+            }, EditorPalette.SecondaryText);
 
+            // Not white any more. A keyword color is picked by the user and can land anywhere on the
+            // spectrum, so the label is chosen per fill by ChipStyle rather than fixed to one end of
+            // it, and this is the end that reads on a dark fill.
             Chip = Pin(new GUIStyle(EditorStyles.miniBoldLabel)
             {
                 alignment = TextAnchor.MiddleCenter
-            }, Color.white);
+            }, EditorPalette.Text);
 
             Count = Pin(new GUIStyle(EditorStyles.miniLabel)
             {
@@ -262,7 +292,7 @@ namespace Base.ToolPackage.Editor.TodoOverview
             {
                 alignment = TextAnchor.MiddleLeft,
                 padding = new RectOffset(ChipTextPadding, DropdownTextPadding, 0, 0)
-            }, EditorPalette.Text);
+            }, EditorPalette.SecondaryText);
 
             Empty = Pin(new GUIStyle(EditorStyles.label)
             {
@@ -270,10 +300,10 @@ namespace Base.ToolPackage.Editor.TodoOverview
                 fontSize = MessageFontSize
             }, EditorPalette.DimText);
 
-            Foldout = new GUIStyle(EditorStyles.foldout)
+            Foldout = Pin(new GUIStyle(EditorStyles.foldout)
             {
                 fontStyle = FontStyle.Bold
-            };
+            }, EditorPalette.Text);
 
             Header = Pin(new GUIStyle(EditorStyles.miniBoldLabel)
             {

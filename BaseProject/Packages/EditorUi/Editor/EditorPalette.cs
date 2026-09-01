@@ -16,6 +16,13 @@ namespace Base.EditorUiPackage
     /// </summary>
     public static class EditorPalette
     {
+        /// <summary>How much of perceived brightness each channel carries, blue last by a long way.</summary>
+        private const float BlueWeight = 0.0722f;
+
+        private const float GreenWeight = 0.7152f;
+
+        private const float RedWeight = 0.2126f;
+
         /// <summary>Blue used for selection, drop targets and the primary button.</summary>
         public static Color Accent => EditorThemeProvider.Colors.Accent;
 
@@ -119,5 +126,34 @@ namespace Base.EditorUiPackage
         /// <param name="alpha">The opacity to lay it on with.</param>
         /// <returns>The faded color.</returns>
         public static Color WithAlpha(Color color, float alpha) => new(color.r, color.g, color.b, alpha);
+
+        /// <summary>
+        /// The text color that stays readable on a given fill.
+        /// </summary>
+        /// <remarks>
+        /// A theme carries exactly one pair of colors meant to sit on top of something:
+        /// <see cref="Text"/> for a dark surface and <see cref="AccentText"/> for a bright one. Which
+        /// of the two is the dark one swaps between the dark and light editor themes, so neither can
+        /// be assumed. Whichever is further from the fill in perceived brightness is the readable one.
+        /// <para>
+        /// For a fill the palette does not own, such as a color the user picked for a keyword. A
+        /// label on one of the palette's own fills should use the color named for it instead.
+        /// </para>
+        /// </remarks>
+        /// <param name="fill">The color the text is drawn on top of.</param>
+        /// <returns>Either <see cref="Text"/> or <see cref="AccentText"/>.</returns>
+        public static Color TextOn(Color fill)
+        {
+            float target = Luminance(fill);
+
+            return Mathf.Abs(target - Luminance(Text)) >= Mathf.Abs(target - Luminance(AccentText))
+                ? Text
+                : AccentText;
+        }
+
+        // Perceived brightness rather than the plain average, because the eye reads green as far
+        // lighter than blue at the same value and an average would call a saturated blue bright.
+        private static float Luminance(Color color)
+            => color.r * RedWeight + color.g * GreenWeight + color.b * BlueWeight;
     }
 }

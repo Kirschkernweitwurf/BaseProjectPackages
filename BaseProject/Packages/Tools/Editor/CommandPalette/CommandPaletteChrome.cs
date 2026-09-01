@@ -125,10 +125,14 @@ namespace Base.ToolPackage.Editor.CommandPalette
 
         private static void DrawPillFace(Rect rect, GUIContent content, bool active, bool hover, bool pressed)
         {
-            DrawFill(rect, CommandPaletteStyles.PillColor(active, hover, pressed), CommandPaletteStyles.PillRadius);
+            Color fill = CommandPaletteStyles.PillColor(active, hover, pressed);
 
+            DrawFill(rect, fill, CommandPaletteStyles.PillRadius);
+
+            // An active pill is filled with the accent, which is pale under some themes and deep under
+            // others, so its label is chosen against the fill rather than fixed.
             GUI.Label(rect, content, active
-                ? CommandPaletteStyles.ChipLabel
+                ? CommandPaletteStyles.ChipLabelFor(fill)
                 : CommandPaletteStyles.PillLabel);
         }
     }

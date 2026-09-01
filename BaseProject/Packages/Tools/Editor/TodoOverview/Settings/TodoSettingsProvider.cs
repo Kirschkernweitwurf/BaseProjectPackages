@@ -12,8 +12,9 @@ namespace Base.ToolPackage.Editor.TodoOverview.Settings
     internal static class TodoSettingsProvider
     {
         private const string DatesHeader = "Dates";
-        private const string DatesHelp = "Date formats are tried in this order. Two digit years resolve "
-            + "into the current century.";
+        private const string DatesHelp = "Date formats are tried in this order when an item is read. Two "
+            + "digit years resolve into the current century. Whichever one matched, every date is shown "
+            + "in a single notation: either the first format above or this machine's region.";
         private const string KeywordsHeader = "Keywords";
         private const string MetadataHeader = "Owner And Date";
 
@@ -81,7 +82,8 @@ namespace Base.ToolPackage.Editor.TodoOverview.Settings
                 TodoSettings.CaseSensitivePropertyName, TodoSettings.ContinuationPropertyName);
 
             DrawSection(MetadataHeader, MetadataHelp, TodoSettings.MetadataPropertyName);
-            DrawSection(DatesHeader, DatesHelp, TodoSettings.DateFormatsPropertyName);
+            DrawSection(DatesHeader, DatesHelp, TodoSettings.DateFormatsPropertyName,
+                TodoSettings.DateDisplayPropertyName);
 
             DrawSection(ScopeHeader, ScopeHelp, TodoSettings.ExtensionsPropertyName,
                 TodoSettings.IgnoredPropertyName);

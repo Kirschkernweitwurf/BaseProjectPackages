@@ -10,6 +10,15 @@ namespace Base.ToolPackage.Editor.TodoOverview.Model
     [Serializable]
     internal sealed class TodoTag
     {
+        /// <summary>Serialized name of the color field, for a drawer that edits it by hand.</summary>
+        internal const string ColorPropertyName = nameof(color);
+
+        /// <summary>Serialized name of the enabled field, for a drawer that edits it by hand.</summary>
+        internal const string EnabledPropertyName = nameof(enabled);
+
+        /// <summary>Serialized name of the keyword field, for a drawer that edits it by hand.</summary>
+        internal const string KeywordPropertyName = nameof(keyword);
+
         [SerializeField] private string keyword;
         [SerializeField] private Color color;
         [SerializeField] private bool enabled;

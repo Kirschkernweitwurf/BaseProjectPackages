@@ -1,5 +1,5 @@
+using Base.EditorUiPackage;
 using Base.ToolPackage.Editor.TodoOverview.Model;
-using UnityEngine;
 
 namespace Base.ToolPackage.Editor.TodoOverview.Settings
 {
@@ -11,6 +11,12 @@ namespace Base.ToolPackage.Editor.TodoOverview.Settings
     {
         /// <summary>How far an item reaches past its own line before anyone changes it.</summary>
         internal const ETodoContinuation Continuation = ETodoContinuation.Indented;
+
+        /// <summary>
+        /// Which notation dates are shown in before anyone changes it. The project's own, so a list
+        /// reads the same for everyone working on it rather than following each machine's region.
+        /// </summary>
+        internal const ETodoDateDisplay DateDisplay = ETodoDateDisplay.Project;
 
         /// <summary>
         /// Formats a date in an item is read with, tried in this order before the invariant culture
@@ -60,16 +66,21 @@ namespace Base.ToolPackage.Editor.TodoOverview.Settings
         };
 
         /// <summary>The keywords that are looked for, with the color each one is drawn in.</summary>
+        /// <remarks>
+        /// Taken from <see cref="EditorSwatches"/> rather than written out here, so a fresh project
+        /// starts on colors tuned for the editor theme it was seeded under, and so the swatch offered
+        /// in the settings page is the same color the keyword already has.
+        /// </remarks>
         /// <returns>The default keyword tags.</returns>
         internal static TodoTag[] CreateTags() => new[]
         {
-            new TodoTag("TODO", new Color(0.29f, 0.56f, 0.85f), true),
-            new TodoTag("FIXME", new Color(0.87f, 0.45f, 0.30f), true),
-            new TodoTag("BUG", new Color(0.82f, 0.29f, 0.32f), true),
-            new TodoTag("HACK", new Color(0.85f, 0.63f, 0.22f), true),
-            new TodoTag("OPTIMIZE", new Color(0.56f, 0.45f, 0.78f), true),
-            new TodoTag("REVIEW", new Color(0.30f, 0.65f, 0.68f), true),
-            new TodoTag("NOTE", new Color(0.42f, 0.62f, 0.45f), false)
+            new TodoTag("TODO", EditorSwatches.Blue, true),
+            new TodoTag("FIXME", EditorSwatches.Orange, true),
+            new TodoTag("BUG", EditorSwatches.Red, true),
+            new TodoTag("HACK", EditorSwatches.Amber, true),
+            new TodoTag("OPTIMIZE", EditorSwatches.Violet, true),
+            new TodoTag("REVIEW", EditorSwatches.Teal, true),
+            new TodoTag("NOTE", EditorSwatches.Green, false)
         };
     }
 }
