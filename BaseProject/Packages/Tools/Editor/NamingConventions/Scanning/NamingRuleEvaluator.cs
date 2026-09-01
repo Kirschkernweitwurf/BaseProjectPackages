@@ -11,7 +11,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Scanning
     /// can be handed in for assets whose sub type is known, for example a normal map that has to
     /// end in _N.
     /// </summary>
-    public static class NamingRuleEvaluator
+    internal static class NamingRuleEvaluator
     {
         private const string Wildcard = "*";
 

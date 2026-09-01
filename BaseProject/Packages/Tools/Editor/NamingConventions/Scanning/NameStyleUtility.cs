@@ -10,7 +10,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Scanning
     /// <see cref="ENamingStyle.PascalSnakeCase"/> keeps the underscores between words, so
     /// "Kitchen_Lamp" stays a category plus an asset instead of collapsing into one word.
     /// </summary>
-    public static class NameStyleUtility
+    internal static class NameStyleUtility
     {
         private const char Underscore = '_';
 

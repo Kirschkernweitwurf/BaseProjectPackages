@@ -72,8 +72,8 @@ namespace Base.CorePackage.Editor.EventBusInspector
             Type type = handler.Method.DeclaringType;
 
             while (type != null
-                && IsGenerated(type)
-                && type.DeclaringType != null)
+                   && IsGenerated(type)
+                   && type.DeclaringType != null)
                 type = type.DeclaringType;
 
             return type;

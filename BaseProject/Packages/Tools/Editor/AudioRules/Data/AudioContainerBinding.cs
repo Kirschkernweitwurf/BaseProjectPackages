@@ -11,7 +11,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Data
     /// simply never match.
     /// </summary>
     [Serializable]
-    public sealed class AudioContainerBinding
+    internal sealed class AudioContainerBinding
     {
         private const string DefaultCategoryField = "AudioType";
         private const string DefaultClipsField = "Clips";

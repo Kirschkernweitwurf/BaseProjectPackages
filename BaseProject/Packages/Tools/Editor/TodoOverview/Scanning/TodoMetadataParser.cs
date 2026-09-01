@@ -65,7 +65,7 @@ namespace Base.ToolPackage.Editor.TodoOverview.Scanning
 
             DateTime? date = TodoDateParser.TryParse(rawDate, patterns.DateFormats, out DateTime parsed)
                 ? parsed
-                : (DateTime?)null;
+                : null;
 
             return new TodoMetadata(Clean(remaining), owner, rawDate, date);
         }

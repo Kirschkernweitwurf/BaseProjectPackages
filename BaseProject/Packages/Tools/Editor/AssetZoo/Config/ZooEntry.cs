@@ -7,7 +7,7 @@ namespace Base.ToolPackage.Editor.AssetZoo.Config
     /// One prefab in the zoo, with an optional display name override.
     /// </summary>
     [Serializable]
-    public class ZooEntry
+    internal class ZooEntry
     {
         [field: Tooltip("Prefab to show in the zoo.")]
         [field: SerializeField] public GameObject Prefab { get; private set; }

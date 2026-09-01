@@ -75,7 +75,7 @@ namespace Base.ToolPackage.Editor.TodoOverview.Scanning
             int index = SkipWhitespace(text, 0);
 
             while (index < text.Length
-                && (text[index] == Decoration || text[index] == Slash))
+                   && (text[index] == Decoration || text[index] == Slash))
                 index++;
 
             return comment.TextColumn + SkipWhitespace(text, index);
@@ -86,7 +86,7 @@ namespace Base.ToolPackage.Editor.TodoOverview.Scanning
             int index = start;
 
             while (index < text.Length
-                && char.IsWhiteSpace(text[index]))
+                   && char.IsWhiteSpace(text[index]))
                 index++;
 
             return index;

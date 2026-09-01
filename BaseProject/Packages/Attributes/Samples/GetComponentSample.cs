@@ -12,7 +12,7 @@ namespace Base.AttributePackage.Samples
         Variations = new[]
         {
             "Nothing to configure. It only fills while the field is empty, so an explicit assignment is never "
-                + "overwritten.",
+            + "overwritten.",
             "Use RequiredGet when a missing one should also be reported as an error."
         })]
     internal sealed class GetComponentSample : MonoBehaviour

@@ -26,9 +26,7 @@ namespace Base.UtilityPackage.Randomization
         /// Creates an empty entry. Declared explicitly because Unity's serializer builds instances
         /// through the parameterless constructor, which the one below would otherwise remove.
         /// </summary>
-        public WeightedEntry()
-        {
-        }
+        public WeightedEntry() { }
 
         /// <summary>Creates an entry for one item.</summary>
         /// <param name="item">The value handed back when this entry is drawn.</param>

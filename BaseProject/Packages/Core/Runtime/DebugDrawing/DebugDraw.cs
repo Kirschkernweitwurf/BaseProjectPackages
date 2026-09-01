@@ -31,7 +31,7 @@ namespace Base.CorePackage.DebugDrawing
         /// <param name="color">The color the line is drawn in.</param>
         /// <param name="duration">How long the line stays, in unscaled seconds.</param>
         /// <param name="depthTest">False to draw the line on top of everything.</param>
-        [Conditional(EditorSymbol), Conditional(DevelopmentSymbol), Conditional(ForceSymbol)]
+        [Conditional(EditorSymbol)] [Conditional(DevelopmentSymbol)] [Conditional(ForceSymbol)]
         public static void Line(Vector3 from, Vector3 to, Color color, float duration = 0f, bool depthTest = true)
             => DebugDrawBuffer.AddLine(from, to, color, duration, depthTest);
 
@@ -41,10 +41,9 @@ namespace Base.CorePackage.DebugDrawing
         /// <param name="color">The color the ray is drawn in.</param>
         /// <param name="duration">How long the ray stays, in unscaled seconds.</param>
         /// <param name="depthTest">False to draw the ray on top of everything.</param>
-        [Conditional(EditorSymbol), Conditional(DevelopmentSymbol), Conditional(ForceSymbol)]
+        [Conditional(EditorSymbol)] [Conditional(DevelopmentSymbol)] [Conditional(ForceSymbol)]
         public static void Ray(Vector3 origin, Vector3 direction, Color color, float duration = 0f,
-            bool depthTest = true)
-            => DebugDrawBuffer.AddLine(origin, origin + direction, color, duration, depthTest);
+            bool depthTest = true) => DebugDrawBuffer.AddLine(origin, origin + direction, color, duration, depthTest);
 
         /// <summary>Draws a line with a head at its end, so its direction is readable.</summary>
         /// <param name="from">The world space start of the arrow.</param>
@@ -52,7 +51,7 @@ namespace Base.CorePackage.DebugDrawing
         /// <param name="color">The color the arrow is drawn in.</param>
         /// <param name="duration">How long the arrow stays, in unscaled seconds.</param>
         /// <param name="depthTest">False to draw the arrow on top of everything.</param>
-        [Conditional(EditorSymbol), Conditional(DevelopmentSymbol), Conditional(ForceSymbol)]
+        [Conditional(EditorSymbol)] [Conditional(DevelopmentSymbol)] [Conditional(ForceSymbol)]
         public static void Arrow(Vector3 from, Vector3 to, Color color, float duration = 0f, bool depthTest = true)
             => DebugDrawShapes.AddArrow(from, to, color, duration, depthTest);
 
@@ -62,10 +61,9 @@ namespace Base.CorePackage.DebugDrawing
         /// <param name="color">The color the cross is drawn in.</param>
         /// <param name="duration">How long the cross stays, in unscaled seconds.</param>
         /// <param name="depthTest">False to draw the cross on top of everything.</param>
-        [Conditional(EditorSymbol), Conditional(DevelopmentSymbol), Conditional(ForceSymbol)]
+        [Conditional(EditorSymbol)] [Conditional(DevelopmentSymbol)] [Conditional(ForceSymbol)]
         public static void Point(Vector3 position, float size, Color color, float duration = 0f,
-            bool depthTest = true)
-            => DebugDrawShapes.AddPoint(position, size, color, duration, depthTest);
+            bool depthTest = true) => DebugDrawShapes.AddPoint(position, size, color, duration, depthTest);
 
         /// <summary>Draws a wire sphere as three circles, one around each axis.</summary>
         /// <param name="center">The world space center of the sphere.</param>
@@ -73,10 +71,9 @@ namespace Base.CorePackage.DebugDrawing
         /// <param name="color">The color the sphere is drawn in.</param>
         /// <param name="duration">How long the sphere stays, in unscaled seconds.</param>
         /// <param name="depthTest">False to draw the sphere on top of everything.</param>
-        [Conditional(EditorSymbol), Conditional(DevelopmentSymbol), Conditional(ForceSymbol)]
+        [Conditional(EditorSymbol)] [Conditional(DevelopmentSymbol)] [Conditional(ForceSymbol)]
         public static void Sphere(Vector3 center, float radius, Color color, float duration = 0f,
-            bool depthTest = true)
-            => DebugDrawShapes.AddSphere(center, radius, color, duration, depthTest);
+            bool depthTest = true) => DebugDrawShapes.AddSphere(center, radius, color, duration, depthTest);
 
         /// <summary>Draws the twelve edges of an axis aligned box.</summary>
         /// <param name="center">The world space center of the box.</param>
@@ -84,7 +81,7 @@ namespace Base.CorePackage.DebugDrawing
         /// <param name="color">The color the box is drawn in.</param>
         /// <param name="duration">How long the box stays, in unscaled seconds.</param>
         /// <param name="depthTest">False to draw the box on top of everything.</param>
-        [Conditional(EditorSymbol), Conditional(DevelopmentSymbol), Conditional(ForceSymbol)]
+        [Conditional(EditorSymbol)] [Conditional(DevelopmentSymbol)] [Conditional(ForceSymbol)]
         public static void Box(Vector3 center, Vector3 size, Color color, float duration = 0f,
             bool depthTest = true)
             => DebugDrawShapes.AddBox(center, size, Quaternion.identity, color, duration, depthTest);
@@ -96,17 +93,16 @@ namespace Base.CorePackage.DebugDrawing
         /// <param name="color">The color the box is drawn in.</param>
         /// <param name="duration">How long the box stays, in unscaled seconds.</param>
         /// <param name="depthTest">False to draw the box on top of everything.</param>
-        [Conditional(EditorSymbol), Conditional(DevelopmentSymbol), Conditional(ForceSymbol)]
+        [Conditional(EditorSymbol)] [Conditional(DevelopmentSymbol)] [Conditional(ForceSymbol)]
         public static void Box(Vector3 center, Vector3 size, Quaternion rotation, Color color, float duration = 0f,
-            bool depthTest = true)
-            => DebugDrawShapes.AddBox(center, size, rotation, color, duration, depthTest);
+            bool depthTest = true) => DebugDrawShapes.AddBox(center, size, rotation, color, duration, depthTest);
 
         /// <summary>Draws the twelve edges of a bounding box.</summary>
         /// <param name="bounds">The world space bounds to outline.</param>
         /// <param name="color">The color the box is drawn in.</param>
         /// <param name="duration">How long the box stays, in unscaled seconds.</param>
         /// <param name="depthTest">False to draw the box on top of everything.</param>
-        [Conditional(EditorSymbol), Conditional(DevelopmentSymbol), Conditional(ForceSymbol)]
+        [Conditional(EditorSymbol)] [Conditional(DevelopmentSymbol)] [Conditional(ForceSymbol)]
         public static void Box(Bounds bounds, Color color, float duration = 0f, bool depthTest = true)
             => DebugDrawShapes.AddBox(bounds.center, bounds.size, Quaternion.identity, color, duration, depthTest);
 
@@ -115,7 +111,7 @@ namespace Base.CorePackage.DebugDrawing
         /// <param name="text">The text that is drawn. Rich text tags are supported.</param>
         /// <param name="color">The color the text is drawn in.</param>
         /// <param name="duration">How long the text stays, in unscaled seconds.</param>
-        [Conditional(EditorSymbol), Conditional(DevelopmentSymbol), Conditional(ForceSymbol)]
+        [Conditional(EditorSymbol)] [Conditional(DevelopmentSymbol)] [Conditional(ForceSymbol)]
         public static void Label(Vector3 position, string text, Color color, float duration = 0f)
         {
             // Empty text is dropped silently rather than logged: this is called every frame, so a
@@ -127,12 +123,12 @@ namespace Base.CorePackage.DebugDrawing
         }
 
         /// <summary>Removes everything currently drawn, including commands with time left.</summary>
-        [Conditional(EditorSymbol), Conditional(DevelopmentSymbol), Conditional(ForceSymbol)]
+        [Conditional(EditorSymbol)] [Conditional(DevelopmentSymbol)] [Conditional(ForceSymbol)]
         public static void Clear() => DebugDrawBuffer.Clear();
 
         /// <summary>Switches drawing on or off. Switching it off clears what is drawn.</summary>
         /// <param name="value">True to keep drawing.</param>
-        [Conditional(EditorSymbol), Conditional(DevelopmentSymbol), Conditional(ForceSymbol)]
+        [Conditional(EditorSymbol)] [Conditional(DevelopmentSymbol)] [Conditional(ForceSymbol)]
         public static void SetEnabled(bool value) => DebugDrawBuffer.SetEnabled(value);
     }
 }

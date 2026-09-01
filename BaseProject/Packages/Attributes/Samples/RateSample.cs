@@ -13,7 +13,7 @@ namespace Base.AttributePackage.Samples
         })]
     internal sealed class RateSample : ScriptableObject
     {
-        [Rate(1, 5)]
+        [Rate(1)]
         [Tooltip("Click a star to set the value.")]
         public int difficulty = 3;
     }

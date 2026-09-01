@@ -7,7 +7,7 @@ namespace Base.ToolPackage.Editor.AssetZoo.Builder
     /// Computes a prefab's bounding box without instantiating it, by walking its
     /// MeshFilter / SkinnedMeshRenderer children and reading shared mesh bounds.
     /// </summary>
-    public static class BoundsCalculator
+    internal static class BoundsCalculator
     {
         /// <summary>
         /// Calculates the world-space bounds of a prefab by examining its MeshFilter and

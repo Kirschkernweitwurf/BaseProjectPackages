@@ -17,8 +17,10 @@ namespace Base.AttributePackage.Editor.Handlers
         private const int HandlerOrder = 6;
         private const string TypeFilter = "t:";
 
+        /// <inheritdoc/>
         public int Order => HandlerOrder;
 
+        /// <inheritdoc/>
         public void AfterField(in MemberContext context)
         {
             if (context.GetAttribute<GetScriptableObjectAttribute>() == null)

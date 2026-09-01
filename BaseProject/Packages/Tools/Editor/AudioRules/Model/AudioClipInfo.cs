@@ -5,7 +5,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Model
     /// clip as it is imported today, not the source file, because that is what ships and what the
     /// memory estimate has to work from.
     /// </summary>
-    public sealed class AudioClipInfo
+    internal sealed class AudioClipInfo
     {
         private const float BytesPerKilobyte = 1024f;
 

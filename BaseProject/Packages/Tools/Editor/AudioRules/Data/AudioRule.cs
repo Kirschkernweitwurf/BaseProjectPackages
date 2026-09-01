@@ -11,7 +11,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Data
     /// targeted exceptions, without repeating the shared settings in every band.
     /// </summary>
     [Serializable]
-    public sealed class AudioRule
+    internal sealed class AudioRule
     {
         private const string DefaultLabel = "New Rule";
 

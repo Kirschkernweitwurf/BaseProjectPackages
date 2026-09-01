@@ -10,8 +10,12 @@ namespace Base.ToolPackage.Editor.UnityConstants
     /// <summary>
     /// Generates a class with all Unity Tags as const strings.
     /// </summary>
-    public static class TagsGenerator
+    internal static class TagsGenerator
     {
+        /// <summary>
+        /// Writes a constants class for the project's tags, so a tag can be named in code without a
+        /// string literal that no rename would follow.
+        /// </summary>
         [DynamicMenuItem("Tools/Base Packages/Code/Generation/Generate Tags")]
         public static void Generate()
         {

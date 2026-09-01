@@ -13,8 +13,10 @@ namespace Base.AttributePackage.Editor.Handlers
     {
         private const int HandlerOrder = -50;
 
+        /// <inheritdoc/>
         public int Order => HandlerOrder;
 
+        /// <inheritdoc/>
         public void BeforeField(in MemberContext context)
         {
             if (!ArraySizeLimits.TryGet(context, out int minimum, out int maximum))

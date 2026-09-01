@@ -22,8 +22,10 @@ namespace Base.AttributePackage.Editor.Handlers
         private const string MissingPrefix = "Validation method not found: ";
         private const string ThrewPrefix = "Validation method threw an exception: ";
 
+        /// <inheritdoc/>
         public int Order => HandlerOrder;
 
+        /// <inheritdoc/>
         public void AfterField(in MemberContext context)
         {
             ValidateInputAttribute attribute = context.GetAttribute<ValidateInputAttribute>();

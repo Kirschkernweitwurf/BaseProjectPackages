@@ -29,8 +29,10 @@ namespace Base.EditorUiPackage
         /// Unity reports as a deleted invalid font reference on the next reload. The domain takes it
         /// with it either way.
         /// </remarks>
-        /// <returns>The monospaced font, or null if the machine has none of the candidates, in which
-        /// case a style keeps the editor default.</returns>
+        /// <returns>
+        /// The monospaced font, or null if the machine has none of the candidates, in which
+        /// case a style keeps the editor default.
+        /// </returns>
         public static Font Monospaced()
         {
             if (_monospaced != null)

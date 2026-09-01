@@ -9,7 +9,16 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
     [Serializable]
     internal class PlayModeObjectReference
     {
+        /// <summary>
+        /// Serialized path of the field holding the reference, which is how it is found again on the
+        /// object the payload is applied to.
+        /// </summary>
         public string propertyPath;
+
+        /// <summary>
+        /// Where the referenced object lives. A scene object cannot survive leaving play mode, so it
+        /// is restored differently from an asset.
+        /// </summary>
         public EPlayModeReferenceKind kind;
 
         /// <summary>Set for assets only. Assets keep a stable id across play mode.</summary>

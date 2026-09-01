@@ -6,27 +6,27 @@ using UnityEngine;
 namespace Base.ToolPackage.Editor.OrderManagement
 {
     /// <summary>Editor window to manage constants and regenerate the generated file.</summary>
-    public sealed class OrderManagerWindow : EditorWindow
+    internal sealed class OrderManagerWindow : EditorWindow
     {
-        private const string AddLabel = "Add Constant";
         private const float AddButtonWidth = 110f;
+        private const string AddLabel = "Add Constant";
         private const string CommentField = "comment";
         private const string ConstantsField = "constants";
         private const string ConstantsHeader = "Constants";
         private const string Description = "Names the execution order constants the generated file is built "
             + "from, then writes that file. Every constant becomes a named value your scripts can order "
             + "themselves by instead of spelling a number out.";
-        private const string EmptyMessage = "No constants yet";
         private const string EmptyHint = "Add one and it appears in the generated file the next time you "
             + "press Generate.";
-        private const string GenerateLabel = "Generate";
+        private const string EmptyMessage = "No constants yet";
         private const float GenerateButtonHeight = 32f;
+        private const string GenerateLabel = "Generate";
+        private const string MenuPath = "Tools/Base Packages/Code/Generation/Order Manager";
         private const float MinWindowHeight = 320f;
         private const float MinWindowWidth = 420f;
-        private const string MenuPath = "Tools/Base Packages/Code/Generation/Order Manager";
         private const string NameField = "name";
-        private const int NoRemoval = -1;
         private const string NamespaceField = "generatedNamespace";
+        private const int NoRemoval = -1;
         private const float NumberWidth = 80f;
         private const string OutputDirectoryField = "outputDirectory";
         private const string OutputHeader = "Output";

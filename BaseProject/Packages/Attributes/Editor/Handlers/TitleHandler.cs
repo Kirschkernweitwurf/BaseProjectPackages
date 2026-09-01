@@ -10,8 +10,10 @@ namespace Base.AttributePackage.Editor.Handlers
     /// </summary>
     internal sealed class TitleHandler : IBeforeFieldHandler
     {
+        /// <inheritdoc/>
         public int Order => 0;
 
+        /// <inheritdoc/>
         public void BeforeField(in MemberContext context)
         {
             TitleAttribute attribute = context.GetAttribute<TitleAttribute>();

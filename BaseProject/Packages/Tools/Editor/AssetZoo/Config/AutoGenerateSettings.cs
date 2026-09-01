@@ -11,7 +11,7 @@ namespace Base.ToolPackage.Editor.AssetZoo.Config
     /// and "SM_Garden_Rock_01" both land in the group "Garden".
     /// </summary>
     [Serializable]
-    public class AutoGenerateSettings
+    internal class AutoGenerateSettings
     {
         /// <summary>
         /// Separator used when none is set.

@@ -12,15 +12,6 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot.Sa
     [TroubleshootSample]
     internal sealed class SampleConditionIssues
     {
-        /// <summary>A valid bool the working conditions point at.</summary>
-        internal bool isEnabled;
-
-        /// <summary>A float, used to show a condition pointing at the wrong type.</summary>
-        internal float speed;
-
-        /// <summary>An enum, used by the enum condition samples.</summary>
-        internal ESampleMode mode;
-
         /// <summary>Points at a member that no longer exists.</summary>
         [ShowIf("wasRenamedAway")] public int renamedMember;
 
@@ -38,5 +29,13 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot.Sa
 
         /// <summary>Points at a float as if it were an enum.</summary>
         [ShowIfEnum(nameof(speed), ESampleMode.Fast)] public int notAnEnum;
+        /// <summary>A valid bool the working conditions point at.</summary>
+        internal bool isEnabled;
+
+        /// <summary>A float, used to show a condition pointing at the wrong type.</summary>
+        internal float speed;
+
+        /// <summary>An enum, used by the enum condition samples.</summary>
+        internal ESampleMode mode;
     }
 }

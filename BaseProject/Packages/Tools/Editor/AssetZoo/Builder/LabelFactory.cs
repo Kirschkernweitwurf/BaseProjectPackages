@@ -7,7 +7,7 @@ namespace Base.ToolPackage.Editor.AssetZoo.Builder
     /// <summary>
     /// Creates 3D TextMesh labels that always face the camera.
     /// </summary>
-    public static class LabelFactory
+    internal static class LabelFactory
     {
         /// <summary>
         /// Creates a 3D TextMesh label with the specified properties and adds

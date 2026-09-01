@@ -9,14 +9,11 @@ namespace Base.SaveSystemPackage.Serialization.Wire
     [Serializable]
     internal sealed class SaveBlob
     {
+        /// <summary>
+        /// Every savable's state, in the order it was collected. A list rather than a dictionary
+        /// because JsonUtility cannot serialize one.
+        /// </summary>
         public List<SaveEntry> entries = new();
-
-        /// <summary>Appends one savable's serialized state.</summary>
-        internal void Add(string id, string state) => entries.Add(new SaveEntry
-        {
-            id = id,
-            state = state
-        });
 
         /// <summary>
         /// Builds an id to state map once, so loading is O(n) instead of O(n*m) linear scans.
@@ -33,5 +30,12 @@ namespace Base.SaveSystemPackage.Serialization.Wire
 
             return map;
         }
+
+        /// <summary>Appends one savable's serialized state.</summary>
+        internal void Add(string id, string state) => entries.Add(new SaveEntry
+        {
+            id = id,
+            state = state
+        });
     }
 }

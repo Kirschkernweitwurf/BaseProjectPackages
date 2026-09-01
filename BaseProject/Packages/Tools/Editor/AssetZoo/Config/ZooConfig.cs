@@ -10,7 +10,7 @@ namespace Base.ToolPackage.Editor.AssetZoo.Config
     /// project assets via Assets &gt; Create &gt; Asset Zoo &gt; Zoo Config.
     /// </summary>
     [DynamicCreateAssetMenu("Scriptable Objects/Base/Asset Zoo/New Config", "ZC_ZooConfig")]
-    public class ZooConfig : ScriptableObject
+    internal class ZooConfig : ScriptableObject
     {
         [field: Title("Settings")]
         [Tooltip("Settings related to how prefabs are arranged in space.")]

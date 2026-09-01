@@ -19,6 +19,8 @@ namespace Base.CorePackage.Audio.OnEvent
         private void Start() => ServiceLocator.TryGet(out _audioManager);
 #endregion
 
+        /// <summary>Plays the configured sound when the element is pointed at.</summary>
+        /// <param name="eventData">The event system payload. Not read; only the event matters.</param>
         public void OnPointerEnter(PointerEventData eventData) => _audioManager.PlaySound(hoverSound);
     }
 }

@@ -13,6 +13,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot.Ch
     {
         private const string EmptyMessage = "No condition members given, so the attribute never applies.";
 
+        /// <inheritdoc/>
         public void Inspect(Type type, List<AttributeIssue> issues)
         {
             foreach (FieldInfo field in ScannedMembers.DeclaredFields(type))

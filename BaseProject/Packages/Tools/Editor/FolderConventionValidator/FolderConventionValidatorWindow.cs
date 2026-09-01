@@ -13,7 +13,7 @@ namespace Base.ToolPackage.Editor.FolderConventionValidator
     /// Editor window that checks the project folders against a <see cref="FolderConventionConfig"/>
     /// and lists every violation, with a one click fix for missing folders.
     /// </summary>
-    public sealed class FolderConventionValidatorWindow : EditorWindow
+    internal sealed class FolderConventionValidatorWindow : EditorWindow
     {
         private const float ActionWidth = 52f;
         private const float ButtonHeight = 26f;
@@ -311,6 +311,7 @@ namespace Base.ToolPackage.Editor.FolderConventionValidator
             GUI.Label(pathRect, new GUIContent(violation.Path, violation.Path), Overview.PathStyle);
             GUI.Label(messageRect, new GUIContent(violation.Message, violation.Message),
                 Overview.DetailStyle);
+
             DrawAction(violation, actionRect);
 
             if (violation.IsFixable)
@@ -429,6 +430,5 @@ namespace Base.ToolPackage.Editor.FolderConventionValidator
             if (Event.current.type == EventType.MouseMove)
                 Repaint();
         }
-
     }
 }

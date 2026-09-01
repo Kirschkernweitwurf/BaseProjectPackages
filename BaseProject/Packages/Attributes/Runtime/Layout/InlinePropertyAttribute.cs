@@ -19,6 +19,5 @@ namespace Base.AttributePackage
     public sealed class InlinePropertyAttribute : PropertyAttribute
     {
         /// <summary>Label width used for each child when none is given.</summary>
-
     }
 }

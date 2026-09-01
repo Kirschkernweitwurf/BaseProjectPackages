@@ -13,12 +13,6 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot.Sa
     [TroubleshootSample]
     internal sealed class SampleSourceIssues
     {
-        /// <summary>A float, used to show a source pointing at the wrong type.</summary>
-        internal float speed;
-
-        /// <summary>A Transform, used to show an Animator source of the wrong type.</summary>
-        internal Transform notAnAnimator;
-
         /// <summary>Reads its options from something that is not enumerable.</summary>
         [Dropdown(nameof(speed))] public string notEnumerable;
 
@@ -39,5 +33,10 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot.Sa
 
         /// <summary>Points at a field that is neither a Material, a Renderer nor a Shader.</summary>
         [ShaderParam(nameof(speed))] public string wrongShaderSource;
+        /// <summary>A float, used to show a source pointing at the wrong type.</summary>
+        internal float speed;
+
+        /// <summary>A Transform, used to show an Animator source of the wrong type.</summary>
+        internal Transform notAnAnimator;
     }
 }

@@ -1,6 +1,5 @@
 using System.Reflection;
 using Base.AttributePackage.Editor.Core.Interfaces;
-using Base.AttributePackage.Editor.Drawers;
 using UnityEditor;
 
 namespace Base.AttributePackage.Editor.Handlers
@@ -24,6 +23,7 @@ namespace Base.AttributePackage.Editor.Handlers
 
         int IAfterFieldHandler.Order => AfterFieldOrder;
 
+        /// <inheritdoc/>
         public void AfterField(in MemberContext context)
         {
             OnValueChangedAttribute attribute = context.GetAttribute<OnValueChangedAttribute>();
@@ -38,6 +38,7 @@ namespace Base.AttributePackage.Editor.Handlers
             context.Editor.Repaint();
         }
 
+        /// <inheritdoc/>
         public void BeforeField(in MemberContext context)
         {
             if (context.GetAttribute<OnValueChangedAttribute>() == null)

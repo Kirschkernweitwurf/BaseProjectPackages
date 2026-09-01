@@ -113,12 +113,22 @@ namespace Base.EditorUiPackage
 
         private readonly struct Entry
         {
+            /// <summary>The USS class the rule applies to.</summary>
             internal string ClassName { get; }
 
+            /// <summary>
+            /// Reads the color when the rule is applied rather than when it is declared, so a theme
+            /// change is picked up without the painter being rebuilt.
+            /// </summary>
             internal Func<Color> Color { get; }
 
+            /// <summary>Which part of the element the color is written to.</summary>
             internal EUssPaintTarget Target { get; }
 
+            /// <summary>Creates one paint rule.</summary>
+            /// <param name="className">The USS class the rule applies to.</param>
+            /// <param name="color">Reads the color at the moment the rule is applied.</param>
+            /// <param name="target">Which part of the element the color is written to.</param>
             internal Entry(string className, Func<Color> color, EUssPaintTarget target)
             {
                 ClassName = className;

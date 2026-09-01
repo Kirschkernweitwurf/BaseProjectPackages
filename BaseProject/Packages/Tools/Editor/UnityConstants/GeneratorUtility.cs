@@ -11,7 +11,10 @@ namespace Base.ToolPackage.Editor.UnityConstants
     /// </summary>
     internal static class GeneratorUtility
     {
+        /// <summary>Namespace every generated constants class is written into.</summary>
         internal const string GeneratedNamespace = "Generated.UnityConstants";
+
+        /// <summary>Folder the generated files are written to, mirroring the namespace.</summary>
         internal const string OutputFolder = "Assets/Generated/UnityConstants";
 
         private static readonly HashSet<string> Keywords = new()

@@ -17,6 +17,7 @@ namespace Base.AttributePackage.Editor.Handlers
     {
         private const double RetryInterval = 0.5;
 
+        /// <inheritdoc/>
         public int Order => 5;
 
         private static readonly Dictionary<string, double> NextAttempt = new();
@@ -25,6 +26,7 @@ namespace Base.AttributePackage.Editor.Handlers
         // at which none of it matters any more.
         static ChildHandler() => EditorApplication.playModeStateChanged += _ => NextAttempt.Clear();
 
+        /// <inheritdoc/>
         public void AfterField(in MemberContext context)
         {
             ChildAttribute attribute = context.GetAttribute<ChildAttribute>();

@@ -19,8 +19,8 @@ namespace Base.CorePackage.Editor.StateMachine
     /// </summary>
     public sealed class StateMachineMonitor : EditorWindow
     {
-        private const string DetailsPaneTitle = "DETAILS";
         private const float DetailsHeight = 220f;
+        private const string DetailsPaneTitle = "DETAILS";
         private const string EditModeBody = "Machines register themselves when they start, so enter play mode "
             + "to watch them. Nothing needs to be set up first.";
         private const string EditModeTitle = "Not playing";
@@ -60,6 +60,8 @@ namespace Base.CorePackage.Editor.StateMachine
 #region Unity Callbacks
         private void OnEnable() => EditorApplication.update += OnEditorUpdate;
 
+        private void OnDisable() => EditorApplication.update -= OnEditorUpdate;
+
         private void CreateGUI()
         {
             rootVisualElement.Add(BuildPanes());
@@ -73,8 +75,6 @@ namespace Base.CorePackage.Editor.StateMachine
 
             Poll(true);
         }
-
-        private void OnDisable() => EditorApplication.update -= OnEditorUpdate;
 #endregion
 
         /// <summary>Opens or focuses the window.</summary>
@@ -203,12 +203,9 @@ namespace Base.CorePackage.Editor.StateMachine
             UpdateStatus(machine);
         }
 
-        private void UpdateGraphHeader(IStateMachineInfo machine)
-        {
-            _graphPane.SetNote(machine == null
-                ? string.Empty
-                : string.Format(ShapeFormat, machine.StateNames.Count, machine.Edges.Count));
-        }
+        private void UpdateGraphHeader(IStateMachineInfo machine) => _graphPane.SetNote(machine == null
+            ? string.Empty
+            : string.Format(ShapeFormat, machine.StateNames.Count, machine.Edges.Count));
 
         private void UpdateEmptyState(IStateMachineInfo machine)
         {

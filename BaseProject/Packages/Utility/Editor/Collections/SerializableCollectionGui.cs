@@ -11,7 +11,6 @@ namespace Base.UtilityPackage.Editor.Collections
     /// </summary>
     public static class SerializableCollectionGui
     {
-
         /// <summary>Horizontal gap between two controls in a row.</summary>
         public const float Gap = 4f;
 
@@ -20,12 +19,12 @@ namespace Base.UtilityPackage.Editor.Collections
         private const float RowBleed = 1f;
 
         /// <summary>Vertical gap between two rows.</summary>
-        private static readonly Color DuplicateTint = new(1f, 0.3f, 0.3f, 0.12f);
-
         public static float Spacing => EditorGUIUtility.standardVerticalSpacing;
 
         /// <summary>Height of a single control line.</summary>
         public static float Line => EditorGUIUtility.singleLineHeight;
+
+        private static readonly Color DuplicateTint = new(1f, 0.3f, 0.3f, 0.12f);
 
         /// <summary>
         /// Returns a value that identifies the property for duplicate detection, or null when the

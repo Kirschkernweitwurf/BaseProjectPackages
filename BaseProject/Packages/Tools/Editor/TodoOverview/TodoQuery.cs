@@ -163,8 +163,9 @@ namespace Base.ToolPackage.Editor.TodoOverview
             if (string.IsNullOrWhiteSpace(search))
                 return true;
 
-            string[] words = search.ToLowerInvariant().Split(SearchSeparators,
-                StringSplitOptions.RemoveEmptyEntries);
+            string[] words = search.ToLowerInvariant()
+                .Split(SearchSeparators,
+                    StringSplitOptions.RemoveEmptyEntries);
 
             foreach (string word in words)
             {

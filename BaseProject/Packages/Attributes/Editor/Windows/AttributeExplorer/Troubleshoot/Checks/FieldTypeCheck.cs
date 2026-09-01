@@ -51,6 +51,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot.Ch
             new(typeof(AudioMixerGroupAttribute), IsMixerGroup, "an AudioMixerGroup reference")
         };
 
+        /// <inheritdoc/>
         public void Inspect(Type type, List<AttributeIssue> issues)
         {
             foreach (FieldInfo field in ScannedMembers.DeclaredFields(type))

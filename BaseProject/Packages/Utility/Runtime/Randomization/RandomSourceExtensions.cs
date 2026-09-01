@@ -81,7 +81,7 @@ namespace Base.UtilityPackage.Randomization
             if (!IsValid(source, nameof(NextBool)))
                 return false;
 
-            return (source.NextUInt() >> HighBit) != 0u;
+            return source.NextUInt() >> HighBit != 0u;
         }
 
         /// <summary>Draws minus one or one with an even chance.</summary>

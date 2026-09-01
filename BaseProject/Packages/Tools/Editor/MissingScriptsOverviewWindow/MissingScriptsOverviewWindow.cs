@@ -12,7 +12,7 @@ namespace Base.ToolPackage.Editor.MissingScriptsOverviewWindow
     /// <summary>
     /// Editor window that lists every missing script in the project and jumps to it on click.
     /// </summary>
-    public sealed class MissingScriptsOverviewWindow : EditorWindow
+    internal sealed class MissingScriptsOverviewWindow : EditorWindow
     {
         private const string MenuPath =
             "Tools/Base Packages/Unity Editor/Project Health/Unused/Missing Scripts Overview";
@@ -49,6 +49,7 @@ namespace Base.ToolPackage.Editor.MissingScriptsOverviewWindow
             {
                 Overview.DrawSuccess("No missing scripts", "Every script reference is intact. "
                     + "Nothing to fix.");
+
                 return;
             }
 
@@ -71,6 +72,21 @@ namespace Base.ToolPackage.Editor.MissingScriptsOverviewWindow
             window.titleContent = new GUIContent("Missing Scripts");
             window.minSize = new Vector2(460f, 320f);
             window.Show();
+        }
+
+        private static GUIContent GetSourceIcon(EMissingScriptSource source)
+        {
+            switch (source)
+            {
+                case EMissingScriptSource.Scene:
+                    return EditorGUIUtility.IconContent("SceneAsset Icon");
+
+                case EMissingScriptSource.Prefab:
+                    return EditorGUIUtility.IconContent("Prefab Icon");
+
+                default:
+                    return EditorGUIUtility.IconContent("ScriptableObject Icon");
+            }
         }
 
         private void DrawActionBar()
@@ -196,6 +212,7 @@ namespace Base.ToolPackage.Editor.MissingScriptsOverviewWindow
 
             GUI.Label(labelRect, new GUIContent(entry.DisplayPath, entry.AssetPath),
                 Overview.PathStyle);
+
             GUI.Label(badgeRect, entry.MissingCount.ToString(), Overview.WarningBadgeStyle);
 
             if (GUI.Button(gotoRect, "Go to"))
@@ -267,21 +284,6 @@ namespace Base.ToolPackage.Editor.MissingScriptsOverviewWindow
 
             if (Event.current.type == EventType.MouseMove)
                 Repaint();
-        }
-
-        private static GUIContent GetSourceIcon(EMissingScriptSource source)
-        {
-            switch (source)
-            {
-                case EMissingScriptSource.Scene:
-                    return EditorGUIUtility.IconContent("SceneAsset Icon");
-
-                case EMissingScriptSource.Prefab:
-                    return EditorGUIUtility.IconContent("Prefab Icon");
-
-                default:
-                    return EditorGUIUtility.IconContent("ScriptableObject Icon");
-            }
         }
     }
 }

@@ -22,6 +22,9 @@ namespace Base.EditorUiPackage
             + "built-in Slate look. Pick a preset below to make it yours.";
         private const string LightLabel = "Light";
         private const string MatchStatus = "Editing \"{0}\", currently the {1} preset unchanged.";
+        private const float ModeButtonWidth = 56f;
+        private const string ModeTooltip = "Whether the preview and the swatches are drawn in dark "
+            + "mode or light mode. Unity's own Editor Theme is left alone.";
         private const string PageLabel = "Editor UI Theme";
         private const float PresetButtonHeight = 46f;
         private const float PresetButtonMinWidth = 84f;
@@ -36,9 +39,6 @@ namespace Base.EditorUiPackage
         private const string PreviewOtherNote = "Unity's Editor Theme is set to the other one, so only "
             + "this panel changes.";
         private const string SettingsPath = "Project/Base Tools/Editor UI Theme";
-        private const float ModeButtonWidth = 56f;
-        private const string ModeTooltip = "Whether the preview and the swatches are drawn in dark "
-            + "mode or light mode. Unity's own Editor Theme is left alone.";
         private const float SwatchGap = 3f;
         private const float SwatchHeight = 10f;
         private const float SwatchInset = 8f;
@@ -322,7 +322,8 @@ namespace Base.EditorUiPackage
             bool isSelected = isDarkButton == isDark;
 
             if (GUILayout.Toggle(isSelected, content, EditorStyles.miniButton,
-                    GUILayout.Width(ModeButtonWidth)) == isSelected)
+                    GUILayout.Width(ModeButtonWidth))
+                == isSelected)
                 return;
 
             _previewDarkMode = isDarkButton;

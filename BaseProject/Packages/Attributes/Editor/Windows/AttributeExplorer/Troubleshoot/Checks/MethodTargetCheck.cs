@@ -14,6 +14,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot.Ch
     {
         private const string ParameterlessMessage = "The method takes parameters, so no button is drawn.";
 
+        /// <inheritdoc/>
         public void Inspect(Type type, List<AttributeIssue> issues)
         {
             foreach (MethodInfo method in ScannedMembers.DeclaredMethods(type))

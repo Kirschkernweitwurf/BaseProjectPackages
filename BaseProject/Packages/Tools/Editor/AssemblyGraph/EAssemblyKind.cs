@@ -1,7 +1,7 @@
 namespace Base.ToolPackage.Editor.AssemblyGraph
 {
     /// <summary>Category of an assembly, used for filtering and cleanup permission.</summary>
-    public enum EAssemblyKind : byte
+    internal enum EAssemblyKind : byte
     {
         /// <summary>An assembly defined inside the project's Assets folder.</summary>
         Project = 0,

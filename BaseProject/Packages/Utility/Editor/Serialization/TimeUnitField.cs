@@ -36,10 +36,6 @@ namespace Base.UtilityPackage.Editor.Serialization
 
         private const float SuffixRightInset = 3f;
 
-        // Dimmed, so the letter reads as a unit printed on the field rather than as part of the value
-        // typed into it.
-        private static readonly Color SuffixText = new(0.55f, 0.55f, 0.58f);
-
         private static GUIStyle SeparatorStyle
         {
             get
@@ -63,6 +59,10 @@ namespace Base.UtilityPackage.Editor.Serialization
                 return _suffixStyle ??= BuildSuffixStyle();
             }
         }
+
+        // Dimmed, so the letter reads as a unit printed on the field rather than as part of the value
+        // typed into it.
+        private static readonly Color SuffixText = new(0.55f, 0.55f, 0.58f);
 
         private static bool _builtForProSkin;
         private static GUIStyle _separatorStyle;

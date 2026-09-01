@@ -5,7 +5,7 @@ namespace Base.ToolPackage.Editor.AssetZoo.Alignment
     /// <summary>
     /// Bounds center sits on the slot. Best for floating items.
     /// </summary>
-    public class CenterAlignment : IAlignmentStrategy
+    internal class CenterAlignment : IAlignmentStrategy
     {
         /// <inheritdoc/>
         public Vector3 GetOffset(Bounds prefabBounds) => -prefabBounds.center;

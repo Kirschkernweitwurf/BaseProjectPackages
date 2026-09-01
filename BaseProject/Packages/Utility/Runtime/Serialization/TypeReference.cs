@@ -24,9 +24,6 @@ namespace Base.UtilityPackage.Serialization
 
         [SerializeField] private string typeName;
 
-        private Type _resolved;
-        private bool _isResolved;
-
         /// <summary>The referenced type, or null when nothing is set or the type no longer exists.</summary>
         public Type Value
         {
@@ -51,6 +48,9 @@ namespace Base.UtilityPackage.Serialization
         /// <summary>True when a name is stored but no longer resolves to a type.</summary>
         public bool IsBroken => !string.IsNullOrEmpty(typeName) && Value == null;
 
+        private Type _resolved;
+        private bool _isResolved;
+
         /// <summary>Creates an empty reference.</summary>
         public TypeReference() { }
 
@@ -68,16 +68,6 @@ namespace Base.UtilityPackage.Serialization
             _isResolved = false;
         }
 
-        /// <summary>Returns the referenced type name, for logs and inspectors.</summary>
-        /// <returns>The short type name, or an empty marker.</returns>
-        // The full assembly qualified name carries a version, a culture and a public key token, none of
-        // which mean anything inside one project and all of which show up in full anywhere the value is
-        // drawn without its own drawer. The type and its assembly are enough for Type.GetType, and an
-        // older value written the long way still resolves.
-        private static string ShortName(Type value) => value.AssemblyQualifiedName == null
-            ? value.FullName
-            : $"{value.FullName}, {value.Assembly.GetName().Name}";
-
         public override string ToString()
         {
             Type value = Value;
@@ -86,6 +76,17 @@ namespace Base.UtilityPackage.Serialization
                 ? string.Empty
                 : value.Name;
         }
+
+        /// <summary>Returns the referenced type name, for logs and inspectors.</summary>
+        /// <returns>The short type name, or an empty marker.</returns>
+
+        // The full assembly qualified name carries a version, a culture and a public key token, none of
+        // which mean anything inside one project and all of which show up in full anywhere the value is
+        // drawn without its own drawer. The type and its assembly are enough for Type.GetType, and an
+        // older value written the long way still resolves.
+        private static string ShortName(Type value) => value.AssemblyQualifiedName == null
+            ? value.FullName
+            : $"{value.FullName}, {value.Assembly.GetName().Name}";
 
         private void Resolve()
         {

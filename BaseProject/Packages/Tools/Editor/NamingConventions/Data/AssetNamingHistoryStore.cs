@@ -12,7 +12,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Data
     /// under ProjectSettings, so the history survives restarts and can be committed for the team.
     /// Newest entries come first, and the list is capped so the file cannot grow forever.
     /// </summary>
-    public static class AssetNamingHistoryStore
+    internal static class AssetNamingHistoryStore
     {
         private const string FilePath = "ProjectSettings/AssetNamingHistory.json";
         private const int MaxEntries = 200;
@@ -141,6 +141,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Data
         [Serializable]
         private sealed class Data
         {
+            /// <summary>Every recorded rename, newest last.</summary>
             public List<AssetNamingHistoryEntry> entries = new();
         }
     }

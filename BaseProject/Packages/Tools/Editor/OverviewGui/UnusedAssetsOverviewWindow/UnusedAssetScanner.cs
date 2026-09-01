@@ -32,6 +32,12 @@ namespace Base.ToolPackage.Editor.OverviewGui.UnusedAssetsOverviewWindow
         };
         private static readonly Regex GuidRegex = new(@"guid:\s*([0-9a-fA-F]{32})", RegexOptions.Compiled);
 
+        /// <summary>
+        /// Finds assets nothing reachable references. Reachability starts from the scenes in the build
+        /// settings and the Resources folders, so an asset only loaded by name will look unused.
+        /// </summary>
+        /// <param name="ignoreEditorFolders">True to leave assets under an Editor folder out of the result.</param>
+        /// <returns>One entry per asset that appears to be unreferenced.</returns>
         internal static List<UnusedAssetEntry> Scan(bool ignoreEditorFolders)
         {
             string[] allPaths = AssetDatabase.GetAllAssetPaths();

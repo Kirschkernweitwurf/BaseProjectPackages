@@ -1,5 +1,4 @@
 using Base.AttributePackage.Editor.Core.Interfaces;
-using Base.AttributePackage.Editor.Drawers;
 using Base.AttributePackage.Editor.SceneHandles;
 using UnityEditor;
 using UnityEngine;
@@ -18,12 +17,15 @@ namespace Base.AttributePackage.Editor.Handlers
         private const string Tooltip = "Pick this reference by clicking in the scene view.";
         private const int WidgetOrder = 6;
 
+        /// <inheritdoc/>
         public int Order => WidgetOrder;
 
+        /// <inheritdoc/>
         public float GetWidth(in MemberContext context) => IsSupported(context)
             ? ButtonWidth
             : 0f;
 
+        /// <inheritdoc/>
         public void Draw(Rect rect, in MemberContext context)
         {
             bool armed = ScenePickerState.IsArmedFor(context.Property);

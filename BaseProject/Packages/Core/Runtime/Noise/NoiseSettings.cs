@@ -32,7 +32,6 @@ namespace Base.CorePackage.Noise
         private const float MinPersistence = 0f;
 
         [field: Title("Shape")]
-
         [field: Tooltip("How the raw samples are shaped. Perlin is plain rolling noise, Ridged carves sharp"
             + " crests for mountains, Turbulence creases the pattern for smoke and marble.")]
         [field: SerializeField] public ENoiseType NoiseType { get; private set; }
@@ -57,19 +56,13 @@ namespace Base.CorePackage.Noise
         [field: SerializeField] public float Persistence { get; private set; } = DefaultPersistence;
 
         [field: Title("Output")]
-
         [field: Tooltip("Scales the result. A sample runs from 0 up to this value.")]
         [field: SerializeField] public float Amplitude { get; private set; } = DefaultAmplitude;
 
         [field: Title("Seed")]
-
         [field: Tooltip("Picks which part of the noise field is sampled. The same seed always gives the same"
             + " pattern, a different one gives an unrelated pattern of the same character.")]
         [field: SerializeField] public int Seed { get; private set; }
-
-        private Vector3 _offset;
-        private int _offsetSeed;
-        private bool _hasOffset;
 
         /// <summary>
         /// Where in the noise field this pattern is sampled, derived from <see cref="Seed"/>. Built
@@ -92,21 +85,22 @@ namespace Base.CorePackage.Noise
             }
         }
 
+        private Vector3 _offset;
+        private int _offsetSeed;
+        private bool _hasOffset;
+
         /// <summary>
         /// Creates settings with the default shape at seed zero. Declared explicitly because
         /// Unity's serializer builds instances through the parameterless constructor.
         /// </summary>
-        public NoiseSettings()
-        {
-        }
+        public NoiseSettings() { }
 
         /// <summary>Creates plain gradient noise with the values that get tuned most often.</summary>
         /// <param name="seed">The part of the noise field to sample.</param>
         /// <param name="frequency">How fast the pattern changes across the sample space.</param>
         /// <param name="octaves">How many layers are stacked.</param>
-        public NoiseSettings(int seed, float frequency, int octaves) : this(seed, frequency, octaves, ENoiseType.Perlin)
-        {
-        }
+        public NoiseSettings(int seed, float frequency, int octaves) :
+            this(seed, frequency, octaves, ENoiseType.Perlin) { }
 
         /// <summary>
         /// Creates settings with the values that get tuned most often. Frequency and octaves are

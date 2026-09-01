@@ -14,9 +14,6 @@ namespace Base.CorePackage.EventBus
     /// </remarks>
     public sealed class EventBus : GameServiceBehaviour, IEventBus
     {
-        private readonly Dictionary<Type, Delegate> _handlers = new();
-        private readonly Dictionary<Type, Delegate[]> _invocationListCache = new();
-
         /// <summary>
         /// The live handler table, keyed by event type. Each value is the multicast delegate every
         /// subscriber of that event was combined into.
@@ -27,6 +24,9 @@ namespace Base.CorePackage.EventBus
         /// <c>Base.CorePackage.Editor</c> and nothing else.
         /// </remarks>
         internal IReadOnlyDictionary<Type, Delegate> Handlers => _handlers;
+
+        private readonly Dictionary<Type, Delegate> _handlers = new();
+        private readonly Dictionary<Type, Delegate[]> _invocationListCache = new();
 
 #region Unity Callbacks
         protected override void OnDestroy()

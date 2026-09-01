@@ -16,6 +16,10 @@ namespace Base.ServicePackage.Tracking
         /// <summary>The insertion order, used as a tiebreaker between equal priorities.</summary>
         public ulong Order { get; }
 
+        /// <summary>Creates a tracked item. Only the tracker that owns it may do this.</summary>
+        /// <param name="item">The item being tracked.</param>
+        /// <param name="priority">The priority it was registered with.</param>
+        /// <param name="order">The insertion order, assigned by the tracker.</param>
         internal TrackedItem(T item, uint priority, ulong order)
         {
             Item = item;

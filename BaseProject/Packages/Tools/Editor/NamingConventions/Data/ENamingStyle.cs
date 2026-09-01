@@ -1,7 +1,7 @@
 namespace Base.ToolPackage.Editor.NamingConventions.Data
 {
     /// <summary>Casing a name can follow, once prefix, suffix and number are stripped.</summary>
-    public enum ENamingStyle : byte
+    internal enum ENamingStyle : byte
     {
         /// <summary>No casing check at all.</summary>
         Any = 0,

@@ -16,8 +16,8 @@ namespace Base.ToolPackage.Editor.CommandPalette
         private const float DetailHeight = 13f;
         private const float LineGap = 2f;
         private const float MainHeight = 16f;
-        private const float PinWidth = 16f;
         private const string PinGlyph = "\u2605";
+        private const float PinWidth = 16f;
         private const float TagGap = 4f;
         private const float TextGap = 10f;
         private const float TopPadding = 5f;

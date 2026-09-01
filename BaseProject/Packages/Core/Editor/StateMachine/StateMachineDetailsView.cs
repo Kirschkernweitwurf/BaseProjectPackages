@@ -141,6 +141,7 @@ namespace Base.CorePackage.Editor.StateMachine
 
             return row;
         }
+
         private void RebuildTransitions(IStateMachineInfo machine)
         {
             _transitions.Clear();
@@ -160,6 +161,5 @@ namespace Base.CorePackage.Editor.StateMachine
             foreach (StateMachineEdge edge in evaluated)
                 _transitions.Add(BuildTransitionRow(edge));
         }
-
     }
 }

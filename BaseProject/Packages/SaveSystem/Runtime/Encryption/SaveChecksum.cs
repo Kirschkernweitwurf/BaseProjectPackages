@@ -46,7 +46,7 @@ namespace Base.SaveSystemPackage.Encryption
         public static void Write(uint checksum, byte[] target, int offset)
         {
             for (int i = 0; i < Length; i++)
-                target[offset + i] = (byte)(checksum >> (i * BitsPerByte));
+                target[offset + i] = (byte)(checksum >> i * BitsPerByte);
         }
 
         /// <summary>Reads a checksum written by <see cref="Write"/>.</summary>
@@ -58,7 +58,7 @@ namespace Base.SaveSystemPackage.Encryption
             uint checksum = 0;
 
             for (int i = 0; i < Length; i++)
-                checksum |= (uint)source[offset + i] << (i * BitsPerByte);
+                checksum |= (uint)source[offset + i] << i * BitsPerByte;
 
             return checksum;
         }

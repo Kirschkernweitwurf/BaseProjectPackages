@@ -39,9 +39,10 @@ namespace Base.CorePackage.Editor.StateMachine
 
             List<List<string>> columns = BuildColumns(machine);
 
-            float top = Padding + (hasAnyStateEdges
-                ? NodeHeight + RowGap * 2f
-                : 0f);
+            float top = Padding
+                + (hasAnyStateEdges
+                    ? NodeHeight + RowGap * 2f
+                    : 0f);
 
             float tallest = 0f;
 

@@ -12,19 +12,19 @@ namespace Base.AttributePackage.Editor.Windows.GetComponentAssigner
     /// </summary>
     internal sealed class GetComponentAssignerWindow : EditorWindow
     {
-        private const string AssignLabel = "Assign References";
         private const float AssignButtonHeight = 28f;
+        private const string AssignLabel = "Assign References";
         private const string Description = "Fills in every empty [GetComponent] and "
             + "[GetComponentInParent] field across the project, so references resolve without "
             + "opening each inspector once.";
+        private const string MenuPath = "Tools/Base Packages/Unity Editor/References/Assign GetComponents";
+        private const float MinimumHeight = 140f;
+        private const float MinimumWidth = 300f;
         private const string NothingFoundResult = "No empty references found. Everything is already "
             + "assigned.";
         private const string PrefabsLabel = "Include prefab assets";
         private const string ScenesLabel = "Include open scenes";
         private const string ScopeHeader = "Scope";
-        private const string MenuPath = "Tools/Base Packages/Unity Editor/References/Assign GetComponents";
-        private const float MinimumHeight = 140f;
-        private const float MinimumWidth = 300f;
         private const string WindowTitle = "Assign GetComponents";
 
         [SerializeField] private bool includePrefabs = true;

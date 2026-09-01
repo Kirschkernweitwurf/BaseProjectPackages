@@ -11,7 +11,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Data
     /// extra state.
     /// </summary>
     [Serializable]
-    public sealed class NamingRule
+    internal sealed class NamingRule
     {
         [Tooltip("Casing the name has to follow once prefix, suffix and number are stripped.")]
         [field: SerializeField] public ENamingStyle Style { get; set; } = ENamingStyle.PascalCase;

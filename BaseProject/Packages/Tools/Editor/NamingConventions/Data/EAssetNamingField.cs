@@ -4,7 +4,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Data
     /// One editable field of a rule. Used to remember which fields a person changed by hand, so
     /// the auto detection can refresh everything else without overwriting a deliberate decision.
     /// </summary>
-    public enum EAssetNamingField : byte
+    internal enum EAssetNamingField : byte
     {
         /// <summary>The display name of the rule.</summary>
         Label = 0,

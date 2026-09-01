@@ -17,8 +17,6 @@ namespace Base.ToolPackage.Editor.CommandPalette
 
         [SerializeField] private List<CommandUsageRecord> records = new();
 
-        [NonSerialized] private Dictionary<string, CommandUsageRecord> _lookup;
-
         private Dictionary<string, CommandUsageRecord> Lookup
         {
             get
@@ -37,6 +35,8 @@ namespace Base.ToolPackage.Editor.CommandPalette
                 return _lookup;
             }
         }
+
+        [NonSerialized] private Dictionary<string, CommandUsageRecord> _lookup;
 
         /// <summary>Returns how often a command was run.</summary>
         /// <param name="id">Id of the command.</param>

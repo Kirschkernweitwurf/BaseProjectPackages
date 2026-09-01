@@ -21,9 +21,6 @@ namespace Base.AttributePackage.Samples
         [Tooltip("Pick an implementation and its own fields appear under this one.")]
         public IAbility ability;
 
-        /// <summary>Something for the picker to offer implementations of.</summary>
-        public interface IAbility { }
-
         /// <summary>One implementation, so the picker has an entry.</summary>
         [Serializable]
         public sealed class DashAbility : IAbility
@@ -39,5 +36,8 @@ namespace Base.AttributePackage.Samples
             /// <summary>How much the heal restores.</summary>
             public int amount = 25;
         }
+
+        /// <summary>Something for the picker to offer implementations of.</summary>
+        public interface IAbility { }
     }
 }

@@ -80,14 +80,6 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
             set => overrideValue = value;
         }
 
-        /// <summary>
-        /// Priority used for registration. The manual override when set, otherwise the
-        /// derived value.
-        /// </summary>
-        internal int EffectivePriority => overridePriority
-            ? overrideValue
-            : priority;
-
         /// <summary>Derived priority. Set to int.MinValue when the entry is not registered.</summary>
         public int Priority
         {
@@ -101,6 +93,14 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
             get => missing;
             set => missing = value;
         }
+
+        /// <summary>
+        /// Priority used for registration. The manual override when set, otherwise the
+        /// derived value.
+        /// </summary>
+        internal int EffectivePriority => overridePriority
+            ? overrideValue
+            : priority;
 
         [NonSerialized]
         private int priority = int.MinValue;

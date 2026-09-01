@@ -9,7 +9,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Scanning
     /// texture is one, so the tool can demand and suggest the right suffix instead of leaving it
     /// to everyone's memory.
     /// </summary>
-    public static class AssetSuffixResolver
+    internal static class AssetSuffixResolver
     {
         private const string LightmapSuffix = "_L";
         private const string NormalSuffix = "_N";

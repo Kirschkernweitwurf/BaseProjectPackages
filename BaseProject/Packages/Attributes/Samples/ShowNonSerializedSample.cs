@@ -20,12 +20,11 @@ namespace Base.AttributePackage.Samples
     internal sealed class ShowNonSerializedSample : ScriptableObject
     {
         [ShowNonSerialized]
-        [Tooltip("Runtime state. Not serialized, so it is shown rather than edited.")]
-        private string lastEvent = "Nothing yet";
-
-        [ShowNonSerialized]
         [Tooltip("A constant, which has no serialized value either.")]
         private const int Limit = 42;
+        [ShowNonSerialized]
+        [Tooltip("Runtime state. Not serialized, so it is shown rather than edited.")]
+        private string lastEvent = "Nothing yet";
 
         [NonSerialized] private int _count;
 

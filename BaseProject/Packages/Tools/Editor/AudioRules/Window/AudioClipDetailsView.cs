@@ -165,6 +165,14 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
             return row;
         }
 
+        private static IEnumerable<EAudioSetting> Ordered(AudioClipPlan plan)
+        {
+            IReadOnlyList<EAudioSetting> settings = AudioRuleResolver.Settings();
+
+            return settings.Where(setting => AudioRuleResolver.IsApplicable(plan.Target, setting))
+                .Concat(settings.Where(setting => !AudioRuleResolver.IsApplicable(plan.Target, setting)));
+        }
+
         private string ReasonFor(string ruleLabel)
         {
             if (_ruleSet == null
@@ -236,14 +244,6 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
             // are the ones the eye lands on first.
             foreach (EAudioSetting setting in Ordered(plan))
                 _body.Add(BuildSettingRow(plan, setting));
-        }
-
-        private static IEnumerable<EAudioSetting> Ordered(AudioClipPlan plan)
-        {
-            IReadOnlyList<EAudioSetting> settings = AudioRuleResolver.Settings();
-
-            return settings.Where(setting => AudioRuleResolver.IsApplicable(plan.Target, setting))
-                .Concat(settings.Where(setting => !AudioRuleResolver.IsApplicable(plan.Target, setting)));
         }
 
         private VisualElement BuildSettingRow(AudioClipPlan plan, EAudioSetting setting)
@@ -329,7 +329,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
                 + "the file and the memory.",
             EAudioFinding.LeadingSilence => "Head silence: playback starts late and the silence still costs "
                 + "memory.",
-            EAudioFinding.LowPeak => $"Quiet: the loudest sample only reaches "
+            EAudioFinding.LowPeak => "Quiet: the loudest sample only reaches "
                 + $"{AudioRulesFormat.Decibels(plan.Analysis.Peak)}.",
             _ => "Tail silence: the end of the clip is silent."
         };

@@ -1,7 +1,7 @@
 namespace Base.ToolPackage.Editor.NamingConventions.Data
 {
     /// <summary>What a detection run changed about the rule set.</summary>
-    public sealed class AssetRuleMergeResult
+    internal sealed class AssetRuleMergeResult
     {
         /// <summary>Rules that were added for an asset kind that had none.</summary>
         public int Added { get; set; }

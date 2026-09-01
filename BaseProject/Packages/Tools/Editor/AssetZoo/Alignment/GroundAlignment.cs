@@ -5,7 +5,7 @@ namespace Base.ToolPackage.Editor.AssetZoo.Alignment
     /// <summary>
     /// Bottom of the bounding box rests on the slot. Best for props on a floor.
     /// </summary>
-    public class GroundAlignment : IAlignmentStrategy
+    internal class GroundAlignment : IAlignmentStrategy
     {
         /// <inheritdoc/>
         public Vector3 GetOffset(Bounds prefabBounds)

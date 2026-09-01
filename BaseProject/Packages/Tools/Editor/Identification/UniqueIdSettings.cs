@@ -17,7 +17,7 @@ namespace Base.ToolPackage.Editor.Identification
     /// Toggle it from: <b>Tools/Base Packages/Identifier/Enable Unique IDs</b>.
     /// </summary>
     [FilePath("ProjectSettings/UniqueIdSettings.asset", FilePathAttribute.Location.ProjectFolder)]
-    public sealed class UniqueIdSettings : ScriptableSingleton<UniqueIdSettings>
+    internal sealed class UniqueIdSettings : ScriptableSingleton<UniqueIdSettings>
     {
         private const string MenuPath = "Tools/Base Packages/Assets/Identifier/Enable Unique ID Validation";
 

@@ -1,7 +1,7 @@
 namespace Base.ToolPackage.Editor.NamingConventions.Data
 {
     /// <summary>What the tool did to an asset, remembered in the history.</summary>
-    public enum EAssetNamingAction : byte
+    internal enum EAssetNamingAction : byte
     {
         /// <summary>The asset was renamed.</summary>
         Renamed = 0,

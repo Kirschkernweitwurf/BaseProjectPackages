@@ -16,24 +16,6 @@ namespace Base.AttributePackage.Samples
         })]
     internal sealed class EnumToggleButtonsSample : ScriptableObject
     {
-        [EnumToggleButtons]
-        [Tooltip("One option at a time.")]
-        public EMode mode = EMode.Simple;
-
-        [EnumToggleButtons]
-        [Tooltip("A flags enum, so several can be down at once.")]
-        public EElement elements = EElement.Fire;
-
-        /// <summary>Modes shown as a single-select row.</summary>
-        public enum EMode : byte
-        {
-            /// <summary>Nothing special.</summary>
-            Simple = 0,
-
-            /// <summary>The advanced settings apply.</summary>
-            Advanced = 1
-        }
-
         /// <summary>Damage types, shown as a multi-select row.</summary>
         [Flags]
         public enum EElement : byte
@@ -50,5 +32,23 @@ namespace Base.AttributePackage.Samples
             /// <summary>Shock damage.</summary>
             Shock = 4
         }
+
+        /// <summary>Modes shown as a single-select row.</summary>
+        public enum EMode : byte
+        {
+            /// <summary>Nothing special.</summary>
+            Simple = 0,
+
+            /// <summary>The advanced settings apply.</summary>
+            Advanced = 1
+        }
+
+        [EnumToggleButtons]
+        [Tooltip("One option at a time.")]
+        public EMode mode = EMode.Simple;
+
+        [EnumToggleButtons]
+        [Tooltip("A flags enum, so several can be down at once.")]
+        public EElement elements = EElement.Fire;
     }
 }

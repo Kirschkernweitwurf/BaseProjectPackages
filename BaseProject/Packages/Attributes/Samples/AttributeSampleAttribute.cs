@@ -24,12 +24,6 @@ namespace Base.AttributePackage.Samples
     [AttributeUsage(AttributeTargets.Class)]
     internal sealed class AttributeSampleAttribute : Attribute
     {
-        /// <summary>The attribute this sample demonstrates.</summary>
-        internal Type AttributeType { get; }
-
-        /// <summary>The group the sample is listed under.</summary>
-        internal EAttributeCategory Category { get; }
-
         /// <summary>What the attribute does, in a sentence or two.</summary>
         public string Description { get; set; }
 
@@ -41,6 +35,12 @@ namespace Base.AttributePackage.Samples
 
         /// <summary>The other ways the attribute can be written, one line each.</summary>
         public string[] Variations { get; set; }
+
+        /// <summary>The attribute this sample demonstrates.</summary>
+        internal Type AttributeType { get; }
+
+        /// <summary>The group the sample is listed under.</summary>
+        internal EAttributeCategory Category { get; }
 
         /// <summary>Creates the sample marker.</summary>
         /// <param name="attributeType">The attribute this sample demonstrates.</param>

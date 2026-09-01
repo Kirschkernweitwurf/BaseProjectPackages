@@ -10,18 +10,18 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
     /// </summary>
     internal static class AudioRulesFormat
     {
-        private const float Kilobyte = 1024f;
-        private const float Megabyte = Kilobyte * Kilobyte;
-        private const string MegabyteSuffix = " MB";
-        private const string KilobyteSuffix = " KB";
         private const string ByteSuffix = " B";
-        private const string ShortNumber = "0.0";
         private const string DecibelFormat = "0.0";
         private const string DecibelSuffix = " dBFS";
+        private const float Kilobyte = 1024f;
+        private const string KilobyteSuffix = " KB";
         private const float KilohertzFactor = 1000f;
         private const string KilohertzFormat = "0.#";
         private const string KilohertzSuffix = " kHz";
+        private const float Megabyte = Kilobyte * Kilobyte;
+        private const string MegabyteSuffix = " MB";
         private const string SecondsSuffix = " s";
+        private const string ShortNumber = "0.0";
         private const string SilenceLabel = "-inf";
 
         /// <summary>Formats a size, picking the unit that keeps the number short.</summary>
@@ -79,8 +79,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
         /// <summary>The short form of what a clip is imported as today.</summary>
         /// <param name="values">The settings to describe.</param>
         /// <returns>Codec and load type in one line.</returns>
-        internal static string Summary(AudioSettingValues values)
-            => $"{values.CompressionFormat} / {Short(values)}";
+        internal static string Summary(AudioSettingValues values) => $"{values.CompressionFormat} / {Short(values)}";
 
         /// <summary>Picks the singular or plural word for an amount.</summary>
         /// <param name="amount">The amount the word describes.</param>

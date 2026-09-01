@@ -14,7 +14,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Scanning
     /// does not have to guess it from the assets that happen to exist. The menu manager registry
     /// wins over the attribute in code, because that is where the file name is actually edited.
     /// </summary>
-    public static class CreateAssetMenuScanner
+    internal static class CreateAssetMenuScanner
     {
         private const string IdPrefix = "CA:";
         private const char PrefixSeparator = '_';

@@ -7,7 +7,7 @@ namespace Base.EditorUiPackage
     /// The inspector of a theme asset. Draws the same sections the Editor UI Theme settings page does,
     /// so a theme can be edited from wherever it was opened.
     /// </summary>
-    internal sealed class EditorThemeInspector : UnityEditor.Editor
+    internal sealed class EditorThemeInspector : Editor
     {
         private const string ActivateLabel = "Use This Theme";
         private const string ActiveMessage = "This is the theme the project draws with.";

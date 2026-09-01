@@ -24,7 +24,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
     /// blocking behind a modal progress bar.
     /// </para>
     /// </summary>
-    public sealed class AudioRulesWindow : EditorWindow
+    internal sealed class AudioRulesWindow : EditorWindow
     {
         /// <summary>Label the default import settings are shown with in the target dropdown.</summary>
         public const string DefaultTargetLabel = "Default";
@@ -33,18 +33,18 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
         private const long AnalysisInterval = 16L;
         private const float DetailsHeight = 240f;
         private const string MenuPath = "Tools/Base Packages/Assets/Audio Rules";
-        private const float RulesWidth = 250f;
         private const string MissingSheetMessage = "The audio rules style sheet was not found, so the "
             + "window is drawn unstyled.";
+        private const float RulesWidth = 250f;
         private const string WindowTitle = "Audio Rules";
 
         private static readonly Vector2 MinWindowSize = new(940f, 520f);
 
+        [SerializeField] private AudioRuleSet ruleSet;
+
         private readonly List<AudioClipPlan> _plans = new();
         private readonly List<AudioClipPlan> _pending = new();
         private readonly Dictionary<string, int> _matchCounts = new();
-
-        [SerializeField] private AudioRuleSet ruleSet;
 
         private AudioClipDetailsView _details;
         private AudioClipTableView _table;
@@ -71,6 +71,12 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
         private bool _showsRuleEditor;
 
 #region Unity Callbacks
+        private void OnDisable()
+        {
+            StopAnalysis();
+            AudioPreviewPlayer.Stop();
+        }
+
         private void CreateGUI()
         {
             if (ruleSet == null)
@@ -97,12 +103,6 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
             if (!AudioRulesStyle.Apply(rootVisualElement))
                 CustomLogger.LogWarning(MissingSheetMessage, this);
         }
-
-        private void OnDisable()
-        {
-            StopAnalysis();
-            AudioPreviewPlayer.Stop();
-        }
 #endregion
 
         /// <summary>Opens or focuses the window.</summary>
@@ -118,8 +118,8 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
 
         private static bool Matches(AudioClipPlan plan, string term)
             => plan.Info.AssetPath.Contains(term, StringComparison.OrdinalIgnoreCase)
-            || plan.PrimaryRule.Contains(term, StringComparison.OrdinalIgnoreCase)
-            || plan.Info.Category.Contains(term, StringComparison.OrdinalIgnoreCase);
+                || plan.PrimaryRule.Contains(term, StringComparison.OrdinalIgnoreCase)
+                || plan.Info.Category.Contains(term, StringComparison.OrdinalIgnoreCase);
 
         private static Label Chip(string text, string variant)
         {
@@ -131,6 +131,16 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
                 chip.AddToClassList(variant);
 
             return chip;
+        }
+
+        private static Label SizeChip(string label, long delta)
+        {
+            if (delta == 0L)
+                return Chip($"{label} unchanged", null);
+
+            return Chip($"{label} {AudioRulesFormat.Delta(delta)}", delta > 0L
+                ? AudioRulesStyle.ChipGoodClass
+                : AudioRulesStyle.ChipBadClass);
         }
 
         private VisualElement BuildToolbar()
@@ -615,16 +625,6 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
             _status.text = $"{_plans.Count} clips scanned for the {TargetName()} target. Sizes are estimates.";
 
             UpdateApplyButton();
-        }
-
-        private static Label SizeChip(string label, long delta)
-        {
-            if (delta == 0L)
-                return Chip($"{label} unchanged", null);
-
-            return Chip($"{label} {AudioRulesFormat.Delta(delta)}", delta > 0L
-                ? AudioRulesStyle.ChipGoodClass
-                : AudioRulesStyle.ChipBadClass);
         }
 
         private string TargetName() => string.IsNullOrEmpty(_platform)

@@ -18,8 +18,6 @@ namespace Base.ToolPackage.Editor.CommandPalette
 
         [SerializeField] private List<CommandTagRecord> records = new();
 
-        [NonSerialized] private Dictionary<string, CommandTagRecord> _lookup;
-
         private Dictionary<string, CommandTagRecord> Lookup
         {
             get
@@ -38,6 +36,8 @@ namespace Base.ToolPackage.Editor.CommandPalette
                 return _lookup;
             }
         }
+
+        [NonSerialized] private Dictionary<string, CommandTagRecord> _lookup;
 
         /// <summary>Every tag used anywhere, sorted and without duplicates.</summary>
         /// <returns>The known tags.</returns>

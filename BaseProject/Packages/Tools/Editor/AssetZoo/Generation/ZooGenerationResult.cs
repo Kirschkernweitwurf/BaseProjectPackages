@@ -3,7 +3,7 @@ namespace Base.ToolPackage.Editor.AssetZoo.Generation
     /// <summary>
     /// Outcome of a single auto-generation run. Used to give the artist feedback in the UI.
     /// </summary>
-    public readonly struct ZooGenerationResult
+    internal readonly struct ZooGenerationResult
     {
         /// <summary>
         /// True when the scan ran and produced at least one category.

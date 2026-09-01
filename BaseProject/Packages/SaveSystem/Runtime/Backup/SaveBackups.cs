@@ -85,8 +85,7 @@ namespace Base.SaveSystemPackage.Backup
 
         /// <inheritdoc/>
         public async Awaitable<byte[]> ReadAsync(string slotId, string backupId, ESaveFile file,
-            CancellationToken ct = default)
-            => await _storage.ReadAsync(SaveKeys.BackupKey(slotId, backupId, file), ct);
+            CancellationToken ct = default) => await _storage.ReadAsync(SaveKeys.BackupKey(slotId, backupId, file), ct);
 
         /// <inheritdoc/>
         public async Awaitable<bool> RestoreAsync(string slotId, string backupId, CancellationToken ct = default)

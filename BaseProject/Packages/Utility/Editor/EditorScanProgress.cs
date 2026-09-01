@@ -24,16 +24,15 @@ namespace Base.UtilityPackage.Editor
         private const int MinimumInterval = 1;
         private const float PhaseStart = 0f;
 
+        /// <summary>True once the user has pressed cancel.</summary>
+        public bool IsCanceled { get; private set; }
+
         private readonly bool _isCancelable;
         private readonly int _reportInterval;
 
         private string _title;
         private float _start;
         private float _span;
-        private bool _isCanceled;
-
-        /// <summary>True once the user has pressed cancel.</summary>
-        public bool IsCanceled => _isCanceled;
 
         /// <summary>Shows a bar for the duration of the scope.</summary>
         /// <param name="title">The window title of the bar.</param>
@@ -54,6 +53,9 @@ namespace Base.UtilityPackage.Editor
             _start = PhaseStart;
             _span = FullSpan;
         }
+
+        /// <summary>Takes the bar down. Safe to call more than once.</summary>
+        public void Dispose() => EditorUtility.ClearProgressBar();
 
         /// <summary>
         /// Points the following reports at one slice of the bar, for a scan that runs through several
@@ -78,7 +80,7 @@ namespace Base.UtilityPackage.Editor
         /// <returns>False once the user has canceled, so the caller can break out of its loop.</returns>
         public bool Report(int done, int total, string label)
         {
-            if (_isCanceled)
+            if (IsCanceled)
                 return false;
 
             if (total <= 0)
@@ -101,12 +103,9 @@ namespace Base.UtilityPackage.Editor
                 return true;
             }
 
-            _isCanceled = EditorUtility.DisplayCancelableProgressBar(_title, label, fraction);
+            IsCanceled = EditorUtility.DisplayCancelableProgressBar(_title, label, fraction);
 
-            return !_isCanceled;
+            return !IsCanceled;
         }
-
-        /// <summary>Takes the bar down. Safe to call more than once.</summary>
-        public void Dispose() => EditorUtility.ClearProgressBar();
     }
 }

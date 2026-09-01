@@ -11,7 +11,7 @@ namespace Base.ToolPackage.Editor.LightingProfileApplier
     /// stays active for the profile fields.
     /// </summary>
     [CustomEditor(typeof(LightingProfile))]
-    public class LightingProfileEditor : AttributePackageEditor
+    internal class LightingProfileEditor : AttributePackageEditor
     {
         /// <inheritdoc/>
         public override void OnInspectorGUI()

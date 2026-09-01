@@ -11,7 +11,7 @@ namespace Base.ToolPackage.Editor.AutoStartScene
     /// Settings are stored using EditorPrefs.
     /// </summary>
     [InitializeOnLoad]
-    public static class AutoStartSceneSettings
+    internal static class AutoStartSceneSettings
     {
         private const string EnabledKey = "AutoStartSceneEnabled";
         private const string SceneKey = "AutoStartScenePath";

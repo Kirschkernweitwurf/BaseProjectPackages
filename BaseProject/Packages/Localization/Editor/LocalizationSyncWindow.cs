@@ -50,6 +50,7 @@ namespace Base.LocalizationPackage.Editor
             {
                 EditorWindowChrome.DrawEmptyState(_styles, EditorIcons.Success, HeaderLabel,
                     GoogleSheetsSync.NoCollectionsMessage);
+
                 return;
             }
 
@@ -80,6 +81,26 @@ namespace Base.LocalizationPackage.Editor
         {
             LocalizationSyncWindow window = GetWindow<LocalizationSyncWindow>(WindowTitle);
             window.minSize = new Vector2(MinWindowWidth, MinWindowHeight);
+        }
+
+        private static void Run(StringTableCollection collection, ESyncDirection direction)
+        {
+            // A single push is just as destructive as a push of all collections, so it is confirmed the same way.
+            if (direction == ESyncDirection.Push
+                && !GoogleSheetsSync.IsPushConfirmed(SingleCollection))
+                return;
+
+            SyncResult result = GoogleSheetsSync.Sync(collection, direction);
+
+            if (result.Success)
+            {
+                AssetDatabase.SaveAssets();
+                CustomLogger.Log($"{direction} '{collection.TableCollectionName}' done.", collection);
+                return;
+            }
+
+            CustomLogger.LogWarning($"{direction} '{collection.TableCollectionName}' skipped: {result.Message}",
+                collection);
         }
 
         private void DrawSyncAllButtons()
@@ -119,26 +140,6 @@ namespace Base.LocalizationPackage.Editor
                 Run(collection, ESyncDirection.Push);
 
             EditorGUILayout.EndHorizontal();
-        }
-
-        private static void Run(StringTableCollection collection, ESyncDirection direction)
-        {
-            // A single push is just as destructive as a push of all collections, so it is confirmed the same way.
-            if (direction == ESyncDirection.Push
-                && !GoogleSheetsSync.IsPushConfirmed(SingleCollection))
-                return;
-
-            SyncResult result = GoogleSheetsSync.Sync(collection, direction);
-
-            if (result.Success)
-            {
-                AssetDatabase.SaveAssets();
-                CustomLogger.Log($"{direction} '{collection.TableCollectionName}' done.", collection);
-                return;
-            }
-
-            CustomLogger.LogWarning($"{direction} '{collection.TableCollectionName}' skipped: {result.Message}",
-                collection);
         }
 
         private void DrawCollectionsToolbar()

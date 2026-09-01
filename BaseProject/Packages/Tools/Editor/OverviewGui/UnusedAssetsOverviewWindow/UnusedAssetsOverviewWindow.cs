@@ -13,7 +13,7 @@ namespace Base.ToolPackage.Editor.OverviewGui.UnusedAssetsOverviewWindow
     /// Dismissed assets are remembered per project, drop out of the count, and can be browsed and
     /// restored from a foldout at the top.
     /// </summary>
-    public sealed class UnusedAssetsOverviewWindow : EditorWindow
+    internal sealed class UnusedAssetsOverviewWindow : EditorWindow
     {
         private const float DiscardDefaultHeight = 220f;
         private const string DiscardHeightKey = "Base.UnusedAssetsOverview.DiscardHeight";

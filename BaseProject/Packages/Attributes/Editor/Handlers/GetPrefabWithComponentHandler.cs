@@ -17,8 +17,10 @@ namespace Base.AttributePackage.Editor.Handlers
         private const int HandlerOrder = 7;
         private const string PrefabFilter = "t:Prefab";
 
+        /// <inheritdoc/>
         public int Order => HandlerOrder;
 
+        /// <inheritdoc/>
         public void AfterField(in MemberContext context)
         {
             GetPrefabWithComponentAttribute attribute =

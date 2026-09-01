@@ -101,47 +101,8 @@ namespace Base.EditorUiPackage
         /// <summary>Orange used for a warning that is not yet an error.</summary>
         public Color Warning => warning;
 
-        /// <summary>
-        /// Whether every color in this set is the same as in another.
-        /// </summary>
-        /// <remarks>
-        /// Lets a theme say which preset it still matches, so the settings page can mark that preset
-        /// rather than leave the user guessing what they are looking at.
-        /// </remarks>
-        /// <param name="other">The set to compare against.</param>
-        /// <returns>True when every color matches.</returns>
-        public bool Matches(EditorThemeColors other)
-        {
-            if (other == null)
-                return false;
-
-            return Accent == other.Accent
-                && AccentText == other.AccentText
-                && Background == other.Background
-                && Border == other.Border
-                && Card == other.Card
-                && Danger == other.Danger
-                && DimText == other.DimText
-                && Divider == other.Divider
-                && Field == other.Field
-                && Focus == other.Focus
-                && Hover == other.Hover
-                && KeyCap == other.KeyCap
-                && Secondary == other.Secondary
-                && SecondaryText == other.SecondaryText
-                && Selection == other.Selection
-                && SelectionFill == other.SelectionFill
-                && Separator == other.Separator
-                && Stripe == other.Stripe
-                && Success == other.Success
-                && Text == other.Text
-                && Warning == other.Warning;
-        }
-
         /// <summary>Creates an empty set. Required by the serializer and by the inspector.</summary>
-        public EditorThemeColors()
-        {
-        }
+        public EditorThemeColors() { }
 
         /// <summary>Creates a full set of colors for one editor theme.</summary>
         /// <param name="accent">Blue used for selection, drop targets and the primary button.</param>
@@ -191,6 +152,43 @@ namespace Base.EditorUiPackage
             this.success = success;
             this.text = text;
             this.warning = warning;
+        }
+
+        /// <summary>
+        /// Whether every color in this set is the same as in another.
+        /// </summary>
+        /// <remarks>
+        /// Lets a theme say which preset it still matches, so the settings page can mark that preset
+        /// rather than leave the user guessing what they are looking at.
+        /// </remarks>
+        /// <param name="other">The set to compare against.</param>
+        /// <returns>True when every color matches.</returns>
+        public bool Matches(EditorThemeColors other)
+        {
+            if (other == null)
+                return false;
+
+            return Accent == other.Accent
+                && AccentText == other.AccentText
+                && Background == other.Background
+                && Border == other.Border
+                && Card == other.Card
+                && Danger == other.Danger
+                && DimText == other.DimText
+                && Divider == other.Divider
+                && Field == other.Field
+                && Focus == other.Focus
+                && Hover == other.Hover
+                && KeyCap == other.KeyCap
+                && Secondary == other.Secondary
+                && SecondaryText == other.SecondaryText
+                && Selection == other.Selection
+                && SelectionFill == other.SelectionFill
+                && Separator == other.Separator
+                && Stripe == other.Stripe
+                && Success == other.Success
+                && Text == other.Text
+                && Warning == other.Warning;
         }
     }
 }

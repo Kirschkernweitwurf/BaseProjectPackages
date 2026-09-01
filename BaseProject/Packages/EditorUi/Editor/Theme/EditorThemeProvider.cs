@@ -20,30 +20,11 @@ namespace Base.EditorUiPackage
     /// </remarks>
     public static class EditorThemeProvider
     {
-        // Built once for the domain and handed out by reference. Nothing here has a setter, so a
-        // project on the built-in look allocates nothing at all on the path a window reads every
-        // repaint.
-        private static readonly EditorThemeColors DefaultDarkColors = EditorThemeDefaults.CreateDarkColors();
-        private static readonly EditorThemeColors DefaultLightColors = EditorThemeDefaults.CreateLightColors();
-        private static readonly EditorThemeMetrics DefaultMetrics = EditorThemeDefaults.CreateMetrics();
-        private static readonly EditorThemeTable DefaultTable = EditorThemeDefaults.CreateTable();
-
-        private static EditorTheme _theme;
-        private static EditorThemeColors _darkColors = DefaultDarkColors;
-        private static EditorThemeColors _lightColors = DefaultLightColors;
-        private static EditorThemeMetrics _metrics = DefaultMetrics;
-        private static EditorThemeTable _table = DefaultTable;
-
-        private static bool? _darkModeOverride;
-        private static bool _isResolved;
-        private static bool _hasResolvedTheme;
-        private static int _revision;
-
         /// <summary>
         /// Rises by one every time the look changes. A style cache that recorded the value it built
         /// with knows it is stale as soon as the two differ.
         /// </summary>
-        public static int Revision => _revision;
+        public static int Revision { get; private set; }
 
         /// <summary>The assigned theme, or null while the project draws with the built-in look.</summary>
         public static EditorTheme ActiveTheme
@@ -102,6 +83,24 @@ namespace Base.EditorUiPackage
             }
         }
 
+        // Built once for the domain and handed out by reference. Nothing here has a setter, so a
+        // project on the built-in look allocates nothing at all on the path a window reads every
+        // repaint.
+        private static readonly EditorThemeColors DefaultDarkColors = EditorThemeDefaults.CreateDarkColors();
+        private static readonly EditorThemeColors DefaultLightColors = EditorThemeDefaults.CreateLightColors();
+        private static readonly EditorThemeMetrics DefaultMetrics = EditorThemeDefaults.CreateMetrics();
+        private static readonly EditorThemeTable DefaultTable = EditorThemeDefaults.CreateTable();
+
+        private static EditorTheme _theme;
+        private static EditorThemeColors _darkColors = DefaultDarkColors;
+        private static EditorThemeColors _lightColors = DefaultLightColors;
+        private static EditorThemeMetrics _metrics = DefaultMetrics;
+        private static EditorThemeTable _table = DefaultTable;
+
+        private static bool? _darkModeOverride;
+        private static bool _isResolved;
+        private static bool _hasResolvedTheme;
+
         /// <summary>
         /// Points the project at a theme asset and refreshes every open window.
         /// </summary>
@@ -140,7 +139,7 @@ namespace Base.EditorUiPackage
         public static void NotifyChanged()
         {
             _isResolved = false;
-            _revision++;
+            Revision++;
 
             InternalEditorUtility.RepaintAllViews();
         }

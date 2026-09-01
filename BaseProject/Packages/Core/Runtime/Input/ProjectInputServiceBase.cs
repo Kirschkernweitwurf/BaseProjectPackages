@@ -15,14 +15,14 @@ namespace Base.CorePackage.Input
     /// </summary>
     public abstract class ProjectInputServiceBase : GameServiceBehaviour
     {
-        private readonly Dictionary<InputActionMap, int> _enabledMapCounts = new();
-
         /// <summary>
         /// The runtime action asset maps are resolved and enabled against. This is the clone the
         /// generated wrapper creates, not the source asset, so callers enable the exact instance
         /// they subscribe to.
         /// </summary>
         protected abstract InputActionAsset RuntimeAsset { get; }
+
+        private readonly Dictionary<InputActionMap, int> _enabledMapCounts = new();
 
         /// <summary>
         /// Enables the given map. Reference counted, so it stays enabled until every caller

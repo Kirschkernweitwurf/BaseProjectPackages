@@ -14,18 +14,18 @@ namespace Base.ToolPackage.Editor.CommandPalette
         [SerializeField] private string[] tags;
         [SerializeField] private bool pinned;
 
-        /// <summary>Id of the command this record belongs to.</summary>
-        internal string Id => id;
-
-        /// <summary>Tags assigned by hand, always lowercase.</summary>
-        internal IReadOnlyList<string> Tags => tags ?? NoTags;
-
         /// <summary>Whether the command is pinned to the top of the results.</summary>
         public bool Pinned
         {
             get => pinned;
             set => pinned = value;
         }
+
+        /// <summary>Id of the command this record belongs to.</summary>
+        internal string Id => id;
+
+        /// <summary>Tags assigned by hand, always lowercase.</summary>
+        internal IReadOnlyList<string> Tags => tags ?? NoTags;
 
         /// <summary>True when the record holds nothing worth saving anymore.</summary>
         internal bool IsEmpty => !pinned && Tags.Count == 0;

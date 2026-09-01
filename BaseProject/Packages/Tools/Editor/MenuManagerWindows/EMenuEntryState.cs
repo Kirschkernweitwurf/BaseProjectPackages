@@ -1,7 +1,7 @@
 namespace Base.ToolPackage.Editor.MenuManagerWindows
 {
     /// <summary>Live state of a menu entry as reported by its source.</summary>
-    public enum EMenuEntryState : byte
+    internal enum EMenuEntryState : byte
     {
         /// <summary>The entry is registered and reachable from the menu.</summary>
         Active = 0,

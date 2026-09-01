@@ -3,7 +3,7 @@ namespace Base.ToolPackage.Editor.AssetZoo.Config
     /// <summary>
     /// The direction in which to expand a category when adding new items.
     /// </summary>
-    public enum ECategoryDirection : byte
+    internal enum ECategoryDirection : byte
     {
         /// <summary>
         /// Expand forward, adding new items in front of existing ones.

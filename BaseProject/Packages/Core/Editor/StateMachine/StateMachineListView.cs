@@ -12,15 +12,15 @@ namespace Base.CorePackage.Editor.StateMachine
     /// </summary>
     internal sealed class StateMachineListView : VisualElement
     {
-        private readonly Dictionary<IStateMachineInfo, Label> _stateLabels = new();
-        private readonly List<IStateMachineInfo> _machines = new();
-        private readonly ScrollView _list = new();
-
         /// <summary>Raised when the user picks a different machine.</summary>
         internal event Action<IStateMachineInfo> SelectionChanged;
 
         /// <summary>The machine currently picked, or null when the list is empty.</summary>
         internal IStateMachineInfo Selected { get; private set; }
+
+        private readonly Dictionary<IStateMachineInfo, Label> _stateLabels = new();
+        private readonly List<IStateMachineInfo> _machines = new();
+        private readonly ScrollView _list = new();
 
         /// <summary>Builds the list.</summary>
         internal StateMachineListView()
@@ -127,8 +127,9 @@ namespace Base.CorePackage.Editor.StateMachine
 
             for (int i = 0; i < _machines.Count; i++)
             {
-                _list[i].EnableInClassList(StateMachineStyle.MachineRowSelectedClass,
-                    ReferenceEquals(_machines[i], machine));
+                _list[i]
+                    .EnableInClassList(StateMachineStyle.MachineRowSelectedClass,
+                        ReferenceEquals(_machines[i], machine));
             }
         }
     }

@@ -7,7 +7,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Model
     /// The seven import settings the tool cares about, in one place. Used both for what a clip has
     /// today and for what the rules want it to have, so the two can be compared setting by setting.
     /// </summary>
-    public sealed class AudioSettingValues
+    internal sealed class AudioSettingValues
     {
         /// <summary>How the clip lives in memory at runtime.</summary>
         public AudioClipLoadType LoadType { get; set; }

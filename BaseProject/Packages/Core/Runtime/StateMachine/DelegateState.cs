@@ -9,12 +9,12 @@ namespace Base.CorePackage.StateMachine
     /// <typeparam name="TContext">The object the state operates on.</typeparam>
     public sealed class DelegateState<TContext> : IState<TContext>
     {
+        /// <inheritdoc/>
+        public string Name { get; }
+
         private readonly Action<TContext> _onEnter;
         private readonly Action<TContext, float> _onTick;
         private readonly Action<TContext> _onExit;
-
-        /// <inheritdoc/>
-        public string Name { get; }
 
         /// <summary>Creates a state from the hooks it needs. Every hook is optional.</summary>
         /// <param name="name">The display name of the state.</param>

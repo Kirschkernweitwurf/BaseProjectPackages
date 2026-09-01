@@ -21,7 +21,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
     /// The window only draws. <see cref="AssetNamingQuery"/> owns the results and the filters,
     /// <see cref="AssetNamingEdits"/> owns every change that is deferred past the layout pass.
     /// </summary>
-    public sealed class AssetNamingWindow : EditorWindow
+    internal sealed class AssetNamingWindow : EditorWindow
     {
         private const float ButtonWidth = 58f;
         private const float DetectWidth = 84f;
@@ -47,6 +47,8 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
             "Bring every dismissed asset back into the scan");
 
         private static readonly GUIContent ClearHistoryContent = new("Clear", "Drop the whole history");
+
+
 
 
 

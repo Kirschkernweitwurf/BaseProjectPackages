@@ -2,10 +2,10 @@
   "name": "Base.ToolPackage.Editor.Tests",
   "rootNamespace": "Base.ToolPackage.Editor.Tests",
   "references": [
-        "Base.ToolPackage.Editor",
-        "UnityEngine.TestRunner",
-        "UnityEditor.TestRunner"
-    ],
+    "Base.ToolPackage.Editor",
+    "UnityEngine.TestRunner",
+    "UnityEditor.TestRunner"
+  ],
   "includePlatforms": [
     "Editor"
   ],

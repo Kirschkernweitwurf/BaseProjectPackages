@@ -6,7 +6,7 @@ namespace Base.ToolPackage.Editor.OverviewGui.PrefabOverviewWindow
     /// Problems a prefab entry can be flagged with after a scan.
     /// </summary>
     [Flags]
-    public enum EPrefabIssue : byte
+    internal enum EPrefabIssue : byte
     {
         /// <summary>Nothing to report.</summary>
         None = 0,

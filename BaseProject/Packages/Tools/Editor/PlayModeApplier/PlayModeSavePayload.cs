@@ -12,9 +12,19 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
     [Serializable]
     internal class PlayModeSavePayload
     {
+        /// <summary>Name of the captured object, shown in the window.</summary>
         public string displayName;
+
+        /// <summary>Where the values are written back to: the scene object, its prefab, or both.</summary>
         public EPlayModeApplyTarget applyTarget;
+
+        /// <summary>The captured values, serialized. Object references are not in here.</summary>
         public string json;
+
+        /// <summary>
+        /// The object references, kept apart from the JSON because a serialized reference does not
+        /// survive leaving play mode and has to be resolved again on the other side.
+        /// </summary>
         public List<PlayModeObjectReference> objectReferences = new();
 
         /// <summary>Full name of the component type.</summary>

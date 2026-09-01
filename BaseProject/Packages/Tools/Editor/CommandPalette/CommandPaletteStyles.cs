@@ -39,8 +39,6 @@ namespace Base.ToolPackage.Editor.CommandPalette
         /// <summary>Closing tag of a matched run.</summary>
         internal const string MatchClose = "</color></b>";
 
-        private const int PathFontSize = 12;
-
         /// <summary>Height of a pill shaped button.</summary>
         internal const float PillHeight = 22f;
 
@@ -59,8 +57,6 @@ namespace Base.ToolPackage.Editor.CommandPalette
         /// <summary>Width Unity reserves for a vertical scrollbar.</summary>
         internal const float ScrollbarWidth = 15f;
 
-        private const int SearchFontSize = 15;
-
         /// <summary>Height of the search box.</summary>
         internal const float SearchHeight = 34f;
 
@@ -73,22 +69,9 @@ namespace Base.ToolPackage.Editor.CommandPalette
         /// <summary>Padding between the window edge and its content.</summary>
         internal const float WindowPadding = 10f;
 
-        private static GUIStyle _badgeLabel;
-        private static GUIStyle _chipLabel;
-        private static GUIStyle _countLabel;
-        private static GUIStyle _detailLabel;
-        private static GUIStyle _emptyLabel;
-        private static GUIStyle _hintLabel;
-        private static GUIStyle _keyCapLabel;
-        private static GUIStyle _pathLabel;
-        private static GUIStyle _pillLabel;
-        private static GUIStyle _pinLabel;
-        private static GUIStyle _placeholder;
-        private static GUIStyle _prefixLabel;
-        private static GUIStyle _searchField;
-        private static GUIStyle _tagLabel;
+        private const int PathFontSize = 12;
 
-        private static readonly EditorStyleWatch Watch = new();
+        private const int SearchFontSize = 15;
 
         /// <summary>Thickness of a hairline.</summary>
         internal static float SeparatorThickness => EditorMetrics.SeparatorThickness;
@@ -194,6 +177,23 @@ namespace Base.ToolPackage.Editor.CommandPalette
             alignment = TextAnchor.MiddleCenter
         }, PinColor());
 
+        private static readonly EditorStyleWatch Watch = new();
+
+        private static GUIStyle _badgeLabel;
+        private static GUIStyle _chipLabel;
+        private static GUIStyle _countLabel;
+        private static GUIStyle _detailLabel;
+        private static GUIStyle _emptyLabel;
+        private static GUIStyle _hintLabel;
+        private static GUIStyle _keyCapLabel;
+        private static GUIStyle _pathLabel;
+        private static GUIStyle _pillLabel;
+        private static GUIStyle _pinLabel;
+        private static GUIStyle _placeholder;
+        private static GUIStyle _prefixLabel;
+        private static GUIStyle _searchField;
+        private static GUIStyle _tagLabel;
+
         /// <summary>Drops every cached style after either theme changes. Call once per GUI pass.</summary>
         internal static void EnsureFresh()
         {
@@ -226,9 +226,6 @@ namespace Base.ToolPackage.Editor.CommandPalette
 
         /// <summary>Border of the search box.</summary>
         internal static Color BorderColor() => EditorPalette.Border;
-
-        /// <summary>Dimmed text used for secondary information.</summary>
-        private static Color DimColor() => EditorPalette.DimText;
 
         /// <summary>Fill of the search box.</summary>
         internal static Color FieldColor() => EditorPalette.Field;
@@ -281,13 +278,15 @@ namespace Base.ToolPackage.Editor.CommandPalette
         /// <summary>Fill of a tag pill.</summary>
         internal static Color TagPillColor() => EditorPalette.Tint(0.09f, 0.07f);
 
+        /// <summary>Dimmed text used for secondary information.</summary>
+        private static Color DimColor() => EditorPalette.DimText;
+
         /// <summary>Primary text color.</summary>
         private static Color TextColor() => EditorPalette.Text;
 
         private static Color Shade(Color color, bool hover, bool pressed)
             => EditorStyleUtility.Shade(color, hover, pressed);
 
-        private static GUIStyle Pin(GUIStyle style, Color color)
-            => EditorStyleUtility.PinTextColor(style, color);
+        private static GUIStyle Pin(GUIStyle style, Color color) => EditorStyleUtility.PinTextColor(style, color);
     }
 }

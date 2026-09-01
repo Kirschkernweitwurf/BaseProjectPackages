@@ -17,15 +17,15 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
         private const string StopMethodName = "StopAllPreviewClips";
         private const string UtilTypeName = "UnityEditor.AudioUtil,UnityEditor";
 
+        /// <summary>True when the editor still exposes the preview methods this uses.</summary>
+        internal static bool IsAvailable => PlayMethod != null;
+
         private static MethodInfo PlayMethod => _playMethod ??= FindMethod(PlayMethodName);
 
         private static MethodInfo StopMethod => _stopMethod ??= FindMethod(StopMethodName);
 
         private static MethodInfo _playMethod;
         private static MethodInfo _stopMethod;
-
-        /// <summary>True when the editor still exposes the preview methods this uses.</summary>
-        internal static bool IsAvailable => PlayMethod != null;
 
         /// <summary>Plays a clip from the start, stopping whatever was playing before.</summary>
         /// <param name="clip">The clip to play.</param>

@@ -1,6 +1,5 @@
 using System;
 using Base.AttributePackage.Editor.Core.Interfaces;
-using Base.AttributePackage.Editor.Drawers;
 using UnityEditor;
 using UnityEngine;
 
@@ -9,8 +8,10 @@ namespace Base.AttributePackage.Editor.Handlers
     /// <summary>Auto-assigns a <see cref="GetComponentAttribute"/> field from the same GameObject.</summary>
     internal sealed class GetComponentHandler : IAfterFieldHandler
     {
+        /// <inheritdoc/>
         public int Order => 5;
 
+        /// <inheritdoc/>
         public void AfterField(in MemberContext context)
         {
             if (context.GetAttribute<GetComponentAttribute>() == null)

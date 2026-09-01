@@ -1,7 +1,7 @@
 namespace Base.ToolPackage.Editor.FolderConventionValidator
 {
     /// <summary>Kind of folder rule that was broken.</summary>
-    public enum EFolderViolationType : byte
+    internal enum EFolderViolationType : byte
     {
         MissingFolder = 0,
         NamingStyle = 1,

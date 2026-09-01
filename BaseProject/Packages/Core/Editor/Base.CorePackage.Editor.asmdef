@@ -1,23 +1,23 @@
 {
-    "name": "Base.CorePackage.Editor",
-    "rootNamespace": "Base.CorePackage.Editor",
-    "references": [
-        "GUID:f2d8f8c295391d141aef02e29987cd86",
-        "GUID:922d81cfb9ff6984da4cb2213b66a375",
-        "GUID:23e24c01ae3d7b347a00cb4924eb02c5",
-        "GUID:75469ad4d38634e559750d17036d5f7c",
-        "GUID:8f82a2d294e14cc5930979a4e0d686ec",
-        "GUID:197b6d0582f34e28ad8ccd70c0b1c826"
-    ],
-    "includePlatforms": [
-        "Editor"
-    ],
-    "excludePlatforms": [],
-    "allowUnsafeCode": false,
-    "overrideReferences": false,
-    "precompiledReferences": [],
-    "autoReferenced": true,
-    "defineConstraints": [],
-    "versionDefines": [],
-    "noEngineReferences": false
+  "name": "Base.CorePackage.Editor",
+  "rootNamespace": "Base.CorePackage.Editor",
+  "references": [
+    "GUID:f2d8f8c295391d141aef02e29987cd86",
+    "GUID:922d81cfb9ff6984da4cb2213b66a375",
+    "GUID:23e24c01ae3d7b347a00cb4924eb02c5",
+    "GUID:75469ad4d38634e559750d17036d5f7c",
+    "GUID:8f82a2d294e14cc5930979a4e0d686ec",
+    "GUID:197b6d0582f34e28ad8ccd70c0b1c826"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
 }

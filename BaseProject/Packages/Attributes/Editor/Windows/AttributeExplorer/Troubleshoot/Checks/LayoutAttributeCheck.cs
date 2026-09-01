@@ -19,6 +19,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot.Ch
     {
         private const string LiteralFallback = "so the attribute falls back to showing the reference itself.";
 
+        /// <inheritdoc/>
         public void Inspect(Type type, List<AttributeIssue> issues)
         {
             foreach (FieldInfo field in ScannedMembers.DeclaredFields(type))

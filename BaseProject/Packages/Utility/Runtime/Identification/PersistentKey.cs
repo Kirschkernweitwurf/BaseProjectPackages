@@ -17,6 +17,7 @@ namespace Base.UtilityPackage.Identification
     /// into storage keys. The recommended pattern is to expose one <c>static readonly <see cref="PersistentKey"/></c>
     /// per owner as that owner's single source of truth.
     /// </remarks>
+
     // Load bearing and concrete on purpose. This is a validated value type, so being concrete is the
     // point: an interface in front of it would let an unvalidated key through and lose the value
     // equality that makes it safe as a dictionary key. The format is settled and does not change.

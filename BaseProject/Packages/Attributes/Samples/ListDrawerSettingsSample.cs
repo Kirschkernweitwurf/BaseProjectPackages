@@ -23,24 +23,48 @@ namespace Base.AttributePackage.Samples
         [Tooltip("A plain list with no attribute, drawn by Unity, for comparison.")]
         public List<Row> plain = new()
         {
-            new Row { id = "Ash", amount = 1 },
-            new Row { id = "Birch", amount = 2 }
+            new Row
+            {
+                id = "Ash",
+                amount = 1
+            },
+            new Row
+            {
+                id = "Birch",
+                amount = 2
+            }
         };
 
         [ListDrawerSettings(Searchable = true)]
         [Tooltip("A search box that hides the rows whose label does not match.")]
         public List<Row> searchable = new()
         {
-            new Row { id = "Ash", amount = 1 },
-            new Row { id = "Birch", amount = 2 },
-            new Row { id = "Cedar", amount = 3 }
+            new Row
+            {
+                id = "Ash",
+                amount = 1
+            },
+            new Row
+            {
+                id = "Birch",
+                amount = 2
+            },
+            new Row
+            {
+                id = "Cedar",
+                amount = 3
+            }
         };
 
         [ListDrawerSettings(ConfirmDelete = true)]
         [Tooltip("Removing a row asks first, naming the row it is about to delete.")]
         public List<Row> confirmedDelete = new()
         {
-            new Row { id = "Delete me", amount = 3 }
+            new Row
+            {
+                id = "Delete me",
+                amount = 3
+            }
         };
 
         /// <summary>One element, shaped so the settings above have something to name.</summary>

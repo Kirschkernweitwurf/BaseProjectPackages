@@ -7,7 +7,7 @@ namespace Base.ToolPackage.Editor.AssetZoo.Config
     /// All settings related to how prefabs are arranged in space.
     /// </summary>
     [Serializable]
-    public class LayoutSettings
+    internal class LayoutSettings
     {
         [field: Tooltip("How items are arranged in the zoo.")]
         [field: SerializeField] public ELayoutType Type { get; private set; } = ELayoutType.Grid;

@@ -18,6 +18,10 @@ namespace Base.TweeningPackage.Core.Data.Parameters
         [field: Tooltip("Optional delay before the tween starts (seconds).")]
         [field: Min(0f)] [field: SerializeField] public float Delay { get; private set; }
 
+        /// <summary>Creates the timing for one tween.</summary>
+        /// <param name="duration">How long the tween runs, in seconds.</param>
+        /// <param name="easing">The easing curve the interpolation follows.</param>
+        /// <param name="delay">Seconds to wait before it starts.</param>
         public TweenData(float duration, EEasingType easing, float delay = 0f)
         {
             Duration = duration;

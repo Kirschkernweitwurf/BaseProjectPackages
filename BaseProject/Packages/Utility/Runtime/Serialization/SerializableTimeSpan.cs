@@ -52,15 +52,13 @@ namespace Base.UtilityPackage.Serialization
         /// <param name="left">The first duration.</param>
         /// <param name="right">The second duration.</param>
         /// <returns>True when both are the same length.</returns>
-        public static bool operator ==(SerializableTimeSpan left, SerializableTimeSpan right)
-            => left.Equals(right);
+        public static bool operator ==(SerializableTimeSpan left, SerializableTimeSpan right) => left.Equals(right);
 
         /// <summary>Compares two durations for inequality.</summary>
         /// <param name="left">The first duration.</param>
         /// <param name="right">The second duration.</param>
         /// <returns>True when they are different lengths.</returns>
-        public static bool operator !=(SerializableTimeSpan left, SerializableTimeSpan right)
-            => !left.Equals(right);
+        public static bool operator !=(SerializableTimeSpan left, SerializableTimeSpan right) => !left.Equals(right);
 
         /// <summary>Orders two durations by length.</summary>
         /// <param name="other">The duration to compare against.</param>

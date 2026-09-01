@@ -56,7 +56,9 @@ namespace Base.SaveSystemPackage.Unity.Composition
         [field: NotZero]
         [field: SerializeField] public int SaveVersion { get; private set; } = 1;
 
-        [field: Tooltip("Find every " + nameof(ISaveMigration) + " in the project and register it automatically. "
+        [field: Tooltip("Find every "
+            + nameof(ISaveMigration)
+            + " in the project and register it automatically. "
             + "Turn off to hand the steps to the factory yourself.")]
         [field: SerializeField] public bool AutoDiscoverMigrations { get; private set; } = true;
 

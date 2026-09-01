@@ -11,7 +11,7 @@ namespace Base.AttributePackage.Samples
         Variations = new[]
         {
             "Nothing to configure. It fills only while the field is empty, so an explicit assignment is never "
-                + "overwritten."
+            + "overwritten."
         })]
     internal sealed class GetScriptableObjectSample : ScriptableObject
     {

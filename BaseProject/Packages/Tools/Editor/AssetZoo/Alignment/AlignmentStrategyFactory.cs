@@ -7,7 +7,7 @@ namespace Base.ToolPackage.Editor.AssetZoo.Alignment
     /// A factory class for creating instances of <see cref="IAlignmentStrategy"/>
     /// based on the specified <see cref="EAlignmentMode"/>.
     /// </summary>
-    public static class AlignmentStrategyFactory
+    internal static class AlignmentStrategyFactory
     {
         /// <summary>
         /// Creates an instance of <see cref="IAlignmentStrategy"/> based on the provided <see cref="EAlignmentMode"/>.

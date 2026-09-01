@@ -44,12 +44,9 @@ namespace Base.UtilityPackage.Editor.Serialization
         /// <param name="baseType">The base type every candidate has to satisfy.</param>
         /// <param name="scope">Which assemblies an unconstrained picker draws from.</param>
         /// <returns>The candidate types.</returns>
-        public static Type[] For(Type baseType, ETypeScope scope)
-        {
-            return baseType == typeof(object)
-                ? Everything(scope)
-                : DerivedFrom(baseType);
-        }
+        public static Type[] For(Type baseType, ETypeScope scope) => baseType == typeof(object)
+            ? Everything(scope)
+            : DerivedFrom(baseType);
 
         private static Type[] DerivedFrom(Type baseType)
         {

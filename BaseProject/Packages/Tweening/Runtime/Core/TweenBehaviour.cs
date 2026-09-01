@@ -54,6 +54,10 @@ namespace Base.TweeningPackage.Core
         [Tooltip("Loop behavior of this tween.")]
         [SerializeField] private LoopSettings loopSettings = new();
 
+        /// <summary>
+        /// True once <see cref="Shutdown"/> has run. Domain reload is disabled, so this is what stops
+        /// a second shutdown from deregistering something that is already gone.
+        /// </summary>
         public bool HasShutDown { get; private set; }
 
         public override TweenBase ActiveTween => _activeTween;
@@ -130,6 +134,10 @@ namespace Base.TweeningPackage.Core
         }
 #endregion
 
+        /// <summary>
+        /// Stops the tween and releases it from the shutdown manager. Runs from <c>OnDestroy</c> on its
+        /// own, and is safe to call early when something needs the tween gone before then.
+        /// </summary>
         public void Shutdown()
         {
             ShutdownManager.Deregister(this);

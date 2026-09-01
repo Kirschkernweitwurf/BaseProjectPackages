@@ -12,7 +12,7 @@ namespace Base.AttributePackage.Samples
         {
             "Works on anything with a foldout: arrays, lists and nested serializable types.",
             "Arrays and lists already open on their own, so the attribute changes nothing there. A nested "
-                + "serializable type is what it is actually for."
+            + "serializable type is what it is actually for."
         })]
     internal sealed class StartExpandedSample : ScriptableObject
     {

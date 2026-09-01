@@ -48,7 +48,7 @@ namespace Base.UtilityPackage.Editor.Serialization
                 Rect second = new(field.x, field.yMax + EditorGUIUtility.standardVerticalSpacing,
                     field.width, EditorGUIUtility.singleLineHeight);
 
-                DateTimeGui.DrawTime(second, ticks, showMilliseconds: false);
+                DateTimeGui.DrawTime(second, ticks, false);
             }
 
             EditorGUI.EndProperty();

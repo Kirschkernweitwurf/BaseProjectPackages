@@ -19,6 +19,8 @@ namespace Base.CorePackage.Audio.OnEvent
         private void Start() => ServiceLocator.TryGet(out _audioManager);
 #endregion
 
+        /// <summary>Plays the configured sound when the element is submitted.</summary>
+        /// <param name="eventData">The event system payload. Not read; only the event matters.</param>
         public void OnSubmit(BaseEventData eventData) => _audioManager.PlaySound(submitSound);
     }
 }

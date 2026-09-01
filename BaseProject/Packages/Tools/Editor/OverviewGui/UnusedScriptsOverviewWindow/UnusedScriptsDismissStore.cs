@@ -14,6 +14,7 @@ namespace Base.ToolPackage.Editor.OverviewGui.UnusedScriptsOverviewWindow
     {
         private const string FilePath = "ProjectSettings/UnusedScriptsDismissed.json";
 
+        /// <summary>How many scripts are currently dismissed, shown beside the clear button.</summary>
         internal static int Count => Guids.Count;
 
         private static HashSet<string> Guids => _guids ??= Load();
@@ -102,6 +103,10 @@ namespace Base.ToolPackage.Editor.OverviewGui.UnusedScriptsOverviewWindow
         [Serializable]
         private sealed class Data
         {
+            /// <summary>
+            /// The dismissed scripts. A list rather than a set because JsonUtility cannot serialize
+            /// one; it becomes a set again on load.
+            /// </summary>
             public List<string> guids = new();
         }
     }

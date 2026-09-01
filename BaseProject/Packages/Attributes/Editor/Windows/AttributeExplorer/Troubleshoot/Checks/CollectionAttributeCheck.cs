@@ -13,6 +13,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot.Ch
     {
         private const string NotACollection = "is not an array or list, so the attribute is ignored.";
 
+        /// <inheritdoc/>
         public void Inspect(Type type, List<AttributeIssue> issues)
         {
             foreach (FieldInfo field in ScannedMembers.DeclaredFields(type))

@@ -14,8 +14,6 @@ namespace Base.ServicePackage
     /// </summary>
     public static class ServiceLocator
     {
-        private static readonly Dictionary<Type, IGameService> Services = new();
-
         /// <summary>
         /// The live registration table, keyed by the type each service was filed under.
         /// </summary>
@@ -27,6 +25,8 @@ namespace Base.ServicePackage
         /// it up, neither of which a read-only view can do.
         /// </remarks>
         internal static IReadOnlyDictionary<Type, IGameService> Registrations => Services;
+
+        private static readonly Dictionary<Type, IGameService> Services = new();
 
         /// <summary>
         /// Adds or updates a service in the locator.

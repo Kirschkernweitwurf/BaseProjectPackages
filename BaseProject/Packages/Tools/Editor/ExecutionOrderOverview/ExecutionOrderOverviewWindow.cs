@@ -12,7 +12,7 @@ namespace Base.ToolPackage.Editor.ExecutionOrderOverview
     /// order that wins at runtime. Only the rows currently visible in the scroll view are
     /// drawn, so the window stays responsive even with a large number of results.
     /// </summary>
-    public sealed class ExecutionOrderOverviewWindow : EditorWindow
+    internal sealed class ExecutionOrderOverviewWindow : EditorWindow
     {
         private const float RowHeight = 22f;
 

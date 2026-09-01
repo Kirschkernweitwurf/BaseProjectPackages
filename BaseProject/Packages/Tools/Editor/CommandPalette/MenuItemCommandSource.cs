@@ -80,7 +80,7 @@ namespace Base.ToolPackage.Editor.CommandPalette
                 return;
 
             entries.Add(new CommandEntry(MenuEntryId.ForMenuItem(owner, method.Name), path, owner,
-                ECommandKind.MenuItem, AssemblyOriginLookup.Classify(owner), () => Invoke(path)));
+                ECommandKind.MenuItem, AssemblyOriginLookup.Classify(owner), execute: () => Invoke(path)));
         }
     }
 }

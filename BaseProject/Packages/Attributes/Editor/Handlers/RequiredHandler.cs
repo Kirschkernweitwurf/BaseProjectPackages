@@ -12,8 +12,10 @@ namespace Base.AttributePackage.Editor.Handlers
     {
         private const int HandlerOrder = 20;
 
+        /// <inheritdoc/>
         public int Order => HandlerOrder;
 
+        /// <inheritdoc/>
         public void AfterField(in MemberContext context)
         {
             RequiredAttribute attribute = context.GetAttribute<RequiredAttribute>();

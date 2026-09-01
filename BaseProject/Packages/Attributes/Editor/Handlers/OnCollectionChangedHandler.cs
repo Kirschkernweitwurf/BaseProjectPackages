@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Reflection;
 using Base.AttributePackage.Editor.Core.Interfaces;
-using Base.AttributePackage.Editor.Drawers;
 using UnityEditor;
 
 namespace Base.AttributePackage.Editor.Handlers
@@ -30,6 +29,7 @@ namespace Base.AttributePackage.Editor.Handlers
         // than held in a field. Entries are removed as soon as they are consumed.
         private static readonly Dictionary<string, int> Recorded = new();
 
+        /// <inheritdoc/>
         public void AfterField(in MemberContext context)
         {
             OnCollectionChangedAttribute attribute = context.GetAttribute<OnCollectionChangedAttribute>();
@@ -60,6 +60,7 @@ namespace Base.AttributePackage.Editor.Handlers
             context.Editor.Repaint();
         }
 
+        /// <inheritdoc/>
         public void BeforeField(in MemberContext context)
         {
             if (context.GetAttribute<OnCollectionChangedAttribute>() == null)

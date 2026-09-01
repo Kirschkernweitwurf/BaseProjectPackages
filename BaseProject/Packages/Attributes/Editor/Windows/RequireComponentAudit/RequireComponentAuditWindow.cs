@@ -17,27 +17,31 @@ namespace Base.AttributePackage.Editor.Windows.RequireComponentAudit
     /// </summary>
     internal sealed class RequireComponentAuditWindow : EditorWindow
     {
+        private const string EmptyMessage = "Nothing to fix";
         private const string MenuPath = "Tools/Base Packages/Unity Editor/References/GetComponent Require Audit";
         private const float MinimumHeight = 200f;
         private const float MinimumWidth = 360f;
-        private const string EmptyMessage = "Nothing to fix";
-        private const string OpenLabel = "Open";
         private const float OpenButtonWidth = 60f;
-        private const string RescanLabel = "Rescan";
+        private const string OpenLabel = "Open";
         private const float RescanButtonWidth = 80f;
+        private const string RescanLabel = "Rescan";
         private const string WindowTitle = "GetComponent Audit";
-
         private static readonly string GetComponentLabel = AttributeNames.Display<GetComponentAttribute>();
-
         private static readonly string RequireComponentLabel = AttributeNames.Display<RequireComponent>();
-
-        // Declared after the two labels it reads, because static field initializers run in the order
-        // they are written, and built once rather than per repaint.
         private static readonly string Description =
             $"Lists every [{GetComponentLabel}] field whose class has no matching "
             + $"[{RequireComponentLabel}], so the component it looks for can go missing at runtime. "
             + $"[{AttributeNames.Display<GetComponentInParentAttribute>()}] is left out, because its "
             + "target lives on a parent rather than the same GameObject.";
+
+        // Declared after the two labels it reads, because static field initializers run in the order
+        // they are written, and built once rather than per repaint.
+
+
+
+
+
+
 
         [SerializeField] private Vector2 scrollPosition;
 

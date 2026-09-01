@@ -14,24 +14,24 @@ namespace Base.MemoryProfilerPackage.Editor
         private const string ActionsHeader = "Actions";
         private const string AssetsFolder = "Assets";
         private const string AutomationHeader = "Automation";
-        private const string CaptureLabel = "Capture Now";
         private const float CaptureButtonHeight = 26f;
+        private const string CaptureLabel = "Capture Now";
+        private const string ConfigFolder = ResourcesRoot + "/" + MemoryProfilerConfigSo.ResourceSubFolder;
         private const string CreateConfigLabel = "Create Config Asset";
         private const string Description = "Captures memory snapshots on a timer or on scene load, and "
             + "writes them where the Memory Profiler package can open them.";
         private const string IdleState = "Idle";
         private const string LastSnapshotLabel = "Last snapshot";
+        private const string MenuPath = "Tools/Base Packages/Unity Editor/Memory Profiler Automation";
         private const string MissingConfigMessage = "No config found in a Resources folder.";
         private const string NoSnapshot = "None";
         private const string OpenFolderLabel = "Open Captures Folder";
-        private const string OutputHeader = "Output";
         private const float OpenFolderWidth = 150f;
-        private const string RunningState = "Running";
-        private const string StateLabel = "State";
-        private const string ConfigFolder = ResourcesRoot + "/" + MemoryProfilerConfigSo.ResourceSubFolder;
-        private const string MenuPath = "Tools/Base Packages/Unity Editor/Memory Profiler Automation";
+        private const string OutputHeader = "Output";
         private const string ResourcesFolderName = "Resources";
         private const string ResourcesRoot = AssetsFolder + "/" + ResourcesFolderName;
+        private const string RunningState = "Running";
+        private const string StateLabel = "State";
         private const string WindowTitle = "Auto Memory Profiler";
 
         private static readonly GUIContent EnabledLabel = new("Enabled");

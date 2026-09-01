@@ -31,6 +31,9 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
             grid.StretchToParentSize();
         }
 
+        /// <summary>The graph is read only, so manual port connections are disabled.</summary>
+        public override List<Port> GetCompatiblePorts(Port startPort, NodeAdapter nodeAdapter) => new();
+
         /// <summary>Clears and rebuilds the graph from the given visible nodes.</summary>
         internal void Rebuild(IReadOnlyList<AssemblyNodeInfo> visibleNodes, string focusedName)
         {
@@ -68,9 +71,6 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
 
             schedule.Execute(() => FrameAll()).ExecuteLater(50);
         }
-
-        /// <summary>The graph is read only, so manual port connections are disabled.</summary>
-        public override List<Port> GetCompatiblePorts(Port startPort, NodeAdapter nodeAdapter) => new();
 
         private void AddEdge(AssemblyGraphNode source, AssemblyGraphNode target, bool unused)
         {

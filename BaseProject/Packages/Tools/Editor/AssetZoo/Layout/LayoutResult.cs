@@ -5,7 +5,7 @@ namespace Base.ToolPackage.Editor.AssetZoo.Layout
     /// <summary>
     /// Output of a layout pass: where each item goes and how big the whole block is.
     /// </summary>
-    public struct LayoutResult
+    internal struct LayoutResult
     {
         /// <summary>
         /// Local positions, one per item, in the category's local space.

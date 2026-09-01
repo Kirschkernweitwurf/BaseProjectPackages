@@ -122,8 +122,8 @@ namespace Base.ToolPackage.Editor.Shared
                 : NoLocation;
         }
 
-        private static bool IsOnLine(string line, string required)
-            => string.IsNullOrEmpty(required) || line.IndexOf(required, StringComparison.Ordinal) >= 0;
+        private static bool IsOnLine(string line, string required) => string.IsNullOrEmpty(required)
+            || line.IndexOf(required, StringComparison.Ordinal) >= 0;
 
         private static int ColumnFor(string line, int tokenIndex, string attributeToken, Regex argument)
         {

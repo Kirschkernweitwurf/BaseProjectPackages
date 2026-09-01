@@ -6,7 +6,7 @@ namespace Base.ToolPackage.Editor.AssetZoo.Layout
     /// <summary>
     /// Layout strategy that arranges items in a circle around the origin, with a radius defined in the settings.
     /// </summary>
-    public class CircleLayoutStrategy : ILayoutStrategy
+    internal class CircleLayoutStrategy : ILayoutStrategy
     {
         /// <summary>
         /// Lays out items in a circle around the origin.

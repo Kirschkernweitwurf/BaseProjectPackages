@@ -4,7 +4,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Model
     /// Something the deep analysis found in the sample data itself. These are content problems, so
     /// most of them are reported rather than repaired.
     /// </summary>
-    public enum EAudioFinding : byte
+    internal enum EAudioFinding : byte
     {
         /// <summary>Samples sit at full scale, so the clip is distorted before the mixer sees it.</summary>
         Clipping = 0,

@@ -11,8 +11,10 @@ namespace Base.AttributePackage.Editor.Handlers
     /// </summary>
     internal sealed class RequiredIfHandler : IAfterFieldHandler
     {
+        /// <inheritdoc/>
         public int Order => 20;
 
+        /// <inheritdoc/>
         public void AfterField(in MemberContext context)
         {
             RequiredIfAttribute attribute = context.GetAttribute<RequiredIfAttribute>();

@@ -14,11 +14,11 @@ namespace Base.ToolPackage.Editor.AudioRules.Scanning
     {
         private const string TypeFilterPrefix = "t:";
 
-        private readonly Dictionary<string, string> _categoryByGuid = new();
-        private readonly HashSet<string> _loopingGuids = new();
-
         /// <summary>How many clips a container was found for.</summary>
         internal int ReferencedClips => _categoryByGuid.Count;
+
+        private readonly Dictionary<string, string> _categoryByGuid = new();
+        private readonly HashSet<string> _loopingGuids = new();
 
         /// <summary>Reads every container the rule set binds to.</summary>
         /// <param name="ruleSet">The rule set holding the bindings.</param>
@@ -71,8 +71,9 @@ namespace Base.ToolPackage.Editor.AudioRules.Scanning
                 : string.Empty;
         }
 
-        private static bool ReadLoop(SerializedProperty property)
-            => property != null && property.propertyType == SerializedPropertyType.Boolean && property.boolValue;
+        private static bool ReadLoop(SerializedProperty property) => property != null
+            && property.propertyType == SerializedPropertyType.Boolean
+            && property.boolValue;
 
         private void ReadBinding(AudioContainerBinding binding)
         {

@@ -13,7 +13,7 @@ namespace Base.AttributePackage.Samples
         {
             "Label(text) for a fixed name.",
             "A text starting with a dollar names a member to read, so the label can say what the value "
-                + "currently means."
+            + "currently means."
         })]
     internal sealed class LabelSample : ScriptableObject
     {

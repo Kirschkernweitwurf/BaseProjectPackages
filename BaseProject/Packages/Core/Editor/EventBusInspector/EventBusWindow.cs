@@ -55,9 +55,9 @@ namespace Base.CorePackage.Editor.EventBusInspector
         private const string PingLabel = "Ping";
         private const double RefreshInterval = 0.25d;
         private const string RefreshLabel = "Refresh";
-        private const string ReportHeader = "Event\tSubscriber\tHandler\tTarget\tState";
-        private const string ReportHandlerFormat = "\t{0}\t{1}\t{2}\t{3}";
         private const string ReportEventFormat = "{0}\t\t\t\t{1}";
+        private const string ReportHandlerFormat = "\t{0}\t{1}\t{2}\t{3}";
+        private const string ReportHeader = "Event\tSubscriber\tHandler\tTarget\tState";
         private const string SearchControlName = "EventBusSearch";
         private const string SelectItem = "Select Subscriber";
         private const string StateHeader = "State";
@@ -65,7 +65,6 @@ namespace Base.CorePackage.Editor.EventBusInspector
         private const string SummaryOkText = "No leaks";
         private const string TargetHeader = "Target";
         private const string WindowTitle = "Event Bus";
-
         private static readonly GUIContent DestroyedContent = new("Destroyed",
             "The object this handler runs on was destroyed but never unsubscribed. It still fires on "
             + "every publish and keeps the destroyed object alive.");
@@ -76,10 +75,6 @@ namespace Base.CorePackage.Editor.EventBusInspector
             + "is a leak depends on who owns it.");
         private static readonly GUIContent StaticContent = new("Static",
             "The handler is a static method, so it has no instance that could outlive its subscription.");
-
-        // The badge column is measured from these rather than from the rows, so its width cannot
-        // depend on how many subscribers happen to be listed. Declared after the four it holds,
-        // because static field initializers run in the order they are written.
         private static readonly GUIContent[] StateBadges =
         {
             DestroyedContent,
@@ -87,13 +82,30 @@ namespace Base.CorePackage.Editor.EventBusInspector
             PlainContent,
             StaticContent
         };
-
         private static readonly GUIContent CopyContent = new(CopyLabel, CopyTooltip);
+
+
+
+
         private static readonly GUIContent LeaksContent = new(LeaksLabel, LeaksTooltip);
+
         private static readonly GUIContent PingContent = new(PingLabel,
             "Select this subscriber and highlight it in the hierarchy.");
-
         private static readonly string NoBusMessage = $"No {typeof(EventBusBehaviour).Name} in the loaded scenes";
+
+
+
+
+
+
+
+
+
+        // The badge column is measured from these rather than from the rows, so its width cannot
+        // depend on how many subscribers happen to be listed. Declared after the four it holds,
+        // because static field initializers run in the order they are written.
+
+
 
         // None of these are created where they are declared. A window Unity restores after a domain
         // reload can reach its first GUI pass without any field initializer having run, and then
@@ -230,31 +242,6 @@ namespace Base.CorePackage.Editor.EventBusInspector
             window.Show();
         }
 
-        // Called from the first GUI pass as well, because a restored window can get there without
-        // OnEnable having run and with every field still null.
-        private void EnsureInitialized()
-        {
-            _busLabels ??= Array.Empty<string>();
-            _buses ??= new List<EventBusBehaviour>();
-            _columns ??= new EventBusColumns();
-            _entries ??= new List<EventTypeEntry>();
-            _expanded ??= new HashSet<Type>();
-            _filtered ??= new List<EventTypeEntry>();
-            _rows ??= new List<EventBusRow>();
-            _search ??= string.Empty;
-            _sorted ??= new List<HandlerEntry>();
-            _stateTooltip ??= new GUIContent();
-            _styles ??= new EventBusStyles();
-
-            if (_isInitialized)
-                return;
-
-            // A value type cannot be asked whether it was ever set, so the ones whose zero value is
-            // the wrong answer are restored under a flag the same reload clears.
-            _isInitialized = true;
-            _sortOrder = ESortOrder.Default;
-        }
-
         private static GUIContent StateContent(EHandlerState state) => state switch
         {
             EHandlerState.Destroyed => DestroyedContent,
@@ -315,9 +302,52 @@ namespace Base.CorePackage.Editor.EventBusInspector
             GUI.Label(label, content, style);
         }
 
-        private static void DrawBottomSeparator(Rect row)
-            => EditorRows.DrawSeparator(new Rect(row.x, row.yMax - EditorMetrics.SeparatorThickness, row.width,
-                EditorMetrics.SeparatorThickness));
+        private static void DrawBottomSeparator(Rect row) => EditorRows.DrawSeparator(new Rect(row.x,
+            row.yMax - EditorMetrics.SeparatorThickness, row.width,
+            EditorMetrics.SeparatorThickness));
+
+        private static Rect PillRect(Rect cell) => new(cell.x,
+            cell.y + (cell.height - EditorMetrics.PillHeight) * 0.5f, cell.width, EditorMetrics.PillHeight);
+
+        // The card fills whatever height is left in the window, but a divider drawn down all of it
+        // reads as a line through empty space. It stops at the last row instead, or at the bottom of
+        // the card when the list is long enough to scroll.
+        private static Rect TableArea(Rect card, int rowCount)
+        {
+            float content = EventBusStyles.CardPadding * 2f
+                + EventBusStyles.HeaderHeight
+                + rowCount * EventBusStyles.RowHeight;
+
+            return new Rect(card.x, card.y, card.width, Mathf.Min(card.height, content));
+        }
+
+        private static int Ordinal(string first, string second)
+            => string.Compare(first, second, StringComparison.Ordinal);
+
+        // Called from the first GUI pass as well, because a restored window can get there without
+        // OnEnable having run and with every field still null.
+        private void EnsureInitialized()
+        {
+            _busLabels ??= Array.Empty<string>();
+            _buses ??= new List<EventBusBehaviour>();
+            _columns ??= new EventBusColumns();
+            _entries ??= new List<EventTypeEntry>();
+            _expanded ??= new HashSet<Type>();
+            _filtered ??= new List<EventTypeEntry>();
+            _rows ??= new List<EventBusRow>();
+            _search ??= string.Empty;
+            _sorted ??= new List<HandlerEntry>();
+            _stateTooltip ??= new GUIContent();
+            _styles ??= new EventBusStyles();
+
+            if (_isInitialized)
+                return;
+
+            // A value type cannot be asked whether it was ever set, so the ones whose zero value is
+            // the wrong answer are restored under a flag the same reload clears.
+            _isInitialized = true;
+            _sortOrder = ESortOrder.Default;
+        }
 
         // Every change that adds or removes a row is applied on the layout event and never mid pass.
         // IMGUI matches the controls of a repaint against the last layout, so a row appearing halfway
@@ -603,9 +633,6 @@ namespace Base.CorePackage.Editor.EventBusInspector
             GUI.color = previous;
         }
 
-        private static Rect PillRect(Rect cell) => new(cell.x,
-            cell.y + (cell.height - EditorMetrics.PillHeight) * 0.5f, cell.width, EditorMetrics.PillHeight);
-
         // One shared width, so the badges form a column instead of every row sizing its own and the
         // edges going ragged. Every state badge text is known up front, so only the count on an
         // event row has to be measured against the data.
@@ -649,17 +676,6 @@ namespace Base.CorePackage.Editor.EventBusInspector
             GUILayout.Space(EventBusStyles.OuterMargin);
         }
 
-        // The card fills whatever height is left in the window, but a divider drawn down all of it
-        // reads as a line through empty space. It stops at the last row instead, or at the bottom of
-        // the card when the list is long enough to scroll.
-        private static Rect TableArea(Rect card, int rowCount)
-        {
-            float content = EventBusStyles.CardPadding * 2f + EventBusStyles.HeaderHeight
-                + rowCount * EventBusStyles.RowHeight;
-
-            return new Rect(card.x, card.y, card.width, Mathf.Min(card.height, content));
-        }
-
         private void DrawHeader()
         {
             Rect header = GUILayoutUtility.GetRect(0f, EventBusStyles.HeaderHeight, GUILayout.ExpandWidth(true));
@@ -671,6 +687,7 @@ namespace Base.CorePackage.Editor.EventBusInspector
 
             DrawSortableTitle(_columns.Subscriber(header, EventBusStyles.Indent), EventHeader,
                 EEventColumn.Event, header);
+
             DrawSortableTitle(_columns.Method(header), HandlerHeader, EEventColumn.Handler, header);
             DrawSortableTitle(_columns.Target(header), TargetHeader, EEventColumn.Target, header);
             DrawSortableTitle(_columns.Badge(header), StateHeader, EEventColumn.State, header);
@@ -915,8 +932,8 @@ namespace Base.CorePackage.Editor.EventBusInspector
 
             if (handler != null && handler.CanPing)
             {
-                menu.AddItem(new GUIContent(PingItem), false, () => Ping(handler));
-                menu.AddItem(new GUIContent(SelectItem), false, () => Selection.activeObject = handler.Context);
+                menu.AddItem(new GUIContent(PingItem), false, func: () => Ping(handler));
+                menu.AddItem(new GUIContent(SelectItem), false, func: () => Selection.activeObject = handler.Context);
             }
             else
             {
@@ -926,9 +943,10 @@ namespace Base.CorePackage.Editor.EventBusInspector
 
             menu.AddSeparator(string.Empty);
             menu.AddItem(new GUIContent(CopyTypeItem), false,
-                () => EditorGUIUtility.systemCopyBuffer = row.Event.EventType.FullName);
+                func: () => EditorGUIUtility.systemCopyBuffer = row.Event.EventType.FullName);
+
             menu.AddItem(new GUIContent(CopyRowItem), false,
-                () => EditorGUIUtility.systemCopyBuffer = ReportRow(row));
+                func: () => EditorGUIUtility.systemCopyBuffer = ReportRow(row));
 
             menu.ShowAsContext();
         }
@@ -1037,7 +1055,6 @@ namespace Base.CorePackage.Editor.EventBusInspector
                 _handlerCount += entry.Handlers.Count;
                 _leakCount += entry.LeakCount;
             }
-
         }
 
         private void ApplyFilter()
@@ -1137,8 +1154,5 @@ namespace Base.CorePackage.Editor.EventBusInspector
         private int Direct(int result) => _sortOrder == ESortOrder.Descending
             ? -result
             : result;
-
-        private static int Ordinal(string first, string second)
-            => string.Compare(first, second, StringComparison.Ordinal);
     }
 }

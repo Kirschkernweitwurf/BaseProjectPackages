@@ -14,6 +14,7 @@ namespace Base.ToolPackage.Editor.OverviewGui.UnusedScriptsOverviewWindow
         /// <summary>Containing folder, used to group the list.</summary>
         internal string Folder { get; }
 
+        /// <summary>File name of the script, which is what the list shows.</summary>
         internal string Name => System.IO.Path.GetFileName(Path);
 
         /// <summary>Creates an entry for one script that nothing appears to reference.</summary>

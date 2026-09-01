@@ -126,7 +126,13 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
         [Serializable]
         private sealed class MinimalAsmdef
         {
+            /// <summary>The assembly name.</summary>
             public string name;
+
+            /// <summary>
+            /// The referenced assemblies, by GUID or by name. Only these two fields are read, so an
+            /// asmdef carrying anything else round trips through the untouched original text.
+            /// </summary>
             public string[] references;
         }
     }

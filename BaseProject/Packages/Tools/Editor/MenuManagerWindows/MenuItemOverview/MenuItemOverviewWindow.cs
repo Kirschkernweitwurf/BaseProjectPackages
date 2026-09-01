@@ -14,7 +14,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows.MenuItemOverview
     /// rows currently visible in the scroll view are drawn, so the window stays responsive with
     /// a large number of results.
     /// </summary>
-    public sealed class MenuItemOverviewWindow : EditorWindow
+    internal sealed class MenuItemOverviewWindow : EditorWindow
     {
         private const string AllRootsLabel = "All";
         private const string DefaultRoot = "Tools";

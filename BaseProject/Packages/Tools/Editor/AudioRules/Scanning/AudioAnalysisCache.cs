@@ -111,44 +111,74 @@ namespace Base.ToolPackage.Editor.AudioRules.Scanning
         }
 
         [Serializable]
-        private sealed class Store
-        {
-            public List<Entry> entries = new();
-        }
-
-        [Serializable]
         private sealed class Entry
         {
+            /// <summary>GUID of the clip the measurement belongs to.</summary>
             public string guid;
+
+            /// <summary>
+            /// Size of the source file when it was measured. Together with the write time this is what
+            /// decides whether the entry still describes the file on disk.
+            /// </summary>
             public long fileSize;
+
+            /// <summary>Write time of the source file when it was measured, in ticks.</summary>
             public long writeTicks;
+
+            /// <summary>False when the clip could not be read, so an empty result is not measured again.</summary>
             public bool hasData;
+
+            /// <summary>Whether the clip has more than one channel.</summary>
             public bool isStereo;
+
+            /// <summary>Loudest sample in the clip, as a normalized amplitude.</summary>
             public float peak;
+
+            /// <summary>Average loudness across the clip, as a normalized amplitude.</summary>
             public float rms;
+
+            /// <summary>How far the waveform sits off the zero line, which points at a recording fault.</summary>
             public float dcOffset;
+
+            /// <summary>Seconds of silence before the clip starts, which a rule can require trimmed.</summary>
             public float leadingSilence;
+
+            /// <summary>Seconds of silence after the clip ends.</summary>
             public float trailingSilence;
+
+            /// <summary>
+            /// How far the two channels differ. Near zero means a stereo clip carrying mono content,
+            /// which is twice the data for nothing.
+            /// </summary>
             public float channelDifference;
+
+            /// <summary>How many samples hit the ceiling, which is what audible clipping sounds like.</summary>
             public int clippedSamples;
 
-            internal static Entry From(string guid, long fileSize, long writeTicks, AudioClipAnalysis analysis)
-                => new()
-                {
-                    guid = guid,
-                    fileSize = fileSize,
-                    writeTicks = writeTicks,
-                    hasData = analysis.HasData,
-                    isStereo = analysis.IsStereo,
-                    peak = analysis.Peak,
-                    rms = analysis.Rms,
-                    dcOffset = analysis.DcOffset,
-                    leadingSilence = analysis.LeadingSilence,
-                    trailingSilence = analysis.TrailingSilence,
-                    channelDifference = analysis.ChannelDifference,
-                    clippedSamples = analysis.ClippedSamples
-                };
+            /// <summary>Builds a cache entry from one measurement.</summary>
+            /// <param name="guid">GUID of the clip.</param>
+            /// <param name="fileSize">Size of the source file at the time of measuring.</param>
+            /// <param name="writeTicks">Write time of the source file at the time of measuring.</param>
+            /// <param name="analysis">The measurements to store.</param>
+            /// <returns>The entry to put in the cache.</returns>
+            internal static Entry From(string guid, long fileSize, long writeTicks, AudioClipAnalysis analysis) => new()
+            {
+                guid = guid,
+                fileSize = fileSize,
+                writeTicks = writeTicks,
+                hasData = analysis.HasData,
+                isStereo = analysis.IsStereo,
+                peak = analysis.Peak,
+                rms = analysis.Rms,
+                dcOffset = analysis.DcOffset,
+                leadingSilence = analysis.LeadingSilence,
+                trailingSilence = analysis.TrailingSilence,
+                channelDifference = analysis.ChannelDifference,
+                clippedSamples = analysis.ClippedSamples
+            };
 
+            /// <summary>Rebuilds the measurement this entry was created from.</summary>
+            /// <returns>The restored analysis.</returns>
             internal AudioClipAnalysis ToAnalysis() => new()
             {
                 HasData = hasData,
@@ -161,6 +191,16 @@ namespace Base.ToolPackage.Editor.AudioRules.Scanning
                 ChannelDifference = channelDifference,
                 ClippedSamples = clippedSamples
             };
+        }
+
+        [Serializable]
+        private sealed class Store
+        {
+            /// <summary>
+            /// Every cached measurement. A list rather than a dictionary because JsonUtility cannot
+            /// serialize one; it is turned back into a lookup on load.
+            /// </summary>
+            public List<Entry> entries = new();
         }
     }
 }

@@ -6,7 +6,7 @@ namespace Base.ToolPackage.Editor.AssetZoo.Layout
     /// <summary>
     /// Layout strategy that arranges items in a straight line along the X-axis, with spacing defined in the settings.
     /// </summary>
-    public class LineLayoutStrategy : ILayoutStrategy
+    internal class LineLayoutStrategy : ILayoutStrategy
     {
         /// <summary>
         /// Lays out items in a line along the X-axis. Each item is spaced

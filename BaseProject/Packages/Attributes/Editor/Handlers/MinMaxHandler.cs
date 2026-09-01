@@ -9,8 +9,10 @@ namespace Base.AttributePackage.Editor.Handlers
     /// </summary>
     internal sealed class MinMaxHandler : IAfterFieldHandler
     {
+        /// <inheritdoc/>
         public int Order => 10;
 
+        /// <inheritdoc/>
         public void AfterField(in MemberContext context)
         {
             MinMaxAttribute attribute = context.GetAttribute<MinMaxAttribute>();

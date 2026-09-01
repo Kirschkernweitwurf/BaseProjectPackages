@@ -5,7 +5,7 @@ namespace Base.ToolPackage.Editor.AssetZoo.Config
     /// Line lays out all items in a single horizontal line, wrapping to multiple lines if needed.
     /// Circle lays out items in a circle around the center of the zoo.
     /// </summary>
-    public enum ELayoutType : byte
+    internal enum ELayoutType : byte
     {
         /// <summary>
         /// Standard grid layout, with configurable columns and spacing.

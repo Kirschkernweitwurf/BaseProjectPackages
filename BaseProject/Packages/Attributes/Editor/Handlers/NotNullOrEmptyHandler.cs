@@ -7,8 +7,10 @@ namespace Base.AttributePackage.Editor.Handlers
     /// <summary>Shows a compact error when a <see cref="NotNullOrEmptyAttribute"/> value is null or empty.</summary>
     internal sealed class NotNullOrEmptyHandler : IAfterFieldHandler
     {
+        /// <inheritdoc/>
         public int Order => 20;
 
+        /// <inheritdoc/>
         public void AfterField(in MemberContext context)
         {
             NotNullOrEmptyAttribute attribute = context.GetAttribute<NotNullOrEmptyAttribute>();

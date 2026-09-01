@@ -7,7 +7,7 @@ namespace Base.ToolPackage.Editor.Identification
     /// Custom editor for <see cref="UniqueIdScriptableObject"/> that displays the unique ID in a read-only manner.
     /// </summary>
     [CustomEditor(typeof(UniqueIdScriptableObject))]
-    public class UniqueIdEditor : UnityEditor.Editor
+    internal class UniqueIdEditor : UnityEditor.Editor
     {
         /// <inheritdoc/>
         public override void OnInspectorGUI()

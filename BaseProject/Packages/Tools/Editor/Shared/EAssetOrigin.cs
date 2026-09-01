@@ -1,7 +1,7 @@
 namespace Base.ToolPackage.Editor.Shared
 {
     /// <summary>Where the source file behind an asset lives.</summary>
-    public enum EAssetOrigin : byte
+    internal enum EAssetOrigin : byte
     {
         /// <summary>Inside the project's Assets folder.</summary>
         Project = 0,

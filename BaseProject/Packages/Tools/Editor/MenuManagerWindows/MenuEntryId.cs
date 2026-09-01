@@ -12,13 +12,13 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         /// <summary>Prefix of every asset creation id.</summary>
         internal const string CreateAssetPrefix = "CA:";
 
-        private const char MemberSeparator = '.';
-
         /// <summary>Prefix of every menu item id.</summary>
         internal const string MenuItemPrefix = "MI:";
 
         /// <summary>Prefix of every settings page id.</summary>
         internal const string SettingsPrefix = "SP:";
+
+        private const char MemberSeparator = '.';
 
         /// <summary>Builds the id of an asset creation entry.</summary>
         /// <param name="type">The ScriptableObject type behind the entry.</param>

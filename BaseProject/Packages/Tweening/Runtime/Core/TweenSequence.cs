@@ -21,6 +21,8 @@ namespace Base.TweeningPackage.Core
         private bool _isRunning;
         private bool _isCompleted;
 
+        /// <summary>Creates an empty sequence.</summary>
+        /// <param name="mode">Whether the added tweens run one after another or all at once.</param>
         public TweenSequence(ESequenceMode mode) => _mode = mode;
 
         /// <summary>

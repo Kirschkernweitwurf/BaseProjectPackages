@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Base.UtilityPackage.Editor;
 using UnityEditor;
@@ -88,7 +89,7 @@ namespace Base.AttributePackage.Editor.Collections
             {
                 string label = ElementLabel.For(property.GetArrayElementAtIndex(i), i);
 
-                if (label.IndexOf(state.Search, System.StringComparison.OrdinalIgnoreCase) < 0)
+                if (label.IndexOf(state.Search, StringComparison.OrdinalIgnoreCase) < 0)
                     Hidden.Add(i);
             }
         }

@@ -25,6 +25,12 @@ namespace Base.ToolPackage.Editor.OverviewGui.UnusedScriptsOverviewWindow
 
         private static readonly Regex IdentifierRegex = new(@"[A-Za-z_][A-Za-z0-9_]*", RegexOptions.Compiled);
 
+        /// <summary>
+        /// Finds scripts whose declared type names appear nowhere else. It is a text search, so a type
+        /// only reached by reflection or by name will look unused.
+        /// </summary>
+        /// <param name="ignoreEditorScripts">True to leave scripts under an Editor folder out of the result.</param>
+        /// <returns>One entry per script that appears to be unreferenced.</returns>
         internal static List<UnusedScriptEntry> Scan(bool ignoreEditorScripts)
         {
             string[] allPaths = AssetDatabase.GetAllAssetPaths();

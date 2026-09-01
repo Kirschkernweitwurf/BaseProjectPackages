@@ -15,7 +15,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Scanning
     /// both prefixes allowed. The result is a starting point that stays fully editable in the
     /// rule table.
     /// </summary>
-    public static class AssetConventionDetector
+    internal static class AssetConventionDetector
     {
         private const float DominanceThreshold = 0.6f;
         private const float MinimumPrefixShare = 0.2f;

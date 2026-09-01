@@ -3,7 +3,7 @@ using System;
 namespace Base.ToolPackage.Editor.Shared
 {
     /// <summary>Maps a project relative asset path onto the place its source file comes from.</summary>
-    public static class AssetOriginResolver
+    internal static class AssetOriginResolver
     {
         private const string PackagePrefix = "Packages/";
         private const string ProjectPrefix = "Assets/";

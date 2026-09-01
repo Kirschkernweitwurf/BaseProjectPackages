@@ -27,8 +27,6 @@ namespace Base.EditorUiPackage
         /// <summary>Opacity a palette color is laid on a badge with, so the text stays readable.</summary>
         public static float BadgeAlpha => EditorThemeProvider.Table.BadgeAlpha;
 
-        private static int BadgeFontSize => EditorThemeProvider.Table.BadgeFontSize;
-
         /// <summary>Horizontal gap between the badge column and its neighbors.</summary>
         public static float BadgeGap => EditorMetrics.ItemGap;
 
@@ -111,6 +109,8 @@ namespace Base.EditorUiPackage
 
         /// <summary>Fill of the badge on a row that is worth a second look but is not broken.</summary>
         public static Color WarningBadgeColor => EditorPalette.WithAlpha(EditorPalette.Warning, BadgeAlpha);
+
+        private static int BadgeFontSize => EditorThemeProvider.Table.BadgeFontSize;
 
         /// <summary>Centered label inside a pill.</summary>
         public GUIStyle Badge { get; private set; }

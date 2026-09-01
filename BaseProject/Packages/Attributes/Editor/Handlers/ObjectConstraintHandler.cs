@@ -1,5 +1,4 @@
 using Base.AttributePackage.Editor.Core.Interfaces;
-using Base.AttributePackage.Editor.Drawers;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -15,8 +14,10 @@ namespace Base.AttributePackage.Editor.Handlers
         private const string AssetOnlyMessage = "Only project assets are allowed here.";
         private const string SceneOnlyMessage = "Only scene objects are allowed here.";
 
+        /// <inheritdoc/>
         public int Order => 0;
 
+        /// <inheritdoc/>
         public void AfterField(in MemberContext context)
         {
             if (context.Property.propertyType != SerializedPropertyType.ObjectReference)

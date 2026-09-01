@@ -83,7 +83,8 @@ namespace Base.ToolPackage.Editor.TodoOverview.Model
             Location = fileName + LineSeparator + line;
 
             SearchText = string.Concat(keyword, Space, message, Space, details, Space, metadata.Owner, Space,
-                assetPath).ToLowerInvariant();
+                    assetPath)
+                .ToLowerInvariant();
         }
     }
 }

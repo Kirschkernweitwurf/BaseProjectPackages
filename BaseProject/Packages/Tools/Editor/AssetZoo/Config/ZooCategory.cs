@@ -9,7 +9,7 @@ namespace Base.ToolPackage.Editor.AssetZoo.Config
     /// A named group of prefabs. Each category gets its own row/section in the zoo.
     /// </summary>
     [Serializable]
-    public class ZooCategory : SerializableDefaults
+    internal class ZooCategory : SerializableDefaults
     {
         [field: Tooltip("Name of this category. Displayed as a label above the category's prefabs.")]
         [field: SerializeField] public string Name { get; private set; } = "Category";

@@ -25,8 +25,8 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
         private const string ColumnRuntime = "runtime";
         private const string ColumnTarget = "target";
         private const string PlayGlyph = "\u25b6";
-        private const int SortStepsPerColumn = 2;
         private const float RowHeight = 21f;
+        private const int SortStepsPerColumn = 2;
         private const string TargetArrow = "\u2192 ";
 
         /// <summary>Raised when the selection changes, with the row that is now current.</summary>
@@ -147,19 +147,18 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
         }
 
         private void AddColumn(string name, string title, float width, float minWidth, bool stretchable,
-            Func<VisualElement> make, Action<VisualElement, int> bind)
-            => _list.columns.Add(new Column
-            {
-                name = name,
-                title = title,
-                width = width,
-                minWidth = minWidth,
-                stretchable = stretchable,
-                sortable = true,
-                resizable = true,
-                makeCell = make,
-                bindCell = bind
-            });
+            Func<VisualElement> make, Action<VisualElement, int> bind) => _list.columns.Add(new Column
+        {
+            name = name,
+            title = title,
+            width = width,
+            minWidth = minWidth,
+            stretchable = stretchable,
+            sortable = true,
+            resizable = true,
+            makeCell = make,
+            bindCell = bind
+        });
 
         private VisualElement MakeClipCell()
         {

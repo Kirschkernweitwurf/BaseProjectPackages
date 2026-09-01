@@ -18,7 +18,7 @@ namespace Base.ToolPackage.Editor.TodoOverview.Scanning
         /// <returns><c>true</c> when the date could be read.</returns>
         internal static bool TryParse(string raw, string[] formats, out DateTime date)
         {
-            date = default;
+            date = default(DateTime);
 
             if (string.IsNullOrWhiteSpace(raw))
                 return false;

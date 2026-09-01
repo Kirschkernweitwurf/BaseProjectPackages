@@ -9,6 +9,7 @@ namespace Base.AttributePackage.Editor
     /// <summary>
     /// Everything a handler needs about a single inspected member, passed by reference.
     /// </summary>
+
     // Load bearing and concrete on purpose. This is the argument every handler in the pipeline takes,
     // so it is a parameter object, not a service. An interface in front of it would box a readonly
     // struct on every handler call, once per member per repaint, to abstract a set of fields.

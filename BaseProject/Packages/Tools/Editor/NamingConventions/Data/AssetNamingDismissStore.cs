@@ -11,7 +11,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Data
     /// per-project file under ProjectSettings, so dismissals survive rescans, renames and restarts
     /// and can be committed for the team.
     /// </summary>
-    public static class AssetNamingDismissStore
+    internal static class AssetNamingDismissStore
     {
         private const string FilePath = "ProjectSettings/AssetNamingDismissed.json";
 
@@ -88,6 +88,10 @@ namespace Base.ToolPackage.Editor.NamingConventions.Data
         [Serializable]
         private sealed class Data
         {
+            /// <summary>
+            /// The dismissed assets. A list rather than a set because JsonUtility cannot serialize one;
+            /// it becomes a set again on load.
+            /// </summary>
             public List<string> guids = new();
         }
     }

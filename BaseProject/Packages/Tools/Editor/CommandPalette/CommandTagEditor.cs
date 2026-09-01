@@ -20,6 +20,9 @@ namespace Base.ToolPackage.Editor.CommandPalette
         private const string PrefixFormat = "Tags for {0}";
         private const string TagSeparator = ", ";
 
+        /// <summary>Whether the editor currently replaces the search box.</summary>
+        internal bool IsActive => _target != null;
+
         private static readonly char[] TagSeparators =
         {
             ',',
@@ -28,9 +31,6 @@ namespace Base.ToolPackage.Editor.CommandPalette
 
         private CommandEntry _target;
         private string _text = string.Empty;
-
-        /// <summary>Whether the editor currently replaces the search box.</summary>
-        internal bool IsActive => _target != null;
 
         /// <summary>The line shown in the footer while the editor is open.</summary>
         /// <returns>The tags already used somewhere in the project.</returns>

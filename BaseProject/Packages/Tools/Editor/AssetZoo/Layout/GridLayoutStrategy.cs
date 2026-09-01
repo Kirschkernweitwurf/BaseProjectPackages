@@ -7,7 +7,7 @@ namespace Base.ToolPackage.Editor.AssetZoo.Layout
     /// Layout strategy that arranges items in a grid pattern,
     /// with a specified number of columns and spacing defined in the settings.
     /// </summary>
-    public class GridLayoutStrategy : ILayoutStrategy
+    internal class GridLayoutStrategy : ILayoutStrategy
     {
         /// <summary>
         /// Lays out items in a grid pattern. The number of columns is determined by the settings,

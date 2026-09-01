@@ -14,10 +14,10 @@ namespace Base.EditorUiPackage
     /// </remarks>
     public abstract class EditorStyleSet
     {
-        private readonly EditorStyleWatch _watch = new();
-
         /// <summary>The textures generated for this style set, released on every rebuild.</summary>
         protected EditorTextureCache Textures { get; } = new();
+
+        private readonly EditorStyleWatch _watch = new();
 
         /// <summary>Builds the styles once, and again after either theme changes. Call from <c>OnGUI</c>.</summary>
         public void EnsureBuilt()

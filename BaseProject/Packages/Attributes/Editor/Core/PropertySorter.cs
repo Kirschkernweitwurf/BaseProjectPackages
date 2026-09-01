@@ -167,11 +167,26 @@ namespace Base.AttributePackage.Editor.Core
 
         private readonly struct Block
         {
+            /// <summary>Index of the first property in the block.</summary>
             internal readonly int Start;
+
+            /// <summary>Index one past the last property in the block.</summary>
             internal readonly int End;
+
+            /// <summary>The order the block sorts by. Lower comes first.</summary>
             internal readonly int Order;
+
+            /// <summary>
+            /// True when a title starts this block, which is what keeps a section's fields together
+            /// rather than letting them sort away from the heading that names them.
+            /// </summary>
             internal readonly bool OpensSection;
 
+            /// <summary>Records one run of properties that has to stay contiguous.</summary>
+            /// <param name="start">Index of the first property in the block.</param>
+            /// <param name="end">Index one past the last property in the block.</param>
+            /// <param name="order">The order the block sorts by.</param>
+            /// <param name="opensSection">Whether a title starts this block.</param>
             internal Block(int start, int end, int order, bool opensSection)
             {
                 Start = start;

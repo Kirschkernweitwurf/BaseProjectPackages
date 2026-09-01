@@ -1,21 +1,21 @@
 {
-    "name": "Base.TweeningPackage.Editor",
-    "rootNamespace": "Base.TweeningPackage.Editor",
-    "references": [
-        "GUID:67ff391e2593426985f327eba2b5d9a3",
-        "GUID:c3837597513e91f44a47d8cd91c34f68",
-        "GUID:94639facfcc1e284b907f050384eaaf0",
-        "GUID:23e24c01ae3d7b347a00cb4924eb02c5"
-    ],
-    "includePlatforms": [
-        "Editor"
-    ],
-    "excludePlatforms": [],
-    "allowUnsafeCode": false,
-    "overrideReferences": false,
-    "precompiledReferences": [],
-    "autoReferenced": true,
-    "defineConstraints": [],
-    "versionDefines": [],
-    "noEngineReferences": false
+  "name": "Base.TweeningPackage.Editor",
+  "rootNamespace": "Base.TweeningPackage.Editor",
+  "references": [
+    "GUID:67ff391e2593426985f327eba2b5d9a3",
+    "GUID:c3837597513e91f44a47d8cd91c34f68",
+    "GUID:94639facfcc1e284b907f050384eaaf0",
+    "GUID:23e24c01ae3d7b347a00cb4924eb02c5"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
 }

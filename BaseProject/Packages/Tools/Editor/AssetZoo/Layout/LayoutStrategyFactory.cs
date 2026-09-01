@@ -6,7 +6,7 @@ namespace Base.ToolPackage.Editor.AssetZoo.Layout
     /// <summary>
     /// Factory for creating layout strategies based on the type specified in the settings.
     /// </summary>
-    public static class LayoutStrategyFactory
+    internal static class LayoutStrategyFactory
     {
         /// <summary>
         /// Creates an instance of <see cref="ILayoutStrategy"/> based on the provided <see cref="ELayoutType"/>.

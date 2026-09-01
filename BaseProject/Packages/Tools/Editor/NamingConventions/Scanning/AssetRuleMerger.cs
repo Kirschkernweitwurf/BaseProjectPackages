@@ -8,7 +8,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Scanning
     /// left exactly as it is, field by field. Everything else belongs to the tool and may be
     /// refreshed or dropped, so a detection stays useful without ever undoing a decision.
     /// </summary>
-    public static class AssetRuleMerger
+    internal static class AssetRuleMerger
     {
         /// <summary>Applies the detected rules and reports what changed.</summary>
         public static AssetRuleMergeResult Merge(AssetNamingRuleSet ruleSet, List<AssetNamingRule> detected)

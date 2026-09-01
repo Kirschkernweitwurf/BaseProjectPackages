@@ -29,7 +29,8 @@ namespace Base.UtilityPackage.Editor.Collections
 
             Collect(items);
 
-            float height = SerializableCollectionGui.Line + SerializableCollectionGui.Spacing
+            float height = SerializableCollectionGui.Line
+                + SerializableCollectionGui.Spacing
                 + ListFor(items).GetHeight();
 
             if (_duplicates.Count > 0)
@@ -62,8 +63,7 @@ namespace Base.UtilityPackage.Editor.Collections
         private static SerializedProperty FindItems(SerializedProperty property)
             => property.FindPropertyRelative(SerializableHashSet<int>.ItemsField);
 
-        private ReorderableList ListFor(SerializedProperty items)
-            => SerializableListCache.Get(items, DrawRow);
+        private ReorderableList ListFor(SerializedProperty items) => SerializableListCache.Get(items, DrawRow);
 
         // The duplicate set is rebuilt once per draw and read here, because the row callback is handed
         // an item rather than its index and cannot work out on its own whether the value repeats.

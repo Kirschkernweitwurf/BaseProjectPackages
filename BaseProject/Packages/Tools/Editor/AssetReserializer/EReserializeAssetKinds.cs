@@ -7,7 +7,7 @@ namespace Base.ToolPackage.Editor.AssetReserializer
     /// several kinds at once.
     /// </summary>
     [Flags]
-    public enum EReserializeAssetKinds : byte
+    internal enum EReserializeAssetKinds : byte
     {
         /// <summary>Nothing is collected.</summary>
         None = 0,

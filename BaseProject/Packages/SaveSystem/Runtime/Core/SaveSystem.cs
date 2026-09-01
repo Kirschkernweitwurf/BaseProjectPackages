@@ -239,8 +239,7 @@ namespace Base.SaveSystemPackage.Core
 
         private static string Describe(string slotId) => $"Slot '{slotId}'";
 
-        private static string Describe(string slotId, string backupId)
-            => $"Backup '{backupId}' of slot '{slotId}'";
+        private static string Describe(string slotId, string backupId) => $"Backup '{backupId}' of slot '{slotId}'";
 
         private static bool TryGetScreenshot(SaveRequest request, out ScreenshotData screenshot)
         {

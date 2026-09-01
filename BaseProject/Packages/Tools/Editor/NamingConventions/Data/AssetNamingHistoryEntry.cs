@@ -4,7 +4,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Data
 {
     /// <summary>One thing the tool did. Serialized into the history file, so fields are public.</summary>
     [Serializable]
-    public sealed class AssetNamingHistoryEntry
+    internal sealed class AssetNamingHistoryEntry
     {
         /// <summary>What happened to the asset.</summary>
         public EAssetNamingAction action;

@@ -10,9 +10,10 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
     /// what was captured and lets the user apply or discard each entry. The captured list is cleared
     /// automatically when the next play session starts.
     /// </summary>
-    public class PlayModeSaverWindow : EditorWindow
+    internal class PlayModeSaverWindow : EditorWindow
     {
         private const float ActionButtonWidth = 60f;
+        private const float ActionLabelWidth = 66f;
         private const string ApplyAllLabel = "Apply All";
         private const string ApplyLabel = "Apply";
         private const string CapturedHeaderFormat = "Captured ({0})";
@@ -20,24 +21,23 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
         private const string Description = "Keeps the changes you make to a component while the game runs. "
             + "Mark a component in play mode, then apply what it captured back to the scene or the prefab "
             + "once you stop.";
+        private const float DetailWidth = 100f;
         private const string DiscardAllLabel = "Discard All";
         private const string DiscardLabel = "Discard";
         private const string EditModeHint = "Enter play mode, then right click a component header and "
             + "choose Save Play Mode Changes.";
         private const string HistoryHeaderFormat = "History ({0})";
         private const string MarkedHeaderFormat = "Marked ({0})";
+        private const float MinimumWindowHeight = 360f;
+        private const float MinimumWindowWidth = 520f;
         private const string NothingCapturedText = "Nothing captured.";
         private const string NothingMarkedText = "Nothing marked.";
         private const string NothingYetText = "Nothing yet.";
         private const string PickPrefabWarning = "Pick the destination prefab.";
-        private const string RemoveLabel = "x";
-        private const string SceneWarningFormat = "Open '{0}' to apply this.";
-        private const float ActionLabelWidth = 66f;
-        private const float DetailWidth = 100f;
-        private const float MinimumWindowHeight = 360f;
-        private const float MinimumWindowWidth = 520f;
         private const float PrefabFieldWidth = 150f;
         private const float RemoveButtonWidth = 22f;
+        private const string RemoveLabel = "x";
+        private const string SceneWarningFormat = "Open '{0}' to apply this.";
         private const float TargetFieldWidth = 110f;
         private const float TimestampWidth = 58f;
         private const string WindowMenuPath = "Tools/Base Packages/Unity Editor/Play Mode Saver";
@@ -45,8 +45,6 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
 
         [SerializeField]
         private Vector2 scrollPosition;
-
-        private readonly EditorWindowStyles _styles = new();
 
         // What each action means is the same everywhere in the Base windows, so the four colors come
         // from the palette rather than being picked again here.
@@ -57,6 +55,8 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
         private static Color DiscardedColor => EditorPalette.DimText;
 
         private static Color FailedColor => EditorPalette.Danger;
+
+        private readonly EditorWindowStyles _styles = new();
 
 #region Unity Callbacks
         private void OnEnable() => EditorApplication.playModeStateChanged += OnPlayModeStateChanged;

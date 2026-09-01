@@ -15,7 +15,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Data
     /// seeded set reads as a base rule, then length bands, then a few targeted exceptions.
     /// </summary>
     [DynamicCreateAssetMenu("Scriptable Objects/Base/Audio Rules/New Rule Set", "ARS_AudioRuleSet")]
-    public sealed class AudioRuleSet : ScriptableObject
+    internal sealed class AudioRuleSet : ScriptableObject
     {
         private const string AssetFilter = "t:" + nameof(AudioRuleSet);
         private const float BandLongSeconds = 20f;
@@ -228,6 +228,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Data
 
             tiny.Conditions.Add(new AudioRuleCondition(EConditionField.DurationSeconds,
                 EConditionOperator.LessThan, BandShortSeconds));
+
             tiny.Overrides.SetsLoadType = true;
             tiny.Overrides.LoadType = AudioClipLoadType.DecompressOnLoad;
             tiny.Overrides.SetsCompressionFormat = true;
@@ -240,8 +241,10 @@ namespace Base.ToolPackage.Editor.AudioRules.Data
 
             shortClip.Conditions.Add(new AudioRuleCondition(EConditionField.DurationSeconds,
                 EConditionOperator.GreaterOrEqual, BandShortSeconds));
+
             shortClip.Conditions.Add(new AudioRuleCondition(EConditionField.DurationSeconds,
                 EConditionOperator.LessThan, BandMediumSeconds));
+
             shortClip.Overrides.SetsLoadType = true;
             shortClip.Overrides.LoadType = AudioClipLoadType.DecompressOnLoad;
             shortClip.Overrides.SetsCompressionFormat = true;
@@ -254,8 +257,10 @@ namespace Base.ToolPackage.Editor.AudioRules.Data
 
             mediumClip.Conditions.Add(new AudioRuleCondition(EConditionField.DurationSeconds,
                 EConditionOperator.GreaterOrEqual, BandMediumSeconds));
+
             mediumClip.Conditions.Add(new AudioRuleCondition(EConditionField.DurationSeconds,
                 EConditionOperator.LessThan, BandLongSeconds));
+
             mediumClip.Overrides.SetsLoadType = true;
             mediumClip.Overrides.LoadType = AudioClipLoadType.CompressedInMemory;
             mediumClip.Overrides.SetsCompressionFormat = true;
@@ -270,6 +275,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Data
 
             longClip.Conditions.Add(new AudioRuleCondition(EConditionField.DurationSeconds,
                 EConditionOperator.GreaterOrEqual, BandLongSeconds));
+
             longClip.Overrides.SetsLoadType = true;
             longClip.Overrides.LoadType = AudioClipLoadType.Streaming;
             longClip.Overrides.SetsCompressionFormat = true;
@@ -288,6 +294,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Data
 
             spatial.Conditions.Add(new AudioRuleCondition(EConditionField.Category,
                 EConditionOperator.Equals, SpatialCategory));
+
             spatial.Overrides.SetsForceToMono = true;
             spatial.Overrides.ForceToMono = true;
 
@@ -298,6 +305,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Data
 
             voice.Conditions.Add(new AudioRuleCondition(EConditionField.Path,
                 EConditionOperator.Contains, "/VO/"));
+
             voice.Overrides.SetsForceToMono = true;
             voice.Overrides.ForceToMono = true;
             voice.Overrides.SetsSampleRate = true;
@@ -313,6 +321,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Data
 
             mobileLong.Conditions.Add(new AudioRuleCondition(EConditionField.DurationSeconds,
                 EConditionOperator.GreaterOrEqual, BandLongSeconds));
+
             mobileLong.Overrides.SetsQuality = true;
             mobileLong.Overrides.Quality = QualityLow;
             mobileLong.Overrides.SetsSampleRate = true;

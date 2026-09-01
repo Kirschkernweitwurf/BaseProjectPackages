@@ -4,7 +4,7 @@ namespace Base.ToolPackage.Editor.AssetZoo.Config
     /// How to align prefabs when placing them in the zoo.
     /// This only affects the editor display, not the prefab assets themselves.
     /// </summary>
-    public enum EAlignmentMode : byte
+    internal enum EAlignmentMode : byte
     {
         /// <summary>
         /// Place the prefab using its original pivot.

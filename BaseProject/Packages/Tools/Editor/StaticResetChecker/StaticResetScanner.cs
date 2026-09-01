@@ -123,6 +123,15 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
             "remove"
         };
 
+        /// <summary>
+        /// Walks the project for static state that survives leaving play mode. Domain reload is
+        /// disabled, so anything not cleared explicitly carries into the next session.
+        /// </summary>
+        /// <param name="opt">The options the scan runs under.</param>
+        /// <param name="filesScanned">
+        /// How many files were read, so an empty result can be told from an empty scan.
+        /// </param>
+        /// <returns>One finding per static that is never reset.</returns>
         internal static List<Finding> Scan(ScanOptions opt, out int filesScanned)
         {
             List<Finding> results = new();

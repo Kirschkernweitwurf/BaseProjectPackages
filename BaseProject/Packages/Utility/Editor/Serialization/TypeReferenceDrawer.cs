@@ -14,6 +14,7 @@ namespace Base.UtilityPackage.Editor.Serialization
     /// <see cref="TypeReferenceOfBase{TBase}"/> only offers types assignable to that base, which is why
     /// no filter attribute exists.
     /// </summary>
+
     // Registered for the generic subclass as well. Unity resolves a drawer for children by walking the
     // base chain, and it does not reliably match an open generic type that way, so a list of
     // TypeReferenceOfBase would otherwise fall back to Unity's own drawing and show the stored assembly
@@ -169,7 +170,7 @@ namespace Base.UtilityPackage.Editor.Serialization
             // The property is captured for the callback, which runs after this OnGUI call has returned.
             SerializedProperty captured = stored.Copy();
 
-            SearchableDropdown menu = new(_state, label.text, labels, index =>
+            SearchableDropdown menu = new(_state, label.text, labels, onSelected: index =>
             {
                 captured.stringValue = index <= 0
                     ? string.Empty

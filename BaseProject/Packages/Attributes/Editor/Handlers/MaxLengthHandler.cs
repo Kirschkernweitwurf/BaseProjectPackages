@@ -1,5 +1,4 @@
 using Base.AttributePackage.Editor.Core.Interfaces;
-using Base.AttributePackage.Editor.Drawers;
 using UnityEditor;
 
 namespace Base.AttributePackage.Editor.Handlers
@@ -7,8 +6,10 @@ namespace Base.AttributePackage.Editor.Handlers
     /// <summary>Trims <see cref="MaxLengthAttribute"/> string fields to the allowed length.</summary>
     internal sealed class MaxLengthHandler : IAfterFieldHandler
     {
+        /// <inheritdoc/>
         public int Order => 10;
 
+        /// <inheritdoc/>
         public void AfterField(in MemberContext context)
         {
             MaxLengthAttribute attribute = context.GetAttribute<MaxLengthAttribute>();

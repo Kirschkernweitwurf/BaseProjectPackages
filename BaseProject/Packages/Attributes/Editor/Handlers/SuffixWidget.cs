@@ -1,5 +1,4 @@
 using Base.AttributePackage.Editor.Core.Interfaces;
-using Base.AttributePackage.Editor.Drawers;
 using UnityEditor;
 using UnityEngine;
 
@@ -20,8 +19,10 @@ namespace Base.AttributePackage.Editor.Handlers
         private const float Padding = 4f;
         private const int WidgetOrder = 90;
 
+        /// <inheritdoc/>
         public int Order => WidgetOrder;
 
+        /// <inheritdoc/>
         public float GetWidth(in MemberContext context)
         {
             SuffixAttribute suffix = context.GetAttribute<SuffixAttribute>();
@@ -32,6 +33,7 @@ namespace Base.AttributePackage.Editor.Handlers
             return EditorStyles.label.CalcSize(ScratchContent.For(suffix.Text)).x + Padding;
         }
 
+        /// <inheritdoc/>
         public void Draw(Rect rect, in MemberContext context)
         {
             SuffixAttribute suffix = context.GetAttribute<SuffixAttribute>();

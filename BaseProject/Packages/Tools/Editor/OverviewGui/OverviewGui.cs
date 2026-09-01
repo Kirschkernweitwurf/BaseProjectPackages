@@ -14,7 +14,7 @@ namespace Base.ToolPackage.Editor.OverviewGui
     /// section header that is this window family's own signature.
     /// </para>
     /// </summary>
-    public static class OverviewGui
+    internal static class OverviewGui
     {
         private const float ActiveHandleAlpha = 0.35f;
         private const float BadgeTrailing = 36f;
@@ -30,8 +30,8 @@ namespace Base.ToolPackage.Editor.OverviewGui
         private const int HeaderFontSize = 12;
         private const float HeaderTint = 0.16f;
         private const float IdleHandleAlpha = 0.14f;
-        private const string KiloByteSuffix = " KB";
         private const float KiloBytes = 1024f;
+        private const string KiloByteSuffix = " KB";
         private const string MegaByteSuffix = " MB";
         private const float SectionHeight = 22f;
         private const float SectionInset = 2f;
@@ -59,6 +59,9 @@ namespace Base.ToolPackage.Editor.OverviewGui
         /// <summary>Count badge on a finding that is only informational.</summary>
         public static GUIStyle NeutralBadgeStyle { get; private set; }
 
+        /// <summary>Height of a list row.</summary>
+        public static float RowHeight => EditorMetrics.RowHeight;
+
         // Calm blue reads as stored, warning yellow matches the Unity console warning icon.
         private static readonly Color NeutralAccent = new(0.33f, 0.52f, 0.74f);
         private static readonly Color WarningAccent = new(0.96f, 0.78f, 0.12f);
@@ -77,9 +80,6 @@ namespace Base.ToolPackage.Editor.OverviewGui
         private static GUIStyle _sectionFoldoutStyle;
         private static GUIStyle _successTitleStyle;
         private static GUIStyle _successSubtitleStyle;
-
-        /// <summary>Height of a list row.</summary>
-        public static float RowHeight => EditorMetrics.RowHeight;
 
         /// <summary>
         /// Builds the shared styles once per domain, and again after either theme changes.

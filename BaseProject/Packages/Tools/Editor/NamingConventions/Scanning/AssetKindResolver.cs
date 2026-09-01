@@ -9,7 +9,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Scanning
     /// extension and the texture importer instead. That is what lets a rule target prefabs with a
     /// P_ prefix or sprites with their own one without hitting everything else.
     /// </summary>
-    public static class AssetKindResolver
+    internal static class AssetKindResolver
     {
         /// <summary>Kind of textures imported as a cookie.</summary>
         public const string CookieKind = "Cookie";

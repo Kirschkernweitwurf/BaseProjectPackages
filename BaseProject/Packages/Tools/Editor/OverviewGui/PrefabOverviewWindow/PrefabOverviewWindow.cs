@@ -10,7 +10,7 @@ namespace Base.ToolPackage.Editor.OverviewGui.PrefabOverviewWindow
     /// Editor window that shows every prefab in the project as a variant tree, how far each variant drifted
     /// from its base, and which variants look redundant, overloaded, or too deeply chained.
     /// </summary>
-    public sealed class PrefabOverviewWindow : EditorWindow
+    internal sealed class PrefabOverviewWindow : EditorWindow
     {
         private const float BadgeGap = 4f;
         private const float BadgeWidth = 34f;

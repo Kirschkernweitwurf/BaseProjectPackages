@@ -18,6 +18,10 @@ namespace Base.CorePackage.Screenshot
 
         private static string ScreenshotDirectory => Path.Combine(Application.persistentDataPath, "Screenshots");
 
+        /// <summary>
+        /// True once <see cref="Shutdown"/> has run. Domain reload is disabled, so this is what keeps
+        /// a second shutdown from unsubscribing input callbacks that are already gone.
+        /// </summary>
         public bool HasShutDown { get; private set; }
 
 #region Unity Callbacks
@@ -39,6 +43,10 @@ namespace Base.CorePackage.Screenshot
         }
 #endregion
 
+        /// <summary>
+        /// Releases the input callbacks and leaves the shutdown manager. Runs from <c>OnDestroy</c> on
+        /// its own, and is safe to call earlier when something needs the hotkeys released first.
+        /// </summary>
         public void Shutdown()
         {
             ShutdownManager.Deregister(this);

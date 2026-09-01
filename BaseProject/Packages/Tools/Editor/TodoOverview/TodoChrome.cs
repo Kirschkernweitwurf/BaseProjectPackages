@@ -182,7 +182,8 @@ namespace Base.ToolPackage.Editor.TodoOverview
 
                     DrawCaret(new Rect(rect.xMax - TodoStyles.Gap - TodoStyles.CaretWidth,
                         rect.center.y - TodoStyles.CaretHeight * 0.5f, TodoStyles.CaretWidth,
-                        TodoStyles.CaretHeight), EditorPalette.DimText, pointUp: false);
+                        TodoStyles.CaretHeight), EditorPalette.DimText, false);
+
                     break;
             }
 

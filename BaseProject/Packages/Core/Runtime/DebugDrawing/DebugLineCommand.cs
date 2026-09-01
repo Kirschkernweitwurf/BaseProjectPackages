@@ -41,6 +41,7 @@ namespace Base.CorePackage.DebugDrawing
         }
 
         /// <inheritdoc/>
+
         // The frame check is what makes a duration of zero survive exactly one frame: it is drawn
         // during the frame it was queued in, no matter where in that frame the call happened.
         public bool IsAlive(int frame, float unscaledTime) => frame == _frame || unscaledTime <= _expireTime;

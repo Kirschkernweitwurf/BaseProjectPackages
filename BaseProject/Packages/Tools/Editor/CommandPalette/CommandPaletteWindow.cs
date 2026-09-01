@@ -15,7 +15,7 @@ namespace Base.ToolPackage.Editor.CommandPalette
     /// keyboard, the mouse and the context menu all end up in the same implementation.
     /// </para>
     /// </summary>
-    public sealed class CommandPaletteWindow : EditorWindow
+    internal sealed class CommandPaletteWindow : EditorWindow
     {
         private const string PaletteMenuPath = "Tools/Base Packages/Command Palette";
 
@@ -158,8 +158,9 @@ namespace Base.ToolPackage.Editor.CommandPalette
                 return;
             }
 
-            CommandPaletteFooter.Draw(row, _status ?? string.Format(ResultFormat, _list.Count,
-                CommandIndex.Entries.Count));
+            CommandPaletteFooter.Draw(row, _status
+                ?? string.Format(ResultFormat, _list.Count,
+                    CommandIndex.Entries.Count));
         }
 
         private void DrawSearchBox(Rect box)

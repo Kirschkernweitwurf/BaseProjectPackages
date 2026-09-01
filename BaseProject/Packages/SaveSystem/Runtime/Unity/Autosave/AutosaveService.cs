@@ -110,15 +110,15 @@ namespace Base.SaveSystemPackage.Unity.Autosave
             _ = SaveAsync(slotId);
         }
 
-        private void OnApplicationFocus(bool hasFocus)
-        {
-            if (!hasFocus)
-                SaveOnInterruption();
-        }
-
         private void OnApplicationPause(bool isPaused)
         {
             if (isPaused)
+                SaveOnInterruption();
+        }
+
+        private void OnApplicationFocus(bool hasFocus)
+        {
+            if (!hasFocus)
                 SaveOnInterruption();
         }
 

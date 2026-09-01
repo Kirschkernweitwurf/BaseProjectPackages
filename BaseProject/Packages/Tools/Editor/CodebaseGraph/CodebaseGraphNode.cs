@@ -244,8 +244,10 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
             badges.AddToClassList(CodebaseGraphStyle.FindingRowClass);
 
             foreach (EFinding finding in Entry.Findings)
+            {
                 badges.Add(GraphLabel.Build(FindingCatalog.Describe(finding).Title,
                     CodebaseGraphStyle.FindingBadgeClass));
+            }
 
             if (Entry.NestedFindingCount > 0)
                 badges.Add(GraphLabel.Build(string.Format(NestedFormat, Entry.NestedFindingCount),

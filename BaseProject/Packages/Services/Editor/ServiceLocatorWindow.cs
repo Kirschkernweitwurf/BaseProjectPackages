@@ -25,9 +25,9 @@ namespace Base.ServicePackage.Editor
         private const string CopyRowItem = "Copy Row";
         private const string CopyTooltip = "Copy the whole table to the clipboard as tab separated text.";
         private const string CopyTypeItem = "Copy Type Name";
-        private const string EditModeMessage = "Nothing to inspect yet";
         private const string EditModeHint = "The service locator is cleared before every play mode run. "
             + "Enter play mode and the registrations show up here as they happen.";
+        private const string EditModeMessage = "Nothing to inspect yet";
         private const string EmptyHint = "Services register themselves in Awake. If this stays empty, no "
             + "GameServiceBehaviour reached its Awake, or every one of them lives in a scene that is not "
             + "loaded.";
@@ -69,21 +69,27 @@ namespace Base.ServicePackage.Editor
         private static readonly GUIContent MismatchContent = new("Mismatch",
             "The instance does not implement the type it is filed under, so every lookup for that type "
             + "fails.");
-
-        // The badge column is measured from these rather than from the rows, so its width cannot
-        // depend on how many services happen to be registered. Declared after the three it holds,
-        // because static field initializers run in the order they are written.
         private static readonly GUIContent[] StateBadges =
         {
             AliveContent,
             DestroyedContent,
             MismatchContent
         };
-
         private static readonly GUIContent CopyContent = new(CopyLabel, CopyTooltip);
+
+
+
+
+
         private static readonly GUIContent PingContent = new(PingLabel,
             "Select this object and highlight it in the hierarchy.");
         private static readonly GUIContent ProblemsContent = new(ProblemsLabel, ProblemsTooltip);
+
+
+        // The badge column is measured from these rather than from the rows, so its width cannot
+        // depend on how many services happen to be registered. Declared after the three it holds,
+        // because static field initializers run in the order they are written.
+
 
         // None of these are created where they are declared. A window Unity restores after a domain
         // reload can reach its first GUI pass without any field initializer having run, and then
@@ -201,26 +207,6 @@ namespace Base.ServicePackage.Editor
             window.Show();
         }
 
-        // Called from the first GUI pass as well, because a restored window can get there without
-        // OnEnable having run and with every field still null.
-        private void EnsureInitialized()
-        {
-            _columns ??= new ServiceLocatorColumns();
-            _entries ??= new List<ServiceRegistrationEntry>();
-            _filtered ??= new List<ServiceRegistrationEntry>();
-            _search ??= string.Empty;
-            _stateTooltip ??= new GUIContent();
-            _styles ??= new ServiceLocatorStyles();
-
-            if (_isInitialized)
-                return;
-
-            // A value type cannot be asked whether it was ever set, so the ones whose zero value is
-            // the wrong answer are restored under a flag the same reload clears.
-            _isInitialized = true;
-            _sortOrder = ESortOrder.Default;
-        }
-
         private static GUIContent StateContent(EServiceState state) => state switch
         {
             EServiceState.Destroyed => DestroyedContent,
@@ -254,9 +240,47 @@ namespace Base.ServicePackage.Editor
             EditorGUIUtility.PingObject(entry.Context);
         }
 
-        private static void DrawBottomSeparator(Rect row)
-            => EditorRows.DrawSeparator(new Rect(row.x, row.yMax - EditorMetrics.SeparatorThickness, row.width,
-                EditorMetrics.SeparatorThickness));
+        private static void DrawBottomSeparator(Rect row) => EditorRows.DrawSeparator(new Rect(row.x,
+            row.yMax - EditorMetrics.SeparatorThickness, row.width,
+            EditorMetrics.SeparatorThickness));
+
+        private static Rect PillRect(Rect cell) => new(cell.x,
+            cell.y + (cell.height - EditorMetrics.PillHeight) * 0.5f, cell.width, EditorMetrics.PillHeight);
+
+        // The card fills whatever height is left in the window, but a divider drawn down all of it
+        // reads as a line through empty space. It stops at the last row instead, or at the bottom of
+        // the card when the list is long enough to scroll.
+        private static Rect TableArea(Rect card, int rowCount)
+        {
+            float content = ServiceLocatorStyles.CardPadding * 2f
+                + ServiceLocatorStyles.HeaderHeight
+                + rowCount * ServiceLocatorStyles.RowHeight;
+
+            return new Rect(card.x, card.y, card.width, Mathf.Min(card.height, content));
+        }
+
+        private static int Ordinal(string first, string second)
+            => string.Compare(first, second, StringComparison.Ordinal);
+
+        // Called from the first GUI pass as well, because a restored window can get there without
+        // OnEnable having run and with every field still null.
+        private void EnsureInitialized()
+        {
+            _columns ??= new ServiceLocatorColumns();
+            _entries ??= new List<ServiceRegistrationEntry>();
+            _filtered ??= new List<ServiceRegistrationEntry>();
+            _search ??= string.Empty;
+            _stateTooltip ??= new GUIContent();
+            _styles ??= new ServiceLocatorStyles();
+
+            if (_isInitialized)
+                return;
+
+            // A value type cannot be asked whether it was ever set, so the ones whose zero value is
+            // the wrong answer are restored under a flag the same reload clears.
+            _isInitialized = true;
+            _sortOrder = ESortOrder.Default;
+        }
 
         // Every change that adds or removes a row is applied on the layout event and never mid pass.
         // IMGUI matches the controls of a repaint against the last layout, so a row appearing halfway
@@ -419,9 +443,6 @@ namespace Base.ServicePackage.Editor
             GUI.color = previous;
         }
 
-        private static Rect PillRect(Rect cell) => new(cell.x,
-            cell.y + (cell.height - EditorMetrics.PillHeight) * 0.5f, cell.width, EditorMetrics.PillHeight);
-
         // The badge text comes from a closed set of states, so the column is measured from those
         // rather than from every row: its width cannot depend on how many rows there are.
         private void MeasureStateColumn()
@@ -459,17 +480,6 @@ namespace Base.ServicePackage.Editor
             }
 
             GUILayout.Space(ServiceLocatorStyles.OuterMargin);
-        }
-
-        // The card fills whatever height is left in the window, but a divider drawn down all of it
-        // reads as a line through empty space. It stops at the last row instead, or at the bottom of
-        // the card when the list is long enough to scroll.
-        private static Rect TableArea(Rect card, int rowCount)
-        {
-            float content = ServiceLocatorStyles.CardPadding * 2f + ServiceLocatorStyles.HeaderHeight
-                + rowCount * ServiceLocatorStyles.RowHeight;
-
-            return new Rect(card.x, card.y, card.width, Mathf.Min(card.height, content));
         }
 
         private void DrawHeader()
@@ -670,8 +680,8 @@ namespace Base.ServicePackage.Editor
 
             if (entry.CanPing)
             {
-                menu.AddItem(new GUIContent(PingItem), false, () => Ping(entry));
-                menu.AddItem(new GUIContent(SelectItem), false, () => Selection.activeObject = entry.Context);
+                menu.AddItem(new GUIContent(PingItem), false, func: () => Ping(entry));
+                menu.AddItem(new GUIContent(SelectItem), false, func: () => Selection.activeObject = entry.Context);
             }
             else
             {
@@ -681,9 +691,10 @@ namespace Base.ServicePackage.Editor
 
             menu.AddSeparator(string.Empty);
             menu.AddItem(new GUIContent(CopyTypeItem), false,
-                () => EditorGUIUtility.systemCopyBuffer = entry.RegisteredType.FullName);
+                func: () => EditorGUIUtility.systemCopyBuffer = entry.RegisteredType.FullName);
+
             menu.AddItem(new GUIContent(CopyRowItem), false,
-                () => EditorGUIUtility.systemCopyBuffer = ReportRow(entry));
+                func: () => EditorGUIUtility.systemCopyBuffer = ReportRow(entry));
 
             menu.ShowAsContext();
         }
@@ -829,8 +840,5 @@ namespace Base.ServicePackage.Editor
                 ? -result
                 : result;
         }
-
-        private static int Ordinal(string first, string second)
-            => string.Compare(first, second, StringComparison.Ordinal);
     }
 }

@@ -13,6 +13,15 @@ namespace Base.ToolPackage.Editor.MissingScriptsOverviewWindow
     /// </summary>
     internal static class MissingScriptScanner
     {
+        /// <summary>Walks the requested sources for objects holding a script that no longer exists.</summary>
+        /// <param name="scanScenes">True to walk scenes.</param>
+        /// <param name="scanAllScenes">
+        /// True to open every scene in the project rather than only the ones already loaded. Slow, and
+        /// it closes what it opens.
+        /// </param>
+        /// <param name="scanPrefabs">True to walk every prefab asset.</param>
+        /// <param name="scanScriptableObjects">True to walk every ScriptableObject asset.</param>
+        /// <returns>One entry per missing script found.</returns>
         internal static List<MissingScriptEntry> Scan(bool scanScenes,
             bool scanAllScenes,
             bool scanPrefabs,

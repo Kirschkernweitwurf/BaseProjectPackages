@@ -43,6 +43,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Showcase
         // The section colors are one pastel rainbow, evenly spaced around the hue circle and leveled to
         // the same perceived lightness, so no heading shouts louder than its neighbors and every one of
         // them stays readable on both editor skins.
+        /// <summary>The Animator the parameter pickers read their options from.</summary>
         [Title("0. Sources", "#FFB8B8", Foldout = true, DefaultExpanded = true)]
         [InfoBox("Assign these first. The pickers further down read their options from these fields. An "
             + "asset can only reference other assets, so the Animator and the Renderer have to come from "
@@ -58,34 +59,44 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Showcase
         /// <summary>Alternative shader source, to show the pickers accept more than a Material.</summary>
         public Renderer sourceRenderer;
 
+        /// <summary>An info box with the default Info styling, drawn above its field.</summary>
         [Title("1. Layout", "#F9BD96", Foldout = true, DefaultExpanded = false)]
         [InfoBox("Info boxes default to Info and sit above their field.")]
         public string infoBoxDefault = "Below a default info box";
 
+        /// <summary>The same box with Warning styling.</summary>
         [InfoBox("Warning styling, still above the field.", EInfoBoxType.Warning)]
         public string infoBoxWarning = "Below a warning box";
 
+        /// <summary>The same box with Error styling, for a setup that is genuinely broken.</summary>
         [InfoBox("Error styling. Use this when the setup is genuinely broken.", EInfoBoxType.Error)]
         public string infoBoxError = "Below an error box";
 
+        /// <summary>The same box with no icon, leaving only the text.</summary>
         [InfoBox("No icon at all, just the text.", EInfoBoxType.None)]
         public string infoBoxNone = "Below an icon-less box";
 
+        /// <summary>A box positioned below its field instead of above it.</summary>
         [InfoBox("This one is drawn below its field.", EInfoBoxType.Info, EInfoBoxPosition.Below)]
         public string infoBoxBelow = "Above its own info box";
 
+        /// <summary>A box in compact form, which takes a single line.</summary>
         [InfoBox("Compact boxes take a single line.", EInfoBoxType.Info, EInfoBoxPosition.Above, true)]
         public string infoBoxCompact = "Below a compact box";
 
+        /// <summary>A box colored through the EColor overload rather than by type.</summary>
         [InfoBox("Colored through the EColor overload.", EColor.Purple)]
         public string infoBoxColored = "Below a purple box";
 
+        /// <summary>A separator line with no arguments.</summary>
         [HorizontalLine]
         public string lineDefault = "Below a default line";
 
+        /// <summary>The same line with a preset color, an explicit thickness and extra spacing.</summary>
         [HorizontalLine(EColor.Orange, 3f, 12f)]
         public string lineColored = "Below a thick orange line";
 
+        /// <summary>The same line colored by hex string rather than by preset.</summary>
         [HorizontalLine("#3FBF7F", 2f)]
         public string lineHex = "Below a hex-colored line";
 
@@ -100,6 +111,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Showcase
 
         [Suffix("m/s")] public float suffixed = 7f;
 
+        /// <summary>Both a prefix and a suffix on one field, to show the two do not collide.</summary>
         [Prefix("from")]
         [Suffix("meters")]
         public float prefixedAndSuffixed = 12f;
@@ -118,6 +130,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Showcase
 
         [Foldout("Another group")] public Color secondGroupSecond = Color.cyan;
 
+        /// <summary>The first field of the General tab, and the one that opts the group into a foldout.</summary>
         [Tab("General", "Settings", Foldout = true)]
         public string tabGeneralName = "General tab";
 
@@ -129,6 +142,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Showcase
 
         [Tab("Debug", "Settings")] public string tabDebugNote = "Debug tab";
 
+        /// <summary>First toggle. Drives most of the conditions in this section.</summary>
         [Title("2. Conditions", "#DAC883", Foldout = true, DefaultExpanded = false)]
         [InfoBox("Toggle the two bools and the enum below and watch the fields under them appear, "
             + "disappear and grey out.")]
@@ -142,9 +156,11 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Showcase
 
         [ShowIf(nameof(isEnabled))] public string showIfSingle = "Shown while enabled";
 
+        /// <summary>Two conditions in the default All mode, so both have to hold.</summary>
         [ShowIf(nameof(isEnabled), nameof(isAdvanced))]
         public string showIfAll = "Shown while both are on";
 
+        /// <summary>The same two conditions in Any mode, so one is enough.</summary>
         [ShowIf(EConditionMode.Any, nameof(isEnabled), nameof(isAdvanced))]
         public string showIfAny = "Shown while either is on";
 
@@ -154,6 +170,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Showcase
 
         [HideIf(nameof(isEnabled))] public string hideIfSingle = "Hidden while enabled";
 
+        /// <summary>The inverse in Any mode: either condition hides the field.</summary>
         [HideIf(EConditionMode.Any, nameof(isEnabled), nameof(isAdvanced))]
         public string hideIfAny = "Hidden while either is on";
 
@@ -165,6 +182,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Showcase
 
         [ShowIfEnum(nameof(mode), ESampleMode.Fast)] public float fastSpeed = 6f;
 
+        /// <summary>An enum condition accepting more than one value.</summary>
         [ShowIfEnum(nameof(mode), ESampleMode.Normal, ESampleMode.Fast)]
         public float movingSpeed = 3f;
 
@@ -182,20 +200,25 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Showcase
         [InfoBox("Clear a required field or break a rule to see the box appear under it.")]
         [Required] public Material requiredDefault;
 
+        /// <summary>A required reference with its own message instead of the default one.</summary>
         [Required("Assign the icon or nothing will render.")]
         public Texture2D requiredWithMessage;
 
         [RequiredIf(nameof(isAdvanced))] public Texture2D requiredIfSingle;
 
+        /// <summary>Conditionally required in Any mode, so one condition is enough to demand it.</summary>
         [RequiredIf(EConditionMode.Any, nameof(isEnabled), nameof(isAdvanced))]
         public Texture2D requiredIfAny;
 
+        /// <summary>Conditionally required, with the message passed as a named argument.</summary>
         [RequiredIf(nameof(isAdvanced), Message = "Advanced mode needs an override asset.")]
         public ScriptableObject requiredIfWithMessage;
 
+        /// <summary>An object field constrained to one component type.</summary>
         [MustImplement(typeof(Collider))]
         public GameObject mustImplementSingle;
 
+        /// <summary>The same constraint with several types, all of which have to be present.</summary>
         [MustImplement(typeof(Collider), typeof(Renderer))]
         public GameObject mustImplementMultiple;
 
@@ -211,6 +234,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Showcase
 
         [NotNullOrEmpty] public string notNullOrEmptyDefault = "Not empty";
 
+        /// <summary>A non-empty string requirement carrying its own message.</summary>
         [NotNullOrEmpty("Give the profile a name.")]
         public string notNullOrEmptyWithMessage = "Named";
 
@@ -218,11 +242,13 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Showcase
 
         [Unique] public List<string> uniqueDefault = new();
 
+        /// <summary>A uniqueness rule on a list, with its own message.</summary>
         [Unique("Every layer name has to appear once.")]
         public List<string> uniqueWithMessage = new();
 
         [ValidateInput(nameof(IsEven))] public int validateWithParameter = 4;
 
+        /// <summary>A validator taking no parameters, so it judges the object rather than the value.</summary>
         [ValidateInput(nameof(HasMaterial), "Assign the material in section 0 first.")]
         public float validateParameterless = 1f;
 
@@ -274,9 +300,11 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Showcase
 
         [AnimatorParam(nameof(animator))] public string animatorParamAny;
 
+        /// <summary>An Animator parameter picker filtered to triggers, storing the name.</summary>
         [AnimatorParam(nameof(animator), AnimatorControllerParameterType.Trigger)]
         public string animatorParamTrigger;
 
+        /// <summary>The same picker filtered to floats, storing the hash instead of the name.</summary>
         [AnimatorParam(nameof(animator), AnimatorControllerParameterType.Float)]
         public int animatorParamFloatHash;
 
@@ -306,6 +334,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Showcase
 
         [ShaderKeyword(nameof(sourceRenderer))] public string rendererKeyword;
 
+        /// <summary>A dropdown whose options come from a sibling field.</summary>
         [Title("5. Widgets", "#89E086", Foldout = true, DefaultExpanded = false)]
         [InfoBox("The last dropdown has forty options, which crosses the threshold where the popup "
             + "becomes a searchable tree.")]
@@ -343,9 +372,11 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Showcase
 
         [MinMaxSlider(0f, FullHealth)] public Vector2 minMaxSlider = new(20f, 80f);
 
+        /// <summary>A curve locked to the unit square.</summary>
         [CurveRange(0f, 1f)]
         public AnimationCurve curveSquare = AnimationCurve.Linear(0f, 0f, 1f, 1f);
 
+        /// <summary>A curve with an explicit range and a colored frame.</summary>
         [CurveRange(0f, -1f, 5f, 1f, EColor.Magenta)]
         public AnimationCurve curveWide = AnimationCurve.EaseInOut(0f, -1f, 5f, 1f);
 
@@ -357,10 +388,12 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Showcase
 
         [CopyButton] public string copyInline = "Copy me";
 
+        /// <summary>Two inline widgets on one field, which share the trailing area between them.</summary>
         [ClearButton]
         [CopyButton]
         public string clearAndCopy = "Two widgets";
 
+        /// <summary>Raises a callback whenever the value is edited.</summary>
         [Title("6. Callbacks", "#85DEA6", Foldout = true, DefaultExpanded = false)]
         [InfoBox("Edit these and watch the last callback field in section 11 update.")]
         [OnValueChanged(nameof(OnTrackedChanged))]
@@ -372,6 +405,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Showcase
 
         [OnArraySizeChanged(nameof(OnTagsResized))] public Material[] palettes = Array.Empty<Material>();
 
+        /// <summary>Raises callbacks before and after the collection changes.</summary>
         [OnCollectionChanged(nameof(BeforeOwnedChanged), nameof(AfterOwnedChanged))]
         [Tooltip("Fires on both sides of a size change. The before half runs while the old contents are "
             + "still there, which is what a collection that owns something needs.")]
@@ -474,6 +508,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Showcase
         /// <summary>A wrapper struct as a dictionary key, which lays out differently from a primitive.</summary>
         public SerializableDictionary<SerializableDateTime, string> journal = new();
 
+        /// <summary>A list with no attributes at all, for comparison with the ones below.</summary>
         [Title("8. Lists and tables", "#89D6E4", Foldout = true, DefaultExpanded = false)]
         [InfoBox("Without an attribute an array keeps Unity's own drawer, including its drag handles. "
             + "These two replace it entirely, which is why reordering becomes arrow buttons.")]
@@ -483,12 +518,15 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Showcase
 
         [ListDrawerSettings(Searchable = true)] public List<string> listSearchable = new();
 
+        /// <summary>The list drawer with its default settings.</summary>
         [ListDrawerSettings]
         public List<ShowcaseTableRow> listLabeled = new();
 
+        /// <summary>The same drawer with the search field switched on.</summary>
         [ListDrawerSettings(Searchable = true)]
         public List<ShowcaseTableRow> listFull = new();
 
+        /// <summary>The same drawer asking before it removes a row.</summary>
         [ListDrawerSettings(ConfirmDelete = true)]
         public List<ShowcaseTableRow> listConfirmDelete = new();
 
@@ -496,6 +534,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Showcase
 
         [Table] public ShowcaseTableRow[] tableArray = Array.Empty<ShowcaseTableRow>();
 
+        /// <summary>The drawer with the alternating row background switched off.</summary>
         [ListDrawerSettings(ShowAlternatingBackground = false)]
         [Tooltip("Striping turned off. On by default, and worth keeping for anything longer than a "
             + "handful of rows.")]
@@ -507,10 +546,12 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Showcase
 
         [ArraySize(Min = 2, Max = 6)] public List<string> boundedList = new();
 
+        /// <summary>A fixed-length list, so the drawer offers no add or remove.</summary>
         [ArraySize(3)]
         [ListDrawerSettings]
         public List<ShowcaseTableRow> fixedLabeledList = new();
 
+        /// <summary>The same fixed length drawn as a table rather than as rows.</summary>
         [ArraySize(3)]
         [Table]
         public ShowcaseTableRow[] fixedTable = Array.Empty<ShowcaseTableRow>();
@@ -519,8 +560,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Showcase
 
         [StartExpanded] public List<string> expandedList = new();
 
-        /// <summary>Drives the field below it, and has no row of its own because of that.</summary>
-        /// <summary>Second toggle, for the object reference below.</summary>
+        /// <summary>A star rating, drawn as a row of glyphs instead of an int field.</summary>
         [Rate(1, 10)] public int difficulty = 7;
 
         [ColorPalette(nameof(BrandColors))] public Color brandColor = Color.white;
@@ -528,6 +568,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Showcase
         [ColorPalette(nameof(BrandColors), AllowCustom = true)]
         public Color brandOrCustom = Color.white;
 
+        /// <summary>A plain asset reference, for comparison with the auto-getter below it.</summary>
         [Title("10. Searching auto-getters", "#C0C3FF", Foldout = true, DefaultExpanded = false)]
         [InfoBox("These search the project, so they only run while the field is empty and their results "
             + "are cached. Clear one to watch it refill. The hierarchy getters are not here: an asset "
@@ -535,6 +576,9 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Showcase
         [GetScriptableObject]
         public ShowcaseConfigAsset config;
 
+        /// <summary>
+        /// An asset found automatically and expanded in place, so it can be edited without leaving the object.
+        /// </summary>
         [Expandable]
         [GetScriptableObject]
         public ShowcaseConfigAsset editableConfig;
@@ -543,104 +587,127 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Showcase
 
         [GetPrefabWithComponent(typeof(Collider))] public GameObject colliderPrefab;
 
+        /// <summary>Feeds the section heading above it, which is itself a dynamic value.</summary>
         [Title("$" + nameof(DynamicSectionTitle), "#D4BDFF", Foldout = true, DefaultExpanded = false)]
         [InfoBox("$" + nameof(DynamicInfo))]
         [Tooltip("The heading above and the box under it are both computed. A string argument starting "
             + "with a dollar names a member to read instead of carrying a literal.")]
         public string dynamicHeadingSubject = "look up";
 
+        /// <summary>A label read from a member every repaint rather than written as a literal.</summary>
         [Label("$" + nameof(DynamicLabel))]
         [Tooltip("The label of this field is computed too, so it can say what the value currently means "
             + "rather than repeating the field name.")]
         public int dynamicLabelValue = 3;
 
+        /// <summary>The same rename written as a literal, for comparison.</summary>
         [Label("Renamed in the inspector only")]
         [Tooltip("A plain literal label, for the fields whose good code name and good inspector name are "
             + "not the same word.")]
         public string literalLabelField = "Same field, different label";
 
+        /// <summary>A required message computed from a member.</summary>
         [Required("$" + nameof(DynamicRequiredMessage))]
         [Tooltip("Clear this and the error box names the asset it is missing from.")]
         public Material dynamicRequiredMessage;
 
+        /// <summary>A required reference offering a one-click fix beside the message.</summary>
         [Required(FixAction = nameof(UseFirstMaterial), FixActionName = "Use first")]
         [Tooltip("The error box carries a button that fills the field, for the failures whose answer is "
             + "always the same.")]
         public Material fixableMaterial;
 
+        /// <summary>A validator returning its own message rather than a fixed one.</summary>
         [ValidateInput(nameof(ValidateTexture))]
         [Tooltip("The validator returns a result rather than a bool, so it names which of its checks "
             + "failed and whether that is an error or only a warning.")]
         public Texture2D validatedTexture;
 
+        /// <summary>A validator offering a one-click fix.</summary>
         [ValidateInput(nameof(IsPositive), FixAction = nameof(MakePositive), FixActionName = "Flip")]
         [Tooltip("A validator with a fix button of its own. Type a negative number.")]
         public float fixableNumber = 5f;
 
+        /// <summary>A range picked with one control, which the two sliders below it read as their bounds.</summary>
         [MinMaxSlider(0f, 50f)]
         [Tooltip("Drives the two sliders below it, so their range moves while you drag this.")]
         public Vector2 dynamicBounds = new(2f, 20f);
 
+        /// <summary>A slider taking both bounds from a sibling range field.</summary>
         [Slider(nameof(dynamicBounds))]
         [Tooltip("A slider taking both bounds from the Vector2 above.")]
         public float boundedBySibling = 10f;
 
+        /// <summary>A slider whose upper bound is a member, clamping the value when that bound moves.</summary>
         [Slider(0f, nameof(MaxSpeed), AutoClamp = true)]
         [Suffix(SuffixAttribute.MetersPerSecond)]
         [Tooltip("A constant lower bound and a member-driven upper one, clamped so the stored value "
             + "cannot sit outside the range even when something else wrote it.")]
         public float clampedSpeed = 4f;
 
+        /// <summary>A unit taken from the shared vocabulary rather than typed out.</summary>
         [Suffix(SuffixAttribute.Meter)]
         [Tooltip("A unit from the constant vocabulary rather than a literal.")]
         public float lengthInMeters = 2.5f;
 
+        /// <summary>Another unit from the same vocabulary.</summary>
         [Suffix(SuffixAttribute.Degree)]
         [Tooltip("Degrees of arc.")]
         public float angleInDegrees = 45f;
 
+        /// <summary>A free-text unit, which is the exception rather than the rule.</summary>
         [Suffix("bananas")]
         [Tooltip("A free-text unit, which is the exception rather than the default.")]
         public float customUnit = 1f;
 
+        /// <summary>A negative indent, which pulls the field left instead of right.</summary>
         [Indent(-1)]
         [Tooltip("A negative amount pulls the field left instead of right, clamped at the first column.")]
         public string pulledBack = "Pulled back out";
 
+        /// <summary>A nested type drawn on one row instead of as a foldout.</summary>
         [InlineProperty]
         [Tooltip("A nested type drawn on this row instead of behind a foldout.")]
         public ShowcaseRange inlineRange = new();
 
+        /// <summary>The same nested type with wider child labels.</summary>
         [InlineProperty]
         [Tooltip("The same nested type with wider child labels.")]
         public ShowcaseRange inlineWideLabels = new();
 
+        /// <summary>The same type without the attribute, for comparison.</summary>
         [Tooltip("The same type without the attribute, for comparison. Three rows and a click.")]
         public ShowcaseRange foldedRange = new();
 
+        /// <summary>An asset preview at the default size.</summary>
         [PreviewObject]
         [Tooltip("A preview big enough to judge rather than a thumbnail. Assign a mesh or a prefab and "
             + "drag inside the preview to turn it round.")]
         public GameObject previewedPrefab;
 
+        /// <summary>The same preview at an explicit height and width.</summary>
         [PreviewObject(64f, Width = 64f)]
         [Tooltip("The same preview at an explicit size, for a texture where turning it round means "
             + "nothing.")]
         public Texture2D previewedTexture;
 
+        /// <summary>A preview inside a foldout, so it can be collapsed away.</summary>
         [PreviewObject(160f, Foldout = true, DefaultExpanded = false)]
         [Tooltip("A large preview behind a foldout, so it costs nothing until you open it.")]
         public Mesh previewedMesh;
 
+        /// <summary>A searchable dropdown over every asset of the field type.</summary>
         [AssetDropdown]
         [Tooltip("A searchable dropdown of every material in the project. The filter comes from the "
             + "field type when none is given.")]
         public Material dropdownMaterial;
 
+        /// <summary>The same dropdown with an explicit asset filter.</summary>
         [AssetDropdown("t:Texture2D")]
         [Tooltip("The same with an explicit asset database filter.")]
         public Texture2D dropdownTexture;
 
+        /// <summary>First cell of a three-cell row.</summary>
         [Title("12. Order and layout", "#EBB6FF", Foldout = true, DefaultExpanded = false)]
         [InfoBox("The three fields at the bottom are declared last but drawn first, because their order "
             + "was given explicitly. Serialization order is still declaration order.")]
@@ -648,52 +715,64 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Showcase
         [Tooltip("First cell of a three-field row. The row ends where the group name changes.")]
         public float width = 1f;
 
+        /// <summary>Second cell of the same row.</summary>
         [Horizontal("dimensions")]
         [Tooltip("Second cell of the same row.")]
         public float height = 2f;
 
+        /// <summary>Third cell of the same row.</summary>
         [Horizontal("dimensions")]
         [Tooltip("Third cell of the same row.")]
         public float depth = 3f;
 
+        /// <summary>A row where the cells are weighted rather than split evenly. This one takes three parts.</summary>
         [Horizontal("weighted", Weight = 3f)]
         [Tooltip("A row where the cells are not equal. This one takes three quarters of the width.")]
         public string weightedName = "Takes most of the row";
 
+        /// <summary>The remaining part of the weighted row.</summary>
         [Horizontal("weighted", Weight = 1f)]
         [Tooltip("And this one the remaining quarter.")]
         public int weightedCount = 1;
 
+        /// <summary>A row drawn without labels, so the two cells sit flush.</summary>
         [Horizontal("unlabeled", Weight = 1f, ShowLabel = false)]
         [Tooltip("A cell that drops its label, giving the value the whole width.")]
         public float unlabeledFirst = 0.5f;
 
+        /// <summary>The second cell of the unlabeled row.</summary>
         [Horizontal("unlabeled", Weight = 1f, ShowLabel = false)]
         [Tooltip("The second half of that row.")]
         public float unlabeledSecond = 1.5f;
 
+        /// <summary>First field of the Loadout tab, and the one that opts the group into a foldout.</summary>
         [Tab("Loadout", "Collapsible tabs", Foldout = true, DefaultExpanded = true)]
         [Tooltip("A tab group under its own collapsible header. Click the bold heading above the tab "
             + "bar to fold the whole group away, tabs and all.")]
         public string collapsibleLoadout = "Primary";
 
+        /// <summary>Second field of the Loadout tab.</summary>
         [Tab("Loadout", "Collapsible tabs")]
         [Tooltip("Second field of the Loadout tab.")]
         public int collapsibleAmmo = 30;
 
+        /// <summary>A second tab in the same group.</summary>
         [Tab("Perks", "Collapsible tabs")]
         [Tooltip("A second tab in the same collapsible group.")]
         public bool collapsiblePerkEnabled = true;
 
+        /// <summary>A third tab, so the bar has something to wrap.</summary>
         [Tab("Notes", "Collapsible tabs")]
         [Tooltip("A third tab, so the bar has enough entries to be worth folding.")]
         public string collapsibleNote = "Anything worth remembering";
 
+        /// <summary>Declared here but drawn at the top of the section.</summary>
         [PropertyOrder(-10)]
         [Tooltip("Declared here, drawn at the top of the section. Lower comes first, and an unmarked "
             + "field counts as zero.")]
         public string pinnedToTop = "Declared last, drawn first";
 
+        /// <summary>Declared here but pushed to the bottom of the section.</summary>
         [PropertyOrder(10)]
         [Tooltip("Pushed to the bottom of the section instead.")]
         public string pushedToBottom = "Declared first, drawn last";

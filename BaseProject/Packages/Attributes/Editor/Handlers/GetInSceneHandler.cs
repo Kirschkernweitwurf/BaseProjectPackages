@@ -14,8 +14,10 @@ namespace Base.AttributePackage.Editor.Handlers
     {
         private const int HandlerOrder = 8;
 
+        /// <inheritdoc/>
         public int Order => HandlerOrder;
 
+        /// <inheritdoc/>
         public void AfterField(in MemberContext context)
         {
             GetInSceneAttribute attribute = context.GetAttribute<GetInSceneAttribute>();

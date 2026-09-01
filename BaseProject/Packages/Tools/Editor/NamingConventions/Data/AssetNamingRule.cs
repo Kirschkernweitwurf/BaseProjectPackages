@@ -12,7 +12,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Data
     /// changed by hand so the auto-detection can refresh the rest without undoing a decision.
     /// </summary>
     [Serializable]
-    public sealed class AssetNamingRule
+    internal sealed class AssetNamingRule
     {
         [Tooltip("Shown in the rule table and in the scan results.")]
         [field: SerializeField] public string Label { get; set; } = "New Rule";

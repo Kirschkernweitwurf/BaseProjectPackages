@@ -137,6 +137,20 @@ namespace Base.ToolPackage.Editor.TodoOverview
             window.Show();
         }
 
+        private static float PillWidth(GUIContent content)
+            => Mathf.Max(TodoStyles.ChipWidth, TodoStyles.Chip.CalcSize(content).x + PillPadding);
+
+        private static GUIContent MessageContent(TodoEntry entry)
+        {
+            string tooltip = entry.Details.Length == 0
+                ? entry.Message
+                : entry.Message + Environment.NewLine + entry.Details;
+
+            return entry.LineCount > 1
+                ? new GUIContent(entry.Message + MultiLineSuffix, tooltip)
+                : new GUIContent(entry.Message, tooltip);
+        }
+
         // Called from the first GUI pass as well, because a restored window can get there without
         // OnEnable having run and with every field still null.
         private void EnsureInitialized()
@@ -150,20 +164,6 @@ namespace Base.ToolPackage.Editor.TodoOverview
             _owners ??= new List<string>();
             _rows ??= new List<TodoRow>();
             _palette ??= new TodoPalette(TodoSettings.instance.Tags);
-        }
-
-        private static float PillWidth(GUIContent content)
-            => Mathf.Max(TodoStyles.ChipWidth, TodoStyles.Chip.CalcSize(content).x + PillPadding);
-
-        private static GUIContent MessageContent(TodoEntry entry)
-        {
-            string tooltip = entry.Details.Length == 0
-                ? entry.Message
-                : entry.Message + Environment.NewLine + entry.Details;
-
-            return entry.LineCount > 1
-                ? new GUIContent(entry.Message + MultiLineSuffix, tooltip)
-                : new GUIContent(entry.Message, tooltip);
         }
 
         // A modal progress bar cannot be opened in the middle of a layout pass without Unity losing
@@ -334,12 +334,12 @@ namespace Base.ToolPackage.Editor.TodoOverview
             GenericMenu menu = new();
 
             menu.AddItem(new GUIContent(AllOwnersLabel), _filter.Owner == TodoFilter.AnyOwner,
-                () => SetOwner(TodoFilter.AnyOwner));
+                func: () => SetOwner(TodoFilter.AnyOwner));
 
             foreach (string owner in _owners)
             {
                 string captured = owner;
-                menu.AddItem(new GUIContent(captured), _filter.Owner == captured, () => SetOwner(captured));
+                menu.AddItem(new GUIContent(captured), _filter.Owner == captured, func: () => SetOwner(captured));
             }
 
             menu.DropDown(rect);
@@ -358,7 +358,8 @@ namespace Base.ToolPackage.Editor.TodoOverview
             foreach (ETodoSort value in (ETodoSort[])Enum.GetValues(typeof(ETodoSort)))
             {
                 ETodoSort captured = value;
-                menu.AddItem(new GUIContent(captured.ToString()), _filter.Sort == captured, () => SetSort(captured));
+                menu.AddItem(new GUIContent(captured.ToString()), _filter.Sort == captured,
+                    func: () => SetSort(captured));
             }
 
             menu.DropDown(rect);
@@ -380,7 +381,7 @@ namespace Base.ToolPackage.Editor.TodoOverview
             {
                 ETodoGrouping captured = value;
                 menu.AddItem(new GUIContent(captured.ToString()), _filter.Grouping == captured,
-                    () => SetGrouping(captured));
+                    func: () => SetGrouping(captured));
             }
 
             menu.DropDown(rect);
@@ -550,8 +551,10 @@ namespace Base.ToolPackage.Editor.TodoOverview
             int last = Mathf.Min(_rows.Count, first + visible);
 
             for (int i = first; i < last; i++)
+            {
                 DrawRow(new Rect(content.x, content.y + i * TodoStyles.RowHeight, content.width,
                     TodoStyles.RowHeight), i);
+            }
 
             _columns.DrawGuides(content);
 

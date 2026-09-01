@@ -93,7 +93,8 @@ namespace Base.ServicePackage.Editor
         /// <summary>The cell holding the ping button.</summary>
         /// <param name="row">The row the columns are laid out in.</param>
         /// <returns>The ping cell.</returns>
-        internal Rect Ping(Rect row) => new(row.xMax - ServiceLocatorStyles.RowInset
+        internal Rect Ping(Rect row) => new(row.xMax
+            - ServiceLocatorStyles.RowInset
             - ServiceLocatorStyles.PingButtonWidth, row.y, ServiceLocatorStyles.PingButtonWidth, row.height);
 
         /// <summary>
@@ -123,8 +124,8 @@ namespace Base.ServicePackage.Editor
 
         // Text starts a few pixels after the boundary rather than against it, so a column never
         // looks like it is touching the divider line in front of it.
-        private static Rect Cell(Rect row, float start, float width)
-            => new(start + TextPadding, row.y, Mathf.Max(0f, width - TextPadding * 2f), row.height);
+        private static Rect Cell(Rect row, float start, float width) => new(start + TextPadding, row.y,
+            Mathf.Max(0f, width - TextPadding * 2f), row.height);
 
         // Takes as much of the deficit out of one column as its minimum allows.
         private static float Reclaim(ref float width, float deficit)
@@ -146,14 +147,19 @@ namespace Base.ServicePackage.Editor
 
         private float InstanceEdge(Rect row) => ServiceEdge(row) + _instanceWidth;
 
-        private float FlexibleWidth(Rect row) => row.xMax - ServiceLocatorStyles.RowInset
-            - ServiceLocatorStyles.PingButtonWidth - ServiceLocatorStyles.BadgeGap - _badgeWidth
-            - ServiceLocatorStyles.BadgeGap - Left(row);
+        private float FlexibleWidth(Rect row) => row.xMax
+            - ServiceLocatorStyles.RowInset
+            - ServiceLocatorStyles.PingButtonWidth
+            - ServiceLocatorStyles.BadgeGap
+            - _badgeWidth
+            - ServiceLocatorStyles.BadgeGap
+            - Left(row);
 
         private void HandleDivider(EServiceDivider divider, float x, Rect area)
         {
             Rect line = new(x - EditorMetrics.DividerThickness * 0.5f, area.y, EditorMetrics.DividerThickness,
                 area.height);
+
             Rect hit = new(x - EditorMetrics.DividerHitWidth * 0.5f, area.y, EditorMetrics.DividerHitWidth,
                 area.height);
 

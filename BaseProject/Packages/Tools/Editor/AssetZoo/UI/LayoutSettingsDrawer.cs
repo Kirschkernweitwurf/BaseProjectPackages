@@ -12,7 +12,7 @@ namespace Base.ToolPackage.Editor.AssetZoo.UI
     /// (e.g. circleRadius is only visible when Circle is selected).
     /// </summary>
     [CustomPropertyDrawer(typeof(LayoutSettings))]
-    public class LayoutSettingsDrawer : PropertyDrawer
+    internal class LayoutSettingsDrawer : PropertyDrawer
     {
         /// <inheritdoc/>
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)

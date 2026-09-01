@@ -196,6 +196,8 @@ namespace Base.ToolPackage.Editor.AssemblyGraph.Architecture
             private int _usageCount;
             private bool _hasIncludedSource;
 
+            /// <summary>Starts collecting the usages that cross one edge.</summary>
+            /// <param name="key">The source and target assemblies the edge runs between.</param>
             internal EdgeBuilder(AssemblyEdgeKey key) => _key = key;
 
             /// <summary>Records one type level usage that crosses this edge.</summary>

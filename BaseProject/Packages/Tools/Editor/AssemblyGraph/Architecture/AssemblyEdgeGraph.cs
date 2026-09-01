@@ -9,18 +9,18 @@ namespace Base.ToolPackage.Editor.AssemblyGraph.Architecture
     /// </summary>
     internal sealed class AssemblyEdgeGraph
     {
+        /// <summary>Every edge found, sorted by source then target.</summary>
+        internal IReadOnlyList<AssemblyEdgeInfo> Edges { get; }
+
+        /// <summary>Names of every assembly that holds at least one scanned type, sorted.</summary>
+        internal IReadOnlyList<string> Assemblies { get; }
+
         private static readonly IReadOnlyList<AssemblyEdgeInfo> NoEdges = new List<AssemblyEdgeInfo>();
 
         private readonly Dictionary<AssemblyEdgeKey, AssemblyEdgeInfo> _byKey;
         private readonly Dictionary<string, List<AssemblyEdgeInfo>> _outgoing;
         private readonly Dictionary<string, List<AssemblyEdgeInfo>> _incoming;
         private readonly Dictionary<string, int> _typeCounts;
-
-        /// <summary>Every edge found, sorted by source then target.</summary>
-        internal IReadOnlyList<AssemblyEdgeInfo> Edges { get; }
-
-        /// <summary>Names of every assembly that holds at least one scanned type, sorted.</summary>
-        internal IReadOnlyList<string> Assemblies { get; }
 
         /// <summary>Creates the rolled up graph.</summary>
         /// <param name="edges">Every edge, already sorted.</param>

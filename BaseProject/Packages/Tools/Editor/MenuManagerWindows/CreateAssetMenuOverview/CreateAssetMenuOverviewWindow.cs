@@ -14,7 +14,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows.CreateAssetMenuOverview
     /// Only the rows currently visible in the scroll view are drawn, so the window stays
     /// responsive with a large number of results.
     /// </summary>
-    public sealed class CreateAssetMenuOverviewWindow : EditorWindow
+    internal sealed class CreateAssetMenuOverviewWindow : EditorWindow
     {
         private const string AllRootsLabel = "All";
         private const float FooterHeight = 20f;

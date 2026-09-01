@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Base.AttributePackage.Editor.Drawers;
 using Base.UtilityPackage.Editor;
 using UnityEditor;
 using UnityEditorInternal;
@@ -20,6 +19,7 @@ namespace Base.AttributePackage.Editor.Collections
     /// </remarks>
     internal static class TableRenderer
     {
+        /// <summary>Header of the row number column, which every table draws first.</summary>
         internal const string IndexHeader = "#";
         private const string EmptyMessage = "Empty. Add a row to see the columns.";
         private const string UnsupportedMessage = "[Table] needs an array of a serializable type.";
@@ -73,11 +73,13 @@ namespace Base.AttributePackage.Editor.Collections
             DrawList(property, canResize);
         }
 
-
-
-
-
-
+        /// <summary>
+        /// The summed weight of every column, used to turn a column's weight into a share of the
+        /// available width.
+        /// </summary>
+        /// <returns>
+        /// The total, floored just above zero so a table of zero-weight columns cannot divide by it.
+        /// </returns>
         internal static float TotalWeight()
         {
             float total = 0f;

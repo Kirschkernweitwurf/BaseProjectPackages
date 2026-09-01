@@ -11,8 +11,12 @@ namespace Base.ToolPackage.Editor.Identification
     /// Editor utility to generate unique IDs for all
     /// ScriptableObjects that implement <see cref="IUniquelyIdentifiable"/>.
     /// </summary>
-    public static class IdGenerator
+    internal static class IdGenerator
     {
+        /// <summary>
+        /// Gives every identifiable ScriptableObject in the project an id, leaving the ones that
+        /// already have one alone, and reports how many were filled in.
+        /// </summary>
         [DynamicMenuItem("Tools/Base Packages/Assets/Identifier/Generate Unique IDs")]
         public static void Generate()
         {

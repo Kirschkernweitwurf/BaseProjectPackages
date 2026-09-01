@@ -33,10 +33,6 @@ namespace Base.UtilityPackage.Randomization
         private const int ThirdMixShift = 31;
         private const int XorShift = 18;
 
-        private readonly ulong _increment;
-
-        private ulong _state;
-
         /// <summary>The seed this generator was built from. Log it to be able to replay a run.</summary>
         public int Seed { get; }
 
@@ -44,13 +40,13 @@ namespace Base.UtilityPackage.Randomization
         /// The raw generator state. Save it to store a run in progress and hand it back to
         /// <see cref="Restore"/> to carry on with the exact draws that were still to come.
         /// </summary>
-        public ulong State => _state;
+        public ulong State { get; private set; }
+
+        private readonly ulong _increment;
 
         /// <summary>Creates a generator for the given seed.</summary>
         /// <param name="seed">The seed the sequence is derived from.</param>
-        public SeededRandom(int seed) : this(seed, 0)
-        {
-        }
+        public SeededRandom(int seed) : this(seed, 0) { }
 
         /// <summary>
         /// Creates a generator for the given seed on a stream of its own. Two generators sharing a
@@ -62,9 +58,27 @@ namespace Base.UtilityPackage.Randomization
         public SeededRandom(int seed, int stream)
         {
             Seed = seed;
-            _increment = ((ulong)(uint)stream << 1) | 1UL;
+            _increment = (ulong)(uint)stream << 1 | 1UL;
 
             Initialize();
+        }
+
+        /// <inheritdoc/>
+        public uint NextUInt()
+        {
+            unchecked
+            {
+                ulong previous = State;
+
+                State = previous * Multiplier + _increment;
+
+                // Built from the previous state, not the new one: the output permutation has to be
+                // one step behind the state so the state itself is never handed out.
+                uint shifted = (uint)((previous >> XorShift ^ previous) >> OutputShift);
+                int rotation = (int)(previous >> RotationShift);
+
+                return shifted >> rotation | shifted << (-rotation & RotationMask);
+            }
         }
 
         /// <summary>Creates a generator on a seed that differs every time this is called.</summary>
@@ -75,30 +89,12 @@ namespace Base.UtilityPackage.Randomization
         /// <returns>The new seed.</returns>
         public static int CreateSeed() => Guid.NewGuid().GetHashCode();
 
-        /// <inheritdoc/>
-        public uint NextUInt()
-        {
-            unchecked
-            {
-                ulong previous = _state;
-
-                _state = previous * Multiplier + _increment;
-
-                // Built from the previous state, not the new one: the output permutation has to be
-                // one step behind the state so the state itself is never handed out.
-                uint shifted = (uint)(((previous >> XorShift) ^ previous) >> OutputShift);
-                int rotation = (int)(previous >> RotationShift);
-
-                return (shifted >> rotation) | (shifted << (-rotation & RotationMask));
-            }
-        }
-
         /// <summary>Rewinds to the start of the sequence, so the same draws come out again.</summary>
         public void Reset() => Initialize();
 
         /// <summary>Continues from a state captured earlier through <see cref="State"/>.</summary>
         /// <param name="state">The state to continue from.</param>
-        public void Restore(ulong state) => _state = state;
+        public void Restore(ulong state) => State = state;
 
         // Spreads the seed out before it is used. Seeds in practice are counters and level indices,
         // and neighboring values would otherwise start out in neighboring parts of the sequence.
@@ -107,10 +103,10 @@ namespace Base.UtilityPackage.Randomization
             unchecked
             {
                 value += GoldenGap;
-                value = (value ^ (value >> FirstMixShift)) * FirstMixConstant;
-                value = (value ^ (value >> SecondMixShift)) * SecondMixConstant;
+                value = (value ^ value >> FirstMixShift) * FirstMixConstant;
+                value = (value ^ value >> SecondMixShift) * SecondMixConstant;
 
-                return value ^ (value >> ThirdMixShift);
+                return value ^ value >> ThirdMixShift;
             }
         }
 
@@ -118,11 +114,11 @@ namespace Base.UtilityPackage.Randomization
         {
             unchecked
             {
-                _state = 0UL;
+                State = 0UL;
 
                 NextUInt();
 
-                _state += Mix((ulong)(uint)Seed);
+                State += Mix((uint)Seed);
 
                 NextUInt();
             }

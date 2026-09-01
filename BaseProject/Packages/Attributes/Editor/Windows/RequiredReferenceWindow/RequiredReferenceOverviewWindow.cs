@@ -14,19 +14,19 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
     internal sealed class RequiredReferenceOverviewWindow : EditorWindow
     {
         private const float BarSpacing = 4f;
+        private const float ButtonHeight = 26f;
+        private const float ButtonWidth = 140f;
         private const string Description = "Lists every [Required] field left empty in the open scenes "
             + "and on ScriptableObject assets. Scene issues rescan as you work; asset issues refresh "
             + "when the project changes.";
-        private const float ButtonHeight = 26f;
-        private const float ButtonWidth = 140f;
         private const float ListSpacing = 4f;
         private const float MinimumHeight = 200f;
         private const float MinimumWidth = 320f;
         private const double MinScanInterval = 0.3;
-        private const double SafetyPollInterval = 1.0;
-        private const float SearchHeight = 20f;
         private const string NoMatchFormat = "No matches for \"{0}\".";
         private const string RefreshLabel = "Refresh";
+        private const double SafetyPollInterval = 1.0;
+        private const float SearchHeight = 20f;
         private const float SearchWidth = 200f;
         private const string SummaryFormat = "{0} missing {1}.";
         private const string SummaryOkText = "No missing references.";

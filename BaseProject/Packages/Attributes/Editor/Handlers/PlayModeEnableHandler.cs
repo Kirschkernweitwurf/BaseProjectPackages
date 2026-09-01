@@ -1,5 +1,4 @@
 using Base.AttributePackage.Editor.Core.Interfaces;
-using Base.AttributePackage.Editor.Drawers;
 using UnityEngine;
 
 namespace Base.AttributePackage.Editor.Handlers
@@ -15,6 +14,7 @@ namespace Base.AttributePackage.Editor.Handlers
     /// </remarks>
     internal sealed class PlayModeEnableHandler : IEnableHandler
     {
+        /// <inheritdoc/>
         public bool ShouldEnable(in MemberContext context)
         {
             if (context.GetAttribute<DisableInPlayModeAttribute>() != null)

@@ -16,6 +16,8 @@ namespace Base.ToolPackage.Editor.EmptyFoldersOverviewWindow
     {
         private const string RootFolder = "Assets";
 
+        /// <summary>Walks the project for folders holding no assets.</summary>
+        /// <returns>One entry per empty folder, or an empty list when there are none.</returns>
         internal static List<EmptyFolderEntry> Scan()
         {
             List<string> allFolders = new();

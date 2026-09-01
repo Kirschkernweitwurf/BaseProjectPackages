@@ -50,9 +50,25 @@ namespace Base.UtilityPackage.Editor.Serialization
 
         private const string YearSuffix = "Y";
 
+        private static GUIStyle AdjacentDayStyle => _adjacentDayStyle ??= DayStyleWith(AdjacentMonthText, false);
+
+        private static GUIStyle DayStyle => _dayStyle ??= DayStyleWith(DayText, false);
+
+        private static GUIStyle SelectedDayStyle => _selectedDayStyle ??= DayStyleWith(SelectionText, true);
+
+        private static GUIStyle WeekdayStyle => _weekdayStyle ??= BuildWeekdayStyle();
+
+        private static GUIStyle WeekendDayStyle => _weekendDayStyle ??= DayStyleWith(WeekendText, false);
+
         private static readonly string[] WeekdayLetters =
         {
-            "S", "M", "T", "W", "T", "F", "S"
+            "S",
+            "M",
+            "T",
+            "W",
+            "T",
+            "F",
+            "S"
         };
 
         // Every number the grid can print, built once. The grid redraws constantly and would otherwise
@@ -80,23 +96,13 @@ namespace Base.UtilityPackage.Editor.Serialization
         private static readonly Color WeekendText = Pick(new Color(0.70f, 0.66f, 0.66f),
             new Color(0.42f, 0.34f, 0.34f));
 
-        private static GUIStyle AdjacentDayStyle => _adjacentDayStyle ??= DayStyleWith(AdjacentMonthText, false);
-
-        private static GUIStyle DayStyle => _dayStyle ??= DayStyleWith(DayText, false);
-
-        private static GUIStyle SelectedDayStyle => _selectedDayStyle ??= DayStyleWith(SelectionText, true);
-
-        private static GUIStyle WeekdayStyle => _weekdayStyle ??= BuildWeekdayStyle();
-
-        private static GUIStyle WeekendDayStyle => _weekendDayStyle ??= DayStyleWith(WeekendText, false);
+        private readonly SerializedProperty _ticks;
 
         private static GUIStyle _adjacentDayStyle;
         private static GUIStyle _dayStyle;
         private static GUIStyle _selectedDayStyle;
         private static GUIStyle _weekdayStyle;
         private static GUIStyle _weekendDayStyle;
-
-        private readonly SerializedProperty _ticks;
 
         private DateTime _visibleMonth;
 
@@ -105,12 +111,6 @@ namespace Base.UtilityPackage.Editor.Serialization
             _ticks = ticks;
             _visibleMonth = FirstOfMonth(SerializableDateTime.ToDateTime(ticks.longValue));
         }
-
-        /// <summary>Opens the calendar under the given control.</summary>
-        /// <param name="anchor">The rectangle the popup drops down from.</param>
-        /// <param name="ticks">The serialized tick count a picked day is written into.</param>
-        internal static void Show(Rect anchor, SerializedProperty ticks)
-            => PopupWindow.Show(anchor, new CalendarPopup(ticks));
 
         /// <inheritdoc/>
         /// <remarks>
@@ -121,7 +121,12 @@ namespace Base.UtilityPackage.Editor.Serialization
 
         /// <inheritdoc/>
         public override Vector2 GetWindowSize() => new(ColumnCount * CellSize + Padding * 2f,
-            HeaderHeight + RowSpacing + WeekdayHeight + RowCount * CellSize + RowSpacing + FooterHeight
+            HeaderHeight
+            + RowSpacing
+            + WeekdayHeight
+            + RowCount * CellSize
+            + RowSpacing
+            + FooterHeight
             + Padding * 2f);
 
         /// <inheritdoc/>
@@ -157,6 +162,12 @@ namespace Base.UtilityPackage.Editor.Serialization
             DrawLine(new Rect(content.x, grid.yMax + RowSpacing * 0.5f, content.width, LineThickness));
             DrawFooter(new Rect(content.x, grid.yMax + RowSpacing, content.width, FooterHeight));
         }
+
+        /// <summary>Opens the calendar under the given control.</summary>
+        /// <param name="anchor">The rectangle the popup drops down from.</param>
+        /// <param name="ticks">The serialized tick count a picked day is written into.</param>
+        internal static void Show(Rect anchor, SerializedProperty ticks)
+            => PopupWindow.Show(anchor, new CalendarPopup(ticks));
 
         private static string[] CreateDayLabels()
         {

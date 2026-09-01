@@ -32,19 +32,19 @@ namespace Base.AttributePackage.Editor.Core
             | BindingFlags.NonPublic
             | BindingFlags.DeclaredOnly;
 
-        private static readonly Assembly AttributeAssembly = typeof(TitleAttribute).Assembly;
-
-        // Whether a type carries anything from this package. Walking every member of every inspected
-        // type is far too much to repeat per repaint, and the answer cannot change without a domain
-        // reload, which clears this.
-        private static readonly Dictionary<Type, bool> Declaring = new();
-
         /// <summary>Whether the package's inspector is switched off for this user.</summary>
         public static bool IsDisabled
         {
             get => EditorPrefs.GetBool(DisabledPreferenceKey, false);
             set => EditorPrefs.SetBool(DisabledPreferenceKey, value);
         }
+
+        private static readonly Assembly AttributeAssembly = typeof(TitleAttribute).Assembly;
+
+        // Whether a type carries anything from this package. Walking every member of every inspected
+        // type is far too much to repeat per repaint, and the answer cannot change without a domain
+        // reload, which clears this.
+        private static readonly Dictionary<Type, bool> Declaring = new();
 
         /// <summary>
         /// Whether the package should draw the inspector for the given type.

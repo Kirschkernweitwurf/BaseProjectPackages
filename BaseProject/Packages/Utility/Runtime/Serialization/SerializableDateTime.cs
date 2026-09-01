@@ -56,15 +56,13 @@ namespace Base.UtilityPackage.Serialization
         /// <param name="left">The first value.</param>
         /// <param name="right">The second value.</param>
         /// <returns>True when both describe the same point in time.</returns>
-        public static bool operator ==(SerializableDateTime left, SerializableDateTime right)
-            => left.Equals(right);
+        public static bool operator ==(SerializableDateTime left, SerializableDateTime right) => left.Equals(right);
 
         /// <summary>Compares two values for inequality.</summary>
         /// <param name="left">The first value.</param>
         /// <param name="right">The second value.</param>
         /// <returns>True when they describe different points in time.</returns>
-        public static bool operator !=(SerializableDateTime left, SerializableDateTime right)
-            => !left.Equals(right);
+        public static bool operator !=(SerializableDateTime left, SerializableDateTime right) => !left.Equals(right);
 
         /// <summary>
         /// Rebuilds a <see cref="DateTime"/> from a raw tick count, clamped to the range it accepts.

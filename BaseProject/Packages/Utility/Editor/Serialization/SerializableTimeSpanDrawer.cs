@@ -32,7 +32,7 @@ namespace Base.UtilityPackage.Editor.Serialization
             // The prefix label already consumed the indent, so the row must not apply it again or every
             // nesting level walks the fields further right than the label they belong to.
             using (new NoIndentScope())
-                TimeSpanGui.Draw(field, ticks, showDays: true, showMilliseconds: false);
+                TimeSpanGui.Draw(field, ticks, true, false);
 
             EditorGUI.EndProperty();
         }

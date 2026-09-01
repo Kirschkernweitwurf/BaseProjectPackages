@@ -66,7 +66,8 @@ namespace Base.ToolPackage.Editor.TodoOverview
 
             float left = DrawButtons(header, entry);
 
-            Rect meta = new(keyword.xMax + TodoStyles.Gap, header.y, Mathf.Max(0f, left - keyword.xMax
+            Rect meta = new(keyword.xMax + TodoStyles.Gap, header.y, Mathf.Max(0f, left
+                - keyword.xMax
                 - TodoStyles.Gap * 2f), header.height);
 
             GUI.Label(meta, Owner(entry), TodoStyles.Path);

@@ -171,8 +171,8 @@ namespace Base.ToolPackage.Editor.TodoOverview
             return new Rect(x, row.y + (row.height - height) * 0.5f, width, height);
         }
 
-        private static Rect Pill(Rect row, float x, float width)
-            => new(x, row.y + (row.height - TodoStyles.ChipHeight) * 0.5f, width, TodoStyles.ChipHeight);
+        private static Rect Pill(Rect row, float x, float width) => new(x,
+            row.y + (row.height - TodoStyles.ChipHeight) * 0.5f, width, TodoStyles.ChipHeight);
 
         private static float Reclaim(ref float width, float minimum, float deficit)
         {
@@ -207,7 +207,7 @@ namespace Base.ToolPackage.Editor.TodoOverview
             Rect caret = new(cell.x + textWidth + TodoStyles.TightGap,
                 cell.center.y - TodoStyles.CaretHeight * 0.5f, TodoStyles.CaretWidth, TodoStyles.CaretHeight);
 
-            TodoChrome.DrawCaret(caret, TodoStyles.AccentColor(), pointUp: descending);
+            TodoChrome.DrawCaret(caret, TodoStyles.AccentColor(), descending);
         }
 
         private void HandleDivider(ETodoDivider divider, float x, Rect row)
@@ -253,6 +253,7 @@ namespace Base.ToolPackage.Editor.TodoOverview
                 case ETodoDivider.KeywordMessage:
                     _savedKeyword = Mathf.Max(TodoStyles.MinKeywordWidth,
                         mouseX - half - row.x - TodoStyles.RowInset);
+
                     break;
 
                 case ETodoDivider.MessageOwner:
@@ -266,6 +267,7 @@ namespace Base.ToolPackage.Editor.TodoOverview
                 case ETodoDivider.DateLocation:
                     _savedLocation = Mathf.Max(TodoStyles.MinLocationWidth,
                         LocationRect(row).xMax - mouseX - half);
+
                     break;
             }
         }

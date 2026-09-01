@@ -31,7 +31,7 @@ namespace Base.CorePackage.Noise
             if (!IsValid(settings, nameof(Sample)))
                 return 0f;
 
-            return Fractal(new Vector3(x, SlicePosition, 0f), settings.Offset, settings, useThirdAxis: false);
+            return Fractal(new Vector3(x, SlicePosition, 0f), settings.Offset, settings, false);
         }
 
         /// <summary>Samples a pattern on a plane.</summary>
@@ -43,7 +43,7 @@ namespace Base.CorePackage.Noise
             if (!IsValid(settings, nameof(Sample)))
                 return 0f;
 
-            return Fractal(new Vector3(point.x, point.y, 0f), settings.Offset, settings, useThirdAxis: false);
+            return Fractal(new Vector3(point.x, point.y, 0f), settings.Offset, settings, false);
         }
 
         /// <summary>Samples a pattern in space.</summary>
@@ -55,7 +55,7 @@ namespace Base.CorePackage.Noise
             if (!IsValid(settings, nameof(Sample)))
                 return 0f;
 
-            return Fractal(point, settings.Offset, settings, useThirdAxis: true);
+            return Fractal(point, settings.Offset, settings, true);
         }
 
         /// <summary>
@@ -82,7 +82,7 @@ namespace Base.CorePackage.Noise
             for (int x = 0; x < width; x++)
             {
                 for (int y = 0; y < height; y++)
-                    map[x, y] = Fractal(new Vector3(x, y, 0f), offset, settings, useThirdAxis: false);
+                    map[x, y] = Fractal(new Vector3(x, y, 0f), offset, settings, false);
             }
 
             return map;

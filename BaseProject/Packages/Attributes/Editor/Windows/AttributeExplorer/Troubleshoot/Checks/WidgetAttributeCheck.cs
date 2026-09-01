@@ -12,6 +12,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot.Ch
     /// </summary>
     internal sealed class WidgetAttributeCheck : IAttributeCheck
     {
+        /// <inheritdoc/>
         public void Inspect(Type type, List<AttributeIssue> issues)
         {
             foreach (FieldInfo field in ScannedMembers.DeclaredFields(type))

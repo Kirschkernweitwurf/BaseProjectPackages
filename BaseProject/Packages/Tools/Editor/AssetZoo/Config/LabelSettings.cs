@@ -7,7 +7,7 @@ namespace Base.ToolPackage.Editor.AssetZoo.Config
     /// All settings related to item / category labels in the zoo.
     /// </summary>
     [Serializable]
-    public class LabelSettings
+    internal class LabelSettings
     {
         /// <summary>
         /// World-space scale applied to category labels.

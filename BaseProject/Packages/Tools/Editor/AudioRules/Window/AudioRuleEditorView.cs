@@ -19,6 +19,9 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
         private const string MatchAll = "All";
         private const string MatchAny = "Any";
 
+        /// <summary>Raised whenever the rule was edited, so the owner can save and rescan.</summary>
+        internal event Action Changed;
+
         private static readonly EConditionOperator[] FlagOperators =
         {
             EConditionOperator.Equals,
@@ -43,9 +46,6 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
             EConditionOperator.NotEquals,
             EConditionOperator.Matches
         };
-
-        /// <summary>Raised whenever the rule was edited, so the owner can save and rescan.</summary>
-        internal event Action Changed;
 
         private readonly ScrollView _body = new();
 
@@ -428,7 +428,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
             });
 
             card.Add(SettingRow("Load type", overrides.SetsLoadType, loadType,
-                value => overrides.SetsLoadType = value));
+                setter: value => overrides.SetsLoadType = value));
 
             EnumField format = new(overrides.CompressionFormat);
 
@@ -439,7 +439,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
             });
 
             card.Add(SettingRow("Compression", overrides.SetsCompressionFormat, format,
-                value => overrides.SetsCompressionFormat = value));
+                setter: value => overrides.SetsCompressionFormat = value));
 
             Slider quality = new(0f, 1f)
             {
@@ -455,21 +455,21 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
             });
 
             card.Add(SettingRow("Quality", overrides.SetsQuality, quality,
-                value => overrides.SetsQuality = value));
+                setter: value => overrides.SetsQuality = value));
 
             card.Add(BuildSampleRateRow(overrides));
 
             card.Add(SettingRow("Force to mono", overrides.SetsForceToMono,
-                BuildFlag(overrides.ForceToMono, value => overrides.ForceToMono = value),
-                value => overrides.SetsForceToMono = value));
+                BuildFlag(overrides.ForceToMono, setter: value => overrides.ForceToMono = value),
+                setter: value => overrides.SetsForceToMono = value));
 
             card.Add(SettingRow("Load in background", overrides.SetsLoadInBackground,
-                BuildFlag(overrides.LoadInBackground, value => overrides.LoadInBackground = value),
-                value => overrides.SetsLoadInBackground = value));
+                BuildFlag(overrides.LoadInBackground, setter: value => overrides.LoadInBackground = value),
+                setter: value => overrides.SetsLoadInBackground = value));
 
             card.Add(SettingRow("Preload audio data", overrides.SetsPreloadAudioData,
-                BuildFlag(overrides.PreloadAudioData, value => overrides.PreloadAudioData = value),
-                value => overrides.SetsPreloadAudioData = value));
+                BuildFlag(overrides.PreloadAudioData, setter: value => overrides.PreloadAudioData = value),
+                setter: value => overrides.SetsPreloadAudioData = value));
 
             _body.Add(card);
         }
@@ -517,7 +517,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
             group.Add(rate);
 
             return SettingRow("Sample rate", overrides.SetsSampleRate, group,
-                value => overrides.SetsSampleRate = value);
+                setter: value => overrides.SetsSampleRate = value);
         }
 
         private Toggle BuildFlag(bool value, Action<bool> setter)

@@ -28,14 +28,14 @@ namespace Base.CorePackage.Editor.EventBusInspector
         /// <summary>Width the Event column starts at before the user drags it.</summary>
         internal const float DefaultSubscriberWidth = 230f;
 
-        private const float GuideAlpha = 0.16f;
-        private const float LeakRowAlpha = 0.07f;
-
         /// <summary>Smallest height of the window.</summary>
         internal const float MinWindowHeight = 280f;
 
         /// <summary>Smallest width of the window, enough for every column plus the button.</summary>
         internal const float MinWindowWidth = 700f;
+
+        private const float GuideAlpha = 0.16f;
+        private const float LeakRowAlpha = 0.07f;
 
         /// <summary>Fill of the badge carrying an event's subscriber count.</summary>
         internal static Color CountBadgeColor => BadgeFill(EditorPalette.Accent);

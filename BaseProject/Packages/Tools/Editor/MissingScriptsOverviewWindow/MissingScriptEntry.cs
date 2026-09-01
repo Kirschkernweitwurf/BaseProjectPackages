@@ -7,6 +7,10 @@ namespace Base.ToolPackage.Editor.MissingScriptsOverviewWindow
     /// </summary>
     internal sealed class MissingScriptEntry
     {
+        /// <summary>
+        /// Whether the missing script sits in a scene, a prefab, or another asset. This decides how the
+        /// entry is navigated back to.
+        /// </summary>
         internal EMissingScriptSource Source { get; }
 
         /// <summary>Scene, prefab, or asset path the object lives in.</summary>

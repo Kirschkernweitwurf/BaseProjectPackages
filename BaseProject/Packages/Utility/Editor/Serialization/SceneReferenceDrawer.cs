@@ -1,3 +1,4 @@
+using System.IO;
 using Base.UtilityPackage.Serialization;
 using UnityEditor;
 using UnityEngine;
@@ -85,7 +86,7 @@ namespace Base.UtilityPackage.Editor.Serialization
             string assetPath = AssetDatabase.GetAssetPath(asset);
 
             Write(path, assetPath);
-            Write(sceneName, System.IO.Path.GetFileNameWithoutExtension(assetPath));
+            Write(sceneName, Path.GetFileNameWithoutExtension(assetPath));
 
             int index = ResolveBuildIndex(assetPath);
             if (buildIndex.intValue != index)

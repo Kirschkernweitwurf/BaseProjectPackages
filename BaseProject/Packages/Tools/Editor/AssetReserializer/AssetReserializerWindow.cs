@@ -12,19 +12,19 @@ namespace Base.ToolPackage.Editor.AssetReserializer
     /// <see cref="FormerlySerializedAsAttribute"/> rename actually lands on disk. Scope the run to a
     /// few folders, check the count first, then commit the diff it produces.
     /// </summary>
-    public sealed class AssetReserializerWindow : EditorWindow
+    internal sealed class AssetReserializerWindow : EditorWindow
     {
         private const string ActionsHeader = "Run";
         private const string AddFoldersLabel = "Add Selected Folders";
         private const float ButtonHeight = 28f;
         private const string ClearFoldersLabel = "Clear Folders";
-        private const string CountLabel = "Count Matching Assets";
-        private const float CountButtonWidth = 170f;
         private const string ConfirmCancel = "Cancel";
         private const string ConfirmMessage = "This rewrites {0} asset(s) on disk using the current serializer.\n\n"
             + "The diff will be larger than the field rename alone. Make sure your work is committed first.";
         private const string ConfirmOk = "Reserialize";
         private const string ConfirmTitle = "Reserialize Assets";
+        private const float CountButtonWidth = 170f;
+        private const string CountLabel = "Count Matching Assets";
         private const string Description = "Rewrites assets with the current serializer, so a "
             + "[FormerlySerializedAs] rename actually lands on disk. Scope the run to a few folders, "
             + "check the count first, then commit the diff it produces.";
@@ -186,17 +186,19 @@ namespace Base.ToolPackage.Editor.AssetReserializer
             EditorWindowChrome.DrawSectionHeader(_styles, ActionsHeader);
 
             using (new EditorGUI.DisabledScope(Kinds == EReserializeAssetKinds.None))
-            using (new EditorGUILayout.HorizontalScope())
             {
-                if (EditorWindowChrome.SecondaryButton(_styles, CountLabel,
-                        GUILayout.Height(ButtonHeight), GUILayout.Width(CountButtonWidth)))
-                    CountAssets();
+                using (new EditorGUILayout.HorizontalScope())
+                {
+                    if (EditorWindowChrome.SecondaryButton(_styles, CountLabel,
+                            GUILayout.Height(ButtonHeight), GUILayout.Width(CountButtonWidth)))
+                        CountAssets();
 
-                GUILayout.Space(EditorMetrics.TightGap);
+                    GUILayout.Space(EditorMetrics.TightGap);
 
-                if (EditorWindowChrome.PrimaryButton(_styles, ReserializeLabel,
-                        GUILayout.Height(ButtonHeight)))
-                    Reserialize();
+                    if (EditorWindowChrome.PrimaryButton(_styles, ReserializeLabel,
+                            GUILayout.Height(ButtonHeight)))
+                        Reserialize();
+                }
             }
         }
 

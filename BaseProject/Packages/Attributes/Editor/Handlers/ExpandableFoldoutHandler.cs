@@ -1,6 +1,5 @@
 using Base.AttributePackage.Editor.Core;
 using Base.AttributePackage.Editor.Core.Interfaces;
-using Base.AttributePackage.Editor.Drawers;
 using Base.UtilityPackage.Editor;
 using UnityEditor;
 using UnityEngine;
@@ -22,8 +21,10 @@ namespace Base.AttributePackage.Editor.Handlers
     {
         private const int HandlerOrder = -200;
 
+        /// <inheritdoc/>
         public int Order => HandlerOrder;
 
+        /// <inheritdoc/>
         public void AfterField(in MemberContext context)
         {
             ExpandableAttribute attribute = context.GetAttribute<ExpandableAttribute>();

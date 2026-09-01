@@ -12,15 +12,15 @@ namespace Base.ToolPackage.Editor.TodoOverview.Model
     {
         private const int Unknown = int.MaxValue;
 
-        private readonly Dictionary<string, Color> _colors = new(StringComparer.OrdinalIgnoreCase);
-        private readonly Dictionary<string, int> _order = new(StringComparer.OrdinalIgnoreCase);
-        private readonly List<TodoTag> _tags = new();
+        /// <summary>Fallback for a keyword whose tag was removed after the scan.</summary>
+        private static Color Fallback => Color.gray;
 
         /// <summary>The tags this palette was built from, in their configured order.</summary>
         internal IReadOnlyList<TodoTag> Tags => _tags;
 
-        /// <summary>Fallback for a keyword whose tag was removed after the scan.</summary>
-        private static Color Fallback => Color.gray;
+        private readonly Dictionary<string, Color> _colors = new(StringComparer.OrdinalIgnoreCase);
+        private readonly Dictionary<string, int> _order = new(StringComparer.OrdinalIgnoreCase);
+        private readonly List<TodoTag> _tags = new();
 
         /// <summary>Builds a palette from the enabled tags.</summary>
         /// <param name="tags">The configured tags.</param>

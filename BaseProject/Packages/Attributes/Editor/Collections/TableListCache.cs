@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Base.UtilityPackage.Editor;
 using UnityEditor;
@@ -25,6 +24,8 @@ namespace Base.AttributePackage.Editor.Collections
         private const float HeaderPadding = 2f;
         private const float IndexWidth = 26f;
         private const float RowPadding = 2f;
+
+        private static List<TableColumn> TableColumns => TableRenderer.Columns;
 
         private static readonly Dictionary<string, ReorderableList> Lists = new();
 
@@ -162,7 +163,5 @@ namespace Base.AttributePackage.Editor.Collections
                 }
             }
         }
-
-        private static List<TableColumn> TableColumns => TableRenderer.Columns;
     }
 }

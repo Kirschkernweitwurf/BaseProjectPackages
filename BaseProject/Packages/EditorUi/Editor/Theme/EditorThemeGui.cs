@@ -96,7 +96,6 @@ namespace Base.EditorUiPackage
             SerializedProperty end = property.GetEndProperty();
 
             if (child.NextVisible(true))
-            {
                 while (!SerializedProperty.EqualContents(child, end))
                 {
                     EditorGUILayout.PropertyField(child, true);
@@ -104,7 +103,6 @@ namespace Base.EditorUiPackage
                     if (!child.NextVisible(false))
                         break;
                 }
-            }
 
             EditorGUI.indentLevel--;
 

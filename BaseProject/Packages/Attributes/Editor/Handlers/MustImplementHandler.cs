@@ -14,8 +14,10 @@ namespace Base.AttributePackage.Editor.Handlers
     /// </summary>
     internal sealed class MustImplementHandler : IAfterFieldHandler
     {
+        /// <inheritdoc/>
         public int Order => 0;
 
+        /// <inheritdoc/>
         public void AfterField(in MemberContext context)
         {
             MustImplementAttribute attribute = context.GetAttribute<MustImplementAttribute>();

@@ -6,6 +6,7 @@ namespace Base.AttributePackage.Editor.Handlers
     /// <summary>Disables the field unless the referenced bool members satisfy the condition mode.</summary>
     internal sealed class EnableIfHandler : IEnableHandler
     {
+        /// <inheritdoc/>
         public bool ShouldEnable(in MemberContext context)
         {
             EnableIfAttribute attribute = context.GetAttribute<EnableIfAttribute>();

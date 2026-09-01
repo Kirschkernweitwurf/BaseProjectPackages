@@ -26,11 +26,9 @@ namespace Base.UtilityPackage.Editor.Serialization
                 return null;
 
             if (property.propertyType == SerializedPropertyType.Integer)
-            {
                 return property.numericType == SerializedPropertyNumericType.Int64
                     ? property
                     : null;
-            }
 
             if (property.propertyType != SerializedPropertyType.Generic)
                 return null;

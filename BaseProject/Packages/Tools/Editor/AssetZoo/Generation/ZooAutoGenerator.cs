@@ -15,7 +15,7 @@ namespace Base.ToolPackage.Editor.AssetZoo.Generation
     /// prefix is the group, so "P_Garden_Rock_01" and "SM_Garden_Rock_01" both end
     /// up in the group "Garden".
     /// </summary>
-    public static class ZooAutoGenerator
+    internal static class ZooAutoGenerator
     {
         private const string AssetFilter = "t:Prefab t:Model";
         private const string AssetsRoot = "Assets";
@@ -255,12 +255,22 @@ namespace Base.ToolPackage.Editor.AssetZoo.Generation
 
         private readonly struct ScannedAsset
         {
+            /// <summary>The prefab the zoo places.</summary>
             public GameObject Asset { get; }
 
+            /// <summary>The name the assets are ordered by within one prefix group.</summary>
             public string SortKey { get; }
 
+            /// <summary>
+            /// Which naming prefix the asset carries, so the groups come out in the order the
+            /// convention lists them rather than alphabetically.
+            /// </summary>
             public int PrefixOrder { get; }
 
+            /// <summary>Records one asset the scan found.</summary>
+            /// <param name="asset">The prefab the zoo places.</param>
+            /// <param name="sortKey">The name it is ordered by within its group.</param>
+            /// <param name="prefixOrder">Which naming prefix group it belongs to.</param>
             public ScannedAsset(GameObject asset, string sortKey, int prefixOrder)
             {
                 Asset = asset;

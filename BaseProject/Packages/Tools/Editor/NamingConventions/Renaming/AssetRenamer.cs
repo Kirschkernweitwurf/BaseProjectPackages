@@ -11,7 +11,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Renaming
     /// the <see cref="AssetNamingHistoryStore"/>. Renaming an asset keeps its GUID, so references
     /// survive, which is why assets can be fixed without touching any code.
     /// </summary>
-    public static class AssetRenamer
+    internal static class AssetRenamer
     {
         private const char PathSeparator = '/';
 

@@ -9,7 +9,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Scanning
     /// the number at the end is bumped until the folder has room, and the user sees the final name
     /// in the suggestion instead of running into an error.
     /// </summary>
-    public static class AssetNameUniquifier
+    internal static class AssetNameUniquifier
     {
         private const int DefaultDigits = 2;
         private const string DigitFormatPrefix = "D";

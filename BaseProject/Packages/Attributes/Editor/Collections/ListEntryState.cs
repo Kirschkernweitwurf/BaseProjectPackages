@@ -12,7 +12,6 @@ namespace Base.AttributePackage.Editor.Collections
     /// </remarks>
     internal readonly struct ListEntryState
     {
-
         /// <summary>Whether removing a row asks first.</summary>
         internal readonly bool ConfirmDelete;
 

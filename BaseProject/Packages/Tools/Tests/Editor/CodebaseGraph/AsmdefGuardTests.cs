@@ -82,9 +82,8 @@ namespace Base.ToolPackage.Editor.Tests
         /// scan that found none is reported rather than passing quietly.
         /// </summary>
         [Test]
-        public void TheProjectHoldsGatedAssemblies()
-            => Assert.That(_gated, Is.Not.Empty,
-                "no assembly in this project is behind a define constraint, so nothing below means anything");
+        public void TheProjectHoldsGatedAssemblies() => Assert.That(_gated, Is.Not.Empty,
+            "no assembly in this project is behind a define constraint, so nothing below means anything");
 
         /// <summary>
         /// Every base package an assembly references has to be reachable from the packages its own

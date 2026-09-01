@@ -17,10 +17,6 @@ namespace Base.EditorUiPackage
     /// </remarks>
     public sealed class EditorStyleWatch
     {
-        private bool _isFresh;
-        private bool _wasDarkMode;
-        private int _themeRevision;
-
         /// <summary>
         /// True when the styles have to be built: for the first time, because the user switched
         /// between the dark and the light editor theme, or because the active theme changed since.
@@ -28,6 +24,10 @@ namespace Base.EditorUiPackage
         public bool IsStale => !_isFresh
             || _wasDarkMode != EditorThemeProvider.IsDarkMode
             || _themeRevision != EditorThemeProvider.Revision;
+
+        private bool _isFresh;
+        private bool _wasDarkMode;
+        private int _themeRevision;
 
         /// <summary>Records that the styles are now built for the editor theme and theme currently active.</summary>
         public void MarkFresh()

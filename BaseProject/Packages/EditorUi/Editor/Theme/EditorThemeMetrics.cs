@@ -15,26 +15,26 @@ namespace Base.EditorUiPackage
     [Serializable]
     public sealed class EditorThemeMetrics
     {
-        [SerializeField, Min(0f)] private float badgeHeight;
-        [SerializeField, Min(0f)] private float badgePadding;
-        [SerializeField, Min(1)] private int descriptionFontSize;
-        [SerializeField, Min(0)] private int cardCornerRadius;
-        [SerializeField, Min(1f)] private float dividerHitWidth;
-        [SerializeField, Min(1f)] private float dividerThickness;
-        [SerializeField, Min(0f)] private float headerHeight;
-        [SerializeField, Range(0f, 1f)] private float hoverLift;
-        [SerializeField, Min(0f)] private float indent;
-        [SerializeField, Min(0f)] private float itemGap;
-        [SerializeField, Min(0)] private int pillCornerRadius;
-        [SerializeField, Min(0f)] private float pillHeight;
-        [SerializeField, Range(0f, 1f)] private float pressDrop;
-        [SerializeField, Min(1f)] private float rowHeight;
-        [SerializeField, Min(0f)] private float rowInset;
-        [SerializeField, Min(0f)] private float sectionGap;
-        [SerializeField, Min(1f)] private float separatorThickness;
-        [SerializeField, Min(0f)] private float sortArrowWidth;
-        [SerializeField, Min(0f)] private float tightGap;
-        [SerializeField, Min(1)] private int titleFontSize;
+        [SerializeField] [Min(0f)] private float badgeHeight;
+        [SerializeField] [Min(0f)] private float badgePadding;
+        [SerializeField] [Min(1)] private int descriptionFontSize;
+        [SerializeField] [Min(0)] private int cardCornerRadius;
+        [SerializeField] [Min(1f)] private float dividerHitWidth;
+        [SerializeField] [Min(1f)] private float dividerThickness;
+        [SerializeField] [Min(0f)] private float headerHeight;
+        [SerializeField] [Range(0f, 1f)] private float hoverLift;
+        [SerializeField] [Min(0f)] private float indent;
+        [SerializeField] [Min(0f)] private float itemGap;
+        [SerializeField] [Min(0)] private int pillCornerRadius;
+        [SerializeField] [Min(0f)] private float pillHeight;
+        [SerializeField] [Range(0f, 1f)] private float pressDrop;
+        [SerializeField] [Min(1f)] private float rowHeight;
+        [SerializeField] [Min(0f)] private float rowInset;
+        [SerializeField] [Min(0f)] private float sectionGap;
+        [SerializeField] [Min(1f)] private float separatorThickness;
+        [SerializeField] [Min(0f)] private float sortArrowWidth;
+        [SerializeField] [Min(0f)] private float tightGap;
+        [SerializeField] [Min(1)] private int titleFontSize;
 
         /// <summary>Height of a badge or a chip.</summary>
         public float BadgeHeight => badgeHeight;
@@ -97,9 +97,7 @@ namespace Base.EditorUiPackage
         public int TitleFontSize => Mathf.Max(1, titleFontSize);
 
         /// <summary>Creates an empty set. Required by the serializer and by the inspector.</summary>
-        public EditorThemeMetrics()
-        {
-        }
+        public EditorThemeMetrics() { }
 
         /// <summary>Creates a full set of layout metrics.</summary>
         /// <param name="badgeHeight">Height of a badge or a chip.</param>

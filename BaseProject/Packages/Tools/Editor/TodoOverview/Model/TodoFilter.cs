@@ -15,8 +15,6 @@ namespace Base.ToolPackage.Editor.TodoOverview.Model
         /// <summary>The order the list falls back to, which is the order the files are read in.</summary>
         internal const ETodoSort DefaultSort = ETodoSort.Location;
 
-        private readonly HashSet<string> _hiddenKeywords = new(StringComparer.OrdinalIgnoreCase);
-
         /// <summary>The text typed into the search field. Every word in it has to match.</summary>
         internal string Search { get; set; } = string.Empty;
 
@@ -34,6 +32,8 @@ namespace Base.ToolPackage.Editor.TodoOverview.Model
 
         /// <summary>Whether only items whose date has passed are shown.</summary>
         internal bool OverdueOnly { get; set; }
+
+        private readonly HashSet<string> _hiddenKeywords = new(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
         /// Applies a click on a column title. A new column sorts by itself, clicking it again turns

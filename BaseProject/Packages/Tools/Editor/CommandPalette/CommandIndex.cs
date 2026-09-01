@@ -8,6 +8,9 @@ namespace Base.ToolPackage.Editor.CommandPalette
     /// </summary>
     internal static class CommandIndex
     {
+        /// <summary>Every known command, built on first access.</summary>
+        internal static IReadOnlyList<CommandEntry> Entries => _entries ??= Build();
+
         private static readonly ICommandSource[] Sources =
         {
             new MenuItemCommandSource(),
@@ -17,9 +20,6 @@ namespace Base.ToolPackage.Editor.CommandPalette
         };
 
         private static List<CommandEntry> _entries;
-
-        /// <summary>Every known command, built on first access.</summary>
-        internal static IReadOnlyList<CommandEntry> Entries => _entries ??= Build();
 
         /// <summary>Drops the cache so the next access scans the project again.</summary>
         internal static void Invalidate()

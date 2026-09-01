@@ -42,6 +42,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot.Ch
             typeof(SceneViewPickerAttribute)
         };
 
+        /// <inheritdoc/>
         public void Inspect(Type type, List<AttributeIssue> issues)
         {
             // Only an asset is definitely wrong. A plain serializable class carrying a handle is fine,

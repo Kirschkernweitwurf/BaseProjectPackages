@@ -7,11 +7,11 @@ namespace Base.CorePackage.StateMachine
     /// <typeparam name="TContext">The object the state operates on.</typeparam>
     public abstract class StateBase<TContext> : IState<TContext>
     {
-        // The type name never changes for an instance, so it is resolved once instead of on every read.
-        private string _name;
-
         /// <inheritdoc/>
         public virtual string Name => _name ??= GetType().Name;
+
+        // The type name never changes for an instance, so it is resolved once instead of on every read.
+        private string _name;
 
         /// <inheritdoc/>
         public virtual void Enter(TContext context) { }

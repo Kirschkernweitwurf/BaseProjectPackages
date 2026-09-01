@@ -13,8 +13,10 @@ namespace Base.AttributePackage.Editor.Handlers
     /// </summary>
     internal sealed class GetComponentInParentHandler : IAfterFieldHandler
     {
+        /// <inheritdoc/>
         public int Order => 5;
 
+        /// <inheritdoc/>
         public void AfterField(in MemberContext context)
         {
             GetComponentInParentAttribute attribute = context.GetAttribute<GetComponentInParentAttribute>();

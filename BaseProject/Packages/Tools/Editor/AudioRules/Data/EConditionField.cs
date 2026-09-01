@@ -4,7 +4,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Data
     /// The fact about a clip a condition looks at. Numeric fields accept the comparison operators,
     /// text fields accept the text operators, and the looping flag only accepts equality.
     /// </summary>
-    public enum EConditionField : byte
+    internal enum EConditionField : byte
     {
         /// <summary>Category the clip was referenced with, empty when no container references it.</summary>
         Category = 0,

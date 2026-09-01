@@ -16,6 +16,7 @@ namespace Base.CorePackage.Editor.StateMachine
     /// </summary>
     internal sealed class StateMachineCanvas : VisualElement
     {
+        private const string AnyStateLabel = "Any State";
         private const float ArrowHalfWidth = 4.5f;
         private const float ArrowLength = 10f;
         private const float BackwardBulge = 46f;
@@ -26,7 +27,6 @@ namespace Base.CorePackage.Editor.StateMachine
         private const float PortInset = 12f;
         private const float SelfLoopHeight = 42f;
         private const float SelfLoopSpread = 30f;
-        private const string AnyStateLabel = "Any State";
 
         private static readonly CustomStyleProperty<Color> EdgeColorProperty = new("--sm-edge");
         private static readonly CustomStyleProperty<Color> EdgeActiveColorProperty = new("--sm-edge-active");

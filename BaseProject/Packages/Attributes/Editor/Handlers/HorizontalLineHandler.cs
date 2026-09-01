@@ -8,10 +8,12 @@ namespace Base.AttributePackage.Editor.Handlers
     /// <summary>Draws the separator line for <see cref="HorizontalLineAttribute"/>.</summary>
     internal sealed class HorizontalLineHandler : IBeforeFieldHandler
     {
+        /// <inheritdoc/>
         public int Order => 10;
 
         private static readonly Color DefaultColor = new(0.5f, 0.5f, 0.5f, 1f);
 
+        /// <inheritdoc/>
         public void BeforeField(in MemberContext context)
         {
             HorizontalLineAttribute attribute = context.GetAttribute<HorizontalLineAttribute>();

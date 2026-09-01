@@ -12,7 +12,7 @@ namespace Base.ToolPackage.Editor.OverviewGui.UnusedScriptsOverviewWindow
     /// Dismissed scripts are remembered per project, drop out of the count, and can be browsed and
     /// restored from a foldout at the top.
     /// </summary>
-    public sealed class UnusedScriptsOverviewWindow : EditorWindow
+    internal sealed class UnusedScriptsOverviewWindow : EditorWindow
     {
         private const float DiscardDefaultHeight = 220f;
         private const string DiscardHeightKey = "Base.UnusedScriptsOverview.DiscardHeight";

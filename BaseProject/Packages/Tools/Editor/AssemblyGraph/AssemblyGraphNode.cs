@@ -12,29 +12,31 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
     /// <summary>A GraphView node that represents one assembly.</summary>
     internal sealed class AssemblyGraphNode : Node
     {
-        internal Port InputPort { get; }
-
-        internal Port OutputPort { get; }
-
-        private AssemblyNodeInfo Info { get; }
-
         private const string ActionRowClass = "action-row";
         private const string CleanButtonClass = "clean-button";
         private const string CleanLabel = "Remove unused";
         private const string ClearFocusLabel = "Clear focus";
         private const string FocusButtonClass = "focus-button";
+        private const string FocusedClass = "is-focused";
         private const string FocusLabel = "Focus";
         private const string FocusTooltip = "Show only this assembly, what it references, and what "
             + "references it.";
         private const string GoToButtonClass = "go-to-button";
         private const string GoToLabel = "Go to";
         private const string IssuesClass = "has-issues";
-        private const string FocusedClass = "is-focused";
         private const string KindLabelClass = "kind-label";
         private const string NodeClass = "assembly-node";
         private const string UnusedHeaderClass = "unused-header";
         private const string UnusedHeaderFormat = "Unused references ({0})";
         private const string UnusedLineClass = "unused-line";
+
+        /// <summary>The port incoming references connect to, meaning assemblies that reference this one.</summary>
+        internal Port InputPort { get; }
+
+        /// <summary>The port outgoing references leave from, meaning assemblies this one references.</summary>
+        internal Port OutputPort { get; }
+
+        private AssemblyNodeInfo Info { get; }
 
         private readonly Action<AssemblyNodeInfo> _onFocusRequested;
         private readonly Action<AssemblyNodeInfo> _onCleanupRequested;

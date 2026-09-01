@@ -10,7 +10,7 @@ namespace Base.ToolPackage.Editor.AssetZoo.UI
     /// and selecting the zoo root, as well as opening the zoo editor window.
     /// </summary>
     [CustomEditor(typeof(ZooConfig))]
-    public class ZooConfigEditor : UnityEditor.Editor
+    internal class ZooConfigEditor : UnityEditor.Editor
     {
         private const float AuxButtonHeight = 22f;
 

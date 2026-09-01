@@ -84,6 +84,8 @@ namespace Base.UtilityPackage.Timers
             TimerManager.Unregister(this);
         }
 
+        /// <summary>Advances the timer by one frame. Driven by the timer manager, not by callers.</summary>
+        /// <param name="deltaTime">Seconds since the last tick. Ignored while stopped or paused.</param>
         internal void Tick(float deltaTime)
         {
             if (!IsRunning)

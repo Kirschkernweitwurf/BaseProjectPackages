@@ -3,7 +3,7 @@ namespace Base.ToolPackage.Editor.OverviewGui.PrefabOverviewWindow
     /// <summary>
     /// Which prefabs the overview window keeps visible.
     /// </summary>
-    public enum EPrefabViewFilter : byte
+    internal enum EPrefabViewFilter : byte
     {
         /// <summary>Every scanned prefab.</summary>
         All = 0,

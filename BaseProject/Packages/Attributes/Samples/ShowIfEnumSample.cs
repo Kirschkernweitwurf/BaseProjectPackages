@@ -14,17 +14,6 @@ namespace Base.AttributePackage.Samples
         })]
     internal sealed class ShowIfEnumSample : ScriptableObject
     {
-        [Tooltip("Drives the fields below. Switch it and watch them swap.")]
-        public EMode mode = EMode.Simple;
-
-        [ShowIfEnum(nameof(mode), EMode.Advanced)]
-        [Tooltip("Visible only in Advanced.")]
-        public float tolerance = 0.01f;
-
-        [ShowIfEnum(nameof(mode), EMode.Simple, EMode.Advanced)]
-        [Tooltip("Visible in either of the two named modes, but not in Disabled.")]
-        public string shownInBoth = "Simple or Advanced";
-
         /// <summary>The modes the fields above react to.</summary>
         public enum EMode : byte
         {
@@ -37,5 +26,16 @@ namespace Base.AttributePackage.Samples
             /// <summary>Neither of the conditional fields applies.</summary>
             Disabled = 2
         }
+
+        [Tooltip("Drives the fields below. Switch it and watch them swap.")]
+        public EMode mode = EMode.Simple;
+
+        [ShowIfEnum(nameof(mode), EMode.Advanced)]
+        [Tooltip("Visible only in Advanced.")]
+        public float tolerance = 0.01f;
+
+        [ShowIfEnum(nameof(mode), EMode.Simple, EMode.Advanced)]
+        [Tooltip("Visible in either of the two named modes, but not in Disabled.")]
+        public string shownInBoth = "Simple or Advanced";
     }
 }

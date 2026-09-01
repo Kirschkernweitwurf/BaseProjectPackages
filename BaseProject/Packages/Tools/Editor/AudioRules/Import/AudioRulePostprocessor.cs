@@ -26,6 +26,24 @@ namespace Base.ToolPackage.Editor.AudioRules.Import
     /// </summary>
     internal sealed class AudioRulePostprocessor : AssetPostprocessor
     {
+#region Unity Callbacks
+        private void OnPostprocessAudio(AudioClip clip)
+        {
+            AudioRuleSet ruleSet = AudioRuleSet.Load();
+
+            if (assetImporter is not AudioImporter importer
+                || IsSkipped(ruleSet, assetImporter, assetPath))
+                return;
+
+            if (!ApplyAllTargets(ruleSet, importer, clip))
+                return;
+
+            string path = assetPath;
+
+            EditorApplication.delayCall += () => Reimport(path);
+        }
+#endregion
+
         /// <summary>Raise this when the tool changes what it writes, so Unity reimports.</summary>
         /// <returns>The version of this postprocessor.</returns>
         public override uint GetVersion() => 1u;
@@ -59,22 +77,6 @@ namespace Base.ToolPackage.Editor.AudioRules.Import
                 : 0L;
         }
 
-        private void OnPostprocessAudio(AudioClip clip)
-        {
-            AudioRuleSet ruleSet = AudioRuleSet.Load();
-
-            if (assetImporter is not AudioImporter importer
-                || IsSkipped(ruleSet, assetImporter, assetPath))
-                return;
-
-            if (!ApplyAllTargets(ruleSet, importer, clip))
-                return;
-
-            string path = assetPath;
-
-            EditorApplication.delayCall += () => Reimport(path);
-        }
-
         private bool ApplyAllTargets(AudioRuleSet ruleSet, AudioImporter importer, AudioClip clip)
         {
             bool changed = ApplyTarget(ruleSet, importer, clip, string.Empty);
@@ -101,10 +103,10 @@ namespace Base.ToolPackage.Editor.AudioRules.Import
             return true;
         }
 
-        private AudioClipInfo BuildInfo(AudioImporter importer, AudioClip clip, string platform)
-            => new(assetPath, AssetDatabase.AssetPathToGUID(assetPath),
-                Path.GetFileNameWithoutExtension(assetPath), clip.length, clip.channels, clip.frequency,
-                ReadFileSize(assetPath), string.Empty, false, false,
-                AudioClipCollector.ReadCurrent(importer, platform));
+        private AudioClipInfo BuildInfo(AudioImporter importer, AudioClip clip, string platform) => new(assetPath,
+            AssetDatabase.AssetPathToGUID(assetPath),
+            Path.GetFileNameWithoutExtension(assetPath), clip.length, clip.channels, clip.frequency,
+            ReadFileSize(assetPath), string.Empty, false, false,
+            AudioClipCollector.ReadCurrent(importer, platform));
     }
 }

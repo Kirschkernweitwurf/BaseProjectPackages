@@ -10,7 +10,7 @@ using UnityEngine.UIElements;
 namespace Base.ToolPackage.Editor.AssemblyGraph
 {
     /// <summary>Editor window that visualizes project assemblies and their references.</summary>
-    public sealed class AssemblyGraphWindow : EditorWindow
+    internal sealed class AssemblyGraphWindow : EditorWindow
     {
         private const string MenuPath = "Tools/Base Packages/Unity Editor/Project Health/Assembly Graph";
         private const float MinWindowHeight = 420f;
@@ -60,6 +60,7 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
         }
 #endregion
 
+        /// <summary>Opens the window, or focuses it when it is already open.</summary>
         [DynamicMenuItem(MenuPath)]
         public static void Open()
         {

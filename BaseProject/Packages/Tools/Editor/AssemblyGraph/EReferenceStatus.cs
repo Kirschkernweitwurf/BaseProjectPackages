@@ -1,7 +1,7 @@
 namespace Base.ToolPackage.Editor.AssemblyGraph
 {
     /// <summary>Whether a declared reference appears to be used by the compiled assembly.</summary>
-    public enum EReferenceStatus : byte
+    internal enum EReferenceStatus : byte
     {
         /// <summary>The reference is resolved and used.</summary>
         Used = 0,

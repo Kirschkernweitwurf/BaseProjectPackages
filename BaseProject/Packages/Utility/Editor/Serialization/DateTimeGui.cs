@@ -22,6 +22,7 @@ namespace Base.UtilityPackage.Editor.Serialization
     public static class DateTimeGui
     {
         private const int DateCellCount = 3;
+
         // A slash rather than a dash. The box border already groups each number with its unit letter,
         // but a dash is the one separator that can still be read as the sign of the number after it.
         private const string DateSeparator = "/";

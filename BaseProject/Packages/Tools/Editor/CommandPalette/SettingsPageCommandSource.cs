@@ -108,7 +108,7 @@ namespace Base.ToolPackage.Editor.CommandPalette
 
             entries.Add(new CommandEntry(MenuEntryId.ForSettings(settingsPath), path, owner,
                 ECommandKind.Settings, AssemblyOriginLookup.Classify(owner),
-                () => Open(settingsPath, isUserScope), provider.keywords));
+                execute: () => Open(settingsPath, isUserScope), provider.keywords));
         }
 
         // The root segment is replaced rather than kept: a page registers itself under "Project/",

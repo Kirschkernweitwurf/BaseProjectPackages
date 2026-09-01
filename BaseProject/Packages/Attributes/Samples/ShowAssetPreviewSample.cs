@@ -13,7 +13,7 @@ namespace Base.AttributePackage.Samples
         })]
     internal sealed class ShowAssetPreviewSample : ScriptableObject
     {
-        [ShowAssetPreview(64)]
+        [ShowAssetPreview]
         [Tooltip("Assign a sprite to see its thumbnail.")]
         public Sprite preview;
     }

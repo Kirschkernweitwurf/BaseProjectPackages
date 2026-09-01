@@ -11,7 +11,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Scanning
     /// "T_PhoneScreen_02_N". The rest of the name goes through the shared
     /// <see cref="NamingRuleEvaluator"/>.
     /// </summary>
-    public static class AssetNameEvaluator
+    internal static class AssetNameEvaluator
     {
         private const string DigitFormatPrefix = "D";
         private const char EnumerationSeparator = '_';

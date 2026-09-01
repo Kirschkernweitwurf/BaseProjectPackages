@@ -8,7 +8,7 @@ using UnityEditor;
 namespace Base.ToolPackage.Editor.NamingConventions.Scanning
 {
     /// <summary>Walks the assets of the project and collects the ones that break a rule.</summary>
-    public static class AssetNamingScanner
+    internal static class AssetNamingScanner
     {
         private const string AssetsRoot = "Assets/";
         private const string PackagesRoot = "Packages/";

@@ -41,7 +41,8 @@ namespace Base.UtilityPackage.Editor.Collections
 
             CollectKeys(entries);
 
-            float height = SerializableCollectionGui.Line + SerializableCollectionGui.Spacing
+            float height = SerializableCollectionGui.Line
+                + SerializableCollectionGui.Spacing
                 + ListFor(entries).GetHeight();
 
             if (SerializableCollectionGui.FindDuplicates(_keys).Count > 0)
@@ -84,14 +85,14 @@ namespace Base.UtilityPackage.Editor.Collections
             ? SerializableCollectionGui.Line
             : EditorGUI.GetPropertyHeight(property, true);
 
-        private ReorderableList ListFor(SerializedProperty entries)
-            => SerializableListCache.Get(entries, DrawRow, RowHeight);
-
         // The key and the value sit side by side, so the row is as tall as the taller of the two. Asking
         // the entry for its own height sums them instead, which is what left a nested value overlapping
         // the rows under it.
         private static float RowHeight(SerializedProperty entry)
             => Mathf.Max(HeightOf(KeyOf(entry)), HeightOf(ValueOf(entry)));
+
+        private ReorderableList ListFor(SerializedProperty entries)
+            => SerializableListCache.Get(entries, DrawRow, RowHeight);
 
         // The duplicate set is rebuilt once per draw and read here, because the row callback is handed
         // an entry rather than its index and cannot work out on its own whether the key repeats.
@@ -110,10 +111,8 @@ namespace Base.UtilityPackage.Editor.Collections
             // Each column keeps its own height, so a one-line key beside a nested value does not get
             // stretched to match it.
             if (key != null)
-            {
                 EditorGUI.PropertyField(new Rect(row.x, row.y, keyWidth, HeightOf(key)), key,
                     GUIContent.none, true);
-            }
 
             if (value == null)
                 return;

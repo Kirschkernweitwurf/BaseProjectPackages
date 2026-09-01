@@ -16,8 +16,10 @@ namespace Base.AttributePackage.Editor.Handlers
         private const float BoxPadding = 4f;
         private const int HandlerOrder = 80;
 
+        /// <inheritdoc/>
         public int Order => HandlerOrder;
 
+        /// <inheritdoc/>
         public void AfterField(in MemberContext context)
         {
             ExpandableAttribute attribute = context.GetAttribute<ExpandableAttribute>();

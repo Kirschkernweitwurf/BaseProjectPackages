@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Base.UtilityPackage.Identification;
 using Base.UtilityPackage.Logging;
-using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace Base.SettingsPackage.Core

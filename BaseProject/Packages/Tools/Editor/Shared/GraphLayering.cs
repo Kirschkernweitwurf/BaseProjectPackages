@@ -27,8 +27,6 @@ namespace Base.ToolPackage.Editor.Shared
         /// </summary>
         private const int OrderingSweeps = 6;
 
-        private static readonly IReadOnlyList<string> NoTargets = Array.Empty<string>();
-
         /// <summary>The connected groups, largest first, so the biggest lands at the top of a drawing.</summary>
         internal IReadOnlyList<GraphCluster> Clusters { get; }
 
@@ -37,6 +35,8 @@ namespace Base.ToolPackage.Editor.Shared
         /// drawn as a block of their own rather than being scattered through the layout.
         /// </summary>
         internal IReadOnlyList<string> Isolated { get; }
+
+        private static readonly IReadOnlyList<string> NoTargets = Array.Empty<string>();
 
         private GraphLayering(List<GraphCluster> clusters, List<string> isolated)
         {

@@ -25,6 +25,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot.Ch
             typeof(ChildAttribute)
         };
 
+        /// <inheritdoc/>
         public void Inspect(Type type, List<AttributeIssue> issues)
         {
             bool isScriptableObject = typeof(ScriptableObject).IsAssignableFrom(type);

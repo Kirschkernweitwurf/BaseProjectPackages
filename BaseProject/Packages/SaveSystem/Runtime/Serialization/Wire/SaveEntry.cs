@@ -9,7 +9,10 @@ namespace Base.SaveSystemPackage.Serialization.Wire
     [Serializable]
     internal sealed class SaveEntry
     {
+        /// <summary>Identifies the savable this state belongs to.</summary>
         public string id;
+
+        /// <summary>The savable's serialized state, opaque to everything but that savable.</summary>
         public string state;
     }
 }

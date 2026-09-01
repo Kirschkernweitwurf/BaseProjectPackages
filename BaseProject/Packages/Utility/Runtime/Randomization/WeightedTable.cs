@@ -18,9 +18,6 @@ namespace Base.UtilityPackage.Randomization
         private const string NothingToDrawMessage = "Nothing to draw. The table holds no entry with a weight "
             + "above zero, or the random source is missing.";
 
-        private readonly List<float> _cumulativeWeights = new();
-        private readonly List<T> _items = new();
-
         /// <summary>The number of entries that can be drawn.</summary>
         public int Count => _items.Count;
 
@@ -29,10 +26,11 @@ namespace Base.UtilityPackage.Randomization
             ? 0f
             : _cumulativeWeights[^1];
 
+        private readonly List<float> _cumulativeWeights = new();
+        private readonly List<T> _items = new();
+
         /// <summary>Creates an empty table.</summary>
-        public WeightedTable()
-        {
-        }
+        public WeightedTable() { }
 
         /// <summary>Creates a table holding the given entries.</summary>
         /// <param name="entries">The entries to add. Missing entries and zero weights are skipped.</param>

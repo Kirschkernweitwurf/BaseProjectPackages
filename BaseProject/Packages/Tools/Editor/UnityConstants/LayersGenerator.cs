@@ -11,10 +11,14 @@ namespace Base.ToolPackage.Editor.UnityConstants
     /// Generates a class with all Unity Layers as const int indices (0-31)
     /// and a nested Masks class with their bit-shifted layer mask values.
     /// </summary>
-    public static class LayersGenerator
+    internal static class LayersGenerator
     {
         private const int LayerCount = 32;
 
+        /// <summary>
+        /// Writes a constants class for the project's layers, so a layer can be named in code without
+        /// a string literal that no rename would follow.
+        /// </summary>
         [DynamicMenuItem("Tools/Base Packages/Code/Generation/Generate Layers")]
         public static void Generate()
         {

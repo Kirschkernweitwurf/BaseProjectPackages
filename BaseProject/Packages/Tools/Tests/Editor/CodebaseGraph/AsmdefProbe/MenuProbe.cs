@@ -14,7 +14,5 @@ namespace AsmdefProbe
     /// that catches that coming back.
     /// </para>
     /// </summary>
-    internal sealed class MenuProbe : Menu
-    {
-    }
+    internal sealed class MenuProbe : Menu { }
 }

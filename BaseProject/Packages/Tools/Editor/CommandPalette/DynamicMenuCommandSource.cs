@@ -56,7 +56,7 @@ namespace Base.ToolPackage.Editor.CommandPalette
                 : entry.CreateFileName;
 
             entries.Add(new CommandEntry(entry.Id, path, type, ECommandKind.CreateAsset,
-                AssemblyOriginLookup.Classify(type), () => MenuAssetCreator.Create(type, fileName)));
+                AssemblyOriginLookup.Classify(type), execute: () => MenuAssetCreator.Create(type, fileName)));
         }
     }
 }

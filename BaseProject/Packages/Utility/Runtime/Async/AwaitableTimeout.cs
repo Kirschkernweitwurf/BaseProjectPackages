@@ -16,14 +16,14 @@ namespace Base.UtilityPackage.Async
     /// </remarks>
     internal sealed class AwaitableTimeout : IDisposable
     {
-        private readonly CancellationTokenSource _linked;
-        private readonly float _seconds;
-
         /// <summary>The token the operation has to observe. Canceled once the deadline passes.</summary>
         internal CancellationToken Token => _linked.Token;
 
         /// <summary>True once the deadline passed, which is what tells a timeout from a caller's cancel.</summary>
         internal bool HasExpired { get; private set; }
+
+        private readonly CancellationTokenSource _linked;
+        private readonly float _seconds;
 
         /// <summary>Starts the countdown.</summary>
         /// <param name="seconds">How long the operation may take.</param>

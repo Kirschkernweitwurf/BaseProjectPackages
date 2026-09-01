@@ -1,3 +1,4 @@
+using System;
 using Base.EditorUiPackage;
 using Base.ToolPackage.Editor.TodoOverview.Model;
 using UnityEditor;
@@ -42,8 +43,6 @@ namespace Base.ToolPackage.Editor.TodoOverview
         /// <summary>Corner radius of a pill.</summary>
         internal const float ChipRadius = 4f;
 
-        private const int ChipTextPadding = 8;
-
         /// <summary>Default width of the keyword column.</summary>
         internal const float ChipWidth = 66f;
 
@@ -59,8 +58,6 @@ namespace Base.ToolPackage.Editor.TodoOverview
         /// <summary>How wide a column divider can be grabbed, which is wider than the line itself.</summary>
         internal const float DividerHitWidth = 8f;
 
-        private const int DropdownTextPadding = 22;
-
         /// <summary>Space between two neighboring blocks.</summary>
         internal const float Gap = 6f;
 
@@ -72,8 +69,6 @@ namespace Base.ToolPackage.Editor.TodoOverview
 
         /// <summary>Default width of the file and line column.</summary>
         internal const float LocationWidth = 190f;
-
-        private const int MessageFontSize = 12;
 
         /// <summary>Narrowest the date column can be dragged.</summary>
         internal const float MinDateWidth = 52f;
@@ -108,7 +103,11 @@ namespace Base.ToolPackage.Editor.TodoOverview
         /// <summary>Height of the bar at the top of the window.</summary>
         internal const float ToolbarHeight = 30f;
 
-        private static readonly EditorStyleWatch Watch = new();
+        private const int ChipTextPadding = 8;
+
+        private const int DropdownTextPadding = 22;
+
+        private const int MessageFontSize = 12;
 
         /// <summary>Thickness of a hairline.</summary>
         internal static float SeparatorThickness => EditorMetrics.SeparatorThickness;
@@ -160,6 +159,8 @@ namespace Base.ToolPackage.Editor.TodoOverview
 
         /// <summary>The word shown in the search field while it is empty.</summary>
         internal static GUIStyle SearchHint { get; private set; }
+
+        private static readonly EditorStyleWatch Watch = new();
 
         /// <summary>
         /// Builds the styles on the first pass and again after either theme changes. Call at the top of
@@ -226,7 +227,7 @@ namespace Base.ToolPackage.Editor.TodoOverview
             {
                 Build();
             }
-            catch (System.NullReferenceException)
+            catch (NullReferenceException)
             {
                 return false;
             }

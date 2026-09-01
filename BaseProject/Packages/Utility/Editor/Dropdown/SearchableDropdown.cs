@@ -18,10 +18,10 @@ namespace Base.UtilityPackage.Editor.Dropdown
     {
         /// <summary>Number of options above which a plain popup should be replaced by this dropdown.</summary>
         public const int Threshold = 12;
-
-        private const char PathSeparator = '/';
         private const float MinimumHeight = 300f;
         private const float MinimumWidth = 220f;
+
+        private const char PathSeparator = '/';
 
         private readonly IReadOnlyList<string> _labels;
         private readonly Action<int> _onSelected;

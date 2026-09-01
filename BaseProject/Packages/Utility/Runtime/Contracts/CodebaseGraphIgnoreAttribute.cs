@@ -25,7 +25,5 @@ namespace Base.UtilityPackage.Contracts
         | AttributeTargets.Property
         | AttributeTargets.Field
         | AttributeTargets.Event)]
-    public sealed class CodebaseGraphIgnoreAttribute : Attribute
-    {
-    }
+    public sealed class CodebaseGraphIgnoreAttribute : Attribute { }
 }

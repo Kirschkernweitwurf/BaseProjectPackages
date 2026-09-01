@@ -57,7 +57,11 @@ namespace Base.ToolPackage.Editor.OverviewGui.PrefabOverviewWindow
         /// <param name="baseGuid">GUID of the base prefab, empty when there is none.</param>
         /// <param name="gameObjectCount">Number of GameObjects inside the prefab.</param>
         /// <param name="componentCount">Number of components inside the prefab, without the transforms.</param>
-        public PrefabEntry(string guid, string assetPath, EPrefabKind kind, string baseGuid, int gameObjectCount,
+        public PrefabEntry(string guid,
+            string assetPath,
+            EPrefabKind kind,
+            string baseGuid,
+            int gameObjectCount,
             int componentCount)
         {
             Guid = guid;
@@ -69,11 +73,18 @@ namespace Base.ToolPackage.Editor.OverviewGui.PrefabOverviewWindow
             ComponentCount = componentCount;
         }
 
+        /// <summary>Orders two entries by name, ignoring case, which is how the tree is sorted.</summary>
+        /// <param name="first">The left entry.</param>
+        /// <param name="second">The right entry.</param>
+        /// <returns>The usual comparison result: negative, zero or positive.</returns>
         internal static int CompareByName(PrefabEntry first, PrefabEntry second)
             => string.Compare(first.Name, second.Name, StringComparison.OrdinalIgnoreCase);
 
+        /// <summary>Records a variant that uses this prefab as its direct base.</summary>
+        /// <param name="child">The variant to attach.</param>
         internal void AddChild(PrefabEntry child) => _children.Add(child);
 
+        /// <summary>Sorts the direct variants by name. Called once the whole tree is built.</summary>
         internal void SortChildren() => _children.Sort(CompareByName);
     }
 }

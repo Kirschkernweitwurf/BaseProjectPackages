@@ -15,7 +15,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Data
     /// auto-detection fills them from the assets that already exist.
     /// </summary>
     [DynamicCreateAssetMenu("Scriptable Objects/Base/Naming Conventions/New Asset Rule Set", "ANRS_AssetNamingRuleSet")]
-    public sealed class AssetNamingRuleSet : ScriptableObject
+    internal sealed class AssetNamingRuleSet : ScriptableObject
     {
         private const string AssetFilter = "t:" + nameof(AssetNamingRuleSet);
         private const string DefaultAssetName = "ANRS_AssetNamingRuleSet.asset";

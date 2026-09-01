@@ -16,7 +16,7 @@ namespace Base.CorePackage.StateMachine
     /// <example>
     /// <code>
     /// StateMachine&lt;Enemy&gt; machine = new(this, "Enemy");
-    ///
+    /// 
     /// machine.AddTransition(patrol, chase, static enemy =&gt; enemy.CanSeePlayer, "SeesPlayer");
     /// machine.AddAnyTransition(dead, static enemy =&gt; enemy.Health &lt;= 0, "Died", priority: 10);
     /// machine.Start(patrol);
@@ -35,14 +35,6 @@ namespace Base.CorePackage.StateMachine
         /// Raised after a switch completed, so a listener already sees the new state as the active one.
         /// </summary>
         public event Action<StateChange<TContext>> StateChanged;
-
-        private readonly Dictionary<IState<TContext>, List<StateTransition<TContext>>> _transitions = new();
-        private readonly List<StateTransition<TContext>> _anyTransitions = new();
-        private readonly List<IState<TContext>> _states = new();
-        private readonly List<StateMachineEdge> _edges = new();
-        private readonly List<string> _stateNames = new();
-
-        private bool _isShapeStale = true;
 
         /// <summary>The object handed to every state and condition.</summary>
         public TContext Context { get; }
@@ -96,6 +88,14 @@ namespace Base.CorePackage.StateMachine
             }
         }
 
+        private readonly Dictionary<IState<TContext>, List<StateTransition<TContext>>> _transitions = new();
+        private readonly List<StateTransition<TContext>> _anyTransitions = new();
+        private readonly List<IState<TContext>> _states = new();
+        private readonly List<StateMachineEdge> _edges = new();
+        private readonly List<string> _stateNames = new();
+
+        private bool _isShapeStale = true;
+
         /// <summary>Creates an empty machine.</summary>
         /// <param name="context">The object handed to every state and condition.</param>
         /// <param name="name">The name shown in the logs and in the monitor window.</param>
@@ -106,6 +106,17 @@ namespace Base.CorePackage.StateMachine
             Name = string.IsNullOrEmpty(name)
                 ? nameof(StateMachine<TContext>)
                 : name;
+        }
+
+        /// <summary>
+        /// Stops the machine and drops every listener, so a machine owned by a destroyed object leaves
+        /// nothing behind.
+        /// </summary>
+        public void Dispose()
+        {
+            Stop();
+
+            StateChanged = null;
         }
 
         /// <summary>
@@ -270,17 +281,6 @@ namespace Base.CorePackage.StateMachine
             CurrentState = null;
         }
 
-        /// <summary>
-        /// Stops the machine and drops every listener, so a machine owned by a destroyed object leaves
-        /// nothing behind.
-        /// </summary>
-        public void Dispose()
-        {
-            Stop();
-
-            StateChanged = null;
-        }
-
         // Keeps the list ordered by descending priority while leaving equal priorities in the order they
         // were added, so the table reads the same way it runs.
         private static void InsertByPriority(List<StateTransition<TContext>> transitions,
@@ -328,8 +328,10 @@ namespace Base.CorePackage.StateMachine
                 _stateNames.Add(NameOf(state));
 
             foreach (StateTransition<TContext> transition in _anyTransitions)
+            {
                 _edges.Add(new StateMachineEdge(string.Empty, NameOf(transition.Target), transition.Name,
                     transition.Priority));
+            }
 
             foreach (IState<TContext> state in _states)
             {

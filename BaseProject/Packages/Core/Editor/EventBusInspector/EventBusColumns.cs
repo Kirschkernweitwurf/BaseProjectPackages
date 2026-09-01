@@ -131,8 +131,8 @@ namespace Base.CorePackage.Editor.EventBusInspector
 
         // Text starts a few pixels after the boundary rather than against it, so a column never
         // looks like it is touching the divider line in front of it.
-        private static Rect Cell(Rect row, float start, float width)
-            => new(start + TextPadding, row.y, Mathf.Max(0f, width - TextPadding * 2f), row.height);
+        private static Rect Cell(Rect row, float start, float width) => new(start + TextPadding, row.y,
+            Mathf.Max(0f, width - TextPadding * 2f), row.height);
 
         // Takes as much of the deficit out of one column as its minimum allows.
         private static float Reclaim(ref float width, float deficit)
@@ -154,14 +154,19 @@ namespace Base.CorePackage.Editor.EventBusInspector
 
         private float MethodEdge(Rect row) => SubscriberEdge(row) + _handlerWidth;
 
-        private float FlexibleWidth(Rect row) => row.xMax - EventBusStyles.RowInset
-            - EventBusStyles.PingButtonWidth - EventBusStyles.BadgeGap - _badgeWidth - EventBusStyles.BadgeGap
+        private float FlexibleWidth(Rect row) => row.xMax
+            - EventBusStyles.RowInset
+            - EventBusStyles.PingButtonWidth
+            - EventBusStyles.BadgeGap
+            - _badgeWidth
+            - EventBusStyles.BadgeGap
             - Left(row, 0f);
 
         private void HandleDivider(EEventDivider divider, float x, Rect area)
         {
             Rect line = new(x - EditorMetrics.DividerThickness * 0.5f, area.y, EditorMetrics.DividerThickness,
                 area.height);
+
             Rect hit = new(x - EditorMetrics.DividerHitWidth * 0.5f, area.y, EditorMetrics.DividerHitWidth,
                 area.height);
 

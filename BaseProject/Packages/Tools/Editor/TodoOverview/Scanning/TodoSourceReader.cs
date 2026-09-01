@@ -25,7 +25,6 @@ namespace Base.ToolPackage.Editor.TodoOverview.Scanning
             string fullPath = ResolveFullPath(assetPath);
 
             if (!string.IsNullOrEmpty(fullPath))
-            {
                 try
                 {
                     return File.ReadAllText(fullPath);
@@ -34,7 +33,6 @@ namespace Base.ToolPackage.Editor.TodoOverview.Scanning
                 {
                     return string.Empty;
                 }
-            }
 
             MonoScript script = AssetDatabase.LoadAssetAtPath<MonoScript>(assetPath);
 

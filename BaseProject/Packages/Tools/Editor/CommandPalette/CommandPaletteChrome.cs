@@ -97,15 +97,6 @@ namespace Base.ToolPackage.Editor.CommandPalette
             return false;
         }
 
-        private static void DrawPillFace(Rect rect, GUIContent content, bool active, bool hover, bool pressed)
-        {
-            DrawFill(rect, CommandPaletteStyles.PillColor(active, hover, pressed), CommandPaletteStyles.PillRadius);
-
-            GUI.Label(rect, content, active
-                ? CommandPaletteStyles.ChipLabel
-                : CommandPaletteStyles.PillLabel);
-        }
-
         /// <summary>Draws one "key does something" hint and returns where the next one starts.</summary>
         /// <param name="area">The row the hint is drawn in.</param>
         /// <param name="x">Left edge of the hint.</param>
@@ -130,6 +121,15 @@ namespace Base.ToolPackage.Editor.CommandPalette
             GUI.Label(textRect, text, CommandPaletteStyles.HintLabel);
 
             return textRect.xMax + HintGap;
+        }
+
+        private static void DrawPillFace(Rect rect, GUIContent content, bool active, bool hover, bool pressed)
+        {
+            DrawFill(rect, CommandPaletteStyles.PillColor(active, hover, pressed), CommandPaletteStyles.PillRadius);
+
+            GUI.Label(rect, content, active
+                ? CommandPaletteStyles.ChipLabel
+                : CommandPaletteStyles.PillLabel);
         }
     }
 }

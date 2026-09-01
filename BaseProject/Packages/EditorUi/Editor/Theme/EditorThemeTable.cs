@@ -15,27 +15,27 @@ namespace Base.EditorUiPackage
     [Serializable]
     public sealed class EditorThemeTable
     {
-        [SerializeField, Range(0f, 1f)] private float badgeAlpha;
-        [SerializeField, Min(1)] private int badgeFontSize;
-        [SerializeField, Min(0)] private int cardPadding;
-        [SerializeField, Min(0f)] private float emptyIconSize;
-        [SerializeField, Min(0f)] private float emptyLineGap;
-        [SerializeField, Min(0f)] private float headerArrowGap;
-        [SerializeField, Range(0f, 1f)] private float headerTintDark;
-        [SerializeField, Range(0f, 1f)] private float headerTintLight;
-        [SerializeField, Min(0f)] private float iconGap;
-        [SerializeField, Min(0f)] private float iconSize;
-        [SerializeField, Min(0f)] private float minBadgeWidth;
-        [SerializeField, Range(0f, 1f)] private float neutralBadgeAlpha;
-        [SerializeField, Min(0f)] private float outerMargin;
-        [SerializeField, Min(0f)] private float pingButtonWidth;
-        [SerializeField, Range(0f, 1f)] private float pingHoverAlpha;
-        [SerializeField, Range(0f, 1f)] private float pingRestAlpha;
-        [SerializeField, Min(1f)] private float rowHeight;
-        [SerializeField, Min(0f)] private float searchWidth;
-        [SerializeField, Min(0f)] private float summaryHeight;
-        [SerializeField, Range(0f, 1f)] private float summaryPillAlpha;
-        [SerializeField, Min(0f)] private float toolbarButtonWidth;
+        [SerializeField] [Range(0f, 1f)] private float badgeAlpha;
+        [SerializeField] [Min(1)] private int badgeFontSize;
+        [SerializeField] [Min(0)] private int cardPadding;
+        [SerializeField] [Min(0f)] private float emptyIconSize;
+        [SerializeField] [Min(0f)] private float emptyLineGap;
+        [SerializeField] [Min(0f)] private float headerArrowGap;
+        [SerializeField] [Range(0f, 1f)] private float headerTintDark;
+        [SerializeField] [Range(0f, 1f)] private float headerTintLight;
+        [SerializeField] [Min(0f)] private float iconGap;
+        [SerializeField] [Min(0f)] private float iconSize;
+        [SerializeField] [Min(0f)] private float minBadgeWidth;
+        [SerializeField] [Range(0f, 1f)] private float neutralBadgeAlpha;
+        [SerializeField] [Min(0f)] private float outerMargin;
+        [SerializeField] [Min(0f)] private float pingButtonWidth;
+        [SerializeField] [Range(0f, 1f)] private float pingHoverAlpha;
+        [SerializeField] [Range(0f, 1f)] private float pingRestAlpha;
+        [SerializeField] [Min(1f)] private float rowHeight;
+        [SerializeField] [Min(0f)] private float searchWidth;
+        [SerializeField] [Min(0f)] private float summaryHeight;
+        [SerializeField] [Range(0f, 1f)] private float summaryPillAlpha;
+        [SerializeField] [Min(0f)] private float toolbarButtonWidth;
 
         /// <summary>Opacity a palette color is laid on a badge with, so the text stays readable.</summary>
         public float BadgeAlpha => badgeAlpha;
@@ -101,9 +101,7 @@ namespace Base.EditorUiPackage
         public float ToolbarButtonWidth => toolbarButtonWidth;
 
         /// <summary>Creates an empty set. Required by the serializer and by the inspector.</summary>
-        public EditorThemeTable()
-        {
-        }
+        public EditorThemeTable() { }
 
         /// <summary>Creates a full set of list window metrics.</summary>
         /// <param name="badgeAlpha">Opacity a palette color is laid on a badge with.</param>

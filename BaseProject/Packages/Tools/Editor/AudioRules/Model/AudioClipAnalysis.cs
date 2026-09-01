@@ -4,7 +4,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Model
     /// What reading the sample data of one clip turned up. Built by the analyzer, cached between
     /// runs, and only filled in once the deep pass has actually run over the clip.
     /// </summary>
-    public sealed class AudioClipAnalysis
+    internal sealed class AudioClipAnalysis
     {
         /// <summary>True once the sample data was readable and the numbers below are meaningful.</summary>
         public bool HasData { get; set; }

@@ -27,7 +27,7 @@ namespace Base.UtilityPackage.Randomization
             uint high = (uint)Random.Range(0, HalfRange);
             uint low = (uint)Random.Range(0, HalfRange);
 
-            return (high << HalfBits) | low;
+            return high << HalfBits | low;
         }
     }
 }

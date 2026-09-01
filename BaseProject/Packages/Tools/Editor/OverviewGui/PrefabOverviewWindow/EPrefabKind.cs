@@ -3,7 +3,7 @@ namespace Base.ToolPackage.Editor.OverviewGui.PrefabOverviewWindow
     /// <summary>
     /// What kind of prefab asset an overview entry points at.
     /// </summary>
-    public enum EPrefabKind : byte
+    internal enum EPrefabKind : byte
     {
         /// <summary>A normal prefab that is not derived from another prefab.</summary>
         Regular = 0,

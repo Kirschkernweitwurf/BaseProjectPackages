@@ -11,8 +11,10 @@ namespace Base.AttributePackage.Editor.Handlers
     {
         private const int HandlerOrder = -60;
 
+        /// <inheritdoc/>
         public int Order => HandlerOrder;
 
+        /// <inheritdoc/>
         public void BeforeField(in MemberContext context)
         {
             if (context.GetAttribute<StartExpandedAttribute>() == null)

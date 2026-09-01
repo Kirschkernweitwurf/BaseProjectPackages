@@ -11,31 +11,30 @@ namespace Base.ToolPackage.Editor.TodoOverview.Settings
     /// </summary>
     internal static class TodoSettingsProvider
     {
+        private const string DatesHeader = "Dates";
         private const string DatesHelp = "Date formats are tried in this order. Two digit years resolve "
             + "into the current century.";
+        private const string KeywordsHeader = "Keywords";
+        private const string MetadataHeader = "Owner And Date";
 
         private const string MetadataHelp = "Patterns that read the responsible person and the date out of "
             + "an item. Each one is a regular expression that may carry an owner group, a date group or "
             + "both, and whatever it matches is cut out of the message. Example for "
             + "\"TODO: text (Jonny, 20.08.26)\": \\((?<owner>[^,()]+),\\s*(?<date>[0-9.]+)\\)";
-
-        private const string DatesHeader = "Dates";
-        private const string KeywordsHeader = "Keywords";
-        private const string MetadataHeader = "Owner And Date";
         private const string PageLabel = "Todo Overview";
+        private const string ScopeHeader = "Scope";
         private const string ScopeHelp = "Files whose path contains one of these are never read.";
         private const string SettingsPath = "Project/Base Tools/Todo Overview";
-        private const string ScopeHeader = "Scope";
         private const string Summary = "The keywords the scan looks for, how owner and date are read out of "
             + "an item, and the paths that are never read.";
         private const string TagsHelp = "The keywords the scan looks for, with the color each one is drawn in.";
 
+        /// <summary>The settings path used to open this page programmatically.</summary>
+        internal static string Path => SettingsPath;
+
         private static readonly EditorWindowStyles Styles = new();
 
         private static SerializedObject _serializedObject;
-
-        /// <summary>The settings path used to open this page programmatically.</summary>
-        internal static string Path => SettingsPath;
 
         [SettingsProvider]
         [BaseToolsPage(Summary)]

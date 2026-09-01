@@ -44,6 +44,9 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
             alignment = TextAnchor.MiddleLeft
         };
 
+        /// <summary>Line color of column dividers and table borders.</summary>
+        internal static Color DividerColor => EditorPalette.Divider;
+
         private static GUIStyle BadgeStyle => _badgeStyle ??= new GUIStyle(EditorStyles.miniBoldLabel)
         {
             alignment = TextAnchor.MiddleCenter,
@@ -92,6 +95,15 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
             }
         };
 
+        /// <summary>Zebra striping of table rows.</summary>
+        private static Color EvenRowColor => EditorPalette.Stripe;
+
+        private static Color HeaderColor => EditorTableStyles.HeaderColor;
+
+        private static Color SuccessTitleColor => EditorPalette.Success;
+
+        private static Color SuccessSubtitleColor => EditorPalette.DimText;
+
         /// <summary>Blue accent of the Rules section.</summary>
         internal static readonly Color RulesAccent = new(0.33f, 0.52f, 0.74f);
 
@@ -103,18 +115,6 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
 
         /// <summary>Light green accent of the History section.</summary>
         internal static readonly Color HistoryAccent = new(0.62f, 0.78f, 0.5f);
-
-        /// <summary>Line color of column dividers and table borders.</summary>
-        internal static Color DividerColor => EditorPalette.Divider;
-
-        /// <summary>Zebra striping of table rows.</summary>
-        private static Color EvenRowColor => EditorPalette.Stripe;
-
-        private static Color HeaderColor => EditorTableStyles.HeaderColor;
-
-        private static Color SuccessTitleColor => EditorPalette.Success;
-
-        private static Color SuccessSubtitleColor => EditorPalette.DimText;
 
         /// <summary>Casing options, each written in the casing it stands for.</summary>
         internal static readonly string[] StyleLabels =
@@ -155,7 +155,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
                 EditorGUI.DrawRect(rect, new Color(accent.r, accent.g, accent.b, 0.16f));
                 EditorGUI.DrawRect(new Rect(rect.x, rect.y, StripeWidth, rect.height), accent);
                 EditorGUI.DrawRect(new Rect(rect.x, rect.yMax - EditorMetrics.SeparatorThickness,
-                rect.width, EditorMetrics.SeparatorThickness), DividerColor);
+                    rect.width, EditorMetrics.SeparatorThickness), DividerColor);
             }
 
             Rect foldoutRect = new(rect.x + 10f, rect.y + 2f, rect.width - BadgeWidth - 24f, rect.height - 4f);

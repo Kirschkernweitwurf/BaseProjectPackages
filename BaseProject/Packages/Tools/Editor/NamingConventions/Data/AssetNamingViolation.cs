@@ -1,7 +1,7 @@
 namespace Base.ToolPackage.Editor.NamingConventions.Data
 {
     /// <summary>An asset that breaks its rule, together with the file name that would fix it.</summary>
-    public sealed class AssetNamingViolation
+    internal sealed class AssetNamingViolation
     {
         /// <summary>Project relative path of the asset.</summary>
         public string AssetPath { get; }

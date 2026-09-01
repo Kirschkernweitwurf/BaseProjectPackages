@@ -23,21 +23,23 @@ namespace Base.ToolPackage.Editor.CommandPalette
         {
             GenericMenu menu = new();
 
-            menu.AddItem(new GUIContent(EditTagsLabel), false, () => handle(ECommandPaletteAction.EditTags));
+            menu.AddItem(new GUIContent(EditTagsLabel), false, func: () => handle(ECommandPaletteAction.EditTags));
 
             menu.AddItem(new GUIContent(CommandTagStore.instance.IsPinned(entry.Id)
                 ? UnpinLabel
-                : PinLabel), false, () => handle(ECommandPaletteAction.TogglePin));
+                : PinLabel), false, func: () => handle(ECommandPaletteAction.TogglePin));
 
             menu.AddSeparator(string.Empty);
 
             if (CommandScriptOpener.CanOpen(entry))
                 menu.AddItem(new GUIContent(OpenScriptLabel), false,
-                    () => handle(ECommandPaletteAction.OpenScript));
+                    func: () => handle(ECommandPaletteAction.OpenScript));
             else
                 menu.AddDisabledItem(new GUIContent(OpenScriptLabel));
 
-            menu.AddItem(new GUIContent(CopyPathLabel), false, () => EditorGUIUtility.systemCopyBuffer = entry.Path);
+            menu.AddItem(new GUIContent(CopyPathLabel), false,
+                func: () => EditorGUIUtility.systemCopyBuffer = entry.Path);
+
             menu.ShowAsContext();
         }
     }

@@ -44,12 +44,12 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
 
         /// <summary>Creates a resolved menu item.</summary>
         internal static ResolvedMenu MenuItem(string defaultPath, Action execute, Func<bool> validate,
-            Func<bool> isChecked, Type declaringType)
-            => new(EMenuEntryKind.MenuItem, defaultPath, execute, validate, isChecked, null, string.Empty,
-                declaringType);
+            Func<bool> isChecked, Type declaringType) => new(EMenuEntryKind.MenuItem, defaultPath, execute, validate,
+            isChecked, null, string.Empty,
+            declaringType);
 
         /// <summary>Creates a resolved asset creation entry.</summary>
-        internal static ResolvedMenu CreateAsset(string defaultPath, Type assetType, string defaultFileName)
-            => new(EMenuEntryKind.CreateAsset, defaultPath, null, null, null, assetType, defaultFileName, assetType);
+        internal static ResolvedMenu CreateAsset(string defaultPath, Type assetType, string defaultFileName) => new(
+            EMenuEntryKind.CreateAsset, defaultPath, null, null, null, assetType, defaultFileName, assetType);
     }
 }

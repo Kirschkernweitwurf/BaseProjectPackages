@@ -41,17 +41,18 @@ namespace Base.ToolPackage.Editor.Tests
 
         /// <summary>The relation the probe does write, which has to survive the fold.</summary>
         [Test]
-        public void ProbeKeepsTheEdgeToTheAssemblyItNames()
-            => Assert.That(_edges.Find(ProbeAssembly, CoreAssembly),
-                Is.Not.Null,
-                "the probe subclasses a type from " + CoreAssembly + ", so that edge is required");
+        public void ProbeKeepsTheEdgeToTheAssemblyItNames() => Assert.That(_edges.Find(ProbeAssembly, CoreAssembly),
+            Is.Not.Null,
+            "the probe subclasses a type from " + CoreAssembly + ", so that edge is required");
 
         /// <summary>The relation the probe does not write, which the fold has to drop.</summary>
         [Test]
-        public void ProbeDoesNotReachTheAssemblyOfAnInheritedInterface()
-            => Assert.That(_edges.Find(ProbeAssembly, ServiceAssembly),
-                Is.Null,
-                "the probe names nothing from " + ServiceAssembly + " and does not reference it, so "
-                + "an edge here is the inherited interface being counted as a usage");
+        public void ProbeDoesNotReachTheAssemblyOfAnInheritedInterface() => Assert.That(
+            _edges.Find(ProbeAssembly, ServiceAssembly),
+            Is.Null,
+            "the probe names nothing from "
+            + ServiceAssembly
+            + " and does not reference it, so "
+            + "an edge here is the inherited interface being counted as a usage");
     }
 }

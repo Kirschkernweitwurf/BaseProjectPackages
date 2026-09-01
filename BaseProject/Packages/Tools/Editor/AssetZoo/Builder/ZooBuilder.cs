@@ -13,7 +13,7 @@ namespace Base.ToolPackage.Editor.AssetZoo.Builder
     /// Builds an asset zoo into the active scene. Pure logic, knows nothing about the
     /// editor UI. Call <see cref="Build"/> to generate, <see cref="Clear"/> to remove.
     /// </summary>
-    public class ZooBuilder
+    internal class ZooBuilder
     {
         private const string BuildUndoLabel = "Build Asset Zoo";
         private const string ClearUndoLabel = "Clear Asset Zoo";

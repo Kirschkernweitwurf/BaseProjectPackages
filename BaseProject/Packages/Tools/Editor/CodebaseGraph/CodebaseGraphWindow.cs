@@ -39,10 +39,10 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         private const string MiniMapShownLabel = "Minimap, click to hide";
         private const float MinimumWindowHeight = 560f;
         private const float MinimumWindowWidth = 1100f;
-        private const string NamespacesHeadingFormat = "Namespaces ({0})";
-        private const string NamespacesSegment = "All namespaces";
         private const string MissingSheetMessage = "The codebase graph style sheet was not found, so the "
             + "window is drawn unstyled.";
+        private const string NamespacesHeadingFormat = "Namespaces ({0})";
+        private const string NamespacesSegment = "All namespaces";
         private const string ScanLabel = "Scan project";
         private const string SearchCappedHeadingFormat = "Showing {0} of {1} matches for \"{2}\"";
         private const long SearchDebounceMilliseconds = 180;

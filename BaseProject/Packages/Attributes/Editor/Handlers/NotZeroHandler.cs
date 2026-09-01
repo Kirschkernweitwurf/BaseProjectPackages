@@ -13,6 +13,7 @@ namespace Base.AttributePackage.Editor.Handlers
     /// </summary>
     internal sealed class NotZeroHandler : IAfterFieldHandler
     {
+        /// <inheritdoc/>
         public int Order => 10;
 
         private static readonly Dictionary<string, float> Previous = new();
@@ -21,6 +22,7 @@ namespace Base.AttributePackage.Editor.Handlers
         // at which none of it matters any more.
         static NotZeroHandler() => EditorApplication.playModeStateChanged += _ => Previous.Clear();
 
+        /// <inheritdoc/>
         public void AfterField(in MemberContext context)
         {
             NotZeroAttribute attribute = context.GetAttribute<NotZeroAttribute>();

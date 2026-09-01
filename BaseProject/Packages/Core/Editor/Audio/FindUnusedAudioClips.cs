@@ -32,8 +32,8 @@ namespace Base.CorePackage.Editor.Audio
         private const string NothingUnusedMessage = "No unused clips";
         private const string PrefabFilter = "t:Prefab";
         private const string RescanLabel = "Rescan";
-        private const string ScanLabel = "Scan for Unused Audio Clips";
         private const float ScanButtonHeight = 28f;
+        private const string ScanLabel = "Scan for Unused Audio Clips";
         private const string SelectAllLabel = "Select All in Project";
         private const string SelectContainersLabel = "Select Affected Containers";
         private const string SlotsHeaderFormat = "Empty clip slots ({0})";
@@ -81,6 +81,7 @@ namespace Base.CorePackage.Editor.Audio
         private void OnDisable() => _styles.Dispose();
 #endregion
 
+        /// <summary>Opens the window and scans immediately, so it never opens on an empty list.</summary>
         [DynamicMenuItem(MenuPath)]
         public static void ShowWindow()
         {
@@ -344,9 +345,16 @@ namespace Base.CorePackage.Editor.Audio
             /// </summary>
             public const int NoClipsIndex = -1;
 
+            /// <summary>The container the empty slot was found in.</summary>
             public readonly AudioContainer Container;
+
             private readonly int index;
 
+            /// <summary>Records one empty clip slot.</summary>
+            /// <param name="container">The container the slot belongs to.</param>
+            /// <param name="index">
+            /// The slot's position, or <see cref="NoClipsIndex"/> when the container holds no clips.
+            /// </param>
             public NullClipReference(AudioContainer container, int index)
             {
                 Container = container;

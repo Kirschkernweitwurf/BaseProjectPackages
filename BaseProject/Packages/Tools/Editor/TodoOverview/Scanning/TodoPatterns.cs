@@ -30,12 +30,6 @@ namespace Base.ToolPackage.Editor.TodoOverview.Scanning
         private const string PatternWarning = "Todo Overview: ignoring the invalid pattern \"{0}\". {1}";
         private const int TimeoutSeconds = 2;
 
-        private static readonly TimeSpan Timeout = TimeSpan.FromSeconds(TimeoutSeconds);
-
-        private readonly Dictionary<string, string> _canonical = new(StringComparer.OrdinalIgnoreCase);
-        private readonly List<Regex> _metadata = new();
-        private readonly List<string> _words = new();
-
         /// <summary>How far an item reaches past the line its keyword sits on.</summary>
         internal ETodoContinuation Continuation { get; }
 
@@ -51,10 +45,11 @@ namespace Base.ToolPackage.Editor.TodoOverview.Scanning
         /// <summary>Whether there is at least one keyword to look for.</summary>
         internal bool HasKeywords => Keywords != null;
 
-        /// <summary>Builds the compiled patterns from the project settings.</summary>
-        /// <param name="settings">The settings to compile.</param>
-        /// <returns>The compiled patterns.</returns>
-        internal static TodoPatterns Create(TodoSettings settings) => new(settings);
+        private static readonly TimeSpan Timeout = TimeSpan.FromSeconds(TimeoutSeconds);
+
+        private readonly Dictionary<string, string> _canonical = new(StringComparer.OrdinalIgnoreCase);
+        private readonly List<Regex> _metadata = new();
+        private readonly List<string> _words = new();
 
         private TodoPatterns(TodoSettings settings)
         {
@@ -79,6 +74,11 @@ namespace Base.ToolPackage.Editor.TodoOverview.Scanning
             foreach (string pattern in settings.MetadataPatterns)
                 AddMetadata(pattern);
         }
+
+        /// <summary>Builds the compiled patterns from the project settings.</summary>
+        /// <param name="settings">The settings to compile.</param>
+        /// <returns>The compiled patterns.</returns>
+        internal static TodoPatterns Create(TodoSettings settings) => new(settings);
 
         /// <summary>
         /// Whether a file mentions any keyword at all. Reading a file is cheap next to lexing it, so

@@ -14,12 +14,6 @@ namespace Base.ToolPackage.Editor.CommandPalette
         private const int PageStep = 10;
         private const int RightMouseButton = 1;
 
-        private readonly List<CommandMatch> _matches = new();
-
-        private Vector2 _scroll;
-        private float _viewport;
-        private int _selected;
-
         /// <summary>How many entries survived the current filter.</summary>
         internal int Count => _matches.Count;
 
@@ -28,6 +22,19 @@ namespace Base.ToolPackage.Editor.CommandPalette
 
         /// <summary>The entry the selection currently sits on.</summary>
         internal CommandEntry Selected => _matches[_selected].Entry;
+
+        private readonly List<CommandMatch> _matches = new();
+
+        private Vector2 _scroll;
+        private float _viewport;
+        private int _selected;
+
+        /// <summary>Jumps back to the first result. Call when the query changes.</summary>
+        public void Reset()
+        {
+            _selected = 0;
+            _scroll = Vector2.zero;
+        }
 
         /// <summary>Replaces the results with everything that matches the filter.</summary>
         /// <param name="entries">Every known command.</param>
@@ -38,13 +45,6 @@ namespace Base.ToolPackage.Editor.CommandPalette
             CommandQuery.Run(entries, filter, projectOnly, _matches);
 
             _selected = Mathf.Clamp(_selected, 0, Mathf.Max(0, _matches.Count - 1));
-        }
-
-        /// <summary>Jumps back to the first result. Call when the query changes.</summary>
-        public void Reset()
-        {
-            _selected = 0;
-            _scroll = Vector2.zero;
         }
 
         /// <summary>Moves the selection and scrolls it back into view.</summary>
@@ -83,8 +83,7 @@ namespace Base.ToolPackage.Editor.CommandPalette
             return action;
         }
 
-        private static void DrawEmpty(Rect area)
-            => GUI.Label(area, EmptyMessage, CommandPaletteStyles.EmptyLabel);
+        private static void DrawEmpty(Rect area) => GUI.Label(area, EmptyMessage, CommandPaletteStyles.EmptyLabel);
 
         private static int StepOf(ECommandPaletteAction action) => action switch
         {

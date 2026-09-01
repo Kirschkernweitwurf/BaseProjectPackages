@@ -23,8 +23,6 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         /// <summary>Width of the accent stripe drawn at the left edge of every row.</summary>
         internal const float StripeWidth = 3f;
 
-        private static readonly EditorStyleWatch Watch = new();
-
         private const float ChipInset = 3f;
 
         /// <summary>Label style for menu paths. Uses rich text to dim everything but the last segment.</summary>
@@ -93,6 +91,8 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         private static string DimHex => EditorThemeProvider.IsDarkMode
             ? "#8C8C8C"
             : "#6B6B6B";
+
+        private static readonly EditorStyleWatch Watch = new();
 
         private static readonly GUIContent DynamicChip =
             new("dynamic", "Registered by the menu manager. Its path and priority can be changed there.");
@@ -211,6 +211,5 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
             EditorGUIUtility.AddCursorRect(rect, MouseCursor.Link);
             return GUI.Button(rect, content, style);
         }
-
     }
 }

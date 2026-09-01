@@ -31,14 +31,27 @@ namespace Base.TweeningPackage.Core
         /// </summary>
         public event Action<TweenBase> OnKill;
 
+        /// <summary>True between <see cref="Start"/> and the tween ending, however it ends.</summary>
         public abstract bool IsRunning { get; }
 
+        /// <summary>
+        /// True once the tween reached its end value. A tween stopped without completing ends without
+        /// this ever becoming true, which is what separates a finish from a cancel.
+        /// </summary>
         public abstract bool IsCompleted { get; }
 
+        /// <summary>Begins the tween. Calling this on a running tween does nothing.</summary>
         public abstract void Start();
 
+        /// <summary>Ends the tween early.</summary>
+        /// <param name="complete">
+        /// True to snap to the end value first, which raises the completion event as if it had
+        /// finished. False to leave the value where it is and only raise the kill event.
+        /// </param>
         public abstract void Stop(bool complete = false);
 
+        /// <summary>Advances the tween by one frame. Called by whatever owns the tween.</summary>
+        /// <param name="deltaTime">Seconds since the last tick, scaled or unscaled as the owner decides.</param>
         public abstract void Tick(float deltaTime);
 
         /// <summary>

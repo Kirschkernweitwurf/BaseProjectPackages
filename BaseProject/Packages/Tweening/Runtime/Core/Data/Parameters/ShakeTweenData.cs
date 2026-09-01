@@ -15,6 +15,9 @@ namespace Base.TweeningPackage.Core.Data.Parameters
         [field: Tooltip("Basic tween parameters.")]
         [field: SerializeField] public TweenData TweenData { get; private set; }
 
+        /// <summary>Creates the parameters for a shake.</summary>
+        /// <param name="strength">How far the shake displaces the target at its peak.</param>
+        /// <param name="tweenData">The duration, easing and delay the shake runs with.</param>
         public ShakeTweenData(float strength, TweenData tweenData)
         {
             Strength = strength;

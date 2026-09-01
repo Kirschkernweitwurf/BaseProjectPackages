@@ -20,6 +20,12 @@ namespace Base.AttributePackage.Editor.Windows.GetComponentAssigner
         private const string PrefabFilter = "t:Prefab";
         private const string ProgressTitle = "Assigning GetComponent references";
 
+        /// <summary>
+        /// Walks the requested sources and fills in every empty auto-assign reference it can resolve.
+        /// </summary>
+        /// <param name="includePrefabs">True to walk every prefab asset in the project.</param>
+        /// <param name="includeScenes">True to walk the objects in the currently open scenes.</param>
+        /// <returns>How many references were assigned.</returns>
         internal static int Run(bool includePrefabs, bool includeScenes)
         {
             int assigned = 0;

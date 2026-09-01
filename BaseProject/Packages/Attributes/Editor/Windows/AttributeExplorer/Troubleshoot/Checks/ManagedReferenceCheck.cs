@@ -20,6 +20,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot.Ch
         private const string UnityObjectMessage =
             "[SerializeReference] cannot store a UnityEngine.Object. Use a plain [SerializeField] instead.";
 
+        /// <inheritdoc/>
         public void Inspect(Type type, List<AttributeIssue> issues)
         {
             foreach (FieldInfo field in ScannedMembers.DeclaredFields(type))

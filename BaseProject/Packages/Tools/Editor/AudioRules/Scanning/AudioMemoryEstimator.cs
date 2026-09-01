@@ -16,12 +16,12 @@ namespace Base.ToolPackage.Editor.AudioRules.Scanning
     /// </summary>
     internal static class AudioMemoryEstimator
     {
-        private const int BytesPerSample = 2;
         private const float AdpcmRatio = 3.5f;
+        private const int BitsPerByte = 8;
+        private const int BytesPerSample = 2;
         private const int MaxLossyBitrate = 256000;
         private const int MinLossyBitrate = 32000;
         private const int StreamingBufferBytes = 65536;
-        private const int BitsPerByte = 8;
 
         /// <summary>What the clip occupies in memory while it is loaded.</summary>
         /// <param name="info">The facts about the clip.</param>

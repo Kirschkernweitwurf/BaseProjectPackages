@@ -4,7 +4,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Data
     /// One import setting a rule can write. Used as the key of the decision trace, so the window
     /// can show which rule won each setting.
     /// </summary>
-    public enum EAudioSetting : byte
+    internal enum EAudioSetting : byte
     {
         /// <summary>The codec the clip is stored with.</summary>
         CompressionFormat = 0,

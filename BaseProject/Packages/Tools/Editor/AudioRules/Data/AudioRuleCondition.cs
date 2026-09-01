@@ -11,7 +11,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Data
     /// numeric fields read <see cref="Number"/>, the text fields read <see cref="Text"/>.
     /// </summary>
     [Serializable]
-    public sealed class AudioRuleCondition
+    internal sealed class AudioRuleCondition
     {
         private const string AnyPattern = ".*";
         private const string PatternEnd = "$";

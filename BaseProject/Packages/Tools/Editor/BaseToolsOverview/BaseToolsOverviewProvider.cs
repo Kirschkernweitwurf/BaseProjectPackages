@@ -27,11 +27,14 @@ namespace Base.ToolPackage.Editor.BaseToolsOverview
         private const float OpenButtonWidth = 72f;
         private const string OpenLabel = "Open";
         private const string PageLabel = "Base Tools";
+        private const float RowHeight = RowPadding * 2f
+            + TitleLineHeight
+            + SummaryLineHeight
+            + ButtonGap
+            + OpenButtonHeight;
         private const float RowPadding = 4f;
         private const float SummaryLineHeight = 16f;
         private const float TitleLineHeight = 18f;
-        private const float RowHeight = RowPadding * 2f + TitleLineHeight + SummaryLineHeight + ButtonGap
-            + OpenButtonHeight;
 
         private static readonly GUILayoutOption ExpandWidth = GUILayout.ExpandWidth(true);
         private static readonly BaseToolsOverviewStyles Styles = new();

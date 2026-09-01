@@ -8,7 +8,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Data
     /// decide for itself what counts as too quiet or as too much silence at the head of a clip.
     /// </summary>
     [Serializable]
-    public sealed class AudioAnalysisSettings
+    internal sealed class AudioAnalysisSettings
     {
         private const float DefaultClipLevel = 0.999f;
         private const int DefaultClippedSamples = 8;

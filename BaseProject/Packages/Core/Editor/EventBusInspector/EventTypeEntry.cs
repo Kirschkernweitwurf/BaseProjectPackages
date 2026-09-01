@@ -47,7 +47,6 @@ namespace Base.CorePackage.Editor.EventBusInspector
             // The bus removes an entry as soon as its last handler goes, so a null delegate should
             // never reach this. Tolerated rather than trusted, because the window reads live state.
             if (combined != null)
-            {
                 foreach (Delegate handler in combined.GetInvocationList())
                 {
                     HandlerEntry entry = new(handler);
@@ -57,7 +56,6 @@ namespace Base.CorePackage.Editor.EventBusInspector
                     if (entry.IsLeak)
                         leaks++;
                 }
-            }
 
             Handlers = handlers;
             LeakCount = leaks;

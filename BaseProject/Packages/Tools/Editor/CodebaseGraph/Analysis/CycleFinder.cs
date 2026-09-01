@@ -206,12 +206,24 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         /// <typeparam name="T">Node identity type.</typeparam>
         private sealed class Frame<T>
         {
+            /// <summary>The node this frame is sitting on.</summary>
             internal T Node { get; }
 
+            /// <summary>
+            /// Walks the node's outgoing edges, and remembers how far it got. Keeping it on the frame
+            /// is what lets the walk resume where it left off after descending into a child.
+            /// </summary>
             internal IEnumerator<T> Enumerator { get; private set; }
 
+            /// <summary>Pushes a node onto the walk. The enumerator is created on first use.</summary>
+            /// <param name="node">The node being descended into.</param>
             internal Frame(T node) => Node = node;
 
+            /// <summary>
+            /// Creates the enumerator the first time the frame is visited, so a node the walk never
+            /// gets around to never pays for enumerating its edges.
+            /// </summary>
+            /// <param name="getTargets">Returns the nodes an edge leads to.</param>
             internal void EnsureEnumerator(Func<T, IEnumerable<T>> getTargets)
                 => Enumerator ??= getTargets(Node).GetEnumerator();
         }

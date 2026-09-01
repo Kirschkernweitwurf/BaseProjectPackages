@@ -1,5 +1,4 @@
 using Base.AttributePackage.Editor.Core.Interfaces;
-using Base.AttributePackage.Editor.Drawers;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -12,8 +11,10 @@ namespace Base.AttributePackage.Editor.Handlers
         private const int MaximumSize = 512;
         private const int MinimumSize = 16;
 
+        /// <inheritdoc/>
         public int Order => 100;
 
+        /// <inheritdoc/>
         public void AfterField(in MemberContext context)
         {
             if (context.Property.propertyType != SerializedPropertyType.ObjectReference)

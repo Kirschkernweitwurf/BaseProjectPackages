@@ -13,17 +13,16 @@ namespace Base.SaveSystemPackage.Backup
     /// </summary>
     internal sealed class NoSaveBackups : ISaveBackups
     {
-        /// <summary>The shared instance. It holds no state, so one is enough.</summary>
-        internal static readonly NoSaveBackups Instance = new();
-
         /// <inheritdoc/>
         public bool IsEnabled => false;
+
+        /// <summary>The shared instance. It holds no state, so one is enough.</summary>
+        internal static readonly NoSaveBackups Instance = new();
 
         private NoSaveBackups() { }
 
         /// <inheritdoc/>
-        public Awaitable RotateAsync(string slotId, CancellationToken ct = default)
-            => AwaitableUtility.Completed();
+        public Awaitable RotateAsync(string slotId, CancellationToken ct = default) => AwaitableUtility.Completed();
 
         /// <inheritdoc/>
         public Awaitable<IReadOnlyList<SaveBackupInfo>> ListAsync(string slotId, CancellationToken ct = default)
@@ -31,15 +30,13 @@ namespace Base.SaveSystemPackage.Backup
 
         /// <inheritdoc/>
         public Awaitable<byte[]> ReadAsync(string slotId, string backupId, ESaveFile file,
-            CancellationToken ct = default)
-            => AwaitableUtility.FromResult<byte[]>(null);
+            CancellationToken ct = default) => AwaitableUtility.FromResult<byte[]>(null);
 
         /// <inheritdoc/>
         public Awaitable<bool> RestoreAsync(string slotId, string backupId, CancellationToken ct = default)
             => AwaitableUtility.FromResult(false);
 
         /// <inheritdoc/>
-        public Awaitable DeleteAllAsync(string slotId, CancellationToken ct = default)
-            => AwaitableUtility.Completed();
+        public Awaitable DeleteAllAsync(string slotId, CancellationToken ct = default) => AwaitableUtility.Completed();
     }
 }

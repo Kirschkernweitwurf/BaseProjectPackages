@@ -20,13 +20,6 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
 
         [SerializeField] private EAssetNamingSort sort = EAssetNamingSort.Folder;
 
-        /// <summary>Sort and grouping mode of the result list.</summary>
-        internal EAssetNamingSort Sort
-        {
-            get => sort;
-            set => sort = value;
-        }
-
         /// <summary>Free text an asset path has to contain to stay in the list.</summary>
         public string Search
         {
@@ -39,6 +32,24 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
         {
             get => _ruleFilter;
             set => _ruleFilter = value;
+        }
+
+        /// <summary>Dismissed assets that still exist, counted before the search is applied.</summary>
+        public int DismissedCount
+        {
+            get
+            {
+                _dismissedPaths ??= BuildDismissedPaths();
+
+                return _dismissedPaths.Count;
+            }
+        }
+
+        /// <summary>Sort and grouping mode of the result list.</summary>
+        internal EAssetNamingSort Sort
+        {
+            get => sort;
+            set => sort = value;
         }
 
         /// <summary>Violations left after the filters, sorted by the current mode.</summary>
@@ -55,17 +66,6 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
 
         /// <summary>Whether a search or a rule filter is hiding anything.</summary>
         internal bool IsFilterActive => !string.IsNullOrWhiteSpace(_search) || _ruleFilter.Length > 0;
-
-        /// <summary>Dismissed assets that still exist, counted before the search is applied.</summary>
-        public int DismissedCount
-        {
-            get
-            {
-                _dismissedPaths ??= BuildDismissedPaths();
-
-                return _dismissedPaths.Count;
-            }
-        }
 
         private readonly List<AssetNamingGroup> _groups = new();
         private readonly List<AssetNamingViolation> _all = new();

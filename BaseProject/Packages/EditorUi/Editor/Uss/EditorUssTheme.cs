@@ -60,23 +60,6 @@ namespace Base.EditorUiPackage
             return attached;
         }
 
-        // The GUID is the reliable way in, but a meta file Unity decides to regenerate takes the
-        // sheet out of reach of it, and an unstyled UI Toolkit window reads as broken rather than
-        // plain. The name search is the fallback for exactly that case.
-        private static bool Attach(VisualElement root)
-        {
-            if (EditorStyleSheets.Apply(root, SheetGuid))
-                return true;
-
-            foreach (string guid in AssetDatabase.FindAssets(SheetFilter))
-            {
-                if (EditorStyleSheets.Apply(root, guid))
-                    return true;
-            }
-
-            return false;
-        }
-
         /// <summary>
         /// The same as the other overload, with a painter that carries the colors this window's own
         /// sheet cannot take from the theme. It is applied straight away and again on every change.
@@ -89,7 +72,7 @@ namespace Base.EditorUiPackage
             if (painter == null)
                 return Apply(root);
 
-            bool attached = Apply(root, () => painter.Paint(root));
+            bool attached = Apply(root, onThemeChanged: () => painter.Paint(root));
 
             painter.Paint(root);
 
@@ -149,16 +132,34 @@ namespace Base.EditorUiPackage
             // Scheduled on the element, so it stops when the window closes. A static event would
             // outlive it while Domain Reload is off and keep calling into a window that is gone.
             root.schedule.Execute(() =>
+                {
+                    if (revision == EditorThemeProvider.Revision)
+                        return;
+
+                    revision = EditorThemeProvider.Revision;
+
+                    Paint(root);
+
+                    onThemeChanged?.Invoke();
+                })
+                .Every(PollMilliseconds);
+        }
+
+        // The GUID is the reliable way in, but a meta file Unity decides to regenerate takes the
+        // sheet out of reach of it, and an unstyled UI Toolkit window reads as broken rather than
+        // plain. The name search is the fallback for exactly that case.
+        private static bool Attach(VisualElement root)
+        {
+            if (EditorStyleSheets.Apply(root, SheetGuid))
+                return true;
+
+            foreach (string guid in AssetDatabase.FindAssets(SheetFilter))
             {
-                if (revision == EditorThemeProvider.Revision)
-                    return;
+                if (EditorStyleSheets.Apply(root, guid))
+                    return true;
+            }
 
-                revision = EditorThemeProvider.Revision;
-
-                Paint(root);
-
-                onThemeChanged?.Invoke();
-            }).Every(PollMilliseconds);
+            return false;
         }
 
         private static void PaintButtons(VisualElement root)

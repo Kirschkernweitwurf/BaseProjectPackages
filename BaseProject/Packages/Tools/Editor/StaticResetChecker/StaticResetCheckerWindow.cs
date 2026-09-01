@@ -28,10 +28,10 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
     /// <remarks>
     /// To suppress a false positive, add the ignore marker as a comment on the field line (e.g. "reset-ignore").
     /// </remarks>
-    public class StaticResetCheckerWindow : EditorWindow
+    internal class StaticResetCheckerWindow : EditorWindow
     {
-        private const string CopyLabel = "Copy report";
         private const float CopyButtonWidth = 110f;
+        private const string CopyLabel = "Copy report";
         private const string Description = "Finds static fields, events and auto-properties that no reset "
             + "method touches. With Domain Reload off they keep their value between play sessions, which "
             + "is where the state that survives a stop comes from.";
@@ -43,16 +43,16 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
         private const float MinWindowWidth = 420f;
         private const string NextLabel = "Next";
         private const string OptionsHeader = "Options";
-        private const int PageSize = 50;
+        private const float PageButtonWidth = 70f;
         private const string PageFormat = "Page {0} / {1}   ({2} files)";
         private const float PageLabelWidth = 180f;
-        private const float PageButtonWidth = 70f;
+        private const int PageSize = 50;
         private const string PrefPrefix = "StaticResetChecker.";
         private const string PrevLabel = "Prev";
         private const string ResultsHeader = "Findings";
         private const float RowHeight = 18f;
-        private const string ScanLabel = "Scan";
         private const float ScanButtonHeight = 28f;
+        private const string ScanLabel = "Scan";
         private const string WindowTitle = "Static Reset Checker";
 
         private readonly Dictionary<string, bool> _foldouts = new();

@@ -12,7 +12,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Data
     /// the codec while a later rule only flips the mono flag.
     /// </summary>
     [Serializable]
-    public sealed class AudioSettingOverrides
+    internal sealed class AudioSettingOverrides
     {
         private const float DefaultQuality = 0.7f;
         private const int DefaultSampleRate = 44100;
@@ -27,6 +27,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Data
         [field: Tooltip("Writes the codec the clip is stored with.")]
         [field: SerializeField] public bool SetsCompressionFormat { get; set; }
 
+        /// <summary>The codec to write. Only applied while the format override is switched on.</summary>
         [field: SerializeField]
         public AudioCompressionFormat CompressionFormat { get; set; } = AudioCompressionFormat.Vorbis;
 
@@ -39,6 +40,10 @@ namespace Base.ToolPackage.Editor.AudioRules.Data
         [field: Tooltip("Writes how the sample rate is handled, including the forced rate.")]
         [field: SerializeField] public bool SetsSampleRate { get; set; }
 
+        /// <summary>
+        /// How the sample rate is handled. Only applied while the sample rate override is switched on,
+        /// and the forced rate beside it only matters when this asks for one.
+        /// </summary>
         [field: SerializeField]
         public AudioSampleRateSetting SampleRateSetting { get; set; } = AudioSampleRateSetting.PreserveSampleRate;
 

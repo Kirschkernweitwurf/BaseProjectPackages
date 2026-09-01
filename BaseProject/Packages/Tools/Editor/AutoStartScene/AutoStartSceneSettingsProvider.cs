@@ -1,7 +1,6 @@
 using Base.EditorUiPackage;
 using Base.ToolPackage.Editor.BaseToolsOverview;
 using UnityEditor;
-using UnityEngine;
 
 namespace Base.ToolPackage.Editor.AutoStartScene
 {
@@ -9,7 +8,7 @@ namespace Base.ToolPackage.Editor.AutoStartScene
     /// Provides a settings provider in Unity's Project Settings to configure the auto start scene.
     /// Allows users to select a scene that will automatically load when entering Play mode.
     /// </summary>
-    public class AutoStartSceneSettingsProvider : SettingsProvider
+    internal class AutoStartSceneSettingsProvider : SettingsProvider
     {
         private const string DefaultSceneFormat = "Using the first build scene as the default: {0}";
         private const string EnableLabel = "Enable Auto Start";
@@ -29,10 +28,11 @@ namespace Base.ToolPackage.Editor.AutoStartScene
         private AutoStartSceneSettingsProvider(string path, SettingsScope scope = SettingsScope.Project)
             : base(path, scope) { }
 
+        /// <summary>Registers the page with the project settings window. Called by Unity.</summary>
+        /// <returns>The provider Unity draws the page from.</returns>
         [SettingsProvider]
         [BaseToolsPage(Summary)]
-        public static SettingsProvider CreateSettingsProvider()
-            => new AutoStartSceneSettingsProvider(SettingsPath);
+        public static SettingsProvider CreateSettingsProvider() => new AutoStartSceneSettingsProvider(SettingsPath);
 
         /// <inheritdoc/>
         public override void OnGUI(string searchContext)

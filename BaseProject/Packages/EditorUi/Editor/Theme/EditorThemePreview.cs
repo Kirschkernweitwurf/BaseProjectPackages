@@ -20,21 +20,21 @@ namespace Base.EditorUiPackage
         private const string HeaderDetail = "Path";
         private const string HeaderName = "Name";
         private const string HeaderState = "State";
+
+        private const int HoveredRow = 2;
         private const string HoverRowName = "Row under the mouse";
+        private const float NameColumnShare = 0.34f;
         private const string PingLabel = "Ping";
         private const string PlainRowName = "A plain row";
         private const string PrimaryLabel = "Refresh";
+        private const int RowCount = 4;
+        private const float SearchFieldHeight = 18f;
         private const string SearchText = "Search";
+        private const int SelectedRow = 3;
         private const string SelectedRowName = "The selected row";
         private const string StripedRowName = "Every second row";
-        private const string SummaryText = "4 of 4 shown";
         private const string SummaryPillText = "All good";
-
-        private const int HoveredRow = 2;
-        private const int RowCount = 4;
-        private const int SelectedRow = 3;
-        private const float NameColumnShare = 0.34f;
-        private const float SearchFieldHeight = 18f;
+        private const string SummaryText = "4 of 4 shown";
         private const float ToolbarHeight = 20f;
 
         /// <summary>
@@ -68,6 +68,7 @@ namespace Base.EditorUiPackage
 
             Rect summary = new(content.x, toolbar.yMax + EditorMetrics.ItemGap, content.width,
                 EditorTableStyles.SummaryHeight);
+
             DrawSummary(summary, styles);
 
             Rect card = new(content.x, summary.yMax + EditorMetrics.TightGap, content.width, CardHeight());
@@ -89,6 +90,7 @@ namespace Base.EditorUiPackage
 
             Rect secondary = new(primary.xMax + EditorMetrics.TightGap, area.y,
                 EditorTableStyles.ToolbarButtonWidth, area.height);
+
             GUI.Label(secondary, ClearLabel, styles.SecondaryButton);
 
             float searchWidth = Mathf.Min(EditorTableStyles.SearchWidth,
@@ -151,7 +153,8 @@ namespace Base.EditorUiPackage
 
             GUI.Label(name, HeaderName, styles.Header);
 
-            Rect arrow = new(name.x + styles.Header.CalcSize(new GUIContent(HeaderName)).x
+            Rect arrow = new(name.x
+                + styles.Header.CalcSize(new GUIContent(HeaderName)).x
                 + EditorTableStyles.HeaderArrowGap, header.y, EditorMetrics.SortArrowWidth, header.height);
 
             EditorRows.DrawSortArrow(arrow, ESortOrder.Ascending, EditorPalette.Accent);
@@ -243,7 +246,8 @@ namespace Base.EditorUiPackage
             return new Rect(name.xMax, row.y, Mathf.Max(0f, right - name.xMax), row.height);
         }
 
-        private static Rect BadgeCell(Rect row) => new(PingCell(row).x - EditorTableStyles.BadgeGap
+        private static Rect BadgeCell(Rect row) => new(PingCell(row).x
+            - EditorTableStyles.BadgeGap
             - EditorTableStyles.MinBadgeWidth, row.y, EditorTableStyles.MinBadgeWidth, row.height);
 
         private static Rect PingCell(Rect row)

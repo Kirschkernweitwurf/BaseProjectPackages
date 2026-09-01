@@ -3,6 +3,7 @@ namespace Base.TweeningPackage.Core
     /// <summary>
     /// Interface for tween-like objects.
     /// </summary>
+
     // The runner only drives a tween, so it calls Tick and IsCompleted and nothing else. IsRunning,
     // Start and Stop are the caller's half of the contract and are used on the concrete tween types.
     // They stay on the interface because a tween that cannot be started through it is not a tween.

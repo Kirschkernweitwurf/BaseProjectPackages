@@ -12,7 +12,7 @@ namespace Base.ToolPackage.Editor.EmptyFoldersOverviewWindow
     /// <summary>
     /// Editor window that lists empty folders and lets you jump to or delete them.
     /// </summary>
-    public sealed class EmptyFoldersOverviewWindow : EditorWindow
+    internal sealed class EmptyFoldersOverviewWindow : EditorWindow
     {
         private const string MenuPath = "Tools/Base Packages/Unity Editor/Project Health/Unused/Empty Folders Overview";
 

@@ -19,12 +19,6 @@ namespace Base.CorePackage.DebugDrawing
         private const string OverflowFormat = "Debug draw is holding more than {0} commands of one kind. "
             + "The excess is dropped until the queued ones expire.";
 
-        private static readonly List<DebugLineCommand> DepthTestedLines = new();
-        private static readonly List<DebugLineCommand> OverlayLines = new();
-        private static readonly List<DebugLabelCommand> Labels = new();
-
-        private static bool _hasWarnedOverflow;
-
         /// <summary>False while drawing is switched off, which makes every add a no-op.</summary>
         internal static bool IsEnabled { get; private set; } = true;
 
@@ -36,6 +30,12 @@ namespace Base.CorePackage.DebugDrawing
 
         /// <summary>The labels waiting to be drawn.</summary>
         internal static IReadOnlyList<DebugLabelCommand> LabelCommands => Labels;
+
+        private static readonly List<DebugLineCommand> DepthTestedLines = new();
+        private static readonly List<DebugLineCommand> OverlayLines = new();
+        private static readonly List<DebugLabelCommand> Labels = new();
+
+        private static bool _hasWarnedOverflow;
 
         /// <summary>Queues a line segment.</summary>
         /// <param name="from">The world space start of the segment.</param>

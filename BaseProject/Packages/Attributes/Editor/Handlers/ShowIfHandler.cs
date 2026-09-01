@@ -6,6 +6,7 @@ namespace Base.AttributePackage.Editor.Handlers
     /// <summary>Hides the field unless the referenced bool members satisfy the condition mode.</summary>
     internal sealed class ShowIfHandler : IVisibilityHandler
     {
+        /// <inheritdoc/>
         public bool ShouldShow(in MemberContext context)
         {
             ShowIfAttribute attribute = context.GetAttribute<ShowIfAttribute>();

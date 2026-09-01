@@ -1,7 +1,7 @@
 namespace Base.ToolPackage.Editor.AudioRules.Data
 {
     /// <summary>How a condition compares the clip against its value.</summary>
-    public enum EConditionOperator : byte
+    internal enum EConditionOperator : byte
     {
         /// <summary>The text contains the value.</summary>
         Contains = 0,

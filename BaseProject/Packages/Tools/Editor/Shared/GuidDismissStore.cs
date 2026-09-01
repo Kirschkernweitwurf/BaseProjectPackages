@@ -25,14 +25,14 @@ namespace Base.ToolPackage.Editor.Shared
         private const string LoadFailedFormat = "Could not read {0}: {1}. Starting with no dismissals.";
         private const string NullRangeFormat = "{0} was given no collection. Nothing was dismissed.";
 
-        private readonly string _filePath;
-
-        private HashSet<string> _guids;
-
         /// <summary>How many entries are currently dismissed.</summary>
         internal int Count => Guids.Count;
 
         private HashSet<string> Guids => _guids ??= Load();
+
+        private readonly string _filePath;
+
+        private HashSet<string> _guids;
 
         /// <summary>Creates a store over one project relative file.</summary>
         /// <param name="filePath">

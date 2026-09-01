@@ -11,7 +11,7 @@ namespace Base.ToolPackage.Editor.ComponentClipboard
     /// paste, delete and reorder through a context menu. Fills the gap left by Unity's single entry
     /// component clipboard.
     /// </summary>
-    public class ComponentClipboardWindow : EditorWindow
+    internal class ComponentClipboardWindow : EditorWindow
     {
         private const string AddBadge = "Add";
         private const float BadgeWidth = 80f;

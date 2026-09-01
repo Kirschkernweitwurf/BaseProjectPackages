@@ -13,8 +13,6 @@ namespace Base.CorePackage.StateMachine
     {
         private const string UnnamedLabel = "Unnamed";
 
-        private readonly Func<TContext, bool> _condition;
-
         /// <summary>The state the machine switches to once the condition holds.</summary>
         public IState<TContext> Target { get; }
 
@@ -23,6 +21,8 @@ namespace Base.CorePackage.StateMachine
 
         /// <summary>Transitions with a higher priority are evaluated first.</summary>
         public int Priority { get; }
+
+        private readonly Func<TContext, bool> _condition;
 
         /// <summary>Creates a transition to the given target.</summary>
         /// <param name="target">The state the machine switches to.</param>

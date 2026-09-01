@@ -14,7 +14,7 @@ namespace Base.AttributePackage.Samples
         {
             "Nothing to configure.",
             "Only one field can be armed at a time. Pressing the button again, pressing Escape or "
-                + "clicking on nothing cancels."
+            + "clicking on nothing cancels."
         })]
     internal sealed class SceneViewPickerSample : MonoBehaviour
     {

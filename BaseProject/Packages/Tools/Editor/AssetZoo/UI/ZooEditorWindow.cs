@@ -22,6 +22,8 @@ namespace Base.ToolPackage.Editor.AssetZoo.UI
         private const string ConfigLabel = "Config";
 
         private const string DefaultPath = "Tools/Base Packages/Assets/Asset Zoo/Open Zoo Builder";
+        private const string Description = "Builds a scene full of every asset a config points at, so a "
+            + "whole library can be looked at side by side instead of one prefab at a time.";
         private const string LastConfigKey = "Base.AssetZoo.LastConfigGuid";
         private const float MainButtonHeight = 32f;
         private const float MinWindowHeight = 400f;
@@ -34,8 +36,6 @@ namespace Base.ToolPackage.Editor.AssetZoo.UI
             + "2. Drop it in the Config field above.\n"
             + "3. Set the search folder under Generation, hit Auto Generate, hit Build.";
         private const string WindowTitle = "Asset Zoo Builder";
-        private const string Description = "Builds a scene full of every asset a config points at, so a "
-            + "whole library can be looked at side by side instead of one prefab at a time.";
 
         [SerializeField] private ZooConfig config;
 

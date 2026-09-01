@@ -8,7 +8,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Model
     /// part, which rule won each setting, what the change costs or saves, and whatever the deep
     /// analysis found. Nothing is written until the plan is applied, so a scan is always safe.
     /// </summary>
-    public sealed class AudioClipPlan
+    internal sealed class AudioClipPlan
     {
         /// <summary>The facts the decision was made from.</summary>
         public AudioClipInfo Info { get; }

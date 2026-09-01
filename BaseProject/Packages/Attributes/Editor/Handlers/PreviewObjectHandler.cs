@@ -1,6 +1,5 @@
 using Base.AttributePackage.Editor.Core;
 using Base.AttributePackage.Editor.Core.Interfaces;
-using Base.AttributePackage.Editor.Drawers;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -23,8 +22,10 @@ namespace Base.AttributePackage.Editor.Handlers
         private const string PreviewKeyPrefix = "PREVIEW";
         private const string PreviewLabel = "Preview";
 
+        /// <inheritdoc/>
         public int Order => HandlerOrder;
 
+        /// <inheritdoc/>
         public void AfterField(in MemberContext context)
         {
             PreviewObjectAttribute attribute = context.GetAttribute<PreviewObjectAttribute>();

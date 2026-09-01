@@ -16,6 +16,7 @@ namespace Base.AttributePackage.Editor.Handlers
     {
         private const float ButtonHeight = 18f;
 
+        /// <inheritdoc/>
         public int Order => 20;
 
         private static readonly GUIContent FixContent =
@@ -26,6 +27,7 @@ namespace Base.AttributePackage.Editor.Handlers
 
         private static readonly List<int> Repeats = new();
 
+        /// <inheritdoc/>
         public void AfterField(in MemberContext context)
         {
             UniqueAttribute attribute = context.GetAttribute<UniqueAttribute>();

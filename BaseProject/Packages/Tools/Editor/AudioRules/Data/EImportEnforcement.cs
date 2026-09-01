@@ -1,7 +1,7 @@
 namespace Base.ToolPackage.Editor.AudioRules.Data
 {
     /// <summary>When the rules are applied automatically as clips are imported.</summary>
-    public enum EImportEnforcement : byte
+    internal enum EImportEnforcement : byte
     {
         /// <summary>Rules apply on every reimport, so hand made changes never survive.</summary>
         Always = 0,

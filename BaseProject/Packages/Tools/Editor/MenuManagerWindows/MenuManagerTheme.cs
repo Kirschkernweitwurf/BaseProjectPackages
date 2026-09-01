@@ -133,9 +133,9 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         /// <param name="row">Row the line belongs to.</param>
         /// <param name="depth">Nesting level the line is drawn for.</param>
         /// <returns>The rect to fill with <see cref="AccentColor"/>.</returns>
-        internal static Rect LineAt(float y, Rect row, int depth)
-            => new(row.x + depth * Indent + DropLineInset, y - DropLineHeight * 0.5f,
-                row.width - depth * Indent - DropLineInset * 2f, DropLineHeight);
+        internal static Rect LineAt(float y, Rect row, int depth) => new(row.x + depth * Indent + DropLineInset,
+            y - DropLineHeight * 0.5f,
+            row.width - depth * Indent - DropLineInset * 2f, DropLineHeight);
 
         private static Color Fade(Color color, float alpha) => new(color.r, color.g, color.b, alpha);
 
