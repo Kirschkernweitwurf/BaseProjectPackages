@@ -1,3 +1,4 @@
+using Base.EditorUiPackage;
 using Base.ToolPackage.Editor.AssetZoo.Config;
 using Base.ToolPackage.Editor.AssetZoo.Generation;
 using UnityEditor;
@@ -6,27 +7,62 @@ using UnityEngine;
 namespace Base.ToolPackage.Editor.AssetZoo.UI
 {
     /// <summary>
-    /// Custom inspector for <see cref="ZooConfig"/> that adds buttons for building, clearing,
-    /// and selecting the zoo root, as well as opening the zoo editor window.
+    /// Custom inspector for <see cref="ZooConfig"/> that adds buttons for generating categories and
+    /// opening the zoo window, and reports what the last generation run did.
     /// </summary>
     [CustomEditor(typeof(ZooConfig))]
     internal class ZooConfigEditor : UnityEditor.Editor
     {
-        private const float AuxButtonHeight = 22f;
+        private const string ActionsHeader = "Actions";
+        private const float ButtonHeight = 24f;
+        private const string GenerateLabel = "Auto Generate Categories";
+        private const string OpenWindowLabel = "Open Zoo Window";
+
+        // Unity's own name for the hidden script reference, which has no member to point nameof at.
+        private const string ScriptField = "m_Script";
+
+        private readonly EditorWindowStyles _styles = new();
+
+        private ZooGenerationResult _lastResult;
+        private bool _hasResult;
+
+#region Unity Callbacks
+        private void OnDisable() => _styles.Dispose();
+#endregion
 
         /// <inheritdoc/>
         public override void OnInspectorGUI()
         {
-            DrawDefaultInspector();
+            _styles.EnsureBuilt();
 
-            EditorGUILayout.Space(8);
-            EditorGUILayout.LabelField("Actions", EditorStyles.boldLabel);
+            serializedObject.Update();
+            DrawPropertiesExcluding(serializedObject, ScriptField);
+            serializedObject.ApplyModifiedProperties();
 
-            if (GUILayout.Button("Auto Generate Categories", GUILayout.Height(AuxButtonHeight)))
-                ZooAutoGenerator.Generate((ZooConfig)target);
+            EditorGUILayout.Space(EditorMetrics.SectionGap);
+            EditorWindowChrome.DrawSectionHeader(_styles, ActionsHeader);
 
-            if (GUILayout.Button("Open Zoo Window", GUILayout.Height(AuxButtonHeight)))
+            if (EditorWindowChrome.PrimaryButton(_styles, GenerateLabel, GUILayout.Height(ButtonHeight)))
+                Generate();
+
+            EditorGUILayout.Space(EditorMetrics.TightGap);
+
+            if (EditorWindowChrome.SecondaryButton(_styles, OpenWindowLabel, GUILayout.Height(ButtonHeight)))
                 ZooEditorWindow.Open((ZooConfig)target);
+
+            if (!_hasResult)
+                return;
+
+            EditorGUILayout.Space(EditorMetrics.ItemGap);
+            ZooResultView.Draw(_styles, _lastResult);
+        }
+
+        private void Generate()
+        {
+            _lastResult = ZooAutoGenerator.Generate((ZooConfig)target);
+            _hasResult = true;
+
+            serializedObject.Update();
         }
     }
 }

@@ -21,17 +21,35 @@ namespace Base.ToolPackage.Editor.AssetZoo.Generation
         public int EntryCount { get; }
 
         /// <summary>
-        /// Human readable summary or error text.
+        /// Human readable summary or error text. Kept to a single short line for the status bar.
         /// </summary>
         public string Message { get; }
 
+        /// <summary>
+        /// What the scan decided about naming prefixes and what it left out, one item per line.
+        /// Empty when there is nothing worth reporting.
+        /// </summary>
+        public string Details { get; }
+
+        /// <summary>
+        /// True when <see cref="Details"/> holds something to show.
+        /// </summary>
+        public bool HasDetails => !string.IsNullOrEmpty(Details);
+
         /// <summary>Creates a result describing what a generation run produced.</summary>
-        public ZooGenerationResult(bool success, int categoryCount, int entryCount, string message)
+        /// <param name="success">Whether the run produced at least one category.</param>
+        /// <param name="categoryCount">Number of categories in the config afterwards.</param>
+        /// <param name="entryCount">Number of entries this run added.</param>
+        /// <param name="message">Single line summary or error text.</param>
+        /// <param name="details">Optional multi line report about prefixes and skipped assets.</param>
+        public ZooGenerationResult(bool success, int categoryCount, int entryCount, string message,
+            string details = null)
         {
             Success = success;
             CategoryCount = categoryCount;
             EntryCount = entryCount;
             Message = message;
+            Details = details;
         }
 
         /// <summary>

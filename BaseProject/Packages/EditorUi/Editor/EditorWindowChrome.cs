@@ -26,7 +26,13 @@ namespace Base.EditorUiPackage
         /// <param name="styles">The built chrome styles.</param>
         /// <param name="title">The name shown at the top.</param>
         /// <param name="description">The sentence under it, or null for none.</param>
-        public static void DrawHeader(EditorWindowStyles styles, string title, string description = null)
+        /// <param name="drawSeparator">
+        /// False to leave off the hairline under the header. For a window that paints the theme
+        /// background itself and follows the header with a section header, where the line lands
+        /// between two things that already read as separate.
+        /// </param>
+        public static void DrawHeader(EditorWindowStyles styles, string title, string description = null,
+            bool drawSeparator = true)
         {
             if (styles == null)
                 return;
@@ -43,7 +49,8 @@ namespace Base.EditorUiPackage
 
             EditorGUILayout.Space(EditorMetrics.ItemGap);
 
-            DrawSeparator();
+            if (drawSeparator)
+                DrawSeparator();
 
             EditorGUILayout.Space(EditorMetrics.ItemGap);
         }
@@ -219,7 +226,10 @@ namespace Base.EditorUiPackage
             EditorGUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();
 
-            GUILayout.Label(new GUIContent(icon), GUILayout.Width(size), GUILayout.Height(size));
+            Rect area = GUILayoutUtility.GetRect(size, size, GUILayout.Width(size),
+                GUILayout.Height(size));
+
+            EditorIcons.Draw(area, icon);
 
             GUILayout.FlexibleSpace();
             EditorGUILayout.EndHorizontal();

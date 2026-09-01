@@ -154,6 +154,15 @@ namespace Base.EditorUiPackage
         /// <summary>Filled accent button for the one action a window is mostly opened for.</summary>
         public GUIStyle PrimaryButton { get; private set; }
 
+        /// <summary>Rounded fill behind a search box.</summary>
+        public GUIStyle SearchField { get; private set; }
+
+        /// <summary>
+        /// Text typed into a search box, with no background of its own so the fill behind it and the
+        /// icon in front of it can be placed by hand.
+        /// </summary>
+        public GUIStyle SearchText { get; private set; }
+
         /// <summary>Filled muted button for every action next to the primary one.</summary>
         public GUIStyle SecondaryButton { get; private set; }
 
@@ -248,6 +257,23 @@ namespace Base.EditorUiPackage
 
             PrimaryButton = EditorStyleUtility.BuildFilledButton(Textures, EditorPalette.Accent,
                 EditorPalette.AccentText, FontStyle.Bold, EditorMetrics.CardCornerRadius);
+
+            SearchField = new GUIStyle
+            {
+                border = EditorStyleUtility.UniformPadding(EditorMetrics.PillCornerRadius)
+            };
+
+            SearchField.normal.background = Textures.Rounded(EditorPalette.Field,
+                EditorMetrics.PillCornerRadius);
+
+            // Clipped rather than ellipsized, because a caret sitting past the right edge of an
+            // ellipsis has nowhere sensible to be drawn.
+            SearchText = EditorStyleUtility.PinTextColor(new GUIStyle(EditorStyles.label)
+            {
+                alignment = TextAnchor.MiddleLeft,
+                clipping = TextClipping.Clip,
+                padding = EditorStyleUtility.HorizontalPadding(0)
+            }, EditorPalette.Text);
 
             SecondaryButton = EditorStyleUtility.BuildFilledButton(Textures, EditorPalette.Secondary,
                 EditorPalette.SecondaryText, FontStyle.Normal, EditorMetrics.CardCornerRadius);
