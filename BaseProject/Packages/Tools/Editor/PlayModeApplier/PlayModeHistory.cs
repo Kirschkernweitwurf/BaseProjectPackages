@@ -12,7 +12,7 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
         private const string TimeFormat = "HH:mm:ss";
 
         /// <summary>Records one action. The history is wiped when the next play session starts.</summary>
-        public static void Record(EPlayModeHistoryAction action, string displayName, string detail)
+        internal static void Record(EPlayModeHistoryAction action, string displayName, string detail)
         {
             PlayModeStateStore store = PlayModeStateStore.instance;
             store.AddHistoryEntry(new PlayModeHistoryEntry

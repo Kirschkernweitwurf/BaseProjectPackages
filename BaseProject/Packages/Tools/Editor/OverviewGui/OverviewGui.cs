@@ -38,7 +38,6 @@ namespace Base.ToolPackage.Editor.OverviewGui
         private const float SectionTop = 4f;
         private const string SizeFormat = "0.0";
         private const float SuccessGap = 8f;
-        private const string SuccessIcon = "TestPassed";
         private const float SuccessIconSize = 48f;
         private const int SuccessTitleFontSize = 15;
 
@@ -71,10 +70,13 @@ namespace Base.ToolPackage.Editor.OverviewGui
         private static readonly EditorTextureCache Textures = new();
         private static readonly EditorStyleWatch Watch = new();
 
+        // Reused rather than built per repaint, and its image is re-read each draw so the fake-null
+        // check EditorIcons does on every access is not defeated by a content holding a dead texture.
+        private static readonly GUIContent SuccessContent = new();
+
         private static GUIStyle _sectionFoldoutStyle;
         private static GUIStyle _successTitleStyle;
         private static GUIStyle _successSubtitleStyle;
-        private static Texture _successTexture;
 
         /// <summary>Height of a list row.</summary>
         public static float RowHeight => EditorMetrics.RowHeight;
@@ -132,8 +134,6 @@ namespace Base.ToolPackage.Editor.OverviewGui
                 alignment = TextAnchor.MiddleCenter,
                 wordWrap = true
             }, EditorStyleUtility.MutedTextColor());
-
-            _successTexture = EditorGUIUtility.IconContent(SuccessIcon).image;
 
             Watch.MarkFresh();
         }
@@ -280,7 +280,9 @@ namespace Base.ToolPackage.Editor.OverviewGui
             {
                 GUILayout.FlexibleSpace();
 
-                GUILayout.Label(new GUIContent(_successTexture),
+                SuccessContent.image = EditorIcons.Success;
+
+                GUILayout.Label(SuccessContent,
                     GUILayout.Width(SuccessIconSize),
                     GUILayout.Height(SuccessIconSize));
 

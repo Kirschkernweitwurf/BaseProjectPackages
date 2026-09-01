@@ -12,7 +12,7 @@ namespace Base.ToolPackage.Editor.CommandPalette
     internal sealed class CommandTagEditor
     {
         /// <summary>Name of the text control, so the window can put the caret in it.</summary>
-        public const string ControlName = "BaseCommandPaletteTags";
+        internal const string ControlName = "BaseCommandPaletteTags";
 
         private const string EmptyHint = "No tags yet. Write a few, separated by commas.";
         private const string KnownPrefix = "In use: ";
@@ -30,11 +30,11 @@ namespace Base.ToolPackage.Editor.CommandPalette
         private string _text = string.Empty;
 
         /// <summary>Whether the editor currently replaces the search box.</summary>
-        public bool IsActive => _target != null;
+        internal bool IsActive => _target != null;
 
         /// <summary>The line shown in the footer while the editor is open.</summary>
         /// <returns>The tags already used somewhere in the project.</returns>
-        public static string Hint()
+        internal static string Hint()
         {
             IReadOnlyList<string> known = CommandTagStore.instance.KnownTags();
 
@@ -45,21 +45,21 @@ namespace Base.ToolPackage.Editor.CommandPalette
 
         /// <summary>Starts editing the tags of an entry.</summary>
         /// <param name="entry">The entry to tag.</param>
-        public void Begin(CommandEntry entry)
+        internal void Begin(CommandEntry entry)
         {
             _target = entry;
             _text = string.Join(TagSeparator, CommandTagStore.instance.TagsFor(entry.Id));
         }
 
         /// <summary>Drops the changes and closes the editor.</summary>
-        public void Cancel()
+        internal void Cancel()
         {
             _target = null;
             _text = string.Empty;
         }
 
         /// <summary>Writes the tags to the store and closes the editor.</summary>
-        public void Commit()
+        internal void Commit()
         {
             CommandTagStore.instance.SetTags(_target.Id,
                 _text.Split(TagSeparators, StringSplitOptions.RemoveEmptyEntries));
@@ -69,7 +69,7 @@ namespace Base.ToolPackage.Editor.CommandPalette
 
         /// <summary>Draws the editor in place of the search box.</summary>
         /// <param name="box">The area the search box would occupy.</param>
-        public void Draw(Rect box)
+        internal void Draw(Rect box)
         {
             CommandPaletteChrome.DrawFill(box, CommandPaletteStyles.FieldColor(), CommandPaletteStyles.CornerRadius);
             CommandPaletteChrome.DrawBorder(box, CommandPaletteStyles.PinColor(), CommandPaletteStyles.CornerRadius,

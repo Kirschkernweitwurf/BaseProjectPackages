@@ -16,46 +16,46 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
     internal static class MenuOverviewGui
     {
         /// <summary>Horizontal padding between columns.</summary>
-        public const float Padding = 6f;
+        internal const float Padding = 6f;
         /// <summary>Height of a single result row.</summary>
-        public const float RowHeight = 24f;
+        internal const float RowHeight = 24f;
 
         /// <summary>Width of the accent stripe drawn at the left edge of every row.</summary>
-        public const float StripeWidth = 3f;
+        internal const float StripeWidth = 3f;
 
         private static readonly EditorStyleWatch Watch = new();
 
         private const float ChipInset = 3f;
 
         /// <summary>Label style for menu paths. Uses rich text to dim everything but the last segment.</summary>
-        public static GUIStyle PathStyle => _pathStyle ??= new GUIStyle(EditorStyles.label)
+        internal static GUIStyle PathStyle => _pathStyle ??= new GUIStyle(EditorStyles.label)
         {
             richText = true
         };
 
         /// <summary>Right aligned bold style for priorities and orders.</summary>
-        public static GUIStyle NumberStyle => _numberStyle ??= new GUIStyle(EditorStyles.boldLabel)
+        internal static GUIStyle NumberStyle => _numberStyle ??= new GUIStyle(EditorStyles.boldLabel)
         {
             alignment = TextAnchor.MiddleRight
         };
 
         /// <summary>Dimmed style for secondary columns such as members, types and file names.</summary>
-        public static GUIStyle DetailStyle => _detailStyle ??= new GUIStyle(EditorStyles.miniLabel);
+        internal static GUIStyle DetailStyle => _detailStyle ??= new GUIStyle(EditorStyles.miniLabel);
 
         /// <summary>Right aligned style for the origin badge.</summary>
-        public static GUIStyle BadgeStyle => _badgeStyle ??= new GUIStyle(EditorStyles.miniLabel)
+        internal static GUIStyle BadgeStyle => _badgeStyle ??= new GUIStyle(EditorStyles.miniLabel)
         {
             alignment = TextAnchor.MiddleRight
         };
 
         /// <summary>Centered style for the compact state marker.</summary>
-        public static GUIStyle StateStyle => _stateStyle ??= new GUIStyle(EditorStyles.miniLabel)
+        internal static GUIStyle StateStyle => _stateStyle ??= new GUIStyle(EditorStyles.miniLabel)
         {
             alignment = TextAnchor.MiddleCenter
         };
 
         /// <summary>Centered style that paints the marker of broken entries red.</summary>
-        public static GUIStyle AlertStyle => _alertStyle ??= new GUIStyle(EditorStyles.miniBoldLabel)
+        internal static GUIStyle AlertStyle => _alertStyle ??= new GUIStyle(EditorStyles.miniBoldLabel)
         {
             alignment = TextAnchor.MiddleCenter,
             normal =
@@ -65,14 +65,14 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         };
 
         /// <summary>Right aligned toolbar counter.</summary>
-        public static GUIStyle CountStyle => _countStyle ??= new GUIStyle(EditorStyles.miniLabel)
+        internal static GUIStyle CountStyle => _countStyle ??= new GUIStyle(EditorStyles.miniLabel)
         {
             alignment = TextAnchor.MiddleRight,
             fixedHeight = 0f
         };
 
         /// <summary>Left aligned footer hint.</summary>
-        public static GUIStyle HintStyle => _hintStyle ??= new GUIStyle(EditorStyles.miniLabel)
+        internal static GUIStyle HintStyle => _hintStyle ??= new GUIStyle(EditorStyles.miniLabel)
         {
             alignment = TextAnchor.MiddleLeft,
             fixedHeight = 0f
@@ -110,12 +110,12 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         private static GUIStyle _hintStyle;
 
         /// <summary>Accent color of the stripe and the chip for a definition.</summary>
-        public static Color AccentFor(EMenuDefinition definition) => definition == EMenuDefinition.Dynamic
+        internal static Color AccentFor(EMenuDefinition definition) => definition == EMenuDefinition.Dynamic
             ? new Color(0.25f, 0.56f, 0.92f)
             : new Color(0.46f, 0.48f, 0.52f);
 
         /// <summary>Chip color, which turns red for broken entries and fades for disabled ones.</summary>
-        public static Color ChipColor(EMenuDefinition definition, EMenuEntryState state) => state switch
+        internal static Color ChipColor(EMenuDefinition definition, EMenuEntryState state) => state switch
         {
             EMenuEntryState.Missing => MissingColor,
             EMenuEntryState.Disabled => new Color(0.45f, 0.45f, 0.48f),
@@ -123,12 +123,12 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         };
 
         /// <summary>Chip label for a definition.</summary>
-        public static GUIContent ChipContent(EMenuDefinition definition) => definition == EMenuDefinition.Dynamic
+        internal static GUIContent ChipContent(EMenuDefinition definition) => definition == EMenuDefinition.Dynamic
             ? DynamicChip
             : StaticChip;
 
         /// <summary>Draws the row background, the hover highlight and the accent stripe.</summary>
-        public static void DrawRow(Rect row, int index, bool hover, Color accent)
+        internal static void DrawRow(Rect row, int index, bool hover, Color accent)
         {
             if (hover)
                 EditorGUI.DrawRect(row, EditorPalette.Hover);
@@ -146,7 +146,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         /// The styles pin colors picked for one editor theme, and a static cache has no window lifetime to
         /// hang a rebuild off, so the windows that draw with them have to ask.
         /// </remarks>
-        public static void EnsureFresh()
+        internal static void EnsureFresh()
         {
             if (!Watch.IsStale)
                 return;
@@ -165,7 +165,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         }
 
         /// <summary>Draws the column header background with a separating bottom line.</summary>
-        public static void DrawHeader(Rect row)
+        internal static void DrawHeader(Rect row)
         {
             EditorGUI.DrawRect(row, EditorTableStyles.HeaderColor);
             EditorGUI.DrawRect(new Rect(row.x, row.yMax - EditorMetrics.SeparatorThickness, row.width,
@@ -173,7 +173,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         }
 
         /// <summary>Draws the footer background with a separating top line.</summary>
-        public static void DrawFooter(Rect row)
+        internal static void DrawFooter(Rect row)
         {
             EditorGUI.DrawRect(row, EditorTableStyles.HeaderColor);
             EditorGUI.DrawRect(new Rect(row.x, row.y, row.width, EditorMetrics.SeparatorThickness),
@@ -181,7 +181,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         }
 
         /// <summary>Draws a filled chip with centered white text.</summary>
-        public static void DrawChip(Rect rect, GUIContent content, Color color)
+        internal static void DrawChip(Rect rect, GUIContent content, Color color)
         {
             Rect chip = new(rect.x, rect.y + ChipInset, rect.width, Mathf.Max(0f, rect.height - ChipInset * 2f));
             EditorGUI.DrawRect(chip, color);
@@ -192,7 +192,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         /// Builds a rich text label that dims everything but the last path segment, so the eye
         /// lands on the actual entry name instead of the repeated parent folders.
         /// </summary>
-        public static GUIContent PathContent(string path, string tooltip)
+        internal static GUIContent PathContent(string path, string tooltip)
         {
             int separator = path.LastIndexOf('/');
 
@@ -206,7 +206,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         }
 
         /// <summary>Draws a label that behaves like a link. Returns true when it was clicked.</summary>
-        public static bool DrawLink(Rect rect, GUIContent content, GUIStyle style)
+        internal static bool DrawLink(Rect rect, GUIContent content, GUIStyle style)
         {
             EditorGUIUtility.AddCursorRect(rect, MouseCursor.Link);
             return GUI.Button(rect, content, style);

@@ -15,7 +15,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot.Ch
         /// <param name="owner">The type the member is looked up on.</param>
         /// <param name="name">Name of the member.</param>
         /// <returns>True when any member with that name exists.</returns>
-        public static bool Exists(Type owner, string name) => ReflectionCache.GetField(owner, name) != null
+        internal static bool Exists(Type owner, string name) => ReflectionCache.GetField(owner, name) != null
             || ReflectionCache.GetProperty(owner, name) != null
             || ReflectionCache.GetMethod(owner, name) != null;
 
@@ -26,7 +26,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot.Ch
         /// <param name="owner">The type the member is looked up on.</param>
         /// <param name="name">Name of the member.</param>
         /// <returns>True when the member yields a bool.</returns>
-        public static bool IsBool(Type owner, string name)
+        internal static bool IsBool(Type owner, string name)
         {
             FieldInfo field = ReflectionCache.GetField(owner, name);
             if (field != null)
@@ -47,7 +47,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot.Ch
         /// <param name="owner">The type the member is looked up on.</param>
         /// <param name="name">Name of the member.</param>
         /// <returns>The value type, or null.</returns>
-        public static Type ValueTypeOf(Type owner, string name)
+        internal static Type ValueTypeOf(Type owner, string name)
         {
             FieldInfo field = ReflectionCache.GetField(owner, name);
             if (field != null)
@@ -71,7 +71,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot.Ch
         /// <param name="name">Name of the field.</param>
         /// <param name="exactType">The type the field has to have.</param>
         /// <returns>True when the field exists with that exact type.</returns>
-        public static bool HasFieldOfExactType(Type owner, string name, Type exactType)
+        internal static bool HasFieldOfExactType(Type owner, string name, Type exactType)
         {
             FieldInfo field = ReflectionCache.GetField(owner, name);
             return field != null && field.FieldType == exactType;
@@ -80,14 +80,14 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot.Ch
         /// <summary>Returns whether the type is an enumerable that is not a string.</summary>
         /// <param name="type">The type to test.</param>
         /// <returns>True when the type can be iterated for dropdown options.</returns>
-        public static bool IsEnumerable(Type type) => type != null
+        internal static bool IsEnumerable(Type type) => type != null
             && type != typeof(string)
             && typeof(IEnumerable).IsAssignableFrom(type);
 
         /// <summary>Returns whether the type is one of the numeric types the drawers handle.</summary>
         /// <param name="type">The type to test.</param>
         /// <returns>True for the integer and floating point types.</returns>
-        public static bool IsNumeric(Type type) => type == typeof(int)
+        internal static bool IsNumeric(Type type) => type == typeof(int)
             || type == typeof(float)
             || type == typeof(double)
             || type == typeof(long)
@@ -97,13 +97,13 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot.Ch
         /// <summary>Returns whether the type is an array or a generic list.</summary>
         /// <param name="type">The type to test.</param>
         /// <returns>True when the field would serialize as an array.</returns>
-        public static bool IsCollection(Type type) => type.IsArray
+        internal static bool IsCollection(Type type) => type.IsArray
             || type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>);
 
         /// <summary>Returns the element type of an array or list, or the type itself.</summary>
         /// <param name="type">The type to unwrap.</param>
         /// <returns>The element type.</returns>
-        public static Type ElementType(Type type)
+        internal static Type ElementType(Type type)
         {
             if (type.IsArray)
                 return type.GetElementType();

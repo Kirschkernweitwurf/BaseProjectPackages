@@ -708,7 +708,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Showcase
         [ShowNativeProperty] public bool HasAnimator => animator != null;
 
         /// <summary>Drives the condition that reads a property rather than a field.</summary>
-        public bool HasAdvancedSetup => isEnabled && isAdvanced;
+        internal bool HasAdvancedSetup => isEnabled && isAdvanced;
 
         // Read by the heading of the dynamic section, which is what makes that heading say something the
         // reader could not already see from the fields under it.
@@ -770,11 +770,11 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Showcase
 
         /// <summary>Plain button with no label, which falls back to the method name.</summary>
         [Button]
-        public void RebuildEverything() => Record(nameof(RebuildEverything));
+        internal void RebuildEverything() => Record(nameof(RebuildEverything));
 
         /// <summary>Button with an explicit label instead of the method name.</summary>
         [Button("Reset To Defaults")]
-        public void ResetValues()
+        internal void ResetValues()
         {
             progressConstant = FullHealth;
             trackedValue = 0;
@@ -783,15 +783,15 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Showcase
 
         /// <summary>Button that is only clickable while the editor is playing.</summary>
         [Button("Play Mode Only", Mode = EButtonMode.PlayMode)]
-        public void RunDuringPlay() => Record(nameof(RunDuringPlay));
+        internal void RunDuringPlay() => Record(nameof(RunDuringPlay));
 
         /// <summary>Button that is only clickable while the editor is stopped.</summary>
         [Button("Edit Mode Only", Mode = EButtonMode.EditMode)]
-        public void RunDuringEdit() => Record(nameof(RunDuringEdit));
+        internal void RunDuringEdit() => Record(nameof(RunDuringEdit));
 
         /// <summary>Button that asks for confirmation before it runs.</summary>
         [Button("Clear Everything", Confirm = "This clears every list on the asset. Continue?")]
-        public void ClearEverything()
+        internal void ClearEverything()
         {
             slots.Clear();
             uniqueDefault.Clear();
@@ -801,11 +801,11 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Showcase
 
         /// <summary>Header button, drawn in the title bar rather than here.</summary>
         [HeaderButton("Ping")]
-        public void Ping() => Record(nameof(Ping));
+        internal void Ping() => Record(nameof(Ping));
 
         /// <summary>Header label, read from a property.</summary>
         [HeaderLabel(Width = 90f)]
-        public string HeaderState() => $"{mode} x{slots.Count}";
+        internal string HeaderState() => $"{mode} x{slots.Count}";
 
         private void UseFirstMaterial()
         {

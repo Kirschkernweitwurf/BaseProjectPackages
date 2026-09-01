@@ -6,21 +6,21 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
     internal struct MenuRowColumns
     {
         /// <summary>Drag handle on the far left.</summary>
-        public Rect Grip;
+        internal Rect Grip;
 
         /// <summary>Enabled toggle.</summary>
-        public Rect Toggle;
+        internal Rect Toggle;
 
         /// <summary>Editable menu path.</summary>
-        public Rect Path;
+        internal Rect Path;
 
         /// <summary>Editable default asset file name, only used by the create asset window.</summary>
-        public Rect File;
+        internal Rect File;
 
         /// <summary>Priority value and its override button.</summary>
-        public Rect Priority;
+        internal Rect Priority;
 
         /// <summary>Open or Remove button on the far right.</summary>
-        public Rect Status;
+        internal Rect Status;
     }
 }

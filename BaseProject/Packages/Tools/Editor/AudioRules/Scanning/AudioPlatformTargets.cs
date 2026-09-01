@@ -10,12 +10,12 @@ namespace Base.ToolPackage.Editor.AudioRules.Scanning
     internal static class AudioPlatformTargets
     {
         /// <summary>Label the default settings are shown with in the target dropdown.</summary>
-        public const string DefaultLabel = "Default";
+        internal const string DefaultLabel = "Default";
 
         /// <summary>True when the target is the default settings rather than a platform.</summary>
         /// <param name="platform">The target, empty for the default settings.</param>
         /// <returns>True for the default target.</returns>
-        public static bool IsDefault(string platform) => string.IsNullOrWhiteSpace(platform);
+        internal static bool IsDefault(string platform) => string.IsNullOrWhiteSpace(platform);
 
         /// <summary>
         /// The settings that are in effect for a target. A platform without its own override
@@ -24,7 +24,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Scanning
         /// <param name="importer">The importer to read.</param>
         /// <param name="platform">The target, empty for the default settings.</param>
         /// <returns>The settings in effect.</returns>
-        public static AudioImporterSampleSettings Read(AudioImporter importer, string platform)
+        internal static AudioImporterSampleSettings Read(AudioImporter importer, string platform)
         {
             if (IsDefault(platform))
                 return importer.defaultSampleSettings;
@@ -38,7 +38,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Scanning
         /// <param name="importer">The importer to write.</param>
         /// <param name="platform">The target, empty for the default settings.</param>
         /// <param name="settings">The settings to write.</param>
-        public static void Write(AudioImporter importer, string platform, AudioImporterSampleSettings settings)
+        internal static void Write(AudioImporter importer, string platform, AudioImporterSampleSettings settings)
         {
             if (IsDefault(platform))
             {
@@ -53,7 +53,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Scanning
         /// <param name="importer">The importer to read.</param>
         /// <param name="platform">The target, empty for the default settings.</param>
         /// <returns>True when an override exists.</returns>
-        public static bool HasOverride(AudioImporter importer, string platform)
+        internal static bool HasOverride(AudioImporter importer, string platform)
             => !IsDefault(platform) && importer.ContainsSampleSettingsOverride(platform);
     }
 }

@@ -14,10 +14,10 @@ namespace Base.AttributePackage.Editor.Collections
     {
 
         /// <summary>Whether removing a row asks first.</summary>
-        public readonly bool ConfirmDelete;
+        internal readonly bool ConfirmDelete;
 
         /// <summary>Whether every other row is tinted.</summary>
-        public readonly bool Striped;
+        internal readonly bool Striped;
 
         private readonly HashSet<int> _hidden;
 
@@ -34,6 +34,6 @@ namespace Base.AttributePackage.Editor.Collections
         /// <summary>Whether the filter is hiding the given row.</summary>
         /// <param name="index">Index of the row.</param>
         /// <returns>True while the row is filtered out.</returns>
-        public bool IsHidden(int index) => _hidden != null && _hidden.Contains(index);
+        internal bool IsHidden(int index) => _hidden != null && _hidden.Contains(index);
     }
 }

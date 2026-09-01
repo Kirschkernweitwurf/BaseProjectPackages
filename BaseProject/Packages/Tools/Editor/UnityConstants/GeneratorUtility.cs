@@ -11,8 +11,8 @@ namespace Base.ToolPackage.Editor.UnityConstants
     /// </summary>
     internal static class GeneratorUtility
     {
-        public const string GeneratedNamespace = "Generated.UnityConstants";
-        public const string OutputFolder = "Assets/Generated/UnityConstants";
+        internal const string GeneratedNamespace = "Generated.UnityConstants";
+        internal const string OutputFolder = "Assets/Generated/UnityConstants";
 
         private static readonly HashSet<string> Keywords = new()
         {
@@ -96,7 +96,7 @@ namespace Base.ToolPackage.Editor.UnityConstants
         };
 
         /// <summary>Writes the do-not-edit banner every generated file starts with.</summary>
-        public static void WriteFileHeader(StringBuilder sb)
+        internal static void WriteFileHeader(StringBuilder sb)
         {
             sb.AppendLine("// -----------------------------------------------------------------------------");
             sb.AppendLine("// AUTO-GENERATED FILE. DO NOT EDIT BY HAND.");
@@ -107,14 +107,14 @@ namespace Base.ToolPackage.Editor.UnityConstants
         }
 
         /// <summary>Writes a generated file into the output folder, creating the folder if needed.</summary>
-        public static void WriteFile(string fileName, string content)
+        internal static void WriteFile(string fileName, string content)
         {
             string path = Path.Combine(OutputFolder, fileName);
             File.WriteAllText(path, content.TrimEnd('\r', '\n'));
         }
 
         /// <summary>Creates the folder and any missing parent folders.</summary>
-        public static void EnsureFolderExists(string folder)
+        internal static void EnsureFolderExists(string folder)
         {
             if (AssetDatabase.IsValidFolder(folder))
                 return;
@@ -135,7 +135,7 @@ namespace Base.ToolPackage.Editor.UnityConstants
         /// Converts an arbitrary string to a valid C# identifier by replacing invalid characters with underscores,
         /// prefixing with an underscore if it starts with a digit, and prefixing with "@" if it matches a C# keyword.
         /// </summary>
-        public static string ToValidIdentifier(string raw)
+        internal static string ToValidIdentifier(string raw)
         {
             if (string.IsNullOrEmpty(raw))
                 return "_";
@@ -165,7 +165,7 @@ namespace Base.ToolPackage.Editor.UnityConstants
         /// Converts a raw string to a valid C# identifier and ensures it's
         /// unique within the given set by appending a numeric suffix if needed.
         /// </summary>
-        public static string MakeUniqueIdentifier(string raw, HashSet<string> used)
+        internal static string MakeUniqueIdentifier(string raw, HashSet<string> used)
         {
             string baseName = ToValidIdentifier(raw);
             string name = baseName;
@@ -180,6 +180,6 @@ namespace Base.ToolPackage.Editor.UnityConstants
         }
 
         /// <summary>Escapes backslashes and quotes so the value is safe inside a generated string literal.</summary>
-        public static string Escape(string value) => value.Replace("\\", @"\\").Replace("\"", "\\\"");
+        internal static string Escape(string value) => value.Replace("\\", @"\\").Replace("\"", "\\\"");
     }
 }

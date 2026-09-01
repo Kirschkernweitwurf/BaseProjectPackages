@@ -16,7 +16,7 @@ namespace Base.AttributePackage.Editor
         /// Tries to read the value of a field or readable property with the given name. Returns false
         /// when no such member exists on the type.
         /// </summary>
-        public static bool TryResolve(Type type, object owner, string member, out object value)
+        internal static bool TryResolve(Type type, object owner, string member, out object value)
         {
             value = null;
             if (type == null || owner == null)
@@ -42,7 +42,7 @@ namespace Base.AttributePackage.Editor
         /// when no field of that name and type exists, which is a setup mistake rather than a missing
         /// value. A found but unassigned field returns true with a null value.
         /// </summary>
-        public static bool TryResolveSibling<T>(SerializedProperty property, string fieldName, out T value)
+        internal static bool TryResolveSibling<T>(SerializedProperty property, string fieldName, out T value)
             where T : class
         {
             value = null;

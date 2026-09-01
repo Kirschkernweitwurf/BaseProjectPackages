@@ -7,15 +7,15 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
     internal static class MenuPath
     {
         /// <summary>Fixed root that asset creation entries are always placed under.</summary>
-        public const string AssetRoot = "Assets/Create";
+        internal const string AssetRoot = "Assets/Create";
 
         /// <summary>Returns the automatic root prefix for a kind, or an empty string.</summary>
-        public static string Prefix(EMenuEntryKind kind) => kind == EMenuEntryKind.CreateAsset
+        internal static string Prefix(EMenuEntryKind kind) => kind == EMenuEntryKind.CreateAsset
             ? AssetRoot
             : string.Empty;
 
         /// <summary>Joins segments into a menu path, skipping empty parts and trimming stray slashes.</summary>
-        public static string Combine(IEnumerable<string> segments)
+        internal static string Combine(IEnumerable<string> segments)
         {
             StringBuilder builder = new();
 

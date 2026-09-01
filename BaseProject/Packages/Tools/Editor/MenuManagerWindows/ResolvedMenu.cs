@@ -6,28 +6,28 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
     internal sealed class ResolvedMenu
     {
         /// <summary>Kind of the entry.</summary>
-        public EMenuEntryKind Kind { get; }
+        internal EMenuEntryKind Kind { get; }
 
         /// <summary>Full default path used when the entry is first discovered.</summary>
-        public string DefaultPath { get; }
+        internal string DefaultPath { get; }
 
         /// <summary>Action invoked when a menu item is clicked. Null for asset entries.</summary>
-        public Action Execute { get; }
+        internal Action Execute { get; }
 
         /// <summary>Optional validate function for a menu item, or null.</summary>
-        public Func<bool> Validate { get; }
+        internal Func<bool> Validate { get; }
 
         /// <summary>Optional check mark state function for a menu item, or null.</summary>
-        public Func<bool> Checked { get; }
+        internal Func<bool> Checked { get; }
 
         /// <summary>ScriptableObject type for an asset entry, or null.</summary>
-        public Type AssetType { get; }
+        internal Type AssetType { get; }
 
         /// <summary>Default asset file name for an asset entry, without extension.</summary>
-        public string DefaultFileName { get; }
+        internal string DefaultFileName { get; }
 
         /// <summary>Type that declares the entry, used to locate its script on disk.</summary>
-        public Type DeclaringType { get; }
+        internal Type DeclaringType { get; }
 
         private ResolvedMenu(EMenuEntryKind kind, string defaultPath, Action execute, Func<bool> validate,
             Func<bool> isChecked, Type assetType, string defaultFileName, Type declaringType)
@@ -43,13 +43,13 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         }
 
         /// <summary>Creates a resolved menu item.</summary>
-        public static ResolvedMenu MenuItem(string defaultPath, Action execute, Func<bool> validate,
+        internal static ResolvedMenu MenuItem(string defaultPath, Action execute, Func<bool> validate,
             Func<bool> isChecked, Type declaringType)
             => new(EMenuEntryKind.MenuItem, defaultPath, execute, validate, isChecked, null, string.Empty,
                 declaringType);
 
         /// <summary>Creates a resolved asset creation entry.</summary>
-        public static ResolvedMenu CreateAsset(string defaultPath, Type assetType, string defaultFileName)
+        internal static ResolvedMenu CreateAsset(string defaultPath, Type assetType, string defaultFileName)
             => new(EMenuEntryKind.CreateAsset, defaultPath, null, null, null, assetType, defaultFileName, assetType);
     }
 }

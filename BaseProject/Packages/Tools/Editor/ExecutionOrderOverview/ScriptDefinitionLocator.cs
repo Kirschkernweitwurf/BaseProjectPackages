@@ -17,7 +17,7 @@ namespace Base.ToolPackage.Editor.ExecutionOrderOverview
         /// Returns a one-based line and a zero-based column. The column points just inside
         /// the attribute's parentheses when present, otherwise the start of the line.
         /// </summary>
-        public static (int Line, int Column) Find(MonoScript script, Type type)
+        internal static (int Line, int Column) Find(MonoScript script, Type type)
         {
             if (script == null || type == null)
                 return (0, 0);

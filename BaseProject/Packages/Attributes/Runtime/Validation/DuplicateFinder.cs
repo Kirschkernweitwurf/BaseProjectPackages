@@ -19,7 +19,7 @@ namespace Base.AttributePackage
         /// Fills the list with one text per duplicate group, for example "0, 2". Null and empty entries
         /// are skipped, so freshly added slots do not count as duplicates while the list is being filled.
         /// </summary>
-        public static void Collect(IList list, List<string> groups)
+        internal static void Collect(IList list, List<string> groups)
         {
             groups.Clear();
 
@@ -44,7 +44,7 @@ namespace Base.AttributePackage
         /// Fills the list with every index that repeats an earlier entry, in ascending order. First
         /// occurrences are not included, so removing these indices leaves one entry per value.
         /// </summary>
-        public static void CollectRepeats(IList list, List<int> indices)
+        internal static void CollectRepeats(IList list, List<int> indices)
         {
             indices.Clear();
 
@@ -61,10 +61,10 @@ namespace Base.AttributePackage
         }
 
         /// <summary>Builds the message text for a single duplicate group.</summary>
-        public static string Describe(string group) => ReasonPrefix + group;
+        internal static string Describe(string group) => ReasonPrefix + group;
 
         /// <summary>Builds one message text covering all duplicate groups.</summary>
-        public static string Describe(IReadOnlyList<string> groups)
+        internal static string Describe(IReadOnlyList<string> groups)
             => ReasonPrefix + string.Join(GroupSeparator, groups);
 
         private static string BuildGroup(IList list, int index, object value)

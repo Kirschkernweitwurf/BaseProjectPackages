@@ -21,20 +21,20 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
         private List<PlayModeHistoryEntry> history = new();
 
         /// <summary>State captured at the end of the last play session, waiting for a manual apply.</summary>
-        public IReadOnlyList<PlayModeSavePayload> Payloads => payloads;
+        internal IReadOnlyList<PlayModeSavePayload> Payloads => payloads;
 
         /// <summary>What happened since the last play session, oldest first.</summary>
-        public IReadOnlyList<PlayModeHistoryEntry> History => history;
+        internal IReadOnlyList<PlayModeHistoryEntry> History => history;
 
         /// <summary>Replaces the pending payloads with the given set.</summary>
-        public void SetPayloads(List<PlayModeSavePayload> capturedPayloads)
+        internal void SetPayloads(List<PlayModeSavePayload> capturedPayloads)
         {
             payloads.Clear();
             payloads.AddRange(capturedPayloads);
         }
 
         /// <summary>Removes one pending payload by list index.</summary>
-        public void RemovePayload(int index)
+        internal void RemovePayload(int index)
         {
             if (index < 0
                 || index >= payloads.Count)
@@ -44,7 +44,7 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
         }
 
         /// <summary>Changes where a pending payload is written on apply.</summary>
-        public void SetPayloadApplyTarget(int index, EPlayModeApplyTarget applyTarget)
+        internal void SetPayloadApplyTarget(int index, EPlayModeApplyTarget applyTarget)
         {
             if (index < 0
                 || index >= payloads.Count)
@@ -54,7 +54,7 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
         }
 
         /// <summary>Points a pending payload at a different destination prefab.</summary>
-        public void SetPayloadPrefab(int index, string prefabGuid)
+        internal void SetPayloadPrefab(int index, string prefabGuid)
         {
             if (index < 0
                 || index >= payloads.Count)
@@ -64,10 +64,10 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
         }
 
         /// <summary>Drops every pending payload.</summary>
-        public void ClearPayloads() => payloads.Clear();
+        internal void ClearPayloads() => payloads.Clear();
 
         /// <summary>Appends one history entry, dropping the oldest once the cap is reached.</summary>
-        public void AddHistoryEntry(PlayModeHistoryEntry entry)
+        internal void AddHistoryEntry(PlayModeHistoryEntry entry)
         {
             history.Add(entry);
 
@@ -76,9 +76,9 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
         }
 
         /// <summary>Drops the whole history.</summary>
-        public void ClearHistory() => history.Clear();
+        internal void ClearHistory() => history.Clear();
 
         /// <summary>Writes the store to disk. Required for anything to survive a domain reload.</summary>
-        public void Persist() => Save(true);
+        internal void Persist() => Save(true);
     }
 }

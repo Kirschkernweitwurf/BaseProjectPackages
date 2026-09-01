@@ -45,7 +45,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
         };
 
         /// <summary>Raised whenever the rule was edited, so the owner can save and rescan.</summary>
-        public event Action Changed;
+        internal event Action Changed;
 
         private readonly ScrollView _body = new();
 
@@ -66,7 +66,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
         /// <summary>Shows a rule, or the empty state when there is none.</summary>
         /// <param name="rule">The rule to edit.</param>
         /// <param name="platforms">The platforms offered as a target.</param>
-        public void SetRule(AudioRule rule, IReadOnlyList<string> platforms)
+        internal void SetRule(AudioRule rule, IReadOnlyList<string> platforms)
         {
             _rule = rule;
             _platforms = platforms;

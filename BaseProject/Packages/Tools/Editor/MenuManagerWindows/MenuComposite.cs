@@ -16,14 +16,14 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         };
 
         /// <summary>Package root first, then overlay root, for the given kind.</summary>
-        public static List<List<MenuNode>> RootsFor(EMenuEntryKind kind) => new()
+        internal static List<List<MenuNode>> RootsFor(EMenuEntryKind kind) => new()
         {
             Registry.RootFor(kind),
             Overlay.RootFor(kind)
         };
 
         /// <summary>Discovers new entries, flags missing ones, and routes new entries to the writable store.</summary>
-        public static void Sync(IReadOnlyDictionary<string, ResolvedMenu> resolved)
+        internal static void Sync(IReadOnlyDictionary<string, ResolvedMenu> resolved)
         {
             Overlay.Migrate();
 
@@ -71,7 +71,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         }
 
         /// <summary>Recomputes derived priorities across both stores for both kinds.</summary>
-        public static void Recalculate()
+        internal static void Recalculate()
         {
             foreach (EMenuEntryKind kind in Kinds)
                 MenuTree.Priorities(RootsFor(kind), Registry.StartFor(kind));
@@ -81,7 +81,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         /// Returns every entry of a kind paired with its full resolved path, package first
         /// then overlay.
         /// </summary>
-        public static List<(MenuEntry entry, string path)> ResolvedEntries(EMenuEntryKind kind)
+        internal static List<(MenuEntry entry, string path)> ResolvedEntries(EMenuEntryKind kind)
         {
             List<(MenuEntry, string)> result = new();
             MenuTree.Collect(RootsFor(kind), kind, result);

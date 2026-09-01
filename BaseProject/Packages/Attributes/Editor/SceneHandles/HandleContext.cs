@@ -16,25 +16,25 @@ namespace Base.AttributePackage.Editor.SceneHandles
     internal readonly struct HandleContext
     {
         /// <summary>The serialized property being visualized.</summary>
-        public readonly SerializedProperty Property;
+        internal readonly SerializedProperty Property;
 
         /// <summary>The reflected field behind the property.</summary>
-        public readonly FieldInfo Field;
+        internal readonly FieldInfo Field;
 
         /// <summary>The inspected Unity object.</summary>
-        public readonly Object Target;
+        internal readonly Object Target;
 
         /// <summary>The transform local space is measured against, or null for an asset.</summary>
-        public readonly Transform Transform;
+        internal readonly Transform Transform;
 
         /// <summary>The type that declares <see cref="Field"/>.</summary>
-        public readonly Type DeclaringType;
+        internal readonly Type DeclaringType;
 
         /// <summary>The managed instance that owns <see cref="Field"/>.</summary>
-        public readonly object DeclaringObject;
+        internal readonly object DeclaringObject;
 
         /// <summary>Human-readable label derived from the property name.</summary>
-        public string DisplayName => ObjectNames.NicifyVariableName(Property.name);
+        internal string DisplayName => ObjectNames.NicifyVariableName(Property.name);
 
         /// <summary>Creates a context for one field.</summary>
         /// <param name="property">The serialized property being visualized.</param>
@@ -61,7 +61,7 @@ namespace Base.AttributePackage.Editor.SceneHandles
         /// <param name="member">Name of the member to read.</param>
         /// <param name="value">The resolved vector.</param>
         /// <returns>True when the member resolved to a Vector3.</returns>
-        public bool TryResolveVector(string member, out Vector3 value)
+        internal bool TryResolveVector(string member, out Vector3 value)
         {
             value = Vector3.zero;
 
@@ -89,7 +89,7 @@ namespace Base.AttributePackage.Editor.SceneHandles
         /// <param name="member">Name of the member to read.</param>
         /// <param name="text">The resolved text.</param>
         /// <returns>True when the member resolved to something printable.</returns>
-        public bool TryResolveText(string member, out string text)
+        internal bool TryResolveText(string member, out string text)
         {
             text = null;
 

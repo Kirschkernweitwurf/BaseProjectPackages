@@ -24,7 +24,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         /// <param name="token">The metadata token.</param>
         /// <param name="resolution">What it resolved to.</param>
         /// <returns>True when the token was already known.</returns>
-        public bool TryGet(Module module, int token, out TokenResolution resolution)
+        internal bool TryGet(Module module, int token, out TokenResolution resolution)
             => _entries.TryGetValue((module, token), out resolution);
 
         /// <summary>Remembers what a token resolved to.</summary>
@@ -36,7 +36,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         /// then, because with a context the same token may resolve perfectly well somewhere else, and
         /// remembering the first failure would report it as unresolvable across the whole module.
         /// </param>
-        public void Store(Module module, int token, TokenResolution resolution, bool isContextFree)
+        internal void Store(Module module, int token, TokenResolution resolution, bool isContextFree)
         {
             if (!resolution.IsResolved && !isContextFree)
                 return;
@@ -49,13 +49,13 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         /// <param name="token">The metadata token.</param>
         /// <param name="literal">The literal when it was already known.</param>
         /// <returns>True when the token was already read.</returns>
-        public bool TryGetLiteral(Module module, int token, out string literal)
+        internal bool TryGetLiteral(Module module, int token, out string literal)
             => _literals.TryGetValue((module, token), out literal);
 
         /// <summary>Remembers a string literal.</summary>
         /// <param name="module">Module the token belongs to.</param>
         /// <param name="token">The metadata token.</param>
         /// <param name="literal">The literal that was read.</param>
-        public void StoreLiteral(Module module, int token, string literal) => _literals[(module, token)] = literal;
+        internal void StoreLiteral(Module module, int token, string literal) => _literals[(module, token)] = literal;
     }
 }

@@ -102,11 +102,11 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
         /// <summary>Sets how the graph arranges what it draws.</summary>
         /// <param name="mode">The arrangement to use.</param>
-        public void SetLayoutMode(ELayoutMode mode) => _layoutMode = mode;
+        internal void SetLayoutMode(ELayoutMode mode) => _layoutMode = mode;
 
         /// <summary>Sets how many relation lines are drawn at once.</summary>
         /// <param name="mode">The mode to draw in.</param>
-        public void SetEdgeMode(EEdgeMode mode)
+        internal void SetEdgeMode(EEdgeMode mode)
         {
             _edgeMode = mode;
             RefreshEdges();
@@ -115,7 +115,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         /// <summary>Clears and rebuilds the graph from the given entries.</summary>
         /// <param name="entries">Entries to draw.</param>
         /// <param name="focusedId">ID of the focused entry, or null.</param>
-        public void Rebuild(IReadOnlyList<GraphEntry> entries, string focusedId)
+        internal void Rebuild(IReadOnlyList<GraphEntry> entries, string focusedId)
         {
             DeleteElements(graphElements.ToList());
             _focusedNode = null;
@@ -163,7 +163,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
         /// <summary>Shows or hides the minimap.</summary>
         /// <param name="isVisible">Whether the minimap should be drawn.</param>
-        public void SetMiniMapVisible(bool isVisible) => _miniMap.style.display = isVisible
+        internal void SetMiniMapVisible(bool isVisible) => _miniMap.style.display = isVisible
             ? DisplayStyle.Flex
             : DisplayStyle.None;
 

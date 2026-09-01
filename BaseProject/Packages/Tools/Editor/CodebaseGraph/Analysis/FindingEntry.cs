@@ -10,22 +10,22 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
     internal sealed class FindingEntry
     {
         /// <summary>Which finding this line reports.</summary>
-        public EFinding Finding { get; }
+        internal EFinding Finding { get; }
 
         /// <summary>How much attention it deserves.</summary>
-        public ESeverity Severity { get; }
+        internal ESeverity Severity { get; }
 
         /// <summary>Stable dismissal id, which doubles as the readable name.</summary>
-        public string Id { get; }
+        internal string Id { get; }
 
         /// <summary>Type the finding sits on, or the declaring type of the member.</summary>
-        public TypeNodeInfo Type { get; set; }
+        internal TypeNodeInfo Type { get; set; }
 
         /// <summary>Member the finding sits on, or null when it is on the type or the namespace.</summary>
-        public MemberNodeInfo Member { get; set; }
+        internal MemberNodeInfo Member { get; set; }
 
         /// <summary>Asset path and line, ready to read, or an empty string when there is none.</summary>
-        public string Location => location;
+        internal string Location => location;
 
         /// <summary>Asset path and line, or an empty string when the script could not be resolved.</summary>
         private readonly string location;
@@ -50,6 +50,6 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
 
         /// <summary>Formats the entry as a Markdown list item.</summary>
         /// <returns>The line to write.</returns>
-        public string Format() => $"- `{Id}`{location}{detail}";
+        internal string Format() => $"- `{Id}`{location}{detail}";
     }
 }

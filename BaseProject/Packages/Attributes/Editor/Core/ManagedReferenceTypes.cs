@@ -23,7 +23,7 @@ namespace Base.AttributePackage.Editor.Core
         /// <param name="property">The managed reference property.</param>
         /// <param name="type">The declared field type.</param>
         /// <returns>True when the type could be resolved.</returns>
-        public static bool TryResolveFieldType(SerializedProperty property, out Type type)
+        internal static bool TryResolveFieldType(SerializedProperty property, out Type type)
         {
             type = null;
 
@@ -40,7 +40,7 @@ namespace Base.AttributePackage.Editor.Core
         /// </summary>
         /// <param name="declaredType">The declared field type.</param>
         /// <returns>The assignable concrete types, sorted by name.</returns>
-        public static Type[] GetAssignable(Type declaredType)
+        internal static Type[] GetAssignable(Type declaredType)
         {
             if (Candidates.TryGetValue(declaredType, out Type[] cached))
                 return cached;
@@ -66,7 +66,7 @@ namespace Base.AttributePackage.Editor.Core
         /// <summary>Builds the dropdown label of a candidate type, grouped by its namespace.</summary>
         /// <param name="type">The candidate type.</param>
         /// <returns>A slash-separated label, so the dropdown groups by namespace.</returns>
-        public static string LabelFor(Type type) => string.IsNullOrEmpty(type.Namespace)
+        internal static string LabelFor(Type type) => string.IsNullOrEmpty(type.Namespace)
             ? type.Name
             : type.Namespace.Replace('.', '/') + "/" + type.Name;
 

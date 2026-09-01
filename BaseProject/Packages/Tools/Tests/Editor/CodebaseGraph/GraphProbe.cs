@@ -23,7 +23,7 @@ namespace Base.ToolPackage.Editor.Tests
         /// <summary>Finds a type by its namespace qualified name.</summary>
         /// <param name="fullName">Full name of the type.</param>
         /// <returns>The type, or null when the scan never saw it.</returns>
-        public TypeNodeInfo FindType(string fullName)
+        internal TypeNodeInfo FindType(string fullName)
         {
             foreach (TypeNodeInfo type in _graph.Types.Values)
             {
@@ -42,7 +42,7 @@ namespace Base.ToolPackage.Editor.Tests
         /// <param name="typeName">Full name of the declaring type.</param>
         /// <param name="memberName">Plain member name.</param>
         /// <returns>The member, or null when the scan never saw it.</returns>
-        public MemberNodeInfo FindMember(string typeName, string memberName)
+        internal MemberNodeInfo FindMember(string typeName, string memberName)
         {
             TypeNodeInfo type = FindType(typeName);
             if (type == null)
@@ -61,7 +61,7 @@ namespace Base.ToolPackage.Editor.Tests
         /// <param name="typeName">Full name of the declaring type.</param>
         /// <param name="memberName">Plain member name.</param>
         /// <returns>The findings as text.</returns>
-        public string Describe(string typeName, string memberName)
+        internal string Describe(string typeName, string memberName)
         {
             MemberNodeInfo member = FindMember(typeName, memberName);
 
@@ -75,7 +75,7 @@ namespace Base.ToolPackage.Editor.Tests
         /// <param name="memberName">Plain member name.</param>
         /// <param name="issue">Finding to look for.</param>
         /// <returns>True when the finding is present.</returns>
-        public bool HasIssue(string typeName, string memberName, EMemberIssue issue)
+        internal bool HasIssue(string typeName, string memberName, EMemberIssue issue)
         {
             MemberNodeInfo member = FindMember(typeName, memberName);
 
@@ -86,7 +86,7 @@ namespace Base.ToolPackage.Editor.Tests
         /// <param name="typeName">Full name of the type.</param>
         /// <param name="issue">Finding to look for.</param>
         /// <returns>True when the finding is present.</returns>
-        public bool HasTypeIssue(string typeName, ETypeIssue issue)
+        internal bool HasTypeIssue(string typeName, ETypeIssue issue)
         {
             TypeNodeInfo type = FindType(typeName);
 
@@ -96,7 +96,7 @@ namespace Base.ToolPackage.Editor.Tests
         /// <summary>Lists every member of a type that carries a finding, for a readable failure.</summary>
         /// <param name="typeName">Full name of the type.</param>
         /// <returns>The reported members as text.</returns>
-        public string DescribeType(string typeName)
+        internal string DescribeType(string typeName)
         {
             TypeNodeInfo type = FindType(typeName);
             if (type == null)

@@ -21,7 +21,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         /// <param name="type">Type to inspect.</param>
         /// <param name="registry">Registry used to fold accessors onto their property.</param>
         /// <param name="sink">Receiver for the relations.</param>
-        public static void ScanType(Type type, MemberRegistry registry, IUsageSink sink)
+        internal static void ScanType(Type type, MemberRegistry registry, IUsageSink sink)
         {
             if (!KeyFactory.TryForType(type, out TypeKey typeKey))
                 return;

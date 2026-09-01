@@ -1,6 +1,7 @@
 using System;
 using System.Reflection;
 using Base.AttributePackage.Editor.Drawers;
+using Base.UtilityPackage;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -25,7 +26,7 @@ namespace Base.AttributePackage.Editor.SceneHandles
         /// SerializedObject that is not the inspector's own.
         /// </summary>
         /// <param name="serializedObject">The serialized view of the object being visualized.</param>
-        public static void Draw(SerializedObject serializedObject)
+        internal static void Draw(SerializedObject serializedObject)
         {
             Object target = serializedObject.targetObject;
             if (target == null)

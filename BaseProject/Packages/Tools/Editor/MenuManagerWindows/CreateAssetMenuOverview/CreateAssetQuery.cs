@@ -16,7 +16,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows.CreateAssetMenuOverview
         /// package and built-in types and applies a name/type search term, then sorts by order
         /// with the menu name as a tie-breaker.
         /// </summary>
-        public static IReadOnlyList<CreateAssetEntry> Apply(IReadOnlyList<CreateAssetEntry> entries,
+        internal static IReadOnlyList<CreateAssetEntry> Apply(IReadOnlyList<CreateAssetEntry> entries,
             string search, string root, EMenuDefinition? definition, bool includeExternal, bool ascending)
         {
             IEnumerable<CreateAssetEntry> query = entries;

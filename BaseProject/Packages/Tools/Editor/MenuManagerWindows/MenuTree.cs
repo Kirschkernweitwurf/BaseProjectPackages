@@ -19,7 +19,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         /// So a node only ever competes with its own siblings: it takes one slot, and a group lays its children out
         /// starting at that same slot. What a group holds inside can never push a sibling group away.
         /// </remarks>
-        public static void Priorities(IReadOnlyList<List<MenuNode>> roots, int start)
+        internal static void Priorities(IReadOnlyList<List<MenuNode>> roots, int start)
         {
             int slot = start;
             bool first = true;
@@ -51,7 +51,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         }
 
         /// <summary>Marks entries as present or missing and returns true when serialized data changed.</summary>
-        public static bool Mark(List<MenuNode> nodes, IReadOnlyDictionary<string, ResolvedMenu> resolved,
+        internal static bool Mark(List<MenuNode> nodes, IReadOnlyDictionary<string, ResolvedMenu> resolved,
             HashSet<string> known)
         {
             bool changed = false;
@@ -93,7 +93,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         }
 
         /// <summary>Collects every entry id in the tree.</summary>
-        public static void CollectIds(List<MenuNode> nodes, HashSet<string> ids)
+        internal static void CollectIds(List<MenuNode> nodes, HashSet<string> ids)
         {
             foreach (MenuNode node in nodes)
             {
@@ -105,7 +105,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         }
 
         /// <summary>Removes entries whose id matches the predicate. Returns true when anything was removed.</summary>
-        public static bool RemoveEntries(List<MenuNode> nodes, Predicate<string> removeById)
+        internal static bool RemoveEntries(List<MenuNode> nodes, Predicate<string> removeById)
         {
             bool changed = false;
 
@@ -128,7 +128,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         }
 
         /// <summary>Removes every entry whose code no longer exists. Returns true when anything was removed.</summary>
-        public static bool RemoveMissing(List<MenuNode> nodes)
+        internal static bool RemoveMissing(List<MenuNode> nodes)
         {
             bool changed = false;
 
@@ -151,7 +151,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         }
 
         /// <summary>True when the tree holds at least one entry whose code no longer exists.</summary>
-        public static bool HasMissing(List<MenuNode> nodes)
+        internal static bool HasMissing(List<MenuNode> nodes)
         {
             foreach (MenuNode node in nodes)
             {
@@ -173,7 +173,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         /// Rebuilds groups from each entry's default path, shortens every entry to its last segment, and resets asset
         /// file names.
         /// </summary>
-        public static bool AutoGroup(List<MenuNode> root, IReadOnlyDictionary<string, ResolvedMenu> resolved)
+        internal static bool AutoGroup(List<MenuNode> root, IReadOnlyDictionary<string, ResolvedMenu> resolved)
         {
             List<MenuEntryNode> entries = new();
             CollectEntries(root, entries);
@@ -230,7 +230,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         /// Sorts groups and entries by display name at every level. Returns true when the
         /// order changed.
         /// </summary>
-        public static bool Sort(List<MenuNode> nodes)
+        internal static bool Sort(List<MenuNode> nodes)
         {
             List<MenuNode> before = new(nodes);
             nodes.Sort(CompareNodes);
@@ -258,7 +258,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         /// Rebuilds separator flags from the retired merged flag, preserving the old
         /// implicit gaps. Runs once.
         /// </summary>
-        public static void MigrateSeparators(List<MenuNode> nodes)
+        internal static void MigrateSeparators(List<MenuNode> nodes)
         {
             bool afterGroup = false;
 
@@ -283,7 +283,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         /// <see cref="UnityEngine.SerializeReferenceAttribute"/> type can no longer be resolved. That happens when a
         /// file moves to another assembly or its namespace changes. Returns true when anything was removed.
         /// </summary>
-        public static bool PruneNulls(List<MenuNode> nodes)
+        internal static bool PruneNulls(List<MenuNode> nodes)
         {
             bool changed = false;
 
@@ -310,7 +310,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         /// Removes every group that holds no entries, innermost first. Returns true when
         /// anything was removed.
         /// </summary>
-        public static bool PruneEmptyGroups(List<MenuNode> nodes)
+        internal static bool PruneEmptyGroups(List<MenuNode> nodes)
         {
             bool changed = false;
 
@@ -332,7 +332,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         }
 
         /// <summary>Expands every group on the way to the entry. Returns false when it is not in this tree.</summary>
-        public static bool Expand(List<MenuNode> nodes, string entryId)
+        internal static bool Expand(List<MenuNode> nodes, string entryId)
         {
             foreach (MenuNode node in nodes)
             {
@@ -358,7 +358,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         /// Opens the script that declares the entry in the external editor. Returns false
         /// when it cannot be found.
         /// </summary>
-        public static bool OpenScript(Type declaringType)
+        internal static bool OpenScript(Type declaringType)
         {
             if (declaringType == null)
                 return false;
@@ -379,7 +379,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         }
 
         /// <summary>True when the tree holds at least one group with no live entries anywhere beneath it.</summary>
-        public static bool HasEmptyGroup(List<MenuNode> nodes)
+        internal static bool HasEmptyGroup(List<MenuNode> nodes)
         {
             foreach (MenuNode node in nodes)
             {
@@ -394,7 +394,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         }
 
         /// <summary>Collects entries paired with their full resolved paths across a sequence of roots.</summary>
-        public static void Collect(IReadOnlyList<List<MenuNode>> roots, EMenuEntryKind kind,
+        internal static void Collect(IReadOnlyList<List<MenuNode>> roots, EMenuEntryKind kind,
             List<(MenuEntry entry, string path)> result)
         {
             string prefixRoot = MenuPath.Prefix(kind);

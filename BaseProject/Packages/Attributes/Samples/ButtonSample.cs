@@ -23,18 +23,18 @@ namespace Base.AttributePackage.Samples
 
         /// <summary>A plain button, drawn under the fields.</summary>
         [Button("Reset")]
-        public void ResetLog() => log = nameof(ResetLog);
+        internal void ResetLog() => log = nameof(ResetLog);
 
         /// <summary>Two buttons sharing a row, since they are opposites.</summary>
         [Button("Apply", Row = "applyRevert")]
-        public void Apply() => log = nameof(Apply);
+        internal void Apply() => log = nameof(Apply);
 
         /// <summary>The other half of that row.</summary>
         [Button("Revert", Row = "applyRevert")]
-        public void Revert() => log = nameof(Revert);
+        internal void Revert() => log = nameof(Revert);
 
         /// <summary>A button that takes arguments, so a one-off call needs no serialized fields.</summary>
         [Button("Spawn", Size = EButtonSize.Large)]
-        public void Spawn(int count = 3, float radius = 5f) => log = $"{nameof(Spawn)} {count} within {radius}";
+        internal void Spawn(int count = 3, float radius = 5f) => log = $"{nameof(Spawn)} {count} within {radius}";
     }
 }

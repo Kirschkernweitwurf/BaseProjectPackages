@@ -18,12 +18,12 @@ namespace Base.ToolPackage.Editor.AudioRules.Scanning
         private readonly HashSet<string> _loopingGuids = new();
 
         /// <summary>How many clips a container was found for.</summary>
-        public int ReferencedClips => _categoryByGuid.Count;
+        internal int ReferencedClips => _categoryByGuid.Count;
 
         /// <summary>Reads every container the rule set binds to.</summary>
         /// <param name="ruleSet">The rule set holding the bindings.</param>
         /// <returns>The filled index.</returns>
-        public static AudioContainerIndex Build(AudioRuleSet ruleSet)
+        internal static AudioContainerIndex Build(AudioRuleSet ruleSet)
         {
             AudioContainerIndex index = new();
 
@@ -39,17 +39,17 @@ namespace Base.ToolPackage.Editor.AudioRules.Scanning
         /// <summary>The category a clip was referenced with.</summary>
         /// <param name="clipGuid">GUID of the clip.</param>
         /// <returns>The category name, or an empty string when nothing references the clip.</returns>
-        public string GetCategory(string clipGuid) => _categoryByGuid.GetValueOrDefault(clipGuid, string.Empty);
+        internal string GetCategory(string clipGuid) => _categoryByGuid.GetValueOrDefault(clipGuid, string.Empty);
 
         /// <summary>True when a container plays the clip as a loop.</summary>
         /// <param name="clipGuid">GUID of the clip.</param>
         /// <returns>True when at least one container loops it.</returns>
-        public bool IsLooping(string clipGuid) => _loopingGuids.Contains(clipGuid);
+        internal bool IsLooping(string clipGuid) => _loopingGuids.Contains(clipGuid);
 
         /// <summary>True when at least one container references the clip.</summary>
         /// <param name="clipGuid">GUID of the clip.</param>
         /// <returns>True when the clip is referenced.</returns>
-        public bool HasContainer(string clipGuid) => _categoryByGuid.ContainsKey(clipGuid);
+        internal bool HasContainer(string clipGuid) => _categoryByGuid.ContainsKey(clipGuid);
 
         private static string ReadCategory(SerializedProperty property)
         {

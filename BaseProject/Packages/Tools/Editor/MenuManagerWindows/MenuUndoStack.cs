@@ -16,10 +16,10 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         private const string UndoCommand = "Undo";
 
         /// <summary>Whether there is a step to go back to.</summary>
-        public bool CanUndo => _undoStates.Count > 0;
+        internal bool CanUndo => _undoStates.Count > 0;
 
         /// <summary>Whether an undone step can be replayed.</summary>
-        public bool CanRedo => _redoStates.Count > 0;
+        internal bool CanRedo => _redoStates.Count > 0;
 
         private readonly Action<MenuUndoState> _apply;
         private readonly Func<MenuUndoState> _capture;
@@ -36,7 +36,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         }
 
         /// <summary>Remembers the current state. Call this before a change, never after.</summary>
-        public void Push()
+        internal void Push()
         {
             _undoStates.Add(_capture.Invoke());
 
@@ -50,7 +50,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         /// Throws the newest step away again. Used by the commands that push first and then find
         /// out they had nothing to change, so an empty step never lands on the stack.
         /// </summary>
-        public void DropLast()
+        internal void DropLast()
         {
             if (_undoStates.Count == 0)
                 return;
@@ -59,7 +59,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         }
 
         /// <summary>Goes one step back, if there is one.</summary>
-        public void Undo()
+        internal void Undo()
         {
             if (_undoStates.Count == 0)
                 return;
@@ -71,7 +71,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         }
 
         /// <summary>Replays the step that was undone last, if there is one.</summary>
-        public void Redo()
+        internal void Redo()
         {
             if (_redoStates.Count == 0)
                 return;
@@ -87,7 +87,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         /// of on whatever Unity has on its own stack while this window has focus.
         /// </summary>
         /// <param name="current">The event being processed.</param>
-        public void HandleCommands(Event current)
+        internal void HandleCommands(Event current)
         {
             if (current.type == EventType.ValidateCommand
                 && (current.commandName == UndoCommand || current.commandName == RedoCommand))

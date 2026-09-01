@@ -6,106 +6,106 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Model
     internal sealed class MemberNodeInfo
     {
         /// <summary>Identity of the member.</summary>
-        public MemberKey Key { get; }
+        internal MemberKey Key { get; }
 
         /// <summary>Plain member name, without parameters.</summary>
-        public string Name { get; }
+        internal string Name { get; }
 
         /// <summary>Display signature, for example "Move(Vector3, Single) : Boolean".</summary>
-        public string Signature { get; }
+        internal string Signature { get; }
 
         /// <summary>Category the member falls into.</summary>
-        public EMemberKind Kind { get; }
+        internal EMemberKind Kind { get; }
 
         /// <summary>Declared visibility.</summary>
-        public EAccessLevel Access { get; }
+        internal EAccessLevel Access { get; }
 
         /// <summary>Type the member is declared in.</summary>
-        public TypeKey DeclaringTypeKey { get; }
+        internal TypeKey DeclaringTypeKey { get; }
 
         /// <summary>True for static members.</summary>
-        public bool IsStatic { get; }
+        internal bool IsStatic { get; }
 
         /// <summary>True for readonly fields and get-only properties.</summary>
-        public bool IsReadOnly { get; }
+        internal bool IsReadOnly { get; }
 
         /// <summary>True when the member overrides a base member or implements an interface member.</summary>
-        public bool IsOverride { get; set; }
+        internal bool IsOverride { get; set; }
 
         /// <summary>True when derived types are expected to supply or replace the implementation.</summary>
-        public bool IsVirtual { get; }
+        internal bool IsVirtual { get; }
 
         /// <summary>True when the member has no body and a derived type has to provide one.</summary>
-        public bool IsAbstract { get; }
+        internal bool IsAbstract { get; }
 
         /// <summary>True when something outside the code can call or write this member.</summary>
-        public bool IsEntryPoint { get; set; }
+        internal bool IsEntryPoint { get; set; }
 
         /// <summary>Reason the member counts as an entry point, used for the tooltip.</summary>
-        public string EntryPointReason { get; set; }
+        internal string EntryPointReason { get; set; }
 
         /// <summary>
         /// True when the text sidecar found the member name used somewhere in source. Only set for consts
         /// and enum members, whose reads the compiler inlines and which are therefore invisible in IL.
         /// </summary>
-        public bool HasTextUsage { get; set; }
+        internal bool HasTextUsage { get; set; }
 
         /// <summary>True when a reset method assigns this field on entering play mode.</summary>
-        public bool IsStateReset { get; set; }
+        internal bool IsStateReset { get; set; }
 
         /// <summary>How many types implement this member, for interface declarations.</summary>
-        public int ImplementationCount { get; set; }
+        internal int ImplementationCount { get; set; }
 
         /// <summary>True when an interface the declaring type implements declares a member of this name.</summary>
-        public bool ImplementsInterfaceMember { get; set; }
+        internal bool ImplementsInterfaceMember { get; set; }
 
         /// <summary>How many prefabs, scenes or assets set this serialized field.</summary>
-        public int AssetUsageCount { get; set; }
+        internal int AssetUsageCount { get; set; }
 
         /// <summary>True when the signature is one the engine could call from an animation clip.</summary>
-        public bool IsAnimationEventSignature { get; set; }
+        internal bool IsAnimationEventSignature { get; set; }
 
         /// <summary>True when something reported here was not reported by the previous scan.</summary>
-        public bool HasNewFindings { get; set; }
+        internal bool HasNewFindings { get; set; }
 
         /// <summary>Earlier names this field answers to, from FormerlySerializedAs.</summary>
-        public List<string> SerializedAliases { get; } = new();
+        internal List<string> SerializedAliases { get; } = new();
 
         /// <summary>
         /// True when the member is deliberately out of scope, set either by a suppression attribute on
         /// the member or by the older source line marker. Every finding on it is silenced.
         /// </summary>
-        public bool IsSuppressed { get; set; }
+        internal bool IsSuppressed { get; set; }
 
         /// <summary>Size of the compiled method body in bytes. Zero for data members.</summary>
-        public int IlSize { get; set; }
+        internal int IlSize { get; set; }
 
         /// <summary>Every usage that starts at this member.</summary>
-        public List<UsageEdgeInfo> Outgoing { get; }
+        internal List<UsageEdgeInfo> Outgoing { get; }
 
         /// <summary>Every usage that points at this member.</summary>
-        public List<UsageEdgeInfo> Incoming { get; }
+        internal List<UsageEdgeInfo> Incoming { get; }
 
         /// <summary>Findings the analyzer reported for this member.</summary>
-        public EMemberIssue Issues { get; set; }
+        internal EMemberIssue Issues { get; set; }
 
         /// <summary>
         /// Number of distinct members that use this one. Not the edge count: one caller that both calls
         /// and reads a member produces two edges but is still a single user.
         /// </summary>
-        public int FanIn { get; private set; }
+        internal int FanIn { get; private set; }
 
         /// <summary>Number of distinct members this one uses.</summary>
-        public int FanOut { get; private set; }
+        internal int FanOut { get; private set; }
 
         /// <summary>Stable id used for dismissals, built once so lookups allocate nothing.</summary>
-        public string DismissalId { get; set; }
+        internal string DismissalId { get; set; }
 
         /// <summary>True when the analyzer reported anything.</summary>
-        public bool HasIssues => Issues != EMemberIssue.None;
+        internal bool HasIssues => Issues != EMemberIssue.None;
 
         /// <summary>True when the member holds data instead of behavior.</summary>
-        public bool IsDataMember => Kind == EMemberKind.Field
+        internal bool IsDataMember => Kind == EMemberKind.Field
             || Kind == EMemberKind.SerializedField
             || Kind == EMemberKind.Const
             || Kind == EMemberKind.EnumMember;
@@ -151,7 +151,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Model
         /// caller reuses, so counting every member costs one allocation rather than fifteen thousand.
         /// </summary>
         /// <param name="scratch">A set the caller owns and reuses between members.</param>
-        public void RecomputeFanCounts(HashSet<MemberKey> scratch)
+        internal void RecomputeFanCounts(HashSet<MemberKey> scratch)
         {
             scratch.Clear();
             foreach (UsageEdgeInfo edge in Incoming)
@@ -167,7 +167,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Model
         }
 
         /// <summary>True when at least one incoming usage writes to this member.</summary>
-        public bool HasIncomingWrite()
+        internal bool HasIncomingWrite()
         {
             foreach (UsageEdgeInfo edge in Incoming)
             {
@@ -179,7 +179,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Model
         }
 
         /// <summary>True when at least one incoming usage reads this member.</summary>
-        public bool HasIncomingRead()
+        internal bool HasIncomingRead()
         {
             foreach (UsageEdgeInfo edge in Incoming)
             {

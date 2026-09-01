@@ -4,16 +4,16 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Model
     internal sealed class UsageEdgeInfo
     {
         /// <summary>Member the usage originates from.</summary>
-        public MemberKey SourceKey { get; }
+        internal MemberKey SourceKey { get; }
 
         /// <summary>Member that is being used.</summary>
-        public MemberKey TargetKey { get; }
+        internal MemberKey TargetKey { get; }
 
         /// <summary>What kind of usage this is.</summary>
-        public EUsageKind Kind { get; }
+        internal EUsageKind Kind { get; }
 
         /// <summary>How many times the usage was found.</summary>
-        public int Count { get; private set; }
+        internal int Count { get; private set; }
 
         /// <summary>Creates a usage edge with a count of one.</summary>
         /// <param name="sourceKey">Member the usage originates from.</param>
@@ -28,6 +28,6 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Model
         }
 
         /// <summary>Raises the occurrence count by one.</summary>
-        public void Increment() => Count++;
+        internal void Increment() => Count++;
     }
 }

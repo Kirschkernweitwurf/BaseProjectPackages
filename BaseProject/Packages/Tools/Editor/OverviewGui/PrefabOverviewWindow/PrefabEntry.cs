@@ -10,43 +10,43 @@ namespace Base.ToolPackage.Editor.OverviewGui.PrefabOverviewWindow
     internal sealed class PrefabEntry
     {
         /// <summary>GUID of the prefab asset.</summary>
-        public string Guid { get; }
+        internal string Guid { get; }
 
         /// <summary>Project relative path of the prefab asset.</summary>
-        public string AssetPath { get; }
+        internal string AssetPath { get; }
 
         /// <summary>File name of the prefab without its extension.</summary>
-        public string Name { get; }
+        internal string Name { get; }
 
         /// <summary>Kind of prefab this entry points at.</summary>
-        public EPrefabKind Kind { get; }
+        internal EPrefabKind Kind { get; }
 
         /// <summary>GUID of the base prefab, or an empty string when the prefab has no base.</summary>
-        public string BaseGuid { get; }
+        internal string BaseGuid { get; }
 
         /// <summary>Number of GameObjects inside the prefab, including the root.</summary>
-        public int GameObjectCount { get; }
+        internal int GameObjectCount { get; }
 
         /// <summary>Number of components inside the prefab, without the transforms.</summary>
-        public int ComponentCount { get; }
+        internal int ComponentCount { get; }
 
         /// <summary>Overrides this variant carries on top of its base. Stays empty for other kinds.</summary>
-        public PrefabOverrideCounts Overrides { get; internal set; }
+        internal PrefabOverrideCounts Overrides { get; set; }
 
         /// <summary>Entry of the base prefab, or null when the base could not be resolved.</summary>
-        public PrefabEntry BaseEntry { get; internal set; }
+        internal PrefabEntry BaseEntry { get; set; }
 
         /// <summary>Number of steps between this entry and the prefab that starts its variant chain.</summary>
-        public int Depth { get; internal set; }
+        internal int Depth { get; set; }
 
         /// <summary>Number of variants derived from this prefab, direct and indirect.</summary>
-        public int TotalVariants { get; internal set; }
+        internal int TotalVariants { get; set; }
 
         /// <summary>Problems found for this entry.</summary>
-        public EPrefabIssue Issues { get; internal set; }
+        internal EPrefabIssue Issues { get; set; }
 
         /// <summary>Variants that use this prefab as their direct base.</summary>
-        public IReadOnlyList<PrefabEntry> Children => _children;
+        internal IReadOnlyList<PrefabEntry> Children => _children;
 
         private readonly List<PrefabEntry> _children = new();
 
@@ -57,11 +57,7 @@ namespace Base.ToolPackage.Editor.OverviewGui.PrefabOverviewWindow
         /// <param name="baseGuid">GUID of the base prefab, empty when there is none.</param>
         /// <param name="gameObjectCount">Number of GameObjects inside the prefab.</param>
         /// <param name="componentCount">Number of components inside the prefab, without the transforms.</param>
-        public PrefabEntry(string guid,
-            string assetPath,
-            EPrefabKind kind,
-            string baseGuid,
-            int gameObjectCount,
+        public PrefabEntry(string guid, string assetPath, EPrefabKind kind, string baseGuid, int gameObjectCount,
             int componentCount)
         {
             Guid = guid;

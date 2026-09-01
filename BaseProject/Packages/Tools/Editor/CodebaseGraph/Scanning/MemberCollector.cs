@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using Base.ToolPackage.Editor.CodebaseGraph.Model;
+using Base.UtilityPackage;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -31,13 +32,13 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         /// Empties the caches held between types. They are keyed on Type, so leaving them in place
         /// would grow the tool's own footprint with every rescan for the life of the domain.
         /// </summary>
-        public static void ResetCaches() => InterfaceMemberNames.Clear();
+        internal static void ResetCaches() => InterfaceMemberNames.Clear();
 
         /// <summary>Creates the type node and registers every member it declares.</summary>
         /// <param name="type">Type to collect.</param>
         /// <param name="registry">Registry that receives the member nodes and redirects.</param>
         /// <returns>The type node, or null when the type cannot be keyed.</returns>
-        public static TypeNodeInfo Collect(Type type, MemberRegistry registry)
+        internal static TypeNodeInfo Collect(Type type, MemberRegistry registry)
         {
             if (!KeyFactory.TryForType(type, out TypeKey typeKey))
                 return null;
@@ -130,8 +131,8 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         private static TypeNodeInfo BuildTypeNode(Type type, TypeKey typeKey)
         {
             TypeNodeInfo node = new(typeKey,
-                TypeNameFormatter.FormatShortName(type),
-                TypeNameFormatter.FormatFullName(type),
+                TypeNameUtility.FormatShortName(type),
+                TypeNameUtility.FormatFullName(type),
                 string.IsNullOrEmpty(type.Namespace)
                     ? CodebaseGraphData.GlobalNamespaceName
                     : type.Namespace,
@@ -205,7 +206,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
 
                 MemberNodeInfo member = new(key,
                     property.Name,
-                    $"{property.Name}{ReturnSeparator}{TypeNameFormatter.Format(property.PropertyType)}",
+                    $"{property.Name}{ReturnSeparator}{TypeNameUtility.Format(property.PropertyType)}",
                     EMemberKind.Property,
                     GetAccessLevel(any),
                     typeKey,
@@ -243,7 +244,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
 
                 MemberNodeInfo member = new(key,
                     declaredEvent.Name,
-                    $"{declaredEvent.Name}{ReturnSeparator}{TypeNameFormatter.Format(declaredEvent.EventHandlerType)}",
+                    $"{declaredEvent.Name}{ReturnSeparator}{TypeNameUtility.Format(declaredEvent.EventHandlerType)}",
                     EMemberKind.Event,
                     GetAccessLevel(any),
                     typeKey,
@@ -289,7 +290,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
 
                 MemberNodeInfo member = new(key,
                     field.Name,
-                    $"{field.Name}{ReturnSeparator}{TypeNameFormatter.Format(field.FieldType)}",
+                    $"{field.Name}{ReturnSeparator}{TypeNameUtility.Format(field.FieldType)}",
                     ResolveFieldKind(type, field),
                     GetAccessLevel(field),
                     typeKey,
@@ -324,7 +325,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
 
                 MemberNodeInfo member = new(key,
                     constructor.Name,
-                    BuildSignature(constructor, TypeNameFormatter.Format(type)),
+                    BuildSignature(constructor, TypeNameUtility.Format(type)),
                     EMemberKind.Constructor,
                     GetAccessLevel(constructor),
                     typeKey,
@@ -522,7 +523,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
                 if (index > 0)
                     builder.Append(ParameterSeparator);
 
-                builder.Append(TypeNameFormatter.Format(parameters[index].ParameterType));
+                builder.Append(TypeNameUtility.Format(parameters[index].ParameterType));
             }
 
             builder.Append(')');
@@ -530,7 +531,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
             if (method is MethodInfo info)
             {
                 builder.Append(ReturnSeparator);
-                builder.Append(TypeNameFormatter.Format(info.ReturnType));
+                builder.Append(TypeNameUtility.Format(info.ReturnType));
             }
 
             return builder.ToString();

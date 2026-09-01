@@ -123,7 +123,7 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
             "remove"
         };
 
-        public static List<Finding> Scan(ScanOptions opt, out int filesScanned)
+        internal static List<Finding> Scan(ScanOptions opt, out int filesScanned)
         {
             List<Finding> results = new();
             filesScanned = 0;

@@ -11,7 +11,7 @@ namespace Base.ToolPackage.Editor.CommandPalette
         /// <summary>Reads the action the current event asks for.</summary>
         /// <param name="current">The event being processed.</param>
         /// <returns>The requested action, or <see cref="ECommandPaletteAction.None"/>.</returns>
-        public static ECommandPaletteAction Read(Event current)
+        internal static ECommandPaletteAction Read(Event current)
         {
             if (current.type != EventType.KeyDown)
                 return ECommandPaletteAction.None;
@@ -34,13 +34,13 @@ namespace Base.ToolPackage.Editor.CommandPalette
         /// <summary>Whether the event cancels the tag editor.</summary>
         /// <param name="current">The event being processed.</param>
         /// <returns><c>true</c> for Escape.</returns>
-        public static bool IsCancel(Event current) => current.type == EventType.KeyDown
+        internal static bool IsCancel(Event current) => current.type == EventType.KeyDown
             && current.keyCode == KeyCode.Escape;
 
         /// <summary>Whether the event confirms the tag editor.</summary>
         /// <param name="current">The event being processed.</param>
         /// <returns><c>true</c> for either Enter key.</returns>
-        public static bool IsSubmit(Event current) => current.type == EventType.KeyDown
+        internal static bool IsSubmit(Event current) => current.type == EventType.KeyDown
             && current.keyCode is KeyCode.Return or KeyCode.KeypadEnter;
 
         // EditorGUI.actionKey is not part of the public API, so the platform key is read here.

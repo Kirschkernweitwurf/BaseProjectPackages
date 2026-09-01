@@ -13,16 +13,16 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
     internal static class DismissalTextFormat
     {
         /// <summary>Verb that hides the findings on an entry itself.</summary>
-        public const string DismissVerb = "dismiss";
+        internal const string DismissVerb = "dismiss";
 
         /// <summary>Verb that hides an entry and everything inside it.</summary>
-        public const string DismissWithContentsVerb = "dismiss-tree";
+        internal const string DismissWithContentsVerb = "dismiss-tree";
 
         /// <summary>Verb that brings a previously dismissed entry back.</summary>
-        public const string RestoreVerb = "restore";
+        internal const string RestoreVerb = "restore";
 
         /// <summary>Verb that brings an entry back together with everything inside it.</summary>
-        public const string RestoreWithContentsVerb = "restore-tree";
+        internal const string RestoreWithContentsVerb = "restore-tree";
 
         private const char CommentMarker = '#';
         private const char LineBreak = '\n';
@@ -30,7 +30,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
 
         /// <summary>Writes the current dismissals as instruction lines.</summary>
         /// <returns>One line per dismissed entry.</returns>
-        public static string Write()
+        internal static string Write()
         {
             StringBuilder builder = new();
 
@@ -44,7 +44,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         /// <param name="text">The lines to read.</param>
         /// <param name="applied">Receives how many lines changed something.</param>
         /// <param name="ignored">Receives how many lines could not be understood or changed nothing.</param>
-        public static void Apply(string text, out int applied, out int ignored)
+        internal static void Apply(string text, out int applied, out int ignored)
         {
             applied = 0;
             ignored = 0;

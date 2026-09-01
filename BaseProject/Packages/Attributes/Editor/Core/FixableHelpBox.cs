@@ -26,7 +26,7 @@ namespace Base.AttributePackage.Editor.Core
         /// <param name="type">How badly.</param>
         /// <param name="method">Name of the parameterless repair method, or null for no button.</param>
         /// <param name="label">Label of the button.</param>
-        public static void Draw(in MemberContext context, string message, EInfoBoxType type, string method,
+        internal static void Draw(in MemberContext context, string message, EInfoBoxType type, string method,
             string label)
         {
             MethodInfo repair = Resolve(context, method);

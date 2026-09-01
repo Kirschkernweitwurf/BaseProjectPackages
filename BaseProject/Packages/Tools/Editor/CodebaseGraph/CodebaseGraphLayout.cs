@@ -45,7 +45,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         /// <param name="entries">Entries to place.</param>
         /// <param name="mode">Layout mode to use.</param>
         /// <returns>The rects, keyed by entry id.</returns>
-        public static Dictionary<string, Rect> Calculate(IReadOnlyList<GraphEntry> entries, ELayoutMode mode)
+        internal static Dictionary<string, Rect> Calculate(IReadOnlyList<GraphEntry> entries, ELayoutMode mode)
         {
             Dictionary<string, Rect> result = new();
             if (entries == null || entries.Count == 0)
@@ -76,7 +76,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         /// <summary>Returns the width a node of this level is drawn at.</summary>
         /// <param name="entry">Entry to measure.</param>
         /// <returns>The node width.</returns>
-        public static float MeasureWidth(GraphEntry entry)
+        internal static float MeasureWidth(GraphEntry entry)
         {
             switch (entry.Level)
             {

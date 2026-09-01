@@ -21,7 +21,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
         [SerializeField] private EAssetNamingSort sort = EAssetNamingSort.Folder;
 
         /// <summary>Sort and grouping mode of the result list.</summary>
-        public EAssetNamingSort Sort
+        internal EAssetNamingSort Sort
         {
             get => sort;
             set => sort = value;
@@ -42,19 +42,19 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
         }
 
         /// <summary>Violations left after the filters, sorted by the current mode.</summary>
-        public IReadOnlyList<AssetNamingViolation> Filtered => _filtered;
+        internal IReadOnlyList<AssetNamingViolation> Filtered => _filtered;
 
         /// <summary>Filtered violations split into the collapsible groups the sort mode asks for.</summary>
-        public IReadOnlyList<AssetNamingGroup> Groups => _groups;
+        internal IReadOnlyList<AssetNamingGroup> Groups => _groups;
 
         /// <summary>Violations the last scan found, before any filter was applied.</summary>
-        public int ScannedCount => _all.Count;
+        internal int ScannedCount => _all.Count;
 
         /// <summary>Whether the project was scanned at least once since the window was opened.</summary>
-        public bool HasScanned { get; private set; }
+        internal bool HasScanned { get; private set; }
 
         /// <summary>Whether a search or a rule filter is hiding anything.</summary>
-        public bool IsFilterActive => !string.IsNullOrWhiteSpace(_search) || _ruleFilter.Length > 0;
+        internal bool IsFilterActive => !string.IsNullOrWhiteSpace(_search) || _ruleFilter.Length > 0;
 
         /// <summary>Dismissed assets that still exist, counted before the search is applied.</summary>
         public int DismissedCount
@@ -77,7 +77,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
 
         /// <summary>Scans the project from scratch and reruns the filters.</summary>
         /// <param name="ruleSet">Rules the assets are checked against.</param>
-        public void Scan(AssetNamingRuleSet ruleSet)
+        internal void Scan(AssetNamingRuleSet ruleSet)
         {
             _all.Clear();
             _all.AddRange(AssetNamingScanner.Scan(ruleSet));
@@ -90,7 +90,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
         }
 
         /// <summary>Reapplies the filters and the sort to the last scan, then rebuilds the groups.</summary>
-        public void Run()
+        internal void Run()
         {
             _filtered.Clear();
 
@@ -115,7 +115,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
         /// Rename and Dismiss.
         /// </summary>
         /// <param name="violation">The violation that no longer applies.</param>
-        public void Remove(AssetNamingViolation violation)
+        internal void Remove(AssetNamingViolation violation)
         {
             if (violation == null)
                 return;
@@ -126,11 +126,11 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
         }
 
         /// <summary>Forgets the resolved dismissed paths, so the next read looks them up again.</summary>
-        public void InvalidateDismissed() => _dismissedPaths = null;
+        internal void InvalidateDismissed() => _dismissedPaths = null;
 
         /// <summary>Dismissed asset paths left after the search, in the order they are drawn.</summary>
         /// <returns>The cached list itself while no search is active, a filtered copy otherwise.</returns>
-        public IReadOnlyList<string> GetVisibleDismissed()
+        internal IReadOnlyList<string> GetVisibleDismissed()
         {
             _dismissedPaths ??= BuildDismissedPaths();
 

@@ -18,7 +18,7 @@ namespace Base.SaveSystemPackage.Slots
         /// <param name="reader">The reader to pull metadata from.</param>
         /// <param name="ct">Cancels the underlying storage reads.</param>
         /// <returns>One entry per existing save, newest first.</returns>
-        public static async Awaitable<IReadOnlyList<SlotInfo>> ListNewestFirstAsync(ISaveReader reader,
+        internal static async Awaitable<IReadOnlyList<SlotInfo>> ListNewestFirstAsync(ISaveReader reader,
             CancellationToken ct)
         {
             IReadOnlyList<SaveMetadata> saves = await reader.ListSavesAsync(ct);

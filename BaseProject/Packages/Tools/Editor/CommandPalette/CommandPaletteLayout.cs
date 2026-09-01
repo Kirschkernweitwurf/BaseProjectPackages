@@ -9,19 +9,19 @@ namespace Base.ToolPackage.Editor.CommandPalette
     internal readonly struct CommandPaletteLayout
     {
         /// <summary>The search box and the pills next to it.</summary>
-        public Rect Search { get; }
+        internal Rect Search { get; }
 
         /// <summary>Hairline between the search box and the results.</summary>
-        public Rect TopLine { get; }
+        internal Rect TopLine { get; }
 
         /// <summary>Everything the result list may use.</summary>
-        public Rect List { get; }
+        internal Rect List { get; }
 
         /// <summary>Hairline between the results and the hints.</summary>
-        public Rect BottomLine { get; }
+        internal Rect BottomLine { get; }
 
         /// <summary>The key hints and the status message.</summary>
-        public Rect Footer { get; }
+        internal Rect Footer { get; }
 
         /// <summary>Divides the window into bands.</summary>
         /// <param name="window">The window rectangle, starting at zero.</param>

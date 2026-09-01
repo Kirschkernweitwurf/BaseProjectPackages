@@ -11,7 +11,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         private MenuEntry entry;
 
         /// <summary>The wrapped entry.</summary>
-        public MenuEntry Entry => entry;
+        internal MenuEntry Entry => entry;
 
         /// <summary>Required by serialization.</summary>
         public MenuEntryNode() { }

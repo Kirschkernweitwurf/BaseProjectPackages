@@ -14,11 +14,11 @@ namespace Base.ToolPackage.Editor.CommandPalette
         /// <summary>Whether the entry could have a script to open.</summary>
         /// <param name="entry">The entry to check.</param>
         /// <returns><c>true</c> when the declaring type is known.</returns>
-        public static bool CanOpen(CommandEntry entry) => entry.Owner != null;
+        internal static bool CanOpen(CommandEntry entry) => entry.Owner != null;
 
         /// <summary>Opens the declaring script in the external editor and pings it.</summary>
         /// <param name="entry">The entry whose script is opened.</param>
-        public static void Open(CommandEntry entry)
+        internal static void Open(CommandEntry entry)
         {
             if (!CanOpen(entry))
                 return;

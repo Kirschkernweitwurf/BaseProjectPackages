@@ -2,8 +2,10 @@
   "name": "com.baseprojectpackages.attributes",
   "displayName": "Base Attribute Package",
   "description": "Inspector attributes for Unity that replace the default MonoBehaviour and ScriptableObject inspectors: titles, validation, conditional fields, auto-assignment, pickers, buttons and widgets.",
-  "version": "1.7.0",
+  "version": "1.7.1",
   "unity": "6000.3",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "licensesUrl": "https://polyformproject.org/licenses/shield/1.0.0",
   "author": {
     "name": "Jonathan Alber"
   }

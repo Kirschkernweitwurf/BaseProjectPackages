@@ -19,11 +19,11 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot.Ch
         /// <summary>Returns the fields declared directly on the given type.</summary>
         /// <param name="type">The type to enumerate.</param>
         /// <returns>The declared fields.</returns>
-        public static FieldInfo[] DeclaredFields(Type type) => type.GetFields(DeclaredFlags);
+        internal static FieldInfo[] DeclaredFields(Type type) => type.GetFields(DeclaredFlags);
 
         /// <summary>Returns the methods declared directly on the given type.</summary>
         /// <param name="type">The type to enumerate.</param>
         /// <returns>The declared methods.</returns>
-        public static MethodInfo[] DeclaredMethods(Type type) => type.GetMethods(DeclaredFlags);
+        internal static MethodInfo[] DeclaredMethods(Type type) => type.GetMethods(DeclaredFlags);
     }
 }

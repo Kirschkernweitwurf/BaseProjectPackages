@@ -30,13 +30,13 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
         private const string TargetArrow = "\u2192 ";
 
         /// <summary>Raised when the selection changes, with the row that is now current.</summary>
-        public event Action<AudioClipPlan> SelectionChanged;
+        internal event Action<AudioClipPlan> SelectionChanged;
 
         /// <summary>Raised whenever the number of selected rows changed.</summary>
-        public event Action SelectionCountChanged;
+        internal event Action SelectionCountChanged;
 
         /// <summary>The rows the user has selected.</summary>
-        public IReadOnlyList<AudioClipPlan> Selection => _selection;
+        internal IReadOnlyList<AudioClipPlan> Selection => _selection;
 
         private readonly MultiColumnListView _list = new();
         private readonly List<AudioClipPlan> _items = new();
@@ -69,7 +69,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
 
         /// <summary>Replaces the rows and keeps the current sort.</summary>
         /// <param name="plans">The plans to show.</param>
-        public void SetItems(IEnumerable<AudioClipPlan> plans)
+        internal void SetItems(IEnumerable<AudioClipPlan> plans)
         {
             _items.Clear();
             _items.AddRange(plans);
@@ -83,7 +83,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
         }
 
         /// <summary>Redraws the visible rows without touching the data.</summary>
-        public void Refresh() => _list.RefreshItems();
+        internal void Refresh() => _list.RefreshItems();
 
         private static Label MakeLabel()
         {

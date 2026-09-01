@@ -15,7 +15,7 @@ namespace Base.ToolPackage.Editor.ExecutionOrderOverview
         /// Optionally hides everything outside the project, applies a name/namespace search
         /// term, then sorts by effective order with the type name as a tie-breaker.
         /// </summary>
-        public static IReadOnlyList<ExecutionOrderEntry> Apply(IReadOnlyList<ExecutionOrderEntry> entries,
+        internal static IReadOnlyList<ExecutionOrderEntry> Apply(IReadOnlyList<ExecutionOrderEntry> entries,
             string search, bool includeExternal, bool ascending)
         {
             IEnumerable<ExecutionOrderEntry> query = entries;

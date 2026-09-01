@@ -13,7 +13,7 @@ namespace Base.AttributePackage.Editor.Core
         private const string AssetFilter = "t:ScriptableObject";
 
         /// <summary>Loads every ScriptableObject asset, skipping the ones that fail to load.</summary>
-        public static IEnumerable<ScriptableObject> LoadAll()
+        internal static IEnumerable<ScriptableObject> LoadAll()
         {
             foreach (string guid in AssetDatabase.FindAssets(AssetFilter))
             {

@@ -7,148 +7,148 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Model
     internal sealed class TypeNodeInfo
     {
         /// <summary>Identity of the type.</summary>
-        public TypeKey Key { get; }
+        internal TypeKey Key { get; }
 
         /// <summary>Name without namespace, with nested types joined by a dot.</summary>
-        public string ShortName { get; }
+        internal string ShortName { get; }
 
         /// <summary>Full name including namespace.</summary>
-        public string FullName { get; }
+        internal string FullName { get; }
 
         /// <summary>Namespace of the type, or an empty string for the global namespace.</summary>
-        public string Namespace { get; }
+        internal string Namespace { get; }
 
         /// <summary>Name of the assembly the type lives in.</summary>
-        public string AssemblyName { get; }
+        internal string AssemblyName { get; }
 
         /// <summary>Category the type falls into.</summary>
-        public ETypeKind Kind { get; }
+        internal ETypeKind Kind { get; }
 
         /// <summary>Declared visibility.</summary>
-        public EAccessLevel Access { get; }
+        internal EAccessLevel Access { get; }
 
         /// <summary>True for static classes.</summary>
-        public bool IsStatic { get; }
+        internal bool IsStatic { get; }
 
         /// <summary>True for abstract types.</summary>
-        public bool IsAbstract { get; }
+        internal bool IsAbstract { get; }
 
         /// <summary>True when no type can derive from this one.</summary>
-        public bool IsSealed { get; set; }
+        internal bool IsSealed { get; set; }
 
         /// <summary>True when this type is an attribute, which exists to be applied to other code.</summary>
-        public bool IsAttribute { get; set; }
+        internal bool IsAttribute { get; set; }
 
         /// <summary>True when this type is an editor window, which nothing outside the project opens.</summary>
-        public bool IsEditorWindow { get; set; }
+        internal bool IsEditorWindow { get; set; }
 
         /// <summary>True when this type shares a namespace with an editor window that owns it.</summary>
-        public bool IsWindowOwned { get; set; }
+        internal bool IsWindowOwned { get; set; }
 
         /// <summary>Members that are neither a constructor nor a property or event accessor.</summary>
-        public int BehaviourMemberCount { get; set; }
+        internal int BehaviourMemberCount { get; set; }
 
         /// <summary>True when the type derives from a Unity object.</summary>
-        public bool IsUnityObject { get; }
+        internal bool IsUnityObject { get; }
 
         /// <summary>True when the type derives from MonoBehaviour.</summary>
-        public bool IsMonoBehaviour { get; }
+        internal bool IsMonoBehaviour { get; }
 
         /// <summary>True when something outside the code reaches this type, for example an editor attribute.</summary>
-        public bool IsEntryPoint { get; set; }
+        internal bool IsEntryPoint { get; set; }
 
         /// <summary>Reason the type counts as an entry point, used for the tooltip.</summary>
-        public string EntryPointReason { get; set; }
+        internal string EntryPointReason { get; set; }
 
         /// <summary>Asset path of the script file, or null when none could be resolved.</summary>
-        public string ScriptPath { get; set; }
+        internal string ScriptPath { get; set; }
 
         /// <summary>True when the type only exists in the editor and never ships in a build.</summary>
-        public bool IsEditorOnly { get; set; }
+        internal bool IsEditorOnly { get; set; }
 
         /// <summary>Stable id used for dismissals, built once so lookups allocate nothing.</summary>
-        public string DismissalId { get; set; }
+        internal string DismissalId { get; set; }
 
         /// <summary>
         /// True when the type ships in a distributable package. Its public surface exists to be called
         /// from code that is not in this project, so "nothing here uses it" is not a defect.
         /// </summary>
-        public bool IsPackageAssembly { get; set; }
+        internal bool IsPackageAssembly { get; set; }
 
         /// <summary>
         /// True when findings on this type are meaningless: generated output, a sample fixture, a test,
         /// or anything carrying a suppression attribute.
         /// </summary>
-        public bool IsExcludedFromFindings { get; set; }
+        internal bool IsExcludedFromFindings { get; set; }
 
         /// <summary>Reason the type is excluded, shown so an exclusion is never silent.</summary>
-        public string ExclusionReason { get; set; }
+        internal string ExclusionReason { get; set; }
 
         /// <summary>Type this one is nested inside, or the default when it is top level.</summary>
-        public TypeKey DeclaringTypeKey { get; set; }
+        internal TypeKey DeclaringTypeKey { get; set; }
 
         /// <summary>Type this one derives from, or the default when it derives from nothing scanned.</summary>
-        public TypeKey BaseTypeKey { get; set; }
+        internal TypeKey BaseTypeKey { get; set; }
 
         /// <summary>Every member declared directly on this type.</summary>
-        public List<MemberNodeInfo> Members { get; }
+        internal List<MemberNodeInfo> Members { get; }
 
         /// <summary>Types this one depends on, with how many member level usages back that up.</summary>
-        public Dictionary<TypeKey, int> Outgoing { get; }
+        internal Dictionary<TypeKey, int> Outgoing { get; }
 
         /// <summary>Types that depend on this one, with how many member level usages back that up.</summary>
-        public Dictionary<TypeKey, int> Incoming { get; }
+        internal Dictionary<TypeKey, int> Incoming { get; }
 
         /// <summary>Number of usages that leave the scanned scope, for example into Unity itself.</summary>
-        public int ExternalReferenceCount { get; set; }
+        internal int ExternalReferenceCount { get; set; }
 
         /// <summary>Findings the analyzer reported for this type.</summary>
-        public ETypeIssue Issues { get; set; }
+        internal ETypeIssue Issues { get; set; }
 
         /// <summary>Names of the other types in the same dependency cycle, if any.</summary>
-        public List<string> CyclePartners { get; }
+        internal List<string> CyclePartners { get; }
 
         /// <summary>Identifies the cycle this type belongs to, shared by every type in the same loop.</summary>
-        public string CycleId { get; set; }
+        internal string CycleId { get; set; }
 
         /// <summary>The edges that close the loop, written out so the cycle can be checked by reading.</summary>
-        public string CycleDescription { get; set; }
+        internal string CycleDescription { get; set; }
 
         /// <summary>How many types are tangled together around this loop, which is often far more.</summary>
-        public int CycleComponentSize { get; set; }
+        internal int CycleComponentSize { get; set; }
 
         /// <summary>The edge in the loop held together by the fewest usages, offered as a hint.</summary>
-        public string CycleCutHint { get; set; }
+        internal string CycleCutHint { get; set; }
 
         /// <summary>Total size of every compiled member body on this type, in bytes.</summary>
-        public int IlSize { get; set; }
+        internal int IlSize { get; set; }
 
         /// <summary>How many different namespaces this type reaches into.</summary>
-        public int NamespaceReach { get; set; }
+        internal int NamespaceReach { get; set; }
 
         /// <summary>
         /// Share of the members that only hold data: consts, enum members and static readonly fields.
         /// A type made almost entirely of those is a lookup table however it happens to be declared.
         /// </summary>
-        public float DataMemberShare { get; set; }
+        internal float DataMemberShare { get; set; }
 
         /// <summary>
         /// Share of the members that are abstract, counting an interface as wholly abstract. Something
         /// everything depends on is safer when it is abstract, because an abstraction changes rarely.
         /// </summary>
-        public float Abstractness { get; set; }
+        internal float Abstractness { get; set; }
 
         /// <summary>Number of types that depend on this one.</summary>
-        public int FanIn => Incoming.Count;
+        internal int FanIn => Incoming.Count;
 
         /// <summary>Number of types this one depends on.</summary>
-        public int FanOut => Outgoing.Count;
+        internal int FanOut => Outgoing.Count;
 
         /// <summary>
         /// Ratio of outgoing to total coupling. Zero means nothing depends outward and the type is
         /// stable, one means it depends on everything and nothing depends on it.
         /// </summary>
-        public float Instability => FanIn + FanOut == 0
+        internal float Instability => FanIn + FanOut == 0
             ? 0f
             : FanOut / (float)(FanIn + FanOut);
 
@@ -156,13 +156,13 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Model
         /// Distance from the main sequence, where abstractness and instability sum to one. Zero is
         /// healthy: depended upon and abstract, or concrete and depending on plenty. One is a corner.
         /// </summary>
-        public float MainSequenceDistance => Mathf.Abs(Abstractness + Instability - 1f);
+        internal float MainSequenceDistance => Mathf.Abs(Abstractness + Instability - 1f);
 
         /// <summary>True when something reported here was not reported by the previous scan.</summary>
-        public bool HasNewFindings { get; set; }
+        internal bool HasNewFindings { get; set; }
 
         /// <summary>True when the analyzer reported anything on the type itself.</summary>
-        public bool HasIssues => Issues != ETypeIssue.None;
+        internal bool HasIssues => Issues != ETypeIssue.None;
 
         /// <summary>Creates a type node without members or relations yet.</summary>
         /// <param name="key">Identity of the type.</param>
@@ -207,7 +207,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Model
 
         /// <summary>Adds one member level usage to the type level relation.</summary>
         /// <param name="target">Type that is being used.</param>
-        public void AddOutgoing(TypeKey target)
+        internal void AddOutgoing(TypeKey target)
         {
             Outgoing.TryGetValue(target, out int count);
             Outgoing[target] = count + 1;
@@ -215,7 +215,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Model
 
         /// <summary>Records that another type uses this one.</summary>
         /// <param name="source">Type that uses this one.</param>
-        public void AddIncoming(TypeKey source)
+        internal void AddIncoming(TypeKey source)
         {
             Incoming.TryGetValue(source, out int count);
             Incoming[source] = count + 1;

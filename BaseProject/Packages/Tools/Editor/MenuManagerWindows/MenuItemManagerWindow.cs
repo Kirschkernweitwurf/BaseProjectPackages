@@ -12,7 +12,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         protected override EMenuEntryKind Kind => EMenuEntryKind.MenuItem;
 
         /// <summary>Opens or focuses the window and returns it.</summary>
-        public static MenuItemManagerWindow OpenWindow()
+        internal static MenuItemManagerWindow OpenWindow()
         {
             MenuItemManagerWindow window = GetWindow<MenuItemManagerWindow>();
             window.titleContent = new GUIContent(WindowTitle);
@@ -22,7 +22,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         }
 
         /// <summary>Opens the window and highlights the entry with the given id.</summary>
-        public static void OpenAt(string entryId) => OpenWindow().FocusEntry(entryId);
+        internal static void OpenAt(string entryId) => OpenWindow().FocusEntry(entryId);
 
         [MenuItem("Tools/Base Packages/Menu Management/Menu Item Manager", false, MenuPriority)]
         private static void Open() => OpenWindow();

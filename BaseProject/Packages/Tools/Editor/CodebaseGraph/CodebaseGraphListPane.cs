@@ -82,7 +82,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         /// <summary>Replaces the shown entries and reapplies the current sort.</summary>
         /// <param name="heading">Heading describing what is being listed.</param>
         /// <param name="entries">Entries to show.</param>
-        public void SetEntries(string heading, List<GraphEntry> entries)
+        internal void SetEntries(string heading, List<GraphEntry> entries)
         {
             _headingLabel.text = heading;
             _entries = entries;

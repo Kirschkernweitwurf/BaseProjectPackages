@@ -6,6 +6,11 @@ namespace Base.AttributePackage.Editor.SceneHandles
     /// Convenience base that removes the cast every handle drawer would otherwise repeat.
     /// </summary>
     /// <typeparam name="TAttribute">The attribute this drawer reacts to.</typeparam>
+    /// <remarks>
+    /// The two members below are public although the class is internal. An implicit interface
+    /// implementation has to be public whatever the access level of the type declaring it, so
+    /// narrowing them does not compile.
+    /// </remarks>
     internal abstract class HandleDrawer<TAttribute> : IHandleDrawer where TAttribute : Attribute
     {
         /// <inheritdoc/>

@@ -73,7 +73,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
         /// <summary>Hands a freshly built graph to the views that read one.</summary>
         /// <param name="graph">Graph to read, or null when nothing has been scanned.</param>
-        public void SetGraph(CodebaseGraphData graph)
+        internal void SetGraph(CodebaseGraphData graph)
         {
             _issuesPane.SetGraph(graph);
             _dismissalsPane.Refresh();
@@ -81,7 +81,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         }
 
         /// <summary>Writes the counts onto the tabs, so the column says what is waiting on each.</summary>
-        public void SetCounts()
+        internal void SetCounts()
         {
             _issuesTab.text = string.Format(IssuesFormat, _issuesPane.VisibleCount);
             _dismissedTab.text = string.Format(DismissedFormat, DismissalStore.Count);

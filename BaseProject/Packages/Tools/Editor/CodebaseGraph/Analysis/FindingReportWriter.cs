@@ -60,7 +60,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         /// <summary>Builds the report.</summary>
         /// <param name="graph">Graph to report on.</param>
         /// <returns>The Markdown text.</returns>
-        public static string Build(CodebaseGraphData graph)
+        internal static string Build(CodebaseGraphData graph)
         {
             List<FindingEntry> entries = FindingCollector.Collect(graph);
             StringBuilder builder = new();

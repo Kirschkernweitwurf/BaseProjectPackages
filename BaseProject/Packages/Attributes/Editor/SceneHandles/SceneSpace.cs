@@ -16,7 +16,7 @@ namespace Base.AttributePackage.Editor.SceneHandles
         /// <param name="value">The stored position.</param>
         /// <param name="space">How the stored value is interpreted.</param>
         /// <returns>The world position.</returns>
-        public static Vector3 ToWorld(Transform transform, Vector3 value, ESpace space)
+        internal static Vector3 ToWorld(Transform transform, Vector3 value, ESpace space)
         {
             if (space == ESpace.World || transform == null)
                 return value;
@@ -29,7 +29,7 @@ namespace Base.AttributePackage.Editor.SceneHandles
         /// <param name="world">The world position.</param>
         /// <param name="space">How the stored value is interpreted.</param>
         /// <returns>The value to store.</returns>
-        public static Vector3 ToStored(Transform transform, Vector3 world, ESpace space)
+        internal static Vector3 ToStored(Transform transform, Vector3 world, ESpace space)
         {
             if (space == ESpace.World || transform == null)
                 return world;
@@ -41,7 +41,7 @@ namespace Base.AttributePackage.Editor.SceneHandles
         /// <param name="transform">The transform local space is measured against, may be null.</param>
         /// <param name="space">How the stored value is interpreted.</param>
         /// <returns>The gizmo orientation.</returns>
-        public static Quaternion Rotation(Transform transform, ESpace space)
+        internal static Quaternion Rotation(Transform transform, ESpace space)
         {
             if (space == ESpace.World || transform == null)
                 return Quaternion.identity;
@@ -54,7 +54,7 @@ namespace Base.AttributePackage.Editor.SceneHandles
         /// <param name="axis">The axis the handle faces along.</param>
         /// <param name="space">How the stored value is interpreted.</param>
         /// <returns>The normal vector.</returns>
-        public static Vector3 Normal(Transform transform, ENormalAxis axis, ESpace space)
+        internal static Vector3 Normal(Transform transform, ENormalAxis axis, ESpace space)
         {
             if (space == ESpace.World || transform == null)
                 return axis switch
@@ -78,7 +78,7 @@ namespace Base.AttributePackage.Editor.SceneHandles
         /// </summary>
         /// <param name="color">The preset to resolve.</param>
         /// <returns>The color to draw with.</returns>
-        public static Color Resolve(EColor color) => color == EColor.Default
+        internal static Color Resolve(EColor color) => color == EColor.Default
             ? Fallback
             : color.ToColor();
 
@@ -87,7 +87,7 @@ namespace Base.AttributePackage.Editor.SceneHandles
         /// <param name="member">Name of an optional Vector3 member holding the offset.</param>
         /// <param name="space">How the offset is interpreted.</param>
         /// <returns>The world position of the anchor.</returns>
-        public static Vector3 Anchor(in HandleContext context, string member, ESpace space)
+        internal static Vector3 Anchor(in HandleContext context, string member, ESpace space)
         {
             if (context.TryResolveVector(member, out Vector3 offset))
                 return ToWorld(context.Transform, offset, space);

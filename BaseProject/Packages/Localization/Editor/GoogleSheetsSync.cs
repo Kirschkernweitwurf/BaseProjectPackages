@@ -35,7 +35,7 @@ namespace Base.LocalizationPackage.Editor
         /// Scans the Asset Database, so cache the result instead of calling this repeatedly.
         /// </summary>
         /// <returns>All String Table Collections with a <see cref="GoogleSheetsExtension"/>.</returns>
-        public static List<StringTableCollection> GetCollections()
+        internal static List<StringTableCollection> GetCollections()
         {
             List<StringTableCollection> result = new();
 
@@ -53,7 +53,7 @@ namespace Base.LocalizationPackage.Editor
         /// </summary>
         /// <param name="collectionCount">The number of collections that would be pushed.</param>
         /// <returns><c>true</c> if the user confirmed the push, otherwise <c>false</c>.</returns>
-        public static bool IsPushConfirmed(int collectionCount) => EditorUtility.DisplayDialog(PushTitle,
+        internal static bool IsPushConfirmed(int collectionCount) => EditorUtility.DisplayDialog(PushTitle,
             string.Format(ConfirmPushMessage, collectionCount), PushButton, CancelButton);
 
         /// <summary>
@@ -65,7 +65,7 @@ namespace Base.LocalizationPackage.Editor
         /// Pull will overwrite local data with the sheet data, while Push will overwrite the sheet with local data.
         /// </param>
         /// <returns>A <see cref="SyncResult"/> indicating success or failure and an error message if failed.</returns>
-        public static SyncResult Sync(StringTableCollection collection, ESyncDirection direction)
+        internal static SyncResult Sync(StringTableCollection collection, ESyncDirection direction)
         {
             if (collection == null)
             {
@@ -118,7 +118,7 @@ namespace Base.LocalizationPackage.Editor
         /// The direction to sync.
         /// Pull will overwrite local data with the sheet data, while Push will overwrite the sheet with local data.
         /// </param>
-        public static void SyncAll(ESyncDirection direction)
+        internal static void SyncAll(ESyncDirection direction)
         {
             List<StringTableCollection> collections = GetCollections();
 

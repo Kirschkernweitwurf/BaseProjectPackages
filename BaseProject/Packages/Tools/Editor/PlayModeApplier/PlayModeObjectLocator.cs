@@ -18,7 +18,7 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
         private const int UnknownIndex = -1;
 
         /// <summary>Builds a name path from the scene root down to the target, root included.</summary>
-        public static string BuildSceneNamePath(Transform target)
+        internal static string BuildSceneNamePath(Transform target)
         {
             List<string> parts = new();
             Transform cursor = target;
@@ -34,7 +34,7 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
         }
 
         /// <summary>Builds a sibling index path from the scene root down to the target, root included.</summary>
-        public static string BuildSceneIndexPath(Transform target)
+        internal static string BuildSceneIndexPath(Transform target)
         {
             List<string> parts = new();
             Transform cursor = target;
@@ -50,7 +50,7 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
         }
 
         /// <summary>Builds a name path from a root down to one of its descendants, root excluded.</summary>
-        public static string BuildRelativeNamePath(Transform root, Transform target)
+        internal static string BuildRelativeNamePath(Transform root, Transform target)
         {
             List<string> parts = new();
             Transform cursor = target;
@@ -69,7 +69,7 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
         }
 
         /// <summary>Builds a sibling index path from a root down to one of its descendants, root excluded.</summary>
-        public static string BuildRelativeIndexPath(Transform root, Transform target)
+        internal static string BuildRelativeIndexPath(Transform root, Transform target)
         {
             List<string> parts = new();
             Transform cursor = target;
@@ -88,7 +88,7 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
         }
 
         /// <summary>Finds the object a scene path points at, or null.</summary>
-        public static Transform ResolveInScene(Scene scene, string namePath, string indexPath)
+        internal static Transform ResolveInScene(Scene scene, string namePath, string indexPath)
         {
             string[] names = Split(namePath);
             if (names.Length == 0)
@@ -103,7 +103,7 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
         }
 
         /// <summary>Finds the object a relative path points at, or the root itself when the path is empty.</summary>
-        public static Transform ResolveFromRoot(Transform root, string namePath, string indexPath)
+        internal static Transform ResolveFromRoot(Transform root, string namePath, string indexPath)
         {
             string[] names = Split(namePath);
             if (names.Length == 0)
@@ -113,7 +113,7 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
         }
 
         /// <summary>Finds a component by type name and its index among components of that type.</summary>
-        public static Component ResolveComponent(Transform owner, string componentTypeName, int componentIndex)
+        internal static Component ResolveComponent(Transform owner, string componentTypeName, int componentIndex)
         {
             int index = 0;
             foreach (Component candidate in owner.GetComponents<Component>())
@@ -134,7 +134,7 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
         }
 
         /// <summary>Returns the index of a component among the components of the same type on its GameObject.</summary>
-        public static int FindComponentIndex(Component component)
+        internal static int FindComponentIndex(Component component)
         {
             int index = 0;
             foreach (Component candidate in component.gameObject.GetComponents<Component>())

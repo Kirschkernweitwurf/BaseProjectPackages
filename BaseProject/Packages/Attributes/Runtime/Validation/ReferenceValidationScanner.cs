@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using Base.UtilityPackage;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -24,7 +25,7 @@ namespace Base.AttributePackage
         private static readonly Dictionary<Type, FieldInfo[]> SerializedFields = new();
 
         /// <summary>Appends every validation issue found on the given object to the results list.</summary>
-        public static void Collect(Object root, List<ReferenceIssue> results)
+        internal static void Collect(Object root, List<ReferenceIssue> results)
         {
             if (root == null)
                 return;

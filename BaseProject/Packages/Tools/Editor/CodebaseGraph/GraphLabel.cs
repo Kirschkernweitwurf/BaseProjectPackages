@@ -13,7 +13,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         /// <param name="text">Text to show.</param>
         /// <param name="styleClass">Class the stylesheet targets.</param>
         /// <returns>The label.</returns>
-        public static Label Build(string text, string styleClass)
+        internal static Label Build(string text, string styleClass)
         {
             Label label = new(text);
             label.AddToClassList(styleClass);

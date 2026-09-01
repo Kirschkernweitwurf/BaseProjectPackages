@@ -13,13 +13,13 @@ namespace Base.AttributePackage.Editor.Core
         /// <param name="context">The member currently being drawn.</param>
         /// <param name="attribute">The attribute driving the foldout.</param>
         /// <returns>True while the inline inspector should be drawn.</returns>
-        public static bool IsExpanded(in MemberContext context, ExpandableAttribute attribute)
+        internal static bool IsExpanded(in MemberContext context, ExpandableAttribute attribute)
             => EditorPrefs.GetBool(KeyFor(context), attribute.DefaultExpanded);
 
         /// <summary>Stores the open state of the given member.</summary>
         /// <param name="context">The member currently being drawn.</param>
         /// <param name="expanded">The new state.</param>
-        public static void SetExpanded(in MemberContext context, bool expanded)
+        internal static void SetExpanded(in MemberContext context, bool expanded)
             => EditorPrefs.SetBool(KeyFor(context), expanded);
 
         /// <summary>
@@ -28,7 +28,7 @@ namespace Base.AttributePackage.Editor.Core
         /// </summary>
         /// <param name="context">The member currently being drawn.</param>
         /// <returns>True when the arrow is drawn for this member.</returns>
-        public static bool NeedsArrow(in MemberContext context)
+        internal static bool NeedsArrow(in MemberContext context)
         {
             if (context.GetAttribute<ExpandableAttribute>() == null)
                 return false;

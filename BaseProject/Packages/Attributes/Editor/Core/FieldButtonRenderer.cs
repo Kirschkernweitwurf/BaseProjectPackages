@@ -1,3 +1,4 @@
+using Base.EditorUiPackage;
 using UnityEditor;
 using UnityEngine;
 
@@ -12,11 +13,21 @@ namespace Base.AttributePackage.Editor.Core
         private const int FontSize = 10;
         private const int HorizontalPadding = 2;
 
-        private static GUIStyle Style => _style ??= new GUIStyle(EditorStyles.miniButton)
+        private static GUIStyle Style
         {
-            padding = new RectOffset(HorizontalPadding, HorizontalPadding, 0, 0),
-            fontSize = FontSize
-        };
+            get
+            {
+                EnsureFresh();
+
+                return _style ??= new GUIStyle(EditorStyles.miniButton)
+                {
+                    padding = EditorStyleUtility.HorizontalPadding(HorizontalPadding),
+                    fontSize = FontSize
+                };
+            }
+        }
+
+        private static readonly EditorStyleWatch Watch = new();
 
         private static GUIStyle _style;
 
@@ -24,6 +35,19 @@ namespace Base.AttributePackage.Editor.Core
         /// <param name="rect">Where to draw it.</param>
         /// <param name="content">Label and tooltip of the button.</param>
         /// <returns>True on click.</returns>
-        public static bool DrawAt(Rect rect, GUIContent content) => GUI.Button(rect, content, Style);
+        internal static bool DrawAt(Rect rect, GUIContent content) => GUI.Button(rect, content, Style);
+
+        // A GUIStyle copies its colors out of EditorStyles when it is built and does not stay
+        // linked to them, so a cached one keeps the previous theme's colors after a switch.
+        // Dropping it here has the next access rebuild it against the theme actually in use.
+        private static void EnsureFresh()
+        {
+            if (!Watch.IsStale)
+                return;
+
+            _style = null;
+
+            Watch.MarkFresh();
+        }
     }
 }

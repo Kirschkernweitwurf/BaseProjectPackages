@@ -141,7 +141,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
         /// <summary>Opens the window.</summary>
         [DynamicMenuItem(MenuPath)]
-        public static void Open()
+        internal static void Open()
         {
             CodebaseGraphWindow window = GetWindow<CodebaseGraphWindow>();
             window.titleContent = new GUIContent(WindowTitle);

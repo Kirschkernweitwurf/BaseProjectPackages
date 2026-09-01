@@ -19,30 +19,30 @@ namespace Base.ControllerSupportPackage.Editor
         private const int BadgeFontSize = 10;
 
         /// <summary>Height of a row button.</summary>
-        public const float ButtonHeight = 18f;
+        internal const float ButtonHeight = 18f;
 
         /// <summary>Width of the "Go to" and "Rebuild" buttons.</summary>
-        public const float ButtonWidth = 56f;
+        internal const float ButtonWidth = 56f;
 
         /// <summary>Width of the "Fix" button.</summary>
-        public const float FixButtonWidth = 40f;
+        internal const float FixButtonWidth = 40f;
 
         private const float IssueRowAlpha = 0.06f;
 
         /// <summary>Smallest width any badge column takes.</summary>
-        public const float MinBadgeWidth = 64f;
+        internal const float MinBadgeWidth = 64f;
 
         /// <summary>Smallest height of the window.</summary>
-        public const float MinWindowHeight = 200f;
+        internal const float MinWindowHeight = 200f;
 
         /// <summary>Smallest width of the window, enough for every column plus the buttons.</summary>
-        public const float MinWindowWidth = 680f;
+        internal const float MinWindowWidth = 680f;
 
         /// <summary>Height of a group row.</summary>
-        public const float RowHeight = 26f;
+        internal const float RowHeight = 26f;
 
         /// <summary>Width of the toolbar's "Refresh" button.</summary>
-        public const float ToolbarButtonWidth = 60f;
+        internal const float ToolbarButtonWidth = 60f;
 
         private static readonly EditorStyleWatch Watch = new();
 
@@ -56,22 +56,22 @@ namespace Base.ControllerSupportPackage.Editor
         private static GUIStyle _name;
 
         /// <summary>Horizontal gap between two badges or buttons.</summary>
-        public static float BadgeGap => EditorMetrics.TightGap;
+        internal static float BadgeGap => EditorMetrics.TightGap;
 
         /// <summary>Height of a badge.</summary>
-        public static float BadgeHeight => EditorMetrics.BadgeHeight;
+        internal static float BadgeHeight => EditorMetrics.BadgeHeight;
 
         /// <summary>Height of the column header strip.</summary>
-        public static float HeaderHeight => EditorMetrics.HeaderHeight;
+        internal static float HeaderHeight => EditorMetrics.HeaderHeight;
 
         /// <summary>Horizontal padding at both ends of a row.</summary>
-        public static float RowPadding => EditorMetrics.RowInset;
+        internal static float RowPadding => EditorMetrics.RowInset;
 
         /// <summary>Thickness of the line below the header and every row.</summary>
-        public static float SeparatorThickness => EditorMetrics.SeparatorThickness;
+        internal static float SeparatorThickness => EditorMetrics.SeparatorThickness;
 
         /// <summary>Centered mini label used inside a badge.</summary>
-        public static GUIStyle Badge
+        internal static GUIStyle Badge
         {
             get
             {
@@ -82,7 +82,7 @@ namespace Base.ControllerSupportPackage.Editor
         }
 
         /// <summary>Centered bold mini label used in the column header.</summary>
-        public static GUIStyle Header
+        internal static GUIStyle Header
         {
             get
             {
@@ -93,7 +93,7 @@ namespace Base.ControllerSupportPackage.Editor
         }
 
         /// <summary>Bold label used for the group name.</summary>
-        public static GUIStyle Name
+        internal static GUIStyle Name
         {
             get
             {
@@ -104,45 +104,45 @@ namespace Base.ControllerSupportPackage.Editor
         }
 
         /// <summary>Background of the column header strip.</summary>
-        public static Color HeaderColor => EditorTableStyles.HeaderColor;
+        internal static Color HeaderColor => EditorTableStyles.HeaderColor;
 
         /// <summary>Tint of the row under the mouse.</summary>
-        public static Color HoverColor => EditorPalette.Hover;
+        internal static Color HoverColor => EditorPalette.Hover;
 
         /// <summary>Color of the line below the header and every row.</summary>
-        public static Color SeparatorColor => EditorPalette.Separator;
+        internal static Color SeparatorColor => EditorPalette.Separator;
 
         /// <summary>Tint of every second row.</summary>
-        public static Color StripeColor => EditorPalette.Stripe;
+        internal static Color StripeColor => EditorPalette.Stripe;
 
         /// <summary>Badge color of the element count.</summary>
-        public static Color ElementsBadgeColor => EditorTableStyles.BadgeFill(ElementsHue);
+        internal static Color ElementsBadgeColor => EditorTableStyles.BadgeFill(ElementsHue);
 
         /// <summary>Badge color of a group without any elements.</summary>
-        public static Color EmptyBadgeColor => EditorTableStyles.WarningBadgeColor;
+        internal static Color EmptyBadgeColor => EditorTableStyles.WarningBadgeColor;
 
         /// <summary>Tint of a row that breaks a menu rule.</summary>
-        public static Color IssueRowColor => EditorPalette.WithAlpha(EditorPalette.Warning, IssueRowAlpha);
+        internal static Color IssueRowColor => EditorPalette.WithAlpha(EditorPalette.Warning, IssueRowAlpha);
 
         /// <summary>Badge color of a group that sits on a menu.</summary>
-        public static Color MenuBadgeColor => EditorTableStyles.OkBadgeColor;
+        internal static Color MenuBadgeColor => EditorTableStyles.OkBadgeColor;
 
         /// <summary>Badge color of a group without a menu.</summary>
-        public static Color NoMenuBadgeColor => EditorTableStyles.NeutralBadgeColor;
+        internal static Color NoMenuBadgeColor => EditorTableStyles.NeutralBadgeColor;
 
         /// <summary>Badge color of the focus priority.</summary>
-        public static Color PriorityBadgeColor => EditorTableStyles.BadgeFill(PriorityHue);
+        internal static Color PriorityBadgeColor => EditorTableStyles.BadgeFill(PriorityHue);
 
         /// <summary>Badge color of the scene name.</summary>
-        public static Color SceneBadgeColor => EditorTableStyles.NeutralBadgeColor;
+        internal static Color SceneBadgeColor => EditorTableStyles.NeutralBadgeColor;
 
         /// <summary>Badge color of a value that breaks a menu rule.</summary>
-        public static Color WarningBadgeColor => EditorTableStyles.WarningBadgeColor;
+        internal static Color WarningBadgeColor => EditorTableStyles.WarningBadgeColor;
 
         /// <summary>Width a badge needs for the given text, never below the shared minimum.</summary>
         /// <param name="text">The badge text to measure.</param>
         /// <returns>The width to lay the badge out with.</returns>
-        public static float MeasureBadge(string text) => EditorRows.MeasureBadge(text, Badge, MinBadgeWidth);
+        internal static float MeasureBadge(string text) => EditorRows.MeasureBadge(text, Badge, MinBadgeWidth);
 
         // The styles pin colors picked for one editor theme, so they are dropped whenever the editor theme or the
         // active theme moves. Reached through the properties rather than from a window callback,

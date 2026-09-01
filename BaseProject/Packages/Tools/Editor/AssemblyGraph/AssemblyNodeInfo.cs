@@ -6,22 +6,22 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
     internal sealed class AssemblyNodeInfo
     {
         /// <summary>Name of the assembly.</summary>
-        public string Name { get; }
+        internal string Name { get; }
 
         /// <summary>Asset path of the asmdef file. Null for predefined or precompiled assemblies.</summary>
-        public string AsmdefPath { get; }
+        internal string AsmdefPath { get; }
 
         /// <summary>Category the assembly falls into.</summary>
-        public EAssemblyKind Kind { get; }
+        internal EAssemblyKind Kind { get; }
 
         /// <summary>Every reference this assembly declares.</summary>
-        public List<AssemblyReferenceInfo> References { get; }
+        internal List<AssemblyReferenceInfo> References { get; }
 
         /// <summary>True when the assembly is defined by an asmdef file.</summary>
-        public bool HasAsmdef => !string.IsNullOrEmpty(AsmdefPath);
+        internal bool HasAsmdef => !string.IsNullOrEmpty(AsmdefPath);
 
         /// <summary>First segment of the name, used to group assemblies by color.</summary>
-        public string RootName
+        internal string RootName
         {
             get
             {
@@ -33,10 +33,10 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
         }
 
         /// <summary>Only owned code may be edited. Unity packages and libraries are always off limits.</summary>
-        public bool IsCleanable => HasAsmdef && (Kind == EAssemblyKind.Project || Kind == EAssemblyKind.Package);
+        internal bool IsCleanable => HasAsmdef && (Kind == EAssemblyKind.Project || Kind == EAssemblyKind.Package);
 
         /// <summary>True when at least one declared reference is unused.</summary>
-        public bool HasUnusedReferences
+        internal bool HasUnusedReferences
         {
             get
             {

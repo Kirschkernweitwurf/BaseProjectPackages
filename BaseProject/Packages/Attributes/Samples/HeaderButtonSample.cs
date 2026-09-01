@@ -21,6 +21,6 @@ namespace Base.AttributePackage.Samples
 
         /// <summary>Runs from the component title bar rather than from the body.</summary>
         [HeaderButton("Reset")]
-        public void ResetLog() => log = nameof(ResetLog);
+        internal void ResetLog() => log = nameof(ResetLog);
     }
 }

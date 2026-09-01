@@ -26,7 +26,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         /// <param name="scope">Namespace or assembly name to write about.</param>
         /// <param name="isAssembly">True when the scope names an assembly rather than a namespace.</param>
         /// <returns>The Markdown text.</returns>
-        public static string Build(CodebaseGraphData graph, string scope, bool isAssembly)
+        internal static string Build(CodebaseGraphData graph, string scope, bool isAssembly)
         {
             List<TypeNodeInfo> types = CollectTypes(graph, scope, isAssembly);
 

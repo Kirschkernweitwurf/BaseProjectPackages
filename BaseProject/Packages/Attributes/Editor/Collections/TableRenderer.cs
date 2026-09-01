@@ -36,7 +36,7 @@ namespace Base.AttributePackage.Editor.Collections
         /// <param name="elementType">The element type, used to read the column attributes.</param>
         /// <param name="attribute">The settings that shape the table.</param>
         /// <param name="canResize">False when [ArraySize] fixes the element count.</param>
-        public static void Draw(SerializedProperty property, GUIContent label, Type elementType,
+        internal static void Draw(SerializedProperty property, GUIContent label, Type elementType,
             TableAttribute attribute, bool canResize = true)
         {
             if (ListDrawerState.IsFirstDraw(property))

@@ -76,7 +76,7 @@ namespace Base.LocalizationPackage.Editor
         /// Opens the Localization Sync window.
         /// It is also reachable via the menu items in <see cref="LocalizationMenu"/>.
         /// </summary>
-        public static void Open()
+        internal static void Open()
         {
             LocalizationSyncWindow window = GetWindow<LocalizationSyncWindow>(WindowTitle);
             window.minSize = new Vector2(MinWindowWidth, MinWindowHeight);

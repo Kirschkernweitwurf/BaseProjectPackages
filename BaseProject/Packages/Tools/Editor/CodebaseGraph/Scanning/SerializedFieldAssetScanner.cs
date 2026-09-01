@@ -44,7 +44,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         /// <param name="graph">Graph to annotate.</param>
         /// <param name="progress">Reporter that can also cancel the pass.</param>
         /// <returns>False when the scan was cancelled.</returns>
-        public static bool Scan(CodebaseGraphData graph, ScanProgress progress)
+        internal static bool Scan(CodebaseGraphData graph, ScanProgress progress)
         {
             AssetScanContext context = AssetScanContext.Build(graph);
             if (context.IsEmpty)

@@ -23,7 +23,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
 
         /// <summary>Adds a member node and makes it findable by name on its declaring type.</summary>
         /// <param name="node">The node to register.</param>
-        public void Register(MemberNodeInfo node)
+        internal void Register(MemberNodeInfo node)
         {
             _members[node.Key] = node;
 
@@ -41,7 +41,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         /// <summary>Points one key at another, so usages of the source land on the target node.</summary>
         /// <param name="from">Key that should be folded away.</param>
         /// <param name="to">Key that should receive the usages.</param>
-        public void Redirect(MemberKey from, MemberKey to)
+        internal void Redirect(MemberKey from, MemberKey to)
         {
             if (!from.IsValid || !to.IsValid || from.Equals(to))
                 return;
@@ -52,7 +52,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         /// <summary>Follows the redirect chain to the node a key really belongs to.</summary>
         /// <param name="key">Key to resolve.</param>
         /// <returns>The final key, or the input when there is no redirect.</returns>
-        public MemberKey Resolve(MemberKey key)
+        internal MemberKey Resolve(MemberKey key)
         {
             MemberKey current = key;
 
@@ -72,7 +72,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         /// <param name="name">Plain member name.</param>
         /// <param name="key">The member key when one was found.</param>
         /// <returns>True when the type declares a member with that name.</returns>
-        public bool TryFindByName(TypeKey typeKey, string name, out MemberKey key)
+        internal bool TryFindByName(TypeKey typeKey, string name, out MemberKey key)
         {
             key = default(MemberKey);
             if (string.IsNullOrEmpty(name))
@@ -85,6 +85,6 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         /// <summary>Returns the node for a key, or null when the key is outside the scanned scope.</summary>
         /// <param name="key">Key to look up.</param>
         /// <returns>The member node, or null.</returns>
-        public MemberNodeInfo Find(MemberKey key) => _members.GetValueOrDefault(key);
+        internal MemberNodeInfo Find(MemberKey key) => _members.GetValueOrDefault(key);
     }
 }

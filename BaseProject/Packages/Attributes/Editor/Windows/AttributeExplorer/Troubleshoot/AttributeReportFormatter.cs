@@ -20,7 +20,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot
         /// <param name="groups">The scanned types and their findings.</param>
         /// <param name="onlyErrors">True to leave the warnings out.</param>
         /// <returns>The report, ready for the clipboard.</returns>
-        public static string Build(List<AttributeIssueGroup> groups, bool onlyErrors)
+        internal static string Build(List<AttributeIssueGroup> groups, bool onlyErrors)
         {
             StringBuilder builder = new();
 

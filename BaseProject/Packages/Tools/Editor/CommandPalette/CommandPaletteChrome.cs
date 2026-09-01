@@ -21,14 +21,14 @@ namespace Base.ToolPackage.Editor.CommandPalette
         /// <param name="rect">The rectangle to shrink.</param>
         /// <param name="padding">How much is taken off each side.</param>
         /// <returns>The shrunk rectangle.</returns>
-        public static Rect Inset(Rect rect, float padding)
+        internal static Rect Inset(Rect rect, float padding)
             => new(rect.x + padding, rect.y, rect.width - padding * 2f, rect.height);
 
         /// <summary>Fills a rounded rectangle.</summary>
         /// <param name="rect">The area to fill.</param>
         /// <param name="color">The fill color, alpha included.</param>
         /// <param name="radius">The corner radius.</param>
-        public static void DrawFill(Rect rect, Color color, float radius)
+        internal static void DrawFill(Rect rect, Color color, float radius)
         {
             if (Event.current.type != EventType.Repaint)
                 return;
@@ -42,7 +42,7 @@ namespace Base.ToolPackage.Editor.CommandPalette
         /// <param name="color">The line color, alpha included.</param>
         /// <param name="radius">The corner radius.</param>
         /// <param name="width">The line thickness.</param>
-        public static void DrawBorder(Rect rect, Color color, float radius, float width)
+        internal static void DrawBorder(Rect rect, Color color, float radius, float width)
         {
             if (Event.current.type != EventType.Repaint)
                 return;
@@ -53,7 +53,7 @@ namespace Base.ToolPackage.Editor.CommandPalette
 
         /// <summary>Fills the given rectangle with the hairline color.</summary>
         /// <param name="line">The area of the line.</param>
-        public static void DrawSeparator(Rect line)
+        internal static void DrawSeparator(Rect line)
         {
             if (Event.current.type != EventType.Repaint)
                 return;
@@ -70,7 +70,7 @@ namespace Base.ToolPackage.Editor.CommandPalette
         /// <param name="content">The label and tooltip.</param>
         /// <param name="active">Whether the button is switched on.</param>
         /// <returns><c>true</c> when the button was clicked.</returns>
-        public static bool DrawPill(Rect rect, GUIContent content, bool active)
+        internal static bool DrawPill(Rect rect, GUIContent content, bool active)
         {
             int control = GUIUtility.GetControlID(FocusType.Passive, rect);
             Event current = Event.current;
@@ -112,7 +112,7 @@ namespace Base.ToolPackage.Editor.CommandPalette
         /// <param name="key">The key combination shown on the cap.</param>
         /// <param name="label">What the key does.</param>
         /// <returns>The left edge of the next hint.</returns>
-        public static float DrawHint(Rect area, float x, string key, string label)
+        internal static float DrawHint(Rect area, float x, string key, string label)
         {
             GUIContent cap = new(key);
             GUIContent text = new(label);

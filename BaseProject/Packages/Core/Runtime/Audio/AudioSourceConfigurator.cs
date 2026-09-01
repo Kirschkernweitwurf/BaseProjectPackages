@@ -30,7 +30,7 @@ namespace Base.CorePackage.Audio
         /// <param name="container">The container that defines the playback settings.</param>
         /// <param name="clip">The clip already picked for this playback.</param>
         /// <param name="position">The world position to play the sound at.</param>
-        public void Apply(AudioSource source, AudioContainer container, AudioClip clip, Vector3 position)
+        internal void Apply(AudioSource source, AudioContainer container, AudioClip clip, Vector3 position)
         {
             source.transform.position = position;
             source.clip = clip;

@@ -27,7 +27,7 @@ namespace Base.AttributePackage.Editor.Core
         /// <param name="context">The member currently being drawn.</param>
         /// <param name="nestedType">The nested type behind the member.</param>
         /// <returns>True when the member was drawn inline.</returns>
-        public static bool TryDraw(in MemberContext context, Type nestedType)
+        internal static bool TryDraw(in MemberContext context, Type nestedType)
         {
             InlinePropertyAttribute attribute = context.GetAttribute<InlinePropertyAttribute>();
             if (attribute == null || nestedType == null)

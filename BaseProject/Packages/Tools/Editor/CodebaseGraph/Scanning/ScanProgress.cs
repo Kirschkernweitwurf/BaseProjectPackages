@@ -31,7 +31,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         /// <param name="total">How many there are in all.</param>
         /// <param name="label">What the phase is doing.</param>
         /// <returns>False when the scan was canceled.</returns>
-        public bool Report(int done, int total, string label)
+        internal bool Report(int done, int total, string label)
         {
             if (_callback == null || total == 0 || done % ReportInterval != 0)
                 return true;

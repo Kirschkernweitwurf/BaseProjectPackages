@@ -40,7 +40,7 @@ namespace Base.ToolPackage.Editor.AssemblyGraph.Architecture
         /// <param name="edges">The rolled up assembly graph.</param>
         /// <param name="nodes">The declared assembly references, used for the cross checks.</param>
         /// <returns>The Markdown text.</returns>
-        public static string Build(AssemblyEdgeGraph edges, IReadOnlyList<AssemblyNodeInfo> nodes)
+        internal static string Build(AssemblyEdgeGraph edges, IReadOnlyList<AssemblyNodeInfo> nodes)
         {
             StringBuilder builder = new();
             Dictionary<string, HashSet<string>> declared = CollectDeclared(nodes);

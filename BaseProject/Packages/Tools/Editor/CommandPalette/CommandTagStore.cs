@@ -41,7 +41,7 @@ namespace Base.ToolPackage.Editor.CommandPalette
 
         /// <summary>Every tag used anywhere, sorted and without duplicates.</summary>
         /// <returns>The known tags.</returns>
-        public IReadOnlyList<string> KnownTags()
+        internal IReadOnlyList<string> KnownTags()
         {
             SortedSet<string> distinct = new(StringComparer.Ordinal);
 
@@ -60,19 +60,19 @@ namespace Base.ToolPackage.Editor.CommandPalette
         /// <summary>Returns the tags of a command, or an empty list.</summary>
         /// <param name="id">Id of the command.</param>
         /// <returns>The assigned tags.</returns>
-        public IReadOnlyList<string> TagsFor(string id) => Lookup.TryGetValue(id, out CommandTagRecord record)
+        internal IReadOnlyList<string> TagsFor(string id) => Lookup.TryGetValue(id, out CommandTagRecord record)
             ? record.Tags
             : NoTags;
 
         /// <summary>Returns whether a command is pinned.</summary>
         /// <param name="id">Id of the command.</param>
         /// <returns><c>true</c> when the command is pinned.</returns>
-        public bool IsPinned(string id) => Lookup.TryGetValue(id, out CommandTagRecord record) && record.Pinned;
+        internal bool IsPinned(string id) => Lookup.TryGetValue(id, out CommandTagRecord record) && record.Pinned;
 
         /// <summary>Replaces the tags of a command and writes the store to disk.</summary>
         /// <param name="id">Id of the command.</param>
         /// <param name="tags">The new tags. They are trimmed, lowercased and deduplicated.</param>
-        public void SetTags(string id, IEnumerable<string> tags)
+        internal void SetTags(string id, IEnumerable<string> tags)
         {
             CommandTagRecord record = Require(id);
             record.SetTags(Normalize(tags));
@@ -83,7 +83,7 @@ namespace Base.ToolPackage.Editor.CommandPalette
 
         /// <summary>Pins or unpins a command and writes the store to disk.</summary>
         /// <param name="id">Id of the command.</param>
-        public void TogglePinned(string id)
+        internal void TogglePinned(string id)
         {
             CommandTagRecord record = Require(id);
             record.Pinned = !record.Pinned;

@@ -58,7 +58,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         private List<MenuGroup> groups = new();
 
         /// <summary>The shared registry instance, loaded from or created as an asset in the package folder.</summary>
-        public static MenuRegistry Instance
+        internal static MenuRegistry Instance
         {
             get
             {
@@ -105,7 +105,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         private bool? readOnly;
 
         /// <summary>Returns the top level node list for the given kind.</summary>
-        public List<MenuNode> RootFor(EMenuEntryKind kind) => kind == EMenuEntryKind.CreateAsset
+        internal List<MenuNode> RootFor(EMenuEntryKind kind) => kind == EMenuEntryKind.CreateAsset
             ? createAssetRoot
             : menuItemRoot;
 
@@ -113,12 +113,12 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         /// Priority given to the first entry of a kind. Each kind is its own menu and
         /// numbers independently.
         /// </summary>
-        public int StartFor(EMenuEntryKind kind) => kind == EMenuEntryKind.CreateAsset
+        internal int StartFor(EMenuEntryKind kind) => kind == EMenuEntryKind.CreateAsset
             ? createAssetStart
             : menuItemStart;
 
         /// <summary>Sets the priority given to the first entry of a kind.</summary>
-        public void SetStart(EMenuEntryKind kind, int value)
+        internal void SetStart(EMenuEntryKind kind, int value)
         {
             if (kind == EMenuEntryKind.CreateAsset)
                 createAssetStart = value;
@@ -127,7 +127,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         }
 
         /// <summary>Writes the asset to disk unless it is read only.</summary>
-        public void Persist()
+        internal void Persist()
         {
             if (IsReadOnly)
                 return;

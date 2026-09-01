@@ -24,7 +24,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Scanning
         /// <param name="clip">The clip to read.</param>
         /// <param name="settings">The thresholds that decide what counts as silence.</param>
         /// <returns>The measurements, with <c>HasData</c> false when the clip refused to be read.</returns>
-        public static AudioClipAnalysis Analyze(AudioClip clip, AudioAnalysisSettings settings)
+        internal static AudioClipAnalysis Analyze(AudioClip clip, AudioAnalysisSettings settings)
         {
             AudioClipAnalysis analysis = new();
 
@@ -45,7 +45,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Scanning
         /// <param name="analysis">The measurements of one clip.</param>
         /// <param name="settings">The thresholds to judge by.</param>
         /// <returns>Everything worth reporting about the clip.</returns>
-        public static List<EAudioFinding> Evaluate(AudioClipAnalysis analysis, AudioAnalysisSettings settings)
+        internal static List<EAudioFinding> Evaluate(AudioClipAnalysis analysis, AudioAnalysisSettings settings)
         {
             List<EAudioFinding> findings = new();
 

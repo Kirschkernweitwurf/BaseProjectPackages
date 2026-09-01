@@ -32,7 +32,7 @@ namespace Base.ToolPackage.Editor.CommandPalette
         /// <param name="filter">The parsed search box content.</param>
         /// <param name="projectOnly">Whether package and built-in commands are hidden.</param>
         /// <param name="results">The list that receives the ranked matches.</param>
-        public static void Run(IReadOnlyList<CommandEntry> entries, CommandFilter filter, bool projectOnly,
+        internal static void Run(IReadOnlyList<CommandEntry> entries, CommandFilter filter, bool projectOnly,
             List<CommandMatch> results)
         {
             results.Clear();

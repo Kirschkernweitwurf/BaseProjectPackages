@@ -11,10 +11,10 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
     internal sealed class AudioRulesMessageView : VisualElement
     {
         /// <summary>Glyph shown when there is nothing to work with yet.</summary>
-        public const string NeutralGlyph = "\u266a";
+        internal const string NeutralGlyph = "\u266a";
 
         /// <summary>Glyph shown when everything matches its rules.</summary>
-        public const string SuccessGlyph = "\u2713";
+        internal const string SuccessGlyph = "\u2713";
 
         private readonly VisualElement _ring = new();
         private readonly Label _glyph = new();
@@ -52,7 +52,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
         /// <param name="variant">Extra class controlling the color, or null.</param>
         /// <param name="buttonText">Label of the button, or null to hide it.</param>
         /// <param name="onClick">What the button does.</param>
-        public void Show(string glyph, string title, string body, string variant, string buttonText,
+        internal void Show(string glyph, string title, string body, string variant, string buttonText,
             Action onClick)
         {
             ClearVariants();

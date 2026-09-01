@@ -37,7 +37,7 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
         };
 
         /// <summary>Serializes the object, including private serialized fields, to JSON.</summary>
-        public static string CaptureJson(Object target) => EditorJsonUtility.ToJson(target);
+        internal static string CaptureJson(Object target) => EditorJsonUtility.ToJson(target);
 
         /// <summary>
         /// Records what every non null object reference points at, so it can be restored in edit mode
@@ -45,7 +45,7 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
         /// Pass the instance root when capturing a runtime instantiated object, so that references between
         /// its own parts are stored relative to it and survive the write into the prefab asset.
         /// </summary>
-        public static List<PlayModeObjectReference> CaptureObjectReferences(Object target, Transform instanceRoot)
+        internal static List<PlayModeObjectReference> CaptureObjectReferences(Object target, Transform instanceRoot)
         {
             List<PlayModeObjectReference> references = new();
             SerializedObject serializedObject = new(target);
@@ -71,7 +71,7 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
         }
 
         /// <summary>Writes captured JSON onto the target, skipping Unity's internal identity fields.</summary>
-        public static void ApplyJson(Object target, string json)
+        internal static void ApplyJson(Object target, string json)
         {
             if (string.IsNullOrEmpty(json))
                 return;
@@ -84,7 +84,7 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
         /// Runs after <see cref="ApplyJson"/>, so array sizes already match the captured state.
         /// Pass the loaded prefab root when writing into a prefab asset, otherwise pass null.
         /// </summary>
-        public static void ApplyObjectReferences(Object target, List<PlayModeObjectReference> references,
+        internal static void ApplyObjectReferences(Object target, List<PlayModeObjectReference> references,
             Transform prefabRoot)
         {
             if (references == null

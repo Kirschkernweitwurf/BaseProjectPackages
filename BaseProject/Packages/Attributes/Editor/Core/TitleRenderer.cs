@@ -1,6 +1,7 @@
 using System;
 using Base.AttributePackage.Editor.Handlers;
 using Base.AttributePackage.Editor.Inspectors;
+using Base.EditorUiPackage;
 using UnityEditor;
 using UnityEngine;
 
@@ -18,14 +19,31 @@ namespace Base.AttributePackage.Editor.Core
         private const float SpaceBelow = 2f;
         private const float UnderlineRowHeight = 3f;
 
-        private static GUIStyle FoldoutStyle => _foldoutStyle ??= new GUIStyle(EditorStyles.foldout)
+        private static GUIStyle FoldoutStyle
         {
-            fontStyle = FontStyle.Bold
-        };
+            get
+            {
+                EnsureFresh();
 
-        private static GUIStyle LabelStyle => _labelStyle ??= new GUIStyle(EditorStyles.boldLabel);
+                return _foldoutStyle ??= new GUIStyle(EditorStyles.foldout)
+                {
+                    fontStyle = FontStyle.Bold
+                };
+            }
+        }
+
+        private static GUIStyle LabelStyle
+        {
+            get
+            {
+                EnsureFresh();
+
+                return _labelStyle ??= new GUIStyle(EditorStyles.boldLabel);
+            }
+        }
 
         private static readonly Color DefaultLine = new(0.5f, 0.5f, 0.5f, 0.5f);
+        private static readonly EditorStyleWatch Watch = new();
 
         private static GUIStyle _foldoutStyle;
         private static GUIStyle _labelStyle;
@@ -33,7 +51,7 @@ namespace Base.AttributePackage.Editor.Core
         /// <summary>Draws a plain bold title with an underline.</summary>
         /// <param name="attribute">The title to draw.</param>
         /// <param name="title">The resolved title text.</param>
-        public static void DrawPlain(TitleAttribute attribute, string title)
+        internal static void DrawPlain(TitleAttribute attribute, string title)
         {
             bool hasColor = TryResolveColor(attribute, out Color color);
             GUILayout.Space(SpaceAbove);
@@ -51,7 +69,7 @@ namespace Base.AttributePackage.Editor.Core
         /// stored per owner type and title in <see cref="EditorPrefs"/>.
         /// </summary>
         /// <param name="title">The resolved title text.</param>
-        public static bool DrawCollapsible(Type ownerType, TitleAttribute attribute, string title)
+        internal static bool DrawCollapsible(Type ownerType, TitleAttribute attribute, string title)
         {
             bool hasColor = TryResolveColor(attribute, out Color color);
             GUILayout.Space(SpaceAbove);
@@ -96,6 +114,20 @@ namespace Base.AttributePackage.Editor.Core
                 : DefaultLine);
 
             GUILayout.Space(SpaceBelow);
+        }
+
+        // A GUIStyle copies its colors out of EditorStyles when it is built and does not stay
+        // linked to them, so a cached one keeps the previous theme's colors after a switch.
+        // Dropping it here has the next access rebuild it against the theme actually in use.
+        private static void EnsureFresh()
+        {
+            if (!Watch.IsStale)
+                return;
+
+            _foldoutStyle = null;
+            _labelStyle = null;
+
+            Watch.MarkFresh();
         }
     }
 }

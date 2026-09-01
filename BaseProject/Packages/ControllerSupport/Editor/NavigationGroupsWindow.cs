@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Base.ControllerSupportPackage.Controller.Navigation;
+using Base.EditorUiPackage;
 using Base.UtilityPackage.Menus;
 using UnityEditor;
 using UnityEngine;
@@ -37,6 +38,10 @@ namespace Base.ControllerSupportPackage.Editor
         private const string SceneHeader = "Scene";
         private const string SceneTooltip = "Scene";
         private const string WindowTitle = "Navigation Groups";
+
+        // Reused rather than built per badge: four badges a row, on every repaint, and only the text
+        // and tooltip differ between them.
+        private static readonly GUIContent BadgeContent = new();
 
         private readonly List<NavigationGroupEntry> _entries = new();
 
@@ -93,15 +98,18 @@ namespace Base.ControllerSupportPackage.Editor
         private static bool ConfirmProjectRebuild()
             => EditorUtility.DisplayDialog(ConfirmTitle, ConfirmMessage, RebuildLabel, CancelLabel);
 
+        // Only the cursor walk is local. The badge itself is centered and filled by EditorRows, which
+        // is what every other window in the stack draws with.
         private static float DrawBadge(float right, Rect row, string text, float width, Color color, string tooltip)
         {
-            float y = row.y + (row.height - NavigationGroupsStyles.BadgeHeight) * 0.5f;
-            Rect rect = new(right - width, y, width, NavigationGroupsStyles.BadgeHeight);
+            Rect cell = new(right - width, row.y, width, row.height);
 
-            EditorGUI.DrawRect(rect, color);
-            GUI.Label(rect, new GUIContent(text, tooltip), NavigationGroupsStyles.Badge);
+            BadgeContent.text = text;
+            BadgeContent.tooltip = tooltip;
 
-            return rect.x - NavigationGroupsStyles.BadgeGap;
+            EditorRows.DrawBadge(cell, BadgeContent, color, NavigationGroupsStyles.Badge);
+
+            return cell.x - NavigationGroupsStyles.BadgeGap;
         }
 
         private static float DrawButton(float right, Rect row, float width, string label, bool enabled,

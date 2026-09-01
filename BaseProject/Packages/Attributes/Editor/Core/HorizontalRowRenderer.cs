@@ -49,7 +49,7 @@ namespace Base.AttributePackage.Editor.Core
         /// <param name="startIndex">Index of the first member of the row.</param>
         /// <param name="editor">The editor drawing the row.</param>
         /// <returns>The index of the first member after the row.</returns>
-        public static int Draw(List<SerializedProperty> properties, int startIndex, UnityEditor.Editor editor)
+        internal static int Draw(List<SerializedProperty> properties, int startIndex, UnityEditor.Editor editor)
         {
             Type type = editor.target.GetType();
             string group = AttributeAt(properties, startIndex, type).Group;
@@ -87,7 +87,7 @@ namespace Base.AttributePackage.Editor.Core
         /// <param name="startIndex">Index of the first member of the row.</param>
         /// <param name="type">The inspected type.</param>
         /// <returns>The index of the first member after the row.</returns>
-        public static int Skip(List<SerializedProperty> properties, int startIndex, Type type)
+        internal static int Skip(List<SerializedProperty> properties, int startIndex, Type type)
         {
             string group = AttributeAt(properties, startIndex, type).Group;
             int index = startIndex;

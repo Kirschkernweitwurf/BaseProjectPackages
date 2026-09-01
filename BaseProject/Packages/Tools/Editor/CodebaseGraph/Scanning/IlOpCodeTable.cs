@@ -43,7 +43,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         /// <param name="position">Read cursor, advanced past the opcode.</param>
         /// <param name="code">The decoded opcode.</param>
         /// <returns>True when an opcode could be read.</returns>
-        public static bool TryRead(byte[] il, ref int position, out OpCode code)
+        internal static bool TryRead(byte[] il, ref int position, out OpCode code)
         {
             code = default(OpCode);
             if (position >= il.Length)
@@ -74,7 +74,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         /// <param name="il">Raw method body bytes.</param>
         /// <param name="position">Position of the first operand byte.</param>
         /// <returns>The operand size in bytes.</returns>
-        public static int GetOperandSize(OpCode code, byte[] il, int position)
+        internal static int GetOperandSize(OpCode code, byte[] il, int position)
         {
             switch (code.OperandType)
             {
@@ -104,7 +104,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         /// <summary>True when the operand of this opcode is a metadata token.</summary>
         /// <param name="code">The opcode that was just read.</param>
         /// <returns>True for token carrying opcodes.</returns>
-        public static bool HasMetadataToken(OpCode code) => code.OperandType == OperandType.InlineField
+        internal static bool HasMetadataToken(OpCode code) => code.OperandType == OperandType.InlineField
             || code.OperandType == OperandType.InlineMethod
             || code.OperandType == OperandType.InlineTok
             || code.OperandType == OperandType.InlineType;
@@ -113,7 +113,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         /// <param name="il">Raw method body bytes.</param>
         /// <param name="position">Position of the first operand byte.</param>
         /// <returns>The metadata token.</returns>
-        public static int ReadToken(byte[] il, int position) => BitConverter.ToInt32(il, position);
+        internal static int ReadToken(byte[] il, int position) => BitConverter.ToInt32(il, position);
 
         private static int GetSwitchSize(byte[] il, int position)
         {

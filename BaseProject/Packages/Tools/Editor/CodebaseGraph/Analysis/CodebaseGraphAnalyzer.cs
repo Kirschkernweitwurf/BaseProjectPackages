@@ -25,7 +25,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         /// asks for this: the shapes it checks the liveness rules against live in a test assembly, which
         /// is precisely the scope those findings are normally suppressed for.
         /// </param>
-        public static void Analyze(CodebaseGraphData graph, bool includeExcludedScopes = false)
+        internal static void Analyze(CodebaseGraphData graph, bool includeExcludedScopes = false)
         {
             Dictionary<TypeKey, List<TypeNodeInfo>> nested = MapNestedTypes(graph);
 

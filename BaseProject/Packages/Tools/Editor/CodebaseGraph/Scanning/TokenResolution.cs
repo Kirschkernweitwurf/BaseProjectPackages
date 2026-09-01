@@ -6,16 +6,16 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
     internal readonly struct TokenResolution
     {
         /// <summary>Member the token names, or the default when it names no member.</summary>
-        public MemberKey Member { get; }
+        internal MemberKey Member { get; }
 
         /// <summary>Type the token names or the member belongs to, or the default when there is none.</summary>
-        public TypeKey Type { get; }
+        internal TypeKey Type { get; }
 
         /// <summary>True when the runtime could rebuild the token at all.</summary>
-        public bool IsResolved { get; }
+        internal bool IsResolved { get; }
 
         /// <summary>True when the token names a method that reaches other code by name.</summary>
-        public bool IsDispatch { get; }
+        internal bool IsDispatch { get; }
 
         /// <summary>Creates a resolution.</summary>
         /// <param name="member">Member the token names.</param>

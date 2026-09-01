@@ -13,7 +13,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         /// <summary>Returns the source of a script asset, or an empty string when it cannot be read.</summary>
         /// <param name="assetPath">Asset path of the script.</param>
         /// <returns>The source text.</returns>
-        public static string Read(string assetPath)
+        internal static string Read(string assetPath)
         {
             if (string.IsNullOrEmpty(assetPath))
                 return string.Empty;

@@ -10,16 +10,16 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot
         /// The type the issues were found on, or null for a fabricated sample group. Null groups cannot
         /// be opened in the code editor, because there is no script behind them.
         /// </summary>
-        public Type Type { get; }
+        internal Type Type { get; }
 
         /// <summary>Name shown in the group header.</summary>
-        public string DisplayName { get; }
+        internal string DisplayName { get; }
 
         /// <summary>The issues found on the type.</summary>
-        public List<AttributeIssue> Issues { get; }
+        internal List<AttributeIssue> Issues { get; }
 
         /// <summary>Number of issues that stop an attribute from working.</summary>
-        public int ErrorCount { get; }
+        internal int ErrorCount { get; }
 
         /// <summary>Creates a group for a real scanned type.</summary>
         /// <param name="type">The type the issues were found on.</param>

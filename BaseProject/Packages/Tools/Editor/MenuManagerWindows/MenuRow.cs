@@ -10,48 +10,48 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
     internal sealed class MenuRow
     {
         /// <summary>Node behind the row, null for a section header and a placeholder.</summary>
-        public MenuNode Node;
+        internal MenuNode Node;
 
         /// <summary>List the node lives in, which is also the list a drop would insert into.</summary>
-        public List<MenuNode> ParentList;
+        internal List<MenuNode> ParentList;
 
         /// <summary>Index of the node inside <see cref="ParentList"/>.</summary>
-        public int Index;
+        internal int Index;
 
         /// <summary>Nesting level, used for the indent and the guides.</summary>
-        public int Depth;
+        internal int Depth;
 
         /// <summary>Whether the row draws a group.</summary>
-        public bool IsGroup;
+        internal bool IsGroup;
 
         /// <summary>Whether the row is the drop hint of an empty list.</summary>
-        public bool IsPlaceholder;
+        internal bool IsPlaceholder;
 
         /// <summary>Whether the row separates the shipped tree from the project tree.</summary>
-        public bool IsSectionHeader;
+        internal bool IsSectionHeader;
 
         /// <summary>Whether the row is the clickable gap between two entries.</summary>
-        public bool IsDivider;
+        internal bool IsDivider;
 
         /// <summary>Whether the row belongs to the read only shipped tree.</summary>
-        public bool Locked;
+        internal bool Locked;
 
         /// <summary>Whether a section header can be folded away.</summary>
-        public bool Collapsible;
+        internal bool Collapsible;
 
         /// <summary>Caption of a section header.</summary>
-        public string Header;
+        internal string Header;
 
         /// <summary>Group behind the row, set only when <see cref="IsGroup"/> is true.</summary>
-        public MenuGroupNode Group;
+        internal MenuGroupNode Group;
 
         /// <summary>Entry behind the row, set only for entry rows.</summary>
-        public MenuEntry Entry;
+        internal MenuEntry Entry;
 
         /// <summary>Full menu path the entry resolves to, shown in the status bar.</summary>
-        public string FullPath;
+        internal string FullPath;
 
         /// <summary>Screen rect the row was last drawn at.</summary>
-        public Rect Rect;
+        internal Rect Rect;
     }
 }

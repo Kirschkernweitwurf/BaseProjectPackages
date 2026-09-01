@@ -18,12 +18,12 @@ namespace Base.ToolPackage.Editor.CommandPalette
         private static readonly Dictionary<Assembly, EAssetOrigin> Cache = new();
 
         /// <summary>Drops every cached classification.</summary>
-        public static void Clear() => Cache.Clear();
+        internal static void Clear() => Cache.Clear();
 
         /// <summary>Returns where the code of the given type comes from.</summary>
         /// <param name="type">The type to classify.</param>
         /// <returns>Project, package or built-in.</returns>
-        public static EAssetOrigin Classify(Type type)
+        internal static EAssetOrigin Classify(Type type)
         {
             if (type == null)
                 return EAssetOrigin.BuiltIn;

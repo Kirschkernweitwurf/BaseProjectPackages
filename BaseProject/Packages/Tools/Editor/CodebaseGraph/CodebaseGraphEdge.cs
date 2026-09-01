@@ -14,19 +14,19 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
     internal sealed class CodebaseGraphEdge : Edge
     {
         /// <summary>ID of the entry the relation starts at.</summary>
-        public string SourceId { get; set; }
+        internal string SourceId { get; set; }
 
         /// <summary>ID of the entry the relation points at.</summary>
-        public string TargetId { get; set; }
+        internal string TargetId { get; set; }
 
         /// <summary>How many usages back the relation up.</summary>
-        public int Weight { get; set; }
+        internal int Weight { get; set; }
 
         /// <summary>Applies an emphasis and asks for a redraw.</summary>
         /// <param name="color">Color to draw the line in, honored where the graph allows it.</param>
         /// <param name="width">Thickness to draw the line at.</param>
         /// <param name="opacity">How visible the line should be, which always holds.</param>
-        public void Restyle(Color color, int width, float opacity)
+        internal void Restyle(Color color, int width, float opacity)
         {
             style.opacity = opacity;
 

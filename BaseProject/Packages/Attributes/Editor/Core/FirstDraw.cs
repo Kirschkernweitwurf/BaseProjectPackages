@@ -28,14 +28,14 @@ namespace Base.AttributePackage.Editor.Core
         /// <summary>Returns true the first time it is called for a given property, false afterwards.</summary>
         /// <param name="property">The property being drawn.</param>
         /// <returns>True on the first draw only.</returns>
-        public static bool IsFirst(SerializedProperty property) => Seen.Add(KeyFor(property));
+        internal static bool IsFirst(SerializedProperty property) => Seen.Add(KeyFor(property));
 
         /// <summary>
         /// Treats every property of the given type as unseen again, so the defaults its attributes
         /// declare are applied once more on the next draw.
         /// </summary>
         /// <param name="owner">The type to forget.</param>
-        public static void Forget(Type owner)
+        internal static void Forget(Type owner)
         {
             if (owner == null)
                 return;

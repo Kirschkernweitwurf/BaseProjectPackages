@@ -98,7 +98,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         }
 
         /// <summary>Rereads the dismissals, after a scan has changed what counts as stale.</summary>
-        public void Refresh() => Rebuild();
+        internal void Refresh() => Rebuild();
 
         private static string BuildScopeText(DismissalEntry entry)
         {

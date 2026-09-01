@@ -21,7 +21,7 @@ namespace Base.AttributePackage.Editor.Core
         /// </summary>
         /// <param name="target">The asset to draw an inline inspector for.</param>
         /// <returns>The nested editor, or null.</returns>
-        public static UnityEditor.Editor Get(Object target)
+        internal static UnityEditor.Editor Get(Object target)
         {
             if (target == null)
                 return null;
@@ -39,7 +39,7 @@ namespace Base.AttributePackage.Editor.Core
         }
 
         /// <summary>Destroys every cached editor.</summary>
-        public static void Clear()
+        internal static void Clear()
         {
             foreach (UnityEditor.Editor editor in Editors.Values)
             {

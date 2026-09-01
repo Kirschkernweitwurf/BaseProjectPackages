@@ -15,7 +15,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         protected override bool ShowFileName => true;
 
         /// <summary>Opens or focuses the window and returns it.</summary>
-        public static CreateAssetMenuManagerWindow OpenWindow()
+        internal static CreateAssetMenuManagerWindow OpenWindow()
         {
             CreateAssetMenuManagerWindow window = GetWindow<CreateAssetMenuManagerWindow>();
             window.titleContent = new GUIContent(WindowTitle);
@@ -25,7 +25,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         }
 
         /// <summary>Opens the window and highlights the entry with the given id.</summary>
-        public static void OpenAt(string entryId) => OpenWindow().FocusEntry(entryId);
+        internal static void OpenAt(string entryId) => OpenWindow().FocusEntry(entryId);
 
         [MenuItem("Tools/Base Packages/Menu Management/Create Asset Manager", false, MenuPriority)]
         private static void Open() => OpenWindow();

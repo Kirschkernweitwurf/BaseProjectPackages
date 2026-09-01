@@ -4,13 +4,13 @@ namespace Base.AttributePackage.Editor.Collections
     internal readonly struct TableColumn
     {
         /// <summary>Name of the child property this column shows.</summary>
-        public readonly string PropertyName;
+        internal readonly string PropertyName;
 
         /// <summary>Header text.</summary>
-        public readonly string Header;
+        internal readonly string Header;
 
         /// <summary>Share of the available width relative to the other columns.</summary>
-        public readonly float Weight;
+        internal readonly float Weight;
 
         /// <summary>Creates a column.</summary>
         /// <param name="propertyName">Name of the child property this column shows.</param>

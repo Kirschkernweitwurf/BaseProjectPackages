@@ -9,21 +9,21 @@ namespace Base.AttributePackage.Editor.SceneHandles
     internal static class ScenePickerState
     {
         /// <summary>True while some field is waiting for a click.</summary>
-        public static bool IsArmed => _propertyPath != null;
+        internal static bool IsArmed => _propertyPath != null;
 
         private static int _targetId;
         private static string _propertyPath;
 
         /// <summary>Arms the given property, replacing whatever was armed before.</summary>
         /// <param name="property">The object reference property to fill on the next click.</param>
-        public static void Arm(SerializedProperty property)
+        internal static void Arm(SerializedProperty property)
         {
             _targetId = property.serializedObject.targetObject.GetInstanceID();
             _propertyPath = property.propertyPath;
         }
 
         /// <summary>Clears the armed state.</summary>
-        public static void Disarm()
+        internal static void Disarm()
         {
             _targetId = 0;
             _propertyPath = null;
@@ -32,7 +32,7 @@ namespace Base.AttributePackage.Editor.SceneHandles
         /// <summary>Returns whether the given property is the one waiting for a click.</summary>
         /// <param name="property">The property to test.</param>
         /// <returns>True when this property is armed.</returns>
-        public static bool IsArmedFor(SerializedProperty property)
+        internal static bool IsArmedFor(SerializedProperty property)
         {
             if (_propertyPath == null)
                 return false;

@@ -89,10 +89,10 @@ namespace Base.ToolPackage.Editor.AssetZoo.UI
         /// Opens the zoo builder window without a config.
         /// </summary>
         [DynamicMenuItem(DefaultPath)]
-        public static void Open() => Open(null);
+        internal static void Open() => Open(null);
 
         /// <summary>Opens the builder window with the given config preselected.</summary>
-        public static void Open(ZooConfig config)
+        internal static void Open(ZooConfig config)
         {
             ZooEditorWindow window = GetWindow<ZooEditorWindow>("Asset Zoo");
             window.minSize = new Vector2(MinWindowWidth, MinWindowHeight);

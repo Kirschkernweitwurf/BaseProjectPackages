@@ -25,7 +25,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Scanning
         /// <param name="platform">The import target, empty for the default settings.</param>
         /// <param name="matchCounts">Filled with how many clips each rule matched.</param>
         /// <returns>One plan per clip.</returns>
-        public static List<AudioClipPlan> Scan(AudioRuleSet ruleSet, string platform,
+        internal static List<AudioClipPlan> Scan(AudioRuleSet ruleSet, string platform,
             IDictionary<string, int> matchCounts)
         {
             List<AudioClipPlan> plans = new();
@@ -51,7 +51,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Scanning
         /// <param name="plan">The plan to fill in.</param>
         /// <param name="settings">The thresholds to judge by.</param>
         /// <returns>True when the cache had a usable entry.</returns>
-        public static bool FillFromCache(AudioClipPlan plan, AudioAnalysisSettings settings)
+        internal static bool FillFromCache(AudioClipPlan plan, AudioAnalysisSettings settings)
         {
             if (!AudioAnalysisCache.TryGet(plan.Info.Guid, plan.Info.FileSizeBytes, ReadWriteTicks(plan),
                     out AudioClipAnalysis cached))
@@ -66,7 +66,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Scanning
         /// <summary>Reads the sample data of one clip and caches the result.</summary>
         /// <param name="plan">The plan to fill in.</param>
         /// <param name="settings">The thresholds to judge by.</param>
-        public static void AnalyzeOne(AudioClipPlan plan, AudioAnalysisSettings settings)
+        internal static void AnalyzeOne(AudioClipPlan plan, AudioAnalysisSettings settings)
         {
             AudioClip clip = AssetDatabase.LoadAssetAtPath<AudioClip>(plan.Info.AssetPath);
             AudioClipAnalysis analysis = AudioClipAnalyzer.Analyze(clip, settings);
@@ -78,7 +78,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Scanning
         }
 
         /// <summary>Writes the analysis cache to disk.</summary>
-        public static void FlushCache() => AudioAnalysisCache.Flush();
+        internal static void FlushCache() => AudioAnalysisCache.Flush();
 
         private static long ReadWriteTicks(AudioClipPlan plan)
         {

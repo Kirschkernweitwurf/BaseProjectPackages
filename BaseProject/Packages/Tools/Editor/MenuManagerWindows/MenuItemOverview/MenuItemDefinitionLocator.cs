@@ -21,7 +21,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows.MenuItemOverview
         /// priority value when present, otherwise just inside the attribute's parentheses.
         /// Falls back to the method declaration when the attribute line cannot be matched.
         /// </summary>
-        public static (int Line, int Column) Find(MonoScript script, string menuPath, string methodName)
+        internal static (int Line, int Column) Find(MonoScript script, string menuPath, string methodName)
         {
             if (script == null)
                 return (0, 0);

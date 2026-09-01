@@ -35,7 +35,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         }
 
         /// <summary>Ordered child nodes.</summary>
-        public List<MenuNode> Children => children;
+        internal List<MenuNode> Children => children;
 
         /// <summary>Required by serialization.</summary>
         public MenuGroupNode() => Separator = true;
@@ -44,7 +44,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         public MenuGroupNode(string name) : this() => this.name = name;
 
         /// <summary>Converts the retired merged flag into the separator flag. Runs once during migration.</summary>
-        public void MigrateMerged()
+        internal void MigrateMerged()
         {
             Separator = !merged;
             merged = false;

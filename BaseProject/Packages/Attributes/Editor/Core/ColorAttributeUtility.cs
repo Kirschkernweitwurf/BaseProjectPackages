@@ -12,7 +12,7 @@ namespace Base.AttributePackage.Editor.Core
         /// Tries to resolve an explicit color. Returns false when neither a hex nor a preset is set,
         /// leaving the drawer to apply its own default.
         /// </summary>
-        public static bool TryResolve(string colorHex, EColor preset, out Color color)
+        internal static bool TryResolve(string colorHex, EColor preset, out Color color)
         {
             if (!string.IsNullOrEmpty(colorHex))
             {

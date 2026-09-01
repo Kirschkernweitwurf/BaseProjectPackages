@@ -7,7 +7,7 @@ namespace Base.AttributePackage.Editor.Core
     internal static class PropertyValueText
     {
         /// <summary>Returns a readable text value for the given property.</summary>
-        public static string Read(SerializedProperty property)
+        internal static string Read(SerializedProperty property)
         {
             switch (property.propertyType)
             {

@@ -13,13 +13,13 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot.Sa
     internal sealed class SampleConditionIssues
     {
         /// <summary>A valid bool the working conditions point at.</summary>
-        public bool isEnabled;
+        internal bool isEnabled;
 
         /// <summary>A float, used to show a condition pointing at the wrong type.</summary>
-        public float speed;
+        internal float speed;
 
         /// <summary>An enum, used by the enum condition samples.</summary>
-        public ESampleMode mode;
+        internal ESampleMode mode;
 
         /// <summary>Points at a member that no longer exists.</summary>
         [ShowIf("wasRenamedAway")] public int renamedMember;

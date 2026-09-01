@@ -5,17 +5,17 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
     /// </summary>
     internal class ScanOptions
     {
-        public string RootFolder = "Assets";
-        public string[] ResetAttributes =
+        internal string RootFolder = "Assets";
+        internal string[] ResetAttributes =
         {
             "InitializeOnEnterPlayMode",
             "RuntimeInitializeOnLoadMethod"
         };
-        public string IgnoreMarker = "reset-ignore";
-        public bool IncludeEvents = true;
-        public bool IncludeAutoProperties = true;
-        public bool SkipEditorFolders = true;
-        public bool ExpandHelpers = true;
-        public bool IgnoreReadonly = true;
+        internal string IgnoreMarker = "reset-ignore";
+        internal bool IncludeEvents = true;
+        internal bool IncludeAutoProperties = true;
+        internal bool SkipEditorFolders = true;
+        internal bool ExpandHelpers = true;
+        internal bool IgnoreReadonly = true;
     }
 }

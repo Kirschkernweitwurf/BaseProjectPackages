@@ -4,13 +4,13 @@ namespace Base.ToolPackage.Editor.CommandPalette
     internal readonly struct CommandMatch
     {
         /// <summary>The matched entry.</summary>
-        public CommandEntry Entry { get; }
+        internal CommandEntry Entry { get; }
 
         /// <summary>Rank of the entry, higher is better.</summary>
-        public int Score { get; }
+        internal int Score { get; }
 
         /// <summary>Whether the entry is pinned to the top of the results.</summary>
-        public bool IsPinned { get; }
+        internal bool IsPinned { get; }
 
         /// <summary>Creates a match.</summary>
         /// <param name="entry">The matched entry.</param>

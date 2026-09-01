@@ -15,7 +15,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         /// <param name="member">Member it was reported on.</param>
         /// <param name="declaring">Type the member is declared on.</param>
         /// <returns>How much attention it deserves.</returns>
-        public static ESeverity Resolve(EFinding finding, MemberNodeInfo member, TypeNodeInfo declaring)
+        internal static ESeverity Resolve(EFinding finding, MemberNodeInfo member, TypeNodeInfo declaring)
         {
             if (IsAlwaysLow(finding))
                 return ESeverity.Low;
@@ -42,7 +42,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         /// <param name="finding">The finding being reported.</param>
         /// <param name="type">Type it was reported on.</param>
         /// <returns>How much attention it deserves.</returns>
-        public static ESeverity Resolve(EFinding finding, TypeNodeInfo type)
+        internal static ESeverity Resolve(EFinding finding, TypeNodeInfo type)
         {
             if (IsAlwaysLow(finding))
                 return ESeverity.Low;

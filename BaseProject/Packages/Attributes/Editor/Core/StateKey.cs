@@ -11,16 +11,16 @@ namespace Base.AttributePackage.Editor.Core
         private const string Separator = ".";
 
         /// <summary>Key for a named state on an owner type, for example a foldout name.</summary>
-        public static string For(Type owner, string name) => owner.FullName + Separator + name;
+        internal static string For(Type owner, string name) => owner.FullName + Separator + name;
 
         /// <summary>Key for a named state on an owner type inside a category, for example a title.</summary>
-        public static string For(Type owner, string category, string name)
+        internal static string For(Type owner, string category, string name)
             => owner.FullName + Separator + category + Separator + name;
 
         /// <summary>Key for one serialized field on one concrete instance.</summary>
-        public static string For(int instanceId, string propertyPath) => instanceId + Separator + propertyPath;
+        internal static string For(int instanceId, string propertyPath) => instanceId + Separator + propertyPath;
 
         /// <summary>Key for a single component of a vector field.</summary>
-        public static string For(string propertyPath, int component) => propertyPath + Separator + component;
+        internal static string For(string propertyPath, int component) => propertyPath + Separator + component;
     }
 }

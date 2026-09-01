@@ -20,9 +20,9 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot.Sa
         public string DisplayName => nameof(SampleHealAbility);
 
         /// <summary>Health restored per use.</summary>
-        public int Amount => amount;
+        internal int Amount => amount;
 
         /// <summary>Whether the heal also removes status effects.</summary>
-        public bool Cleanses => cleanses;
+        internal bool Cleanses => cleanses;
     }
 }

@@ -21,7 +21,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         /// <param name="component">Nodes of one strongly connected component.</param>
         /// <param name="getTargets">Returns the nodes a given node depends on.</param>
         /// <returns>The cycle in order, or an empty list when the component holds none.</returns>
-        public static List<T> FindShortestCycle<T>(IReadOnlyCollection<T> component,
+        internal static List<T> FindShortestCycle<T>(IReadOnlyCollection<T> component,
             Func<T, IEnumerable<T>> getTargets)
         {
             HashSet<T> members = new(component);
@@ -47,7 +47,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         /// <param name="nodes">All nodes to consider.</param>
         /// <param name="getTargets">Returns the nodes a given node depends on.</param>
         /// <returns>One list per cycle, each holding the members of that cycle.</returns>
-        public static List<List<T>> FindCycles<T>(IEnumerable<T> nodes, Func<T, IEnumerable<T>> getTargets)
+        internal static List<List<T>> FindCycles<T>(IEnumerable<T> nodes, Func<T, IEnumerable<T>> getTargets)
         {
             Dictionary<T, int> index = new();
             Dictionary<T, int> lowLink = new();
@@ -206,13 +206,13 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         /// <typeparam name="T">Node identity type.</typeparam>
         private sealed class Frame<T>
         {
-            public T Node { get; }
+            internal T Node { get; }
 
-            public IEnumerator<T> Enumerator { get; private set; }
+            internal IEnumerator<T> Enumerator { get; private set; }
 
-            public Frame(T node) => Node = node;
+            internal Frame(T node) => Node = node;
 
-            public void EnsureEnumerator(Func<T, IEnumerable<T>> getTargets)
+            internal void EnsureEnumerator(Func<T, IEnumerable<T>> getTargets)
                 => Enumerator ??= getTargets(Node).GetEnumerator();
         }
     }

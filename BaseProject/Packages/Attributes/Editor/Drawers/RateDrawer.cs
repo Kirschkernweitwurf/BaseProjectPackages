@@ -1,4 +1,5 @@
 using Base.AttributePackage.Editor.Core;
+using Base.EditorUiPackage;
 using Base.UtilityPackage.Editor;
 using UnityEditor;
 using UnityEngine;
@@ -14,12 +15,22 @@ namespace Base.AttributePackage.Editor.Drawers
         private const int StarFontSize = 15;
         private const float StarWidth = 18f;
 
-        private static GUIStyle Style => _style ??= new GUIStyle(EditorStyles.label)
+        private static GUIStyle Style
         {
-            alignment = TextAnchor.MiddleCenter,
-            fontSize = StarFontSize,
-            padding = new RectOffset(0, 0, 0, 0)
-        };
+            get
+            {
+                EnsureFresh();
+
+                return _style ??= new GUIStyle(EditorStyles.label)
+                {
+                    alignment = TextAnchor.MiddleCenter,
+                    fontSize = StarFontSize,
+                    padding = new RectOffset(0, 0, 0, 0)
+                };
+            }
+        }
+
+        private static readonly EditorStyleWatch Watch = new();
 
         private static GUIStyle _style;
 
@@ -61,6 +72,19 @@ namespace Base.AttributePackage.Editor.Drawers
                     ? rate.Min
                     : star;
             }
+        }
+
+        // A GUIStyle copies its colors out of EditorStyles when it is built and does not stay
+        // linked to them, so a cached one keeps the previous theme's colors after a switch.
+        // Dropping it here has the next access rebuild it against the theme actually in use.
+        private static void EnsureFresh()
+        {
+            if (!Watch.IsStale)
+                return;
+
+            _style = null;
+
+            Watch.MarkFresh();
         }
     }
 }

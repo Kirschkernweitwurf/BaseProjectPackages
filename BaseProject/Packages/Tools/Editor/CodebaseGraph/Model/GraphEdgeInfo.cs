@@ -4,10 +4,10 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Model
     internal sealed class GraphEdgeInfo
     {
         /// <summary>ID of the entry this relation points at.</summary>
-        public string TargetId { get; }
+        internal string TargetId { get; }
 
         /// <summary>How many usages back the relation up, which sets how heavy the line is drawn.</summary>
-        public int Weight { get; }
+        internal int Weight { get; }
 
         /// <summary>Creates a relation.</summary>
         /// <param name="targetId">ID of the entry being pointed at.</param>

@@ -11,7 +11,7 @@ namespace Base.AttributePackage.Editor.Drawers
     internal static class CompactHelpBox
     {
         /// <summary>Height of one compact line, for PropertyDrawer height calculations.</summary>
-        public const float Height = 20f;
+        internal const float Height = 20f;
 
         private const string ErrorHex = "#DB4C52";
         private const string ErrorIcon = "console.erroricon.sml";
@@ -30,34 +30,34 @@ namespace Base.AttributePackage.Editor.Drawers
         private static GUIStyle _label;
 
         /// <summary>Draws a compact info line.</summary>
-        public static void Info(string message) => Draw(message, EInfoBoxType.Info);
+        internal static void Info(string message) => Draw(message, EInfoBoxType.Info);
 
         /// <summary>Draws a compact warning line.</summary>
-        public static void Warning(string message) => Draw(message, EInfoBoxType.Warning);
+        internal static void Warning(string message) => Draw(message, EInfoBoxType.Warning);
 
         /// <summary>Draws a compact error line.</summary>
-        public static void Error(string message) => Draw(message, EInfoBoxType.Error);
+        internal static void Error(string message) => Draw(message, EInfoBoxType.Error);
 
         /// <summary>Draws a compact line for the given type using its default color.</summary>
-        public static void Draw(string message, EInfoBoxType type) => Draw(message, type, DefaultColor(type));
+        internal static void Draw(string message, EInfoBoxType type) => Draw(message, type, DefaultColor(type));
 
         /// <summary>
         /// Draws a compact line for the given type, resolving the color from a hex string or an
         /// <see cref="EColor"/> preset. Hex wins over the preset; neither falls back to the type color.
         /// </summary>
-        public static void Draw(string message, EInfoBoxType type, string hex, EColor preset)
+        internal static void Draw(string message, EInfoBoxType type, string hex, EColor preset)
             => Draw(message, type, Resolve(hex, preset, DefaultColor(type)));
 
         /// <summary>Draws a compact line for the given type with an explicit color.</summary>
-        public static void Draw(string message, EInfoBoxType type, Color color)
+        internal static void Draw(string message, EInfoBoxType type, Color color)
             => Draw(EditorGUILayout.GetControlRect(false, Height), message, type, color);
 
         /// <summary>Draws a compact line into the given rect, for use inside PropertyDrawers.</summary>
-        public static void Draw(Rect rect, string message, EInfoBoxType type)
+        internal static void Draw(Rect rect, string message, EInfoBoxType type)
             => Draw(rect, message, type, DefaultColor(type));
 
         /// <summary>Draws a compact line into the given rect with an explicit color.</summary>
-        public static void Draw(Rect rect, string message, EInfoBoxType type, Color color)
+        internal static void Draw(Rect rect, string message, EInfoBoxType type, Color color)
         {
             Build();
 

@@ -19,7 +19,7 @@ namespace Base.ToolPackage.Editor.CommandPalette
         /// <summary>Opens the context menu at the mouse position.</summary>
         /// <param name="entry">The entry the menu acts on.</param>
         /// <param name="handle">Receives the action the user picked.</param>
-        public static void Show(CommandEntry entry, Action<ECommandPaletteAction> handle)
+        internal static void Show(CommandEntry entry, Action<ECommandPaletteAction> handle)
         {
             GenericMenu menu = new();
 

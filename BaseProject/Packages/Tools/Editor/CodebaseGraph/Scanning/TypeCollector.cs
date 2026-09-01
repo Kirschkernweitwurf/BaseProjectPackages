@@ -16,7 +16,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         /// <param name="assemblies">Assemblies to walk.</param>
         /// <param name="declaredTypes">Receives the handwritten types.</param>
         /// <param name="generatedTypes">Receives the compiler generated types.</param>
-        public static void Collect(IReadOnlyList<Assembly> assemblies,
+        internal static void Collect(IReadOnlyList<Assembly> assemblies,
             List<Type> declaredTypes,
             List<Type> generatedTypes)
         {
@@ -38,7 +38,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         /// <summary>Walks outward through nested types until a handwritten type is reached.</summary>
         /// <param name="type">Type to start at.</param>
         /// <returns>The owning handwritten type, or null when there is none.</returns>
-        public static Type FindDeclaringWrittenType(Type type)
+        internal static Type FindDeclaringWrittenType(Type type)
         {
             Type current = type;
 

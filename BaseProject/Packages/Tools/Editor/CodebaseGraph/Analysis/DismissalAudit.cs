@@ -26,7 +26,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         /// <summary>Marks which entries no longer match anything, why and what they may have become.</summary>
         /// <param name="graph">Graph to check against, or null when nothing has been scanned.</param>
         /// <param name="entries">Entries to annotate in place.</param>
-        public static void Apply(CodebaseGraphData graph, List<DismissalEntry> entries)
+        internal static void Apply(CodebaseGraphData graph, List<DismissalEntry> entries)
         {
             if (graph == null)
                 return;
@@ -45,7 +45,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         /// <param name="entries">Entries already annotated.</param>
         /// <param name="reason">Reason to count.</param>
         /// <returns>How many carry that reason.</returns>
-        public static int Count(List<DismissalEntry> entries, EStaleReason reason)
+        internal static int Count(List<DismissalEntry> entries, EStaleReason reason)
         {
             int count = 0;
 
@@ -61,7 +61,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         /// <summary>Counts every entry that stopped matching, whatever the reason.</summary>
         /// <param name="entries">Entries already annotated.</param>
         /// <returns>How many are stale.</returns>
-        public static int CountStale(List<DismissalEntry> entries)
+        internal static int CountStale(List<DismissalEntry> entries)
             => Count(entries, EStaleReason.Missing) + Count(entries, EStaleReason.Resolved);
 
         private static void Inspect(DismissalEntry entry,

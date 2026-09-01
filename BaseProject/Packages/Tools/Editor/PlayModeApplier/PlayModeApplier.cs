@@ -16,7 +16,7 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
         private const string UndoName = "Apply Play Mode Changes";
 
         /// <summary>Returns true when the payload has everything its chosen destination needs.</summary>
-        public static bool CanApply(PlayModeSavePayload payload)
+        internal static bool CanApply(PlayModeSavePayload payload)
         {
             if (EditorApplication.isPlayingOrWillChangePlaymode
                 || EditorApplication.isCompiling)
@@ -29,7 +29,7 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
         }
 
         /// <summary>Applies one payload. Returns false and logs a warning when the destination is gone.</summary>
-        public static bool TryApply(PlayModeSavePayload payload)
+        internal static bool TryApply(PlayModeSavePayload payload)
         {
             if (payload.applyTarget == EPlayModeApplyTarget.PrefabAsset)
                 return TryApplyToPrefabAsset(payload);

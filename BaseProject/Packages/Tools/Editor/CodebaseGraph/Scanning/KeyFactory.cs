@@ -15,7 +15,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         /// <param name="type">Type to build a key for.</param>
         /// <param name="key">The resulting key when the type can be keyed.</param>
         /// <returns>True when a key could be built.</returns>
-        public static bool TryForType(Type type, out TypeKey key)
+        internal static bool TryForType(Type type, out TypeKey key)
         {
             key = default(TypeKey);
 
@@ -39,7 +39,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         /// <param name="member">Member to build a key for.</param>
         /// <param name="key">The resulting key when the member can be keyed.</param>
         /// <returns>True when a key could be built.</returns>
-        public static bool TryForMember(MemberInfo member, out MemberKey key)
+        internal static bool TryForMember(MemberInfo member, out MemberKey key)
         {
             key = default(MemberKey);
             if (member == null)

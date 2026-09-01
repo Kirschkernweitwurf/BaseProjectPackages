@@ -41,20 +41,20 @@ namespace Base.ToolPackage.Editor.CommandPalette
         /// <summary>Returns how often a command was run.</summary>
         /// <param name="id">Id of the command.</param>
         /// <returns>The run count.</returns>
-        public int CountFor(string id) => Lookup.TryGetValue(id, out CommandUsageRecord record)
+        internal int CountFor(string id) => Lookup.TryGetValue(id, out CommandUsageRecord record)
             ? record.Count
             : 0;
 
         /// <summary>Returns the UTC tick count of the last run.</summary>
         /// <param name="id">Id of the command.</param>
         /// <returns>The tick count, or zero when the command was never run.</returns>
-        public long LastUsedFor(string id) => Lookup.TryGetValue(id, out CommandUsageRecord record)
+        internal long LastUsedFor(string id) => Lookup.TryGetValue(id, out CommandUsageRecord record)
             ? record.LastUsedTicks
             : 0L;
 
         /// <summary>Counts one run of a command and writes the store to disk.</summary>
         /// <param name="id">Id of the command.</param>
-        public void Register(string id)
+        internal void Register(string id)
         {
             if (!Lookup.TryGetValue(id, out CommandUsageRecord record))
             {

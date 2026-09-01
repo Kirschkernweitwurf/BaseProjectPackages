@@ -23,7 +23,7 @@ namespace Base.ToolPackage.Editor.OverviewGui.PrefabOverviewWindow
         /// <param name="includePackages">True to also scan prefabs that live inside packages.</param>
         /// <param name="analyzeOverrides">True to count the overrides of every variant, which is slower.</param>
         /// <returns>All found prefabs.</returns>
-        public static List<PrefabEntry> Scan(bool includePackages, bool analyzeOverrides)
+        internal static List<PrefabEntry> Scan(bool includePackages, bool analyzeOverrides)
         {
             Dictionary<string, PrefabEntry> entries = new();
 

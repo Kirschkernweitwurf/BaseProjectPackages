@@ -13,7 +13,7 @@ namespace Base.AttributePackage.Editor.Core
     internal static class LeadingGutter
     {
         /// <summary>Width of the arrow, which is the whole step.</summary>
-        public const float Width = 13f;
+        internal const float Width = 13f;
 
         private const float IndentStep = 15f;
 
@@ -22,7 +22,7 @@ namespace Base.AttributePackage.Editor.Core
         /// </summary>
         /// <param name="context">The member being drawn.</param>
         /// <returns>One step when the member has an arrow, otherwise zero.</returns>
-        public static int StepsFor(in MemberContext context) => ExpandableState.NeedsArrow(context)
+        internal static int StepsFor(in MemberContext context) => ExpandableState.NeedsArrow(context)
             ? 1
             : 0;
 
@@ -31,7 +31,7 @@ namespace Base.AttributePackage.Editor.Core
         /// <param name="indentLevel">The indent the field is drawn at.</param>
         /// <param name="height">The height of the row.</param>
         /// <returns>The rect to draw the arrow in.</returns>
-        public static Rect RectFor(Rect row, int indentLevel, float height)
+        internal static Rect RectFor(Rect row, int indentLevel, float height)
             => new(row.x + indentLevel * IndentStep, row.y, Width, height);
     }
 }

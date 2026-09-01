@@ -26,13 +26,13 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         /// <param name="id">ID of the entry.</param>
         /// <param name="finding">Finding to narrow it to.</param>
         /// <returns>The id of that one finding on that entry.</returns>
-        public static string ForFinding(string id, EFinding finding) => $"{id}{FindingBoundary}{finding}";
+        internal static string ForFinding(string id, EFinding finding) => $"{id}{FindingBoundary}{finding}";
 
         /// <summary>Splits a stored id back into the entry it names and the finding, if it carries one.</summary>
         /// <param name="id">ID to read.</param>
         /// <param name="finding">The finding, or none when the id covers the whole entry.</param>
         /// <returns>The id with any finding removed.</returns>
-        public static string ReadEntry(string id, out EFinding finding)
+        internal static string ReadEntry(string id, out EFinding finding)
         {
             finding = EFinding.None;
 
@@ -51,14 +51,14 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         /// <summary>Checks that a string looks like an id this tool produced.</summary>
         /// <param name="id">Text to test.</param>
         /// <returns>True when the id carries a known prefix.</returns>
-        public static bool IsValid(string id) => TryRead(id, out EDismissalKind _, out string _);
+        internal static bool IsValid(string id) => TryRead(id, out EDismissalKind _, out string _);
 
         /// <summary>Splits an id into what it points at and the name inside it.</summary>
         /// <param name="id">ID to read.</param>
         /// <param name="kind">What the id points at.</param>
         /// <param name="qualifiedName">The id with its prefix removed.</param>
         /// <returns>True when the id could be read.</returns>
-        public static bool TryRead(string id, out EDismissalKind kind, out string qualifiedName)
+        internal static bool TryRead(string id, out EDismissalKind kind, out string qualifiedName)
         {
             kind = default(EDismissalKind);
             qualifiedName = null;
@@ -97,7 +97,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         /// <param name="outerId">ID of the containing entry.</param>
         /// <param name="innerId">ID that may sit inside it.</param>
         /// <returns>True when the inner id is contained by the outer one.</returns>
-        public static bool IsNested(string outerId, string innerId)
+        internal static bool IsNested(string outerId, string innerId)
         {
             if (!TryRead(outerId, out EDismissalKind outerKind, out string outer))
                 return false;
@@ -118,18 +118,18 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         /// <summary>Builds the stable id of a namespace.</summary>
         /// <param name="name">Full namespace name.</param>
         /// <returns>The id.</returns>
-        public static string ForNamespace(string name) => NamespacePrefix + name;
+        internal static string ForNamespace(string name) => NamespacePrefix + name;
 
         /// <summary>Builds the stable id of a type.</summary>
         /// <param name="type">Type to identify.</param>
         /// <returns>The id.</returns>
-        public static string ForType(TypeNodeInfo type) => TypePrefix + type.FullName;
+        internal static string ForType(TypeNodeInfo type) => TypePrefix + type.FullName;
 
         /// <summary>Builds the stable id of a member.</summary>
         /// <param name="declaring">Type the member is declared on.</param>
         /// <param name="member">Member to identify.</param>
         /// <returns>The id.</returns>
-        public static string ForMember(TypeNodeInfo declaring, MemberNodeInfo member)
+        internal static string ForMember(TypeNodeInfo declaring, MemberNodeInfo member)
             => $"{MemberPrefix}{declaring.FullName}{MemberSeparator}{member.Signature}";
     }
 }

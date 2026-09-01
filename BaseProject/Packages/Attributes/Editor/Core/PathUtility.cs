@@ -9,13 +9,13 @@ namespace Base.AttributePackage.Editor.Core
     internal static class PathUtility
     {
         /// <summary>Converts backslashes to forward slashes.</summary>
-        public static string Normalize(string path) => path?.Replace("\\", "/");
+        internal static string Normalize(string path) => path?.Replace("\\", "/");
 
         /// <summary>
         /// Returns a path relative to the project ("Assets/..."). Paths outside the project are
         /// returned normalized but absolute.
         /// </summary>
-        public static string ToProjectRelative(string absolute)
+        internal static string ToProjectRelative(string absolute)
         {
             string dataPath = Normalize(Application.dataPath);
             string normalized = Normalize(absolute);
@@ -33,7 +33,7 @@ namespace Base.AttributePackage.Editor.Core
         /// Converts an asset path to a path relative to its Resources folder, without extension,
         /// ready for Resources.Load. Returns null when the asset is not under a Resources folder.
         /// </summary>
-        public static string ToResourcesPath(string assetPath)
+        internal static string ToResourcesPath(string assetPath)
         {
             string normalized = Normalize(assetPath);
             if (string.IsNullOrEmpty(normalized))

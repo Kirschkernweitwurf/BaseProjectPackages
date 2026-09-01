@@ -9,10 +9,10 @@ namespace Base.AttributePackage.Editor.Collections
     internal static class CollectionGui
     {
         /// <summary>Cancel label of the delete confirmation dialog.</summary>
-        public const string ConfirmCancel = "Cancel";
+        internal const string ConfirmCancel = "Cancel";
 
         /// <summary>Accept label of the delete confirmation dialog.</summary>
-        public const string ConfirmDelete = "Delete";
+        internal const string ConfirmDelete = "Delete";
 
         /// <summary>
         /// Removes an element, working around the two-step delete Unity does on object references.
@@ -24,7 +24,7 @@ namespace Base.AttributePackage.Editor.Collections
         /// </remarks>
         /// <param name="array">The array to remove from.</param>
         /// <param name="index">Index of the element to remove.</param>
-        public static void DeleteElement(SerializedProperty array, int index)
+        internal static void DeleteElement(SerializedProperty array, int index)
         {
             SerializedProperty element = array.GetArrayElementAtIndex(index);
 
@@ -43,7 +43,7 @@ namespace Base.AttributePackage.Editor.Collections
         /// <param name="label">What is being removed, shown in the dialog.</param>
         /// <param name="required">Whether a confirmation is wanted at all.</param>
         /// <returns>True when the removal should go ahead.</returns>
-        public static bool ConfirmRemoval(string label, bool required)
+        internal static bool ConfirmRemoval(string label, bool required)
         {
             if (!required)
                 return true;

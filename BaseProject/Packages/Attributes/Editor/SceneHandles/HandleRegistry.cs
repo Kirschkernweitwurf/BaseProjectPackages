@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Base.UtilityPackage;
 using UnityEditor;
 
 namespace Base.AttributePackage.Editor.SceneHandles
@@ -27,7 +28,7 @@ namespace Base.AttributePackage.Editor.SceneHandles
         /// <summary>Returns the handle bindings on the given field, empty when it carries none.</summary>
         /// <param name="field">The field to inspect.</param>
         /// <returns>The bindings, in attribute declaration order.</returns>
-        public static HandleBinding[] GetBindings(FieldInfo field)
+        internal static HandleBinding[] GetBindings(FieldInfo field)
         {
             if (Bindings.TryGetValue(field, out HandleBinding[] cached))
                 return cached;
@@ -55,7 +56,7 @@ namespace Base.AttributePackage.Editor.SceneHandles
         /// </summary>
         /// <param name="type">The type to inspect.</param>
         /// <returns>True when at least one handle attribute exists somewhere in the type.</returns>
-        public static bool HasAny(Type type)
+        internal static bool HasAny(Type type)
         {
             if (TypesWithHandles.TryGetValue(type, out bool cached))
                 return cached;

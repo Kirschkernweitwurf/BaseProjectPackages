@@ -48,6 +48,14 @@ Under `Editor/Theme`:
 | `EditorThemeAssetFactory` | Creates a theme asset and makes it active |
 | `EditorThemeInspector` | The inspector of a theme asset |
 
+## One namespace for the whole package
+
+Every type here declares `Base.EditorUiPackage`, including the ones under `Theme` and `Uss`. Same
+reason as the Attributes package: a window pulling in a palette, some metrics, a row helper and a
+style set should need one using line, not four. The folders are marked as non-namespace-providers
+(Rider: **folder > Properties > Namespace provider: off**), so a folder-to-namespace scan reporting
+these is reporting the convention.
+
 ## Theming
 
 A theme is a `ScriptableObject` in your project, so it can be version controlled, shared and switched. Which one is active is stored in `ProjectSettings/BaseEditorTheme.asset` by GUID, so the choice travels with the project rather than with the machine and survives the asset being renamed or moved.

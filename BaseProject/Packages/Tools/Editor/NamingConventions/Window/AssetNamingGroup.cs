@@ -10,10 +10,10 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
     internal sealed class AssetNamingGroup
     {
         /// <summary>Header of the group. Empty when the list is not grouped.</summary>
-        public string Key { get; }
+        internal string Key { get; }
 
         /// <summary>Violations inside this group.</summary>
-        public List<AssetNamingViolation> Violations { get; } = new();
+        internal List<AssetNamingViolation> Violations { get; } = new();
 
         /// <summary>Creates an empty group.</summary>
         public AssetNamingGroup(string key) => Key = key;

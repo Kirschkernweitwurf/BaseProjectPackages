@@ -73,7 +73,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         /// modifier nor the abstract keyword, so the usual declaration test never matches one.
         /// </param>
         /// <returns>The line number, or the type's own line when the member cannot be pinned down.</returns>
-        public static int Find(string[] lines, MemberNodeInfo member, string typeName, bool isInterface)
+        internal static int Find(string[] lines, MemberNodeInfo member, string typeName, bool isInterface)
         {
             if (lines == null || lines.Length == 0)
                 return FirstLine;
@@ -98,7 +98,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         /// <summary>Reads a script and splits it into lines.</summary>
         /// <param name="assetPath">Asset path of the script.</param>
         /// <returns>The lines, or an empty array.</returns>
-        public static string[] Split(string assetPath)
+        internal static string[] Split(string assetPath)
         {
             string source = ScriptSourceReader.Read(assetPath);
 

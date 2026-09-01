@@ -9,12 +9,12 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
     internal sealed class MenuUndoState
     {
         /// <summary>Copy of the shipped tree.</summary>
-        public List<MenuNode> Package;
+        internal List<MenuNode> Package;
 
         /// <summary>Copy of the project overlay tree.</summary>
-        public List<MenuNode> Overlay;
+        internal List<MenuNode> Overlay;
 
         /// <summary>Priority the automatic numbering starts at.</summary>
-        public int Start;
+        internal int Start;
     }
 }

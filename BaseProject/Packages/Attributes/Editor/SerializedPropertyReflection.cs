@@ -16,7 +16,7 @@ namespace Base.AttributePackage.Editor
         private const string DataPrefix = "data[";
 
         /// <summary>Returns the managed value of the given property, or null when it cannot resolve.</summary>
-        public static object GetValue(SerializedProperty property)
+        internal static object GetValue(SerializedProperty property)
         {
             object current = property.serializedObject.targetObject;
             string[] elements = property.propertyPath.Split('.');

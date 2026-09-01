@@ -15,10 +15,10 @@ namespace Base.ToolPackage.Editor.CommandPalette
         [SerializeField] private bool pinned;
 
         /// <summary>Id of the command this record belongs to.</summary>
-        public string Id => id;
+        internal string Id => id;
 
         /// <summary>Tags assigned by hand, always lowercase.</summary>
-        public IReadOnlyList<string> Tags => tags ?? NoTags;
+        internal IReadOnlyList<string> Tags => tags ?? NoTags;
 
         /// <summary>Whether the command is pinned to the top of the results.</summary>
         public bool Pinned
@@ -28,7 +28,7 @@ namespace Base.ToolPackage.Editor.CommandPalette
         }
 
         /// <summary>True when the record holds nothing worth saving anymore.</summary>
-        public bool IsEmpty => !pinned && Tags.Count == 0;
+        internal bool IsEmpty => !pinned && Tags.Count == 0;
 
         /// <summary>Required by serialization.</summary>
         public CommandTagRecord() { }
@@ -39,6 +39,6 @@ namespace Base.ToolPackage.Editor.CommandPalette
 
         /// <summary>Replaces the assigned tags.</summary>
         /// <param name="value">The new tags, already normalized.</param>
-        public void SetTags(string[] value) => tags = value;
+        internal void SetTags(string[] value) => tags = value;
     }
 }

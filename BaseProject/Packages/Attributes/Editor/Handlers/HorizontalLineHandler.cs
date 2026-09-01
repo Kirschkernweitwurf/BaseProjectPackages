@@ -3,7 +3,7 @@ using Base.AttributePackage.Editor.Core.Interfaces;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Drawers
+namespace Base.AttributePackage.Editor.Handlers
 {
     /// <summary>Draws the separator line for <see cref="HorizontalLineAttribute"/>.</summary>
     internal sealed class HorizontalLineHandler : IBeforeFieldHandler
@@ -15,6 +15,7 @@ namespace Base.AttributePackage.Editor.Drawers
         public void BeforeField(in MemberContext context)
         {
             HorizontalLineAttribute attribute = context.GetAttribute<HorizontalLineAttribute>();
+
             if (attribute == null)
                 return;
 

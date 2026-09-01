@@ -4,16 +4,16 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot
     internal readonly struct AttributeIssue
     {
         /// <summary>Name of the field or method carrying the attribute.</summary>
-        public readonly string MemberName;
+        internal readonly string MemberName;
 
         /// <summary>Display name of the attribute, without the "Attribute" suffix.</summary>
-        public readonly string AttributeName;
+        internal readonly string AttributeName;
 
         /// <summary>What is wrong and what the attribute does instead.</summary>
-        public readonly string Message;
+        internal readonly string Message;
 
         /// <summary>How badly the attribute behaves.</summary>
-        public readonly EAttributeIssueSeverity Severity;
+        internal readonly EAttributeIssueSeverity Severity;
 
         /// <summary>Creates an issue record.</summary>
         /// <param name="memberName">Name of the member carrying the attribute.</param>

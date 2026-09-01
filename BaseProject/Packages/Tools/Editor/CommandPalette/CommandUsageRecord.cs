@@ -12,13 +12,13 @@ namespace Base.ToolPackage.Editor.CommandPalette
         [SerializeField] private long lastUsedTicks;
 
         /// <summary>Id of the command this record belongs to.</summary>
-        public string Id => id;
+        internal string Id => id;
 
         /// <summary>How often the command was run.</summary>
-        public int Count => count;
+        internal int Count => count;
 
         /// <summary>UTC tick count of the last run.</summary>
-        public long LastUsedTicks => lastUsedTicks;
+        internal long LastUsedTicks => lastUsedTicks;
 
         /// <summary>Required by serialization.</summary>
         public CommandUsageRecord() { }
@@ -29,7 +29,7 @@ namespace Base.ToolPackage.Editor.CommandPalette
 
         /// <summary>Counts one more run at the given moment.</summary>
         /// <param name="ticks">UTC tick count of the run.</param>
-        public void Register(long ticks)
+        internal void Register(long ticks)
         {
             count++;
             lastUsedTicks = ticks;

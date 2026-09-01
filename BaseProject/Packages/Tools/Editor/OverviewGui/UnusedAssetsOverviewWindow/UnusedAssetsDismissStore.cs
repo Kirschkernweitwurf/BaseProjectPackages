@@ -14,17 +14,17 @@ namespace Base.ToolPackage.Editor.OverviewGui.UnusedAssetsOverviewWindow
     {
         private const string FilePath = "ProjectSettings/UnusedAssetsDismissed.json";
 
-        public static int Count => Guids.Count;
+        internal static int Count => Guids.Count;
 
         private static HashSet<string> Guids => _guids ??= Load();
 
         private static HashSet<string> _guids;
 
         /// <summary>True when the entry was dismissed.</summary>
-        public static bool IsDismissed(string guid) => !string.IsNullOrEmpty(guid) && Guids.Contains(guid);
+        internal static bool IsDismissed(string guid) => !string.IsNullOrEmpty(guid) && Guids.Contains(guid);
 
         /// <summary>Excludes the entry from future scans.</summary>
-        public static void Dismiss(string guid)
+        internal static void Dismiss(string guid)
         {
             if (string.IsNullOrEmpty(guid))
                 return;
@@ -34,7 +34,7 @@ namespace Base.ToolPackage.Editor.OverviewGui.UnusedAssetsOverviewWindow
         }
 
         /// <summary>Excludes every given entry from future scans in one write.</summary>
-        public static void DismissRange(IEnumerable<string> guids)
+        internal static void DismissRange(IEnumerable<string> guids)
         {
             bool changed = false;
 
@@ -49,7 +49,7 @@ namespace Base.ToolPackage.Editor.OverviewGui.UnusedAssetsOverviewWindow
         }
 
         /// <summary>Brings the entry back into future scans.</summary>
-        public static void Restore(string guid)
+        internal static void Restore(string guid)
         {
             if (string.IsNullOrEmpty(guid))
                 return;
@@ -59,7 +59,7 @@ namespace Base.ToolPackage.Editor.OverviewGui.UnusedAssetsOverviewWindow
         }
 
         /// <summary>Clears every dismissal.</summary>
-        public static void Clear()
+        internal static void Clear()
         {
             if (Guids.Count == 0)
                 return;
@@ -69,7 +69,7 @@ namespace Base.ToolPackage.Editor.OverviewGui.UnusedAssetsOverviewWindow
         }
 
         /// <summary>Snapshot of the dismissed GUIDs, safe to iterate while dismissing or restoring.</summary>
-        public static IReadOnlyList<string> GetAll() => Guids.ToList();
+        internal static IReadOnlyList<string> GetAll() => Guids.ToList();
 
         private static HashSet<string> Load()
         {

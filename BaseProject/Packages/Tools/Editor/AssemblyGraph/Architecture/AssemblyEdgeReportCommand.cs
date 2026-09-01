@@ -24,7 +24,7 @@ namespace Base.ToolPackage.Editor.AssemblyGraph.Architecture
 
         /// <summary>Builds the report from an existing scan and asks where to put it.</summary>
         /// <param name="graph">The scan to roll up. Nothing is written when it is null.</param>
-        public static void Export(CodebaseGraphData graph)
+        internal static void Export(CodebaseGraphData graph)
         {
             if (graph == null)
                 return;

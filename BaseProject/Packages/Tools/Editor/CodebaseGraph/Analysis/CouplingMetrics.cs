@@ -36,7 +36,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         /// </summary>
         /// <param name="type">Type to test.</param>
         /// <returns>True when the type looks overloaded.</returns>
-        public static bool IsGodClass(TypeNodeInfo type)
+        internal static bool IsGodClass(TypeNodeInfo type)
         {
             if (IsExempt(type))
                 return false;
@@ -65,7 +65,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         /// </summary>
         /// <param name="type">Type to test.</param>
         /// <returns>True when the type is hard to change safely.</returns>
-        public static bool IsHardToChange(TypeNodeInfo type)
+        internal static bool IsHardToChange(TypeNodeInfo type)
         {
             if (IsExempt(type) || IsMeantToBeDependedOn(type))
                 return false;

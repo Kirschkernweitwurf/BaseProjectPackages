@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Base.EditorUiPackage;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -10,8 +11,6 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
     internal static class RequiredReferenceView
     {
         private const float AccentWidth = 3f;
-        private const float BadgeInset = 4f;
-        private const float BadgePadding = 6f;
         private const float BadgeReserve = 60f;
         private const float GroupSpacing = 8f;
         private const float HeaderHeight = 24f;
@@ -24,10 +23,13 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
         private const float SuccessGap = 8f;
         private const float SuccessIconSize = 48f;
 
-        private static GUIContent _successContent;
+        // Reused rather than cached with its texture: a GUIContent built once holds the icon it was
+        // given forever, which defeats the fake-null check EditorIcons does on every access. The
+        // image is re-read each draw instead, so a destroyed icon is replaced rather than drawn blank.
+        private static readonly GUIContent SuccessContent = new();
 
         /// <summary>Draws every group filtered by search. Returns the clicked owner, or null.</summary>
-        public static Object DrawGroups(List<RequiredReferenceGroup> groups,
+        internal static Object DrawGroups(List<RequiredReferenceGroup> groups,
             string search,
             RequiredReferenceStyles styles,
             out bool anyShown)
@@ -60,15 +62,16 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
         }
 
         /// <summary>Draws the rewarding success state shown when nothing is missing.</summary>
-        public static void DrawSuccess(RequiredReferenceStyles styles)
+        internal static void DrawSuccess(RequiredReferenceStyles styles)
         {
             GUILayout.FlexibleSpace();
 
             EditorGUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();
 
-            _successContent ??= new GUIContent(RequiredReferenceStyles.SuccessTexture);
-            GUILayout.Label(_successContent,
+            SuccessContent.image = RequiredReferenceStyles.SuccessTexture;
+
+            GUILayout.Label(SuccessContent,
                 GUILayout.Width(SuccessIconSize),
                 GUILayout.Height(SuccessIconSize));
 
@@ -125,16 +128,11 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
             RequiredReferenceStyles styles)
         {
             string text = count.ToString();
-            float width = styles.Badge.CalcSize(ScratchContent.For(text)).x + BadgePadding * 2f;
+            float width = EditorRows.MeasureBadge(text, styles.Badge);
 
-            Rect badge = new(header.xMax - width - LeftPadding,
-                header.y + BadgeInset,
-                width,
-                header.height - BadgeInset * 2f);
+            Rect cell = new(header.xMax - width - LeftPadding, header.y, width, header.height);
 
-            EditorGUI.DrawRect(badge, RequiredReferenceStyles.Accent);
-
-            GUI.Label(badge, text, styles.Badge);
+            EditorRows.DrawBadge(cell, text, RequiredReferenceStyles.Accent, styles.Badge);
         }
 
         private static Object DrawRow(Object owner,

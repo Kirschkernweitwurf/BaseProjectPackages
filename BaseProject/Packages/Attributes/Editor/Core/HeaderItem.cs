@@ -6,19 +6,19 @@ namespace Base.AttributePackage.Editor.Core
     internal readonly struct HeaderItem
     {
         /// <summary>The member the control was declared on.</summary>
-        public readonly MemberInfo Member;
+        internal readonly MemberInfo Member;
 
         /// <summary>What the control does.</summary>
-        public readonly EHeaderItemKind Kind;
+        internal readonly EHeaderItemKind Kind;
 
         /// <summary>The button settings, or null for the other kinds.</summary>
-        public readonly HeaderButtonAttribute Button;
+        internal readonly HeaderButtonAttribute Button;
 
         /// <summary>The resolved label, used by buttons only.</summary>
-        public readonly string Label;
+        internal readonly string Label;
 
         /// <summary>Width the control takes in the header.</summary>
-        public readonly float Width;
+        internal readonly float Width;
 
         /// <summary>Creates a header item.</summary>
         /// <param name="member">The member the control was declared on.</param>

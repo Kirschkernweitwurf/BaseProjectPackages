@@ -6,43 +6,43 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Model
     internal sealed class NamespaceNodeInfo
     {
         /// <summary>Full namespace name, or "(global)" when the types have no namespace.</summary>
-        public string Name { get; }
+        internal string Name { get; }
 
         /// <summary>Types declared in this namespace.</summary>
-        public List<TypeNodeInfo> Types { get; }
+        internal List<TypeNodeInfo> Types { get; }
 
         /// <summary>Namespaces this one depends on, with how many type level usages back that up.</summary>
-        public Dictionary<string, int> Outgoing { get; }
+        internal Dictionary<string, int> Outgoing { get; }
 
         /// <summary>Namespaces that depend on this one.</summary>
-        public Dictionary<string, int> Incoming { get; }
+        internal Dictionary<string, int> Incoming { get; }
 
         /// <summary>Names of the other namespaces in the same dependency cycle, if any.</summary>
-        public List<string> CyclePartners { get; }
+        internal List<string> CyclePartners { get; }
 
         /// <summary>Identifies the cycle this namespace belongs to, shared by every one in the loop.</summary>
-        public string CycleId { get; set; }
+        internal string CycleId { get; set; }
 
         /// <summary>The edges that close the loop, written out so the cycle can be checked by reading.</summary>
-        public string CycleDescription { get; set; }
+        internal string CycleDescription { get; set; }
 
         /// <summary>How many namespaces are tangled together around this loop.</summary>
-        public int CycleComponentSize { get; set; }
+        internal int CycleComponentSize { get; set; }
 
         /// <summary>The edge in the loop held together by the fewest usages, offered as a hint.</summary>
-        public string CycleCutHint { get; set; }
+        internal string CycleCutHint { get; set; }
 
         /// <summary>Stable id used for dismissals, built once so lookups allocate nothing.</summary>
-        public string DismissalId { get; set; }
+        internal string DismissalId { get; set; }
 
         /// <summary>True when something reported here was not reported by the previous scan.</summary>
-        public bool HasNewFindings { get; set; }
+        internal bool HasNewFindings { get; set; }
 
         /// <summary>Number of namespaces that depend on this one.</summary>
-        public int FanIn => Incoming.Count;
+        internal int FanIn => Incoming.Count;
 
         /// <summary>Number of namespaces this one depends on.</summary>
-        public int FanOut => Outgoing.Count;
+        internal int FanOut => Outgoing.Count;
 
         /// <summary>Creates an empty namespace node.</summary>
         /// <param name="name">Full namespace name.</param>
@@ -57,7 +57,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Model
 
         /// <summary>Adds one type level usage to the namespace level relation.</summary>
         /// <param name="target">Namespace that is being used.</param>
-        public void AddOutgoing(string target)
+        internal void AddOutgoing(string target)
         {
             Outgoing.TryGetValue(target, out int count);
             Outgoing[target] = count + 1;
@@ -65,7 +65,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Model
 
         /// <summary>Records that another namespace uses this one.</summary>
         /// <param name="source">Namespace that uses this one.</param>
-        public void AddIncoming(string source)
+        internal void AddIncoming(string source)
         {
             Incoming.TryGetValue(source, out int count);
             Incoming[source] = count + 1;

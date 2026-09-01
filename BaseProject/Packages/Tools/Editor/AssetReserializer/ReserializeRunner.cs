@@ -30,7 +30,7 @@ namespace Base.ToolPackage.Editor.AssetReserializer
         /// </param>
         /// <param name="kinds">Which asset kinds to include.</param>
         /// <returns>The matching asset paths, sorted and free of duplicates.</returns>
-        public static IReadOnlyList<string> CollectPaths(IReadOnlyList<string> folderPaths,
+        internal static IReadOnlyList<string> CollectPaths(IReadOnlyList<string> folderPaths,
             EReserializeAssetKinds kinds)
         {
             if (kinds == EReserializeAssetKinds.None)
@@ -54,7 +54,7 @@ namespace Base.ToolPackage.Editor.AssetReserializer
         /// </summary>
         /// <param name="assetPaths">The asset paths to rewrite.</param>
         /// <returns>How many assets were handed to the asset database.</returns>
-        public static int Run(IReadOnlyList<string> assetPaths)
+        internal static int Run(IReadOnlyList<string> assetPaths)
         {
             if (assetPaths == null
                 || assetPaths.Count == 0)

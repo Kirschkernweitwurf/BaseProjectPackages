@@ -120,7 +120,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         /// </summary>
         /// <param name="root">Element to style.</param>
         /// <returns>False when the window's own sheet is missing, so the caller can report it.</returns>
-        public static bool Apply(VisualElement root)
+        internal static bool Apply(VisualElement root)
         {
             if (root == null)
                 return false;

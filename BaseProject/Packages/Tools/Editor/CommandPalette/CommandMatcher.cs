@@ -31,7 +31,7 @@ namespace Base.ToolPackage.Editor.CommandPalette
         /// <param name="matches">Receives the index of every matched character.</param>
         /// <param name="score">The resulting score, higher is better.</param>
         /// <returns><c>true</c> when the term matches the entry.</returns>
-        public static bool TryMatch(CommandEntry entry, string term, List<int> matches, out int score)
+        internal static bool TryMatch(CommandEntry entry, string term, List<int> matches, out int score)
         {
             matches.Clear();
             score = 0;

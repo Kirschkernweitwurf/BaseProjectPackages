@@ -33,13 +33,13 @@ namespace Base.CorePackage.Audio.Pool
         /// Retrieves an AudioSource from the pool.
         /// </summary>
         /// <returns>An available AudioSource.</returns>
-        public AudioSource Get() => _pool.Get();
+        internal AudioSource Get() => _pool.Get();
 
         /// <summary>
         /// Returns an AudioSource to the pool.
         /// </summary>
         /// <param name="source">The AudioSource to release.</param>
-        public void Release(AudioSource source)
+        internal void Release(AudioSource source)
         {
             if (source == null)
             {
@@ -55,7 +55,7 @@ namespace Base.CorePackage.Audio.Pool
         /// <summary>
         /// Releases every active instance back into the pool.
         /// </summary>
-        public void ReleaseAll() => _pool.ReleaseAll();
+        internal void ReleaseAll() => _pool.ReleaseAll();
 
         /// <summary>
         /// Stops an AudioSource before it goes back into the pool.

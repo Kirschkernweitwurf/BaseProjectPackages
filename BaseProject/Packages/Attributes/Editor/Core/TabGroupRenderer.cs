@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Base.AttributePackage.Editor.Drawers;
+using Base.EditorUiPackage;
 using UnityEditor;
 using UnityEngine;
 
@@ -23,28 +24,47 @@ namespace Base.AttributePackage.Editor.Core
         private const string TabKeyPrefix = "TAB";
         private const float ViewPadding = 24f;
 
-        private static GUIStyle FoldoutStyle => _foldoutStyle ??= new GUIStyle(EditorStyles.foldout)
+        private static GUIStyle FoldoutStyle
         {
-            fontStyle = FontStyle.Bold
-        };
+            get
+            {
+                EnsureFresh();
+
+                return _foldoutStyle ??= new GUIStyle(EditorStyles.foldout)
+                {
+                    fontStyle = FontStyle.Bold
+                };
+            }
+        }
 
         // A copy of the box style with no top padding, so the bar sits flush against the top edge of
         // the block. The original is shared by every help box in the editor and must not be edited in
         // place.
         // No padding and no side margins, so the block is exactly as wide as the bar above it. Anything
         // the style adds on one side would show as the block reaching past the bar it belongs to.
-        private static GUIStyle ContentStyle => _contentStyle ??= new GUIStyle(EditorStyles.helpBox)
+        private static GUIStyle ContentStyle
         {
-            padding = new RectOffset(0, 0, 0, 0),
+            get
+            {
+                EnsureFresh();
 
-            // No margins either. A margin on one side only would inset the block without inseting the
-            // bar that fills it, and the two would stop being the same width.
-            margin = new RectOffset(0, 0, 0, EditorStyles.helpBox.margin.bottom),
+                return _contentStyle ??= new GUIStyle(EditorStyles.helpBox)
+                {
+                    padding = new RectOffset(0, 0, 0, 0),
 
-            // The help box style paints its background beyond its own rect, which is fine for a box that
-            // stands alone and is exactly what made this one bleed past the fields beside it.
-            overflow = new RectOffset(0, 0, 0, 0)
-        };
+                    // No margins either. A margin on one side only would inset the block without
+                    // inseting the bar that fills it, and the two would stop being the same width.
+                    margin = new RectOffset(0, 0, 0, EditorStyles.helpBox.margin.bottom),
+
+                    // The help box style paints its background beyond its own rect, which is fine for a
+                    // box that stands alone and is exactly what made this one bleed past the fields
+                    // beside it.
+                    overflow = new RectOffset(0, 0, 0, 0)
+                };
+            }
+        }
+
+        private static readonly EditorStyleWatch Watch = new();
 
         private static GUIStyle _contentStyle;
         private static GUIStyle _foldoutStyle;
@@ -57,7 +77,7 @@ namespace Base.AttributePackage.Editor.Core
         /// <param name="startIndex">Index of the first member of the group.</param>
         /// <param name="editor">The editor drawing the group.</param>
         /// <returns>The index of the first member after the group.</returns>
-        public static int Draw(List<SerializedProperty> properties, int startIndex, UnityEditor.Editor editor)
+        internal static int Draw(List<SerializedProperty> properties, int startIndex, UnityEditor.Editor editor)
         {
             Type type = editor.target.GetType();
             TabAttribute first = AttributeAt(properties, startIndex, type);
@@ -142,7 +162,7 @@ namespace Base.AttributePackage.Editor.Core
         /// <param name="startIndex">Index of the first member of the group.</param>
         /// <param name="type">The inspected type.</param>
         /// <returns>The index of the first member after the group.</returns>
-        public static int Skip(List<SerializedProperty> properties, int startIndex, Type type)
+        internal static int Skip(List<SerializedProperty> properties, int startIndex, Type type)
         {
             string group = AttributeAt(properties, startIndex, type).Group;
             int index = startIndex;
@@ -214,5 +234,19 @@ namespace Base.AttributePackage.Editor.Core
         // The block has no padding, so that is the view less the indent and the scrollbar.
         private static float AvailableWidth()
             => EditorGUIUtility.currentViewWidth - EditorGUI.indentLevel * IndentStep - ViewPadding;
+
+        // A GUIStyle copies its colors out of EditorStyles when it is built and does not stay
+        // linked to them, so a cached one keeps the previous theme's colors after a switch.
+        // Dropping it here has the next access rebuild it against the theme actually in use.
+        private static void EnsureFresh()
+        {
+            if (!Watch.IsStale)
+                return;
+
+            _contentStyle = null;
+            _foldoutStyle = null;
+
+            Watch.MarkFresh();
+        }
     }
 }

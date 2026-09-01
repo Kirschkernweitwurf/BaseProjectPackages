@@ -19,34 +19,34 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
         private const int TitleFontSize = 15;
 
         /// <summary>Subtle background behind a group header.</summary>
-        public static Color Header => EditorPalette.Tint(HeaderStrength);
+        internal static Color Header => EditorPalette.Tint(HeaderStrength);
 
         /// <summary>Red alert icon shown per missing reference.</summary>
-        public static Texture ErrorTexture => EditorIcons.Error;
+        internal static Texture ErrorTexture => EditorIcons.Error;
 
         /// <summary>Green success icon shown in the empty state.</summary>
-        public static Texture SuccessTexture => EditorIcons.Success;
+        internal static Texture SuccessTexture => EditorIcons.Success;
 
         /// <summary>Default object icon for a group header.</summary>
-        public static Texture ObjectTexture => EditorIcons.GameObject;
+        internal static Texture ObjectTexture => EditorIcons.GameObject;
 
         /// <summary>Accent used for problems.</summary>
-        public static Color Accent => EditorPalette.Danger;
+        internal static Color Accent => EditorPalette.Danger;
 
         /// <summary>Bold label for the object name in a group header.</summary>
-        public GUIStyle Name { get; private set; }
+        internal GUIStyle Name { get; private set; }
 
         /// <summary>Label for a single missing-reference path.</summary>
-        public GUIStyle Path { get; private set; }
+        internal GUIStyle Path { get; private set; }
 
         /// <summary>Centered white label used inside the count badge.</summary>
-        public GUIStyle Badge { get; private set; }
+        internal GUIStyle Badge { get; private set; }
 
         /// <summary>Large green title shown when everything is assigned.</summary>
-        public GUIStyle SuccessTitle { get; private set; }
+        internal GUIStyle SuccessTitle { get; private set; }
 
         /// <summary>Muted subtitle shown under the success title.</summary>
-        public GUIStyle SuccessSubtitle { get; private set; }
+        internal GUIStyle SuccessSubtitle { get; private set; }
 
         /// <inheritdoc/>
         protected override void Build()

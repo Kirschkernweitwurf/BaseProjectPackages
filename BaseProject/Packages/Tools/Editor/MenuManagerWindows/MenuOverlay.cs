@@ -27,19 +27,19 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         private int schemaVersion;
 
         /// <summary>Whether the shipped, read only section is collapsed in the window.</summary>
-        public bool ShippedCollapsed
+        internal bool ShippedCollapsed
         {
             get => shippedCollapsed;
             set => shippedCollapsed = value;
         }
 
         /// <summary>Returns the top level node list for the given kind.</summary>
-        public List<MenuNode> RootFor(EMenuEntryKind kind) => kind == EMenuEntryKind.CreateAsset
+        internal List<MenuNode> RootFor(EMenuEntryKind kind) => kind == EMenuEntryKind.CreateAsset
             ? createAssetRoot
             : menuItemRoot;
 
         /// <summary>Drops unreadable nodes and rebuilds separator flags from retired data.</summary>
-        public void Migrate()
+        internal void Migrate()
         {
             bool dropped = MenuTree.PruneNulls(menuItemRoot);
             dropped |= MenuTree.PruneNulls(createAssetRoot);
@@ -63,6 +63,6 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         }
 
         /// <summary>Writes the overlay to disk.</summary>
-        public void Persist() => Save(true);
+        internal void Persist() => Save(true);
     }
 }

@@ -11,16 +11,16 @@ namespace Base.ToolPackage.Editor.CommandPalette
     internal readonly struct CommandFilter
     {
         /// <summary>Marks a token that narrows the result to asset creation entries.</summary>
-        public const char CreateAssetMarker = '+';
+        internal const char CreateAssetMarker = '+';
 
         /// <summary>Marks a token that narrows the result to menu items.</summary>
-        public const char MenuItemMarker = '>';
+        internal const char MenuItemMarker = '>';
 
         /// <summary>Marks a token that narrows the result to settings pages.</summary>
-        public const char SettingsMarker = '@';
+        internal const char SettingsMarker = '@';
 
         /// <summary>Marks a token that narrows the result to a tag.</summary>
-        public const char TagMarker = '#';
+        internal const char TagMarker = '#';
 
         private const char TokenSeparator = ' ';
 
@@ -32,13 +32,13 @@ namespace Base.ToolPackage.Editor.CommandPalette
         };
 
         /// <summary>Lowercase search term with every space removed.</summary>
-        public string Term { get; }
+        internal string Term { get; }
 
         /// <summary>Lowercase tags every result has to carry.</summary>
-        public IReadOnlyList<string> Tags { get; }
+        internal IReadOnlyList<string> Tags { get; }
 
         /// <summary>Kind every result has to be, or null when both are allowed.</summary>
-        public ECommandKind? Kind { get; }
+        internal ECommandKind? Kind { get; }
 
         private CommandFilter(string term, IReadOnlyList<string> tags, ECommandKind? kind)
         {
@@ -50,7 +50,7 @@ namespace Base.ToolPackage.Editor.CommandPalette
         /// <summary>Parses the raw search box content.</summary>
         /// <param name="raw">The text the user typed.</param>
         /// <returns>The filter the query layer works with.</returns>
-        public static CommandFilter Parse(string raw)
+        internal static CommandFilter Parse(string raw)
         {
             if (string.IsNullOrWhiteSpace(raw))
                 return new CommandFilter(string.Empty, NoTags, null);

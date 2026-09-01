@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Base.ToolPackage.Editor.CodebaseGraph.Model;
+using Base.UtilityPackage;
 using UnityEditor;
 
 namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
@@ -20,7 +21,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         private const string UnityEventReason = "Called by a UnityEvent wired in the inspector";
 
         /// <summary>True when nothing in the graph could be answered for by an asset.</summary>
-        public bool IsEmpty => _anyField.Count == 0 && _anyMethod.Count == 0 && _byFullName.Count == 0;
+        internal bool IsEmpty => _anyField.Count == 0 && _anyMethod.Count == 0 && _byFullName.Count == 0;
 
         private readonly Dictionary<string, TypeNodeInfo> _byFullName = new(StringComparer.Ordinal);
         private readonly Dictionary<string, TypeNodeInfo> _byGuid = new(StringComparer.Ordinal);
@@ -34,7 +35,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         /// <summary>Gathers everything the assets might have something to say about.</summary>
         /// <param name="graph">Graph to read from and later annotate.</param>
         /// <returns>The prepared context.</returns>
-        public static AssetScanContext Build(CodebaseGraphData graph)
+        internal static AssetScanContext Build(CodebaseGraphData graph)
         {
             AssetScanContext context = new()
             {
@@ -53,7 +54,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         /// <summary>Finds the type a script guid points at, remembering the answer.</summary>
         /// <param name="guid">Guid read out of an m_Script reference.</param>
         /// <returns>The type, or null when the script cannot be resolved.</returns>
-        public TypeNodeInfo ResolveByGuid(string guid)
+        internal TypeNodeInfo ResolveByGuid(string guid)
         {
             if (_byGuid.TryGetValue(guid, out TypeNodeInfo cached))
                 return cached;
@@ -72,7 +73,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         /// </summary>
         /// <param name="owner">Type the document belongs to, or null when it could not be resolved.</param>
         /// <param name="key">Serialized key read from the document.</param>
-        public void CreditField(TypeNodeInfo owner, string key)
+        internal void CreditField(TypeNodeInfo owner, string key)
         {
             for (TypeNodeInfo current = owner; current != null; current = ReadBaseType(current))
             {
@@ -103,7 +104,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         /// <summary>Marks a method named by an inspector wired UnityEvent as reachable.</summary>
         /// <param name="typeName">Namespace qualified name of the target type.</param>
         /// <param name="methodName">Method the event calls.</param>
-        public void MarkEventTarget(string typeName, string methodName)
+        internal void MarkEventTarget(string typeName, string methodName)
         {
             if (_byFullName.TryGetValue(typeName, out TypeNodeInfo type))
             {
@@ -119,11 +120,11 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         /// never the type, so this can only be matched by name across the project.
         /// </summary>
         /// <param name="methodName">Method the clip calls.</param>
-        public void MarkAnimationEvent(string methodName) => MarkAnywhere(methodName, AnimationEventReason, true);
+        internal void MarkAnimationEvent(string methodName) => MarkAnywhere(methodName, AnimationEventReason, true);
 
         /// <summary>Marks a type stored by SerializeReference as reachable.</summary>
         /// <param name="typeName">Namespace qualified name read from the reference entry.</param>
-        public void MarkReferenceType(string typeName)
+        internal void MarkReferenceType(string typeName)
         {
             if (!_byFullName.TryGetValue(typeName, out TypeNodeInfo type))
                 return;
@@ -201,7 +202,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
             if (type == null)
                 return null;
 
-            return _byFullName.GetValueOrDefault(TypeNameFormatter.FormatFullName(type));
+            return _byFullName.GetValueOrDefault(TypeNameUtility.FormatFullName(type));
         }
 
         private void CollectCandidates(TypeNodeInfo type)

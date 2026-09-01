@@ -4,19 +4,19 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Model
     internal sealed class GraphMemberRow
     {
         /// <summary>Single letter standing for the kind of member.</summary>
-        public string Glyph { get; }
+        internal string Glyph { get; }
 
         /// <summary>Member name with its type, as it would be read in source.</summary>
-        public string Label { get; }
+        internal string Label { get; }
 
         /// <summary>Declared visibility, which sets the row color.</summary>
-        public EAccessLevel Access { get; }
+        internal EAccessLevel Access { get; }
 
         /// <summary>True when the analyzer reported something that is still showing.</summary>
-        public bool HasFinding { get; }
+        internal bool HasFinding { get; }
 
         /// <summary>True when something was reported and then reviewed and dismissed.</summary>
-        public bool IsDismissed { get; }
+        internal bool IsDismissed { get; }
 
         /// <summary>Creates a member row.</summary>
         /// <param name="glyph">Single letter standing for the kind.</param>

@@ -13,7 +13,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         /// <param name="member">Member to test.</param>
         /// <param name="declaring">Type the member is declared on.</param>
         /// <returns>True when nothing here using it proves nothing.</returns>
-        public static bool IsSurface(MemberNodeInfo member, TypeNodeInfo declaring)
+        internal static bool IsSurface(MemberNodeInfo member, TypeNodeInfo declaring)
         {
             if (declaring == null || !declaring.IsPackageAssembly)
                 return false;
@@ -38,6 +38,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         /// <summary>True when the type itself is part of the published surface.</summary>
         /// <param name="type">Type to test.</param>
         /// <returns>True when nothing here using it proves nothing.</returns>
-        public static bool IsSurface(TypeNodeInfo type) => type.IsPackageAssembly && type.Access == EAccessLevel.Public;
+        internal static bool IsSurface(TypeNodeInfo type) => type.IsPackageAssembly
+            && type.Access == EAccessLevel.Public;
     }
 }

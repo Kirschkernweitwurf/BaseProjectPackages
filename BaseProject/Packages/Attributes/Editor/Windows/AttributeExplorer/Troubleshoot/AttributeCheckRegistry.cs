@@ -11,7 +11,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot
     internal static class AttributeCheckRegistry
     {
         /// <summary>All discovered checks.</summary>
-        public static IAttributeCheck[] Checks => _checks ??= Create();
+        internal static IAttributeCheck[] Checks => _checks ??= Create();
 
         private static IAttributeCheck[] _checks;
 

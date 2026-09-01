@@ -19,7 +19,7 @@ namespace Base.ToolPackage.Editor.CommandPalette
         /// <summary>Draws the key hints and a status message.</summary>
         /// <param name="row">The footer row.</param>
         /// <param name="message">Right aligned status, usually the result count.</param>
-        public static void Draw(Rect row, string message)
+        internal static void Draw(Rect row, string message)
         {
             float x = row.x;
 
@@ -32,6 +32,6 @@ namespace Base.ToolPackage.Editor.CommandPalette
         /// <summary>Draws a single line of text instead of the key hints.</summary>
         /// <param name="row">The footer row.</param>
         /// <param name="text">The text to show.</param>
-        public static void DrawText(Rect row, string text) => GUI.Label(row, text, CommandPaletteStyles.HintLabel);
+        internal static void DrawText(Rect row, string text) => GUI.Label(row, text, CommandPaletteStyles.HintLabel);
     }
 }

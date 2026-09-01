@@ -58,7 +58,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         /// for.
         /// </param>
         /// <returns>The finished graph, or null when the scan was canceled.</returns>
-        public static CodebaseGraphData Build(Func<float, string, bool> onProgress,
+        internal static CodebaseGraphData Build(Func<float, string, bool> onProgress,
             bool includeExcludedScopes = false)
         {
             Stopwatch stopwatch = Stopwatch.StartNew();

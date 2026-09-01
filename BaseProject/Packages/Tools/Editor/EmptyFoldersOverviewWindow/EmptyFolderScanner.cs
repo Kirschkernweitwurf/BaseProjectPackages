@@ -16,7 +16,7 @@ namespace Base.ToolPackage.Editor.EmptyFoldersOverviewWindow
     {
         private const string RootFolder = "Assets";
 
-        public static List<EmptyFolderEntry> Scan()
+        internal static List<EmptyFolderEntry> Scan()
         {
             List<string> allFolders = new();
             CollectFolders(RootFolder, allFolders);

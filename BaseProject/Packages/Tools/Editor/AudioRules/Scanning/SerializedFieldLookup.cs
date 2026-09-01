@@ -16,7 +16,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Scanning
         /// <param name="source">The serialized object to search.</param>
         /// <param name="fieldName">The name the field has in code.</param>
         /// <returns>The property, or null when the object has no such field.</returns>
-        public static SerializedProperty Find(SerializedObject source, string fieldName)
+        internal static SerializedProperty Find(SerializedObject source, string fieldName)
         {
             if (string.IsNullOrWhiteSpace(fieldName))
                 return null;

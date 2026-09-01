@@ -13,15 +13,15 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         private readonly Dictionary<Type, MonoScript> _cache = new();
 
         /// <summary>Returns the project relative path of a script, or null when there is none.</summary>
-        public static string PathOf(MonoScript script) => script == null
+        internal static string PathOf(MonoScript script) => script == null
             ? null
             : AssetDatabase.GetAssetPath(script);
 
         /// <summary>Drops every cached lookup so the next resolve hits the asset database again.</summary>
-        public void Clear() => _cache.Clear();
+        internal void Clear() => _cache.Clear();
 
         /// <summary>Returns the script that declares the type, or null when it cannot be found.</summary>
-        public MonoScript Resolve(Type type)
+        internal MonoScript Resolve(Type type)
         {
             if (type == null)
                 return null;

@@ -14,6 +14,6 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot.Sa
         public string DisplayName => nameof(SampleDashAbility);
 
         /// <summary>How far the dash travels.</summary>
-        public float Distance => distance;
+        internal float Distance => distance;
     }
 }

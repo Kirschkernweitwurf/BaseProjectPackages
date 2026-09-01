@@ -10,7 +10,7 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
     internal static class RequiredReferenceCollector
     {
         /// <summary>Returns one group per scene object with issues. Scene objects group by GameObject.</summary>
-        public static List<RequiredReferenceGroup> CollectScene(out int total)
+        internal static List<RequiredReferenceGroup> CollectScene(out int total)
         {
             MonoBehaviour[] behaviors =
                 Object.FindObjectsByType<MonoBehaviour>(FindObjectsInactive.Include, FindObjectsSortMode.None);
@@ -19,7 +19,7 @@ namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
         }
 
         /// <summary>Returns one group per ScriptableObject asset with issues.</summary>
-        public static List<RequiredReferenceGroup> CollectAssets(out int total)
+        internal static List<RequiredReferenceGroup> CollectAssets(out int total)
         {
             List<ScriptableObject> assets = new(ScriptableObjectAssets.LoadAll());
             return Collect(assets, ResolveAssetOwner, out total);

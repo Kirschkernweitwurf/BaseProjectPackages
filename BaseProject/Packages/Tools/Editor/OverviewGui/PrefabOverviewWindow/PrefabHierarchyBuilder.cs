@@ -16,7 +16,7 @@ namespace Base.ToolPackage.Editor.OverviewGui.PrefabOverviewWindow
         /// <param name="entries">All entries returned by the scanner.</param>
         /// <param name="overridesAnalyzed">True when the scan counted overrides, which enables more checks.</param>
         /// <returns>The prefabs that start a variant chain, sorted by name.</returns>
-        public static List<PrefabEntry> Build(List<PrefabEntry> entries, bool overridesAnalyzed)
+        internal static List<PrefabEntry> Build(List<PrefabEntry> entries, bool overridesAnalyzed)
         {
             Dictionary<string, PrefabEntry> byGuid = new();
 

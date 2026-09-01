@@ -34,7 +34,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Scanning
         /// <param name="platform">The import target to read the current settings from.</param>
         /// <param name="index">The container index that supplies category and loop flag.</param>
         /// <returns>One entry per clip, in project order.</returns>
-        public static List<AudioClipInfo> Collect(AudioRuleSet ruleSet, string platform, AudioContainerIndex index)
+        internal static List<AudioClipInfo> Collect(AudioRuleSet ruleSet, string platform, AudioContainerIndex index)
         {
             List<AudioClipInfo> results = new();
             string[] guids = AssetDatabase.FindAssets(ClipFilter, SearchFolders(ruleSet));
@@ -64,7 +64,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Scanning
         /// <param name="importer">The importer of the clip.</param>
         /// <param name="platform">The import target, empty for the default settings.</param>
         /// <returns>The current settings.</returns>
-        public static AudioSettingValues ReadCurrent(AudioImporter importer, string platform)
+        internal static AudioSettingValues ReadCurrent(AudioImporter importer, string platform)
         {
             AudioImporterSampleSettings settings = AudioPlatformTargets.Read(importer, platform);
 

@@ -39,7 +39,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         /// <summary>Marks inlined members that are used, and any member carrying the ignore marker.</summary>
         /// <param name="graph">Graph to annotate.</param>
         /// <param name="index">Index built while resolving script paths, holding the source already read.</param>
-        public static void Scan(CodebaseGraphData graph, ScriptIndex index)
+        internal static void Scan(CodebaseGraphData graph, ScriptIndex index)
         {
             Dictionary<string, List<MemberNodeInfo>> inlined = CollectInlinedMembers(graph);
             Dictionary<string, List<TypeNodeInfo>> typesByPath = MapTypesByPath(graph);

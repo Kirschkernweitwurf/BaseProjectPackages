@@ -36,7 +36,7 @@ namespace Base.ToolPackage.Editor.CommandPalette
         /// <param name="hover">Whether the mouse sits on this row.</param>
         /// <param name="term">Lowercase search term, used to pick out the matched characters.</param>
         /// <param name="tags">The tags assigned to the entry.</param>
-        public static void Draw(Rect row, CommandMatch match, bool selected, bool hover, string term,
+        internal static void Draw(Rect row, CommandMatch match, bool selected, bool hover, string term,
             IReadOnlyList<string> tags)
         {
             CommandEntry entry = match.Entry;

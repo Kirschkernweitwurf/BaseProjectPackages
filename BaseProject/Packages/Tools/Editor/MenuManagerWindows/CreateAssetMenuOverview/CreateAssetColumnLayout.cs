@@ -11,28 +11,28 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows.CreateAssetMenuOverview
     internal readonly struct CreateAssetColumnLayout
     {
         /// <summary>Menu order.</summary>
-        public Rect Order { get; }
+        internal Rect Order { get; }
 
         /// <summary>Chip that tells a dynamic entry from a static one.</summary>
-        public Rect Kind { get; }
+        internal Rect Kind { get; }
 
         /// <summary>Clickable menu name.</summary>
-        public Rect MenuName { get; }
+        internal Rect MenuName { get; }
 
         /// <summary>ScriptableObject type name.</summary>
-        public Rect Type { get; }
+        internal Rect Type { get; }
 
         /// <summary>Default file name.</summary>
-        public Rect FileName { get; }
+        internal Rect FileName { get; }
 
         /// <summary>Compact state marker for disabled and missing entries.</summary>
-        public Rect State { get; }
+        internal Rect State { get; }
 
         /// <summary>Source badge (pkg / lib).</summary>
-        public Rect Badge { get; }
+        internal Rect Badge { get; }
 
         /// <summary>Link that opens a dynamic entry in the create asset manager.</summary>
-        public Rect Manage { get; }
+        internal Rect Manage { get; }
 
         /// <summary>Builds the column rectangles inside the given row.</summary>
         public CreateAssetColumnLayout(Rect row)

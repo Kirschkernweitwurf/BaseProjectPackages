@@ -6,8 +6,8 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
     /// </summary>
     internal class FieldHit
     {
-        public int Index;
-        public string Name;
-        public string Kind;
+        internal int Index;
+        internal string Name;
+        internal string Kind;
     }
 }

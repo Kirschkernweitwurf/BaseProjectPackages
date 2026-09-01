@@ -13,12 +13,12 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
     /// </summary>
     internal class Context
     {
-        public readonly List<FieldHit> Fields = new();
-        public readonly Dictionary<string, string> StaticMethods = new();
-        public readonly List<string> ResetBodies = new();
+        internal readonly List<FieldHit> Fields = new();
+        internal readonly Dictionary<string, string> StaticMethods = new();
+        internal readonly List<string> ResetBodies = new();
 
-        public string Cleaned;
-        public int[] LineStarts;
-        public ScanOptions Opt;
+        internal string Cleaned;
+        internal int[] LineStarts;
+        internal ScanOptions Opt;
     }
 }

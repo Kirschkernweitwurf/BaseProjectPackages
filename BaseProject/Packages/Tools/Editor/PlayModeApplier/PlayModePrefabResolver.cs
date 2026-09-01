@@ -18,7 +18,7 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
         /// Finds the highest ancestor that looks like an instantiated prefab root, or null when there is none.
         /// A null result means the object most likely came with the scene rather than from Instantiate.
         /// </summary>
-        public static Transform FindCloneRoot(Transform target)
+        internal static Transform FindCloneRoot(Transform target)
         {
             Transform cursor = target;
             Transform highestClone = null;
@@ -39,7 +39,7 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
         /// Returns an empty string unless exactly one prefab matches, so an ambiguous name never
         /// silently writes to the wrong asset.
         /// </summary>
-        public static string FindPrefabGuid(Transform root)
+        internal static string FindPrefabGuid(Transform root)
         {
             string rootName = InstantiationUtility.StripCloneSuffix(root.name);
             string[] guids = AssetDatabase.FindAssets($"\"{rootName}\"{PrefabFilter}");

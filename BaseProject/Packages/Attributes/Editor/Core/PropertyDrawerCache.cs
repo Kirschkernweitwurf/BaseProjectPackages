@@ -21,7 +21,7 @@ namespace Base.AttributePackage.Editor.Core
         private static List<Type> _baseTypes;
 
         /// <summary>Returns true when the given type is drawn by a registered property drawer.</summary>
-        public static bool HasDrawer(Type type)
+        internal static bool HasDrawer(Type type)
         {
             if (Results.TryGetValue(type, out bool cached))
                 return cached;

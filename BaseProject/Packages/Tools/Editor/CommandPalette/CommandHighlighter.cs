@@ -25,7 +25,7 @@ namespace Base.ToolPackage.Editor.CommandPalette
         /// <param name="entry">The entry to render.</param>
         /// <param name="term">Lowercase search term. An empty term only dims the parent.</param>
         /// <returns>The rich text to draw with a rich text label style.</returns>
-        public static string Build(CommandEntry entry, string term)
+        internal static string Build(CommandEntry entry, string term)
         {
             string path = entry.Path;
 

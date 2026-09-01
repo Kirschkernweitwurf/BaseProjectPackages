@@ -12,7 +12,7 @@ namespace Base.AttributePackage
     internal static class ValidationRules
     {
         /// <summary>All discovered rules.</summary>
-        public static IReadOnlyList<IValidationRule> All => _rules ??= Discover();
+        internal static IReadOnlyList<IValidationRule> All => _rules ??= Discover();
 
         // Reflection cache over loaded types. Those cannot change without a domain reload,
         // which clears this anyway, so carrying it across play sessions is correct.

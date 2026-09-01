@@ -14,32 +14,32 @@ namespace Base.ToolPackage.Editor.AssemblyGraph.Architecture
     internal sealed class AssemblyEdgeInfo
     {
         /// <summary>Identity of the edge.</summary>
-        public AssemblyEdgeKey Key { get; }
+        internal AssemblyEdgeKey Key { get; }
 
         /// <summary>Name of the assembly the dependency starts at.</summary>
-        public string SourceName => Key.Source;
+        internal string SourceName => Key.Source;
 
         /// <summary>Name of the assembly the dependency points at.</summary>
-        public string TargetName => Key.Target;
+        internal string TargetName => Key.Target;
 
         /// <summary>Full names of the distinct target types this edge exists for, sorted.</summary>
-        public IReadOnlyList<string> TargetTypeNames { get; }
+        internal IReadOnlyList<string> TargetTypeNames { get; }
 
         /// <summary>Full names of the distinct source types that reach across the edge, sorted.</summary>
-        public IReadOnlyList<string> SourceTypeNames { get; }
+        internal IReadOnlyList<string> SourceTypeNames { get; }
 
         /// <summary>Number of member level usages behind the edge, which is what the scan counted.</summary>
-        public int UsageCount { get; }
+        internal int UsageCount { get; }
 
         /// <summary>
         /// True when every source type behind the edge is generated, sample or test code. The
         /// dependency is real and still compiles, but no amount of refactoring will remove it, so a
         /// rule that suggests cutting it is wasting the reader's time.
         /// </summary>
-        public bool IsEntirelyExcluded { get; }
+        internal bool IsEntirelyExcluded { get; }
 
         /// <summary>How many distinct target types hold the edge up. This is the number rules read.</summary>
-        public int Weight => TargetTypeNames.Count;
+        internal int Weight => TargetTypeNames.Count;
 
         /// <summary>Creates a finished edge.</summary>
         /// <param name="key">Identity of the edge.</param>

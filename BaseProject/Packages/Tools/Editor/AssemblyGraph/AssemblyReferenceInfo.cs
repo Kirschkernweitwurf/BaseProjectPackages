@@ -4,10 +4,10 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
     internal sealed class AssemblyReferenceInfo
     {
         /// <summary>Name of the referenced assembly.</summary>
-        public string TargetName { get; }
+        internal string TargetName { get; }
 
         /// <summary>True when the reference can safely be removed.</summary>
-        public bool IsUnused => Status == EReferenceStatus.Unused;
+        internal bool IsUnused => Status == EReferenceStatus.Unused;
 
         /// <summary>Whether the reference is used, unused or undetermined.</summary>
         private EReferenceStatus Status { get; }

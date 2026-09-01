@@ -4,7 +4,7 @@ namespace Base.AttributePackage
     internal static class ValidationLog
     {
         /// <summary>Composes a single error line plus the window pointer.</summary>
-        public static string Build(ReferenceIssue issue)
+        internal static string Build(ReferenceIssue issue)
         {
             string where = issue.Owner != null
                 ? issue.Owner.name

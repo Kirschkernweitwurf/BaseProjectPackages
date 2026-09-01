@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot.Samples;
+using Base.UtilityPackage;
 using UnityEditor;
 using UnityEngine;
 
@@ -18,7 +19,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot
         /// <param name="errors">Total number of findings that stop an attribute from working.</param>
         /// <param name="warnings">Total number of findings that only change behavior.</param>
         /// <returns>The groups, sorted by type name.</returns>
-        public static List<AttributeIssueGroup> CollectProject(out int errors, out int warnings)
+        internal static List<AttributeIssueGroup> CollectProject(out int errors, out int warnings)
             => Run(ProjectTypes(), out errors, out warnings);
 
         /// <summary>
@@ -28,7 +29,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot
         /// <param name="errors">Total number of findings that stop an attribute from working.</param>
         /// <param name="warnings">Total number of findings that only change behavior.</param>
         /// <returns>The groups, sorted by type name.</returns>
-        public static List<AttributeIssueGroup> CollectSamples(out int errors, out int warnings)
+        internal static List<AttributeIssueGroup> CollectSamples(out int errors, out int warnings)
             => Run(SampleTypes(), out errors, out warnings);
 
         private static List<AttributeIssueGroup> Run(IEnumerable<Type> types, out int errors, out int warnings)

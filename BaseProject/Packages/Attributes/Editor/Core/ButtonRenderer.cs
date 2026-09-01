@@ -41,7 +41,7 @@ namespace Base.AttributePackage.Editor.Core
 
         /// <summary>Draws all buttons for the edited object.</summary>
         /// <param name="editor">The editor whose target owns the buttons.</param>
-        public static void Draw(UnityEditor.Editor editor)
+        internal static void Draw(UnityEditor.Editor editor)
         {
             Type type = editor.target.GetType();
 

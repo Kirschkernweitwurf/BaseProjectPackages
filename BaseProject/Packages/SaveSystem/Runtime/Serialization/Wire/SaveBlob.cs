@@ -12,7 +12,7 @@ namespace Base.SaveSystemPackage.Serialization.Wire
         public List<SaveEntry> entries = new();
 
         /// <summary>Appends one savable's serialized state.</summary>
-        public void Add(string id, string state) => entries.Add(new SaveEntry
+        internal void Add(string id, string state) => entries.Add(new SaveEntry
         {
             id = id,
             state = state

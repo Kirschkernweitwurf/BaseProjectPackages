@@ -46,7 +46,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
         /// <summary>Replaces the shown path. The last segment is where the view currently is.</summary>
         /// <param name="segments">Path segments, from the root inward.</param>
-        public void SetPath(IReadOnlyList<string> segments)
+        internal void SetPath(IReadOnlyList<string> segments)
         {
             _pathBar.Clear();
 
@@ -63,11 +63,11 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
         /// <summary>Adds a control that is only shown while the view is narrowed to one entry.</summary>
         /// <param name="control">Control to place in the focus bar.</param>
-        public void AddFocusControl(VisualElement control) => _focusBar.Add(control);
+        internal void AddFocusControl(VisualElement control) => _focusBar.Add(control);
 
         /// <summary>Shows or hides the focus bar and sets the line explaining what is being shown.</summary>
         /// <param name="notice">Explanation of the narrowed view, or an empty string to hide the bar.</param>
-        public void SetFocus(string notice)
+        internal void SetFocus(string notice)
         {
             bool isVisible = !string.IsNullOrEmpty(notice);
 

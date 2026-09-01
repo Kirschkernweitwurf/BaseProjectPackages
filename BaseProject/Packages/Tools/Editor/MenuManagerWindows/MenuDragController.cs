@@ -22,10 +22,10 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         private const string GroupFallbackLabel = "Group";
 
         /// <summary>Whether a drag passed the threshold and is currently running.</summary>
-        public bool IsActive { get; private set; }
+        internal bool IsActive { get; private set; }
 
         /// <summary>Node being dragged, so a row can draw itself as the source.</summary>
-        public MenuNode Node { get; private set; }
+        internal MenuNode Node { get; private set; }
 
         private readonly HashSet<List<MenuNode>> _forbidden = new();
         private readonly HashSet<List<MenuNode>> _lockedLists;
@@ -57,14 +57,14 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         /// <param name="current">Event that started the gesture.</param>
         /// <param name="node">The entry node under the mouse.</param>
         /// <param name="parent">List the node currently lives in.</param>
-        public void BeginEntry(Event current, MenuNode node, List<MenuNode> parent)
+        internal void BeginEntry(Event current, MenuNode node, List<MenuNode> parent)
             => Arm(current, node, parent, false);
 
         /// <summary>Arms a drag on a group, together with everything below it.</summary>
         /// <param name="current">Event that started the gesture.</param>
         /// <param name="group">The group under the mouse.</param>
         /// <param name="parent">List the group currently lives in.</param>
-        public void BeginGroup(Event current, MenuGroupNode group, List<MenuNode> parent)
+        internal void BeginGroup(Event current, MenuGroupNode group, List<MenuNode> parent)
         {
             Arm(current, group, parent, true);
             CollectForbidden(group);
@@ -77,7 +77,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         /// <param name="current">The event being processed.</param>
         /// <param name="root">List a drop below the last row falls back to.</param>
         /// <returns>What the window still has to do.</returns>
-        public EMenuDragOutcome Resolve(Event current, List<MenuNode> root)
+        internal EMenuDragOutcome Resolve(Event current, List<MenuNode> root)
         {
             if (!_isArmed)
                 return EMenuDragOutcome.None;

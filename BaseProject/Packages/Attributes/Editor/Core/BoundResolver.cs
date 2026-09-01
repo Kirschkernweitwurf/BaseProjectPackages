@@ -20,7 +20,7 @@ namespace Base.AttributePackage.Editor.Core
         /// <param name="member">Name of the member holding the bound.</param>
         /// <param name="value">The resolved bound.</param>
         /// <returns>True when the member resolved to a number.</returns>
-        public static bool TryNumber(SerializedProperty property, string member, out float value)
+        internal static bool TryNumber(SerializedProperty property, string member, out float value)
         {
             value = 0f;
 
@@ -49,7 +49,7 @@ namespace Base.AttributePackage.Editor.Core
         /// <param name="min">The resolved lower bound.</param>
         /// <param name="max">The resolved upper bound.</param>
         /// <returns>True when the member resolved to a vector.</returns>
-        public static bool TryRange(SerializedProperty property, string member, out float min, out float max)
+        internal static bool TryRange(SerializedProperty property, string member, out float min, out float max)
         {
             min = 0f;
             max = 0f;

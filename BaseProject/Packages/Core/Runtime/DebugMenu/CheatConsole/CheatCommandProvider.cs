@@ -23,7 +23,7 @@ namespace Base.CorePackage.DebugMenu.CheatConsole
         /// all active and inactive MonoBehaviours in the scene.
         /// </summary>
         /// <returns>Every cheat command that can currently be executed.</returns>
-        public static List<CheatCommandInfo> DiscoverAllCommands()
+        internal static List<CheatCommandInfo> DiscoverAllCommands()
         {
             List<CheatCommandInfo> result = new();
 

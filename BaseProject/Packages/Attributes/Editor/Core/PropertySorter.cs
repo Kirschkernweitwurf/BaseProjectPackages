@@ -34,7 +34,7 @@ namespace Base.AttributePackage.Editor.Core
         /// <summary>Sorts the properties in place.</summary>
         /// <param name="properties">The properties to sort.</param>
         /// <param name="type">The inspected type, used to read the attributes.</param>
-        public static void Sort(List<SerializedProperty> properties, Type type)
+        internal static void Sort(List<SerializedProperty> properties, Type type)
         {
             if (!Collect(properties, type))
                 return;
@@ -167,12 +167,12 @@ namespace Base.AttributePackage.Editor.Core
 
         private readonly struct Block
         {
-            public readonly int Start;
-            public readonly int End;
-            public readonly int Order;
-            public readonly bool OpensSection;
+            internal readonly int Start;
+            internal readonly int End;
+            internal readonly int Order;
+            internal readonly bool OpensSection;
 
-            public Block(int start, int end, int order, bool opensSection)
+            internal Block(int start, int end, int order, bool opensSection)
             {
                 Start = start;
                 End = end;

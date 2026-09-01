@@ -20,7 +20,7 @@ namespace Base.ToolPackage.Editor.ComponentClipboard
 
         /// <summary>Returns true when the component can be captured into the clipboard.</summary>
         /// <param name="component">Component to test. May be null.</param>
-        public static bool CanCopy(Component component) => component != null && !(component is Transform);
+        internal static bool CanCopy(Component component) => component != null && !(component is Transform);
 
         /// <summary>
         /// Works out what a paste would do, one step per entry and in entry order. A single entry of
@@ -36,7 +36,7 @@ namespace Base.ToolPackage.Editor.ComponentClipboard
         /// <paramref name="target"/> are ignored. Pass null or an empty list to always add new.
         /// </param>
         /// <returns>One step per entry, empty when there is nothing to paste.</returns>
-        public static List<ComponentPasteStep> BuildPastePlan(GameObject target,
+        internal static List<ComponentPasteStep> BuildPastePlan(GameObject target,
             IReadOnlyList<ComponentClipboardEntry> entries, IReadOnlyList<Component> overwriteTargets)
         {
             List<ComponentPasteStep> plan = new();
@@ -61,7 +61,7 @@ namespace Base.ToolPackage.Editor.ComponentClipboard
         /// <param name="target">GameObject receiving the components.</param>
         /// <param name="entries">Snapshots to paste, applied in order.</param>
         /// <param name="overwriteTargets">Components that may be overwritten, usually the selection.</param>
-        public static void Paste(GameObject target, IReadOnlyList<ComponentClipboardEntry> entries,
+        internal static void Paste(GameObject target, IReadOnlyList<ComponentClipboardEntry> entries,
             IReadOnlyList<Component> overwriteTargets)
             => Execute(target, BuildPastePlan(target, entries, overwriteTargets), true);
 
@@ -72,7 +72,7 @@ namespace Base.ToolPackage.Editor.ComponentClipboard
         /// </summary>
         /// <param name="target">GameObject receiving the components.</param>
         /// <param name="entries">Snapshots to paste, applied in order.</param>
-        public static void PasteMatchingByType(GameObject target, IReadOnlyList<ComponentClipboardEntry> entries)
+        internal static void PasteMatchingByType(GameObject target, IReadOnlyList<ComponentClipboardEntry> entries)
         {
             if (target == null)
                 return;
@@ -83,7 +83,7 @@ namespace Base.ToolPackage.Editor.ComponentClipboard
         /// <summary>Always adds new components, even when the target already has that type.</summary>
         /// <param name="target">GameObject receiving the components.</param>
         /// <param name="entries">Snapshots to paste, applied in order.</param>
-        public static void PasteAsNew(GameObject target, IReadOnlyList<ComponentClipboardEntry> entries)
+        internal static void PasteAsNew(GameObject target, IReadOnlyList<ComponentClipboardEntry> entries)
             => Paste(target, entries, null);
 
         /// <summary>
@@ -93,13 +93,13 @@ namespace Base.ToolPackage.Editor.ComponentClipboard
         /// <param name="target">GameObject whose components are overwritten.</param>
         /// <param name="entries">Snapshots to apply.</param>
         /// <param name="overwriteTargets">Components that may be overwritten, usually the selection.</param>
-        public static void PasteValues(GameObject target, IReadOnlyList<ComponentClipboardEntry> entries,
+        internal static void PasteValues(GameObject target, IReadOnlyList<ComponentClipboardEntry> entries,
             IReadOnlyList<Component> overwriteTargets)
             => Execute(target, BuildPastePlan(target, entries, overwriteTargets), false);
 
         /// <summary>Destroys the given components, skipping any that are required by others.</summary>
         /// <param name="components">Components to destroy.</param>
-        public static void Delete(IReadOnlyList<Component> components)
+        internal static void Delete(IReadOnlyList<Component> components)
         {
             if (components == null)
                 return;
@@ -124,7 +124,7 @@ namespace Base.ToolPackage.Editor.ComponentClipboard
 
         /// <summary>Moves the given components one slot up in the inspector order.</summary>
         /// <param name="components">Components to move, expected in inspector order.</param>
-        public static void MoveUp(IReadOnlyList<Component> components)
+        internal static void MoveUp(IReadOnlyList<Component> components)
         {
             if (components == null)
                 return;
@@ -135,7 +135,7 @@ namespace Base.ToolPackage.Editor.ComponentClipboard
 
         /// <summary>Moves the given components one slot down in the inspector order.</summary>
         /// <param name="components">Components to move, expected in inspector order.</param>
-        public static void MoveDown(IReadOnlyList<Component> components)
+        internal static void MoveDown(IReadOnlyList<Component> components)
         {
             if (components == null)
                 return;

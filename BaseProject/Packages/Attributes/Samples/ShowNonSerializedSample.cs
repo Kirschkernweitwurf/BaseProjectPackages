@@ -31,7 +31,7 @@ namespace Base.AttributePackage.Samples
 
         /// <summary>Changes the state the rows above report.</summary>
         [Button("Record an event")]
-        public void Record()
+        internal void Record()
         {
             _count++;
             lastEvent = $"event {_count} of at most {Limit}";

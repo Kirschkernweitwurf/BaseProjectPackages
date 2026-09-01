@@ -11,7 +11,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         /// <summary>Copies a whole list of nodes, dropping the ones that failed to deserialize.</summary>
         /// <param name="nodes">The list to copy.</param>
         /// <returns>A new list holding new nodes.</returns>
-        public static List<MenuNode> CloneNodes(List<MenuNode> nodes)
+        internal static List<MenuNode> CloneNodes(List<MenuNode> nodes)
         {
             List<MenuNode> copy = new(nodes.Count);
 

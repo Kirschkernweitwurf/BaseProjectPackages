@@ -24,7 +24,7 @@ namespace Base.ToolPackage.Editor.FolderConventionValidator
         private static readonly Regex SnakeCase = new("^[a-z0-9]+(_[a-z0-9]+)*$", RegexOptions.Compiled);
 
         /// <summary>Scans the project and returns every violation, sorted by path.</summary>
-        public static List<FolderViolation> Scan(FolderConventionConfig config)
+        internal static List<FolderViolation> Scan(FolderConventionConfig config)
         {
             List<FolderViolation> violations = new();
 
@@ -51,7 +51,7 @@ namespace Base.ToolPackage.Editor.FolderConventionValidator
         }
 
         /// <summary>Creates the folder and all missing parents. True when it exists afterward.</summary>
-        public static bool CreateFolder(string path)
+        internal static bool CreateFolder(string path)
         {
             if (string.IsNullOrWhiteSpace(path))
             {

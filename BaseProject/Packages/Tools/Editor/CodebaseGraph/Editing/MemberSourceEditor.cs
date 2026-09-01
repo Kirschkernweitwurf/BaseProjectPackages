@@ -42,7 +42,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Editing
         /// <param name="type">Type that declares the member.</param>
         /// <param name="member">Member to demote.</param>
         /// <returns>True when the file was changed.</returns>
-        public static bool DemoteToInternal(TypeNodeInfo type, MemberNodeInfo member)
+        internal static bool DemoteToInternal(TypeNodeInfo type, MemberNodeInfo member)
         {
             Regex pattern = new($@"^(\s*){PublicKeyword}(\s+)(?=[^\r\n]*\b{Regex.Escape(member.Name)}\b)",
                 RegexOptions.Multiline);
@@ -54,7 +54,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Editing
         /// <param name="type">Type that declares the member.</param>
         /// <param name="member">Member to demote.</param>
         /// <returns>True when the file was changed.</returns>
-        public static bool DemoteToPrivate(TypeNodeInfo type, MemberNodeInfo member)
+        internal static bool DemoteToPrivate(TypeNodeInfo type, MemberNodeInfo member)
         {
             Regex pattern = new($@"^(\s*)(?:{WiderKeywords})(\s+)(?=[^\r\n]*\b{Regex.Escape(member.Name)}\b)",
                 RegexOptions.Multiline);
@@ -66,7 +66,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Editing
         /// <param name="type">Type that declares the field.</param>
         /// <param name="member">Field to make readonly.</param>
         /// <returns>True when the file was changed.</returns>
-        public static bool AddReadOnly(TypeNodeInfo type, MemberNodeInfo member)
+        internal static bool AddReadOnly(TypeNodeInfo type, MemberNodeInfo member)
         {
             Regex pattern = new(@"^(\s*)((?:private|protected|internal|public)(?:\s+static)?\s+)"
                 + $@"(?![^\r\n]*\b{ReadOnlyKeyword}\b)(?=[^\r\n]*\b{Regex.Escape(member.Name)}\b)",
@@ -78,7 +78,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Editing
         /// <summary>Opens the script that declares the member and jumps to its declaration.</summary>
         /// <param name="type">Type that declares the member.</param>
         /// <param name="member">Member to jump to, or null to open the file at the top.</param>
-        public static void OpenAtMember(TypeNodeInfo type, MemberNodeInfo member)
+        internal static void OpenAtMember(TypeNodeInfo type, MemberNodeInfo member)
         {
             if (type == null || string.IsNullOrEmpty(type.ScriptPath))
                 return;

@@ -249,7 +249,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         /// <param name="reason">Why it counts as an entry point, or null.</param>
         /// <param name="isReset">Whether it runs on entering play mode.</param>
         /// <returns>True when the method must never be reported as dead.</returns>
-        public static bool Inspect(MethodBase method, Type declaringType, out string reason, out bool isReset)
+        internal static bool Inspect(MethodBase method, Type declaringType, out string reason, out bool isReset)
         {
             reason = null;
             isReset = false;
@@ -283,7 +283,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         /// <param name="isUnityObject">Whether the declaring type derives from a Unity object.</param>
         /// <param name="reason">Human-readable reason, or null.</param>
         /// <returns>True when the constructor must never be reported as dead.</returns>
-        public static bool IsRuntimeConstructor(bool isStatic, bool isUnityObject, out string reason)
+        internal static bool IsRuntimeConstructor(bool isStatic, bool isUnityObject, out string reason)
         {
             reason = isStatic || isUnityObject
                 ? ConstructorReason
@@ -296,7 +296,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         /// <param name="type">Type to test.</param>
         /// <param name="reason">Human-readable reason, or null.</param>
         /// <returns>True when the type must never be reported as unreferenced.</returns>
-        public static bool IsEngineDriven(Type type, out string reason)
+        internal static bool IsEngineDriven(Type type, out string reason)
         {
             reason = null;
             if (type == null)
@@ -327,7 +327,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         /// <param name="member">Member or type to test.</param>
         /// <param name="reason">Human-readable reason, or null.</param>
         /// <returns>True when findings on it should be suppressed.</returns>
-        public static bool IsSuppressed(MemberInfo member, out string reason)
+        internal static bool IsSuppressed(MemberInfo member, out string reason)
         {
             reason = null;
             if (member == null)
@@ -350,7 +350,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         /// <param name="field">Field to test.</param>
         /// <param name="reason">Human-readable reason, or null when the field is not an entry point.</param>
         /// <returns>True when the field is filled in by serialization.</returns>
-        public static bool IsSerializedEntryPoint(FieldInfo field, out string reason)
+        internal static bool IsSerializedEntryPoint(FieldInfo field, out string reason)
         {
             reason = null;
             if (!IsSerialized(field))
@@ -363,7 +363,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         /// <summary>True when Unity serializes the field and therefore writes it from outside the code.</summary>
         /// <param name="field">Field to test.</param>
         /// <returns>True for serialized fields.</returns>
-        public static bool IsSerialized(FieldInfo field)
+        internal static bool IsSerialized(FieldInfo field)
         {
             if (field == null || field.IsStatic || field.IsLiteral)
                 return false;
@@ -388,7 +388,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         /// </summary>
         /// <param name="method">Method to test.</param>
         /// <returns>True when the engine could call it from a clip.</returns>
-        public static bool IsAnimationEventSignature(MethodInfo method)
+        internal static bool IsAnimationEventSignature(MethodInfo method)
         {
             if (method == null || !method.IsPublic || method.IsStatic)
                 return false;
@@ -413,7 +413,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         /// <summary>True when the type is an editor window, which only the editor ever opens.</summary>
         /// <param name="type">Type to test.</param>
         /// <returns>True for an editor window.</returns>
-        public static bool IsEditorWindow(Type type)
+        internal static bool IsEditorWindow(Type type)
         {
             for (Type current = type?.BaseType; current != null; current = current.BaseType)
             {
@@ -427,7 +427,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         /// <summary>Collects the earlier names a field still answers to in existing assets.</summary>
         /// <param name="field">Field to inspect.</param>
         /// <param name="aliases">List that receives the earlier names.</param>
-        public static void CollectSerializedAliases(FieldInfo field, List<string> aliases)
+        internal static void CollectSerializedAliases(FieldInfo field, List<string> aliases)
         {
             foreach (CustomAttributeData attribute in ReadAttributes(field))
             {
@@ -446,7 +446,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         /// <param name="member">Member to test.</param>
         /// <param name="reason">Human-readable reason, or null when nothing matched.</param>
         /// <returns>True when a known entry point attribute is present.</returns>
-        public static bool TryGetEntryPointAttribute(MemberInfo member, out string reason)
+        internal static bool TryGetEntryPointAttribute(MemberInfo member, out string reason)
         {
             reason = null;
             if (member == null)

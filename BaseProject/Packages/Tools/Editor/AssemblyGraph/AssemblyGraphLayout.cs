@@ -24,7 +24,7 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
         private const float UnusedLineHeight = 15f;
 
         /// <summary>Returns a placement rect for every given node.</summary>
-        public static Dictionary<string, Rect> Calculate(IReadOnlyList<AssemblyNodeInfo> nodes)
+        internal static Dictionary<string, Rect> Calculate(IReadOnlyList<AssemblyNodeInfo> nodes)
         {
             Dictionary<string, Rect> result = new();
             if (nodes == null || nodes.Count == 0)

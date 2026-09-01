@@ -22,7 +22,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows.CreateAssetMenuOverview
         /// value when present, otherwise just inside the attribute's parentheses. Falls back
         /// to the type declaration when the attribute line cannot be matched.
         /// </summary>
-        public static (int Line, int Column) Find(MonoScript script, string typeName)
+        internal static (int Line, int Column) Find(MonoScript script, string typeName)
         {
             if (script == null)
                 return (0, 0);

@@ -25,7 +25,7 @@ namespace Base.ToolPackage.Editor.PlayModeApplier
         }
 
         /// <summary>Builds a readable label such as "P_Garden_Bush01(Clone) (Transform)".</summary>
-        public static string BuildDisplayName(Object target)
+        internal static string BuildDisplayName(Object target)
         {
             Component component = target as Component;
             if (component != null)

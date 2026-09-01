@@ -33,7 +33,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         private const float ValueStep = 0.02f;
 
         /// <summary>Color the node title is written in, dark because every background here is light.</summary>
-        public static Color TitleTextColor { get; } = new(0.10f, 0.10f, 0.11f);
+        internal static Color TitleTextColor { get; } = new(0.10f, 0.10f, 0.11f);
 
         /// <summary>Saturations, all gentle, so two nearby hues still read as different colors.</summary>
         private static readonly float[] Saturations =
@@ -49,7 +49,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         /// <summary>Returns the title color for a seed name. The same name always yields the same color.</summary>
         /// <param name="seed">Name to derive the color from.</param>
         /// <returns>The tint for the node title bar, light enough to read dark text on.</returns>
-        public static Color GetColor(string seed)
+        internal static Color GetColor(string seed)
         {
             if (string.IsNullOrEmpty(seed))
                 return new Color(FallbackChannel, FallbackChannel, FallbackChannel);

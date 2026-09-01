@@ -11,80 +11,80 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Model
     internal sealed class GraphEntry
     {
         /// <summary>Unique id inside the current view, used for edges and selection.</summary>
-        public string Id { get; }
+        internal string Id { get; }
 
         /// <summary>Main line shown on the node and in the list.</summary>
-        public string Title { get; }
+        internal string Title { get; }
 
         /// <summary>Second line, for example the kind and the visibility.</summary>
-        public string Subtitle { get; }
+        internal string Subtitle { get; }
 
         /// <summary>Name the node color is derived from, so related entries share a tint.</summary>
-        public string ColorSeed { get; }
+        internal string ColorSeed { get; }
 
         /// <summary>How many entries depend on this one.</summary>
-        public int FanIn { get; }
+        internal int FanIn { get; }
 
         /// <summary>How many entries this one depends on.</summary>
-        public int FanOut { get; }
+        internal int FanOut { get; }
 
         /// <summary>Which zoom level this entry belongs to.</summary>
-        public EGraphScope Level { get; }
+        internal EGraphScope Level { get; }
 
         /// <summary>Single letter standing for the kind, shown in the node title.</summary>
-        public string Glyph { get; set; }
+        internal string Glyph { get; set; }
 
         /// <summary>Declared visibility, which colors the accent stripe.</summary>
-        public EAccessLevel Access { get; set; }
+        internal EAccessLevel Access { get; set; }
 
         /// <summary>Relations this entry points at, limited to what is currently visible.</summary>
-        public List<GraphEdgeInfo> Targets { get; }
+        internal List<GraphEdgeInfo> Targets { get; }
 
         /// <summary>Members listed inside the node, for type entries.</summary>
-        public List<GraphMemberRow> Rows { get; }
+        internal List<GraphMemberRow> Rows { get; }
 
         /// <summary>Members that exist but did not fit in the list.</summary>
-        public int HiddenRowCount { get; set; }
+        internal int HiddenRowCount { get; set; }
 
         /// <summary>Findings reported on this entry.</summary>
-        public List<EFinding> Findings { get; }
+        internal List<EFinding> Findings { get; }
 
         /// <summary>The namespace this entry stands for, when the view is at namespace level.</summary>
-        public NamespaceNodeInfo Namespace { get; set; }
+        internal NamespaceNodeInfo Namespace { get; set; }
 
         /// <summary>The type this entry stands for, or the declaring type of the member.</summary>
-        public TypeNodeInfo Type { get; set; }
+        internal TypeNodeInfo Type { get; set; }
 
         /// <summary>The member this entry stands for, when the view is at member level.</summary>
-        public MemberNodeInfo Member { get; set; }
+        internal MemberNodeInfo Member { get; set; }
 
         /// <summary>True when double-clicking the entry opens a deeper level.</summary>
-        public bool CanDrillDown { get; set; }
+        internal bool CanDrillDown { get; set; }
 
         /// <summary>Number of findings on the members inside this entry, for types and namespaces.</summary>
-        public int NestedFindingCount { get; set; }
+        internal int NestedFindingCount { get; set; }
 
         /// <summary>True when this entry was reviewed and dismissed, so its findings are silenced.</summary>
-        public bool IsDismissed { get; set; }
+        internal bool IsDismissed { get; set; }
 
         /// <summary>Number of members inside this entry whose findings were dismissed.</summary>
-        public int DismissedNestedCount { get; set; }
+        internal int DismissedNestedCount { get; set; }
 
         /// <summary>True when the entry is drawn with a dashed border, which marks a contract.</summary>
-        public bool IsContract { get; set; }
+        internal bool IsContract { get; set; }
 
         /// <summary>True when something reported here is still waiting to be dealt with.</summary>
-        public bool HasOpenFindings => Findings.Count > 0 || NestedFindingCount > 0;
+        internal bool HasOpenFindings => Findings.Count > 0 || NestedFindingCount > 0;
 
         /// <summary>True when the entry has been dismissed, itself or through what it contains.</summary>
-        public bool HasDismissals => IsDismissed || DismissedNestedCount > 0;
+        internal bool HasDismissals => IsDismissed || DismissedNestedCount > 0;
 
         /// <summary>
         /// How many badges the node draws. Each one sits on its own line, so the layout can work out a
         /// node's height exactly rather than guessing how many will fit on a row. Dismissed findings
         /// get a badge too: a decision that leaves no trace on screen is one nobody can review.
         /// </summary>
-        public int BadgeCount => Findings.Count
+        internal int BadgeCount => Findings.Count
             + (NestedFindingCount > 0
                 ? 1
                 : 0)

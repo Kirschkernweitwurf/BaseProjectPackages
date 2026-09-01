@@ -12,7 +12,7 @@ namespace Base.ToolPackage.Editor.MissingScriptsOverviewWindow
     internal static class MissingScriptNavigator
     {
         /// <summary>Selects and pings the object the entry points at, opening its scene if needed.</summary>
-        public static void Navigate(MissingScriptEntry entry)
+        internal static void Navigate(MissingScriptEntry entry)
         {
             switch (entry.Source)
             {

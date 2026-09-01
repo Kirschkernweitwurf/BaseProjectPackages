@@ -316,14 +316,14 @@ namespace Base.ToolPackage.Editor.TodoOverview
             Search = Pin(new GUIStyle(EditorStyles.label)
             {
                 alignment = TextAnchor.MiddleLeft,
-                padding = new RectOffset(ChipTextPadding, ChipTextPadding, 0, 0),
+                padding = EditorStyleUtility.HorizontalPadding(ChipTextPadding),
                 wordWrap = false
             }, EditorPalette.Text);
 
             SearchHint = Pin(new GUIStyle(EditorStyles.label)
             {
                 alignment = TextAnchor.MiddleLeft,
-                padding = new RectOffset(ChipTextPadding, ChipTextPadding, 0, 0),
+                padding = EditorStyleUtility.HorizontalPadding(ChipTextPadding),
                 wordWrap = false
             }, EditorPalette.DimText);
         }

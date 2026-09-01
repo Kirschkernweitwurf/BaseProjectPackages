@@ -36,13 +36,13 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         private const string TitleLabelName = "title-label";
 
         /// <summary>The entry this node stands for.</summary>
-        public GraphEntry Entry { get; }
+        internal GraphEntry Entry { get; }
 
         /// <summary>Port other nodes connect into.</summary>
-        public Port InputPort { get; }
+        internal Port InputPort { get; }
 
         /// <summary>Port this node connects out of.</summary>
-        public Port OutputPort { get; }
+        internal Port OutputPort { get; }
 
         private static readonly Color BodyColor = new(0.20f, 0.20f, 0.22f, 1f);
 

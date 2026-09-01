@@ -16,7 +16,7 @@ namespace Base.ToolPackage.Editor.ComponentClipboard
         [SerializeField] private string globalId;
 
         /// <summary>Serialized property path the reference belongs to.</summary>
-        public string PropertyPath => propertyPath;
+        internal string PropertyPath => propertyPath;
 
         /// <summary>Creates a reference entry.</summary>
         /// <param name="propertyPath">Serialized property path.</param>
@@ -28,14 +28,14 @@ namespace Base.ToolPackage.Editor.ComponentClipboard
         }
 
         /// <summary>Returns true when a target object was captured.</summary>
-        public bool HasTarget() => !string.IsNullOrEmpty(globalId);
+        internal bool HasTarget() => !string.IsNullOrEmpty(globalId);
 
         /// <summary>
         /// Resolves the stored id back into an object. Scene objects only resolve while their scene
         /// is loaded.
         /// </summary>
         /// <returns>The referenced object, or null when it cannot be resolved.</returns>
-        public Object Resolve()
+        internal Object Resolve()
         {
             if (!HasTarget())
                 return null;

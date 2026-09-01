@@ -141,7 +141,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         /// into view. Used by the overview windows to link straight to a single entry.
         /// </summary>
         /// <param name="entryId">Stable id of the entry to focus.</param>
-        public void FocusEntry(string entryId)
+        internal void FocusEntry(string entryId)
         {
             if (string.IsNullOrEmpty(entryId))
                 return;

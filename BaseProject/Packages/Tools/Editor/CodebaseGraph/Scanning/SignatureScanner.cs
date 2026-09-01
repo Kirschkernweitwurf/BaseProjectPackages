@@ -23,7 +23,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         /// <summary>Links every type named in the signatures of one type's members.</summary>
         /// <param name="type">Type whose signatures should be read.</param>
         /// <param name="sink">Receiver for the relations.</param>
-        public static void ScanType(Type type, IUsageSink sink)
+        internal static void ScanType(Type type, IUsageSink sink)
         {
             if (!KeyFactory.TryForType(type, out TypeKey typeKey))
                 return;

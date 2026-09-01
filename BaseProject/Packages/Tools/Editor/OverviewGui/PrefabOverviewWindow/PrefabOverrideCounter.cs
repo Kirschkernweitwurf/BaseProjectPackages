@@ -19,7 +19,7 @@ namespace Base.ToolPackage.Editor.OverviewGui.PrefabOverviewWindow
         /// </summary>
         /// <param name="assetPath">Project relative path of the variant asset.</param>
         /// <returns>The counted overrides, or empty counts when the asset cannot be read.</returns>
-        public static PrefabOverrideCounts Count(string assetPath)
+        internal static PrefabOverrideCounts Count(string assetPath)
         {
             GameObject contents = null;
 

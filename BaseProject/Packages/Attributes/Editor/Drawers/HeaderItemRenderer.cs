@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Base.AttributePackage.Editor.Core;
+using Base.EditorUiPackage;
 using JetBrains.Annotations;
 using UnityEditor;
 using UnityEditorInternal;
@@ -24,7 +25,7 @@ namespace Base.AttributePackage.Editor.Drawers
     internal static class HeaderItemRenderer
     {
         /// <summary>Name of the method the header hook binds to. Kept here so the hook needs no literal.</summary>
-        public const string DrawMethodName = nameof(DrawHeaderItems);
+        internal const string DrawMethodName = nameof(DrawHeaderItems);
 
         private const string CancelLabel = "Cancel";
         private const string ConfirmLabel = "Confirm";
@@ -35,13 +36,21 @@ namespace Base.AttributePackage.Editor.Drawers
         private const float MinimumWidth = 40f;
         private const string UndoFormat = "Header button {0}";
 
-        private static GUIStyle LabelStyle => _labelStyle ??= new GUIStyle(EditorStyles.miniLabel)
+        private static GUIStyle LabelStyle
         {
-            alignment = TextAnchor.MiddleRight
-        };
+            get
+            {
+                EnsureFresh();
+
+                return _labelStyle ??= new GUIStyle(EditorStyles.miniLabel)
+                {
+                    alignment = TextAnchor.MiddleRight
+                };
+            }
+        }
 
         private static readonly Dictionary<Type, HeaderItem[]> Items = new();
-
+        private static readonly EditorStyleWatch Watch = new();
 
         private static GUIStyle _labelStyle;
 
@@ -254,6 +263,19 @@ namespace Base.AttributePackage.Editor.Drawers
                 return true;
 
             return EditorUtility.DisplayDialog(item.Label, item.Button.Confirm, ConfirmLabel, CancelLabel);
+        }
+
+        // A GUIStyle copies its colors out of EditorStyles when it is built and does not stay
+        // linked to them, so a cached one keeps the previous theme's colors after a switch.
+        // Dropping it here has the next access rebuild it against the theme actually in use.
+        private static void EnsureFresh()
+        {
+            if (!Watch.IsStale)
+                return;
+
+            _labelStyle = null;
+
+            Watch.MarkFresh();
         }
     }
 }

@@ -29,7 +29,7 @@ namespace Base.AttributePackage.Editor.Collections
         /// <param name="label">The label and tooltip of the field.</param>
         /// <param name="settings">The settings that shape the list.</param>
         /// <param name="canResize">False when [ArraySize] fixes the element count.</param>
-        public static void Draw(SerializedProperty property, GUIContent label,
+        internal static void Draw(SerializedProperty property, GUIContent label,
             ListDrawerSettingsAttribute settings, bool canResize = true)
         {
             ListDrawerState state = ListDrawerState.For(property);

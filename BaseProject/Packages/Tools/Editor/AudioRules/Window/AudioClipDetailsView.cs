@@ -37,11 +37,11 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
 
         /// <summary>Points the pane at the rule set, so it can look up why a rule exists.</summary>
         /// <param name="ruleSet">The rule set the plans were resolved with.</param>
-        public void SetRuleSet(AudioRuleSet ruleSet) => _ruleSet = ruleSet;
+        internal void SetRuleSet(AudioRuleSet ruleSet) => _ruleSet = ruleSet;
 
         /// <summary>Shows a clip, or the empty state when nothing is selected.</summary>
         /// <param name="plan">The plan to describe.</param>
-        public void SetPlan(AudioClipPlan plan)
+        internal void SetPlan(AudioClipPlan plan)
         {
             _body.Clear();
 

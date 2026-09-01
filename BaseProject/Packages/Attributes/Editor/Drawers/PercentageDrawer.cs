@@ -1,4 +1,5 @@
 using Base.AttributePackage.Editor.Core;
+using Base.EditorUiPackage;
 using Base.UtilityPackage.Editor;
 using UnityEditor;
 using UnityEngine;
@@ -20,10 +21,20 @@ namespace Base.AttributePackage.Editor.Drawers
         private const float SignWidth = 16f;
         private const float ValueWidth = 50f;
 
-        private static GUIStyle SignStyle => _signStyle ??= new GUIStyle(EditorStyles.label)
+        private static GUIStyle SignStyle
         {
-            alignment = TextAnchor.MiddleLeft
-        };
+            get
+            {
+                EnsureFresh();
+
+                return _signStyle ??= new GUIStyle(EditorStyles.label)
+                {
+                    alignment = TextAnchor.MiddleLeft
+                };
+            }
+        }
+
+        private static readonly EditorStyleWatch Watch = new();
 
         private static GUIStyle _signStyle;
 
@@ -65,6 +76,19 @@ namespace Base.AttributePackage.Editor.Drawers
                 property.floatValue = Mathf.Clamp01(edited / FullPercent);
 
             EditorGUI.EndProperty();
+        }
+
+        // A GUIStyle copies its colors out of EditorStyles when it is built and does not stay
+        // linked to them, so a cached one keeps the previous theme's colors after a switch.
+        // Dropping it here has the next access rebuild it against the theme actually in use.
+        private static void EnsureFresh()
+        {
+            if (!Watch.IsStale)
+                return;
+
+            _signStyle = null;
+
+            Watch.MarkFresh();
         }
     }
 }

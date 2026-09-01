@@ -12,28 +12,28 @@ namespace Base.ToolPackage.Editor.ExecutionOrderOverview
     internal sealed class ExecutionOrderEntry
     {
         /// <summary>The script asset this entry was built from.</summary>
-        public MonoScript Script { get; }
+        internal MonoScript Script { get; }
 
         /// <summary>The runtime type declared by the script.</summary>
-        public Type Type { get; }
+        internal Type Type { get; }
 
         /// <summary>Short type name, used as the display label.</summary>
-        public string Name { get; }
+        internal string Name { get; }
 
         /// <summary>Namespace of the type, or a dash when it has none.</summary>
-        public string Namespace { get; }
+        internal string Namespace { get; }
 
         /// <summary>Project-relative asset path of the script.</summary>
-        public string AssetPath { get; }
+        internal string AssetPath { get; }
 
         /// <summary>Where the script's source lives.</summary>
-        public EAssetOrigin Origin { get; }
+        internal EAssetOrigin Origin { get; }
 
         /// <summary>
         /// Order that actually wins at runtime. The project value takes priority when it
         /// is non-zero; otherwise the attribute value is used.
         /// </summary>
-        public int EffectiveOrder => ProjectOrder != 0
+        internal int EffectiveOrder => ProjectOrder != 0
             ? ProjectOrder
             : AttributeOrder;
 

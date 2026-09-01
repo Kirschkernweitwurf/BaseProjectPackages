@@ -11,16 +11,16 @@ namespace Base.ToolPackage.Editor.ExecutionOrderOverview
     internal readonly struct ExecutionOrderColumnLayout
     {
         /// <summary>Effective execution order.</summary>
-        public Rect Order { get; }
+        internal Rect Order { get; }
 
         /// <summary>Clickable script name.</summary>
-        public Rect Name { get; }
+        internal Rect Name { get; }
 
         /// <summary>Type namespace.</summary>
-        public Rect Namespace { get; }
+        internal Rect Namespace { get; }
 
         /// <summary>Source badge (pkg / lib).</summary>
-        public Rect Badge { get; }
+        internal Rect Badge { get; }
 
         /// <summary>Builds the column rectangles inside the given row.</summary>
         public ExecutionOrderColumnLayout(Rect row)

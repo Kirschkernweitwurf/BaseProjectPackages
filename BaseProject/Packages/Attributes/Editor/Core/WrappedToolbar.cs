@@ -28,7 +28,7 @@ namespace Base.AttributePackage.Editor.Core
         /// <param name="labels">The tab labels.</param>
         /// <param name="width">The width the bar has to fit into.</param>
         /// <returns>The number of rows, at least one.</returns>
-        public static int Rows(string[] labels, float width)
+        internal static int Rows(string[] labels, float width)
         {
             Pack(labels, width);
 
@@ -40,7 +40,7 @@ namespace Base.AttributePackage.Editor.Core
         /// <param name="selected">The index currently selected.</param>
         /// <param name="labels">The tab labels.</param>
         /// <returns>The index after any click, which is the given one when nothing was clicked.</returns>
-        public static int DrawAt(Rect area, int selected, string[] labels)
+        internal static int DrawAt(Rect area, int selected, string[] labels)
         {
             if (labels.Length == 0 || RowStarts.Count == 0)
                 return selected;

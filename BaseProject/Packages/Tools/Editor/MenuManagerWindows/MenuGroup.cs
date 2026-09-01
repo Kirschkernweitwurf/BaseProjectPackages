@@ -22,7 +22,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         }
 
         /// <summary>Entries in this group.</summary>
-        public List<MenuEntry> Entries => entries;
+        internal List<MenuEntry> Entries => entries;
 
         /// <summary>Required by serialization.</summary>
         public MenuGroup() { }

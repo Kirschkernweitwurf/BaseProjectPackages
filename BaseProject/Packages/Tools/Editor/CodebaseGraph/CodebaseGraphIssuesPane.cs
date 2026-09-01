@@ -42,7 +42,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         private const string SuccessMark = "\u2713";
 
         /// <summary>How many findings are showing after the current filter.</summary>
-        public int VisibleCount => _entries.Count;
+        internal int VisibleCount => _entries.Count;
 
         private readonly List<FindingEntry> _all = new();
         private readonly List<FindingEntry> _entries = new();
@@ -85,7 +85,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
         /// <summary>Points the pane at a freshly built graph, or at nothing when the scan was cleared.</summary>
         /// <param name="graph">Graph to read, or null.</param>
-        public void SetGraph(CodebaseGraphData graph)
+        internal void SetGraph(CodebaseGraphData graph)
         {
             _graph = graph;
             Recollect();

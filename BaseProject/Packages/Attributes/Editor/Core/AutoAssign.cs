@@ -14,7 +14,7 @@ namespace Base.AttributePackage.Editor.Core
         /// <param name="context">The member currently being drawn.</param>
         /// <param name="fieldType">The type the field holds.</param>
         /// <returns>True when a search should run.</returns>
-        public static bool IsFillable(in MemberContext context, out Type fieldType)
+        internal static bool IsFillable(in MemberContext context, out Type fieldType)
         {
             fieldType = context.Field?.FieldType;
 

@@ -28,24 +28,24 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         /// <summary>Builds the id a member entry is published under.</summary>
         /// <param name="key">Identity of the member.</param>
         /// <returns>The entry id.</returns>
-        public static string MakeMemberId(MemberKey key) => MemberIdPrefix + key;
+        internal static string MakeMemberId(MemberKey key) => MemberIdPrefix + key;
 
         /// <summary>Builds the id a type entry is published under.</summary>
         /// <param name="key">Identity of the type.</param>
         /// <returns>The entry id.</returns>
-        public static string MakeTypeId(TypeKey key) => TypeIdPrefix + key;
+        internal static string MakeTypeId(TypeKey key) => TypeIdPrefix + key;
 
         /// <summary>Builds the id a namespace entry is published under.</summary>
         /// <param name="name">Full namespace name.</param>
         /// <returns>The entry id.</returns>
-        public static string MakeNamespaceId(string name) => NamespaceIdPrefix + name;
+        internal static string MakeNamespaceId(string name) => NamespaceIdPrefix + name;
 
         /// <summary>Builds the namespace level entries, or the neighborhood of a focused one.</summary>
         /// <param name="graph">Graph to read from.</param>
         /// <param name="filter">Current toolbar state.</param>
         /// <param name="focus">Namespace to center the view on, or null.</param>
         /// <returns>The entries to draw.</returns>
-        public static List<GraphEntry> BuildNamespaces(CodebaseGraphData graph,
+        internal static List<GraphEntry> BuildNamespaces(CodebaseGraphData graph,
             GraphFilter filter,
             NamespaceNodeInfo focus)
         {
@@ -75,7 +75,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         /// <param name="namespaceName">Namespace to restrict to, or null for all.</param>
         /// <param name="focus">Type to center the view on, or null.</param>
         /// <returns>The entries to draw.</returns>
-        public static List<GraphEntry> BuildTypes(CodebaseGraphData graph,
+        internal static List<GraphEntry> BuildTypes(CodebaseGraphData graph,
             GraphFilter filter,
             string namespaceName,
             TypeNodeInfo focus,
@@ -114,7 +114,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         /// <param name="owner">Type whose members are shown.</param>
         /// <param name="focus">Member to center the view on, or null.</param>
         /// <returns>The entries to draw.</returns>
-        public static List<GraphEntry> BuildMembers(CodebaseGraphData graph,
+        internal static List<GraphEntry> BuildMembers(CodebaseGraphData graph,
             GraphFilter filter,
             TypeNodeInfo owner,
             MemberNodeInfo focus)
@@ -151,7 +151,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         /// <param name="filter">Current toolbar state, carrying the search text.</param>
         /// <param name="total">Receives how many matched before the cap was applied.</param>
         /// <returns>The entries to draw.</returns>
-        public static List<GraphEntry> BuildSearch(CodebaseGraphData graph, GraphFilter filter, out int total)
+        internal static List<GraphEntry> BuildSearch(CodebaseGraphData graph, GraphFilter filter, out int total)
         {
             bool wantsTypes = filter.SearchScope != ESearchScope.Members;
             bool wantsMembers = filter.SearchScope != ESearchScope.Types;

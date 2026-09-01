@@ -17,23 +17,23 @@ namespace Base.AttributePackage.Editor.Core
         private const float MinimumWidth = 40f;
 
         /// <summary>Display label per button.</summary>
-        public string[] Labels { get; private set; }
+        internal string[] Labels { get; private set; }
 
         /// <summary>Flag bits per button. Null for plain enums, which map by value index instead.</summary>
-        public int[] Values { get; private set; }
+        internal int[] Values { get; private set; }
 
         /// <summary>Whether the enum is a flags enum and the buttons multi-select.</summary>
-        public bool IsFlags { get; private set; }
+        internal bool IsFlags { get; private set; }
 
         /// <summary>Width the widest label needs, used to decide how many buttons fit per row.</summary>
-        public float MinButtonWidth { get; private set; }
+        internal float MinButtonWidth { get; private set; }
 
         private EnumButtonLayout() { }
 
         /// <summary>
         /// Builds the layout for the given enum type, or null when the enum offers no drawable values.
         /// </summary>
-        public static EnumButtonLayout Build(Type enumType, SerializedProperty property)
+        internal static EnumButtonLayout Build(Type enumType, SerializedProperty property)
         {
             EnumButtonLayout layout = new()
             {

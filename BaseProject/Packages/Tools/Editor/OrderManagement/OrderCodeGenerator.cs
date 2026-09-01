@@ -14,7 +14,7 @@ namespace Base.ToolPackage.Editor.OrderManagement
         private const string Indent = "    ";
 
         /// <summary>Generates the constants file and refreshes the AssetDatabase.</summary>
-        public static void Generate(OrderRegistry registry)
+        internal static void Generate(OrderRegistry registry)
         {
             if (registry == null)
                 return;

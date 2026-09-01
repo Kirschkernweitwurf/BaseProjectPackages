@@ -6,13 +6,13 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot.Ch
     internal readonly struct FieldTypeRule
     {
         /// <summary>The attribute the rule applies to.</summary>
-        public readonly Type AttributeType;
+        internal readonly Type AttributeType;
 
         /// <summary>Returns whether the given field type is supported by the attribute.</summary>
-        public readonly Func<Type, bool> Accepts;
+        internal readonly Func<Type, bool> Accepts;
 
         /// <summary>What the field type has to be, phrased for the message.</summary>
-        public readonly string Requirement;
+        internal readonly string Requirement;
 
         /// <summary>Creates a rule.</summary>
         /// <param name="attributeType">The attribute the rule applies to.</param>

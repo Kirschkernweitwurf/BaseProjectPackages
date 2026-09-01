@@ -18,7 +18,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         static MenuApplier() => Schedule();
 
         /// <summary>Rescans, syncs both stores, and re-registers every enabled entry of both kinds.</summary>
-        public static void Apply(bool log)
+        internal static void Apply(bool log)
         {
             Dictionary<string, ResolvedMenu> resolved = MenuScanner.Scan();
             MenuComposite.Sync(resolved);

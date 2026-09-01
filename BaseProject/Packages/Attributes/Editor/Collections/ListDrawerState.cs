@@ -13,7 +13,7 @@ namespace Base.AttributePackage.Editor.Collections
     internal sealed class ListDrawerState
     {
         /// <summary>Current filter text, empty when nothing is filtered.</summary>
-        public string Search { get; set; } = string.Empty;
+        internal string Search { get; set; } = string.Empty;
 
         private static readonly Dictionary<string, ListDrawerState> States = new();
 
@@ -30,14 +30,14 @@ namespace Base.AttributePackage.Editor.Collections
         /// guards is shared by Unity across every object of a type, so a per-instance key would force it
         /// open again on the next object and undo the fold on the one before it.
         /// </remarks>
-        public static bool IsFirstDraw(SerializedProperty property) => Seen.Add(TypeKeyFor(property));
+        internal static bool IsFirstDraw(SerializedProperty property) => Seen.Add(TypeKeyFor(property));
 
         /// <summary>
         /// Treats every property of the given type as never drawn, so a default expanded state is
         /// applied once more on the next draw.
         /// </summary>
         /// <param name="owner">The type to forget.</param>
-        public static void Forget(Type owner)
+        internal static void Forget(Type owner)
         {
             if (owner == null)
                 return;
@@ -50,7 +50,7 @@ namespace Base.AttributePackage.Editor.Collections
         /// <summary>Returns the state belonging to the given property, creating it on first use.</summary>
         /// <param name="property">The list property being drawn.</param>
         /// <returns>The state for that property.</returns>
-        public static ListDrawerState For(SerializedProperty property)
+        internal static ListDrawerState For(SerializedProperty property)
         {
             string key = InstanceKeyFor(property);
 

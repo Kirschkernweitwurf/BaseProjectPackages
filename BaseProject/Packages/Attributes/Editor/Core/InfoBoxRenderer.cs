@@ -35,12 +35,12 @@ namespace Base.AttributePackage.Editor.Core
 
         /// <summary>Draws the box for the given attribute, using its own message.</summary>
         /// <param name="attribute">The attribute to draw.</param>
-        public static void Draw(InfoBoxAttribute attribute) => Draw(attribute, attribute?.Message);
+        internal static void Draw(InfoBoxAttribute attribute) => Draw(attribute, attribute?.Message);
 
         /// <summary>Draws the box for the given attribute with an already resolved message.</summary>
         /// <param name="attribute">The attribute to draw.</param>
         /// <param name="message">The message to show.</param>
-        public static void Draw(InfoBoxAttribute attribute, string message)
+        internal static void Draw(InfoBoxAttribute attribute, string message)
         {
             if (attribute == null)
                 return;
@@ -57,7 +57,7 @@ namespace Base.AttributePackage.Editor.Core
         /// <summary>Maps the package's box type onto Unity's own.</summary>
         /// <param name="type">The box type to map.</param>
         /// <returns>The matching message type.</returns>
-        public static MessageType ToMessageType(EInfoBoxType type)
+        internal static MessageType ToMessageType(EInfoBoxType type)
         {
             switch (type)
             {

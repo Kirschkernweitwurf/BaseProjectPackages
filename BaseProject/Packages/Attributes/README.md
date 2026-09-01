@@ -58,6 +58,24 @@ Numeric bounds work the same way without the prefix, because a bound that could 
 [MinMaxSlider(nameof(min), nameof(max))] public Vector2 band;
 ```
 
+## One namespace for the whole package
+
+Every runtime type in this package declares `Base.AttributePackage`, whatever subfolder it sits in.
+`Validation`, `Widgets`, `References`, `Layout`, `Conditional` and the rest are folders for finding
+things, not namespaces.
+
+That is deliberate. An attribute library is used by sprinkling attributes across a project, and one
+`using Base.AttributePackage;` should be enough to reach all of them. Splitting the namespace by
+folder would mean six using lines on a file that uses six attributes.
+
+The folders are marked as non-namespace-providers, so the IDE does not offer to "fix" the mismatch.
+In Rider that is **right-click the folder > Properties > Namespace provider: off**. A folder scan
+that reports these as namespace violations is reporting the convention, not a problem.
+
+The editor assembly does not work this way. `Base.AttributePackage.Editor.Drawers`,
+`.Handlers`, `.Core` and `.Windows` all mirror their folders, because nothing outside the package
+writes against them.
+
 ## Layout and display
 
 ```csharp

@@ -76,6 +76,16 @@ namespace Base.EditorUiPackage
         /// <param name="fill">The badge background color.</param>
         /// <param name="style">The style the text is drawn with.</param>
         public static void DrawBadge(Rect cell, string text, Color fill, GUIStyle style)
+            => DrawBadge(cell, EditorGUIUtility.TrTempContent(text), fill, style);
+
+        /// <summary>
+        /// Draws a filled badge, vertically centered in its cell.
+        /// </summary>
+        /// <param name="cell">The cell the badge is centered in.</param>
+        /// <param name="content">The badge text, and the tooltip shown on hover.</param>
+        /// <param name="fill">The badge background color.</param>
+        /// <param name="style">The style the text is drawn with.</param>
+        public static void DrawBadge(Rect cell, GUIContent content, Color fill, GUIStyle style)
         {
             Rect badge = new(cell.x, cell.y + (cell.height - EditorMetrics.BadgeHeight) * 0.5f,
                 cell.width, EditorMetrics.BadgeHeight);
@@ -83,7 +93,7 @@ namespace Base.EditorUiPackage
             if (Event.current.type == EventType.Repaint)
                 EditorGUI.DrawRect(badge, fill);
 
-            GUI.Label(badge, text, style);
+            GUI.Label(badge, content, style);
         }
 
         /// <summary>

@@ -23,13 +23,13 @@ namespace Base.ToolPackage.Editor.CommandPalette
         private readonly Action _execute;
 
         /// <summary>Stable id used to store tags and usage, independent of the current path.</summary>
-        public string Id { get; }
+        internal string Id { get; }
 
         /// <summary>Full menu path the entry is indexed by, root segment included.</summary>
-        public string Path { get; }
+        internal string Path { get; }
 
         /// <summary>Lowercase copy of <see cref="Path"/>, cached because every keystroke reads it.</summary>
-        public string LowerPath { get; }
+        internal string LowerPath { get; }
 
         /// <summary>
         /// The entry's own search terms, lowercase, whitespace removed and separated by a
@@ -40,22 +40,22 @@ namespace Base.ToolPackage.Editor.CommandPalette
         /// a long run of keywords almost any few letters appear in order somewhere, so every entry
         /// carrying them would match everything. They are matched as a plain substring instead.
         /// </remarks>
-        public string LowerKeywords { get; }
+        internal string LowerKeywords { get; }
 
         /// <summary>Index of the first character of the last path segment.</summary>
-        public int LeafStart { get; }
+        internal int LeafStart { get; }
 
         /// <summary>Type that declares the command, or null when it could not be resolved.</summary>
-        public Type Owner { get; }
+        internal Type Owner { get; }
 
         /// <summary>Short name of <see cref="Owner"/>, shown as the secondary label.</summary>
-        public string Detail { get; }
+        internal string Detail { get; }
 
         /// <summary>What executing the entry does.</summary>
-        public ECommandKind Kind { get; }
+        internal ECommandKind Kind { get; }
 
         /// <summary>Where the declaring code lives.</summary>
-        public EAssetOrigin Origin { get; }
+        internal EAssetOrigin Origin { get; }
 
         /// <summary>Creates an entry.</summary>
         /// <param name="id">Stable id used for tags and usage.</param>
@@ -89,7 +89,7 @@ namespace Base.ToolPackage.Editor.CommandPalette
         }
 
         /// <summary>Runs the command.</summary>
-        public void Execute() => _execute();
+        internal void Execute() => _execute();
 
         // Whitespace is dropped because the search box concatenates its tokens without any, so a
         // typed "contact offset" arrives as one word and would never match "Contact Offset".

@@ -22,7 +22,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Apply
         /// <param name="plans">The plans to write.</param>
         /// <param name="platform">The import target the plans were resolved for.</param>
         /// <returns>How many clips were changed.</returns>
-        public static int Apply(IReadOnlyList<AudioClipPlan> plans, string platform)
+        internal static int Apply(IReadOnlyList<AudioClipPlan> plans, string platform)
         {
             if (plans == null
                 || plans.Count == 0)
@@ -58,7 +58,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Apply
         /// <param name="importer">The importer to write.</param>
         /// <param name="platform">The import target, empty for the default settings.</param>
         /// <param name="values">The values to write.</param>
-        public static void Write(AudioImporter importer, string platform, AudioSettingValues values)
+        internal static void Write(AudioImporter importer, string platform, AudioSettingValues values)
         {
             AudioImporterSampleSettings settings = AudioPlatformTargets.Read(importer, platform);
 

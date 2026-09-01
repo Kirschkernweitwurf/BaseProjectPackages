@@ -12,7 +12,7 @@ namespace Base.AttributePackage.Editor
         private static readonly GUIContent Content = new();
 
         /// <summary>Returns the shared content filled with the given text.</summary>
-        public static GUIContent For(string text)
+        internal static GUIContent For(string text)
         {
             Content.text = text;
             return Content;

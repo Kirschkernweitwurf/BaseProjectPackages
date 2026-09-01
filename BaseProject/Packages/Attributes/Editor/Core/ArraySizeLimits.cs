@@ -14,7 +14,7 @@ namespace Base.AttributePackage.Editor.Core
         /// <param name="minimum">Smallest allowed count, or -1.</param>
         /// <param name="maximum">Largest allowed count, or -1.</param>
         /// <returns>True when the member is bounded and is an array.</returns>
-        public static bool TryGet(in MemberContext context, out int minimum, out int maximum)
+        internal static bool TryGet(in MemberContext context, out int minimum, out int maximum)
         {
             minimum = ArraySizeAttribute.Unbounded;
             maximum = ArraySizeAttribute.Unbounded;
@@ -45,7 +45,7 @@ namespace Base.AttributePackage.Editor.Core
         /// </summary>
         /// <param name="context">The member currently being drawn.</param>
         /// <returns>True when rows may be added or removed.</returns>
-        public static bool CanResize(in MemberContext context)
+        internal static bool CanResize(in MemberContext context)
         {
             if (!TryGet(context, out int minimum, out int maximum))
                 return true;

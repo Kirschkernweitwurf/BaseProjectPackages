@@ -5,11 +5,11 @@ namespace Base.ToolPackage.Editor.StaticResetChecker
     /// </summary>
     internal class Finding
     {
-        public string AssetPath;
-        public string AbsolutePath;
-        public int Line;
-        public string Name;
-        public string Kind;
-        public string Snippet;
+        internal string AssetPath;
+        internal string AbsolutePath;
+        internal int Line;
+        internal string Name;
+        internal string Kind;
+        internal string Snippet;
     }
 }

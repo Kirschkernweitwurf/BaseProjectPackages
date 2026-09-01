@@ -16,10 +16,10 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
     internal static class AssetNamingGui
     {
         /// <summary>Horizontal padding between columns.</summary>
-        public const float Padding = 6f;
+        internal const float Padding = 6f;
 
         /// <summary>Height of a single table row.</summary>
-        public const float RowHeight = 22f;
+        internal const float RowHeight = 22f;
 
         private const float BadgeHeight = 16f;
         private const float BadgeWidth = 30f;
@@ -28,19 +28,18 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
         private const float SectionHeight = 22f;
         private const float StripeWidth = 3f;
         private const float SuccessGap = 8f;
-        private const string SuccessIcon = "TestPassed";
         private const float SuccessIconSize = 20f;
         private const int SuccessTitleFontSize = 15;
         private const float SuccessTitleGap = 2f;
 
         /// <summary>Dimmed style for secondary columns like rule, reason, path and time.</summary>
-        public static GUIStyle DetailStyle => _detailStyle ??= new GUIStyle(EditorStyles.miniLabel)
+        internal static GUIStyle DetailStyle => _detailStyle ??= new GUIStyle(EditorStyles.miniLabel)
         {
             alignment = TextAnchor.MiddleLeft
         };
 
         /// <summary>Style of asset names.</summary>
-        public static GUIStyle NameStyle => _nameStyle ??= new GUIStyle(EditorStyles.label)
+        internal static GUIStyle NameStyle => _nameStyle ??= new GUIStyle(EditorStyles.label)
         {
             alignment = TextAnchor.MiddleLeft
         };
@@ -64,9 +63,6 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
             fontSize = EditorStyles.miniBoldLabel.fontSize,
             fontStyle = FontStyle.Bold
         };
-
-        /// <summary>Green check icon, the same one the project health overviews use.</summary>
-        private static Texture SuccessTexture => _successTexture ??= EditorGUIUtility.IconContent(SuccessIcon).image;
 
         private static GUIStyle SuccessTitleStyle => _successTitleStyle ??= new GUIStyle(EditorStyles.boldLabel)
         {
@@ -97,19 +93,19 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
         };
 
         /// <summary>Blue accent of the Rules section.</summary>
-        public static readonly Color RulesAccent = new(0.33f, 0.52f, 0.74f);
+        internal static readonly Color RulesAccent = new(0.33f, 0.52f, 0.74f);
 
         /// <summary>Calm gray accent of the Dismissed section.</summary>
-        public static readonly Color DismissedAccent = new(0.55f, 0.55f, 0.58f);
+        internal static readonly Color DismissedAccent = new(0.55f, 0.55f, 0.58f);
 
         /// <summary>Teal accent of the Scan Results section.</summary>
-        public static readonly Color ResultsAccent = new(0.26f, 0.62f, 0.58f);
+        internal static readonly Color ResultsAccent = new(0.26f, 0.62f, 0.58f);
 
         /// <summary>Light green accent of the History section.</summary>
-        public static readonly Color HistoryAccent = new(0.62f, 0.78f, 0.5f);
+        internal static readonly Color HistoryAccent = new(0.62f, 0.78f, 0.5f);
 
         /// <summary>Line color of column dividers and table borders.</summary>
-        public static Color DividerColor => EditorPalette.Divider;
+        internal static Color DividerColor => EditorPalette.Divider;
 
         /// <summary>Zebra striping of table rows.</summary>
         private static Color EvenRowColor => EditorPalette.Stripe;
@@ -121,7 +117,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
         private static Color SuccessSubtitleColor => EditorPalette.DimText;
 
         /// <summary>Casing options, each written in the casing it stands for.</summary>
-        public static readonly string[] StyleLabels =
+        internal static readonly string[] StyleLabels =
         {
             "Any",
             "PascalCase",
@@ -133,6 +129,10 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
 
         private static readonly EditorStyleWatch Watch = new();
 
+        // Reused rather than built per repaint, and its image is re-read each draw so the fake-null
+        // check EditorIcons does on every access is not defeated by a content holding a dead texture.
+        private static readonly GUIContent SuccessContent = new();
+
         private static GUIStyle _badgeStyle;
         private static GUIStyle _detailStyle;
         private static GUIStyle _foldoutStyle;
@@ -140,13 +140,12 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
         private static GUIStyle _nameStyle;
         private static GUIStyle _successSubtitleStyle;
         private static GUIStyle _successTitleStyle;
-        private static Texture _successTexture;
 
         /// <summary>
         /// Draws a tinted, color coded section header with a count badge and returns the new
         /// expanded state.
         /// </summary>
-        public static bool DrawSectionHeader(bool expanded, string label, int count, Color accent)
+        internal static bool DrawSectionHeader(bool expanded, string label, int count, Color accent)
         {
             Rect rect = GUILayoutUtility.GetRect(0f, SectionHeight, GUILayout.ExpandWidth(true));
             rect = new Rect(rect.x + 2f, rect.y + 2f, rect.width - 4f, rect.height - 2f);
@@ -177,7 +176,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
         /// Draws a smaller header for a group inside a section, for example one folder of the
         /// results, and returns the new expanded state.
         /// </summary>
-        public static bool DrawGroupHeader(bool expanded, string label, int count, Color accent)
+        internal static bool DrawGroupHeader(bool expanded, string label, int count, Color accent)
         {
             Rect rect = GUILayoutUtility.GetRect(0f, GroupHeight, GUILayout.ExpandWidth(true));
             rect = new Rect(rect.x + 10f, rect.y, rect.width - 12f, rect.height);
@@ -198,7 +197,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
         /// Drops every cached style after either theme changes. Call once per GUI pass, before
         /// anything reads a style.
         /// </summary>
-        public static void EnsureFresh()
+        internal static void EnsureFresh()
         {
             if (!Watch.IsStale)
                 return;
@@ -215,7 +214,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
         }
 
         /// <summary>Draws the zebra striping of a row.</summary>
-        public static void DrawRowBackground(Rect row, int index)
+        internal static void DrawRowBackground(Rect row, int index)
         {
             if (index % 2 != 0)
                 return;
@@ -227,7 +226,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
         }
 
         /// <summary>Draws the tinted strip and the baseline behind a table header.</summary>
-        public static void DrawHeaderBackground(Rect rect)
+        internal static void DrawHeaderBackground(Rect rect)
         {
             if (Event.current.type != EventType.Repaint)
                 return;
@@ -238,7 +237,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
         }
 
         /// <summary>Draws the centered green block shown when there is nothing left to fix.</summary>
-        public static void DrawSuccess(string title, string subtitle)
+        internal static void DrawSuccess(string title, string subtitle)
         {
             EditorGUILayout.Space(SuccessGap);
 
@@ -249,7 +248,9 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
             {
                 GUILayout.FlexibleSpace();
 
-                GUILayout.Label(new GUIContent(SuccessTexture), GUILayout.Width(SuccessIconSize),
+                SuccessContent.image = EditorIcons.Success;
+
+                GUILayout.Label(SuccessContent, GUILayout.Width(SuccessIconSize),
                     GUILayout.Height(SuccessIconSize));
 
                 GUILayout.FlexibleSpace();

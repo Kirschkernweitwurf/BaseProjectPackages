@@ -48,7 +48,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         /// <param name="packageAssemblies">Receives the names of the ones that ship inside a package.</param>
         /// <param name="testAssemblies">Receives the names of the ones that hold tests.</param>
         /// <returns>The assemblies to scan, sorted by name.</returns>
-        public static List<Assembly> Resolve(HashSet<string> packageAssemblies, HashSet<string> testAssemblies)
+        internal static List<Assembly> Resolve(HashSet<string> packageAssemblies, HashSet<string> testAssemblies)
         {
             HashSet<string> wanted = CollectWantedNames(packageAssemblies);
             List<Assembly> result = new();
@@ -80,7 +80,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         /// same code the pass over the compiled types does.
         /// </summary>
         /// <returns>Project relative paths, compared without case so Windows behaves.</returns>
-        public static HashSet<string> CollectProjectSourceFiles()
+        internal static HashSet<string> CollectProjectSourceFiles()
         {
             HashSet<string> files = new(StringComparer.OrdinalIgnoreCase);
 

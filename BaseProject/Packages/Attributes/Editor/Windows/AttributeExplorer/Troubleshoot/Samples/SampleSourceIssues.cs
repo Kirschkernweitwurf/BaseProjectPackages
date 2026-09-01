@@ -14,10 +14,10 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot.Sa
     internal sealed class SampleSourceIssues
     {
         /// <summary>A float, used to show a source pointing at the wrong type.</summary>
-        public float speed;
+        internal float speed;
 
         /// <summary>A Transform, used to show an Animator source of the wrong type.</summary>
-        public Transform notAnAnimator;
+        internal Transform notAnAnimator;
 
         /// <summary>Reads its options from something that is not enumerable.</summary>
         [Dropdown(nameof(speed))] public string notEnumerable;

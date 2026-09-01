@@ -32,7 +32,7 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
         }
 
         /// <summary>Clears and rebuilds the graph from the given visible nodes.</summary>
-        public void Rebuild(IReadOnlyList<AssemblyNodeInfo> visibleNodes, string focusedName)
+        internal void Rebuild(IReadOnlyList<AssemblyNodeInfo> visibleNodes, string focusedName)
         {
             DeleteElements(graphElements.ToList());
             if (visibleNodes.Count == 0)

@@ -32,7 +32,7 @@ namespace Base.ToolPackage.Editor.OverviewGui.UnusedAssetsOverviewWindow
         };
         private static readonly Regex GuidRegex = new(@"guid:\s*([0-9a-fA-F]{32})", RegexOptions.Compiled);
 
-        public static List<UnusedAssetEntry> Scan(bool ignoreEditorFolders)
+        internal static List<UnusedAssetEntry> Scan(bool ignoreEditorFolders)
         {
             string[] allPaths = AssetDatabase.GetAllAssetPaths();
             string projectPath = Application.dataPath.Substring(0, Application.dataPath.Length - "Assets".Length);

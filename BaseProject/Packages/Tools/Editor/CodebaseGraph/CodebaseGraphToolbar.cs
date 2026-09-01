@@ -87,11 +87,11 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
 
         /// <summary>The largest number of steps out the neighbor control offers.</summary>
         /// <returns>The maximum depth.</returns>
-        public static int ReadNeighborMaximum() => NeighborMaximum;
+        internal static int ReadNeighborMaximum() => NeighborMaximum;
 
         /// <summary>Replaces the assembly choices after a scan and selects them all.</summary>
         /// <param name="assemblies">Assemblies the scan covered.</param>
-        public void SetAssemblies(IEnumerable<string> assemblies)
+        internal void SetAssemblies(IEnumerable<string> assemblies)
         {
             List<string> choices = new()
             {
@@ -108,14 +108,14 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         /// <summary>True when an assembly is among the current choices.</summary>
         /// <param name="assembly">Assembly name to look for.</param>
         /// <returns>True when it can be selected.</returns>
-        public bool HasAssembly(string assembly) => _assemblyField.choices.Contains(assembly);
+        internal bool HasAssembly(string assembly) => _assemblyField.choices.Contains(assembly);
 
         /// <summary>
         /// Pushes the filter values into the controls, after restoring them from disk. The two menus
         /// need nothing here: they read the filter every time they open, so they cannot fall out of step
         /// with it.
         /// </summary>
-        public void Sync()
+        internal void Sync()
         {
             _findingField.index = FindingCatalog.GetIndex(_filter.Finding);
             _searchScopeField.index = (int)_filter.SearchScope;
@@ -126,7 +126,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         }
 
         /// <summary>Clears the search box without raising a change.</summary>
-        public void ClearSearch()
+        internal void ClearSearch()
         {
             _filter.Search = string.Empty;
             _searchField.SetValueWithoutNotify(string.Empty);
@@ -137,7 +137,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         /// notice rather than in the toolbar, because it only means anything while something is focused.
         /// </summary>
         /// <returns>The control, for the caller to place.</returns>
-        public VisualElement CreateNeighborField()
+        internal VisualElement CreateNeighborField()
         {
             _neighborField = new PopupField<string>(BuildNeighborChoices(), 0)
             {

@@ -34,7 +34,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Scanning
         /// <param name="platform">The import target being resolved, empty for the default settings.</param>
         /// <param name="matchCounts">Counts per rule label, raised for every rule that matched.</param>
         /// <returns>The plan for the clip.</returns>
-        public static AudioClipPlan Resolve(AudioClipInfo info, AudioRuleSet ruleSet, string platform,
+        internal static AudioClipPlan Resolve(AudioClipInfo info, AudioRuleSet ruleSet, string platform,
             IDictionary<string, int> matchCounts)
         {
             AudioSettingValues target = info.Current.Clone();
@@ -72,7 +72,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Scanning
         /// <param name="target">What the rules want.</param>
         /// <param name="setting">The setting to compare.</param>
         /// <returns>True when applying would change something.</returns>
-        public static bool Differs(AudioSettingValues current, AudioSettingValues target, EAudioSetting setting)
+        internal static bool Differs(AudioSettingValues current, AudioSettingValues target, EAudioSetting setting)
             => setting switch
             {
                 EAudioSetting.CompressionFormat => current.CompressionFormat != target.CompressionFormat,
@@ -89,7 +89,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Scanning
         /// <param name="values">The settings to read.</param>
         /// <param name="setting">The setting to describe.</param>
         /// <returns>The value as text.</returns>
-        public static string Describe(AudioSettingValues values, EAudioSetting setting) => setting switch
+        internal static string Describe(AudioSettingValues values, EAudioSetting setting) => setting switch
         {
             EAudioSetting.CompressionFormat => values.CompressionFormat.ToString(),
             EAudioSetting.ForceToMono => values.ForceToMono.ToString(),
@@ -103,7 +103,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Scanning
 
         /// <summary>Every setting the tool knows about, in a fixed order for the details pane.</summary>
         /// <returns>The settings.</returns>
-        public static IReadOnlyList<EAudioSetting> Settings() => AllSettings;
+        internal static IReadOnlyList<EAudioSetting> Settings() => AllSettings;
 
         /// <summary>
         /// False when a setting does nothing for these values, so the window can say so instead of
@@ -112,7 +112,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Scanning
         /// <param name="values">The settings to read.</param>
         /// <param name="setting">The setting to ask about.</param>
         /// <returns>True when the setting matters.</returns>
-        public static bool IsApplicable(AudioSettingValues values, EAudioSetting setting)
+        internal static bool IsApplicable(AudioSettingValues values, EAudioSetting setting)
             => setting != EAudioSetting.Quality || IsLossy(values.CompressionFormat);
 
         // The slider only reaches a lossy encoder. On PCM and ADPCM the stored number is real but

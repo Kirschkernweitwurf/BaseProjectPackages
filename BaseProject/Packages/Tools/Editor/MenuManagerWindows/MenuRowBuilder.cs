@@ -18,7 +18,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         /// <param name="kind">Kind of entries the window manages.</param>
         /// <param name="rows">Row list to refill.</param>
         /// <param name="lockedLists">Set of read only node lists to refill.</param>
-        public static void Build(MenuRegistry registry, MenuOverlay overlay, EMenuEntryKind kind,
+        internal static void Build(MenuRegistry registry, MenuOverlay overlay, EMenuEntryKind kind,
             List<MenuRow> rows, HashSet<List<MenuNode>> lockedLists)
         {
             rows.Clear();

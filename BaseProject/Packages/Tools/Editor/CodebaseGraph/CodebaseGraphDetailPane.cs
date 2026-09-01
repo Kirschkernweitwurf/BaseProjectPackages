@@ -108,7 +108,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         /// <summary>Shows everything known about one entry.</summary>
         /// <param name="entry">Entry to describe.</param>
         /// <param name="graph">Graph the entry came from, used to name its relations.</param>
-        public void Show(GraphEntry entry, CodebaseGraphData graph)
+        internal void Show(GraphEntry entry, CodebaseGraphData graph)
         {
             _content.Clear();
 

@@ -18,7 +18,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Showcase
 
         /// <summary>Draws the explanation and the showcase inspector.</summary>
         /// <param name="showcase">The in-memory showcase asset.</param>
-        public static void Draw(AttributeShowcase showcase)
+        internal static void Draw(AttributeShowcase showcase)
         {
             EditorGUILayout.HelpBox(Explanation, MessageType.Info);
 

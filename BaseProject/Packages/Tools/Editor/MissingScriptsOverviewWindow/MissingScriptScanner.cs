@@ -13,7 +13,7 @@ namespace Base.ToolPackage.Editor.MissingScriptsOverviewWindow
     /// </summary>
     internal static class MissingScriptScanner
     {
-        public static List<MissingScriptEntry> Scan(bool scanScenes,
+        internal static List<MissingScriptEntry> Scan(bool scanScenes,
             bool scanAllScenes,
             bool scanPrefabs,
             bool scanScriptableObjects)

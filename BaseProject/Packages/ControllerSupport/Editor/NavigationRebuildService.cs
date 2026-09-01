@@ -28,7 +28,7 @@ namespace Base.ControllerSupportPackage.Editor
         };
 
         /// <summary>Rebuilds a single group and marks everything it touched dirty.</summary>
-        public static void RebuildGroup(NavigableGroup group)
+        internal static void RebuildGroup(NavigableGroup group)
         {
             if (group == null)
             {
@@ -42,7 +42,7 @@ namespace Base.ControllerSupportPackage.Editor
         }
 
         /// <summary>Rebuilds every group in the loaded scenes, including the ones on inactive objects.</summary>
-        public static void RebuildLoadedScenes()
+        internal static void RebuildLoadedScenes()
         {
             int rebuilt = RebuildFoundGroups();
             CustomLogger.Log($"Rebuilt {rebuilt} navigable group(s) in the loaded scenes.", null);
@@ -53,7 +53,7 @@ namespace Base.ControllerSupportPackage.Editor
         /// each scene one by one and restores the current scene setup afterward. Does nothing when the
         /// user cancels over unsaved changes.
         /// </summary>
-        public static void RebuildProject()
+        internal static void RebuildProject()
         {
             if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
                 return;

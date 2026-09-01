@@ -20,7 +20,7 @@ namespace Base.AttributePackage.Editor.Windows.GetComponentAssigner
         private const string PrefabFilter = "t:Prefab";
         private const string ProgressTitle = "Assigning GetComponent references";
 
-        public static int Run(bool includePrefabs, bool includeScenes)
+        internal static int Run(bool includePrefabs, bool includeScenes)
         {
             int assigned = 0;
 

@@ -17,12 +17,12 @@ namespace Base.ToolPackage.Editor.OrderManagement
         private string comment;
 
         /// <summary>Identifier used for the generated constant.</summary>
-        public string Name => name;
+        internal string Name => name;
 
         /// <summary>Value assigned to the generated constant.</summary>
-        public int Value => value;
+        internal int Value => value;
 
         /// <summary>Optional text emitted as an XML summary above the constant.</summary>
-        public string Comment => comment;
+        internal string Comment => comment;
     }
 }

@@ -23,18 +23,18 @@ namespace Base.ToolPackage.Editor.OrderManagement
         private List<OrderConstant> constants = new();
 
         /// <summary>Project relative or absolute folder the generated file is written to.</summary>
-        public string OutputDirectory => outputDirectory;
+        internal string OutputDirectory => outputDirectory;
 
         /// <summary>Namespace of the generated code.</summary>
-        public string GeneratedNamespace => generatedNamespace;
+        internal string GeneratedNamespace => generatedNamespace;
 
         /// <summary>Name of the generated root static class. Also used as the file name.</summary>
-        public string RootClassName => rootClassName;
+        internal string RootClassName => rootClassName;
 
         /// <summary>All configured constants.</summary>
-        public IReadOnlyList<OrderConstant> Constants => constants;
+        internal IReadOnlyList<OrderConstant> Constants => constants;
 
         /// <summary>Writes the in-memory state to disk.</summary>
-        public void Persist() => Save(true);
+        internal void Persist() => Save(true);
     }
 }

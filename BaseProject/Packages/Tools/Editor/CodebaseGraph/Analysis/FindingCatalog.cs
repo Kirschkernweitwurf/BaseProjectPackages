@@ -60,7 +60,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
 
         /// <summary>Builds the dropdown entries in display order.</summary>
         /// <returns>The labels to show.</returns>
-        public static List<string> BuildChoices()
+        internal static List<string> BuildChoices()
         {
             List<string> choices = new(Order.Length);
 
@@ -73,14 +73,14 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         /// <summary>Returns the finding at a dropdown position.</summary>
         /// <param name="index">Index the dropdown reported.</param>
         /// <returns>The matching finding, or none when the index is out of range.</returns>
-        public static EFinding GetAt(int index) => index < 0 || index >= Order.Length
+        internal static EFinding GetAt(int index) => index < 0 || index >= Order.Length
             ? EFinding.None
             : Order[index];
 
         /// <summary>Returns the dropdown position of a finding.</summary>
         /// <param name="finding">Finding to locate.</param>
         /// <returns>The index, or zero when the finding is not listed.</returns>
-        public static int GetIndex(EFinding finding)
+        internal static int GetIndex(EFinding finding)
         {
             for (int index = 0; index < Order.Length; index++)
             {
@@ -94,7 +94,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         /// <summary>Returns everything the window can say about a finding.</summary>
         /// <param name="finding">Finding to describe.</param>
         /// <returns>The descriptor.</returns>
-        public static FindingDescriptor Describe(EFinding finding)
+        internal static FindingDescriptor Describe(EFinding finding)
             => Descriptors.TryGetValue(finding, out FindingDescriptor descriptor)
                 ? descriptor
                 : Descriptors[EFinding.None];
@@ -102,13 +102,13 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         /// <summary>True when this namespace was dismissed during triage.</summary>
         /// <param name="group">Namespace to test.</param>
         /// <returns>True when its findings are hidden.</returns>
-        public static bool IsHidden(NamespaceNodeInfo group)
+        internal static bool IsHidden(NamespaceNodeInfo group)
             => !DismissalStore.IsEmpty && DismissalStore.Contains(group.DismissalId);
 
         /// <summary>True when this type, or the namespace holding it, was dismissed during triage.</summary>
         /// <param name="type">Type to test.</param>
         /// <returns>True when its findings are hidden.</returns>
-        public static bool IsHidden(TypeNodeInfo type)
+        internal static bool IsHidden(TypeNodeInfo type)
         {
             if (DismissalStore.IsEmpty)
                 return false;
@@ -121,7 +121,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         /// <param name="declaring">Type the member is declared on.</param>
         /// <param name="member">Member to test.</param>
         /// <returns>True when its findings are hidden.</returns>
-        public static bool IsHidden(TypeNodeInfo declaring, MemberNodeInfo member)
+        internal static bool IsHidden(TypeNodeInfo declaring, MemberNodeInfo member)
         {
             if (DismissalStore.IsEmpty)
                 return false;
@@ -134,7 +134,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         /// <summary>Counts the findings on a type's members that are still showing.</summary>
         /// <param name="type">Type to count inside.</param>
         /// <returns>The number of members with a visible finding.</returns>
-        public static int CountVisibleMemberFindings(TypeNodeInfo type)
+        internal static int CountVisibleMemberFindings(TypeNodeInfo type)
         {
             int count = 0;
 
@@ -150,7 +150,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         /// <summary>Counts the members of a type whose findings were dismissed.</summary>
         /// <param name="type">Type to count inside.</param>
         /// <returns>The number of members with a silenced finding.</returns>
-        public static int CountDismissedMemberFindings(TypeNodeInfo type)
+        internal static int CountDismissedMemberFindings(TypeNodeInfo type)
         {
             if (DismissalStore.IsEmpty)
                 return 0;
@@ -169,7 +169,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         /// <summary>Counts everything inside a namespace whose findings were dismissed.</summary>
         /// <param name="group">Namespace to count inside.</param>
         /// <returns>The number of types and members with a silenced finding.</returns>
-        public static int CountDismissedFindings(NamespaceNodeInfo group)
+        internal static int CountDismissedFindings(NamespaceNodeInfo group)
         {
             if (DismissalStore.IsEmpty)
                 return 0;
@@ -190,7 +190,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         /// <summary>Counts every finding still showing inside a namespace.</summary>
         /// <param name="group">Namespace to count inside.</param>
         /// <returns>The number of types and members with a visible finding.</returns>
-        public static int CountVisibleFindings(NamespaceNodeInfo group)
+        internal static int CountVisibleFindings(NamespaceNodeInfo group)
         {
             int count = 0;
 
@@ -208,7 +208,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         /// <summary>Lists what was reported on a type, ignoring whether any of it was dismissed.</summary>
         /// <param name="type">Type to inspect.</param>
         /// <returns>The findings raised on it.</returns>
-        public static IEnumerable<EFinding> ReadReported(TypeNodeInfo type)
+        internal static IEnumerable<EFinding> ReadReported(TypeNodeInfo type)
         {
             foreach (EFinding finding in Order)
             {
@@ -220,7 +220,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         /// <summary>Lists what was reported on a member, ignoring whether any of it was dismissed.</summary>
         /// <param name="member">Member to inspect.</param>
         /// <returns>The findings raised on it.</returns>
-        public static IEnumerable<EFinding> ReadReported(MemberNodeInfo member)
+        internal static IEnumerable<EFinding> ReadReported(MemberNodeInfo member)
         {
             foreach (EFinding finding in Order)
             {
@@ -233,7 +233,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         /// <param name="member">Member to inspect.</param>
         /// <param name="declaring">Type the member is declared on.</param>
         /// <param name="findings">List that receives the findings.</param>
-        public static void Collect(MemberNodeInfo member, TypeNodeInfo declaring, List<EFinding> findings)
+        internal static void Collect(MemberNodeInfo member, TypeNodeInfo declaring, List<EFinding> findings)
         {
             if (declaring != null && IsHidden(declaring, member))
                 return;
@@ -252,7 +252,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         /// <summary>Collects every finding reported on a type itself, ignoring its members.</summary>
         /// <param name="type">Type to inspect.</param>
         /// <param name="findings">List that receives the findings.</param>
-        public static void Collect(TypeNodeInfo type, List<EFinding> findings)
+        internal static void Collect(TypeNodeInfo type, List<EFinding> findings)
         {
             if (IsHidden(type))
                 return;
@@ -269,7 +269,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         /// <summary>Collects every finding reported on a namespace itself.</summary>
         /// <param name="group">Namespace to inspect.</param>
         /// <param name="findings">List that receives the findings.</param>
-        public static void Collect(NamespaceNodeInfo group, List<EFinding> findings)
+        internal static void Collect(NamespaceNodeInfo group, List<EFinding> findings)
         {
             if (IsHidden(group))
                 return;
@@ -283,7 +283,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         /// <param name="member">Member to test.</param>
         /// <param name="declaring">Type the member is declared on, or null when the member is not in a type.</param>
         /// <returns>True when the member should be shown.</returns>
-        public static bool IsMatch(EFinding finding, MemberNodeInfo member, TypeNodeInfo declaring)
+        internal static bool IsMatch(EFinding finding, MemberNodeInfo member, TypeNodeInfo declaring)
         {
             if (finding == EFinding.None)
                 return true;
@@ -305,7 +305,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         /// <param name="finding">Finding to filter by.</param>
         /// <param name="type">Type to test.</param>
         /// <returns>True when the type should be shown.</returns>
-        public static bool IsMatch(EFinding finding, TypeNodeInfo type)
+        internal static bool IsMatch(EFinding finding, TypeNodeInfo type)
         {
             if (finding == EFinding.None)
                 return true;
@@ -334,7 +334,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         /// <param name="finding">Finding to filter by.</param>
         /// <param name="group">Namespace to test.</param>
         /// <returns>True when the namespace should be shown.</returns>
-        public static bool IsMatch(EFinding finding, NamespaceNodeInfo group)
+        internal static bool IsMatch(EFinding finding, NamespaceNodeInfo group)
         {
             if (finding == EFinding.None)
                 return true;

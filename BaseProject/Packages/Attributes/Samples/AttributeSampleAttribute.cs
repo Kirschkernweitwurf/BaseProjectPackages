@@ -15,15 +15,20 @@ namespace Base.AttributePackage.Samples
     /// The attribute is named by <c>typeof</c> rather than by string, so renaming it moves the sample
     /// with it and an attribute that no longer exists is a compile error rather than a missing page.
     /// </para>
+    /// <para>
+    /// The four settable properties below are public although the attribute itself is internal. A
+    /// named attribute argument has to be a public read-write property, whatever the access level of
+    /// the type declaring it, so narrowing them is a compile error at every usage rather than here.
+    /// </para>
     /// </remarks>
     [AttributeUsage(AttributeTargets.Class)]
     internal sealed class AttributeSampleAttribute : Attribute
     {
         /// <summary>The attribute this sample demonstrates.</summary>
-        public Type AttributeType { get; }
+        internal Type AttributeType { get; }
 
         /// <summary>The group the sample is listed under.</summary>
-        public EAttributeCategory Category { get; }
+        internal EAttributeCategory Category { get; }
 
         /// <summary>What the attribute does, in a sentence or two.</summary>
         public string Description { get; set; }

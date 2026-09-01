@@ -31,14 +31,14 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         /// <summary>True when the name was produced by the compiler rather than written by hand.</summary>
         /// <param name="name">Type or member name to test.</param>
         /// <returns>True for generated names.</returns>
-        public static bool IsGeneratedName(string name)
+        internal static bool IsGeneratedName(string name)
             => !string.IsNullOrEmpty(name) && name.IndexOf(OpenBracket) >= 0;
 
         /// <summary>Extracts the name of the member a generated name belongs to.</summary>
         /// <param name="name">Generated type or member name.</param>
         /// <param name="ownerName">The owning member name when one is encoded.</param>
         /// <returns>True when an owner name could be read.</returns>
-        public static bool TryGetOwnerName(string name, out string ownerName)
+        internal static bool TryGetOwnerName(string name, out string ownerName)
         {
             ownerName = null;
             if (string.IsNullOrEmpty(name))
@@ -66,7 +66,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         /// <param name="name">Generated member name.</param>
         /// <param name="ownerName">The written member it belongs to.</param>
         /// <returns>True when an owner could be read.</returns>
-        public static bool TryResolveOwnerName(string name, out string ownerName)
+        internal static bool TryResolveOwnerName(string name, out string ownerName)
         {
             ownerName = null;
             string current = name;
@@ -94,7 +94,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         /// <param name="name">Member name, which may name an accessor.</param>
         /// <param name="ownerName">The property or event the accessor belongs to.</param>
         /// <returns>True when the name was an accessor.</returns>
-        public static bool TryGetAccessorOwner(string name, out string ownerName)
+        internal static bool TryGetAccessorOwner(string name, out string ownerName)
         {
             ownerName = null;
             if (string.IsNullOrEmpty(name))
@@ -116,7 +116,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         /// <param name="fieldName">Name of the field.</param>
         /// <param name="propertyName">Name of the property the field backs.</param>
         /// <returns>True when the field is an auto property backing field.</returns>
-        public static bool TryGetBackingPropertyName(string fieldName, out string propertyName)
+        internal static bool TryGetBackingPropertyName(string fieldName, out string propertyName)
         {
             propertyName = null;
             if (string.IsNullOrEmpty(fieldName))

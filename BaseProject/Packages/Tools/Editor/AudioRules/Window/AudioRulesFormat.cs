@@ -27,7 +27,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
         /// <summary>Formats a size, picking the unit that keeps the number short.</summary>
         /// <param name="bytes">The size in bytes.</param>
         /// <returns>The size with its unit.</returns>
-        public static string Size(long bytes)
+        internal static string Size(long bytes)
         {
             if (bytes >= Megabyte)
                 return (bytes / Megabyte).ToString(ShortNumber) + MegabyteSuffix;
@@ -41,7 +41,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
         /// <summary>Formats a size difference, with a sign so a cost reads differently to a saving.</summary>
         /// <param name="bytes">The difference in bytes, positive when it saves.</param>
         /// <returns>The signed difference, or a dash when it is zero.</returns>
-        public static string Delta(long bytes)
+        internal static string Delta(long bytes)
         {
             if (bytes == 0L)
                 return "-";
@@ -57,7 +57,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
         /// </summary>
         /// <param name="linear">The level, 1 being full scale.</param>
         /// <returns>The level in dBFS.</returns>
-        public static string Decibels(float linear)
+        internal static string Decibels(float linear)
         {
             if (linear <= 0f)
                 return SilenceLabel + DecibelSuffix;
@@ -68,18 +68,18 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
         /// <summary>Formats a sample rate the way it is spoken about.</summary>
         /// <param name="hertz">The rate in Hz.</param>
         /// <returns>The rate in kHz.</returns>
-        public static string Kilohertz(int hertz)
+        internal static string Kilohertz(int hertz)
             => (hertz / KilohertzFactor).ToString(KilohertzFormat) + KilohertzSuffix;
 
         /// <summary>Formats a duration in seconds.</summary>
         /// <param name="seconds">The duration.</param>
         /// <returns>The duration with its unit.</returns>
-        public static string Seconds(float seconds) => seconds.ToString(ShortNumber) + SecondsSuffix;
+        internal static string Seconds(float seconds) => seconds.ToString(ShortNumber) + SecondsSuffix;
 
         /// <summary>The short form of what a clip is imported as today.</summary>
         /// <param name="values">The settings to describe.</param>
         /// <returns>Codec and load type in one line.</returns>
-        public static string Summary(AudioSettingValues values)
+        internal static string Summary(AudioSettingValues values)
             => $"{values.CompressionFormat} / {Short(values)}";
 
         /// <summary>Picks the singular or plural word for an amount.</summary>
@@ -87,7 +87,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
         /// <param name="singular">The word used for exactly one.</param>
         /// <param name="plural">The word used for every other amount.</param>
         /// <returns>The word matching the amount.</returns>
-        public static string Plural(int amount, string singular, string plural) => amount == 1
+        internal static string Plural(int amount, string singular, string plural) => amount == 1
             ? singular
             : plural;
 

@@ -16,47 +16,47 @@ namespace Base.ControllerSupportPackage.Editor
         private const string SingleElementText = "1 Element";
 
         /// <summary>The scanned group.</summary>
-        public NavigableGroup Group { get; }
+        internal NavigableGroup Group { get; }
 
         /// <summary>The menu on the same GameObject, or null when the group manages its own activation.</summary>
-        public Menu Menu { get; }
+        internal Menu Menu { get; }
 
         /// <summary>True while the group still exists. Scanned rows can be destroyed between repaints.</summary>
-        public bool IsAlive => Group != null;
+        internal bool IsAlive => Group != null;
 
         /// <summary>True when a menu drives activation but the group also activates itself.</summary>
-        public bool HasAutoActivateConflict => Menu != null
+        internal bool HasAutoActivateConflict => Menu != null
             && Group.AutoActivate;
 
         /// <summary>True when the group's focus priority differs from its menu's priority.</summary>
-        public bool HasPriorityMismatch => Menu != null
+        internal bool HasPriorityMismatch => Menu != null
             && Group.Priority != Menu.Priority;
 
         /// <summary>True when the group breaks at least one menu rule.</summary>
-        public bool HasIssues => HasAutoActivateConflict
+        internal bool HasIssues => HasAutoActivateConflict
             || HasPriorityMismatch;
 
         /// <summary>True when the group holds no navigable elements at all.</summary>
-        public bool IsEmpty => ElementCount == 0;
+        internal bool IsEmpty => ElementCount == 0;
 
         /// <summary>Badge text for the menu column.</summary>
-        public string MenuText => Menu != null
+        internal string MenuText => Menu != null
             ? Menu.GetType().Name
             : NoMenuText;
 
         /// <summary>Badge text for the element count column.</summary>
-        public string ElementsText => ElementCount == 1
+        internal string ElementsText => ElementCount == 1
             ? SingleElementText
             : $"{ElementCount} Elements";
 
         /// <summary>Badge text for the priority column.</summary>
-        public string PriorityText => Group.Priority.ToString();
+        internal string PriorityText => Group.Priority.ToString();
 
         /// <summary>Badge text for the scene column.</summary>
-        public string SceneText => Group.gameObject.scene.name;
+        internal string SceneText => Group.gameObject.scene.name;
 
         /// <summary>Tooltip explaining the priority badge.</summary>
-        public string PriorityTooltip => HasPriorityMismatch
+        internal string PriorityTooltip => HasPriorityMismatch
             ? $"Priority differs from the menu ({Menu.Priority})."
             : "Focus priority.";
 
@@ -72,7 +72,7 @@ namespace Base.ControllerSupportPackage.Editor
         }
 
         /// <summary>Tooltip explaining the menu badge and any rule the group breaks.</summary>
-        public string BuildMenuTooltip()
+        internal string BuildMenuTooltip()
         {
             if (Menu == null)
                 return "This group sits on no menu and manages its own activation.";
@@ -95,14 +95,14 @@ namespace Base.ControllerSupportPackage.Editor
         }
 
         /// <summary>Selects the group in the hierarchy and pings it.</summary>
-        public void GoTo()
+        internal void GoTo()
         {
             Selection.activeGameObject = Group.gameObject;
             EditorGUIUtility.PingObject(Group.gameObject);
         }
 
         /// <summary>Aligns the group with its menu's rules. Only ever called from an explicit click.</summary>
-        public void Fix()
+        internal void Fix()
         {
             SerializedObject serializedGroup = new(Group);
 

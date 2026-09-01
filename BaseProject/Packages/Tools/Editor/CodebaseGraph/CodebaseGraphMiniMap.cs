@@ -65,7 +65,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         /// <summary>Replaces what the map shows.</summary>
         /// <param name="entries">Entries currently drawn in the graph.</param>
         /// <param name="placements">Where each of them sits, keyed by entry id.</param>
-        public void SetContent(IReadOnlyList<GraphEntry> entries, Dictionary<string, Rect> placements)
+        internal void SetContent(IReadOnlyList<GraphEntry> entries, Dictionary<string, Rect> placements)
         {
             _dots.Clear();
             _placements.Clear();
@@ -95,11 +95,11 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         }
 
         /// <summary>Redraws the view box after the graph has been panned or zoomed.</summary>
-        public void Refresh() => PlaceViewBox();
+        internal void Refresh() => PlaceViewBox();
 
         /// <summary>Marks which entries are selected, so the map shows where the selection sits.</summary>
         /// <param name="ids">Ids of the selected entries.</param>
-        public void SetSelection(IEnumerable<string> ids)
+        internal void SetSelection(IEnumerable<string> ids)
         {
             _selected.Clear();
 

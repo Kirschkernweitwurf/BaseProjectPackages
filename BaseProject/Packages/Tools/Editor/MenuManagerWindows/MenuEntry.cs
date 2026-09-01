@@ -84,7 +84,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         /// Priority used for registration. The manual override when set, otherwise the
         /// derived value.
         /// </summary>
-        public int EffectivePriority => overridePriority
+        internal int EffectivePriority => overridePriority
             ? overrideValue
             : priority;
 

@@ -40,14 +40,31 @@ namespace Base.UtilityPackage.Editor.Serialization
         // typed into it.
         private static readonly Color SuffixText = new(0.55f, 0.55f, 0.58f);
 
-        private static GUIStyle SeparatorStyle => _separatorStyle ??= new GUIStyle(EditorStyles.label)
+        private static GUIStyle SeparatorStyle
         {
-            alignment = TextAnchor.MiddleCenter,
-            padding = new RectOffset(0, 0, 0, 0)
-        };
+            get
+            {
+                EnsureFresh();
 
-        private static GUIStyle SuffixStyle => _suffixStyle ??= BuildSuffixStyle();
+                return _separatorStyle ??= new GUIStyle(EditorStyles.label)
+                {
+                    alignment = TextAnchor.MiddleCenter,
+                    padding = new RectOffset(0, 0, 0, 0)
+                };
+            }
+        }
 
+        private static GUIStyle SuffixStyle
+        {
+            get
+            {
+                EnsureFresh();
+
+                return _suffixStyle ??= BuildSuffixStyle();
+            }
+        }
+
+        private static bool _builtForProSkin;
         private static GUIStyle _separatorStyle;
         private static GUIStyle _suffixStyle;
 
@@ -125,6 +142,26 @@ namespace Base.UtilityPackage.Editor.Serialization
             style.focused.textColor = SuffixText;
 
             return style;
+        }
+
+        // A GUIStyle copies its colors out of EditorStyles when it is built and does not stay linked
+        // to them, so a cached one keeps the previous skin's colors after a switch. Dropping it here
+        // has the next access rebuild it against the skin actually in use.
+        //
+        // Utility sits at the bottom of the stack and references no other Base package, so the shared
+        // EditorStyleWatch is out of reach and the skin is tracked directly. That covers the dark and
+        // light switch; the custom themes EditorStyleWatch also follows are an EditorUi concept this
+        // package knows nothing about.
+        private static void EnsureFresh()
+        {
+            if (_separatorStyle != null
+                && _builtForProSkin == EditorGUIUtility.isProSkin)
+                return;
+
+            _separatorStyle = null;
+            _suffixStyle = null;
+
+            _builtForProSkin = EditorGUIUtility.isProSkin;
         }
     }
 }

@@ -18,10 +18,10 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         private const string FilePath = "ProjectSettings/CodebaseGraphDismissed.json";
 
         /// <summary>Raised whenever the set of dismissals changes, so open windows can refresh.</summary>
-        public static event Action Changed;
+        internal static event Action Changed;
 
         /// <summary>True when nothing has been dismissed, so lookups can skip the work entirely.</summary>
-        public static bool IsEmpty
+        internal static bool IsEmpty
         {
             get
             {
@@ -31,7 +31,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         }
 
         /// <summary>How many entries have been dismissed.</summary>
-        public static int Count
+        internal static int Count
         {
             get
             {
@@ -41,7 +41,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         }
 
         /// <summary>The ids that were dismissed on their own, without their contents.</summary>
-        public static IReadOnlyCollection<string> DismissedAlone
+        internal static IReadOnlyCollection<string> DismissedAlone
         {
             get
             {
@@ -51,7 +51,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         }
 
         /// <summary>The ids that were dismissed together with everything inside them.</summary>
-        public static IReadOnlyCollection<string> DismissedWithContents
+        internal static IReadOnlyCollection<string> DismissedWithContents
         {
             get
             {
@@ -70,7 +70,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         /// Rereads the file when something outside the window changed it. The findings report tells
         /// people they may edit the file by hand, so writing over their edits would be rude.
         /// </summary>
-        public static void Refresh()
+        internal static void Refresh()
         {
             if (!File.Exists(FilePath))
                 return;
@@ -87,7 +87,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         /// <summary>True when the findings on this id itself are hidden.</summary>
         /// <param name="id">Stable id of the entry.</param>
         /// <returns>True when hidden.</returns>
-        public static bool Contains(string id)
+        internal static bool Contains(string id)
         {
             Load();
             return Own.Contains(id) || Tree.Contains(id);
@@ -96,7 +96,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         /// <summary>True when this id was dismissed together with everything inside it.</summary>
         /// <param name="id">Stable id of the entry.</param>
         /// <returns>True when the whole subtree is hidden.</returns>
-        public static bool ContainsTree(string id)
+        internal static bool ContainsTree(string id)
         {
             Load();
             return Tree.Contains(id);
@@ -105,7 +105,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         /// <summary>Sets an entry aside.</summary>
         /// <param name="id">Stable id of the entry.</param>
         /// <param name="includeContents">True to hide everything inside it as well.</param>
-        public static void Dismiss(string id, bool includeContents)
+        internal static void Dismiss(string id, bool includeContents)
         {
             Refresh();
             Load();
@@ -121,7 +121,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         /// <summary>Brings one dismissed entry back, whichever way it was dismissed.</summary>
         /// <param name="id">Stable id of the entry.</param>
         /// <returns>True when the entry had been dismissed and is now showing again.</returns>
-        public static bool Restore(string id)
+        internal static bool Restore(string id)
         {
             Refresh();
             Load();
@@ -141,7 +141,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         /// </summary>
         /// <param name="ids">Stable ids of the entries.</param>
         /// <returns>How many came back.</returns>
-        public static int RestoreMany(IEnumerable<string> ids)
+        internal static int RestoreMany(IEnumerable<string> ids)
         {
             Refresh();
             Load();
@@ -166,7 +166,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         /// </summary>
         /// <param name="id">Stable id of the entry.</param>
         /// <returns>How many entries came back, including the one named.</returns>
-        public static int RestoreWithContents(string id)
+        internal static int RestoreWithContents(string id)
         {
             Refresh();
             Load();
@@ -199,7 +199,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
 
         /// <summary>Lists every dismissal, sorted for reading rather than for the file.</summary>
         /// <returns>The entries, grouped by kind and then by name.</returns>
-        public static List<DismissalEntry> Collect()
+        internal static List<DismissalEntry> Collect()
         {
             Load();
 
@@ -216,7 +216,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         }
 
         /// <summary>Brings every dismissed entry back.</summary>
-        public static void RestoreAll()
+        internal static void RestoreAll()
         {
             Load();
             Own.Clear();

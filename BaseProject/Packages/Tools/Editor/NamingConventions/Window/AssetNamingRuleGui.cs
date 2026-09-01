@@ -18,7 +18,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
     internal static class AssetNamingRuleGui
     {
         /// <summary>Returned when no row was marked for removal.</summary>
-        public const int NoIndex = -1;
+        internal const int NoIndex = -1;
 
         private const string AnyTypeLabel = "Any Asset";
         private const string CustomTypeLabel = "Custom";
@@ -81,7 +81,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
         /// Draws the scan options. Fragment rows change the control count, so additions and
         /// removals are reported back and applied by the window after the layout pass.
         /// </summary>
-        public static bool DrawOptions(AssetNamingRuleSet ruleSet, bool isFragmentsExpanded,
+        internal static bool DrawOptions(AssetNamingRuleSet ruleSet, bool isFragmentsExpanded,
             out bool isFragmentAddRequested, out int fragmentRemovalIndex)
         {
             isFragmentAddRequested = false;
@@ -113,7 +113,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
         }
 
         /// <summary>Draws the rule table and returns the index the user asked to remove.</summary>
-        public static int DrawRules(AssetNamingRuleSet ruleSet)
+        internal static int DrawRules(AssetNamingRuleSet ruleSet)
         {
             int removalIndex = NoIndex;
             float width = Columns.TotalWidth + RemoveWidth + AssetNamingGui.Padding;
@@ -146,7 +146,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
         }
 
         /// <summary>True when the user asked for another rule.</summary>
-        public static bool DrawAddButton() => GUILayout.Button(AddRuleContent, GUILayout.Width(110f));
+        internal static bool DrawAddButton() => GUILayout.Button(AddRuleContent, GUILayout.Width(110f));
 
         private static string[] BuildTypeValues() => new[]
         {

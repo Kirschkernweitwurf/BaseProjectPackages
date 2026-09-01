@@ -31,7 +31,7 @@ namespace Base.ToolPackage.Editor.AssemblyGraph.Architecture
         /// <summary>Rolls a scan result up to weighted assembly edges.</summary>
         /// <param name="graph">The scan result to read. A null graph yields an empty result.</param>
         /// <returns>The assembly level graph.</returns>
-        public static AssemblyEdgeGraph Build(CodebaseGraphData graph)
+        internal static AssemblyEdgeGraph Build(CodebaseGraphData graph)
         {
             Dictionary<AssemblyEdgeKey, EdgeBuilder> builders = new();
             Dictionary<TypeKey, TypeNodeInfo> outermost = new();
@@ -196,14 +196,14 @@ namespace Base.ToolPackage.Editor.AssemblyGraph.Architecture
             private int _usageCount;
             private bool _hasIncludedSource;
 
-            public EdgeBuilder(AssemblyEdgeKey key) => _key = key;
+            internal EdgeBuilder(AssemblyEdgeKey key) => _key = key;
 
             /// <summary>Records one type level usage that crosses this edge.</summary>
             /// <param name="sourceTypeName">Outermost source type reaching across.</param>
             /// <param name="targetTypeName">Outermost target type being reached.</param>
             /// <param name="usageCount">How many member level usages back this pair up.</param>
             /// <param name="isSourceExcluded">Whether the source is generated, sample or test code.</param>
-            public void Add(string sourceTypeName, string targetTypeName, int usageCount, bool isSourceExcluded)
+            internal void Add(string sourceTypeName, string targetTypeName, int usageCount, bool isSourceExcluded)
             {
                 _sourceTypes.Add(sourceTypeName);
                 _targetTypes.Add(targetTypeName);
@@ -215,7 +215,7 @@ namespace Base.ToolPackage.Editor.AssemblyGraph.Architecture
 
             /// <summary>Freezes the gathered data into an immutable edge.</summary>
             /// <returns>The finished edge.</returns>
-            public AssemblyEdgeInfo ToEdge() => new(_key,
+            internal AssemblyEdgeInfo ToEdge() => new(_key,
                 new List<string>(_targetTypes),
                 new List<string>(_sourceTypes),
                 _usageCount,

@@ -15,46 +15,46 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows.CreateAssetMenuOverview
         private const string EmptyLabel = "-";
 
         /// <summary>Menu path under "Assets/Create", e.g. "Balance/Audio Settings".</summary>
-        public string MenuName { get; }
+        internal string MenuName { get; }
 
         /// <summary>Top-level menu segment, used for grouping and filtering.</summary>
-        public string Root { get; }
+        internal string Root { get; }
 
         /// <summary>ScriptableObject type behind the entry, or null when the code is gone.</summary>
-        public Type DeclaringType { get; }
+        internal Type DeclaringType { get; }
 
         /// <summary>Short type name, used as the secondary column.</summary>
-        public string TypeName { get; }
+        internal string TypeName { get; }
 
         /// <summary>Default file name created for new assets of this type.</summary>
-        public string FileName { get; }
+        internal string FileName { get; }
 
         /// <summary>Menu order that positions the item inside the Create menu.</summary>
-        public int Order { get; }
+        internal int Order { get; }
 
         /// <summary>Order formatted for display. A dash when no order is assigned.</summary>
-        public string OrderLabel { get; }
+        internal string OrderLabel { get; }
 
         /// <summary>Whether the entry is declared by an attribute or managed by the menu manager.</summary>
-        public EMenuDefinition Definition { get; }
+        internal EMenuDefinition Definition { get; }
 
         /// <summary>Live state of the entry.</summary>
-        public EMenuEntryState State { get; }
+        internal EMenuEntryState State { get; }
 
         /// <summary>Menu manager id of a dynamic entry, or an empty string for a static one.</summary>
-        public string EntryId { get; }
+        internal string EntryId { get; }
 
         /// <summary>Where the defining script lives.</summary>
-        public EAssetOrigin Origin { get; }
+        internal EAssetOrigin Origin { get; }
 
         /// <summary>Script asset that defines the type, or null for built-in types.</summary>
-        public MonoScript Script { get; }
+        internal MonoScript Script { get; }
 
         /// <summary>Project-relative asset path, or a dash for built-in types.</summary>
-        public string AssetPath { get; }
+        internal string AssetPath { get; }
 
         /// <summary>True when the entry is arranged in the menu manager.</summary>
-        public bool IsDynamic => Definition == EMenuDefinition.Dynamic;
+        internal bool IsDynamic => Definition == EMenuDefinition.Dynamic;
 
         private CreateAssetEntry(string menuName, string fileName, Type declaringType, string typeName, int order,
             EMenuDefinition definition, EMenuEntryState state, string entryId, EAssetOrigin origin,
@@ -94,13 +94,13 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows.CreateAssetMenuOverview
         }
 
         /// <summary>Creates an entry for a <see cref="CreateAssetMenuAttribute"/>.</summary>
-        public static CreateAssetEntry Attributed(string menuName, string fileName, Type declaringType, int order,
+        internal static CreateAssetEntry Attributed(string menuName, string fileName, Type declaringType, int order,
             EAssetOrigin origin, MonoScript script, string assetPath) => new(menuName, fileName, declaringType,
             declaringType.Name, order, EMenuDefinition.Static,
             EMenuEntryState.Active, string.Empty, origin, script, assetPath);
 
         /// <summary>Creates an entry for a type registered through the menu manager.</summary>
-        public static CreateAssetEntry Managed(string entryId, string menuName, string fileName, Type declaringType,
+        internal static CreateAssetEntry Managed(string entryId, string menuName, string fileName, Type declaringType,
             string typeName, int order, EMenuEntryState state, EAssetOrigin origin, MonoScript script,
             string assetPath) => new(menuName, fileName, declaringType, typeName, order, EMenuDefinition.Dynamic, state,
             entryId,

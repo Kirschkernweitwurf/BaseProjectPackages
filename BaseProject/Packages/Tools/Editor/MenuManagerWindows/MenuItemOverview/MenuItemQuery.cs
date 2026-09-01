@@ -16,7 +16,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows.MenuItemOverview
         /// package and built-in items, hides validation functions and applies a path/member
         /// search term, then sorts by priority with the menu path as a tie-breaker.
         /// </summary>
-        public static IReadOnlyList<MenuItemEntry> Apply(IReadOnlyList<MenuItemEntry> entries,
+        internal static IReadOnlyList<MenuItemEntry> Apply(IReadOnlyList<MenuItemEntry> entries,
             string search, string root, EMenuDefinition? definition, bool includeExternal, bool hideValidation,
             bool ascending)
         {

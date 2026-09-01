@@ -55,7 +55,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         /// <param name="registry">Registry used to fold accessors and lambdas onto their owner.</param>
         /// <param name="cache">Cache of tokens already resolved during this scan.</param>
         /// <param name="sink">Receiver for the usages.</param>
-        public static void ScanType(Type type, MemberRegistry registry, TokenResolutionCache cache, IUsageSink sink)
+        internal static void ScanType(Type type, MemberRegistry registry, TokenResolutionCache cache, IUsageSink sink)
         {
             foreach (MethodInfo method in type.GetMethods(DeclaredMembers))
                 ScanMethod(method, type, registry, cache, sink);

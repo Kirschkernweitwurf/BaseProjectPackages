@@ -19,10 +19,10 @@ namespace Base.ToolPackage.Editor.CommandPalette
         private static List<CommandEntry> _entries;
 
         /// <summary>Every known command, built on first access.</summary>
-        public static IReadOnlyList<CommandEntry> Entries => _entries ??= Build();
+        internal static IReadOnlyList<CommandEntry> Entries => _entries ??= Build();
 
         /// <summary>Drops the cache so the next access scans the project again.</summary>
-        public static void Invalidate()
+        internal static void Invalidate()
         {
             _entries = null;
             AssemblyOriginLookup.Clear();

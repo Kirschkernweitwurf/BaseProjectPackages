@@ -131,3 +131,9 @@ I made this to have a solid, consistent base for all my Unity projects. It saves
 ## Updates
 
 This repo gets updated whenever I improve something in one of my projects. Expect changes over time.
+
+## License
+
+[PolyForm Shield 1.0.0](https://polyformproject.org/licenses/shield/1.0.0). Use it in whatever you
+build, including commercial work. The one thing it does not allow is building something that competes
+with these packages, so you cannot repackage them and sell them as your own library.

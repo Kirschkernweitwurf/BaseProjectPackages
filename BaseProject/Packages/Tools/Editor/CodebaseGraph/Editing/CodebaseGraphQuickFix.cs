@@ -28,7 +28,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Editing
         /// <param name="member">Member the finding sits on.</param>
         /// <param name="finding">Finding being acted on.</param>
         /// <returns>True when a file was changed.</returns>
-        public static bool Apply(TypeNodeInfo type, MemberNodeInfo member, EFinding finding)
+        internal static bool Apply(TypeNodeInfo type, MemberNodeInfo member, EFinding finding)
         {
             if (type == null || member == null)
                 return false;

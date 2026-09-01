@@ -11,25 +11,25 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows.MenuItemOverview
     internal readonly struct MenuItemColumnLayout
     {
         /// <summary>Menu priority.</summary>
-        public Rect Priority { get; }
+        internal Rect Priority { get; }
 
         /// <summary>Chip that tells a dynamic entry from a static one.</summary>
-        public Rect Kind { get; }
+        internal Rect Kind { get; }
 
         /// <summary>Clickable menu path.</summary>
-        public Rect Path { get; }
+        internal Rect Path { get; }
 
         /// <summary>Declaring "Type.Method".</summary>
-        public Rect Member { get; }
+        internal Rect Member { get; }
 
         /// <summary>Compact state marker for validation, disabled and missing entries.</summary>
-        public Rect State { get; }
+        internal Rect State { get; }
 
         /// <summary>Source badge (pkg / lib).</summary>
-        public Rect Badge { get; }
+        internal Rect Badge { get; }
 
         /// <summary>Link that opens a dynamic entry in the menu item manager.</summary>
-        public Rect Manage { get; }
+        internal Rect Manage { get; }
 
         /// <summary>Builds the column rectangles inside the given row.</summary>
         public MenuItemColumnLayout(Rect row)

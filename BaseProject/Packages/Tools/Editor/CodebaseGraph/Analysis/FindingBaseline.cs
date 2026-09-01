@@ -22,7 +22,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
 
         /// <summary>Reads the ids the previous scan wrote.</summary>
         /// <returns>The ids, or an empty set when there is no baseline yet.</returns>
-        public static HashSet<string> Read()
+        internal static HashSet<string> Read()
         {
             if (!File.Exists(FilePath))
                 return new HashSet<string>();
@@ -45,7 +45,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
 
         /// <summary>Writes the ids this scan raised, to compare the next one against.</summary>
         /// <param name="ids">Ids the scan raised.</param>
-        public static void Write(HashSet<string> ids)
+        internal static void Write(HashSet<string> ids)
         {
             FindingBaselineData data = new();
             data.Ids.AddRange(ids);
@@ -65,7 +65,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         /// <summary>Collects the id of every finding currently raised.</summary>
         /// <param name="graph">Graph to read.</param>
         /// <returns>The ids, in the same form dismissals use.</returns>
-        public static HashSet<string> Collect(CodebaseGraphData graph)
+        internal static HashSet<string> Collect(CodebaseGraphData graph)
         {
             HashSet<string> ids = new();
 
@@ -93,7 +93,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         /// <summary>Marks everything raised now that was not raised before.</summary>
         /// <param name="graph">Graph to annotate.</param>
         /// <param name="previous">Ids the previous scan raised, or null when there was none.</param>
-        public static void Apply(CodebaseGraphData graph, HashSet<string> previous)
+        internal static void Apply(CodebaseGraphData graph, HashSet<string> previous)
         {
             if (previous == null || previous.Count == 0)
                 return;

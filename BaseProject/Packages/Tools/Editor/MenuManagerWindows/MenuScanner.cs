@@ -19,7 +19,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         private const string ValidateRole = "Validate";
 
         /// <summary>Returns all resolved entries keyed by their stable id.</summary>
-        public static Dictionary<string, ResolvedMenu> Scan()
+        internal static Dictionary<string, ResolvedMenu> Scan()
         {
             Dictionary<string, ResolvedMenu> result = new();
 

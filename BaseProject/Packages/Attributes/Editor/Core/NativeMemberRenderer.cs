@@ -35,7 +35,7 @@ namespace Base.AttributePackage.Editor.Core
 
         /// <summary>Draws all native members for the edited object.</summary>
         /// <param name="editor">The editor whose target is drawn.</param>
-        public static void Draw(UnityEditor.Editor editor)
+        internal static void Draw(UnityEditor.Editor editor)
         {
             Object target = editor.target;
             Type type = target.GetType();

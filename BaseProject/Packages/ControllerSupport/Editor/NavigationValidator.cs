@@ -21,7 +21,7 @@ namespace Base.ControllerSupportPackage.Editor
         /// Adds a <see cref="NavigableElement"/> to every selectable below the root that is missing one
         /// and returns how many were added.
         /// </summary>
-        public static int AddMissingElements(Transform root)
+        internal static int AddMissingElements(Transform root)
         {
             if (root == null)
             {

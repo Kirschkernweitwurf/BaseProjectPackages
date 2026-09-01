@@ -15,7 +15,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
         private const float MinimumWidth = 24f;
 
         /// <summary>Horizontal offset right behind the last column, including padding.</summary>
-        public float TotalWidth
+        internal float TotalWidth
         {
             get
             {
@@ -61,7 +61,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
         }
 
         /// <summary>Full height rectangle of one cell, used for labels.</summary>
-        public Rect Cell(Rect row, int index)
+        internal Rect Cell(Rect row, int index)
         {
             float x = row.x + AssetNamingGui.Padding;
 
@@ -72,7 +72,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
         }
 
         /// <summary>Slightly inset rectangle of one cell, used for fields and buttons.</summary>
-        public Rect Field(Rect row, int index)
+        internal Rect Field(Rect row, int index)
         {
             Rect cell = Cell(row, index);
 
@@ -80,7 +80,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
         }
 
         /// <summary>Draws the titles and the drag handles. Returns true when a width changed.</summary>
-        public bool DrawHeader(Rect rect, GUIContent[] titles)
+        internal bool DrawHeader(Rect rect, GUIContent[] titles)
         {
             bool isChanged = false;
 

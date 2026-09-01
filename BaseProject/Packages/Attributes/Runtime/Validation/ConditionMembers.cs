@@ -21,7 +21,7 @@ namespace Base.AttributePackage
         /// <param name="mode">How the members are combined.</param>
         /// <param name="members">Names of the bool members to evaluate.</param>
         /// <returns>True when the combined condition holds.</returns>
-        public static bool Evaluate(object instance, EConditionMode mode, string[] members)
+        internal static bool Evaluate(object instance, EConditionMode mode, string[] members)
         {
             if (instance == null || members == null || members.Length == 0)
                 return true;

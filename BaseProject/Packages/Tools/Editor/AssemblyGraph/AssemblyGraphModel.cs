@@ -30,7 +30,7 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
         };
 
         /// <summary>Builds a node for every compiled assembly in the project.</summary>
-        public static List<AssemblyNodeInfo> Build()
+        internal static List<AssemblyNodeInfo> Build()
         {
             Assembly[] compiled = CompilationPipeline.GetAssemblies(AssembliesType.Editor);
             Dictionary<string, HashSet<string>> actualReferences = BuildActualReferenceLookup();

@@ -15,22 +15,22 @@ namespace Base.ToolPackage.Editor.OverviewGui.PrefabOverviewWindow
         private const string VariantBadgeTooltip = "Variants derived from this prefab";
 
         /// <summary>Icon of the prefab asset.</summary>
-        public GUIContent Icon { get; }
+        internal GUIContent Icon { get; }
 
         /// <summary>Name of the prefab, with the asset details as tooltip.</summary>
-        public GUIContent Label { get; }
+        internal GUIContent Label { get; }
 
         /// <summary>Number of variants below the prefab, or null when it has none.</summary>
-        public GUIContent VariantBadge { get; }
+        internal GUIContent VariantBadge { get; }
 
         /// <summary>Number of overrides against the base, or null when there is nothing to show.</summary>
-        public GUIContent OverrideBadge { get; }
+        internal GUIContent OverrideBadge { get; }
 
         /// <summary>Marker for the issues of the prefab, or null when it has none.</summary>
-        public GUIContent IssueBadge { get; }
+        internal GUIContent IssueBadge { get; }
 
         /// <summary>Color role of the override badge. Only meaningful together with that badge.</summary>
-        public EOverviewAccent OverrideAccent { get; }
+        internal EOverviewAccent OverrideAccent { get; }
 
         /// <summary>Builds the labels of one row.</summary>
         /// <param name="entry">Entry the row stands for.</param>

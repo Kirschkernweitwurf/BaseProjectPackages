@@ -18,7 +18,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         /// <summary>Creates a new asset and starts the inline rename in the project window.</summary>
         /// <param name="type">Concrete ScriptableObject type to create.</param>
         /// <param name="fileName">File name without extension. Falls back to the type name.</param>
-        public static void Create(Type type, string fileName)
+        internal static void Create(Type type, string fileName)
         {
             if (type == null)
             {

@@ -26,7 +26,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Scanning
         /// <param name="writeTicks">Current write time of the source file.</param>
         /// <param name="analysis">The cached measurements, or null.</param>
         /// <returns>True when a usable entry was found.</returns>
-        public static bool TryGet(string guid, long fileSize, long writeTicks, out AudioClipAnalysis analysis)
+        internal static bool TryGet(string guid, long fileSize, long writeTicks, out AudioClipAnalysis analysis)
         {
             analysis = null;
 
@@ -47,14 +47,14 @@ namespace Base.ToolPackage.Editor.AudioRules.Scanning
         /// <param name="fileSize">Size of the source file the measurement belongs to.</param>
         /// <param name="writeTicks">Write time of the source file the measurement belongs to.</param>
         /// <param name="analysis">The measurements.</param>
-        public static void Set(string guid, long fileSize, long writeTicks, AudioClipAnalysis analysis)
+        internal static void Set(string guid, long fileSize, long writeTicks, AudioClipAnalysis analysis)
         {
             Entries[guid] = Entry.From(guid, fileSize, writeTicks, analysis);
             _isDirty = true;
         }
 
         /// <summary>Writes the cache to disk if anything changed since the last write.</summary>
-        public static void Flush()
+        internal static void Flush()
         {
             if (!_isDirty)
                 return;
@@ -77,7 +77,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Scanning
         }
 
         /// <summary>Throws the cache away so the next deep pass reads every file again.</summary>
-        public static void Clear()
+        internal static void Clear()
         {
             Entries.Clear();
             _isDirty = true;
@@ -132,7 +132,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Scanning
             public float channelDifference;
             public int clippedSamples;
 
-            public static Entry From(string guid, long fileSize, long writeTicks, AudioClipAnalysis analysis)
+            internal static Entry From(string guid, long fileSize, long writeTicks, AudioClipAnalysis analysis)
                 => new()
                 {
                     guid = guid,
@@ -149,7 +149,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Scanning
                     clippedSamples = analysis.ClippedSamples
                 };
 
-            public AudioClipAnalysis ToAnalysis() => new()
+            internal AudioClipAnalysis ToAnalysis() => new()
             {
                 HasData = hasData,
                 IsStereo = isStereo,

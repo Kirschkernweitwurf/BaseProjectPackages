@@ -19,7 +19,7 @@ namespace Base.AttributePackage.Editor.Core
         /// <param name="mode">How the members are combined.</param>
         /// <param name="members">Names of the bool members to evaluate.</param>
         /// <returns>True when the combined condition holds.</returns>
-        public static bool ResolveAll(in MemberContext context, EConditionMode mode, string[] members)
+        internal static bool ResolveAll(in MemberContext context, EConditionMode mode, string[] members)
         {
             if (members == null || members.Length == 0)
                 return true;
@@ -46,7 +46,7 @@ namespace Base.AttributePackage.Editor.Core
         /// <param name="context">The member currently being drawn.</param>
         /// <param name="member">Name of the bool member to evaluate.</param>
         /// <returns>The value of the member, or true when it cannot be resolved.</returns>
-        public static bool ResolveBool(in MemberContext context, string member)
+        internal static bool ResolveBool(in MemberContext context, string member)
         {
             SerializedProperty property = context.FindSiblingProperty(member);
             if (property != null && property.propertyType == SerializedPropertyType.Boolean)
@@ -76,7 +76,7 @@ namespace Base.AttributePackage.Editor.Core
         /// <param name="context">The member currently being drawn.</param>
         /// <param name="member">Name of the enum member to evaluate.</param>
         /// <returns>The boxed enum value, or null when it cannot be resolved.</returns>
-        public static object ResolveEnum(in MemberContext context, string member) => MemberValueResolver.TryResolve(
+        internal static object ResolveEnum(in MemberContext context, string member) => MemberValueResolver.TryResolve(
             context.DeclaringType, context.DeclaringObject, member,
             out object value)
             ? value

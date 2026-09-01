@@ -20,6 +20,6 @@ namespace Base.AttributePackage.Samples
 
         /// <summary>Shown in the component title bar.</summary>
         [HeaderLabel]
-        public string Summary => $"{waypointCount} waypoints";
+        internal string Summary => $"{waypointCount} waypoints";
     }
 }

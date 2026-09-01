@@ -21,19 +21,19 @@ namespace Base.ToolPackage.Editor.CommandPalette
         private int _selected;
 
         /// <summary>How many entries survived the current filter.</summary>
-        public int Count => _matches.Count;
+        internal int Count => _matches.Count;
 
         /// <summary>Whether there is an entry to act on.</summary>
-        public bool HasSelection => _matches.Count > 0;
+        internal bool HasSelection => _matches.Count > 0;
 
         /// <summary>The entry the selection currently sits on.</summary>
-        public CommandEntry Selected => _matches[_selected].Entry;
+        internal CommandEntry Selected => _matches[_selected].Entry;
 
         /// <summary>Replaces the results with everything that matches the filter.</summary>
         /// <param name="entries">Every known command.</param>
         /// <param name="filter">The parsed search box content.</param>
         /// <param name="projectOnly">Whether package and built-in commands are hidden.</param>
-        public void Fill(IReadOnlyList<CommandEntry> entries, CommandFilter filter, bool projectOnly)
+        internal void Fill(IReadOnlyList<CommandEntry> entries, CommandFilter filter, bool projectOnly)
         {
             CommandQuery.Run(entries, filter, projectOnly, _matches);
 
@@ -49,7 +49,7 @@ namespace Base.ToolPackage.Editor.CommandPalette
 
         /// <summary>Moves the selection and scrolls it back into view.</summary>
         /// <param name="action">The move that was requested.</param>
-        public void Move(ECommandPaletteAction action)
+        internal void Move(ECommandPaletteAction action)
         {
             if (_matches.Count == 0)
                 return;
@@ -63,7 +63,7 @@ namespace Base.ToolPackage.Editor.CommandPalette
         /// <param name="area">The area the list may use.</param>
         /// <param name="term">Lowercase search term, used to pick out the matched characters.</param>
         /// <returns>The action the mouse asked for.</returns>
-        public ECommandPaletteAction Draw(Rect area, string term)
+        internal ECommandPaletteAction Draw(Rect area, string term)
         {
             _viewport = area.height;
 

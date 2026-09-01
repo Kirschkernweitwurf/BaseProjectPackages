@@ -12,9 +12,9 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
     /// <summary>A GraphView node that represents one assembly.</summary>
     internal sealed class AssemblyGraphNode : Node
     {
-        public Port InputPort { get; }
+        internal Port InputPort { get; }
 
-        public Port OutputPort { get; }
+        internal Port OutputPort { get; }
 
         private AssemblyNodeInfo Info { get; }
 

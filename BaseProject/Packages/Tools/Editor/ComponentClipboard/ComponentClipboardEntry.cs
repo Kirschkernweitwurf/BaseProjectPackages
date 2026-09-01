@@ -22,13 +22,13 @@ namespace Base.ToolPackage.Editor.ComponentClipboard
         [SerializeField] private List<ComponentReferenceEntry> references = new();
 
         /// <summary>Assembly qualified name of the captured component type.</summary>
-        public string TypeName => typeName;
+        internal string TypeName => typeName;
 
         /// <summary>Serialized values of the captured component.</summary>
-        public string Json => json;
+        internal string Json => json;
 
         /// <summary>Human-readable name used for list entries and menu labels.</summary>
-        public string DisplayName => displayName;
+        internal string DisplayName => displayName;
 
         /// <summary>Creates an entry by capturing the current values of the given component.</summary>
         /// <param name="component">Component to capture. Must not be null.</param>
@@ -46,14 +46,14 @@ namespace Base.ToolPackage.Editor.ComponentClipboard
 
         /// <summary>Resolves the stored type name back into a runtime type.</summary>
         /// <returns>The component type, or null when the type no longer exists.</returns>
-        public Type ResolveType() => Type.GetType(typeName);
+        internal Type ResolveType() => Type.GetType(typeName);
 
         /// <summary>
         /// Restores every captured object reference on the target. References that cannot be
         /// resolved are cleared, so no stale instance id survives.
         /// </summary>
         /// <param name="target">Component that already received the JSON values.</param>
-        public void ApplyReferences(Component target)
+        internal void ApplyReferences(Component target)
         {
             if (target == null)
                 return;

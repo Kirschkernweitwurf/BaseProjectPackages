@@ -34,7 +34,7 @@ namespace Base.TweeningPackage.Editor
         /// Draws the full inspector for the given tween component or tween profile.
         /// </summary>
         /// <param name="editor">The attribute package editor whose object is inspected.</param>
-        public static void Draw(AttributePackageEditor editor)
+        internal static void Draw(AttributePackageEditor editor)
         {
             SerializedObject serializedObject = editor.serializedObject;
             Type type = serializedObject.targetObject.GetType();

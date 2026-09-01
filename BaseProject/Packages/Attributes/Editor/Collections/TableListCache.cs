@@ -40,7 +40,7 @@ namespace Base.AttributePackage.Editor.Collections
         /// <param name="property">The array being drawn.</param>
         /// <param name="canResize">False when [ArraySize] fixes the element count.</param>
         /// <returns>The cached list, configured for this draw.</returns>
-        public static ReorderableList Get(SerializedProperty property, bool canResize)
+        internal static ReorderableList Get(SerializedProperty property, bool canResize)
         {
             string key = property.serializedObject.targetObject.GetInstanceID() + property.propertyPath;
 

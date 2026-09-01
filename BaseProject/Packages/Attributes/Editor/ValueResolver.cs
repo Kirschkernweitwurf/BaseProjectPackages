@@ -38,7 +38,8 @@ namespace Base.AttributePackage.Editor
         /// <summary>Returns whether the argument names a member instead of carrying a literal.</summary>
         /// <param name="value">The attribute argument.</param>
         /// <returns>True when the value is a member reference.</returns>
-        public static bool IsMemberReference(string value) => !string.IsNullOrEmpty(value) && value[0] == MemberPrefix;
+        internal static bool IsMemberReference(string value) => !string.IsNullOrEmpty(value)
+            && value[0] == MemberPrefix;
 
         /// <summary>
         /// Resolves a text argument. A literal is returned as written; a member reference is read from
@@ -47,7 +48,7 @@ namespace Base.AttributePackage.Editor
         /// <param name="context">The member currently being drawn.</param>
         /// <param name="value">The attribute argument.</param>
         /// <returns>The text to show, or the argument itself when it cannot be resolved.</returns>
-        public static string Text(in MemberContext context, string value)
+        internal static string Text(in MemberContext context, string value)
         {
             if (!IsMemberReference(value))
                 return value;
@@ -63,7 +64,7 @@ namespace Base.AttributePackage.Editor
         /// <param name="member">Name of the member.</param>
         /// <param name="value">The value read.</param>
         /// <returns>True when the member existed and could be read.</returns>
-        public static bool TryRead(Type type, object owner, string member, out object value)
+        internal static bool TryRead(Type type, object owner, string member, out object value)
         {
             value = null;
 
@@ -87,7 +88,7 @@ namespace Base.AttributePackage.Editor
         /// <summary>Strips the prefix from a member reference.</summary>
         /// <param name="value">The attribute argument.</param>
         /// <returns>The member name.</returns>
-        public static string MemberName(string value) => IsMemberReference(value)
+        internal static string MemberName(string value) => IsMemberReference(value)
             ? value[1..]
             : value;
 

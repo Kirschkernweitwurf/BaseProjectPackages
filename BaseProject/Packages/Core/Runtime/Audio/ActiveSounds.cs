@@ -18,7 +18,7 @@ namespace Base.CorePackage.Audio
         /// </summary>
         /// <param name="container">The container the source plays a clip of.</param>
         /// <param name="source">The source that started playing.</param>
-        public void Add(AudioContainer container, AudioSource source)
+        internal void Add(AudioContainer container, AudioSource source)
         {
             if (!_sourcesByContainer.TryGetValue(container, out List<AudioSource> sources))
             {
@@ -34,7 +34,7 @@ namespace Base.CorePackage.Audio
         /// Removes a source from tracking. Safe to call for untracked or already destroyed sources.
         /// </summary>
         /// <param name="source">The source to stop tracking.</param>
-        public void Remove(AudioSource source)
+        internal void Remove(AudioSource source)
         {
             if (!_containerBySource.Remove(source, out AudioContainer container))
                 return;
@@ -54,7 +54,7 @@ namespace Base.CorePackage.Audio
         /// <param name="container">The container to look up.</param>
         /// <param name="sources">The sources playing for the container, empty if none are.</param>
         /// <returns>True if at least one source is playing for the container.</returns>
-        public bool TryGetSources(AudioContainer container, out IReadOnlyList<AudioSource> sources)
+        internal bool TryGetSources(AudioContainer container, out IReadOnlyList<AudioSource> sources)
         {
             sources = null;
 
@@ -76,22 +76,23 @@ namespace Base.CorePackage.Audio
         /// <param name="source">The source to look up.</param>
         /// <param name="container">The container the source belongs to.</param>
         /// <returns>True if the source is tracked.</returns>
-        public bool TryGetContainer(AudioSource source, out AudioContainer container)
+        internal bool TryGetContainer(AudioSource source, out AudioContainer container)
             => _containerBySource.TryGetValue(source, out container);
 
         /// <summary>
         /// Counts how many live sources are playing for a container.
         /// </summary>
         /// <param name="container">The container to count sources for.</param>
-        public int CountOf(AudioContainer container) => TryGetSources(container, out IReadOnlyList<AudioSource> sources)
-            ? sources.Count
-            : 0;
+        internal int CountOf(AudioContainer container)
+            => TryGetSources(container, out IReadOnlyList<AudioSource> sources)
+                ? sources.Count
+                : 0;
 
         /// <summary>
         /// Gets the oldest live source playing for a container, or null if none is.
         /// </summary>
         /// <param name="container">The container to look up.</param>
-        public AudioSource GetOldest(AudioContainer container)
+        internal AudioSource GetOldest(AudioContainer container)
             => TryGetSources(container, out IReadOnlyList<AudioSource> sources)
                 ? sources[0]
                 : null;
@@ -100,7 +101,7 @@ namespace Base.CorePackage.Audio
         /// Copies every tracked source into the given buffer, so callers can release while iterating.
         /// </summary>
         /// <param name="buffer">The buffer to fill. It is not cleared first.</param>
-        public void CopyAllSourcesTo(List<AudioSource> buffer)
+        internal void CopyAllSourcesTo(List<AudioSource> buffer)
         {
             foreach (AudioSource source in _containerBySource.Keys)
                 buffer.Add(source);
@@ -110,7 +111,7 @@ namespace Base.CorePackage.Audio
         /// Drops all tracking without touching the sources themselves.
         /// Call this when the pools were cleared behind the manager's back.
         /// </summary>
-        public void Clear()
+        internal void Clear()
         {
             _sourcesByContainer.Clear();
             _containerBySource.Clear();

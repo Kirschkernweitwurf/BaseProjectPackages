@@ -15,7 +15,7 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
         private static readonly Dictionary<string, Color> Cache = new();
 
         /// <summary>Returns the title color for the given root name. Same name always yields the same color.</summary>
-        public static Color GetColor(string rootName)
+        internal static Color GetColor(string rootName)
         {
             if (string.IsNullOrEmpty(rootName))
                 return new Color(FallbackChannel, FallbackChannel, FallbackChannel);

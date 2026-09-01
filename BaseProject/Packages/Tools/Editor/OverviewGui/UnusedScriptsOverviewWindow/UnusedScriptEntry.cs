@@ -6,15 +6,15 @@ namespace Base.ToolPackage.Editor.OverviewGui.UnusedScriptsOverviewWindow
     internal sealed class UnusedScriptEntry
     {
         /// <summary>Asset path, for example "Assets/Runtime/OldThing.cs".</summary>
-        public string Path { get; }
+        internal string Path { get; }
 
         /// <summary>Stable GUID.</summary>
-        public string Guid { get; }
+        internal string Guid { get; }
 
         /// <summary>Containing folder, used to group the list.</summary>
-        public string Folder { get; }
+        internal string Folder { get; }
 
-        public string Name => System.IO.Path.GetFileName(Path);
+        internal string Name => System.IO.Path.GetFileName(Path);
 
         /// <summary>Creates an entry for one script that nothing appears to reference.</summary>
         public UnusedScriptEntry(string path, string guid)

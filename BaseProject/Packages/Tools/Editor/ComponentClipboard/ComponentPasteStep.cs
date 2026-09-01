@@ -12,19 +12,19 @@ namespace Base.ToolPackage.Editor.ComponentClipboard
     internal class ComponentPasteStep
     {
         /// <summary>Clipboard entry this step pastes.</summary>
-        public ComponentClipboardEntry Entry { get; }
+        internal ComponentClipboardEntry Entry { get; }
 
         /// <summary>Resolved component type, null when the type no longer exists.</summary>
-        public Type Type { get; }
+        internal Type Type { get; }
 
         /// <summary>Components that get overwritten. Empty means a new component is added.</summary>
-        public IReadOnlyList<Component> Targets => _targets;
+        internal IReadOnlyList<Component> Targets => _targets;
 
         /// <summary>Returns true when the entry type could be resolved.</summary>
-        public bool IsValid => Type != null;
+        internal bool IsValid => Type != null;
 
         /// <summary>Returns true when this step overwrites instead of adding.</summary>
-        public bool IsOverwrite => _targets.Count > 0;
+        internal bool IsOverwrite => _targets.Count > 0;
 
         private readonly List<Component> _targets;
 

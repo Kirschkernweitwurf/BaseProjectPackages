@@ -13,7 +13,7 @@ namespace Base.AttributePackage.Editor.Core
         /// <summary>
         /// Clamps the property into the inclusive range. Pass an infinity for a side that is unbounded.
         /// </summary>
-        public static void Apply(SerializedProperty property, float min, float max)
+        internal static void Apply(SerializedProperty property, float min, float max)
         {
             switch (property.propertyType)
             {

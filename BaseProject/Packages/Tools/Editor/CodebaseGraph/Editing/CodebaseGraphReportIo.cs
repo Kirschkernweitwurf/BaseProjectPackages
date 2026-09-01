@@ -35,7 +35,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Editing
 
         /// <summary>Asks where to put the findings report and writes it there.</summary>
         /// <param name="graph">Graph to report on.</param>
-        public static void Export(CodebaseGraphData graph)
+        internal static void Export(CodebaseGraphData graph)
         {
             if (graph == null)
                 return;
@@ -60,7 +60,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Editing
         /// <param name="graph">Graph to read from.</param>
         /// <param name="scope">Namespace or assembly name.</param>
         /// <param name="isAssembly">True when the scope names an assembly.</param>
-        public static void ExportScope(CodebaseGraphData graph, string scope, bool isAssembly)
+        internal static void ExportScope(CodebaseGraphData graph, string scope, bool isAssembly)
         {
             if (graph == null || string.IsNullOrEmpty(scope))
                 return;
@@ -79,7 +79,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Editing
 
         /// <summary>Reads dismissal instructions from the clipboard or a file and applies them.</summary>
         /// <returns>True when anything changed and the view should be rebuilt.</returns>
-        public static bool Import()
+        internal static bool Import()
         {
             int choice = EditorUtility.DisplayDialogComplex(ImportLabel,
                 ImportMessage,

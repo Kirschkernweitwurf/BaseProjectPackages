@@ -25,11 +25,11 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
         private static MethodInfo _stopMethod;
 
         /// <summary>True when the editor still exposes the preview methods this uses.</summary>
-        public static bool IsAvailable => PlayMethod != null;
+        internal static bool IsAvailable => PlayMethod != null;
 
         /// <summary>Plays a clip from the start, stopping whatever was playing before.</summary>
         /// <param name="clip">The clip to play.</param>
-        public static void Play(AudioClip clip)
+        internal static void Play(AudioClip clip)
         {
             if (clip == null)
                 return;
@@ -49,10 +49,10 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
 
         /// <summary>Plays the clip at the given path.</summary>
         /// <param name="assetPath">Project relative path of the clip.</param>
-        public static void Play(string assetPath) => Play(AssetDatabase.LoadAssetAtPath<AudioClip>(assetPath));
+        internal static void Play(string assetPath) => Play(AssetDatabase.LoadAssetAtPath<AudioClip>(assetPath));
 
         /// <summary>Stops every preview the editor is playing.</summary>
-        public static void Stop() => StopMethod?.Invoke(null, Array.Empty<object>());
+        internal static void Stop() => StopMethod?.Invoke(null, Array.Empty<object>());
 
         private static MethodInfo FindMethod(string name)
         {

@@ -27,7 +27,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Scanning
         /// <param name="info">The facts about the clip.</param>
         /// <param name="settings">The settings to estimate for.</param>
         /// <returns>The estimated runtime bytes.</returns>
-        public static long EstimateRuntimeBytes(AudioClipInfo info, AudioSettingValues settings)
+        internal static long EstimateRuntimeBytes(AudioClipInfo info, AudioSettingValues settings)
         {
             if (settings.LoadType == AudioClipLoadType.Streaming)
                 return StreamingBufferBytes;
@@ -42,7 +42,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Scanning
         /// <param name="info">The facts about the clip.</param>
         /// <param name="settings">The settings to estimate for.</param>
         /// <returns>The estimated build bytes.</returns>
-        public static long EstimateBuildBytes(AudioClipInfo info, AudioSettingValues settings)
+        internal static long EstimateBuildBytes(AudioClipInfo info, AudioSettingValues settings)
         {
             long raw = DecompressedBytes(info, settings);
 

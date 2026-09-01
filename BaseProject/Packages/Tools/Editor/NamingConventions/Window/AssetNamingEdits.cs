@@ -26,43 +26,43 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
         private bool _isRenameAllPending;
 
         /// <summary>Queues a new empty rule.</summary>
-        public void RequestAddRule() => _isAddRulePending = true;
+        internal void RequestAddRule() => _isAddRulePending = true;
 
         /// <summary>Queues the removal of the rule at the given index.</summary>
         /// <param name="index">Index in the rule set.</param>
-        public void RequestRuleRemoval(int index) => _pendingRuleRemoval = index;
+        internal void RequestRuleRemoval(int index) => _pendingRuleRemoval = index;
 
         /// <summary>Queues a new empty ignored path fragment.</summary>
-        public void RequestAddFragment() => _isAddFragmentPending = true;
+        internal void RequestAddFragment() => _isAddFragmentPending = true;
 
         /// <summary>Queues the removal of the ignored path fragment at the given index.</summary>
         /// <param name="index">Index in the fragment list.</param>
-        public void RequestFragmentRemoval(int index) => _pendingFragmentRemoval = index;
+        internal void RequestFragmentRemoval(int index) => _pendingFragmentRemoval = index;
 
         /// <summary>Queues taking one asset out of the scan.</summary>
         /// <param name="violation">The row that was dismissed.</param>
-        public void RequestDismiss(AssetNamingViolation violation) => _pendingDismiss = violation;
+        internal void RequestDismiss(AssetNamingViolation violation) => _pendingDismiss = violation;
 
         /// <summary>Queues bringing one dismissed asset back into the scan.</summary>
         /// <param name="guid">GUID of the asset to restore.</param>
-        public void RequestRestore(string guid) => _pendingRestoreGuid = guid;
+        internal void RequestRestore(string guid) => _pendingRestoreGuid = guid;
 
         /// <summary>Queues restoring every dismissed asset.</summary>
-        public void RequestClearDismissed() => _isClearDismissedPending = true;
+        internal void RequestClearDismissed() => _isClearDismissedPending = true;
 
         /// <summary>Queues dropping the whole history.</summary>
-        public void RequestClearHistory() => _isClearHistoryPending = true;
+        internal void RequestClearHistory() => _isClearHistoryPending = true;
 
         /// <summary>Queues taking one history entry back.</summary>
         /// <param name="entry">The entry to undo.</param>
-        public void RequestUndo(AssetNamingHistoryEntry entry) => _pendingUndo = entry;
+        internal void RequestUndo(AssetNamingHistoryEntry entry) => _pendingUndo = entry;
 
         /// <summary>Queues the rename of one asset to its current suggestion.</summary>
         /// <param name="violation">The row that was confirmed.</param>
-        public void RequestRename(AssetNamingViolation violation) => _pendingRename = violation;
+        internal void RequestRename(AssetNamingViolation violation) => _pendingRename = violation;
 
         /// <summary>Queues the rename of every asset in the filtered list.</summary>
-        public void RequestRenameAll() => _isRenameAllPending = true;
+        internal void RequestRenameAll() => _isRenameAllPending = true;
 
         /// <summary>
         /// Runs at most one queued change. Rule edits come first because they resize the rule
@@ -71,7 +71,7 @@ namespace Base.ToolPackage.Editor.NamingConventions.Window
         /// <param name="ruleSet">Rule set the edits are applied to, also used as the log context.</param>
         /// <param name="query">Query that has to be refreshed when the results change.</param>
         /// <returns>What the window still has to do.</returns>
-        public EAssetNamingEditOutcome Apply(AssetNamingRuleSet ruleSet, AssetNamingQuery query)
+        internal EAssetNamingEditOutcome Apply(AssetNamingRuleSet ruleSet, AssetNamingQuery query)
         {
             if (ApplyRuleEdits(ruleSet))
                 return EAssetNamingEditOutcome.None;

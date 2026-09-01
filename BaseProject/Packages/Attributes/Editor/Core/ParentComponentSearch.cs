@@ -15,7 +15,7 @@ namespace Base.AttributePackage.Editor.Core
         /// Finds the first matching object on an ancestor. With a name only ancestors of that name are
         /// considered. Returns the Transform or GameObject itself when the field type asks for one.
         /// </summary>
-        public static Object FindInParents(Transform start, Type type, string name, bool includeInactive)
+        internal static Object FindInParents(Transform start, Type type, string name, bool includeInactive)
         {
             for (Transform current = start.parent; current != null; current = current.parent)
             {

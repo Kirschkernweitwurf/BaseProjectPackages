@@ -9,10 +9,10 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
     internal sealed class AudioRulesPane : VisualElement
     {
         /// <summary>Where the content of the pane goes.</summary>
-        public VisualElement Body { get; } = new();
+        internal VisualElement Body { get; } = new();
 
         /// <summary>The row of the header right of the title, for chips and small buttons.</summary>
-        public VisualElement HeaderRight { get; } = new();
+        internal VisualElement HeaderRight { get; } = new();
 
         private readonly Label _note = new();
         private readonly Label _title;
@@ -48,10 +48,10 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
 
         /// <summary>Changes the headline, used when the details pane switches what it shows.</summary>
         /// <param name="title">The new headline.</param>
-        public void SetTitle(string title) => _title.text = title;
+        internal void SetTitle(string title) => _title.text = title;
 
         /// <summary>Sets the quiet line next to the title, used for counts.</summary>
         /// <param name="text">The note, or an empty string to hide it.</param>
-        public void SetNote(string text) => _note.text = text;
+        internal void SetNote(string text) => _note.text = text;
     }
 }

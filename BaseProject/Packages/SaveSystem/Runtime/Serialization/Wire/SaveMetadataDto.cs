@@ -21,7 +21,7 @@ namespace Base.SaveSystemPackage.Serialization.Wire
         public int screenshotHeight;
 
         /// <summary>Flattens domain metadata into the shape written to disk.</summary>
-        public static SaveMetadataDto From(SaveMetadata metadata) => new()
+        internal static SaveMetadataDto From(SaveMetadata metadata) => new()
         {
             slotId = metadata.SlotId,
             displayName = metadata.DisplayName,
@@ -36,7 +36,7 @@ namespace Base.SaveSystemPackage.Serialization.Wire
         };
 
         /// <summary>Rebuilds the domain metadata from the stored shape.</summary>
-        public SaveMetadata ToDomain() => new(slotId,
+        internal SaveMetadata ToDomain() => new(slotId,
             displayName,
             saveVersion,
             appVersion,

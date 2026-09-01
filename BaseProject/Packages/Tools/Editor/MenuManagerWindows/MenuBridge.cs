@@ -11,7 +11,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         private const BindingFlags Flags = BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
 
         /// <summary>True when the internal API was found and menu registration can run.</summary>
-        public static bool IsAvailable => AddMethod != null && RemoveMethod != null;
+        internal static bool IsAvailable => AddMethod != null && RemoveMethod != null;
 
         private static readonly MethodInfo AddMethod;
         private static readonly MethodInfo RemoveMethod;
@@ -49,7 +49,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         }
 
         /// <summary>Registers a menu item at the given path and priority.</summary>
-        public static void Add(string path, int priority, Action execute, Func<bool> validate)
+        internal static void Add(string path, int priority, Action execute, Func<bool> validate)
         {
             if (AddMethod == null)
                 return;
@@ -66,7 +66,7 @@ namespace Base.ToolPackage.Editor.MenuManagerWindows
         }
 
         /// <summary>Removes a previously registered menu item.</summary>
-        public static void Remove(string path)
+        internal static void Remove(string path)
         {
             if (RemoveMethod == null)
                 return;

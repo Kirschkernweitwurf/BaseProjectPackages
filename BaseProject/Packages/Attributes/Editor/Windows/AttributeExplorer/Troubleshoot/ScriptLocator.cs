@@ -18,7 +18,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot
         /// <summary>Opens the script declaring the given type in the code editor.</summary>
         /// <param name="type">The type to open.</param>
         /// <returns>True when a matching script was found and opened.</returns>
-        public static bool Open(Type type)
+        internal static bool Open(Type type)
         {
             MonoScript script = Find(type);
             if (script == null)
@@ -30,7 +30,7 @@ namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot
 
         /// <summary>Selects and pings the script declaring the given type.</summary>
         /// <param name="type">The type to ping.</param>
-        public static void Ping(Type type)
+        internal static void Ping(Type type)
         {
             MonoScript script = Find(type);
             if (script == null)

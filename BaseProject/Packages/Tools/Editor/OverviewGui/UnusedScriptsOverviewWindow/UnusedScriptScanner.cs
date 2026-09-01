@@ -25,7 +25,7 @@ namespace Base.ToolPackage.Editor.OverviewGui.UnusedScriptsOverviewWindow
 
         private static readonly Regex IdentifierRegex = new(@"[A-Za-z_][A-Za-z0-9_]*", RegexOptions.Compiled);
 
-        public static List<UnusedScriptEntry> Scan(bool ignoreEditorScripts)
+        internal static List<UnusedScriptEntry> Scan(bool ignoreEditorScripts)
         {
             string[] allPaths = AssetDatabase.GetAllAssetPaths();
             string projectPath = Application.dataPath.Substring(0, Application.dataPath.Length - "Assets".Length);

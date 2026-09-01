@@ -7,19 +7,19 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Model
     internal sealed class FindingDescriptor
     {
         /// <summary>Wording used in the findings dropdown, phrased as a group of things.</summary>
-        public string FilterLabel { get; }
+        internal string FilterLabel { get; }
 
         /// <summary>Short wording used on a node badge and as the detail heading.</summary>
-        public string Title { get; }
+        internal string Title { get; }
 
         /// <summary>What the scan actually observed, in plain words.</summary>
-        public string Explanation { get; }
+        internal string Explanation { get; }
 
         /// <summary>What to do about it.</summary>
-        public string Action { get; }
+        internal string Action { get; }
 
         /// <summary>True when the window can apply the change itself.</summary>
-        public bool CanQuickFix { get; }
+        internal bool CanQuickFix { get; }
 
         /// <summary>Creates a descriptor.</summary>
         /// <param name="filterLabel">Wording used in the findings dropdown.</param>

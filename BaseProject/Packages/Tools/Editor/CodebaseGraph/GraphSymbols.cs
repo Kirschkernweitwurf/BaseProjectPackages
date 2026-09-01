@@ -13,7 +13,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         private const string NamespaceGlyphText = "{}";
 
         /// <summary>Glyph shown on a namespace node.</summary>
-        public static string NamespaceGlyph => NamespaceGlyphText;
+        internal static string NamespaceGlyph => NamespaceGlyphText;
 
         /// <summary>
         /// Color of each visibility, used for the accent stripe and the member rows. Pastel like the
@@ -54,33 +54,33 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
         /// <summary>Returns the letter for a kind of type.</summary>
         /// <param name="kind">Kind to name.</param>
         /// <returns>The glyph.</returns>
-        public static string GetGlyph(ETypeKind kind) => TypeGlyphs.GetValueOrDefault(kind, NamespaceGlyphText);
+        internal static string GetGlyph(ETypeKind kind) => TypeGlyphs.GetValueOrDefault(kind, NamespaceGlyphText);
 
         /// <summary>Returns the letter for a kind of member.</summary>
         /// <param name="kind">Kind to name.</param>
         /// <returns>The glyph.</returns>
-        public static string GetGlyph(EMemberKind kind) => MemberGlyphs.TryGetValue(kind, out string glyph)
+        internal static string GetGlyph(EMemberKind kind) => MemberGlyphs.TryGetValue(kind, out string glyph)
             ? glyph
             : MemberGlyphs[EMemberKind.Field];
 
         /// <summary>Returns the color standing for a visibility.</summary>
         /// <param name="access">Visibility to color.</param>
         /// <returns>The color.</returns>
-        public static Color GetColor(EAccessLevel access) => AccessColors.TryGetValue(access, out Color color)
+        internal static Color GetColor(EAccessLevel access) => AccessColors.TryGetValue(access, out Color color)
             ? color
             : AccessColors[EAccessLevel.Private];
 
         /// <summary>Lists the type glyphs in reading order, for the legend.</summary>
         /// <returns>Kind and glyph pairs.</returns>
-        public static IReadOnlyDictionary<ETypeKind, string> GetTypeGlyphs() => TypeGlyphs;
+        internal static IReadOnlyDictionary<ETypeKind, string> GetTypeGlyphs() => TypeGlyphs;
 
         /// <summary>Lists the member glyphs in reading order, for the legend.</summary>
         /// <returns>Kind and glyph pairs.</returns>
-        public static IReadOnlyDictionary<EMemberKind, string> GetMemberGlyphs() => MemberGlyphs;
+        internal static IReadOnlyDictionary<EMemberKind, string> GetMemberGlyphs() => MemberGlyphs;
 
         /// <summary>Lists the visibilities in reading order, for the legend.</summary>
         /// <returns>The visibilities, widest first.</returns>
-        public static IReadOnlyList<EAccessLevel> GetAccessOrder() => new[]
+        internal static IReadOnlyList<EAccessLevel> GetAccessOrder() => new[]
         {
             EAccessLevel.Public,
             EAccessLevel.ProtectedInternal,

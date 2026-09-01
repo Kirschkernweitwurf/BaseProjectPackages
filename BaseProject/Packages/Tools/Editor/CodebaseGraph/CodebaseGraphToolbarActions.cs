@@ -9,33 +9,33 @@ namespace Base.ToolPackage.Editor.CodebaseGraph
     internal sealed class CodebaseGraphToolbarActions
     {
         /// <summary>Raised when anything the view depends on has changed.</summary>
-        public Action FilterChanged;
+        internal Action FilterChanged;
 
         /// <summary>Raised when only the line drawing changed, which needs no rebuild.</summary>
-        public Action EdgeModeChanged;
+        internal Action EdgeModeChanged;
 
         /// <summary>Raised when the neighbor depth changed, which only matters while focused.</summary>
-        public Action NeighborChanged;
+        internal Action NeighborChanged;
 
         /// <summary>Raised on every keystroke in the search box, which the window debounces.</summary>
-        public Action SearchChanged;
+        internal Action SearchChanged;
 
         /// <summary>Raised to go up one level.</summary>
-        public Action Back;
+        internal Action Back;
 
         /// <summary>Raised to scan the project again.</summary>
-        public Action Rescan;
+        internal Action Rescan;
 
         /// <summary>Raised to write the findings report.</summary>
-        public Action Export;
+        internal Action Export;
 
         /// <summary>Raised to read dismissals back in.</summary>
-        public Action Import;
+        internal Action Import;
 
         /// <summary>Raised to write a report about one namespace or assembly.</summary>
-        public Action ExportScope;
+        internal Action ExportScope;
 
         /// <summary>Raised to roll the scan up to assemblies and write that report.</summary>
-        public Action AssemblyEdgeReport;
+        internal Action AssemblyEdgeReport;
     }
 }

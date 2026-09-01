@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using Base.UtilityPackage;
 using UnityEditor;
 
 namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
@@ -39,7 +40,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
 
         /// <summary>Lists every script asset belonging to an assembly the scan covers.</summary>
         /// <returns>The asset paths.</returns>
-        public static List<string> CollectPaths()
+        internal static List<string> CollectPaths()
         {
             HashSet<string> inScope = ProjectAssemblyResolver.CollectProjectSourceFiles();
             List<string> paths = new();
@@ -59,7 +60,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
         /// <param name="paths">Every script asset in the project.</param>
         /// <param name="progress">Reporter that can also cancel the pass.</param>
         /// <returns>The index, or null when the scan was canceled.</returns>
-        public static ScriptIndex Build(IReadOnlyList<string> paths, ScanProgress progress)
+        internal static ScriptIndex Build(IReadOnlyList<string> paths, ScanProgress progress)
         {
             ScriptIndex index = new();
 
@@ -85,7 +86,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
             if (type == null)
                 return;
 
-            index.ByFullName[TypeNameFormatter.FormatFullName(type)] = path;
+            index.ByFullName[TypeNameUtility.FormatFullName(type)] = path;
         }
 
         private static void IndexBySourceText(string path, ScriptIndex index)

@@ -15,10 +15,10 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
         private const float RowHeight = 22f;
 
         /// <summary>Raised when the selected rule changes.</summary>
-        public event Action<AudioRule> SelectionChanged;
+        internal event Action<AudioRule> SelectionChanged;
 
         /// <summary>Raised whenever the list itself was edited, so the owner can save and rescan.</summary>
-        public event Action Changed;
+        internal event Action Changed;
 
         private readonly ListView _list = new();
         private readonly Dictionary<string, int> _matchCounts = new();
@@ -48,7 +48,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
 
         /// <summary>Points the list at the rules of a rule set.</summary>
         /// <param name="rules">The live rule list, edited in place.</param>
-        public void SetRules(List<AudioRule> rules)
+        internal void SetRules(List<AudioRule> rules)
         {
             _rules = rules;
             _list.itemsSource = _rules;
@@ -58,7 +58,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
 
         /// <summary>Feeds in how many clips each rule matched during the last scan.</summary>
         /// <param name="counts">Counts by rule label.</param>
-        public void SetMatchCounts(IReadOnlyDictionary<string, int> counts)
+        internal void SetMatchCounts(IReadOnlyDictionary<string, int> counts)
         {
             _matchCounts.Clear();
 
@@ -69,7 +69,7 @@ namespace Base.ToolPackage.Editor.AudioRules.Window
         }
 
         /// <summary>Redraws the rows, for example after a rule was renamed in the editor pane.</summary>
-        public void Refresh() => _list.RefreshItems();
+        internal void Refresh() => _list.RefreshItems();
 
         private static VisualElement MakeRow()
         {

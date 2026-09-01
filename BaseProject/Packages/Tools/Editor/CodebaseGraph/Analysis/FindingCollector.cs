@@ -15,7 +15,7 @@ namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
         /// <summary>Gathers every finding still showing, ranked, one entry per finding.</summary>
         /// <param name="graph">Graph to read.</param>
         /// <returns>The entries, worst first.</returns>
-        public static List<FindingEntry> Collect(CodebaseGraphData graph)
+        internal static List<FindingEntry> Collect(CodebaseGraphData graph)
         {
             List<FindingEntry> entries = new();
             Dictionary<string, string[]> sources = new(StringComparer.Ordinal);

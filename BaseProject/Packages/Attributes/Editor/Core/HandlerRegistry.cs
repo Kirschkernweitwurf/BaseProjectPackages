@@ -13,25 +13,25 @@ namespace Base.AttributePackage.Editor.Core
     internal static class HandlerRegistry
     {
         /// <summary>All before-field handlers, sorted by order.</summary>
-        public static IBeforeFieldHandler[] BeforeField
+        internal static IBeforeFieldHandler[] BeforeField
             => _beforeField ??= CreateSorted<IBeforeFieldHandler>(handler => handler.Order);
 
         /// <summary>All visibility handlers.</summary>
-        public static IVisibilityHandler[] Visibility => _visibility ??= Create<IVisibilityHandler>();
+        internal static IVisibilityHandler[] Visibility => _visibility ??= Create<IVisibilityHandler>();
 
         /// <summary>Handlers that draw a member themselves instead of the normal field.</summary>
-        public static IFieldReplacementHandler[] FieldReplacement
+        internal static IFieldReplacementHandler[] FieldReplacement
             => _fieldReplacement ??= Create<IFieldReplacementHandler>();
 
         /// <summary>All enable handlers.</summary>
-        public static IEnableHandler[] Enable => _enable ??= Create<IEnableHandler>();
+        internal static IEnableHandler[] Enable => _enable ??= Create<IEnableHandler>();
 
         /// <summary>All after-field handlers, sorted by order.</summary>
-        public static IAfterFieldHandler[] AfterField
+        internal static IAfterFieldHandler[] AfterField
             => _afterField ??= CreateSorted<IAfterFieldHandler>(handler => handler.Order);
 
         /// <summary>All inline field widgets, sorted by order.</summary>
-        public static IInlineFieldWidget[] InlineWidgets
+        internal static IInlineFieldWidget[] InlineWidgets
             => _inlineWidgets ??= CreateSorted<IInlineFieldWidget>(widget => widget.Order);
 
         private static IAfterFieldHandler[] _afterField;

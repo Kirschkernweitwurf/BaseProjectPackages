@@ -9,13 +9,13 @@ namespace Base.AttributePackage.Editor.Core
     internal readonly struct InspectorButton
     {
         /// <summary>The parameterless method invoked by the button.</summary>
-        public readonly MethodInfo Method;
+        internal readonly MethodInfo Method;
 
         /// <summary>The attribute carrying mode and confirmation settings.</summary>
-        public readonly ButtonAttribute Attribute;
+        internal readonly ButtonAttribute Attribute;
 
         /// <summary>Resolved button label, either the custom label or the nicified method name.</summary>
-        public readonly string Label;
+        internal readonly string Label;
 
         /// <summary>Creates a cached button entry.</summary>
         public InspectorButton(MethodInfo method, ButtonAttribute attribute, string label)

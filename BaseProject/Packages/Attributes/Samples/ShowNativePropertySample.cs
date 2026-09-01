@@ -20,6 +20,6 @@ namespace Base.AttributePackage.Samples
         /// <summary>A computed property surfaced in the inspector, read-only by nature.</summary>
         [ShowNativeProperty]
         [Tooltip("Has no serialized value, so it is shown rather than edited.")]
-        public string Summary => $"{itemCount} items";
+        internal string Summary => $"{itemCount} items";
     }
 }

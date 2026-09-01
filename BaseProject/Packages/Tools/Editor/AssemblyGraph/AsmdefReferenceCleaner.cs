@@ -14,7 +14,7 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
         /// Removes the given reference names from the asmdef at the given asset path.
         /// Returns how many references were removed.
         /// </summary>
-        public static int RemoveReferences(string asmdefPath, HashSet<string> referenceNamesToRemove)
+        internal static int RemoveReferences(string asmdefPath, HashSet<string> referenceNamesToRemove)
         {
             if (string.IsNullOrEmpty(asmdefPath)
                 || referenceNamesToRemove == null

@@ -6,10 +6,10 @@ namespace Base.AttributePackage.Editor.SceneHandles
     internal readonly struct HandleBinding
     {
         /// <summary>The attribute instance found on the field.</summary>
-        public readonly Attribute Attribute;
+        internal readonly Attribute Attribute;
 
         /// <summary>The drawer that renders it.</summary>
-        public readonly IHandleDrawer Drawer;
+        internal readonly IHandleDrawer Drawer;
 
         /// <summary>Creates a binding.</summary>
         /// <param name="attribute">The attribute instance found on the field.</param>
