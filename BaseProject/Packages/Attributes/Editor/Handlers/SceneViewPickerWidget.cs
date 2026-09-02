@@ -1,9 +1,9 @@
-using Base.AttributePackage.Editor.Core.Interfaces;
-using Base.AttributePackage.Editor.SceneHandles;
+using Base.AttributesPackage.Editor.Core.Interfaces;
+using Base.AttributesPackage.Editor.SceneHandles;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Handlers
+namespace Base.AttributesPackage.Editor.Handlers
 {
     /// <summary>
     /// Draws the arm button of <see cref="SceneViewPickerAttribute"/> next to the field. The scene view

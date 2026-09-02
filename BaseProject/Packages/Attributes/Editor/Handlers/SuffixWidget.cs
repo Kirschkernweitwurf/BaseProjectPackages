@@ -1,8 +1,8 @@
-using Base.AttributePackage.Editor.Core.Interfaces;
+using Base.AttributesPackage.Editor.Core.Interfaces;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Handlers
+namespace Base.AttributesPackage.Editor.Handlers
 {
     /// <summary>
     /// Draws the label of a <see cref="SuffixAttribute"/> after the value, as an inline widget rather

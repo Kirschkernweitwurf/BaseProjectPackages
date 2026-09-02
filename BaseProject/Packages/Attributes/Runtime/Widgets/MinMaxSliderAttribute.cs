@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Base.AttributePackage
+namespace Base.AttributesPackage
 {
     /// <summary>
     /// Draws a Vector2 as a two-handled range slider, with bounds that may come from other members

@@ -1,7 +1,7 @@
 using System;
-using Base.ToolPackage.Editor.CodebaseGraph.Model;
+using Base.ToolsPackage.Editor.CodebaseGraph.Model;
 
-namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
+namespace Base.ToolsPackage.Editor.CodebaseGraph.Analysis
 {
     /// <summary>
     /// Builds and reads the ids that survive a recompile. Metadata tokens do not, so anything written to

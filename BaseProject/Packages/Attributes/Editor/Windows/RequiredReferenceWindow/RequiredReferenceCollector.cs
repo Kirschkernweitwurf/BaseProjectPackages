@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
-using Base.AttributePackage.Editor.Core;
+using Base.AttributesPackage.Editor.Core;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
+namespace Base.AttributesPackage.Editor.Windows.RequiredReferenceWindow
 {
     /// <summary>Scans scene objects and ScriptableObject assets for validation issues, grouped per owner.</summary>
     internal static class RequiredReferenceCollector

@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 using Base.UtilityPackage;
 using UnityEditor;
 
-namespace Base.ToolPackage.Editor.Shared
+namespace Base.ToolsPackage.Editor.Shared
 {
     /// <summary>
     /// Finds the source line an attribute sits on, so a window can open a script with the cursor

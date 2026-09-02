@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
-using Base.ToolPackage.Editor.Shared;
+using Base.ToolsPackage.Editor.Shared;
 using Base.UtilityPackage.Menus;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.MenuManagerWindows.MenuItemOverview
+namespace Base.ToolsPackage.Editor.MenuManagerWindows.MenuItemOverview
 {
     /// <summary>
     /// Editor window that lists every menu item known to the editor, no matter whether it comes

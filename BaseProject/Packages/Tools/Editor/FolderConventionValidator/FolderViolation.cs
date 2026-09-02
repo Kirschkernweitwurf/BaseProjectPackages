@@ -1,4 +1,4 @@
-namespace Base.ToolPackage.Editor.FolderConventionValidator
+namespace Base.ToolsPackage.Editor.FolderConventionValidator
 {
     /// <summary>
     /// One broken folder rule. Immutable, built by the <see cref="FolderConventionScanner"/>

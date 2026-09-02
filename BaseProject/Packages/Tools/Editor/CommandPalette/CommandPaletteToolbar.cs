@@ -4,7 +4,7 @@
 using UnityEditor;
 using UnityEditor.Toolbars;
 
-namespace Base.ToolPackage.Editor.CommandPalette
+namespace Base.ToolsPackage.Editor.CommandPalette
 {
     /// <summary>
     /// Adds the palette button to Unity's main toolbar. The toolbar calls this method whenever it

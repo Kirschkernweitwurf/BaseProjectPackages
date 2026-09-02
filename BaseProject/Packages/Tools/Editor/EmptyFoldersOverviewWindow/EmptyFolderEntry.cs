@@ -1,4 +1,4 @@
-namespace Base.ToolPackage.Editor.EmptyFoldersOverviewWindow
+namespace Base.ToolsPackage.Editor.EmptyFoldersOverviewWindow
 {
     /// <summary>
     /// One empty folder, plus how many folders get removed with it (itself and nested empties).

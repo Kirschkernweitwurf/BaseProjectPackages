@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A referenced asset edited inline.</summary>
     [AttributeSample(typeof(ExpandableAttribute), EAttributeCategory.Widgets,

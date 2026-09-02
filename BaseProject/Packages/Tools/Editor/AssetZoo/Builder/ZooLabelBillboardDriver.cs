@@ -1,8 +1,8 @@
-using Base.ToolPackage.AssetZoo;
+using Base.ToolsPackage.AssetZoo;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.AssetZoo.Builder
+namespace Base.ToolsPackage.Editor.AssetZoo.Builder
 {
     /// <summary>
     /// Turns every <see cref="ZooLabelBillboard"/> toward the scene view camera while the editor is

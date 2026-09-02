@@ -1,7 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.EditorUiPackage
+namespace Base.EditorUIPackage.Editor
 {
     /// <summary>
     /// The style set a Base editor window draws its chrome with: the name it carries at the top, the

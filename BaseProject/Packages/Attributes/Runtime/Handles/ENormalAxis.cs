@@ -1,4 +1,4 @@
-namespace Base.AttributePackage
+namespace Base.AttributesPackage
 {
     /// <summary>Which axis a flat scene handle such as a disc is oriented around.</summary>
     public enum ENormalAxis : byte

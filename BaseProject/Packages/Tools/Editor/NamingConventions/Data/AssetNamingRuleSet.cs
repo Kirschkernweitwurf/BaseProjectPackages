@@ -6,7 +6,7 @@ using Base.UtilityPackage.Menus;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.NamingConventions.Data
+namespace Base.ToolsPackage.Editor.NamingConventions.Data
 {
     /// <summary>
     /// The asset naming conventions of a project. Stored as a plain asset next to the code rule

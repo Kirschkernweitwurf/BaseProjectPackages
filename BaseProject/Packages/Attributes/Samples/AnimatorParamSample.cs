@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A parameter name picked from an Animator.</summary>
     [AttributeSample(typeof(AnimatorParamAttribute), EAttributeCategory.Pickers,

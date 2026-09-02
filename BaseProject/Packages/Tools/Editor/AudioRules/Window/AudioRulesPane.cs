@@ -1,6 +1,6 @@
 using UnityEngine.UIElements;
 
-namespace Base.ToolPackage.Editor.AudioRules.Window
+namespace Base.ToolsPackage.Editor.AudioRules.Window
 {
     /// <summary>
     /// A titled pane. Three of these sit in the split views, and the header is what makes the

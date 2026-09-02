@@ -1,8 +1,8 @@
-using Base.EditorUiPackage;
+using Base.EditorUIPackage.Editor;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.ServicePackage.Editor
+namespace Base.ServicesPackage.Editor
 {
     /// <summary>
     /// Owns the table's column widths and the draggable lines between them, and hands back one
@@ -16,9 +16,9 @@ namespace Base.ServicePackage.Editor
     /// </summary>
     internal sealed class ServiceLocatorColumns
     {
-        private const string InstanceWidthKey = "Base.ServicePackage.Columns.Instance";
+        private const string InstanceWidthKey = "Base.ServicesPackage.Columns.Instance";
         private const float MinTextColumnWidth = 70f;
-        private const string ServiceWidthKey = "Base.ServicePackage.Columns.Service";
+        private const string ServiceWidthKey = "Base.ServicesPackage.Columns.Service";
         private const float TextPadding = 4f;
 
         // What the user dragged to, kept apart from what is actually drawn: a narrow window clamps

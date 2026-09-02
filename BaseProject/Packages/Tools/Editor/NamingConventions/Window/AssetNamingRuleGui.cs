@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
-using Base.ToolPackage.Editor.NamingConventions.Data;
-using Base.ToolPackage.Editor.NamingConventions.Scanning;
+using Base.ToolsPackage.Editor.NamingConventions.Data;
+using Base.ToolsPackage.Editor.NamingConventions.Scanning;
 using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.NamingConventions.Window
+namespace Base.ToolsPackage.Editor.NamingConventions.Window
 {
     /// <summary>
     /// Draws the editable options and rule table of the asset naming window. Both tables are laid

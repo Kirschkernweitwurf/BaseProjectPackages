@@ -1,7 +1,7 @@
-using Base.AttributePackage;
+using Base.AttributesPackage;
 using Base.CorePackage.Input;
 using Base.CorePackage.MenuManaging;
-using Base.ServicePackage;
+using Base.ServicesPackage;
 using Base.TweeningPackage.Components.System;
 using UnityEngine;
 using UnityEngine.InputSystem;

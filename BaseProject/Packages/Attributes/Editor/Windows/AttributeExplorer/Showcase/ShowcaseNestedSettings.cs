@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Showcase
+namespace Base.AttributesPackage.Editor.Windows.AttributeExplorer.Showcase
 {
     /// <summary>
     /// Nested block used by the showcase to confirm the pipeline descends into plain serializable types

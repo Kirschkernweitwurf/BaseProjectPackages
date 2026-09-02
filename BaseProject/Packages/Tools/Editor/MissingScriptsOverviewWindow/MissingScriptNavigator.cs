@@ -4,7 +4,7 @@ using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Base.ToolPackage.Editor.MissingScriptsOverviewWindow
+namespace Base.ToolsPackage.Editor.MissingScriptsOverviewWindow
 {
     /// <summary>
     /// Opens, selects, and frames the object behind a missing script entry.

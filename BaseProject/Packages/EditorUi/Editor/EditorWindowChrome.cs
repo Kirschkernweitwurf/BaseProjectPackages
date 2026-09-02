@@ -1,7 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.EditorUiPackage
+namespace Base.EditorUIPackage.Editor
 {
     /// <summary>
     /// The layout blocks that give every Base editor window the same shape: a title with a sentence

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A field checked by a method of your own.</summary>
     [AttributeSample(typeof(ValidateInputAttribute), EAttributeCategory.Validation,

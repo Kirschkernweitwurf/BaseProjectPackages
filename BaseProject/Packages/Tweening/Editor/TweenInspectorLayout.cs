@@ -1,9 +1,9 @@
 using System;
 using System.Reflection;
-using Base.AttributePackage;
-using Base.AttributePackage.Editor;
-using Base.AttributePackage.Editor.Drawers;
-using Base.AttributePackage.Editor.Inspectors;
+using Base.AttributesPackage;
+using Base.AttributesPackage.Editor;
+using Base.AttributesPackage.Editor.Drawers;
+using Base.AttributesPackage.Editor.Inspectors;
 using Base.TweeningPackage.Core.Data;
 using Base.TweeningPackage.Core.Data.Profiles;
 using Base.UtilityPackage.Editor;
@@ -14,7 +14,7 @@ namespace Base.TweeningPackage.Editor
     /// <summary>
     /// Shared inspector layout for tween components and tween profile assets. It draws the fields in a
     /// fixed order (profile, values, timing, references) and hides every field that a turned on asset
-    /// already provides. Value and reference fields run through the attribute package pipeline, so
+    /// already provides. Value and reference fields run through the Attributes package pipeline, so
     /// attributes like <see cref="GetComponentAttribute"/> and <see cref="TweenValueAttribute"/> keep
     /// working here. Reference fields are always drawn last, separated by a space.
     /// </summary>
@@ -33,8 +33,8 @@ namespace Base.TweeningPackage.Editor
         /// <summary>
         /// Draws the full inspector for the given tween component or tween profile.
         /// </summary>
-        /// <param name="editor">The attribute package editor whose object is inspected.</param>
-        internal static void Draw(AttributePackageEditor editor)
+        /// <param name="editor">The Attributes package editor whose object is inspected.</param>
+        internal static void Draw(AttributesPackageEditor editor)
         {
             SerializedObject serializedObject = editor.serializedObject;
             Type type = serializedObject.targetObject.GetType();
@@ -105,7 +105,7 @@ namespace Base.TweeningPackage.Editor
             EditorGUILayout.HelpBox(info, MessageType.None);
         }
 
-        private static void DrawValueFields(AttributePackageEditor editor, Type type, bool usesProfile)
+        private static void DrawValueFields(AttributesPackageEditor editor, Type type, bool usesProfile)
         {
             SerializedProperty property = editor.serializedObject.GetIterator();
             bool enterChildren = true;
@@ -128,7 +128,7 @@ namespace Base.TweeningPackage.Editor
             }
         }
 
-        private static void DrawReferenceFields(AttributePackageEditor editor, Type type)
+        private static void DrawReferenceFields(AttributesPackageEditor editor, Type type)
         {
             SerializedProperty property = editor.serializedObject.GetIterator();
             bool enterChildren = true;
@@ -180,7 +180,7 @@ namespace Base.TweeningPackage.Editor
             EditorGUILayout.PropertyField(property, true);
         }
 
-        private static void DrawMember(AttributePackageEditor editor, SerializedProperty property, Type type)
+        private static void DrawMember(AttributesPackageEditor editor, SerializedProperty property, Type type)
         {
             FieldInfo field = ReflectionCache.GetField(type, property.name);
             MemberRenderer.Draw(property.Copy(), field, editor);

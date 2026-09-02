@@ -1,4 +1,4 @@
-namespace Base.ToolPackage.Editor.StaticResetChecker
+namespace Base.ToolsPackage.Editor.StaticResetChecker
 {
     /// <summary>
     /// Represents a hit of a static field reference in the code.

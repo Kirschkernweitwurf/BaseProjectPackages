@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.PlayModeApplier
+namespace Base.ToolsPackage.Editor.PlayModeApplier
 {
     /// <summary>
     /// Holds the components marked during the current play session.

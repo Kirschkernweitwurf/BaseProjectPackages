@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.AudioRules.Data
+namespace Base.ToolsPackage.Editor.AudioRules.Data
 {
     /// <summary>
     /// The thresholds the deep analysis judges by. They live in the rule set so a project can

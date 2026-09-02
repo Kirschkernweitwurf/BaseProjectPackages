@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
-using Base.ToolPackage.Editor.Shared;
+using Base.ToolsPackage.Editor.Shared;
 using Base.UtilityPackage.Menus;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.MenuManagerWindows.CreateAssetMenuOverview
+namespace Base.ToolsPackage.Editor.MenuManagerWindows.CreateAssetMenuOverview
 {
     /// <summary>
     /// Editor window that lists every entry under "Assets/Create", no matter whether it comes

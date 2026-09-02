@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A number with an upper bound only.</summary>
     [AttributeSample(typeof(MaxAttribute), EAttributeCategory.Validation,

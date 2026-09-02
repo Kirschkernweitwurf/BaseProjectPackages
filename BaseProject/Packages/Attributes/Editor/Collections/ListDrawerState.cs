@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using Base.AttributePackage.Editor.Core;
+using Base.AttributesPackage.Editor.Core;
 using UnityEditor;
 
-namespace Base.AttributePackage.Editor.Collections
+namespace Base.AttributesPackage.Editor.Collections
 {
     /// <summary>
     /// Search text and page position of one drawn list. Kept outside the renderer because handlers and

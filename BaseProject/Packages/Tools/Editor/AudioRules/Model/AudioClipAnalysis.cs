@@ -1,4 +1,4 @@
-namespace Base.ToolPackage.Editor.AudioRules.Model
+namespace Base.ToolsPackage.Editor.AudioRules.Model
 {
     /// <summary>
     /// What reading the sample data of one clip turned up. Built by the analyzer, cached between

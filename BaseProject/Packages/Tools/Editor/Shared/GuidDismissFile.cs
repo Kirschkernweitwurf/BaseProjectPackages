@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Base.ToolPackage.Editor.Shared
+namespace Base.ToolsPackage.Editor.Shared
 {
     /// <summary>
     /// The on disk shape of a <see cref="GuidDismissStore"/> file.

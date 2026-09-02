@@ -1,4 +1,4 @@
-namespace Base.ToolPackage.Editor.Tests.Fixtures
+namespace Base.ToolsPackage.Editor.Tests.Fixtures
 {
     /// <summary>
     /// The other half of the fixture. A liveness tool that reports nothing passes every test about what

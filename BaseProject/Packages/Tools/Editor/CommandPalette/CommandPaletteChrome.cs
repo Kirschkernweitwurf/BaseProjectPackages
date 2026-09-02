@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.CommandPalette
+namespace Base.ToolsPackage.Editor.CommandPalette
 {
     /// <summary>
     /// The drawing primitives the palette is built from: rounded fills and borders, hairlines,

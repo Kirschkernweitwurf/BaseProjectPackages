@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>An enum shown as a row of buttons.</summary>
     [AttributeSample(typeof(EnumToggleButtonsAttribute), EAttributeCategory.Widgets,

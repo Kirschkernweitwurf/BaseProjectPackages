@@ -1,8 +1,8 @@
-using Base.ToolPackage.AssetZoo;
+using Base.ToolsPackage.AssetZoo;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-namespace Base.ToolPackage.Editor.AssetZoo.Builder
+namespace Base.ToolsPackage.Editor.AssetZoo.Builder
 {
     /// <summary>
     /// Creates 3D TextMesh labels that always face the camera.

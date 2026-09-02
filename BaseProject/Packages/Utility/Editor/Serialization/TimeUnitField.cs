@@ -150,7 +150,7 @@ namespace Base.UtilityPackage.Editor.Serialization
         //
         // Utility sits at the bottom of the stack and references no other Base package, so the shared
         // EditorStyleWatch is out of reach and the skin is tracked directly. That covers the dark and
-        // light switch; the custom themes EditorStyleWatch also follows are an EditorUi concept this
+        // light switch; the custom themes EditorStyleWatch also follows are an EditorUI concept this
         // package knows nothing about.
         private static void EnsureFresh()
         {

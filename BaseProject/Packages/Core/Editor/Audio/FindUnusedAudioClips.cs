@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Base.CorePackage.Audio;
-using Base.EditorUiPackage;
+using Base.EditorUIPackage.Editor;
 using Base.UtilityPackage.Editor;
 using Base.UtilityPackage.Logging;
 using Base.UtilityPackage.Menus;

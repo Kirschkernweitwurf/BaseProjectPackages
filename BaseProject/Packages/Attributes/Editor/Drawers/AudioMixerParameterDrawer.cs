@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
-using Base.AttributePackage.Editor.Core;
+using Base.AttributesPackage.Editor.Core;
 using Base.UtilityPackage.Editor;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Audio;
 
-namespace Base.AttributePackage.Editor.Drawers
+namespace Base.AttributesPackage.Editor.Drawers
 {
     /// <summary>
     /// Draws a dropdown of the exposed parameters of a sibling AudioMixer for

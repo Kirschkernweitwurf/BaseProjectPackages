@@ -25,9 +25,6 @@ The fixture holds both halves. Eleven shapes that are alive and must not be repo
 dead and must be. A tool that reported nothing would pass the first half, which is why the second half
 exists.
 
-`AsmdefProbe` is a separate assembly the scan reads as a second compilation unit, so cross-assembly
-resolution is covered rather than assumed.
-
 ## What is deliberately not covered
 
 Three shapes need real assets whose GUIDs only exist once Unity has imported them, so there is nothing

@@ -1,6 +1,6 @@
 using System;
 
-namespace Base.ToolPackage.Editor.CodebaseGraph.Model
+namespace Base.ToolsPackage.Editor.CodebaseGraph.Model
 {
     /// <summary>The toolbar state, in one object, so the entry factory only takes a single argument.</summary>
     internal sealed class GraphFilter

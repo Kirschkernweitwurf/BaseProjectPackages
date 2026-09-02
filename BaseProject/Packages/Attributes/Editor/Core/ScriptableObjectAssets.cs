@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Core
+namespace Base.AttributesPackage.Editor.Core
 {
     /// <summary>
     /// Enumerates the ScriptableObject assets of the project. Shared by the play-mode validator and the

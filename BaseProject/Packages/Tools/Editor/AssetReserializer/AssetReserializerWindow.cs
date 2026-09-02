@@ -1,11 +1,11 @@
 using System.Collections.Generic;
-using Base.EditorUiPackage;
+using Base.EditorUIPackage.Editor;
 using Base.UtilityPackage.Menus;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace Base.ToolPackage.Editor.AssetReserializer
+namespace Base.ToolsPackage.Editor.AssetReserializer
 {
     /// <summary>
     /// Rewrites assets with the current serializer so that a

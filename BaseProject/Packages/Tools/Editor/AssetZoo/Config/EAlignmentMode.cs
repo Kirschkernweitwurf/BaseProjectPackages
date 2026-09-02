@@ -1,4 +1,4 @@
-namespace Base.ToolPackage.Editor.AssetZoo.Config
+namespace Base.ToolsPackage.Editor.AssetZoo.Config
 {
     /// <summary>
     /// How to align prefabs when placing them in the zoo.

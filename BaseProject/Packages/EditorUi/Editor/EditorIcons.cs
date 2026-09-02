@@ -1,7 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.EditorUiPackage
+namespace Base.EditorUIPackage.Editor
 {
     /// <summary>
     /// The built-in editor icons the Base windows report findings with, resolved once and cached.

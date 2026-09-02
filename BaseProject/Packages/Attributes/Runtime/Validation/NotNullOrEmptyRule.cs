@@ -3,7 +3,7 @@ using System.Collections;
 using System.Reflection;
 using Object = UnityEngine.Object;
 
-namespace Base.AttributePackage
+namespace Base.AttributesPackage
 {
     /// <summary>Fails when a <see cref="NotNullOrEmptyAttribute"/> value is null or empty.</summary>
     internal sealed class NotNullOrEmptyRule : IValidationRule

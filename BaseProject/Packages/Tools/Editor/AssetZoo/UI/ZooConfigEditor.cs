@@ -1,10 +1,10 @@
-using Base.EditorUiPackage;
-using Base.ToolPackage.Editor.AssetZoo.Config;
-using Base.ToolPackage.Editor.AssetZoo.Generation;
+using Base.EditorUIPackage.Editor;
+using Base.ToolsPackage.Editor.AssetZoo.Config;
+using Base.ToolsPackage.Editor.AssetZoo.Generation;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.AssetZoo.UI
+namespace Base.ToolsPackage.Editor.AssetZoo.UI
 {
     /// <summary>
     /// Custom inspector for <see cref="ZooConfig"/> that adds buttons for generating categories and

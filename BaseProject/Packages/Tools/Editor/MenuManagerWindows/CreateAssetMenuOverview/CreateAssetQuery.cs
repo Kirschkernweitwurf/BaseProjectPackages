@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Base.ToolPackage.Editor.Shared;
+using Base.ToolsPackage.Editor.Shared;
 
-namespace Base.ToolPackage.Editor.MenuManagerWindows.CreateAssetMenuOverview
+namespace Base.ToolsPackage.Editor.MenuManagerWindows.CreateAssetMenuOverview
 {
     /// <summary>
     /// Pure filtering and sorting for asset creation entries. The input collection is never

@@ -1,8 +1,8 @@
-using Base.ToolPackage.Editor.CodebaseGraph;
-using Base.ToolPackage.Editor.CodebaseGraph.Model;
+using Base.ToolsPackage.Editor.CodebaseGraph;
+using Base.ToolsPackage.Editor.CodebaseGraph.Model;
 using NUnit.Framework;
 
-namespace Base.ToolPackage.Editor.Tests
+namespace Base.ToolsPackage.Editor.Tests
 {
     /// <summary>
     /// Checks that the scanner is right about what is alive. Everything this tool says rests on that
@@ -19,23 +19,23 @@ namespace Base.ToolPackage.Editor.Tests
     /// </summary>
     public sealed class LivenessTests
     {
-        private const string Behaviour = "Base.ToolPackage.Editor.Tests.Fixtures.FixtureBehaviour";
-        private const string Constants = "Base.ToolPackage.Editor.Tests.Fixtures.FixtureConstants";
-        private const string Contract = "Base.ToolPackage.Editor.Tests.Fixtures.IFixtureContract";
-        private const string DeadCode = "Base.ToolPackage.Editor.Tests.Fixtures.FixtureDeadCode";
+        private const string Behaviour = "Base.ToolsPackage.Editor.Tests.Fixtures.FixtureBehaviour";
+        private const string Constants = "Base.ToolsPackage.Editor.Tests.Fixtures.FixtureConstants";
+        private const string Contract = "Base.ToolsPackage.Editor.Tests.Fixtures.IFixtureContract";
+        private const string DeadCode = "Base.ToolsPackage.Editor.Tests.Fixtures.FixtureDeadCode";
         private const string DescribeMember = "Describe";
-        private const string NestingHost = "Base.ToolPackage.Editor.Tests.Fixtures.FixtureNestingHost";
+        private const string NestingHost = "Base.ToolsPackage.Editor.Tests.Fixtures.FixtureNestingHost";
         private const string NestingUnused = NestingHost + ".Unused";
-        private const string Orphan = "Base.ToolPackage.Editor.Tests.Fixtures.IFixtureOrphan";
+        private const string Orphan = "Base.ToolsPackage.Editor.Tests.Fixtures.IFixtureOrphan";
         private const string OrphanedMember = "Orphaned";
 
-        private const string PublishedConstants = "Base.ToolPackage.Editor.Tests.Fixtures."
+        private const string PublishedConstants = "Base.ToolsPackage.Editor.Tests.Fixtures."
             + "FixturePublishedConstants";
 
         private const string PublishedConstName = "PublishedLabel";
         private const string SharedConstName = "SharedLabel";
         private const string UnreadConstName = "UnreadLabel";
-        private const string Vector = "Base.ToolPackage.Editor.Tests.Fixtures.FixtureVector";
+        private const string Vector = "Base.ToolsPackage.Editor.Tests.Fixtures.FixtureVector";
 
         private GraphProbe _probe;
 

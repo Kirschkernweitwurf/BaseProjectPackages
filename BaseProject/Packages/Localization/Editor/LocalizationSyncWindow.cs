@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Base.EditorUiPackage;
+using Base.EditorUIPackage.Editor;
 using Base.UtilityPackage.Logging;
 using UnityEditor;
 using UnityEditor.Localization;

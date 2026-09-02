@@ -1,17 +1,18 @@
-using Base.AttributePackage;
-using Base.ServicePackage;
+using Base.AttributesPackage;
+using Base.SaveSystemPackage.Unity.Autosave;
+using Base.ServicesPackage;
 using Base.SettingsPackage.Components;
 using Base.UtilityPackage.Identification;
 using UnityEngine;
 
-namespace Base.SaveSystemPackage.Unity.Autosave.Settings
+namespace Base.SaveSystemPackage.Settings
 {
     /// <summary>
-    /// Stores whether autosaving is allowed and pushes it into the <see cref="AutosaveService"/>. Both
-    /// the key and the default come from the save package, so this component, the service and the
-    /// config asset cannot drift apart.
+    /// Stores how often a timed autosave is offered and pushes it into the
+    /// <see cref="AutosaveService"/>. Pair it with <see cref="AutosaveEnabledSetting"/> for a slider
+    /// next to a toggle. The value is in seconds; a menu that shows minutes converts on display.
     /// </summary>
-    public sealed class AutosaveEnabledSetting : BoolSettingComponent
+    public sealed class AutosaveIntervalSetting : FloatSettingComponent
     {
         [Title("Autosave")]
         [Tooltip("Defaults asset. Use the same one the AutosaveService references.")]
@@ -19,10 +20,10 @@ namespace Base.SaveSystemPackage.Unity.Autosave.Settings
         [SerializeField] private AutosaveConfig config;
 
         /// <inheritdoc/>
-        public override PersistentKey Key => AutosaveSettingKeys.Enabled;
+        public override PersistentKey Key => AutosaveSettingKeys.Interval;
 
         /// <inheritdoc/>
-        protected override bool DefaultValue => config.AutosaveEnabled;
+        protected override float DefaultValue => config.IntervalSeconds;
 
         private AutosaveService _autosaveService;
 
@@ -38,12 +39,12 @@ namespace Base.SaveSystemPackage.Unity.Autosave.Settings
 #endregion
 
         /// <inheritdoc/>
-        protected override void Apply(bool value)
+        protected override void Apply(float value)
         {
             if (_autosaveService == null)
                 return;
 
-            _autosaveService.SetAutosaveEnabled(value);
+            _autosaveService.SetIntervalSeconds(value);
         }
     }
 }

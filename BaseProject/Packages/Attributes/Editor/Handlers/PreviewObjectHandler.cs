@@ -1,10 +1,10 @@
-using Base.AttributePackage.Editor.Core;
-using Base.AttributePackage.Editor.Core.Interfaces;
+using Base.AttributesPackage.Editor.Core;
+using Base.AttributesPackage.Editor.Core.Interfaces;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Base.AttributePackage.Editor.Handlers
+namespace Base.AttributesPackage.Editor.Handlers
 {
     /// <summary>
     /// Draws a large preview under a <see cref="PreviewObjectAttribute"/> reference, interactive where

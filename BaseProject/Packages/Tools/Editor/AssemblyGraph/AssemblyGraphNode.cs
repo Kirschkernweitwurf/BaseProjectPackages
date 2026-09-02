@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
-using Base.EditorUiPackage;
+using Base.EditorUIPackage.Editor;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Base.ToolPackage.Editor.AssemblyGraph
+namespace Base.ToolsPackage.Editor.AssemblyGraph
 {
     /// <summary>A GraphView node that represents one assembly.</summary>
     internal sealed class AssemblyGraphNode : Node
@@ -121,7 +121,7 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
             Label kindLabel = new(Info.Kind.ToString());
 
             kindLabel.AddToClassList(KindLabelClass);
-            kindLabel.AddToClassList(EditorUiClass.Dim);
+            kindLabel.AddToClassList(EditorUIClass.Dim);
             extensionContainer.Add(kindLabel);
 
             extensionContainer.Add(BuildActionRow());
@@ -133,7 +133,7 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
             Label header = new(string.Format(UnusedHeaderFormat, unused.Count));
 
             header.AddToClassList(UnusedHeaderClass);
-            header.AddToClassList(EditorUiClass.Danger);
+            header.AddToClassList(EditorUIClass.Danger);
             extensionContainer.Add(header);
 
             foreach (string name in unused)
@@ -141,7 +141,7 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
                 Label line = new(name);
 
                 line.AddToClassList(UnusedLineClass);
-                line.AddToClassList(EditorUiClass.Danger);
+                line.AddToClassList(EditorUIClass.Danger);
                 extensionContainer.Add(line);
             }
 
@@ -154,7 +154,7 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
             };
 
             cleanButton.AddToClassList(CleanButtonClass);
-            cleanButton.AddToClassList(EditorUiClass.Button);
+            cleanButton.AddToClassList(EditorUIClass.Button);
 
             // Destructive, so it takes the danger fill rather than either shared button class.
             cleanButton.style.backgroundColor = EditorPalette.Danger;
@@ -178,7 +178,7 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
             };
 
             focusButton.AddToClassList(FocusButtonClass);
-            focusButton.AddToClassList(EditorUiClass.Button);
+            focusButton.AddToClassList(EditorUIClass.Button);
 
             // Amber while focused, matching the border of the node it belongs to, so the two read as
             // one state rather than two.
@@ -189,7 +189,7 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
             }
             else
             {
-                focusButton.AddToClassList(EditorUiClass.ButtonSecondary);
+                focusButton.AddToClassList(EditorUIClass.ButtonSecondary);
             }
 
             row.Add(focusButton);
@@ -200,8 +200,8 @@ namespace Base.ToolPackage.Editor.AssemblyGraph
             };
 
             goToButton.AddToClassList(GoToButtonClass);
-            goToButton.AddToClassList(EditorUiClass.Button);
-            goToButton.AddToClassList(EditorUiClass.ButtonSecondary);
+            goToButton.AddToClassList(EditorUIClass.Button);
+            goToButton.AddToClassList(EditorUIClass.ButtonSecondary);
             goToButton.SetEnabled(Info.HasAsmdef);
             row.Add(goToButton);
 

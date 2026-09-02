@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Base.AttributePackage
+namespace Base.AttributesPackage
 {
     /// <summary>
     /// Draws a movable position gizmo in the scene view for a Vector3 field, so a point can be dragged

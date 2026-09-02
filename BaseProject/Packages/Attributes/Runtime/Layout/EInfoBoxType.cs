@@ -1,4 +1,4 @@
-namespace Base.AttributePackage
+namespace Base.AttributesPackage
 {
     /// <summary>
     /// Icon and severity shown by an <see cref="InfoBoxAttribute"/>.

@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Base.AttributePackage
+namespace Base.AttributesPackage
 {
     /// <summary>
     /// Shows the field only while the referenced enum member equals one of the given values.

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>Methods called before and after a collection changes.</summary>
     [AttributeSample(typeof(OnCollectionChangedAttribute), EAttributeCategory.Callbacks,

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A method turned into a button.</summary>
     [AttributeSample(typeof(ButtonAttribute), EAttributeCategory.Widgets,

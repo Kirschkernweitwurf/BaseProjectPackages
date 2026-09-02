@@ -1,7 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Core
+namespace Base.AttributesPackage.Editor.Core
 {
     /// <summary>Converts a serialized property value to a plain text form for the clipboard.</summary>
     internal static class PropertyValueText

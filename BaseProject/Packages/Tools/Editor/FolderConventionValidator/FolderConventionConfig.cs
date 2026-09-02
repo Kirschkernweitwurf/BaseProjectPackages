@@ -1,9 +1,9 @@
 using System.Collections.Generic;
-using Base.AttributePackage;
+using Base.AttributesPackage;
 using Base.UtilityPackage.Menus;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.FolderConventionValidator
+namespace Base.ToolsPackage.Editor.FolderConventionValidator
 {
     /// <summary>
     /// Rules the project folder layout has to follow. Read by the

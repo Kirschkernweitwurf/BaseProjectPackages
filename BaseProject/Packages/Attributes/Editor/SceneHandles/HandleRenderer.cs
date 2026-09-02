@@ -5,7 +5,7 @@ using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Base.AttributePackage.Editor.SceneHandles
+namespace Base.AttributesPackage.Editor.SceneHandles
 {
     /// <summary>
     /// Walks the inspected object's serialized properties during a scene view repaint and lets each

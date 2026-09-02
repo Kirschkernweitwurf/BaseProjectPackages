@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A range picked with one slider and two handles.</summary>
     [AttributeSample(typeof(MinMaxSliderAttribute), EAttributeCategory.Widgets,

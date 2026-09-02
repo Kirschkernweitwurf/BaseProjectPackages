@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Base.AttributePackage;
+using Base.AttributesPackage;
 using Base.UtilityPackage.Logging;
 using Base.UtilityPackage.Menus;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.AudioRules.Data
+namespace Base.ToolsPackage.Editor.AudioRules.Data
 {
     /// <summary>
     /// The audio import conventions of a project. Rules cascade from top to bottom: every rule

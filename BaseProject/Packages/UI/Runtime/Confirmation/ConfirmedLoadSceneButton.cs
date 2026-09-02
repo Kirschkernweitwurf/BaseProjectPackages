@@ -1,4 +1,4 @@
-using Base.AttributePackage;
+using Base.AttributesPackage;
 using Base.UIPackage.Utility;
 using UnityEngine;
 

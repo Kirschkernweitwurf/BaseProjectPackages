@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Object = UnityEngine.Object;
 
-namespace Base.ToolPackage.Editor.PlayModeApplier
+namespace Base.ToolsPackage.Editor.PlayModeApplier
 {
     /// <summary>
     /// Writes a captured payload back onto an edit mode object or a prefab asset.

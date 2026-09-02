@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A duration typed as hours, minutes and seconds.</summary>
     [AttributeSample(typeof(TimeAttribute), EAttributeCategory.Widgets,

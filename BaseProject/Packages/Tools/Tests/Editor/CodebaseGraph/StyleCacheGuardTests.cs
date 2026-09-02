@@ -5,7 +5,7 @@ using NUnit.Framework;
 using UnityEditor;
 using PackageInfo = UnityEditor.PackageManager.PackageInfo;
 
-namespace Base.ToolPackage.Editor.Tests
+namespace Base.ToolsPackage.Editor.Tests
 {
     /// <summary>
     /// Checks that no base package source holds a <c>GUIStyle</c> in a static without a way to drop it
@@ -19,7 +19,7 @@ namespace Base.ToolPackage.Editor.Tests
     /// </para>
     /// <para>
     /// The guard is either the shared <c>EditorStyleWatch</c>, or a direct skin comparison for the
-    /// packages that sit below EditorUi and cannot reach it. Both leave a mark in the source, which is
+    /// packages that sit below EditorUI and cannot reach it. Both leave a mark in the source, which is
     /// what this looks for. A text check is the right shape here: the fault is a missing rebuild path,
     /// and a path that was never written is not something the compiled assembly can be asked about.
     /// </para>
@@ -94,7 +94,7 @@ namespace Base.ToolPackage.Editor.Tests
 
             failures.Add($"{AssetDatabase.GetAssetPath(script)} caches a GUIStyle in a static but names "
                 + "no guard, so it keeps the colors of the theme it was built for. Drop the cache from "
-                + "an EditorStyleWatch, or compare against EditorGUIUtility.isProSkin where EditorUi is "
+                + "an EditorStyleWatch, or compare against EditorGUIUtility.isProSkin where EditorUI is "
                 + "out of reach.");
         }
 

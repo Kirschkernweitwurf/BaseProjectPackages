@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A reference restricted to objects implementing an interface.</summary>
     [AttributeSample(typeof(MustImplementAttribute), EAttributeCategory.Validation,

@@ -1,4 +1,4 @@
-using Base.AttributePackage;
+using Base.AttributesPackage;
 using Base.SettingsPackage.Components;
 using Base.SettingsPackage.Core;
 using Base.UtilityPackage.Logging;

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A field editable only while a condition holds.</summary>
     [AttributeSample(typeof(EnableIfAttribute), EAttributeCategory.Conditions,

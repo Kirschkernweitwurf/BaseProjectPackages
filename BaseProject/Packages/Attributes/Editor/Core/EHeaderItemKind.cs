@@ -1,4 +1,4 @@
-namespace Base.AttributePackage.Editor.Core
+namespace Base.AttributesPackage.Editor.Core
 {
     /// <summary>What a member contributes to the component header.</summary>
     internal enum EHeaderItemKind : byte

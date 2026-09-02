@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.CommandPalette
+namespace Base.ToolsPackage.Editor.CommandPalette
 {
     /// <summary>The tags and the pinned state stored for a single command.</summary>
     [Serializable]

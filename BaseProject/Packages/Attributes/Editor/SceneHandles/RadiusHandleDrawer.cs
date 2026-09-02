@@ -1,7 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.SceneHandles
+namespace Base.AttributesPackage.Editor.SceneHandles
 {
     /// <summary>Draws a draggable circle for <see cref="RadiusHandleAttribute"/>.</summary>
     internal sealed class RadiusHandleDrawer : HandleDrawer<RadiusHandleAttribute>

@@ -2,7 +2,7 @@ using System.IO;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.EditorUiPackage
+namespace Base.EditorUIPackage.Editor
 {
     /// <summary>
     /// Creates a theme asset, seeded with the built-in look, at a place the user picks.

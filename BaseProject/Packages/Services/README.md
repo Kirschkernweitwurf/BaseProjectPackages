@@ -1,4 +1,4 @@
-# Base Service Package
+# Base Services
 
 The runtime kernel the other Base packages build on. Service location, service lifetime, an ordered shutdown pipeline and priority trackers, and nothing else.
 
@@ -8,9 +8,9 @@ It was split out of the Core package so that a project can use the save system, 
 
 - Unity `6000.3` or newer
 - `Base.UtilityPackage` for `CustomLogger` and `UnityObjectUtility`
-- `Base.AttributePackage` for `[Required]`, `[NotNullOrEmpty]` and `[SceneName]`
-- `Base.EditorUiPackage` for the Service Locator window
-- Assemblies: `Base.ServicePackage` and `Base.ServicePackage.Editor`
+- `Base.AttributesPackage` for `[Required]`, `[NotNullOrEmpty]` and `[SceneName]`
+- `Base.EditorUIPackage.Editor` for the Service Locator window
+- Assemblies: `Base.ServicesPackage` and `Base.ServicesPackage.Editor`
 
 ## Systems
 
@@ -54,4 +54,4 @@ An entry whose instance was destroyed is what the window exists for: from inside
 
 ## Install
 
-Install through the Git Package Manager window. Installing this package selects `Base.UtilityPackage`, `Base.AttributePackage` and `Base.EditorUiPackage` automatically. UPM cannot resolve Base package dependencies for Git installs, so installing by hand means installing those first, in that order.
+Install through the Git Package Manager window. Installing this package selects `Base.UtilityPackage`, `Base.AttributesPackage` and `Base.EditorUIPackage.Editor` automatically. UPM cannot resolve Base package dependencies for Git installs, so installing by hand means installing those first, in that order.

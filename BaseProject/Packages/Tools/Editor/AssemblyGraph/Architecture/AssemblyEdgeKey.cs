@@ -1,6 +1,6 @@
 using System;
 
-namespace Base.ToolPackage.Editor.AssemblyGraph.Architecture
+namespace Base.ToolsPackage.Editor.AssemblyGraph.Architecture
 {
     /// <summary>Identifies one directed edge between two assemblies.</summary>
     internal readonly struct AssemblyEdgeKey : IEquatable<AssemblyEdgeKey>

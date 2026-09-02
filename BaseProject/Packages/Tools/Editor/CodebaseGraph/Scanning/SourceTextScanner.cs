@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using Base.ToolPackage.Editor.CodebaseGraph.Model;
+using Base.ToolsPackage.Editor.CodebaseGraph.Model;
 
-namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
+namespace Base.ToolsPackage.Editor.CodebaseGraph.Scanning
 {
     /// <summary>
     /// Covers the two things only the source text can tell us. First, the compiler inlines the value of

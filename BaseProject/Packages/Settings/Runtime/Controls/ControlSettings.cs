@@ -1,5 +1,5 @@
 using System;
-using Base.ServicePackage;
+using Base.ServicesPackage;
 using UnityEngine;
 
 namespace Base.SettingsPackage.Controls

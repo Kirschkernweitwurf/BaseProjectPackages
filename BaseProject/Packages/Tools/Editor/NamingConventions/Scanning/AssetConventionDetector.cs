@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Base.ToolPackage.Editor.NamingConventions.Data;
+using Base.ToolsPackage.Editor.NamingConventions.Data;
 using Base.UtilityPackage.Logging;
 using UnityEditor;
 
-namespace Base.ToolPackage.Editor.NamingConventions.Scanning
+namespace Base.ToolsPackage.Editor.NamingConventions.Scanning
 {
     /// <summary>
     /// Reads the asset naming conventions a project already follows. Assets are grouped by their

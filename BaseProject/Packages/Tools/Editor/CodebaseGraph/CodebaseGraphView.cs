@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
-using Base.ToolPackage.Editor.CodebaseGraph.Model;
+using Base.ToolsPackage.Editor.CodebaseGraph.Model;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Base.ToolPackage.Editor.CodebaseGraph
+namespace Base.ToolsPackage.Editor.CodebaseGraph
 {
     /// <summary>
     /// Renders the current entries as draggable nodes with usage edges. A dense graph is unreadable if

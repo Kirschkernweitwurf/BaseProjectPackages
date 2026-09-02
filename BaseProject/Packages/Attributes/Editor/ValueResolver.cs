@@ -4,7 +4,7 @@ using System.Reflection;
 using Base.UtilityPackage.Logging;
 using Object = UnityEngine.Object;
 
-namespace Base.AttributePackage.Editor
+namespace Base.AttributesPackage.Editor
 {
     /// <summary>
     /// Resolves a string attribute argument that may be either a literal or a reference to a member.

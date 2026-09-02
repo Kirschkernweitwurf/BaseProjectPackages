@@ -1,12 +1,12 @@
-using Base.AttributePackage.Editor.Core;
-using Base.AttributePackage.Editor.Core.Interfaces;
-using Base.AttributePackage.Editor.Inspectors;
+using Base.AttributesPackage.Editor.Core;
+using Base.AttributesPackage.Editor.Core.Interfaces;
+using Base.AttributesPackage.Editor.Inspectors;
 
-namespace Base.AttributePackage.Editor.Handlers
+namespace Base.AttributesPackage.Editor.Handlers
 {
     /// <summary>
     /// Draws the bold title and underline for a plain <see cref="TitleAttribute"/>. Collapsible titles
-    /// are drawn by <see cref="AttributePackageEditor"/> instead, which also folds the fields below them.
+    /// are drawn by <see cref="AttributesPackageEditor"/> instead, which also folds the fields below them.
     /// </summary>
     internal sealed class TitleHandler : IBeforeFieldHandler
     {

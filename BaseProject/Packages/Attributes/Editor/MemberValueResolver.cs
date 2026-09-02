@@ -3,7 +3,7 @@ using System.Reflection;
 using UnityEditor;
 using Object = UnityEngine.Object;
 
-namespace Base.AttributePackage.Editor
+namespace Base.AttributesPackage.Editor
 {
     /// <summary>
     /// Resolves the current value of a member referenced by name from attributes, checking fields

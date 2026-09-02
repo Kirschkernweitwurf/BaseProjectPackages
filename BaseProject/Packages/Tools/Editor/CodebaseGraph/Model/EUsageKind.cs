@@ -1,4 +1,4 @@
-namespace Base.ToolPackage.Editor.CodebaseGraph.Model
+namespace Base.ToolsPackage.Editor.CodebaseGraph.Model
 {
     /// <summary>
     /// How one member or type makes use of another. A string reference is the weakest of them: the

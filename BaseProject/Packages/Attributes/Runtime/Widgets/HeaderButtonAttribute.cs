@@ -1,7 +1,7 @@
 using System;
 using JetBrains.Annotations;
 
-namespace Base.AttributePackage
+namespace Base.AttributesPackage
 {
     /// <summary>
     /// Draws a button in the component header instead of the inspector body, so it costs no vertical

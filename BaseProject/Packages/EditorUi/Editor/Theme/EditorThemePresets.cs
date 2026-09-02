@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.EditorUiPackage
+namespace Base.EditorUIPackage.Editor
 {
     /// <summary>
     /// Five complete looks a project can start from, and the values behind them.

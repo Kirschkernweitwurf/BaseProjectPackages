@@ -1,8 +1,8 @@
 using System;
-using Base.ToolPackage.Editor.Shared;
+using Base.ToolsPackage.Editor.Shared;
 using UnityEditor;
 
-namespace Base.ToolPackage.Editor.ExecutionOrderOverview
+namespace Base.ToolsPackage.Editor.ExecutionOrderOverview
 {
     /// <summary>
     /// Finds the most relevant source line for a script: the execution-order attribute

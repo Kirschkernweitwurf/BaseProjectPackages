@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
-using Base.EditorUiPackage;
+using Base.EditorUIPackage.Editor;
 using Base.UtilityPackage.Menus;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Base.ToolPackage.Editor.AssemblyGraph
+namespace Base.ToolsPackage.Editor.AssemblyGraph
 {
     /// <summary>Editor window that visualizes project assemblies and their references.</summary>
     internal sealed class AssemblyGraphWindow : EditorWindow

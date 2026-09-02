@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Base.UtilityPackage.Editor;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.AssetZoo.Config
+namespace Base.ToolsPackage.Editor.AssetZoo.Config
 {
     /// <summary>
     /// A named group of prefabs. Each category gets its own row/section in the zoo.

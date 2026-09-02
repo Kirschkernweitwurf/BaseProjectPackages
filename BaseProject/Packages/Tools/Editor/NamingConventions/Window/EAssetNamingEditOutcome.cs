@@ -1,4 +1,4 @@
-namespace Base.ToolPackage.Editor.NamingConventions.Window
+namespace Base.ToolsPackage.Editor.NamingConventions.Window
 {
     /// <summary>What the window still has to do after a deferred edit was applied.</summary>
     internal enum EAssetNamingEditOutcome : byte

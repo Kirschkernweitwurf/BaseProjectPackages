@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Base.ToolPackage.Editor.CommandPalette
+namespace Base.ToolsPackage.Editor.CommandPalette
 {
     /// <summary>
     /// Supplies one group of palette commands. Every source appends into the same list so a full

@@ -1,4 +1,4 @@
-namespace Base.ToolPackage.Editor.NamingConventions.Data
+namespace Base.ToolsPackage.Editor.NamingConventions.Data
 {
     /// <summary>Casing a name can follow, once prefix, suffix and number are stripped.</summary>
     internal enum ENamingStyle : byte

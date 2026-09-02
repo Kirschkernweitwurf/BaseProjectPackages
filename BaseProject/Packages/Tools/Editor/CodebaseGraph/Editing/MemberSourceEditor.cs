@@ -1,12 +1,12 @@
 using System;
 using System.IO;
 using System.Text.RegularExpressions;
-using Base.ToolPackage.Editor.CodebaseGraph.Model;
-using Base.ToolPackage.Editor.CodebaseGraph.Scanning;
+using Base.ToolsPackage.Editor.CodebaseGraph.Model;
+using Base.ToolsPackage.Editor.CodebaseGraph.Scanning;
 using Base.UtilityPackage.Logging;
 using UnityEditor;
 
-namespace Base.ToolPackage.Editor.CodebaseGraph.Editing
+namespace Base.ToolsPackage.Editor.CodebaseGraph.Editing
 {
     /// <summary>
     /// Applies the three quick fixes the graph can offer. All of them are deliberately timid: the

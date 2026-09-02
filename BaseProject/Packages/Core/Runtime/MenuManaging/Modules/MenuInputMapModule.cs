@@ -1,5 +1,5 @@
 using Base.CorePackage.Input;
-using Base.ServicePackage;
+using Base.ServicesPackage;
 using UnityEngine;
 using UnityEngine.InputSystem;
 

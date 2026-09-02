@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Base.ToolPackage.Editor.MenuManagerWindows
+namespace Base.ToolsPackage.Editor.MenuManagerWindows
 {
     /// <summary>
     /// Deep copy of both menu trees and the start priority, taken before a change so the undo

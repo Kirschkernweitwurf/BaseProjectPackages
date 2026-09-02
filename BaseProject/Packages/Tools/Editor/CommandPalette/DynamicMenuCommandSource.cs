@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using Base.ToolPackage.Editor.MenuManagerWindows;
+using Base.ToolsPackage.Editor.MenuManagerWindows;
 
-namespace Base.ToolPackage.Editor.CommandPalette
+namespace Base.ToolsPackage.Editor.CommandPalette
 {
     /// <summary>
     /// Collects the entries arranged in the menu manager. They are registered at runtime and are

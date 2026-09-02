@@ -1,4 +1,4 @@
-namespace Base.ServicePackage
+namespace Base.ServicesPackage
 {
     /// <summary>
     /// Marker interface for game services that can be resolved through the <see cref="ServiceLocator"/>.

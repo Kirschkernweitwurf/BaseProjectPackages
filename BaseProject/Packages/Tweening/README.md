@@ -1,4 +1,4 @@
-# Base Tweening Package
+# Base Tweening
 
 A data driven tween system with runtime factories, ready-made components and authoring assets. Drop a component on a transform, renderer, graphic or text and drive its value from a reusable profile asset, or build tweens in code and never touch a component.
 
@@ -8,8 +8,8 @@ It was split out of the Core package because it was roughly forty percent of it 
 
 - Unity `6000.3` or newer
 - `com.unity.ugui` `2.0.0` and TextMeshPro, for the graphic and text tweens
-- `Base.ServicePackage` for `GameServiceBehaviour` and the shutdown pipeline
-- `Base.AttributePackage` for the inspector attributes the components use
+- `Base.ServicesPackage` for `GameServiceBehaviour` and the shutdown pipeline
+- `Base.AttributesPackage` for the inspector attributes the components use
 - `Base.UtilityPackage` for `CustomLogger`, `[DynamicCreateAssetMenu]` and `IMenuResettable`
 - Assemblies: `Base.TweeningPackage` and `Base.TweeningPackage.Editor`
 
@@ -55,4 +55,4 @@ The Core package uses it for menu open and close animations, the debug menu and 
 
 ## Install
 
-Install through the Git Package Manager window. Installing by hand means installing `Base.UtilityPackage`, `Base.AttributePackage` and `Base.ServicePackage` first, in that order; UPM cannot resolve Base package dependencies for Git installs.
+Install through the Git Package Manager window. Installing by hand means installing `Base.UtilityPackage`, `Base.AttributesPackage` and `Base.ServicesPackage` first, in that order; UPM cannot resolve Base package dependencies for Git installs.

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Base.ToolPackage.Editor.CodebaseGraph.Model
+namespace Base.ToolsPackage.Editor.CodebaseGraph.Model
 {
     /// <summary>The complete scan result: every type, member and relation the builder found.</summary>
     internal sealed class CodebaseGraphData

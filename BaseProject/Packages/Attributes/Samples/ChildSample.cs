@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A reference filled from a child.</summary>
     [AttributeSample(typeof(ChildAttribute), EAttributeCategory.References,

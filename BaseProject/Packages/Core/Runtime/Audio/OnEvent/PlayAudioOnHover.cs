@@ -1,5 +1,5 @@
-using Base.AttributePackage;
-using Base.ServicePackage;
+using Base.AttributesPackage;
+using Base.ServicesPackage;
 using UnityEngine;
 using UnityEngine.EventSystems;
 

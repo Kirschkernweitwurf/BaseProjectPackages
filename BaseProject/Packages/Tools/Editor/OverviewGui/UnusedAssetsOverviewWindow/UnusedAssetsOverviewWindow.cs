@@ -6,7 +6,7 @@ using Base.UtilityPackage.Menus;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.OverviewGui.UnusedAssetsOverviewWindow
+namespace Base.ToolsPackage.Editor.OverviewGui.UnusedAssetsOverviewWindow
 {
     /// <summary>
     /// Editor window that lists assets that look unused and lets you ping, dismiss, or delete them.

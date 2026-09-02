@@ -1,8 +1,8 @@
-using Base.EditorUiPackage;
+using Base.EditorUIPackage.Editor;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.NamingConventions.Window
+namespace Base.ToolsPackage.Editor.NamingConventions.Window
 {
     /// <summary>
     /// Row metrics, label styles, colored section headers and the success block of the asset

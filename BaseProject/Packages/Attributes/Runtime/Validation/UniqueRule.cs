@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace Base.AttributePackage
+namespace Base.AttributesPackage
 {
     /// <summary>Fails when a <see cref="UniqueAttribute"/> list contains the same entry twice.</summary>
     internal sealed class UniqueRule : IValidationRule

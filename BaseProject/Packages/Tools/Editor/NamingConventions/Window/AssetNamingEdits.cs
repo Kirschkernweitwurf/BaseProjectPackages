@@ -1,10 +1,10 @@
 using System.IO;
-using Base.ToolPackage.Editor.NamingConventions.Data;
-using Base.ToolPackage.Editor.NamingConventions.Renaming;
+using Base.ToolsPackage.Editor.NamingConventions.Data;
+using Base.ToolsPackage.Editor.NamingConventions.Renaming;
 using Base.UtilityPackage.Logging;
 using UnityEditor;
 
-namespace Base.ToolPackage.Editor.NamingConventions.Window
+namespace Base.ToolsPackage.Editor.NamingConventions.Window
 {
     /// <summary>
     /// Every edit the asset naming window defers. The rows request a change while they are drawn,

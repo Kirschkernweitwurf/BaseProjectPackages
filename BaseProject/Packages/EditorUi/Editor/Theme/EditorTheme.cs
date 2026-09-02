@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.EditorUiPackage
+namespace Base.EditorUIPackage.Editor
 {
     /// <summary>
     /// A complete look for the Base editor windows: the colors for both editor themes, the spacings

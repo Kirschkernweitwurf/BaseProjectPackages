@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
-using Base.ToolPackage.Editor.CodebaseGraph.Analysis;
-using Base.ToolPackage.Editor.CodebaseGraph.Model;
-using Base.ToolPackage.Editor.CodebaseGraph.Scanning;
+using Base.ToolsPackage.Editor.CodebaseGraph.Analysis;
+using Base.ToolsPackage.Editor.CodebaseGraph.Model;
+using Base.ToolsPackage.Editor.CodebaseGraph.Scanning;
 
-namespace Base.ToolPackage.Editor.CodebaseGraph
+namespace Base.ToolsPackage.Editor.CodebaseGraph
 {
     /// <summary>Runs the whole scan and returns the finished graph.</summary>
     internal static class CodebaseGraphBuilder

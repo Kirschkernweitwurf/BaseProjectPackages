@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Base.AttributePackage
+namespace Base.AttributesPackage
 {
     /// <summary>
     /// Draws an AudioMixerGroup field as a dropdown of the groups of a mixer. The mixer comes from an

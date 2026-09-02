@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using Base.ToolPackage.Editor.CodebaseGraph.Model;
+using Base.ToolsPackage.Editor.CodebaseGraph.Model;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.CodebaseGraph
+namespace Base.ToolsPackage.Editor.CodebaseGraph
 {
     /// <summary>
     /// Places the entries. Connected entries are grouped into clusters, layered by how deep their

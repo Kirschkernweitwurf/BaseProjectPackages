@@ -1,4 +1,4 @@
-namespace Base.EditorUiPackage
+namespace Base.EditorUIPackage.Editor
 {
     /// <summary>
     /// What a divider did during one event, which is what tells a table when to recompute a column

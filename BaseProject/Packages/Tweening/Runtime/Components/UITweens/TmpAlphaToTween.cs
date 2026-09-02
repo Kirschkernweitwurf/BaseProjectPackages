@@ -1,4 +1,4 @@
-using Base.AttributePackage;
+using Base.AttributesPackage;
 using Base.TweeningPackage.Core;
 using Base.TweeningPackage.Core.Data;
 using Base.TweeningPackage.Core.Data.Profiles;

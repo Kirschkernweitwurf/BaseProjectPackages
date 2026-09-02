@@ -5,7 +5,7 @@ using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Base.AttributePackage.Editor.Core
+namespace Base.AttributesPackage.Editor.Core
 {
     /// <summary>
     /// Holds and draws the arguments of a parameterized inspector button.

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot
+namespace Base.AttributesPackage.Editor.Windows.AttributeExplorer.Troubleshoot
 {
     /// <summary>All issues found on a single type, so the window can list them under one header.</summary>
     internal sealed class AttributeIssueGroup

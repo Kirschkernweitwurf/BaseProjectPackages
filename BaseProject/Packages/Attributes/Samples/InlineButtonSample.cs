@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A button beside the field.</summary>
     [AttributeSample(typeof(InlineButtonAttribute), EAttributeCategory.Widgets,

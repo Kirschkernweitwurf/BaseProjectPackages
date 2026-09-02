@@ -1,12 +1,12 @@
 using System;
-using Base.EditorUiPackage;
-using Base.ToolPackage.Editor.AssetZoo.Config;
+using Base.EditorUIPackage.Editor;
+using Base.ToolsPackage.Editor.AssetZoo.Config;
 using Base.UtilityPackage.Editor;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Base.ToolPackage.Editor.AssetZoo.UI
+namespace Base.ToolsPackage.Editor.AssetZoo.UI
 {
     /// <summary>
     /// The categories of a config, drawn as an <see cref="EditorList"/>. Each row is the category

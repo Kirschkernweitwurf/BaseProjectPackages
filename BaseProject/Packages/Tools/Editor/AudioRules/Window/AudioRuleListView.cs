@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using Base.ToolPackage.Editor.AudioRules.Data;
+using Base.ToolsPackage.Editor.AudioRules.Data;
 using UnityEngine.UIElements;
 
-namespace Base.ToolPackage.Editor.AudioRules.Window
+namespace Base.ToolsPackage.Editor.AudioRules.Window
 {
     /// <summary>
     /// The rule list. Order is meaning here, so the list is reorderable by drag, and every row

@@ -5,7 +5,7 @@ using System.Linq;
 using Base.UtilityPackage.Logging;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.Shared
+namespace Base.ToolsPackage.Editor.Shared
 {
     /// <summary>
     /// Remembers the assets a scan was told to leave alone. Entries are stored by GUID in a

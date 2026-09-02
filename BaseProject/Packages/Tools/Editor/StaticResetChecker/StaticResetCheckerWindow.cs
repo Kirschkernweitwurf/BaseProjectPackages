@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Base.EditorUiPackage;
+using Base.EditorUIPackage.Editor;
 using Base.UtilityPackage.Logging;
 using Base.UtilityPackage.Menus;
 using UnityEditor;
@@ -11,7 +11,7 @@ using UnityEditorInternal;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Base.ToolPackage.Editor.StaticResetChecker
+namespace Base.ToolsPackage.Editor.StaticResetChecker
 {
     /// <summary>
     /// Editor window for scanning static fields that are not reset on Enter Play Mode.

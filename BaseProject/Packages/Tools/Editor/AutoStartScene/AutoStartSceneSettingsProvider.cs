@@ -1,8 +1,8 @@
-using Base.EditorUiPackage;
-using Base.ToolPackage.Editor.BaseToolsOverview;
+using Base.EditorUIPackage.Editor;
+using Base.ToolsPackage.Editor.BaseToolsOverview;
 using UnityEditor;
 
-namespace Base.ToolPackage.Editor.AutoStartScene
+namespace Base.ToolsPackage.Editor.AutoStartScene
 {
     /// <summary>
     /// Provides a settings provider in Unity's Project Settings to configure the auto start scene.

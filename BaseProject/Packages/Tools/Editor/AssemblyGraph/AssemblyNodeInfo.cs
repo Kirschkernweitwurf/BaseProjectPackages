@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Base.ToolPackage.Editor.AssemblyGraph
+namespace Base.ToolsPackage.Editor.AssemblyGraph
 {
     /// <summary>One assembly node in the graph, with its declared references.</summary>
     internal sealed class AssemblyNodeInfo

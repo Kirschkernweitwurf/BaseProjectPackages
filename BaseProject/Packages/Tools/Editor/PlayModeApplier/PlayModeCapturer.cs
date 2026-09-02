@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Base.ToolPackage.Editor.PlayModeApplier
+namespace Base.ToolsPackage.Editor.PlayModeApplier
 {
     /// <summary>
     /// Lets the user flag components during play mode and snapshots them the moment play mode starts to exit,

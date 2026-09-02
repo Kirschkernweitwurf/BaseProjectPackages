@@ -1,4 +1,4 @@
-namespace Base.ToolPackage.Editor.CodebaseGraph.Model
+namespace Base.ToolsPackage.Editor.CodebaseGraph.Model
 {
     /// <summary>Declared visibility of a type or member, ordered from most to least restricted.</summary>
     internal enum EAccessLevel : byte

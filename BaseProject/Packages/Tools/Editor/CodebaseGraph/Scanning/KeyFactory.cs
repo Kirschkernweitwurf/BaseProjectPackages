@@ -1,8 +1,8 @@
 using System;
 using System.Reflection;
-using Base.ToolPackage.Editor.CodebaseGraph.Model;
+using Base.ToolsPackage.Editor.CodebaseGraph.Model;
 
-namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
+namespace Base.ToolsPackage.Editor.CodebaseGraph.Scanning
 {
     /// <summary>
     /// Turns reflection objects into graph keys. Constructed generics, arrays and by-ref wrappers are

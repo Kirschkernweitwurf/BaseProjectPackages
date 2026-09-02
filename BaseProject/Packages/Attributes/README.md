@@ -1,11 +1,11 @@
-# Base Attribute Package
+# Base Attributes
 
 100 inspector attributes for Unity. Section headers, validation, conditional fields, auto-assignment, pickers, buttons, widgets, scene handles.
 
 The whole thing works by taking over the default inspector for every `MonoBehaviour` and `ScriptableObject`. You do not inherit from a base class and you do not write a `[CustomEditor]` per type. You tag your fields and they draw.
 
 ```csharp
-using Base.AttributePackage;
+using Base.AttributesPackage;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour
@@ -29,8 +29,8 @@ public class Enemy : MonoBehaviour
 
 - Unity `6000.3` or newer, for `TypeCache` and the standard IMGUI drawer API
 - `Base.UtilityPackage` for logging and the serializable collections
-- `Base.EditorUiPackage` for the shared look of its windows
-- Assemblies: `Base.AttributePackage`, `Base.AttributePackage.Editor` and `Base.AttributePackage.Samples`, the last of which is editor only and never enters a build
+- `Base.EditorUIPackage.Editor` for the shared look of its windows
+- Assemblies: `Base.AttributesPackage`, `Base.AttributesPackage.Editor` and `Base.AttributesPackage.Samples`, the last of which is editor only and never enters a build
 
 No third-party packages.
 
@@ -60,19 +60,19 @@ Numeric bounds work the same way without the prefix, because a bound that could 
 
 ## One namespace for the whole package
 
-Every runtime type in this package declares `Base.AttributePackage`, whatever subfolder it sits in.
+Every runtime type in this package declares `Base.AttributesPackage`, whatever subfolder it sits in.
 `Validation`, `Widgets`, `References`, `Layout`, `Conditional` and the rest are folders for finding
 things, not namespaces.
 
 That is deliberate. An attribute library is used by sprinkling attributes across a project, and one
-`using Base.AttributePackage;` should be enough to reach all of them. Splitting the namespace by
+`using Base.AttributesPackage;` should be enough to reach all of them. Splitting the namespace by
 folder would mean six using lines on a file that uses six attributes.
 
 The folders are marked as non-namespace-providers, so the IDE does not offer to "fix" the mismatch.
 In Rider that is **right-click the folder > Properties > Namespace provider: off**. A folder scan
 that reports these as namespace violations is reporting the convention, not a problem.
 
-The editor assembly does not work this way. `Base.AttributePackage.Editor.Drawers`,
+The editor assembly does not work this way. `Base.AttributesPackage.Editor.Drawers`,
 `.Handlers`, `.Core` and `.Windows` all mirror their folders, because nothing outside the package
 writes against them.
 
@@ -444,11 +444,11 @@ Handlers are discovered with `TypeCache`, so adding one is dropping in a file. P
 
 The package draws every `MonoBehaviour` and `ScriptableObject` through a `[CustomEditor]` on the base types. The moment you write your own `[CustomEditor]` for a specific type, Unity picks the more specific one and this package's inspector drops out, taking all the attribute drawing with it.
 
-Derive from `AttributePackageEditor` instead of `UnityEditor.Editor` and call `base.OnInspectorGUI()`. This is required for every custom editor you write if you want the attributes to keep working.
+Derive from `AttributesPackageEditor` instead of `UnityEditor.Editor` and call `base.OnInspectorGUI()`. This is required for every custom editor you write if you want the attributes to keep working.
 
 ```csharp
 [CustomEditor(typeof(Enemy))]
-public sealed class EnemyEditor : AttributePackageEditor
+public sealed class EnemyEditor : AttributesPackageEditor
 {
     public override void OnInspectorGUI()
     {
@@ -472,11 +472,11 @@ What keeps working, by design:
 - **Header controls.** `[HeaderButton]`, `[HeaderLabel]` and `[HeaderDraw]` are registered with Unity's component header, which cannot be unregistered from cleanly. The switch is read once at load, so they disappear on the next domain reload rather than immediately.
 - **Scene handles.** They draw from `OnSceneGUI`, which Unity calls separately from the inspector.
 
-The setting lives in `EditorPrefs` under `Base.AttributePackage.InspectorDisabled`, so it is per user and per machine, not committed with the project.
+The setting lives in `EditorPrefs` under `Base.AttributesPackage.InspectorDisabled`, so it is per user and per machine, not committed with the project.
 
 ## A type with no attributes skips the pipeline
 
-Even with the inspector on, a type declaring nothing from this package is handed straight back to Unity. The check walks the type and its base classes once, asks whether any attribute on the type or on any of its members comes from the `Base.AttributePackage` assembly, and caches the answer until the next domain reload. Ownership is decided by assembly rather than by a list of names, so a new attribute added to the package is recognized with nothing to update.
+Even with the inspector on, a type declaring nothing from this package is handed straight back to Unity. The check walks the type and its base classes once, asks whether any attribute on the type or on any of its members comes from the `Base.AttributesPackage` assembly, and caches the answer until the next domain reload. Ownership is decided by assembly rather than by a list of names, so a new attribute added to the package is recognized with nothing to update.
 
 This is why a plain `BoxCollider` or a third-party script looks exactly like it does in a project without this package installed.
 

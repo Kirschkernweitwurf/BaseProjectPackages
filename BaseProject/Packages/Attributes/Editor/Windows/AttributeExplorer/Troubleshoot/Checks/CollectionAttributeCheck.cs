@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot.Checks
+namespace Base.AttributesPackage.Editor.Windows.AttributeExplorer.Troubleshoot.Checks
 {
     /// <summary>
     /// Verifies that the attributes replacing Unity's array drawing sit on something that is actually an

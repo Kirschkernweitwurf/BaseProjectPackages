@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using Base.ToolPackage.Editor.Shared;
+using Base.ToolsPackage.Editor.Shared;
 
-namespace Base.ToolPackage.Editor.CommandPalette
+namespace Base.ToolsPackage.Editor.CommandPalette
 {
     /// <summary>
     /// Filters and ranks the index for one keystroke. The fuzzy score is the base, on top of it

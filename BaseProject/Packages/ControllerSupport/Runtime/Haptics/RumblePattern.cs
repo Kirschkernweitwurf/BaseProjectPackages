@@ -1,6 +1,6 @@
-using Base.AttributePackage;
-using Base.ServicePackage;
-using Base.ServicePackage.Tracking;
+using Base.AttributesPackage;
+using Base.ServicesPackage;
+using Base.ServicesPackage.Tracking;
 using Base.UtilityPackage.Menus;
 using UnityEngine;
 

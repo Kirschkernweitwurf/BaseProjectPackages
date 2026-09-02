@@ -1,9 +1,9 @@
 using System.IO;
-using Base.ToolPackage.Editor.CodebaseGraph.Analysis;
-using Base.ToolPackage.Editor.CodebaseGraph.Model;
+using Base.ToolsPackage.Editor.CodebaseGraph.Analysis;
+using Base.ToolsPackage.Editor.CodebaseGraph.Model;
 using UnityEditor;
 
-namespace Base.ToolPackage.Editor.CodebaseGraph.Editing
+namespace Base.ToolsPackage.Editor.CodebaseGraph.Editing
 {
     /// <summary>
     /// Moves findings and dismissals across the window's edge: the report out, and instructions back in.

@@ -1,6 +1,6 @@
 using System;
 
-namespace Base.AttributePackage.Editor.SceneHandles
+namespace Base.AttributesPackage.Editor.SceneHandles
 {
     /// <summary>
     /// Convenience base that removes the cast every handle drawer would otherwise repeat.

@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.CommandPalette
+namespace Base.ToolsPackage.Editor.CommandPalette
 {
     /// <summary>How often and how recently a single command was run.</summary>
     [Serializable]

@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Base.ToolPackage.Editor.AudioRules.Data;
-using Base.ToolPackage.Editor.AudioRules.Model;
+using Base.ToolsPackage.Editor.AudioRules.Data;
+using Base.ToolsPackage.Editor.AudioRules.Model;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.AudioRules.Scanning
+namespace Base.ToolsPackage.Editor.AudioRules.Scanning
 {
     /// <summary>
     /// Walks the project and gathers the facts about every clip in scope. The length, channel

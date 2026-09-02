@@ -1,6 +1,6 @@
 using System;
 
-namespace Base.ToolPackage.Editor.PlayModeApplier
+namespace Base.ToolsPackage.Editor.PlayModeApplier
 {
     /// <summary>
     /// One line in the session history.

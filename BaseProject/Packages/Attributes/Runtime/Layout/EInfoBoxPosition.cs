@@ -1,4 +1,4 @@
-namespace Base.AttributePackage
+namespace Base.AttributesPackage
 {
     /// <summary>Where an <see cref="InfoBoxAttribute"/> draws relative to the field.</summary>
     public enum EInfoBoxPosition : byte

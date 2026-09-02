@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Base.ToolPackage.Editor.PlayModeApplier
+namespace Base.ToolsPackage.Editor.PlayModeApplier
 {
     /// <summary>
     /// Finds an object again by where it sits in a hierarchy rather than by id.

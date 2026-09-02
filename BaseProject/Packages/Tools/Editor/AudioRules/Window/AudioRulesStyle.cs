@@ -1,7 +1,7 @@
-using Base.EditorUiPackage;
+using Base.EditorUIPackage.Editor;
 using UnityEngine.UIElements;
 
-namespace Base.ToolPackage.Editor.AudioRules.Window
+namespace Base.ToolsPackage.Editor.AudioRules.Window
 {
     /// <summary>
     /// The USS class names the audio rules window applies from code, and the one place that attaches

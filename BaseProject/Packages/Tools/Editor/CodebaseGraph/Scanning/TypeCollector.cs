@@ -4,7 +4,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using Base.UtilityPackage;
 
-namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
+namespace Base.ToolsPackage.Editor.CodebaseGraph.Scanning
 {
     /// <summary>
     /// Walks the scanned assemblies and splits their types into the ones that were written by hand and

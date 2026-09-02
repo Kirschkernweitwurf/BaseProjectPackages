@@ -1,4 +1,4 @@
-namespace Base.ToolPackage.Editor.CodebaseGraph.Model
+namespace Base.ToolsPackage.Editor.CodebaseGraph.Model
 {
     /// <summary>
     /// How the graph draws its relation lines. Muted is the default because a dense graph drawn at full

@@ -1,6 +1,6 @@
 {
   "name": "Base.ControllerSupportPackage.Settings",
-  "rootNamespace": "Base.ControllerSupportPackage.Haptics.Settings",
+  "rootNamespace": "Base.ControllerSupportPackage.Settings",
   "references": [
     "GUID:e1378ce9c1febe949aa5b5a4d2c14e2c",
     "GUID:1bb27541c4d98c341871129f271f8263",

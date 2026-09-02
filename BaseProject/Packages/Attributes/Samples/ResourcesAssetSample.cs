@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>An asset chosen from the Resources folders.</summary>
     [AttributeSample(typeof(ResourcesAssetAttribute), EAttributeCategory.Pickers,

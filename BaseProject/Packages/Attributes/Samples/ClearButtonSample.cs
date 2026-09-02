@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A small button that empties the field.</summary>
     [AttributeSample(typeof(ClearButtonAttribute), EAttributeCategory.Widgets,

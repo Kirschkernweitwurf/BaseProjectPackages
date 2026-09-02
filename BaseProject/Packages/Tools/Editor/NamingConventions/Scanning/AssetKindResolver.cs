@@ -1,7 +1,7 @@
 using System;
 using UnityEditor;
 
-namespace Base.ToolPackage.Editor.NamingConventions.Scanning
+namespace Base.ToolsPackage.Editor.NamingConventions.Scanning
 {
     /// <summary>
     /// Resolves the kind of an asset. Prefabs and model files both load as GameObject, and every

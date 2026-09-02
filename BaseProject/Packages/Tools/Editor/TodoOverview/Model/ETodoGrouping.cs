@@ -1,4 +1,4 @@
-namespace Base.ToolPackage.Editor.TodoOverview.Model
+namespace Base.ToolsPackage.Editor.TodoOverview.Model
 {
     /// <summary>What the list is split into sections by.</summary>
     internal enum ETodoGrouping : byte

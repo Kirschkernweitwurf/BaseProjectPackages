@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A member Unity does not serialize, shown anyway.</summary>
     [AttributeSample(typeof(ShowNonSerializedAttribute), EAttributeCategory.Callbacks,

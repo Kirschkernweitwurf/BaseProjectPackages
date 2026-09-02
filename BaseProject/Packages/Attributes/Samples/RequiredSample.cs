@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A reference that has to be filled in.</summary>
     [AttributeSample(typeof(RequiredAttribute), EAttributeCategory.Validation,

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A field renamed in the inspector only.</summary>
     [AttributeSample(typeof(LabelAttribute), EAttributeCategory.Layout,

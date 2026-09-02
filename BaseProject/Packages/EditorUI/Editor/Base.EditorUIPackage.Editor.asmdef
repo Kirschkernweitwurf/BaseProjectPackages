@@ -1,6 +1,6 @@
 {
-  "name": "Base.EditorUiPackage",
-  "rootNamespace": "Base.EditorUiPackage",
+  "name": "Base.EditorUIPackage.Editor",
+  "rootNamespace": "Base.EditorUIPackage.Editor",
   "references": [],
   "includePlatforms": [
     "Editor"

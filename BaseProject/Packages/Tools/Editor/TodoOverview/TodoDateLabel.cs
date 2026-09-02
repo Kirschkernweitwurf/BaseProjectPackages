@@ -1,8 +1,8 @@
 using System.Globalization;
-using Base.ToolPackage.Editor.TodoOverview.Model;
-using Base.ToolPackage.Editor.TodoOverview.Settings;
+using Base.ToolsPackage.Editor.TodoOverview.Model;
+using Base.ToolsPackage.Editor.TodoOverview.Settings;
 
-namespace Base.ToolPackage.Editor.TodoOverview
+namespace Base.ToolsPackage.Editor.TodoOverview
 {
     /// <summary>
     /// Turns the date on an item into the text the list shows for it, in the one notation the project

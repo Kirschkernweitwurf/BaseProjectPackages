@@ -1,14 +1,14 @@
 using System;
 using System.Collections.Generic;
-using Base.EditorUiPackage;
-using Base.ToolPackage.Editor.TodoOverview.Model;
-using Base.ToolPackage.Editor.TodoOverview.Scanning;
-using Base.ToolPackage.Editor.TodoOverview.Settings;
+using Base.EditorUIPackage.Editor;
+using Base.ToolsPackage.Editor.TodoOverview.Model;
+using Base.ToolsPackage.Editor.TodoOverview.Scanning;
+using Base.ToolsPackage.Editor.TodoOverview.Settings;
 using Base.UtilityPackage.Menus;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.TodoOverview
+namespace Base.ToolsPackage.Editor.TodoOverview
 {
     /// <summary>
     /// Lists every TODO, BUG, FIXME and whatever else the project marks its open work with. The items

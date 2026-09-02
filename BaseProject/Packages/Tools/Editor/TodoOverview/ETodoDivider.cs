@@ -1,4 +1,4 @@
-namespace Base.ToolPackage.Editor.TodoOverview
+namespace Base.ToolsPackage.Editor.TodoOverview
 {
     /// <summary>The draggable dividers between the resizable columns of the list.</summary>
     internal enum ETodoDivider : byte

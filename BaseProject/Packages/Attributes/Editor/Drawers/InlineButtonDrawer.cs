@@ -3,7 +3,7 @@ using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Base.AttributePackage.Editor.Drawers
+namespace Base.AttributesPackage.Editor.Drawers
 {
     /// <summary>
     /// Draws the field with a button next to it for <see cref="InlineButtonAttribute"/>.

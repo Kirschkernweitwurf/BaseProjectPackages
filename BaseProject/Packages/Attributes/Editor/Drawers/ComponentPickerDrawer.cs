@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
-using Base.AttributePackage.Editor.Core;
+using Base.AttributesPackage.Editor.Core;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Drawers
+namespace Base.AttributesPackage.Editor.Drawers
 {
     /// <summary>
     /// Draws fields marked with <see cref="ComponentPickerAttribute"/>. Dropping a GameObject assigns

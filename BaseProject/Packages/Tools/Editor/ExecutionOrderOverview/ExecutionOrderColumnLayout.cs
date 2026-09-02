@@ -1,7 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.ExecutionOrderOverview
+namespace Base.ToolsPackage.Editor.ExecutionOrderOverview
 {
     /// <summary>
     /// Computes the column rectangles for a single row so the header and the rows stay

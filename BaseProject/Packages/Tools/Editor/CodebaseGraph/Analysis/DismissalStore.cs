@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Base.ToolPackage.Editor.CodebaseGraph.Model;
+using Base.ToolsPackage.Editor.CodebaseGraph.Model;
 using Base.UtilityPackage.Logging;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
+namespace Base.ToolsPackage.Editor.CodebaseGraph.Analysis
 {
     /// <summary>
     /// Remembers which findings have been looked at and dismissed, so a first pass over a few thousand

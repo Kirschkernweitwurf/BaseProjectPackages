@@ -1,4 +1,4 @@
-namespace Base.ToolPackage.Editor.CodebaseGraph.Model
+namespace Base.ToolsPackage.Editor.CodebaseGraph.Model
 {
     /// <summary>
     /// Everything the window needs to say about one kind of finding: what to call it, what it actually

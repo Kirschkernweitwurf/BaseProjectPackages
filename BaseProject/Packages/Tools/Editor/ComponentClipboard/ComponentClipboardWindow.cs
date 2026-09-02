@@ -1,10 +1,10 @@
 using System.Collections.Generic;
-using Base.EditorUiPackage;
+using Base.EditorUIPackage.Editor;
 using Base.UtilityPackage.Menus;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.ComponentClipboard
+namespace Base.ToolsPackage.Editor.ComponentClipboard
 {
     /// <summary>
     /// Lists the components of the active GameObject with checkbox multi selection and offers copy,

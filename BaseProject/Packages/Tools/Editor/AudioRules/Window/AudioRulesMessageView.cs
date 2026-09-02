@@ -1,7 +1,7 @@
 using System;
 using UnityEngine.UIElements;
 
-namespace Base.ToolPackage.Editor.AudioRules.Window
+namespace Base.ToolsPackage.Editor.AudioRules.Window
 {
     /// <summary>
     /// The centered panel the window shows instead of a table: no rule set yet, nothing found, or

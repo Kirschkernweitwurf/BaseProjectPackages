@@ -1,4 +1,4 @@
-namespace Base.ToolPackage.Editor.MenuManagerWindows
+namespace Base.ToolsPackage.Editor.MenuManagerWindows
 {
     /// <summary>What a window still has to do after the drag controller handled an event.</summary>
     internal enum EMenuDragOutcome : byte

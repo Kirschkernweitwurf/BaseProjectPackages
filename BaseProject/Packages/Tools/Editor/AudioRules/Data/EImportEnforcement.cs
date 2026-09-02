@@ -1,4 +1,4 @@
-namespace Base.ToolPackage.Editor.AudioRules.Data
+namespace Base.ToolsPackage.Editor.AudioRules.Data
 {
     /// <summary>When the rules are applied automatically as clips are imported.</summary>
     internal enum EImportEnforcement : byte

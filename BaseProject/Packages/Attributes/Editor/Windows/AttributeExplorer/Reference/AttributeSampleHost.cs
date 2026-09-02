@@ -1,10 +1,10 @@
 using System;
-using Base.AttributePackage.Samples;
+using Base.AttributesPackage.Samples;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Reference
+namespace Base.AttributesPackage.Editor.Windows.AttributeExplorer.Reference
 {
     /// <summary>
     /// Creates and destroys the object a sample is drawn on, whichever kind of object that is.

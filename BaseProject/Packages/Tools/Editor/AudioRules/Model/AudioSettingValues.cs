@@ -1,7 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.AudioRules.Model
+namespace Base.ToolsPackage.Editor.AudioRules.Model
 {
     /// <summary>
     /// The seven import settings the tool cares about, in one place. Used both for what a clip has

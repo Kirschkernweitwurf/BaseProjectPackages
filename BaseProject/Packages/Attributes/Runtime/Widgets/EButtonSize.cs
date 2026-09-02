@@ -1,4 +1,4 @@
-namespace Base.AttributePackage
+namespace Base.AttributesPackage
 {
     /// <summary>How tall an inspector button is drawn.</summary>
     public enum EButtonSize : byte

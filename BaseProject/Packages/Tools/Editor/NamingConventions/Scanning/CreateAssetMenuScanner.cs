@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Base.ToolPackage.Editor.MenuManagerWindows;
+using Base.ToolsPackage.Editor.MenuManagerWindows;
 using Base.UtilityPackage.Menus;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.NamingConventions.Scanning
+namespace Base.ToolsPackage.Editor.NamingConventions.Scanning
 {
     /// <summary>
     /// Reads the default file names of the asset creation entries. A type created as

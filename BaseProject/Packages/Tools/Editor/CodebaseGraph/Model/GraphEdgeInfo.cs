@@ -1,4 +1,4 @@
-namespace Base.ToolPackage.Editor.CodebaseGraph.Model
+namespace Base.ToolsPackage.Editor.CodebaseGraph.Model
 {
     /// <summary>One relation the graph draws, and how much traffic it carries.</summary>
     internal sealed class GraphEdgeInfo

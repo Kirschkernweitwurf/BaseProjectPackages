@@ -1,6 +1,6 @@
 using System;
 
-namespace Base.ToolPackage.Editor.CodebaseGraph.Model
+namespace Base.ToolsPackage.Editor.CodebaseGraph.Model
 {
     /// <summary>
     /// Identifies one type across the whole graph, on the same module and token scheme as

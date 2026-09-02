@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using Base.ToolPackage.Editor.Shared;
+using Base.ToolsPackage.Editor.Shared;
 using UnityEditor;
 
-namespace Base.ToolPackage.Editor.MenuManagerWindows.CreateAssetMenuOverview
+namespace Base.ToolsPackage.Editor.MenuManagerWindows.CreateAssetMenuOverview
 {
     /// <summary>
     /// Source that reports every asset creation entry registered through the menu manager,

@@ -1,8 +1,8 @@
-using Base.AttributePackage.Editor.Core;
-using Base.AttributePackage.Editor.Core.Interfaces;
+using Base.AttributesPackage.Editor.Core;
+using Base.AttributesPackage.Editor.Core.Interfaces;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Handlers
+namespace Base.AttributesPackage.Editor.Handlers
 {
     /// <summary>Applies the background tint of <see cref="GUIColorAttribute"/> before the field draws.</summary>
     internal sealed class GUIColorBeforeHandler : IBeforeFieldHandler

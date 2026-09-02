@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Base.ToolPackage.Editor.AudioRules.Model;
+using Base.ToolsPackage.Editor.AudioRules.Model;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.AudioRules.Scanning
+namespace Base.ToolsPackage.Editor.AudioRules.Scanning
 {
     /// <summary>
     /// Remembers what the analyzer measured, so a second deep pass only reads the files that

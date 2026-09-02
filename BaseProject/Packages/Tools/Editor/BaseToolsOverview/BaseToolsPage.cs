@@ -1,4 +1,4 @@
-namespace Base.ToolPackage.Editor.BaseToolsOverview
+namespace Base.ToolsPackage.Editor.BaseToolsOverview
 {
     /// <summary>
     /// One settings page listed on the Base Tools overview.

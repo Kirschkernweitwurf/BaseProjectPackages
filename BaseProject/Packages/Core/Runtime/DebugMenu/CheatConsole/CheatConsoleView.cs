@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using Base.AttributePackage;
+using Base.AttributesPackage;
 using Base.CorePackage.MenuManaging;
 using Base.UtilityPackage.Pooling;
 using TMPro;

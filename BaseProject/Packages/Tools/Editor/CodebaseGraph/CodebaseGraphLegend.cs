@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using Base.ToolPackage.Editor.CodebaseGraph.Model;
+using Base.ToolsPackage.Editor.CodebaseGraph.Model;
 using UnityEngine.UIElements;
 
-namespace Base.ToolPackage.Editor.CodebaseGraph
+namespace Base.ToolsPackage.Editor.CodebaseGraph
 {
     /// <summary>
     /// Explains the encodings on the graph. Several things are being said at once by shape, glyph and

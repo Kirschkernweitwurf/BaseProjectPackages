@@ -1,4 +1,4 @@
-# Base Localization Package
+# Base Localization
 
 Editor tooling for syncing Unity String Table Collections with Google Sheets.
 

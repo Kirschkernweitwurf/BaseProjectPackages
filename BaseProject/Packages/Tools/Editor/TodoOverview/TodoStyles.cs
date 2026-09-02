@@ -1,10 +1,10 @@
 using System;
-using Base.EditorUiPackage;
-using Base.ToolPackage.Editor.TodoOverview.Model;
+using Base.EditorUIPackage.Editor;
+using Base.ToolsPackage.Editor.TodoOverview.Model;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.TodoOverview
+namespace Base.ToolsPackage.Editor.TodoOverview
 {
     /// <summary>
     /// Every size, color and style the todo window draws with. Styles are built on first use because

@@ -5,7 +5,7 @@ using System.Text;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.AssemblyGraph
+namespace Base.ToolsPackage.Editor.AssemblyGraph
 {
     /// <summary>Removes unused references from asmdef files while keeping every other field intact.</summary>
     internal static class AsmdefReferenceCleaner

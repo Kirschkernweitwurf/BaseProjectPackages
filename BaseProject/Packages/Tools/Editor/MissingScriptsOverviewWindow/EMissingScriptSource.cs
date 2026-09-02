@@ -1,4 +1,4 @@
-namespace Base.ToolPackage.Editor.MissingScriptsOverviewWindow
+namespace Base.ToolsPackage.Editor.MissingScriptsOverviewWindow
 {
     /// <summary>
     /// Identifies where a missing script was found.

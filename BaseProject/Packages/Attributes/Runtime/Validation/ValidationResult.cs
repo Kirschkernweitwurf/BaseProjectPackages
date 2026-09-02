@@ -1,4 +1,4 @@
-namespace Base.AttributePackage
+namespace Base.AttributesPackage
 {
     /// <summary>
     /// The outcome of a <see cref="ValidateInputAttribute"/> method, carrying a severity and its own

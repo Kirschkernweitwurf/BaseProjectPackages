@@ -1,6 +1,6 @@
-using Base.ToolPackage.Editor.CodebaseGraph.Model;
+using Base.ToolsPackage.Editor.CodebaseGraph.Model;
 
-namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
+namespace Base.ToolsPackage.Editor.CodebaseGraph.Analysis
 {
     /// <summary>
     /// Turns raw coupling numbers into findings. Both rules here are deliberately narrow: a size rule

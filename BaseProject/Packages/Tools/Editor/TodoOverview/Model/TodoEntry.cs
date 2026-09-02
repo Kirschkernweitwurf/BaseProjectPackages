@@ -1,6 +1,6 @@
 using System;
 
-namespace Base.ToolPackage.Editor.TodoOverview.Model
+namespace Base.ToolsPackage.Editor.TodoOverview.Model
 {
     /// <summary>
     /// One comment item found by the scan, with everything the list needs to draw it and everything

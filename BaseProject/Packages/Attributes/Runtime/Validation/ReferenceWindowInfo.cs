@@ -1,4 +1,4 @@
-namespace Base.AttributePackage
+namespace Base.AttributesPackage
 {
     /// <summary>Shared menu path and pointer text so logs can direct the user to the overview window.</summary>
     internal static class ReferenceWindowInfo

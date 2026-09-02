@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
+namespace Base.ToolsPackage.Editor.CodebaseGraph.Analysis
 {
     /// <summary>
     /// A plain line format for moving dismissals in and out of the window. The findings report writes

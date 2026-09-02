@@ -5,9 +5,9 @@ using System.Linq;
 using Base.UtilityPackage.Menus;
 using UnityEditor;
 using UnityEngine;
-using Overview = Base.ToolPackage.Editor.OverviewGui.OverviewGui;
+using Overview = Base.ToolsPackage.Editor.OverviewGui.OverviewGui;
 
-namespace Base.ToolPackage.Editor.MissingScriptsOverviewWindow
+namespace Base.ToolsPackage.Editor.MissingScriptsOverviewWindow
 {
     /// <summary>
     /// Editor window that lists every missing script in the project and jumps to it on click.

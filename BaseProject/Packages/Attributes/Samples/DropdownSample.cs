@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A value picked from options a member provides.</summary>
     [AttributeSample(typeof(DropdownAttribute), EAttributeCategory.Pickers,

@@ -1,4 +1,4 @@
-namespace Base.ToolPackage.Editor.TodoOverview.Model
+namespace Base.ToolsPackage.Editor.TodoOverview.Model
 {
     /// <summary>The order the items inside a section are listed in.</summary>
     internal enum ETodoSort : byte

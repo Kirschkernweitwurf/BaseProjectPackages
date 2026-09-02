@@ -1,11 +1,11 @@
 using System.Collections.Generic;
-using Base.EditorUiPackage;
-using Base.ToolPackage.Editor.Shared;
+using Base.EditorUIPackage.Editor;
+using Base.ToolsPackage.Editor.Shared;
 using Base.UtilityPackage.Menus;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.ExecutionOrderOverview
+namespace Base.ToolsPackage.Editor.ExecutionOrderOverview
 {
     /// <summary>
     /// Editor window that lists every script with a custom execution order, sorted by the

@@ -9,7 +9,7 @@ using UnityEngine;
 using PackageInfo = UnityEditor.PackageManager.PackageInfo;
 using Object = UnityEngine.Object;
 
-namespace Base.ToolPackage.Editor.MenuManagerWindows
+namespace Base.ToolsPackage.Editor.MenuManagerWindows
 {
     /// <summary>The shipped package layout, saved as an asset so it travels with the package.</summary>
     internal sealed class MenuRegistry : ScriptableObject

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.OverviewGui.PrefabOverviewWindow
+namespace Base.ToolsPackage.Editor.OverviewGui.PrefabOverviewWindow
 {
     /// <summary>
     /// Ready made labels for one row of the prefab overview. Built once per scan so that drawing does not

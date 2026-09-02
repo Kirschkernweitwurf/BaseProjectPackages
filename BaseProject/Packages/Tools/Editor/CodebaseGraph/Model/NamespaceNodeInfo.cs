@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Base.ToolPackage.Editor.CodebaseGraph.Model
+namespace Base.ToolsPackage.Editor.CodebaseGraph.Model
 {
     /// <summary>One namespace in the graph, aggregated from the types it contains.</summary>
     internal sealed class NamespaceNodeInfo

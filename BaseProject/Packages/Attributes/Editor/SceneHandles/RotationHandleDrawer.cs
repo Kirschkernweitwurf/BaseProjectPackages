@@ -1,7 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.SceneHandles
+namespace Base.AttributesPackage.Editor.SceneHandles
 {
     /// <summary>
     /// Draws a rotation gizmo for <see cref="RotationHandleAttribute"/>. Accepts a Quaternion field or a

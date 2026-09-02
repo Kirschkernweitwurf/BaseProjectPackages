@@ -1,4 +1,4 @@
-namespace Base.ToolPackage.Editor.OverviewGui.PrefabOverviewWindow
+namespace Base.ToolsPackage.Editor.OverviewGui.PrefabOverviewWindow
 {
     /// <summary>
     /// Amount of overrides a prefab variant carries on top of its base prefab.

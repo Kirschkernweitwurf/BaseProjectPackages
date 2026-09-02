@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A method called when a field is edited.</summary>
     [AttributeSample(typeof(OnValueChangedAttribute), EAttributeCategory.Callbacks,

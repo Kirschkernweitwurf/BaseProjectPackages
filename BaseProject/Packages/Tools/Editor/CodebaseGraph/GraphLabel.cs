@@ -1,6 +1,6 @@
 using UnityEngine.UIElements;
 
-namespace Base.ToolPackage.Editor.CodebaseGraph
+namespace Base.ToolsPackage.Editor.CodebaseGraph
 {
     /// <summary>
     /// Builds the labels every panel is made of. Four files each carried their own copy of the same

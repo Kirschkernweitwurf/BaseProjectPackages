@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Base.UtilityPackage.Logging;
 using UnityEditor;
 
-namespace Base.ToolPackage.Editor.MenuManagerWindows
+namespace Base.ToolsPackage.Editor.MenuManagerWindows
 {
     /// <summary>Registers managed entries into the editor menus. Runs on editor load and on demand.</summary>
     [InitializeOnLoad]

@@ -1,7 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.MenuManagerWindows.MenuItemOverview
+namespace Base.ToolsPackage.Editor.MenuManagerWindows.MenuItemOverview
 {
     /// <summary>
     /// Computes the column rectangles for a single row so the header and rows stay aligned.

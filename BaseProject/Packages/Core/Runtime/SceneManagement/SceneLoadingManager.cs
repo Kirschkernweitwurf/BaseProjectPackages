@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
-using Base.AttributePackage;
-using Base.ServicePackage;
+using Base.AttributesPackage;
+using Base.ServicesPackage;
 using Base.UtilityPackage.Logging;
 using UnityEngine;
 using UnityEngine.SceneManagement;

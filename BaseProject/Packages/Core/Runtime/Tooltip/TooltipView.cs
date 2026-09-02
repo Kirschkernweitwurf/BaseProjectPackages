@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
-using Base.AttributePackage;
-using Base.ServicePackage;
+using Base.AttributesPackage;
+using Base.ServicesPackage;
 using Base.UtilityPackage.Logging;
 using TMPro;
 using UnityEngine;

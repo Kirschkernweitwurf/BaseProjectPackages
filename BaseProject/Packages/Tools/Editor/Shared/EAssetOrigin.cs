@@ -1,4 +1,4 @@
-namespace Base.ToolPackage.Editor.Shared
+namespace Base.ToolsPackage.Editor.Shared
 {
     /// <summary>Where the source file behind an asset lives.</summary>
     internal enum EAssetOrigin : byte

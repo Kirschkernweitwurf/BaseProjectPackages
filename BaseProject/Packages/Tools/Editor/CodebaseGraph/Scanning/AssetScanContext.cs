@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
-using Base.ToolPackage.Editor.CodebaseGraph.Model;
+using Base.ToolsPackage.Editor.CodebaseGraph.Model;
 using Base.UtilityPackage;
 using UnityEditor;
 
-namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
+namespace Base.ToolsPackage.Editor.CodebaseGraph.Scanning
 {
     /// <summary>
     /// What the asset pass needs to look things up, and where its answers are written back. Holding it

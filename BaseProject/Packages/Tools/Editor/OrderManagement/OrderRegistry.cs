@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.OrderManagement
+namespace Base.ToolsPackage.Editor.OrderManagement
 {
     /// <summary>Central store of all constants. Edited through the Order Manager window.</summary>
     [FilePath(FilePathValue, FilePathAttribute.Location.ProjectFolder)]

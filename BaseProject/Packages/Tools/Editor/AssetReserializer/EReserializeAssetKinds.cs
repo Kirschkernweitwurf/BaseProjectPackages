@@ -1,6 +1,6 @@
 using System;
 
-namespace Base.ToolPackage.Editor.AssetReserializer
+namespace Base.ToolsPackage.Editor.AssetReserializer
 {
     /// <summary>
     /// Which kinds of asset a reserialize run touches. Combined as flags, so one run can cover

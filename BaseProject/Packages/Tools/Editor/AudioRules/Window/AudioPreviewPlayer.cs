@@ -3,7 +3,7 @@ using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.AudioRules.Window
+namespace Base.ToolsPackage.Editor.AudioRules.Window
 {
     /// <summary>
     /// Plays a clip in the editor. A designer will not trust a change to a clip they cannot hear,

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>One column of a table, sized and named.</summary>
     [AttributeSample(typeof(TableColumnAttribute), EAttributeCategory.Collections,

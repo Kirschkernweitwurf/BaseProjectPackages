@@ -5,7 +5,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.EmptyFoldersOverviewWindow
+namespace Base.ToolsPackage.Editor.EmptyFoldersOverviewWindow
 {
     /// <summary>
     /// Finds empty folders under Assets. A folder counts as empty when it holds no assets

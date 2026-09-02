@@ -1,4 +1,4 @@
-namespace Base.AttributePackage
+namespace Base.AttributesPackage
 {
     /// <summary>Which shader property kinds a <see cref="ShaderParamAttribute"/> dropdown offers.</summary>
     public enum EShaderParamType : byte

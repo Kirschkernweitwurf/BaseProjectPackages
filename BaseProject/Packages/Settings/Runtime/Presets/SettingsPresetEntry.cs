@@ -1,5 +1,5 @@
 using System;
-using Base.AttributePackage;
+using Base.AttributesPackage;
 using Base.SettingsPackage.Core;
 using Base.UtilityPackage.Identification;
 using Base.UtilityPackage.Logging;

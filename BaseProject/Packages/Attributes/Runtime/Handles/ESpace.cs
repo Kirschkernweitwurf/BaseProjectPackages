@@ -1,4 +1,4 @@
-namespace Base.AttributePackage
+namespace Base.AttributesPackage
 {
     /// <summary>Which space a scene handle interprets a stored vector in.</summary>
     public enum ESpace : byte

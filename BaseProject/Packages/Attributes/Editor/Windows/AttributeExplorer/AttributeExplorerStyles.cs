@@ -1,8 +1,8 @@
-using Base.EditorUiPackage;
+using Base.EditorUIPackage.Editor;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Windows.AttributeExplorer
+namespace Base.AttributesPackage.Editor.Windows.AttributeExplorer
 {
     /// <summary>
     /// Styles, metrics and colors for the attribute window.

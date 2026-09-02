@@ -1,6 +1,6 @@
 using UnityEditor;
 
-namespace Base.AttributePackage.Editor.Collections
+namespace Base.AttributesPackage.Editor.Collections
 {
     /// <summary>
     /// Builds the text shown for one element of a list, which is also the text the search box matches

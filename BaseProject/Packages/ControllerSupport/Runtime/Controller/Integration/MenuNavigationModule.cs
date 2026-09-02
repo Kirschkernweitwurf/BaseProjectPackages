@@ -1,4 +1,4 @@
-using Base.AttributePackage;
+using Base.AttributesPackage;
 using Base.ControllerSupportPackage.Controller.Navigation;
 using Base.CorePackage.MenuManaging;
 using Base.CorePackage.MenuManaging.Modules;

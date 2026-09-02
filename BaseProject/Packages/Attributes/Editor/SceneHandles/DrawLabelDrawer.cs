@@ -1,7 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.SceneHandles
+namespace Base.AttributesPackage.Editor.SceneHandles
 {
     /// <summary>Draws floating text for <see cref="DrawLabelAttribute"/>.</summary>
     internal sealed class DrawLabelDrawer : HandleDrawer<DrawLabelAttribute>

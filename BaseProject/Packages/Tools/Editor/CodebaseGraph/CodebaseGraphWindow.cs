@@ -1,15 +1,15 @@
 using System.Collections.Generic;
-using Base.ToolPackage.Editor.AssemblyGraph.Architecture;
-using Base.ToolPackage.Editor.CodebaseGraph.Analysis;
-using Base.ToolPackage.Editor.CodebaseGraph.Editing;
-using Base.ToolPackage.Editor.CodebaseGraph.Model;
+using Base.ToolsPackage.Editor.AssemblyGraph.Architecture;
+using Base.ToolsPackage.Editor.CodebaseGraph.Analysis;
+using Base.ToolsPackage.Editor.CodebaseGraph.Editing;
+using Base.ToolsPackage.Editor.CodebaseGraph.Model;
 using Base.UtilityPackage.Logging;
 using Base.UtilityPackage.Menus;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Base.ToolPackage.Editor.CodebaseGraph
+namespace Base.ToolsPackage.Editor.CodebaseGraph
 {
     /// <summary>
     /// Editor window that shows the project as a graph of namespaces, types and members, with the

@@ -1,7 +1,7 @@
-using Base.ToolPackage.Editor.MenuManagerWindows;
+using Base.ToolsPackage.Editor.MenuManagerWindows;
 using UnityEditor;
 
-namespace Base.ToolPackage.Editor.CommandPalette
+namespace Base.ToolsPackage.Editor.CommandPalette
 {
     /// <summary>
     /// Opens the script that declares a command. The lookup walks the asset database, so it only

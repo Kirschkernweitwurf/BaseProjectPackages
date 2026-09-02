@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Base.EditorUiPackage
+namespace Base.EditorUIPackage.Editor
 {
     /// <summary>
     /// Every color the Base editor windows share, for one editor theme. A theme holds two of these,

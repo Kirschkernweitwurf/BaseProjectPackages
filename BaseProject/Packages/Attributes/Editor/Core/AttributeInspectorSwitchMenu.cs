@@ -1,7 +1,7 @@
 using Base.UtilityPackage.Menus;
 using UnityEditorInternal;
 
-namespace Base.AttributePackage.Editor.Core
+namespace Base.AttributesPackage.Editor.Core
 {
     /// <summary>
     /// Puts <see cref="AttributeInspectorSwitch"/> on a menu item, so the package can be switched off

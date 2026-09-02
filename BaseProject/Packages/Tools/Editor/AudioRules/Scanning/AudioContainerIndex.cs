@@ -1,9 +1,9 @@
 using System.Collections.Generic;
-using Base.ToolPackage.Editor.AudioRules.Data;
+using Base.ToolsPackage.Editor.AudioRules.Data;
 using UnityEditor;
 using Object = UnityEngine.Object;
 
-namespace Base.ToolPackage.Editor.AudioRules.Scanning
+namespace Base.ToolsPackage.Editor.AudioRules.Scanning
 {
     /// <summary>
     /// Reads the audio containers of the project and remembers which category each clip was

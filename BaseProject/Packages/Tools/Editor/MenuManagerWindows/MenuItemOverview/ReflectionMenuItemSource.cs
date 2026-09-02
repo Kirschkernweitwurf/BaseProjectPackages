@@ -2,11 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Base.ToolPackage.Editor.Shared;
+using Base.ToolsPackage.Editor.Shared;
 using Base.UtilityPackage;
 using UnityEditor;
 
-namespace Base.ToolPackage.Editor.MenuManagerWindows.MenuItemOverview
+namespace Base.ToolsPackage.Editor.MenuManagerWindows.MenuItemOverview
 {
     /// <summary>
     /// Default source that scans every loaded assembly for static methods decorated with

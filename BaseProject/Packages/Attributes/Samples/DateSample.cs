@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A point in time picked from a calendar.</summary>
     [AttributeSample(typeof(DateAttribute), EAttributeCategory.Widgets,

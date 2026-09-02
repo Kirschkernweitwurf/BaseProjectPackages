@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
-using Base.AttributePackage;
-using Base.ServicePackage.Shutdown;
+using Base.AttributesPackage;
+using Base.ServicesPackage.Shutdown;
 using Base.TweeningPackage.Core;
 using Base.TweeningPackage.Core.Data;
 using Base.UtilityPackage.Contracts;

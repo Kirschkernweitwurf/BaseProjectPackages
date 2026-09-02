@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Base.ToolPackage.Editor.NamingConventions.Data;
+using Base.ToolsPackage.Editor.NamingConventions.Data;
 using Base.UtilityPackage.Logging;
 using UnityEditor;
 
-namespace Base.ToolPackage.Editor.NamingConventions.Scanning
+namespace Base.ToolsPackage.Editor.NamingConventions.Scanning
 {
     /// <summary>Walks the assets of the project and collects the ones that break a rule.</summary>
     internal static class AssetNamingScanner

@@ -1,16 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Base.AttributePackage.Editor.Collections;
-using Base.AttributePackage.Editor.Core;
-using Base.AttributePackage.Editor.Core.Interfaces;
+using Base.AttributesPackage.Editor.Collections;
+using Base.AttributesPackage.Editor.Core;
+using Base.AttributesPackage.Editor.Core.Interfaces;
 using Base.UtilityPackage;
 using Base.UtilityPackage.Editor;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Base.AttributePackage.Editor.Drawers
+namespace Base.AttributesPackage.Editor.Drawers
 {
     /// <summary>
     /// Runs the per-member pipeline: visibility, enable state, before-field decorations, the field

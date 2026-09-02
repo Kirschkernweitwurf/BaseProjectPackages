@@ -1,16 +1,16 @@
 using System;
 using System.Collections.Generic;
-using Base.AttributePackage.Editor.Windows.AttributeExplorer.Reference;
-using Base.AttributePackage.Editor.Windows.AttributeExplorer.Showcase;
-using Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot;
+using Base.AttributesPackage.Editor.Windows.AttributeExplorer.Reference;
+using Base.AttributesPackage.Editor.Windows.AttributeExplorer.Showcase;
+using Base.AttributesPackage.Editor.Windows.AttributeExplorer.Troubleshoot;
 using Base.UtilityPackage.Menus;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Windows.AttributeExplorer
+namespace Base.AttributesPackage.Editor.Windows.AttributeExplorer
 {
     /// <summary>
-    /// One window for everything about the attribute package: a reference page per attribute, a showcase
+    /// One window for everything about the Attributes package: a reference page per attribute, a showcase
     /// of all of them at once, and a scan for usages that cannot work as written.
     /// </summary>
     /// <remarks>

@@ -5,9 +5,9 @@ using Base.UtilityPackage.Menus;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
-using Overview = Base.ToolPackage.Editor.OverviewGui.OverviewGui;
+using Overview = Base.ToolsPackage.Editor.OverviewGui.OverviewGui;
 
-namespace Base.ToolPackage.Editor.EmptyFoldersOverviewWindow
+namespace Base.ToolsPackage.Editor.EmptyFoldersOverviewWindow
 {
     /// <summary>
     /// Editor window that lists empty folders and lets you jump to or delete them.

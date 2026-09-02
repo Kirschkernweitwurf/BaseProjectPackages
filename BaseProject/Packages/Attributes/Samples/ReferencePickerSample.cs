@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>An interface field filled by picking an implementation.</summary>
     [AttributeSample(typeof(ReferencePickerAttribute), EAttributeCategory.Serialization,

@@ -1,4 +1,4 @@
-namespace Base.EditorUiPackage
+namespace Base.EditorUIPackage.Editor
 {
     /// <summary>
     /// The spacings and sizes the Base editor windows lay out by. A window keeps its own numbers for

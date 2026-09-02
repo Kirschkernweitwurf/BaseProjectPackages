@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Core
+namespace Base.AttributesPackage.Editor.Core
 {
     /// <summary>
     /// Resolves an explicit color from an HTML hex string or an <see cref="EColor"/> preset.

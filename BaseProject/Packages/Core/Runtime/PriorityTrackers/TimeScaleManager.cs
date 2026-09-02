@@ -1,5 +1,5 @@
-using Base.ServicePackage;
-using Base.ServicePackage.Tracking;
+using Base.ServicesPackage;
+using Base.ServicesPackage.Tracking;
 using UnityEngine;
 
 namespace Base.CorePackage.PriorityTrackers

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Base.ToolPackage.Editor.MenuManagerWindows
+namespace Base.ToolsPackage.Editor.MenuManagerWindows
 {
     /// <summary>Builds full menu paths from group names and the per kind root prefix.</summary>
     internal static class MenuPath

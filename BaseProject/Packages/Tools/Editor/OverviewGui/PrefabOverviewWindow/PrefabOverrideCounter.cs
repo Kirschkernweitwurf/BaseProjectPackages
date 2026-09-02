@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Base.ToolPackage.Editor.OverviewGui.PrefabOverviewWindow
+namespace Base.ToolsPackage.Editor.OverviewGui.PrefabOverviewWindow
 {
     /// <summary>
     /// Counts how far a prefab variant drifted away from its base prefab.

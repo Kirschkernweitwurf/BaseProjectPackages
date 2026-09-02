@@ -2,9 +2,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
-using Base.ToolPackage.Editor.TodoOverview.Model;
+using Base.ToolsPackage.Editor.TodoOverview.Model;
 
-namespace Base.ToolPackage.Editor.TodoOverview.Scanning
+namespace Base.ToolsPackage.Editor.TodoOverview.Scanning
 {
     /// <summary>
     /// Turns the comment lines of one file into items.

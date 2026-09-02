@@ -1,6 +1,6 @@
 using System;
 
-namespace Base.AttributePackage.Editor.SceneHandles
+namespace Base.AttributesPackage.Editor.SceneHandles
 {
     /// <summary>One attribute on a field paired with the drawer that reacts to it.</summary>
     internal readonly struct HandleBinding

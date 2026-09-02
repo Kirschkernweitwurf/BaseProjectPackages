@@ -1,4 +1,4 @@
-namespace Base.EditorUiPackage
+namespace Base.EditorUIPackage.Editor
 {
     /// <summary>
     /// The built-in look: the values the Base editor windows drew with before any of it could be

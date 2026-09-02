@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.CommandPalette
+namespace Base.ToolsPackage.Editor.CommandPalette
 {
     /// <summary>
     /// Translates key presses into palette actions. Pure and free of any state, so the key map can

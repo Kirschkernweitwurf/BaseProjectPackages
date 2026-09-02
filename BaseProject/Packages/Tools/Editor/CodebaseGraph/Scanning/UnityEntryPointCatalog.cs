@@ -4,7 +4,7 @@ using System.Reflection;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
+namespace Base.ToolsPackage.Editor.CodebaseGraph.Scanning
 {
     /// <summary>
     /// Knows which members are called by something other than the code itself. Without this every Awake,

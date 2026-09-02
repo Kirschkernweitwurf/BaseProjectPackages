@@ -4,7 +4,7 @@ using Base.UtilityPackage.Menus;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.OverviewGui.PrefabOverviewWindow
+namespace Base.ToolsPackage.Editor.OverviewGui.PrefabOverviewWindow
 {
     /// <summary>
     /// Editor window that shows every prefab in the project as a variant tree, how far each variant drifted

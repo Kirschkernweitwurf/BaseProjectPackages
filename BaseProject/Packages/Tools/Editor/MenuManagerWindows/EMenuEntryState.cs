@@ -1,4 +1,4 @@
-namespace Base.ToolPackage.Editor.MenuManagerWindows
+namespace Base.ToolsPackage.Editor.MenuManagerWindows
 {
     /// <summary>Live state of a menu entry as reported by its source.</summary>
     internal enum EMenuEntryState : byte

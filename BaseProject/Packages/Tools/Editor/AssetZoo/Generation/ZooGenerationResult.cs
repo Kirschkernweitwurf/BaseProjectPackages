@@ -1,4 +1,4 @@
-namespace Base.ToolPackage.Editor.AssetZoo.Generation
+namespace Base.ToolsPackage.Editor.AssetZoo.Generation
 {
     /// <summary>
     /// Outcome of a single auto-generation run. Used to give the artist feedback in the UI.

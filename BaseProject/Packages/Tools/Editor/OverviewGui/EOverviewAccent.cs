@@ -1,4 +1,4 @@
-namespace Base.ToolPackage.Editor.OverviewGui
+namespace Base.ToolsPackage.Editor.OverviewGui
 {
     /// <summary>
     /// Color role of an overview section, used for its header bar and count badge.

@@ -1,9 +1,9 @@
 using System;
-using Base.ToolPackage.Editor.Shared;
+using Base.ToolsPackage.Editor.Shared;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.MenuManagerWindows.CreateAssetMenuOverview
+namespace Base.ToolsPackage.Editor.MenuManagerWindows.CreateAssetMenuOverview
 {
     /// <summary>
     /// Immutable description of a single asset creation entry, either a

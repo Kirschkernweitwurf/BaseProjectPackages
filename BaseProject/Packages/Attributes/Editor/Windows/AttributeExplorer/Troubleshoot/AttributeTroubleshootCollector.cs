@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
-using Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot.Samples;
+using Base.AttributesPackage.Editor.Windows.AttributeExplorer.Troubleshoot.Samples;
 using Base.UtilityPackage;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot
+namespace Base.AttributesPackage.Editor.Windows.AttributeExplorer.Troubleshoot
 {
     /// <summary>
     /// Runs every discovered check over every type the attribute pipeline can reach: components,

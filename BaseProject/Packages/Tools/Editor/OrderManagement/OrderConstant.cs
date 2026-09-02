@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.OrderManagement
+namespace Base.ToolsPackage.Editor.OrderManagement
 {
     /// <summary>Single named constant emitted into the generated class.</summary>
     [Serializable]

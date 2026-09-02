@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A separator line above a field.</summary>
     [AttributeSample(typeof(HorizontalLineAttribute), EAttributeCategory.Layout,

@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Base.ToolPackage.Editor.AudioRules.Model;
+using Base.ToolsPackage.Editor.AudioRules.Model;
 using UnityEngine.UIElements;
 
-namespace Base.ToolPackage.Editor.AudioRules.Window
+namespace Base.ToolsPackage.Editor.AudioRules.Window
 {
     /// <summary>
     /// The results table. Columns are resizable, reorderable and sortable because an audio

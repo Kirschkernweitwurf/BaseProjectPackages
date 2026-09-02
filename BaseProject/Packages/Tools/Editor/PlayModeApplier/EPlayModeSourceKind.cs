@@ -1,4 +1,4 @@
-namespace Base.ToolPackage.Editor.PlayModeApplier
+namespace Base.ToolsPackage.Editor.PlayModeApplier
 {
     /// <summary>
     /// Describes how a marked object can be found again once play mode ends.

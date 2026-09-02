@@ -15,13 +15,13 @@ Async, slot-based save and load for Unity. Each object owns its own save data an
 ## Requirements
 
 - Unity `6000.3` or newer, for `Awaitable`
-- `Base.ServicePackage` for the service locator and the shutdown pipeline
+- `Base.ServicesPackage` for the service locator and the shutdown pipeline
 - `Base.UtilityPackage` for `PersistentKey` and logging
-- `Base.AttributePackage` for the inspector attributes on `SaveManager`
+- `Base.AttributesPackage` for the inspector attributes on `SaveManager`
 - `Base.SettingsPackage`, optional, only for the three autosave setting components
 - Assemblies: `Base.SaveSystemPackage` and the optional `Base.SaveSystemPackage.Settings`
 
-Not the Core package. The save system needs the service locator and the shutdown pipeline, both of which live in the Service package.
+Not the Core package. The save system needs the service locator and the shutdown pipeline, both of which live in the Services package.
 
 ## Install
 

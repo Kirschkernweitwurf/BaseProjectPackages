@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A component picked from a dropped GameObject.</summary>
     [AttributeSample(typeof(ComponentPickerAttribute), EAttributeCategory.Pickers,

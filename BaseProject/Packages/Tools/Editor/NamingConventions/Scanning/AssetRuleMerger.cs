@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using Base.ToolPackage.Editor.NamingConventions.Data;
+using Base.ToolsPackage.Editor.NamingConventions.Data;
 
-namespace Base.ToolPackage.Editor.NamingConventions.Scanning
+namespace Base.ToolsPackage.Editor.NamingConventions.Scanning
 {
     /// <summary>
     /// Folds a detection run into the rule set. Anything a person created or changed by hand is

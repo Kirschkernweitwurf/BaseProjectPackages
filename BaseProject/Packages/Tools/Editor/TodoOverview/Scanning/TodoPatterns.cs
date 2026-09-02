@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using Base.ToolPackage.Editor.TodoOverview.Model;
-using Base.ToolPackage.Editor.TodoOverview.Settings;
+using Base.ToolsPackage.Editor.TodoOverview.Model;
+using Base.ToolsPackage.Editor.TodoOverview.Settings;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.TodoOverview.Scanning
+namespace Base.ToolsPackage.Editor.TodoOverview.Scanning
 {
     /// <summary>
     /// The compiled form of everything the settings declare: one regular expression for the keywords,

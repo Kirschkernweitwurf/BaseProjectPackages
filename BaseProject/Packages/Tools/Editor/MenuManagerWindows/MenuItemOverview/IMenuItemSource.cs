@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEditor;
 
-namespace Base.ToolPackage.Editor.MenuManagerWindows.MenuItemOverview
+namespace Base.ToolsPackage.Editor.MenuManagerWindows.MenuItemOverview
 {
     /// <summary>
     /// Supplies the set of <see cref="MenuItem"/> entries currently defined in the editor.

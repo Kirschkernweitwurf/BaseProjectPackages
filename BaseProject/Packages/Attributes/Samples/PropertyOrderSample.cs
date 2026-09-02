@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A field drawn somewhere other than where it is declared.</summary>
     [AttributeSample(typeof(PropertyOrderAttribute), EAttributeCategory.Layout,

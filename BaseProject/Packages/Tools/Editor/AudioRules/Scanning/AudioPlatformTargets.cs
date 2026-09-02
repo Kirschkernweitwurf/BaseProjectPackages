@@ -1,6 +1,6 @@
 using UnityEditor;
 
-namespace Base.ToolPackage.Editor.AudioRules.Scanning
+namespace Base.ToolsPackage.Editor.AudioRules.Scanning
 {
     /// <summary>
     /// Reads and writes the sample settings of one import target. The default settings and a

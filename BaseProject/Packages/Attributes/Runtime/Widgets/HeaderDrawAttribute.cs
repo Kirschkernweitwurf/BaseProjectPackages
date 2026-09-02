@@ -1,7 +1,7 @@
 using System;
 using JetBrains.Annotations;
 
-namespace Base.AttributePackage
+namespace Base.AttributesPackage
 {
     /// <summary>
     /// Hands the decorated method a rect in the component header and lets it draw whatever it likes. The

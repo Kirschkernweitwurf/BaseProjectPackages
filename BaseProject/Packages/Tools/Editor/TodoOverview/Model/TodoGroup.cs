@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.TodoOverview.Model
+namespace Base.ToolsPackage.Editor.TodoOverview.Model
 {
     /// <summary>One section of the list: a header, the color it is banded with, and its items.</summary>
     internal sealed class TodoGroup

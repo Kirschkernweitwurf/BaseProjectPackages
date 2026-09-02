@@ -4,7 +4,7 @@ using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Base.ToolPackage.Editor.AssemblyGraph
+namespace Base.ToolsPackage.Editor.AssemblyGraph
 {
     /// <summary>Renders assemblies as draggable nodes with reference edges.</summary>
     internal sealed class AssemblyGraphView : GraphView

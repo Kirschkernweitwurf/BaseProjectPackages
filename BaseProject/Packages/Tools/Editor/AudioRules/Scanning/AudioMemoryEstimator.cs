@@ -1,8 +1,8 @@
-using Base.ToolPackage.Editor.AudioRules.Model;
+using Base.ToolsPackage.Editor.AudioRules.Model;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.AudioRules.Scanning
+namespace Base.ToolsPackage.Editor.AudioRules.Scanning
 {
     /// <summary>
     /// Estimates what a clip costs in memory at runtime and in the build, from its length, channel

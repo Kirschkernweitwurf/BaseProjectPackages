@@ -1,7 +1,7 @@
-using Base.ToolPackage.Editor.NamingConventions.Data;
+using Base.ToolsPackage.Editor.NamingConventions.Data;
 using UnityEditor;
 
-namespace Base.ToolPackage.Editor.NamingConventions.Scanning
+namespace Base.ToolsPackage.Editor.NamingConventions.Scanning
 {
     /// <summary>
     /// Reads the sub type of a texture from its importer and turns it into the suffix the rule

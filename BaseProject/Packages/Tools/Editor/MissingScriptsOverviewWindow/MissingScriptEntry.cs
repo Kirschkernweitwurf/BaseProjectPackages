@@ -1,6 +1,6 @@
 using System;
 
-namespace Base.ToolPackage.Editor.MissingScriptsOverviewWindow
+namespace Base.ToolsPackage.Editor.MissingScriptsOverviewWindow
 {
     /// <summary>
     /// One found missing script, holding enough data to navigate back to it.

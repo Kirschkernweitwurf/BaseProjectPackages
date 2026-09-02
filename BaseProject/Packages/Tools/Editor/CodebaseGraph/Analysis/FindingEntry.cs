@@ -1,6 +1,6 @@
-using Base.ToolPackage.Editor.CodebaseGraph.Model;
+using Base.ToolsPackage.Editor.CodebaseGraph.Model;
 
-namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
+namespace Base.ToolsPackage.Editor.CodebaseGraph.Analysis
 {
     /// <summary>
     /// One finding, with everything needed to rank it, print it and act on it. The report only prints,

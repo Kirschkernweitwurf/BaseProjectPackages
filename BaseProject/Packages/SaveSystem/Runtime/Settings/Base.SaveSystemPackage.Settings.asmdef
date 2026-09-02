@@ -1,6 +1,6 @@
 {
   "name": "Base.SaveSystemPackage.Settings",
-  "rootNamespace": "Base.SaveSystemPackage.Unity.Autosave.Settings",
+  "rootNamespace": "Base.SaveSystemPackage.Settings",
   "references": [
     "GUID:0507359db01f03f429835e7c67e9ec0a",
     "GUID:1bb27541c4d98c341871129f271f8263",

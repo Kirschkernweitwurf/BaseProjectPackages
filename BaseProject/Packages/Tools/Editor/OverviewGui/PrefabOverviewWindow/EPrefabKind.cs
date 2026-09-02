@@ -1,4 +1,4 @@
-namespace Base.ToolPackage.Editor.OverviewGui.PrefabOverviewWindow
+namespace Base.ToolsPackage.Editor.OverviewGui.PrefabOverviewWindow
 {
     /// <summary>
     /// What kind of prefab asset an overview entry points at.

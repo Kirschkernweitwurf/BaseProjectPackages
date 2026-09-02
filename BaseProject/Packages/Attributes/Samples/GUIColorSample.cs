@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A tinted field.</summary>
     [AttributeSample(typeof(GUIColorAttribute), EAttributeCategory.Layout,

@@ -1,8 +1,8 @@
 using System;
-using Base.ToolPackage.Editor.Shared;
+using Base.ToolsPackage.Editor.Shared;
 using UnityEditor;
 
-namespace Base.ToolPackage.Editor.ExecutionOrderOverview
+namespace Base.ToolsPackage.Editor.ExecutionOrderOverview
 {
     /// <summary>
     /// Immutable description of a single script that defines a custom execution order,

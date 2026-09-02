@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.ComponentClipboard
+namespace Base.ToolsPackage.Editor.ComponentClipboard
 {
     /// <summary>
     /// Multi component clipboard. Unity's internal clipboard only holds a single component, so this

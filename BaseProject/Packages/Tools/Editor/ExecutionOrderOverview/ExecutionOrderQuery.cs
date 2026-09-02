@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Base.ToolPackage.Editor.Shared;
+using Base.ToolsPackage.Editor.Shared;
 
-namespace Base.ToolPackage.Editor.ExecutionOrderOverview
+namespace Base.ToolsPackage.Editor.ExecutionOrderOverview
 {
     /// <summary>
     /// Pure filtering and sorting for execution-order entries. The input collection is

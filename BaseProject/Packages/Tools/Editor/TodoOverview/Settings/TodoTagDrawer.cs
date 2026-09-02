@@ -1,10 +1,10 @@
 using System.Collections.Generic;
-using Base.EditorUiPackage;
-using Base.ToolPackage.Editor.TodoOverview.Model;
+using Base.EditorUIPackage.Editor;
+using Base.ToolsPackage.Editor.TodoOverview.Model;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.TodoOverview.Settings
+namespace Base.ToolsPackage.Editor.TodoOverview.Settings
 {
     /// <summary>
     /// Draws one keyword in the settings page: the word, whether it is scanned for, its color, and a

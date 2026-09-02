@@ -1,10 +1,10 @@
-using Base.AttributePackage.Editor.Core;
+using Base.AttributesPackage.Editor.Core;
 using Base.UtilityPackage.Editor;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Audio;
 
-namespace Base.AttributePackage.Editor.Drawers
+namespace Base.AttributesPackage.Editor.Drawers
 {
     /// <summary>
     /// Draws an AudioMixerGroup field as a dropdown of a mixer's groups for

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A scale edited with a scale handle.</summary>
     [AttributeSample(typeof(ScaleHandleAttribute), EAttributeCategory.Widgets,

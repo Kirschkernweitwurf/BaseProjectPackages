@@ -1,4 +1,4 @@
-namespace Base.ToolPackage.Editor.NamingConventions.Data
+namespace Base.ToolsPackage.Editor.NamingConventions.Data
 {
     /// <summary>What a detection run changed about the rule set.</summary>
     internal sealed class AssetRuleMergeResult

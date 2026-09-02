@@ -1,6 +1,6 @@
 using System;
 
-namespace Base.AttributePackage.Editor.SceneHandles
+namespace Base.AttributesPackage.Editor.SceneHandles
 {
     /// <summary>
     /// Draws one scene view handle for one attribute. Implement this anywhere and

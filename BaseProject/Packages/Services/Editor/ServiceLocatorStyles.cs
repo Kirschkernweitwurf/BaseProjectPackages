@@ -1,7 +1,7 @@
-using Base.EditorUiPackage;
+using Base.EditorUIPackage.Editor;
 using UnityEngine;
 
-namespace Base.ServicePackage.Editor
+namespace Base.ServicesPackage.Editor
 {
     /// <summary>
     /// What the <see cref="ServiceLocatorWindow"/> needs on top of the shared list window look: the

@@ -1,10 +1,11 @@
-using Base.AttributePackage;
-using Base.ServicePackage;
+using Base.AttributesPackage;
+using Base.SaveSystemPackage.Unity.Autosave;
+using Base.ServicesPackage;
 using Base.SettingsPackage.Components;
 using Base.UtilityPackage.Identification;
 using UnityEngine;
 
-namespace Base.SaveSystemPackage.Unity.Autosave.Settings
+namespace Base.SaveSystemPackage.Settings
 {
     /// <summary>
     /// Stores the shortest gap allowed between two autosaves and pushes it into the

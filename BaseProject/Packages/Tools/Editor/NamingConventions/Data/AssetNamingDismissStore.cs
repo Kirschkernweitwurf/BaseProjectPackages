@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using Base.ToolPackage.Editor.Shared;
+using Base.ToolsPackage.Editor.Shared;
 
-namespace Base.ToolPackage.Editor.NamingConventions.Data
+namespace Base.ToolsPackage.Editor.NamingConventions.Data
 {
     /// <summary>
     /// Remembers assets the user chose to exclude from the naming scan. Stored by GUID in a

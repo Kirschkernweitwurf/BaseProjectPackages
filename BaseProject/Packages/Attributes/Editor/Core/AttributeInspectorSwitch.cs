@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using UnityEditor;
 
-namespace Base.AttributePackage.Editor.Core
+namespace Base.AttributesPackage.Editor.Core
 {
     /// <summary>
     /// Decides whether the package draws a given inspector at all, and offers one switch to stop it
@@ -24,7 +24,7 @@ namespace Base.AttributePackage.Editor.Core
     internal static class AttributeInspectorSwitch
     {
         /// <summary>The editor preference the switch is stored under. Per user, per machine.</summary>
-        internal const string DisabledPreferenceKey = "Base.AttributePackage.InspectorDisabled";
+        internal const string DisabledPreferenceKey = "Base.AttributesPackage.InspectorDisabled";
 
         private const BindingFlags MemberFlags = BindingFlags.Instance
             | BindingFlags.Static

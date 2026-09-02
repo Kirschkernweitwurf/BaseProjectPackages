@@ -1,7 +1,7 @@
-using Base.EditorUiPackage;
-using Base.ToolPackage.Editor.TodoOverview.Model;
+using Base.EditorUIPackage.Editor;
+using Base.ToolsPackage.Editor.TodoOverview.Model;
 
-namespace Base.ToolPackage.Editor.TodoOverview.Settings
+namespace Base.ToolsPackage.Editor.TodoOverview.Settings
 {
     /// <summary>
     /// What a fresh <see cref="TodoSettings"/> starts out with. These are only the starting values;

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using Base.ToolPackage.Editor.Shared;
+using Base.ToolsPackage.Editor.Shared;
 
-namespace Base.ToolPackage.Editor.OverviewGui.UnusedAssetsOverviewWindow
+namespace Base.ToolsPackage.Editor.OverviewGui.UnusedAssetsOverviewWindow
 {
     /// <summary>
     /// Remembers assets the user chose to keep. Stored by GUID in a per-project file under

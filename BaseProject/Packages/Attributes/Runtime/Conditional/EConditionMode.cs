@@ -1,4 +1,4 @@
-namespace Base.AttributePackage
+namespace Base.AttributesPackage
 {
     /// <summary>How multiple condition members are combined into a single result.</summary>
     public enum EConditionMode : byte

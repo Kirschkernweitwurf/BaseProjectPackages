@@ -1,5 +1,5 @@
-using Base.AttributePackage;
-using Base.ServicePackage;
+using Base.AttributesPackage;
+using Base.ServicesPackage;
 using Base.SettingsPackage.Controls;
 using Base.UtilityPackage.Identification;
 using UnityEngine;

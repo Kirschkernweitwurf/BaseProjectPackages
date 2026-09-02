@@ -1,10 +1,10 @@
 using System.Collections.Generic;
-using Base.ToolPackage.Editor.Shared;
+using Base.ToolsPackage.Editor.Shared;
 using Base.UtilityPackage.Logging;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.OverviewGui.PrefabOverviewWindow
+namespace Base.ToolsPackage.Editor.OverviewGui.PrefabOverviewWindow
 {
     /// <summary>
     /// Collects every prefab asset in the project, classifies it, and optionally counts the overrides

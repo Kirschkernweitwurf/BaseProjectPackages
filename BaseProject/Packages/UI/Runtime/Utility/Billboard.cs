@@ -1,6 +1,6 @@
-using Base.AttributePackage;
+using Base.AttributesPackage;
 using Base.CorePackage.CameraUtility;
-using Base.ServicePackage;
+using Base.ServicesPackage;
 using UnityEngine;
 
 namespace Base.UIPackage.Utility

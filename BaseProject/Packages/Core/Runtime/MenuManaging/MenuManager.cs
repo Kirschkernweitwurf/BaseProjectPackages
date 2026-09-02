@@ -1,10 +1,10 @@
 using System.Linq;
-using Base.AttributePackage;
+using Base.AttributesPackage;
 using Base.CorePackage.Input;
 using Base.CorePackage.MenuManaging.Identifier;
-using Base.ServicePackage;
-using Base.ServicePackage.Shutdown;
-using Base.ServicePackage.Tracking;
+using Base.ServicesPackage;
+using Base.ServicesPackage.Shutdown;
+using Base.ServicesPackage.Tracking;
 using Base.UtilityPackage.Logging;
 using UnityEngine;
 using UnityEngine.InputSystem;

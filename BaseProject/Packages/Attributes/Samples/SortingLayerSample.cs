@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A string picked from the sorting layers.</summary>
     [AttributeSample(typeof(SortingLayerAttribute), EAttributeCategory.Pickers,

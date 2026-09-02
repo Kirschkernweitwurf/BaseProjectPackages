@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>An int picked from the project layers.</summary>
     [AttributeSample(typeof(LayerAttribute), EAttributeCategory.Pickers,

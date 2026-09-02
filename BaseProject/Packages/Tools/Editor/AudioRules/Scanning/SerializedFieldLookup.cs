@@ -1,6 +1,6 @@
 using UnityEditor;
 
-namespace Base.ToolPackage.Editor.AudioRules.Scanning
+namespace Base.ToolsPackage.Editor.AudioRules.Scanning
 {
     /// <summary>
     /// Finds a serialized field by the name it has in code. A property written as

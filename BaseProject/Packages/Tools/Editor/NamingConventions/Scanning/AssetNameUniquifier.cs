@@ -2,7 +2,7 @@ using System.Globalization;
 using System.IO;
 using UnityEditor;
 
-namespace Base.ToolPackage.Editor.NamingConventions.Scanning
+namespace Base.ToolsPackage.Editor.NamingConventions.Scanning
 {
     /// <summary>
     /// Keeps a suggested file name free of collisions. Renaming onto an existing asset fails, so

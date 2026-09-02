@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A field visible only while a condition holds.</summary>
     [AttributeSample(typeof(ShowIfAttribute), EAttributeCategory.Conditions,

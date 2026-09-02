@@ -5,7 +5,7 @@ using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Collections
+namespace Base.AttributesPackage.Editor.Collections
 {
     /// <summary>
     /// Draws a <see cref="ListDrawerSettingsAttribute"/> collection: a foldout with an element count, an

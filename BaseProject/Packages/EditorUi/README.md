@@ -1,4 +1,4 @@
-# Base Editor UI Package
+# Base Editor UI
 
 The shared look of the Base editor windows. Editor only, no dependencies, so any tool assembly can reference it without dragging anything else in.
 
@@ -10,7 +10,7 @@ What does **not** live here is anything one window alone understands. A badge co
 
 - Unity `6000.3` or newer
 - No dependencies, Base or otherwise
-- One assembly: `Base.EditorUiPackage`, Editor platform only
+- One assembly: `Base.EditorUIPackage.Editor`, Editor platform only
 
 ## Contents
 
@@ -50,7 +50,7 @@ Under `Editor/Theme`:
 
 ## One namespace for the whole package
 
-Every type here declares `Base.EditorUiPackage`, including the ones under `Theme` and `Uss`. Same
+Every type here declares `Base.EditorUIPackage.Editor`, including the ones under `Theme` and `Uss`. Same
 reason as the Attributes package: a window pulling in a palette, some metrics, a row helper and a
 style set should need one using line, not four. The folders are marked as non-namespace-providers
 (Rider: **folder > Properties > Namespace provider: off**), so a folder-to-namespace scan reporting

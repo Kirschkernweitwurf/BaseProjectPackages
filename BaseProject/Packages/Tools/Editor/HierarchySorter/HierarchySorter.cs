@@ -6,7 +6,7 @@ using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Base.ToolPackage.Editor.HierarchySorter
+namespace Base.ToolsPackage.Editor.HierarchySorter
 {
     /// <summary>
     /// Sorts the children of a GameObject or a whole scene alphabetically, recursively.

@@ -1,7 +1,7 @@
 using Base.UtilityPackage.Identification;
 using UnityEditor;
 
-namespace Base.ToolPackage.Editor.Identification
+namespace Base.ToolsPackage.Editor.Identification
 {
     /// <summary>
     /// Custom editor for <see cref="UniqueIdScriptableObject"/> that displays the unique ID in a read-only manner.

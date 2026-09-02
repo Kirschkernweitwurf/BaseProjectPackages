@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Base.ToolPackage.Editor.AssemblyGraph.Architecture
+namespace Base.ToolsPackage.Editor.AssemblyGraph.Architecture
 {
     /// <summary>
     /// Writes the rolled up assembly edges out as text. Nothing in the architecture analysis is worth

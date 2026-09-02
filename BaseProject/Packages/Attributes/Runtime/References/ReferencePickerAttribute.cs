@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Base.AttributePackage
+namespace Base.AttributesPackage
 {
     /// <summary>
     /// Adds a type picker to a <c>[SerializeReference]</c> field so the concrete implementation can be

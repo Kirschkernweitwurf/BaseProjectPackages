@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A line drawn to a position.</summary>
     [AttributeSample(typeof(DrawLineAttribute), EAttributeCategory.Widgets,

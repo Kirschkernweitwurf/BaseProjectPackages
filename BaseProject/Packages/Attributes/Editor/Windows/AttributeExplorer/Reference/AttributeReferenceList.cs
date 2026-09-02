@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Base.AttributePackage.Editor.Core;
-using Base.AttributePackage.Samples;
+using Base.AttributesPackage.Editor.Core;
+using Base.AttributesPackage.Samples;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Reference
+namespace Base.AttributesPackage.Editor.Windows.AttributeExplorer.Reference
 {
     /// <summary>
     /// Draws the attribute list: a search box, then the attributes under collapsible category headers.

@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Base.EditorUiPackage
+namespace Base.EditorUIPackage.Editor
 {
     /// <summary>
     /// The spacings, sizes and corner radii the Base editor windows lay out by, read through

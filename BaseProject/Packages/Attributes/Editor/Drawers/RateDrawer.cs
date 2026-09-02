@@ -1,10 +1,10 @@
-using Base.AttributePackage.Editor.Core;
-using Base.EditorUiPackage;
+using Base.AttributesPackage.Editor.Core;
+using Base.EditorUIPackage.Editor;
 using Base.UtilityPackage.Editor;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Drawers
+namespace Base.AttributesPackage.Editor.Drawers
 {
     /// <summary>Draws an int as a row of clickable stars for <see cref="RateAttribute"/>.</summary>
     [CustomPropertyDrawer(typeof(RateAttribute))]

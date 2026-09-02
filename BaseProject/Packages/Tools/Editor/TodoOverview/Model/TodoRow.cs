@@ -1,4 +1,4 @@
-namespace Base.ToolPackage.Editor.TodoOverview.Model
+namespace Base.ToolsPackage.Editor.TodoOverview.Model
 {
     /// <summary>
     /// One drawn line of the list, either a section header or an item inside a section. Headers and

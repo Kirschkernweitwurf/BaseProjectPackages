@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Base.AttributePackage.Samples;
+using Base.AttributesPackage.Samples;
 using UnityEditor;
 
-namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Reference
+namespace Base.AttributesPackage.Editor.Windows.AttributeExplorer.Reference
 {
     /// <summary>
     /// Collects the sample types and turns each one into the reference page for its attribute.

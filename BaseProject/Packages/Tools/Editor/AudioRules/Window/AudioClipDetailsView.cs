@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
-using Base.ToolPackage.Editor.AudioRules.Data;
-using Base.ToolPackage.Editor.AudioRules.Model;
-using Base.ToolPackage.Editor.AudioRules.Scanning;
+using Base.ToolsPackage.Editor.AudioRules.Data;
+using Base.ToolsPackage.Editor.AudioRules.Model;
+using Base.ToolsPackage.Editor.AudioRules.Scanning;
 using UnityEngine.UIElements;
 
-namespace Base.ToolPackage.Editor.AudioRules.Window
+namespace Base.ToolsPackage.Editor.AudioRules.Window
 {
     /// <summary>
     /// Shows one clip setting by setting: what it has now, what the rules want, which rule decided

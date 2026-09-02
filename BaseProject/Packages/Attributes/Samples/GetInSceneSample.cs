@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A reference filled from anywhere in the scene.</summary>
     [AttributeSample(typeof(GetInSceneAttribute), EAttributeCategory.References,

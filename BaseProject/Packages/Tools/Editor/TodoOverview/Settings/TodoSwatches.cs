@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using Base.EditorUiPackage;
+using Base.EditorUIPackage.Editor;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.TodoOverview.Settings
+namespace Base.ToolsPackage.Editor.TodoOverview.Settings
 {
     /// <summary>
     /// A named set of keyword colors, one row of the spectrum plus a gray, given twice: once for a

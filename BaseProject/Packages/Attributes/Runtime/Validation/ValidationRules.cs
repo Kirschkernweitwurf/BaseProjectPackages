@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Base.UtilityPackage;
 
-namespace Base.AttributePackage
+namespace Base.AttributesPackage
 {
     /// <summary>
     /// Discovers every <see cref="IValidationRule"/> implementation once and caches it. Add a new rule

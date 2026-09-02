@@ -4,7 +4,7 @@ using Base.UtilityPackage.Logging;
 using UnityEditor;
 using UnityEngine.Serialization;
 
-namespace Base.ToolPackage.Editor.AssetReserializer
+namespace Base.ToolsPackage.Editor.AssetReserializer
 {
     /// <summary>
     /// Rewrites assets on disk using the current serializer. This is what makes a

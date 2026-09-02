@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using Base.ToolPackage.Editor.CodebaseGraph.Scanning;
+using Base.ToolsPackage.Editor.CodebaseGraph.Scanning;
 using NUnit.Framework;
 
-namespace Base.ToolPackage.Editor.Tests
+namespace Base.ToolsPackage.Editor.Tests
 {
     /// <summary>
     /// Checks that the identifier count reads code and only code. It is the entire evidence for whether

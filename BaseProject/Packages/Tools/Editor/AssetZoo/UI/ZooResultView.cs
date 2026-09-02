@@ -1,9 +1,9 @@
-using Base.EditorUiPackage;
-using Base.ToolPackage.Editor.AssetZoo.Generation;
+using Base.EditorUIPackage.Editor;
+using Base.ToolsPackage.Editor.AssetZoo.Generation;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.AssetZoo.UI
+namespace Base.ToolsPackage.Editor.AssetZoo.UI
 {
     /// <summary>
     /// Draws the outcome of the last auto generation run as a card: an icon for how it went, the one

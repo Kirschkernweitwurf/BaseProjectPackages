@@ -1,9 +1,9 @@
-using Base.AttributePackage;
+using Base.AttributesPackage;
 using Base.UtilityPackage;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Base.ServicePackage
+namespace Base.ServicesPackage
 {
     /// <summary>
     /// Instantiates the manager prefabs a scene needs: persistent managers once per session, scene managers

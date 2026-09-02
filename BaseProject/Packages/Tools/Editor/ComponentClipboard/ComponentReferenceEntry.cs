@@ -3,7 +3,7 @@ using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Base.ToolPackage.Editor.ComponentClipboard
+namespace Base.ToolsPackage.Editor.ComponentClipboard
 {
     /// <summary>
     /// One object reference of a captured component, stored as a <see cref="GlobalObjectId"/> string.

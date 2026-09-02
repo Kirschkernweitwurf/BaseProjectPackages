@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
-using Base.ToolPackage.Editor.AudioRules.Data;
+using Base.ToolsPackage.Editor.AudioRules.Data;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Base.ToolPackage.Editor.AudioRules.Window
+namespace Base.ToolsPackage.Editor.AudioRules.Window
 {
     /// <summary>
     /// Edits the selected rule as what it is: a list of conditions and a list of settings. The

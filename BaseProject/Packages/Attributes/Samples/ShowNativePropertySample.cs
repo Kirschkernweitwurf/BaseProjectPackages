@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A property shown as a read-only row.</summary>
     [AttributeSample(typeof(ShowNativePropertyAttribute), EAttributeCategory.Callbacks,

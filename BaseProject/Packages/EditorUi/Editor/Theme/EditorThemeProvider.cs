@@ -1,7 +1,7 @@
 using UnityEditor;
 using UnityEditorInternal;
 
-namespace Base.EditorUiPackage
+namespace Base.EditorUIPackage.Editor
 {
     /// <summary>
     /// The one place the active look is read from. <see cref="EditorPalette"/>,

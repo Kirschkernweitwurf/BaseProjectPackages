@@ -1,12 +1,12 @@
 using System.IO;
-using Base.ToolPackage.Editor.AudioRules.Apply;
-using Base.ToolPackage.Editor.AudioRules.Data;
-using Base.ToolPackage.Editor.AudioRules.Model;
-using Base.ToolPackage.Editor.AudioRules.Scanning;
+using Base.ToolsPackage.Editor.AudioRules.Apply;
+using Base.ToolsPackage.Editor.AudioRules.Data;
+using Base.ToolsPackage.Editor.AudioRules.Model;
+using Base.ToolsPackage.Editor.AudioRules.Scanning;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.AudioRules.Import
+namespace Base.ToolsPackage.Editor.AudioRules.Import
 {
     /// <summary>
     /// Applies the rules while clips are imported, so a file dropped into the project arrives

@@ -1,4 +1,4 @@
-namespace Base.ToolPackage.Editor.AudioRules.Model
+namespace Base.ToolsPackage.Editor.AudioRules.Model
 {
     /// <summary>
     /// Something the deep analysis found in the sample data itself. These are content problems, so

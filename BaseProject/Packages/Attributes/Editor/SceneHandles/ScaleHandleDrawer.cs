@@ -1,7 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.SceneHandles
+namespace Base.AttributesPackage.Editor.SceneHandles
 {
     /// <summary>Draws a scale gizmo for <see cref="ScaleHandleAttribute"/>.</summary>
     internal sealed class ScaleHandleDrawer : HandleDrawer<ScaleHandleAttribute>

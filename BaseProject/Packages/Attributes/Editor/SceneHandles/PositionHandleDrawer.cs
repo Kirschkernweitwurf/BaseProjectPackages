@@ -1,7 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.SceneHandles
+namespace Base.AttributesPackage.Editor.SceneHandles
 {
     /// <summary>Draws a movable position gizmo for <see cref="PositionHandleAttribute"/>.</summary>
     internal sealed class PositionHandleDrawer : HandleDrawer<PositionHandleAttribute>

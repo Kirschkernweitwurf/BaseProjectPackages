@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A reference required only under a condition.</summary>
     [AttributeSample(typeof(RequiredIfAttribute), EAttributeCategory.Validation,

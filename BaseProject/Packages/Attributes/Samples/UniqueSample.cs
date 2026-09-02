@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A collection whose entries have to differ.</summary>
     [AttributeSample(typeof(UniqueAttribute), EAttributeCategory.Validation,

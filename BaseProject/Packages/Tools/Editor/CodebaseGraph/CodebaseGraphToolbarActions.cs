@@ -1,6 +1,6 @@
 using System;
 
-namespace Base.ToolPackage.Editor.CodebaseGraph
+namespace Base.ToolsPackage.Editor.CodebaseGraph
 {
     /// <summary>
     /// What the toolbar can ask the window to do. Gathered into one object because a control row that

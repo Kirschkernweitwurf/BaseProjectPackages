@@ -1,8 +1,8 @@
 {
   "name": "com.baseprojectpackages.localization",
-  "displayName": "Base Localization Package",
+  "displayName": "Base Localization",
   "description": "Editor tooling for syncing Unity String Table Collections with Google Sheets. Adds one-click Pull and Push for single or all collections through menu items and a dedicated sync window, with up-front validation, progress reporting and per-collection success or failure logging.",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "unity": "6000.3",
   "license": "SEE LICENSE IN LICENSE.md",
   "licensesUrl": "https://polyformproject.org/licenses/shield/1.0.0",

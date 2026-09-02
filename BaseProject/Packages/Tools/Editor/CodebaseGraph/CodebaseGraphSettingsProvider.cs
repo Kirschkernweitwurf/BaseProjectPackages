@@ -1,9 +1,9 @@
 using System.Collections.Generic;
-using Base.EditorUiPackage;
-using Base.ToolPackage.Editor.BaseToolsOverview;
+using Base.EditorUIPackage.Editor;
+using Base.ToolsPackage.Editor.BaseToolsOverview;
 using UnityEditor;
 
-namespace Base.ToolPackage.Editor.CodebaseGraph
+namespace Base.ToolsPackage.Editor.CodebaseGraph
 {
     /// <summary>
     /// Exposes the Codebase Graph ignore list in the project settings, so third party code under Assets

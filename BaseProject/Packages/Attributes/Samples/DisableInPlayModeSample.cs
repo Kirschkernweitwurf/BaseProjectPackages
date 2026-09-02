@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A field locked while playing.</summary>
     [AttributeSample(typeof(DisableInPlayModeAttribute), EAttributeCategory.Conditions,

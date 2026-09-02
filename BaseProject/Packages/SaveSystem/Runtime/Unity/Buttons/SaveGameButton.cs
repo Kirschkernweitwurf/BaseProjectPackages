@@ -1,5 +1,5 @@
 using System.Threading;
-using Base.AttributePackage;
+using Base.AttributesPackage;
 using Base.SaveSystemPackage.Model;
 using Base.SaveSystemPackage.Slots;
 using Base.SaveSystemPackage.Unity.Composition;

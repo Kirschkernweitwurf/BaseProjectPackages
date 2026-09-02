@@ -1,6 +1,6 @@
 using UnityEditor;
 
-namespace Base.AttributePackage.Editor.Collections
+namespace Base.AttributesPackage.Editor.Collections
 {
     /// <summary>
     /// Shared metrics, labels and small controls for the list and table renderers, so both look and

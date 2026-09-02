@@ -1,11 +1,11 @@
-using Base.AttributePackage.Editor.Core;
+using Base.AttributesPackage.Editor.Core;
 using Base.UtilityPackage.Editor;
 using Base.UtilityPackage.Editor.Serialization;
 using Base.UtilityPackage.Serialization;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Drawers
+namespace Base.AttributesPackage.Editor.Drawers
 {
     /// <summary>
     /// Draws a tick count as a signed duration row for <see cref="TimeAttribute"/>.

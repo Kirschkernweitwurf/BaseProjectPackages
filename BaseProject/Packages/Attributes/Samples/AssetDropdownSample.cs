@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A reference picked from a flat list of assets.</summary>
     [AttributeSample(typeof(AssetDropdownAttribute), EAttributeCategory.Pickers,

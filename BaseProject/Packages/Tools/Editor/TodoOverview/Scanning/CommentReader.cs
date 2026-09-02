@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Base.ToolPackage.Editor.TodoOverview.Scanning
+namespace Base.ToolsPackage.Editor.TodoOverview.Scanning
 {
     /// <summary>
     /// Lifts the comments out of a source file and leaves everything else behind.

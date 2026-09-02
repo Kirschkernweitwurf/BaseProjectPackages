@@ -1,4 +1,4 @@
-namespace Base.ToolPackage.Editor.NamingConventions.Window
+namespace Base.ToolsPackage.Editor.NamingConventions.Window
 {
     /// <summary>How the scan results are grouped and ordered.</summary>
     internal enum EAssetNamingSort : byte

@@ -1,9 +1,9 @@
 using System.Collections.Generic;
-using Base.AttributePackage;
+using Base.AttributesPackage;
 using Base.UtilityPackage.Menus;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.AssetZoo.Config
+namespace Base.ToolsPackage.Editor.AssetZoo.Config
 {
     /// <summary>
     /// Author-time configuration for an asset zoo. Create one or more of these as

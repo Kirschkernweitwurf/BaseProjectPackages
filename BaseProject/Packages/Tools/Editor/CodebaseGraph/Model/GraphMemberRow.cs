@@ -1,4 +1,4 @@
-namespace Base.ToolPackage.Editor.CodebaseGraph.Model
+namespace Base.ToolsPackage.Editor.CodebaseGraph.Model
 {
     /// <summary>One line of a type node's member list, so a class on the graph reads like a class.</summary>
     internal sealed class GraphMemberRow

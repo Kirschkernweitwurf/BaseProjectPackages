@@ -1,6 +1,6 @@
 using System;
 
-namespace Base.ToolPackage.Editor.PlayModeApplier
+namespace Base.ToolsPackage.Editor.PlayModeApplier
 {
     /// <summary>
     /// Records what the Play Mode Saver did since the last play session.

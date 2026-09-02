@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
-using Base.ToolPackage.Editor.Shared;
+using Base.ToolsPackage.Editor.Shared;
 using UnityEditor.Compilation;
 using Assembly = System.Reflection.Assembly;
 
-namespace Base.ToolPackage.Editor.CommandPalette
+namespace Base.ToolsPackage.Editor.CommandPalette
 {
     /// <summary>
     /// Classifies where a type's code lives by looking at its assembly instead of its script

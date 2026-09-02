@@ -2,7 +2,7 @@ using Base.UtilityPackage.Editor;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Drawers
+namespace Base.AttributesPackage.Editor.Drawers
 {
     /// <summary>
     /// Shared base for drawers that fall back to the plain field and explain the problem in a compact

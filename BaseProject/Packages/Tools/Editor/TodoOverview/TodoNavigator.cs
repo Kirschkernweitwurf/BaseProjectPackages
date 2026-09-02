@@ -1,10 +1,10 @@
-using Base.ToolPackage.Editor.TodoOverview.Model;
-using Base.ToolPackage.Editor.TodoOverview.Scanning;
+using Base.ToolsPackage.Editor.TodoOverview.Model;
+using Base.ToolsPackage.Editor.TodoOverview.Scanning;
 using UnityEditor;
 using UnityEditorInternal;
 using Object = UnityEngine.Object;
 
-namespace Base.ToolPackage.Editor.TodoOverview
+namespace Base.ToolsPackage.Editor.TodoOverview
 {
     /// <summary>
     /// Opens the file an item sits in at the exact line and column of its keyword. A file the asset

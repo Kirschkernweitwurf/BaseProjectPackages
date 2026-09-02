@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>Consecutive fields placed on one row.</summary>
     [AttributeSample(typeof(HorizontalAttribute), EAttributeCategory.Layout,

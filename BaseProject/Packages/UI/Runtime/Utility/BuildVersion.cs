@@ -1,5 +1,5 @@
 using System.IO;
-using Base.AttributePackage;
+using Base.AttributesPackage;
 using Base.UtilityPackage;
 using TMPro;
 using UnityEngine;

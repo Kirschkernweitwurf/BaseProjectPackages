@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
-using Base.EditorUiPackage;
+using Base.EditorUIPackage.Editor;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
+namespace Base.AttributesPackage.Editor.Windows.RequiredReferenceWindow
 {
     /// <summary>Renders the grouped list of issues. Returns the object a click targeted.</summary>
     internal static class RequiredReferenceView

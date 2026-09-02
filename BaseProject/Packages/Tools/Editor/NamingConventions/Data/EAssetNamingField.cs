@@ -1,4 +1,4 @@
-namespace Base.ToolPackage.Editor.NamingConventions.Data
+namespace Base.ToolsPackage.Editor.NamingConventions.Data
 {
     /// <summary>
     /// One editable field of a rule. Used to remember which fields a person changed by hand, so

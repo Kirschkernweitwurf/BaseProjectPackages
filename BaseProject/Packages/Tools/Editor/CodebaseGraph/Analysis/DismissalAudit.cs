@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using Base.ToolPackage.Editor.CodebaseGraph.Model;
+using Base.ToolsPackage.Editor.CodebaseGraph.Model;
 
-namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
+namespace Base.ToolsPackage.Editor.CodebaseGraph.Analysis
 {
     /// <summary>
     /// Checks stored dismissals against the graph. An id embeds both the signature and the finding it

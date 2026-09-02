@@ -1,7 +1,7 @@
 using System;
 using UnityEditor;
 
-namespace Base.AttributePackage.Editor.Core
+namespace Base.AttributesPackage.Editor.Core
 {
     /// <summary>
     /// The guard every auto-getter shares: only fill an object reference that is empty, only on a single

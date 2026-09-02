@@ -1,9 +1,9 @@
-using Base.AttributePackage;
+using Base.AttributesPackage;
 using Base.UtilityPackage.Menus;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-namespace Base.ToolPackage.LightingProfileApplier
+namespace Base.ToolsPackage.LightingProfileApplier
 {
     /// <summary>
     /// Stores the render settings of a scene so they can be applied without making that scene the active one.

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A normalized value shown as a percentage.</summary>
     [AttributeSample(typeof(PercentageAttribute), EAttributeCategory.Widgets,

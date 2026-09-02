@@ -1,8 +1,8 @@
 using System;
-using Base.ToolPackage.Editor.AudioRules.Model;
+using Base.ToolsPackage.Editor.AudioRules.Model;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.AudioRules.Window
+namespace Base.ToolsPackage.Editor.AudioRules.Window
 {
     /// <summary>
     /// Turns the numbers behind a plan into the short strings the table shows. Kept apart from the

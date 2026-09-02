@@ -1,7 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.SceneHandles
+namespace Base.AttributesPackage.Editor.SceneHandles
 {
     /// <summary>Draws a non-interactive wire circle for <see cref="DrawWireDiscAttribute"/>.</summary>
     internal sealed class DrawWireDiscDrawer : HandleDrawer<DrawWireDiscAttribute>

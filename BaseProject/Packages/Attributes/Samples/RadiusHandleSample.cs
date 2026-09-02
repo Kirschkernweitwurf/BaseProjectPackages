@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A radius edited with a ring handle.</summary>
     [AttributeSample(typeof(RadiusHandleAttribute), EAttributeCategory.Widgets,

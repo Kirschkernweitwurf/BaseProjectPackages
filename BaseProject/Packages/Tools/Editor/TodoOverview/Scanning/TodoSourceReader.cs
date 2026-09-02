@@ -3,7 +3,7 @@ using UnityEditor;
 using UnityEngine;
 using PackageInfo = UnityEditor.PackageManager.PackageInfo;
 
-namespace Base.ToolPackage.Editor.TodoOverview.Scanning
+namespace Base.ToolsPackage.Editor.TodoOverview.Scanning
 {
     /// <summary>
     /// Reads the text of a source file and finds the real file behind a project relative path.

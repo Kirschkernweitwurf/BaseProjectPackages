@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.AssetZoo.Config
+namespace Base.ToolsPackage.Editor.AssetZoo.Config
 {
     /// <summary>
     /// All settings related to how prefabs are arranged in space.

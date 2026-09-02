@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
-using Base.ToolPackage.Editor.CodebaseGraph.Analysis;
-using Base.ToolPackage.Editor.CodebaseGraph.Editing;
-using Base.ToolPackage.Editor.CodebaseGraph.Model;
+using Base.ToolsPackage.Editor.CodebaseGraph.Analysis;
+using Base.ToolsPackage.Editor.CodebaseGraph.Editing;
+using Base.ToolsPackage.Editor.CodebaseGraph.Model;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
 
-namespace Base.ToolPackage.Editor.CodebaseGraph
+namespace Base.ToolsPackage.Editor.CodebaseGraph
 {
     /// <summary>
     /// The findings as a plain list, worst first, with nothing else on screen. The graph is for

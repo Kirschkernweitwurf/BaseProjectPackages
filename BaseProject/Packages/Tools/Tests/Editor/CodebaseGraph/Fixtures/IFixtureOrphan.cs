@@ -1,4 +1,4 @@
-namespace Base.ToolPackage.Editor.Tests.Fixtures
+namespace Base.ToolsPackage.Editor.Tests.Fixtures
 {
     /// <summary>
     /// A contract nothing implements. It sits on its own interface rather than alongside the implemented

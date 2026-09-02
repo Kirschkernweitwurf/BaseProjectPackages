@@ -1,6 +1,6 @@
 using System;
 
-namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
+namespace Base.ToolsPackage.Editor.CodebaseGraph.Scanning
 {
     /// <summary>
     /// Reports progress from inside one phase of the scan and carries the answer back. A long loop that

@@ -1,6 +1,6 @@
 using System;
 
-namespace Base.AttributePackage.Editor.Core
+namespace Base.AttributesPackage.Editor.Core
 {
     /// <summary>
     /// Builds display names and usage messages for attributes from their type, so UI strings survive

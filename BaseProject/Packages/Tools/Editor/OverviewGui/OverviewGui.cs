@@ -1,9 +1,9 @@
-using Base.EditorUiPackage;
+using Base.EditorUIPackage.Editor;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Base.ToolPackage.Editor.OverviewGui
+namespace Base.ToolsPackage.Editor.OverviewGui
 {
     /// <summary>
     /// Shared styles and layout blocks for the project health overview windows, so that the

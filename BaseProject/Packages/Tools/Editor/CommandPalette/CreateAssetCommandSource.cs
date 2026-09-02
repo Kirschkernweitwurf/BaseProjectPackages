@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Base.ToolPackage.Editor.MenuManagerWindows;
+using Base.ToolsPackage.Editor.MenuManagerWindows;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.CommandPalette
+namespace Base.ToolsPackage.Editor.CommandPalette
 {
     /// <summary>
     /// Collects every type marked with <see cref="CreateAssetMenuAttribute"/>. The command builds

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.CommandPalette
+namespace Base.ToolsPackage.Editor.CommandPalette
 {
     /// <summary>
     /// The hint bar at the bottom of the palette: what the keys do on the left, a short status on

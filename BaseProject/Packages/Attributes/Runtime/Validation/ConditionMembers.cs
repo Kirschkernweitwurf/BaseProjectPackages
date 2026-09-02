@@ -1,7 +1,7 @@
 using System;
 using System.Reflection;
 
-namespace Base.AttributePackage
+namespace Base.AttributesPackage
 {
     /// <summary>
     /// Evaluates named bool members against a live instance through reflection. Used by validation

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using Base.AttributePackage;
+using Base.AttributesPackage;
 using Base.CorePackage.MenuManaging;
 using Base.UtilityPackage.Logging;
 using TMPro;

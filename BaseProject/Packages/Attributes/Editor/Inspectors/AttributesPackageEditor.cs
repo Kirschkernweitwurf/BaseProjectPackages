@@ -1,15 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Base.AttributePackage.Editor.Core;
-using Base.AttributePackage.Editor.Drawers;
+using Base.AttributesPackage.Editor.Core;
+using Base.AttributesPackage.Editor.Drawers;
 using Base.UtilityPackage.Editor;
 using UnityEditor;
 
-namespace Base.AttributePackage.Editor.Inspectors
+namespace Base.AttributesPackage.Editor.Inspectors
 {
     /// <summary>
-    /// Base inspector for the attribute package. Handles the serialized script field, foldout and
+    /// Base inspector for the Attributes package. Handles the serialized script field, foldout and
     /// collapsible title grouping, then delegates each member to <see cref="MemberRenderer"/> and the
     /// handler pipeline. Tab groups are drawn by <see cref="TabGroupRenderer"/>, read-only native
     /// members and buttons by their renderers. Header buttons are not drawn from here: Unity does not
@@ -22,7 +22,7 @@ namespace Base.AttributePackage.Editor.Inspectors
     /// whole project rather than the types that asked for the attributes.
     /// </para>
     /// </summary>
-    public abstract class AttributePackageEditor : UnityEditor.Editor
+    public abstract class AttributesPackageEditor : UnityEditor.Editor
     {
         private string _activeFoldout;
         private bool _foldoutExpanded = true;

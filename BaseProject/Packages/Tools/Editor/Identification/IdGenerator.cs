@@ -5,7 +5,7 @@ using Base.UtilityPackage.Menus;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.Identification
+namespace Base.ToolsPackage.Editor.Identification
 {
     /// <summary>
     /// Editor utility to generate unique IDs for all

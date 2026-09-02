@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A number clamped to a range, without a slider.</summary>
     [AttributeSample(typeof(MinMaxAttribute), EAttributeCategory.Validation,

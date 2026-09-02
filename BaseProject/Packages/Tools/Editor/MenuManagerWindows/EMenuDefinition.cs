@@ -1,4 +1,4 @@
-namespace Base.ToolPackage.Editor.MenuManagerWindows
+namespace Base.ToolsPackage.Editor.MenuManagerWindows
 {
     /// <summary>How a menu entry gets its place in the editor menus.</summary>
     internal enum EMenuDefinition : byte

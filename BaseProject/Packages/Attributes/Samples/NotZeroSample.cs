@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A number that refuses to sit on zero.</summary>
     [AttributeSample(typeof(NotZeroAttribute), EAttributeCategory.Validation,

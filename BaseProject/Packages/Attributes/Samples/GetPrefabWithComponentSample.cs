@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A reference filled with a prefab carrying a component.</summary>
     [AttributeSample(typeof(GetPrefabWithComponentAttribute), EAttributeCategory.References,

@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Reflection;
-using Base.AttributePackage.Editor.Core.Interfaces;
+using Base.AttributesPackage.Editor.Core.Interfaces;
 using UnityEditor;
 
-namespace Base.AttributePackage.Editor.Handlers
+namespace Base.AttributesPackage.Editor.Handlers
 {
     /// <summary>
     /// Detects element count changes on <see cref="OnArraySizeChangedAttribute"/> fields and invokes the

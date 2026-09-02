@@ -1,7 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.EditorUiPackage
+namespace Base.EditorUIPackage.Editor
 {
     /// <summary>
     /// Draws the editable body of a theme: the colors of both editor themes, the layout metrics and the
@@ -20,7 +20,7 @@ namespace Base.EditorUiPackage
     {
         private const string DarkLabel = "Dark Editor Colors";
         private const string DarkTooltip = "Used while Unity's Editor Theme is set to Dark.";
-        private const string FoldoutKeyPrefix = "Base.EditorUi.Theme.Section.";
+        private const string FoldoutKeyPrefix = "Base.EditorUI.Theme.Section.";
         private const string LightLabel = "Light Editor Colors";
         private const string LightTooltip = "Used while Unity's Editor Theme is set to Light.";
         private const string MetricsLabel = "Layout";

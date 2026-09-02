@@ -3,7 +3,7 @@ using Base.UtilityPackage.Logging;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.MenuManagerWindows
+namespace Base.ToolsPackage.Editor.MenuManagerWindows
 {
     /// <summary>
     /// Creates a ScriptableObject asset the way Unity's own create menu does, including the inline

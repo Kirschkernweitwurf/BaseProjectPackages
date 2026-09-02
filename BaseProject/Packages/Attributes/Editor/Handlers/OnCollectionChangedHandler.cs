@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Reflection;
-using Base.AttributePackage.Editor.Core.Interfaces;
+using Base.AttributesPackage.Editor.Core.Interfaces;
 using UnityEditor;
 
-namespace Base.AttributePackage.Editor.Handlers
+namespace Base.AttributesPackage.Editor.Handlers
 {
     /// <summary>
     /// Calls the before and after methods of <see cref="OnCollectionChangedAttribute"/> around a change

@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Base.ToolPackage.Editor.MenuManagerWindows;
+using Base.ToolsPackage.Editor.MenuManagerWindows;
 using Base.UtilityPackage.Logging;
 using UnityEditor;
 
-namespace Base.ToolPackage.Editor.CommandPalette
+namespace Base.ToolsPackage.Editor.CommandPalette
 {
     /// <summary>
     /// Collects the pages of the project settings and the preferences. They are the one corner of

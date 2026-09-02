@@ -1,4 +1,4 @@
-namespace Base.ToolPackage.Editor.FolderConventionValidator
+namespace Base.ToolsPackage.Editor.FolderConventionValidator
 {
     /// <summary>Kind of folder rule that was broken.</summary>
     internal enum EFolderViolationType : byte

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Base.AttributePackage.Editor.Collections
+namespace Base.AttributesPackage.Editor.Collections
 {
     /// <summary>
     /// What a reorderable list needs to know about the field it is drawing, refreshed on every draw.

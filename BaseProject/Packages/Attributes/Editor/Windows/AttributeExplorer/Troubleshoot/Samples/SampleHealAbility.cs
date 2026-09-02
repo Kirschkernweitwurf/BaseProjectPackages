@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot.Samples
+namespace Base.AttributesPackage.Editor.Windows.AttributeExplorer.Troubleshoot.Samples
 {
     /// <summary>
     /// Second implementation of <see cref="ISampleAbility"/>, so the reference picker in the showcase has

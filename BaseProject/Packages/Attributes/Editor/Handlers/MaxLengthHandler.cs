@@ -1,7 +1,7 @@
-using Base.AttributePackage.Editor.Core.Interfaces;
+using Base.AttributesPackage.Editor.Core.Interfaces;
 using UnityEditor;
 
-namespace Base.AttributePackage.Editor.Handlers
+namespace Base.AttributesPackage.Editor.Handlers
 {
     /// <summary>Trims <see cref="MaxLengthAttribute"/> string fields to the allowed length.</summary>
     internal sealed class MaxLengthHandler : IAfterFieldHandler

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.AssetZoo.Alignment
+namespace Base.ToolsPackage.Editor.AssetZoo.Alignment
 {
     /// <summary>
     /// Bounds center sits on the slot. Best for floating items.

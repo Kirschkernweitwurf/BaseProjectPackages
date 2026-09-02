@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A nested type drawn on one row instead of behind a foldout.</summary>
     [AttributeSample(typeof(InlinePropertyAttribute), EAttributeCategory.Layout,

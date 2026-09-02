@@ -3,7 +3,7 @@ using System.IO;
 using System.Text;
 using UnityEditor;
 
-namespace Base.ToolPackage.Editor.UnityConstants
+namespace Base.ToolsPackage.Editor.UnityConstants
 {
     /// <summary>
     /// Shared helper code for the Tags and Layers generators.

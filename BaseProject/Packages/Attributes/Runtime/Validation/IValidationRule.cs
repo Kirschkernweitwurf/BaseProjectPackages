@@ -1,6 +1,6 @@
 using System.Reflection;
 
-namespace Base.AttributePackage
+namespace Base.AttributesPackage
 {
     /// <summary>
     /// A single validation check for a serialized field. Implement this interface anywhere and the

@@ -1,4 +1,4 @@
-namespace Base.ToolPackage.Editor.AssetZoo.Config
+namespace Base.ToolsPackage.Editor.AssetZoo.Config
 {
     /// <summary>
     /// The direction in which to expand a category when adding new items.

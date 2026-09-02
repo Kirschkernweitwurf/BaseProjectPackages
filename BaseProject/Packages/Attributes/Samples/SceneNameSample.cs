@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A string picked from the scenes in the build.</summary>
     [AttributeSample(typeof(SceneNameAttribute), EAttributeCategory.Pickers,

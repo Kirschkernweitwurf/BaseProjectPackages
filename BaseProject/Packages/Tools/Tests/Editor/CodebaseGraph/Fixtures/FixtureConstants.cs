@@ -1,4 +1,4 @@
-namespace Base.ToolPackage.Editor.Tests.Fixtures
+namespace Base.ToolsPackage.Editor.Tests.Fixtures
 {
     /// <summary>
     /// Constants read from another file. The compiler inlines their values at every call site, so no

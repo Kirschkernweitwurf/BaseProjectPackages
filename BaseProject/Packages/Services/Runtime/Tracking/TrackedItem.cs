@@ -1,4 +1,4 @@
-namespace Base.ServicePackage.Tracking
+namespace Base.ServicesPackage.Tracking
 {
     /// <summary>
     /// A single tracked item together with its priority and insertion order.

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A field editable only while playing.</summary>
     [AttributeSample(typeof(EnableInPlayModeAttribute), EAttributeCategory.Conditions,

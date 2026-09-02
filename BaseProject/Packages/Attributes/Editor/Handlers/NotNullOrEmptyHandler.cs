@@ -1,8 +1,8 @@
-using Base.AttributePackage.Editor.Core.Interfaces;
-using Base.AttributePackage.Editor.Drawers;
+using Base.AttributesPackage.Editor.Core.Interfaces;
+using Base.AttributesPackage.Editor.Drawers;
 using UnityEditor;
 
-namespace Base.AttributePackage.Editor.Handlers
+namespace Base.AttributesPackage.Editor.Handlers
 {
     /// <summary>Shows a compact error when a <see cref="NotNullOrEmptyAttribute"/> value is null or empty.</summary>
     internal sealed class NotNullOrEmptyHandler : IAfterFieldHandler

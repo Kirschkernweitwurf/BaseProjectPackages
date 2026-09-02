@@ -1,4 +1,4 @@
-namespace Base.ToolPackage.Editor.CodebaseGraph.Model
+namespace Base.ToolsPackage.Editor.CodebaseGraph.Model
 {
     /// <summary>One entry that was dismissed during triage, in the shape the overview list draws.</summary>
     internal sealed class DismissalEntry

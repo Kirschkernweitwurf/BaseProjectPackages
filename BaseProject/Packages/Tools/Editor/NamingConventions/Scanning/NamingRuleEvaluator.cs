@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using Base.ToolPackage.Editor.NamingConventions.Data;
+using Base.ToolsPackage.Editor.NamingConventions.Data;
 using UnityEditor;
 
-namespace Base.ToolPackage.Editor.NamingConventions.Scanning
+namespace Base.ToolsPackage.Editor.NamingConventions.Scanning
 {
     /// <summary>
     /// Checks names against a rule and builds the replacement name for a fix. A required suffix

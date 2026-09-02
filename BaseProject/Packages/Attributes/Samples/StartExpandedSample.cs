@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A field that opens itself the first time it is seen.</summary>
     [AttributeSample(typeof(StartExpandedAttribute), EAttributeCategory.Layout,

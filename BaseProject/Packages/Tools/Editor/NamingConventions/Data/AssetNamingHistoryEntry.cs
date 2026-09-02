@@ -1,6 +1,6 @@
 using System;
 
-namespace Base.ToolPackage.Editor.NamingConventions.Data
+namespace Base.ToolsPackage.Editor.NamingConventions.Data
 {
     /// <summary>One thing the tool did. Serialized into the history file, so fields are public.</summary>
     [Serializable]

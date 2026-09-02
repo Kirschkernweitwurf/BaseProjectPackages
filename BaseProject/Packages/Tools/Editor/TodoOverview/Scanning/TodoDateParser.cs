@@ -1,8 +1,8 @@
 using System;
 using System.Globalization;
-using Base.ToolPackage.Editor.TodoOverview.Model;
+using Base.ToolsPackage.Editor.TodoOverview.Model;
 
-namespace Base.ToolPackage.Editor.TodoOverview.Scanning
+namespace Base.ToolsPackage.Editor.TodoOverview.Scanning
 {
     /// <summary>
     /// Turns the date written into a comment into a real date, and says whether it has passed.

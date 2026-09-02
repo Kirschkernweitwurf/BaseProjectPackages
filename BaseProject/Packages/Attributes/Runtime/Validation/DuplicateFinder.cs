@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Object = UnityEngine.Object;
 
-namespace Base.AttributePackage
+namespace Base.AttributesPackage
 {
     /// <summary>
     /// Finds every duplicate group inside a list or array. A group holds all indices that share the same

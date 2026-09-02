@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
-using Base.AttributePackage;
+using Base.AttributesPackage;
 using Base.CorePackage.MenuManaging.Identifier;
 using Base.CorePackage.MenuManaging.Modules;
-using Base.ServicePackage;
-using Base.ServicePackage.Shutdown;
-using Base.ServicePackage.Tracking;
+using Base.ServicesPackage;
+using Base.ServicesPackage.Shutdown;
+using Base.ServicesPackage.Tracking;
 using Base.TweeningPackage.Components.System;
 using Base.UtilityPackage.Logging;
 using UnityEngine;

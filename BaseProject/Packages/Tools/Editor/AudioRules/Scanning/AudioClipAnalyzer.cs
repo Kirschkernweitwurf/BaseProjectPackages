@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
-using Base.ToolPackage.Editor.AudioRules.Data;
-using Base.ToolPackage.Editor.AudioRules.Model;
+using Base.ToolsPackage.Editor.AudioRules.Data;
+using Base.ToolsPackage.Editor.AudioRules.Model;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.AudioRules.Scanning
+namespace Base.ToolsPackage.Editor.AudioRules.Scanning
 {
     /// <summary>
     /// Reads the sample data of a clip and reports what is in it rather than what the importer was

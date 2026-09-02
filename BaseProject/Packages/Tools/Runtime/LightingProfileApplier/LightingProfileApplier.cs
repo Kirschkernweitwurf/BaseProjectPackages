@@ -1,7 +1,7 @@
-using Base.AttributePackage;
+using Base.AttributesPackage;
 using UnityEngine;
 
-namespace Base.ToolPackage.LightingProfileApplier
+namespace Base.ToolsPackage.LightingProfileApplier
 {
     /// <summary>
     /// Applies a lighting profile as soon as the scene holding this component is loaded.

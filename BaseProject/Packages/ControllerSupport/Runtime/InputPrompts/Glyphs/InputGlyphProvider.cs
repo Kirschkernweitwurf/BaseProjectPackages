@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using Base.AttributePackage;
+using Base.AttributesPackage;
 using Base.ControllerSupportPackage.InputPrompts.Devices;
-using Base.ServicePackage;
+using Base.ServicesPackage;
 using Base.UtilityPackage.Logging;
 using UnityEngine;
 using UnityEngine.InputSystem;

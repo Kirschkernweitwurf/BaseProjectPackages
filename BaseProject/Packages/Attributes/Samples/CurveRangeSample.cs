@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>An animation curve locked to a box.</summary>
     [AttributeSample(typeof(CurveRangeAttribute), EAttributeCategory.Widgets,

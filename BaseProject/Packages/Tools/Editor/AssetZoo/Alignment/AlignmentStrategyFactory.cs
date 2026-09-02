@@ -1,7 +1,7 @@
-using Base.ToolPackage.Editor.AssetZoo.Config;
+using Base.ToolsPackage.Editor.AssetZoo.Config;
 using Base.UtilityPackage.Logging;
 
-namespace Base.ToolPackage.Editor.AssetZoo.Alignment
+namespace Base.ToolsPackage.Editor.AssetZoo.Alignment
 {
     /// <summary>
     /// A factory class for creating instances of <see cref="IAlignmentStrategy"/>

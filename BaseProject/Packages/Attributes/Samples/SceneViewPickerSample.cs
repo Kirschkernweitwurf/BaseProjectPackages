@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A reference picked by clicking the object in the Scene view.</summary>
     [AttributeSample(typeof(SceneViewPickerAttribute), EAttributeCategory.Pickers,

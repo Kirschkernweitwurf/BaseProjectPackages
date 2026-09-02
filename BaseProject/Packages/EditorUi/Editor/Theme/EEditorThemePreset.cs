@@ -1,4 +1,4 @@
-namespace Base.EditorUiPackage
+namespace Base.EditorUIPackage.Editor
 {
     /// <summary>
     /// The looks a theme can be started from.

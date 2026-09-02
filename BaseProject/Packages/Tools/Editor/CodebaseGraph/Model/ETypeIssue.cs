@@ -1,6 +1,6 @@
 using System;
 
-namespace Base.ToolPackage.Editor.CodebaseGraph.Model
+namespace Base.ToolsPackage.Editor.CodebaseGraph.Model
 {
     /// <summary>Findings the analyzer can report for a whole type.</summary>
     [Flags]

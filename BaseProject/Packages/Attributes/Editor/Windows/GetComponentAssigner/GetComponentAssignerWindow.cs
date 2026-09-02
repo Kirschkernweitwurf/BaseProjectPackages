@@ -1,9 +1,9 @@
-using Base.EditorUiPackage;
+using Base.EditorUIPackage.Editor;
 using Base.UtilityPackage.Menus;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Windows.GetComponentAssigner
+namespace Base.AttributesPackage.Editor.Windows.GetComponentAssigner
 {
     /// <summary>
     /// One-click tool that assigns every empty <see cref="GetComponentAttribute"/> and

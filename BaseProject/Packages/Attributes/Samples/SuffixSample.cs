@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A small label after the value, almost always a unit.</summary>
     [AttributeSample(typeof(SuffixAttribute), EAttributeCategory.Layout,

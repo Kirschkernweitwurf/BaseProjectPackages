@@ -5,7 +5,7 @@ using Base.UtilityPackage.Logging;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Base.ServicePackage
+namespace Base.ServicesPackage
 {
     /// <summary>
     /// A simple service locator for managing and accessing game services.
@@ -20,7 +20,7 @@ namespace Base.ServicePackage
         /// <remarks>
         /// A view onto the locator's own dictionary rather than a copy, so a tool reading it on a
         /// timer allocates nothing. Internal because it exists for the window in
-        /// <c>Base.ServicePackage.Editor</c> and nothing else: gameplay code resolves services
+        /// <c>Base.ServicesPackage.Editor</c> and nothing else: gameplay code resolves services
         /// through <see cref="TryGet{T}"/>, which reports a missing or destroyed entry and cleans
         /// it up, neither of which a read-only view can do.
         /// </remarks>

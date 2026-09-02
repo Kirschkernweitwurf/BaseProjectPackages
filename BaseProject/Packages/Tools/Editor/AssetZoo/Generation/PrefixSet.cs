@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Base.ToolPackage.Editor.AssetZoo.Generation
+namespace Base.ToolsPackage.Editor.AssetZoo.Generation
 {
     /// <summary>
     /// The naming prefixes one generation run works with, both the ones the user typed and the ones

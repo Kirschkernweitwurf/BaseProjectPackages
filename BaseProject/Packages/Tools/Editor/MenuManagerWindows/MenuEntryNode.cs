@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.MenuManagerWindows
+namespace Base.ToolsPackage.Editor.MenuManagerWindows
 {
     /// <summary>Leaf node wrapping a single managed entry.</summary>
     [Serializable]

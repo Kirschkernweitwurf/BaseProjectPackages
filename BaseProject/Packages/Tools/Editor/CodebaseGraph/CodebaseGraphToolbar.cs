@@ -1,10 +1,10 @@
 using System.Collections.Generic;
-using Base.ToolPackage.Editor.CodebaseGraph.Analysis;
-using Base.ToolPackage.Editor.CodebaseGraph.Model;
+using Base.ToolsPackage.Editor.CodebaseGraph.Analysis;
+using Base.ToolsPackage.Editor.CodebaseGraph.Model;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
 
-namespace Base.ToolPackage.Editor.CodebaseGraph
+namespace Base.ToolsPackage.Editor.CodebaseGraph
 {
     /// <summary>
     /// Every control that changes what the view shows. They were spread through the window alongside

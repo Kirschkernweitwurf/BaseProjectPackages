@@ -3,7 +3,7 @@ using Base.UtilityPackage;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.PlayModeApplier
+namespace Base.ToolsPackage.Editor.PlayModeApplier
 {
     /// <summary>
     /// Reconstructs the link between a runtime instantiated object and the prefab it came from.

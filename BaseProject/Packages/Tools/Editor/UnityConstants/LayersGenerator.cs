@@ -5,7 +5,7 @@ using Base.UtilityPackage.Menus;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.UnityConstants
+namespace Base.ToolsPackage.Editor.UnityConstants
 {
     /// <summary>
     /// Generates a class with all Unity Layers as const int indices (0-31)

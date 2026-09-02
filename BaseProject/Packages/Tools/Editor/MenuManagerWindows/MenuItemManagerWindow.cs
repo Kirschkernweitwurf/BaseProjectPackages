@@ -1,7 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.MenuManagerWindows
+namespace Base.ToolsPackage.Editor.MenuManagerWindows
 {
     /// <summary>Window to arrange dynamic menu item entries.</summary>
     internal sealed class MenuItemManagerWindow : MenuManagerWindowBase

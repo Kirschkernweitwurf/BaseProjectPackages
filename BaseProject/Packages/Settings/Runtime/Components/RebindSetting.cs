@@ -1,4 +1,4 @@
-using Base.AttributePackage;
+using Base.AttributesPackage;
 using Base.SettingsPackage.Controls;
 using Base.UtilityPackage.Identification;
 using Base.UtilityPackage.Logging;

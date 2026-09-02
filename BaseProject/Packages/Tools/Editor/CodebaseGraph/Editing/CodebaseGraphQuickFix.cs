@@ -1,7 +1,7 @@
-using Base.ToolPackage.Editor.CodebaseGraph.Model;
+using Base.ToolsPackage.Editor.CodebaseGraph.Model;
 using UnityEditor;
 
-namespace Base.ToolPackage.Editor.CodebaseGraph.Editing
+namespace Base.ToolsPackage.Editor.CodebaseGraph.Editing
 {
     /// <summary>
     /// Confirms a quick fix and applies it. The wording matters as much as the edit here, because the

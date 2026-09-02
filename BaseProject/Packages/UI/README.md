@@ -1,4 +1,4 @@
-# Base UI Package
+# Base UI
 
 Reusable UI building blocks: click-driven button components, an awaitable confirmation dialog and a set of small utility components, so the same UI systems drop into any project without rewriting them.
 
@@ -9,8 +9,8 @@ Code only. The ready-made button prefabs and UI sprites live in `Base.ContentPac
 - Unity `6000.3` or newer
 - `com.unity.ugui` `2.0.0` and TextMeshPro
 - `Base.CorePackage` for the `MenuManager`, menu identifiers and the `SceneLoadingManager`
-- `Base.ServicePackage` for `ServiceLocator` and `GameServiceBehaviour`
-- `Base.AttributePackage` for `[Required]`, `[GetComponent]`, `[NotNullOrEmpty]` and `[SceneName]`
+- `Base.ServicesPackage` for `ServiceLocator` and `GameServiceBehaviour`
+- `Base.AttributesPackage` for `[Required]`, `[GetComponent]`, `[NotNullOrEmpty]` and `[SceneName]`
 - `Base.UtilityPackage` for `CustomLogger` and `Platform`
 - Assemblies: `Base.UIPackage` and `Base.UIPackage.Editor`
 

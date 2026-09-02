@@ -1,11 +1,11 @@
 using System;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.AudioRules.Data
+namespace Base.ToolsPackage.Editor.AudioRules.Data
 {
     /// <summary>
     /// Optional. Tells the scanner where a clip's category and loop flag come from, so a rule can
-    /// use them as conditions. The tool package must not reference the package that owns the
+    /// use them as conditions. The Tools package must not reference the package that owns the
     /// containers, so the type and its fields are addressed by name and read through a
     /// <c>SerializedObject</c>. Without a binding everything still works, the category conditions
     /// simply never match.

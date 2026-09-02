@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 using Base.UtilityPackage;
 using UnityEditor;
 
-namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
+namespace Base.ToolsPackage.Editor.CodebaseGraph.Scanning
 {
     /// <summary>
     /// Maps types to the script file that declares them. MonoScript.GetClass only answers for the one

@@ -1,4 +1,4 @@
-namespace Base.ToolPackage.Editor.AssemblyGraph
+namespace Base.ToolsPackage.Editor.AssemblyGraph
 {
     /// <summary>Category of an assembly, used for filtering and cleanup permission.</summary>
     internal enum EAssemblyKind : byte

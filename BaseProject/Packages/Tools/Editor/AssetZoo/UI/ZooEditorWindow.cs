@@ -1,13 +1,13 @@
-using Base.EditorUiPackage;
-using Base.ToolPackage.Editor.AssetZoo.Builder;
-using Base.ToolPackage.Editor.AssetZoo.Config;
-using Base.ToolPackage.Editor.AssetZoo.Generation;
+using Base.EditorUIPackage.Editor;
+using Base.ToolsPackage.Editor.AssetZoo.Builder;
+using Base.ToolsPackage.Editor.AssetZoo.Config;
+using Base.ToolsPackage.Editor.AssetZoo.Generation;
 using Base.UtilityPackage.Editor;
 using Base.UtilityPackage.Menus;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.AssetZoo.UI
+namespace Base.ToolsPackage.Editor.AssetZoo.UI
 {
     /// <summary>
     /// Dockable window for quick zoo building. Tools &gt; Asset Zoo &gt; Open Zoo Builder.

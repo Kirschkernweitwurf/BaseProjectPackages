@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Base.ToolPackage.Editor.AssemblyGraph.Architecture
+namespace Base.ToolsPackage.Editor.AssemblyGraph.Architecture
 {
     /// <summary>
     /// One dependency between two assemblies, with the types that actually justify it. The declared

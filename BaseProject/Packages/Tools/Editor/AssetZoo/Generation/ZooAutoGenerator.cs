@@ -2,12 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Base.ToolPackage.Editor.AssetZoo.Config;
+using Base.ToolsPackage.Editor.AssetZoo.Config;
 using Base.UtilityPackage.Logging;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.AssetZoo.Generation
+namespace Base.ToolsPackage.Editor.AssetZoo.Generation
 {
     /// <summary>
     /// Scans a project folder and fills a <see cref="ZooConfig"/> with categories, derived from asset

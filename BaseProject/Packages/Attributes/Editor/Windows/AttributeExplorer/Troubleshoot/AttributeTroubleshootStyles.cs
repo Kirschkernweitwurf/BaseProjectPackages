@@ -1,8 +1,8 @@
-using Base.EditorUiPackage;
+using Base.EditorUIPackage.Editor;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot
+namespace Base.AttributesPackage.Editor.Windows.AttributeExplorer.Troubleshoot
 {
     /// <summary>
     /// Cached styles, colors and icons for the findings list. Pure presentation.

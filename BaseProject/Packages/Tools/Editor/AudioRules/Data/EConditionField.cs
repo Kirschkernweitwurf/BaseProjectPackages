@@ -1,4 +1,4 @@
-namespace Base.ToolPackage.Editor.AudioRules.Data
+namespace Base.ToolsPackage.Editor.AudioRules.Data
 {
     /// <summary>
     /// The fact about a clip a condition looks at. Numeric fields accept the comparison operators,

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using Base.ToolPackage.Editor.NamingConventions.Data;
+using Base.ToolsPackage.Editor.NamingConventions.Data;
 
-namespace Base.ToolPackage.Editor.NamingConventions.Window
+namespace Base.ToolsPackage.Editor.NamingConventions.Window
 {
     /// <summary>
     /// One collapsible group of scan results, for example a folder or a rule. A group with an

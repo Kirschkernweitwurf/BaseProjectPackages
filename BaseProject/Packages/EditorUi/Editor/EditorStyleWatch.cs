@@ -1,4 +1,4 @@
-namespace Base.EditorUiPackage
+namespace Base.EditorUIPackage.Editor
 {
     /// <summary>
     /// Tracks whether a cache of styles still matches the editor theme and the theme it was built for.

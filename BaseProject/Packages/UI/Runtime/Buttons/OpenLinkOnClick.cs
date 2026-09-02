@@ -1,4 +1,4 @@
-using Base.AttributePackage;
+using Base.AttributesPackage;
 using UnityEngine;
 
 namespace Base.UIPackage.Buttons

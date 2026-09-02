@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A string edited as a file path.</summary>
     [AttributeSample(typeof(FilePathAttribute), EAttributeCategory.Pickers,

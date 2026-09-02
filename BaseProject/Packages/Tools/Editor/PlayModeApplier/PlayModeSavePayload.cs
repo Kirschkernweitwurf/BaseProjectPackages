@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Base.ToolPackage.Editor.PlayModeApplier
+namespace Base.ToolsPackage.Editor.PlayModeApplier
 {
     /// <summary>
     /// Holds everything captured from one object at the moment play mode ends.

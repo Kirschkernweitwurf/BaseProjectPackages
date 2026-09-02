@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Base.AttributePackage.Editor
+namespace Base.AttributesPackage.Editor
 {
     /// <summary>
     /// Everything a handler needs about a single inspected member, passed by reference.

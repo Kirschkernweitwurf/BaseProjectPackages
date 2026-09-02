@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
-using Base.ToolPackage.Editor.TodoOverview.Model;
-using Base.ToolPackage.Editor.TodoOverview.Settings;
+using Base.ToolsPackage.Editor.TodoOverview.Model;
+using Base.ToolsPackage.Editor.TodoOverview.Settings;
 using UnityEditor;
 
-namespace Base.ToolPackage.Editor.TodoOverview.Scanning
+namespace Base.ToolsPackage.Editor.TodoOverview.Scanning
 {
     /// <summary>
     /// Runs one pass over the project and collects every item. Files are taken from the asset database

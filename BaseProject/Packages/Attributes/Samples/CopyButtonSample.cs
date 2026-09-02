@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A small button that copies the value.</summary>
     [AttributeSample(typeof(CopyButtonAttribute), EAttributeCategory.Widgets,

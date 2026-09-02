@@ -1,7 +1,7 @@
 using Base.UtilityPackage.Logging;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.AssetZoo.Builder
+namespace Base.ToolsPackage.Editor.AssetZoo.Builder
 {
     /// <summary>
     /// Computes a prefab's bounding box without instantiating it, by walking its

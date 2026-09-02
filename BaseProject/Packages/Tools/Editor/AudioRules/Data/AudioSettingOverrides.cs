@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
-using Base.ToolPackage.Editor.AudioRules.Model;
+using Base.ToolsPackage.Editor.AudioRules.Model;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.AudioRules.Data
+namespace Base.ToolsPackage.Editor.AudioRules.Data
 {
     /// <summary>
     /// The "then" half of a rule: the settings it writes and nothing else. A setting that is not

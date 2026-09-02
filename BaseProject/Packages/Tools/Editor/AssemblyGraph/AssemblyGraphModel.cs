@@ -4,7 +4,7 @@ using System.Reflection;
 using UnityEditor.Compilation;
 using Assembly = UnityEditor.Compilation.Assembly;
 
-namespace Base.ToolPackage.Editor.AssemblyGraph
+namespace Base.ToolsPackage.Editor.AssemblyGraph
 {
     /// <summary>Scans the project and builds the assembly graph data, including unused reference detection.</summary>
     internal static class AssemblyGraphModel

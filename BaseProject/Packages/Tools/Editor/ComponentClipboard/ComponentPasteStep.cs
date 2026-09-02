@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.ComponentClipboard
+namespace Base.ToolsPackage.Editor.ComponentClipboard
 {
     /// <summary>
     /// One planned paste of a single clipboard entry. Built by

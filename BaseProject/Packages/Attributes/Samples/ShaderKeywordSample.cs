@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A keyword picked from a material shader.</summary>
     [AttributeSample(typeof(ShaderKeywordAttribute), EAttributeCategory.Pickers,

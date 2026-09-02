@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A heading above a field.</summary>
     [AttributeSample(typeof(TitleAttribute), EAttributeCategory.Layout,

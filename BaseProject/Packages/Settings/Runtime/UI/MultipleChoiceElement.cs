@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Base.AttributePackage;
+using Base.AttributesPackage;
 using Base.SettingsPackage.Core;
 using Base.UtilityPackage;
 using Base.UtilityPackage.Pooling;

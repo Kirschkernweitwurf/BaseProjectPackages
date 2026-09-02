@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using Base.ToolPackage.Editor.AudioRules.Model;
+using Base.ToolsPackage.Editor.AudioRules.Model;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.AudioRules.Data
+namespace Base.ToolsPackage.Editor.AudioRules.Data
 {
     /// <summary>
     /// One rule: if every condition holds, write these settings. Rules cascade instead of stopping

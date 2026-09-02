@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>Fields split across named tabs.</summary>
     [AttributeSample(typeof(TabAttribute), EAttributeCategory.Layout,

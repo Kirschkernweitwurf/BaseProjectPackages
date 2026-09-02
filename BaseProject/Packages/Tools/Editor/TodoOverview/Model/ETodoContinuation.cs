@@ -1,4 +1,4 @@
-namespace Base.ToolPackage.Editor.TodoOverview.Model
+namespace Base.ToolsPackage.Editor.TodoOverview.Model
 {
     /// <summary>
     /// How far an item reaches past the line its keyword sits on. IDEs disagree here, so the rule is a

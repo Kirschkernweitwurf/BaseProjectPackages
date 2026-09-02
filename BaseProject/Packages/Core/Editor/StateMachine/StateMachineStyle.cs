@@ -1,4 +1,4 @@
-using Base.EditorUiPackage;
+using Base.EditorUIPackage.Editor;
 using UnityEngine.UIElements;
 
 namespace Base.CorePackage.Editor.StateMachine

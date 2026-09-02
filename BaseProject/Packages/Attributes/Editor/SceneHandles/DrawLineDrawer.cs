@@ -1,7 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.SceneHandles
+namespace Base.AttributesPackage.Editor.SceneHandles
 {
     /// <summary>Draws a connecting line for <see cref="DrawLineAttribute"/>.</summary>
     internal sealed class DrawLineDrawer : HandleDrawer<DrawLineAttribute>

@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Base.EditorUiPackage
+namespace Base.EditorUIPackage.Editor
 {
     /// <summary>
     /// The numbers and opacities that describe a list window specifically: the card it sits in, the

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A rotation edited with a rotate handle.</summary>
     [AttributeSample(typeof(RotationHandleAttribute), EAttributeCategory.Widgets,

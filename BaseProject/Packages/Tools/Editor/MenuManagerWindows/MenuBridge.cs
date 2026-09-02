@@ -3,7 +3,7 @@ using System.Reflection;
 using Base.UtilityPackage.Logging;
 using UnityEditor;
 
-namespace Base.ToolPackage.Editor.MenuManagerWindows
+namespace Base.ToolsPackage.Editor.MenuManagerWindows
 {
     /// <summary>Reflection bridge to Unity's internal dynamic menu API.</summary>
     internal static class MenuBridge

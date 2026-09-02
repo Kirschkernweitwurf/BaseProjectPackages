@@ -1,4 +1,4 @@
-namespace Base.ToolPackage.Editor.TodoOverview.Model
+namespace Base.ToolsPackage.Editor.TodoOverview.Model
 {
     /// <summary>
     /// Which notation a date is shown in, whatever notation it was written in. A project that lets

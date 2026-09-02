@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using Base.ToolPackage.Editor.CodebaseGraph.Model;
-using Base.ToolPackage.Editor.CodebaseGraph.Scanning;
+using Base.ToolsPackage.Editor.CodebaseGraph.Model;
+using Base.ToolsPackage.Editor.CodebaseGraph.Scanning;
 
-namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
+namespace Base.ToolsPackage.Editor.CodebaseGraph.Analysis
 {
     /// <summary>
     /// Turns a graph into a flat, ranked list of findings, one entry per finding rather than one per

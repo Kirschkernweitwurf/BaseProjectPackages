@@ -3,7 +3,7 @@ using Base.UtilityPackage;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Base.ServicePackage.Editor
+namespace Base.ServicesPackage.Editor
 {
     /// <summary>
     /// One row of the <see cref="ServiceLocatorWindow"/>: a snapshot of a single entry in the

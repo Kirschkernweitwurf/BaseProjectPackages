@@ -1,6 +1,6 @@
 using System;
 
-namespace Base.ToolPackage.Editor.BaseToolsOverview
+namespace Base.ToolsPackage.Editor.BaseToolsOverview
 {
     /// <summary>
     /// Optional one line description for a project settings page under Base Tools. Put it on the

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A shader property picked from a material.</summary>
     [AttributeSample(typeof(ShaderParamAttribute), EAttributeCategory.Pickers,

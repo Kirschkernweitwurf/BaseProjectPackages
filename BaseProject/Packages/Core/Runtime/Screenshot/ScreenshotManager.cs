@@ -1,8 +1,8 @@
 using System;
 using System.IO;
 using Base.CorePackage.Input;
-using Base.ServicePackage;
-using Base.ServicePackage.Shutdown;
+using Base.ServicesPackage;
+using Base.ServicesPackage.Shutdown;
 using Base.UtilityPackage.Logging;
 using UnityEngine;
 using UnityEngine.InputSystem;

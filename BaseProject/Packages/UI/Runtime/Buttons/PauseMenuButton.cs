@@ -1,8 +1,8 @@
-using Base.AttributePackage;
+using Base.AttributesPackage;
 using Base.CorePackage.MenuManaging;
 using Base.CorePackage.MenuManaging.Identifier;
 using Base.CorePackage.MenuManaging.Menus;
-using Base.ServicePackage;
+using Base.ServicesPackage;
 using UnityEngine;
 
 namespace Base.UIPackage.Buttons

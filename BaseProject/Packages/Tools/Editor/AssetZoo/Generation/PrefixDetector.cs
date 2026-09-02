@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Base.ToolPackage.Editor.AssetZoo.Generation
+namespace Base.ToolsPackage.Editor.AssetZoo.Generation
 {
     /// <summary>
     /// Decides which leading name parts are naming prefixes ("SM", "P", "VFX") and which are real group

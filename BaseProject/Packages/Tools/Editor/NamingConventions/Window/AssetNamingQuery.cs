@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Base.ToolPackage.Editor.NamingConventions.Data;
-using Base.ToolPackage.Editor.NamingConventions.Scanning;
+using Base.ToolsPackage.Editor.NamingConventions.Data;
+using Base.ToolsPackage.Editor.NamingConventions.Scanning;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.NamingConventions.Window
+namespace Base.ToolsPackage.Editor.NamingConventions.Window
 {
     /// <summary>
     /// Scan results of the asset naming window and everything that narrows them down: the search

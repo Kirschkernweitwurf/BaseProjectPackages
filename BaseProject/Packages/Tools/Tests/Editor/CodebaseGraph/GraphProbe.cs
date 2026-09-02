@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using Base.ToolPackage.Editor.CodebaseGraph.Model;
+using Base.ToolsPackage.Editor.CodebaseGraph.Model;
 
-namespace Base.ToolPackage.Editor.Tests
+namespace Base.ToolsPackage.Editor.Tests
 {
     /// <summary>
     /// Asks a scanned graph what it decided about one member. The tests read as statements about

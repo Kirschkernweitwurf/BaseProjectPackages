@@ -1,15 +1,15 @@
 using System;
-using Base.AttributePackage.Editor.Handlers;
-using Base.AttributePackage.Editor.Inspectors;
-using Base.EditorUiPackage;
+using Base.AttributesPackage.Editor.Handlers;
+using Base.AttributesPackage.Editor.Inspectors;
+using Base.EditorUIPackage.Editor;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Core
+namespace Base.AttributesPackage.Editor.Core
 {
     /// <summary>
     /// Shared drawing for <see cref="TitleAttribute"/>. Used by <see cref="TitleHandler"/> for plain
-    /// titles and by <see cref="AttributePackageEditor"/> for collapsible titles, so both look the same.
+    /// titles and by <see cref="AttributesPackageEditor"/> for collapsible titles, so both look the same.
     /// </summary>
     internal static class TitleRenderer
     {

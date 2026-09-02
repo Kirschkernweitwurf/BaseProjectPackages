@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A number drawn as a filled bar.</summary>
     [AttributeSample(typeof(ProgressBarAttribute), EAttributeCategory.Widgets,

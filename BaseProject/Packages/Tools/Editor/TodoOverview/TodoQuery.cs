@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
-using Base.EditorUiPackage;
-using Base.ToolPackage.Editor.TodoOverview.Model;
-using Base.ToolPackage.Editor.TodoOverview.Scanning;
+using Base.EditorUIPackage.Editor;
+using Base.ToolsPackage.Editor.TodoOverview.Model;
+using Base.ToolsPackage.Editor.TodoOverview.Scanning;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.TodoOverview
+namespace Base.ToolsPackage.Editor.TodoOverview
 {
     /// <summary>
     /// Narrows the scanned items down to what the user asked for and lays them out in sections. Pure

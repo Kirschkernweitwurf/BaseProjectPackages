@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A field pushed one step to the right.</summary>
     [AttributeSample(typeof(IndentAttribute), EAttributeCategory.Layout,

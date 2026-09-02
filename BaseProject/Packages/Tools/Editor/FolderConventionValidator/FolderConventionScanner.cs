@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 using Base.UtilityPackage.Logging;
 using UnityEditor;
 
-namespace Base.ToolPackage.Editor.FolderConventionValidator
+namespace Base.ToolsPackage.Editor.FolderConventionValidator
 {
     /// <summary>
     /// Walks the folders below the configured root and reports every rule of a

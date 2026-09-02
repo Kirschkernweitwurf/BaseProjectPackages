@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A collection with a locked element count.</summary>
     [AttributeSample(typeof(ArraySizeAttribute), EAttributeCategory.Validation,

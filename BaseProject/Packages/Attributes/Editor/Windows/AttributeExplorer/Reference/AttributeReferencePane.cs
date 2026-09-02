@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Reference
+namespace Base.AttributesPackage.Editor.Windows.AttributeExplorer.Reference
 {
     /// <summary>
     /// The reference tab: a searchable list of attributes on the left, and on the right either one

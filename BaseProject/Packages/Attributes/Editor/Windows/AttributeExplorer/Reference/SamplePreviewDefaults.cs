@@ -1,8 +1,8 @@
 using System;
-using Base.AttributePackage.Editor.Collections;
-using Base.AttributePackage.Editor.Core;
+using Base.AttributesPackage.Editor.Collections;
+using Base.AttributesPackage.Editor.Core;
 
-namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Reference
+namespace Base.AttributesPackage.Editor.Windows.AttributeExplorer.Reference
 {
     /// <summary>
     /// Forgets the first-draw state of a sample type, so the defaults its attributes declare are applied

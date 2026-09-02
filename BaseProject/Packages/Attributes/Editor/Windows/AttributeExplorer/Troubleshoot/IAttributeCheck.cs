@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot
+namespace Base.AttributesPackage.Editor.Windows.AttributeExplorer.Troubleshoot
 {
     /// <summary>
     /// A single family of attribute misconfigurations. Implement this interface anywhere and the

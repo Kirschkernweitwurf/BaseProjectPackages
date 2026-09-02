@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Base.ToolPackage.Editor.CodebaseGraph.Analysis
+namespace Base.ToolsPackage.Editor.CodebaseGraph.Analysis
 {
     /// <summary>Serialization shape of the dismissal file. Two lists, so the format stays obvious.</summary>
     [Serializable]

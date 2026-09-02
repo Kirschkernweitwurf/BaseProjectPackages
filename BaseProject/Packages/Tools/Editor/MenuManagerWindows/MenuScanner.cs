@@ -6,7 +6,7 @@ using Base.UtilityPackage.Menus;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.MenuManagerWindows
+namespace Base.ToolsPackage.Editor.MenuManagerWindows
 {
     /// <summary>Scans the project for dynamic menu attributes and builds resolved entries.</summary>
     internal static class MenuScanner

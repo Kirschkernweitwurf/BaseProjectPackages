@@ -1,4 +1,4 @@
-namespace Base.ToolPackage.Editor.PlayModeApplier
+namespace Base.ToolsPackage.Editor.PlayModeApplier
 {
     /// <summary>
     /// Defines where captured play mode values are written once play mode ends.

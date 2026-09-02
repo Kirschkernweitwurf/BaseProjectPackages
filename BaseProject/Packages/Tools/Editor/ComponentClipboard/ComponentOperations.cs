@@ -5,7 +5,7 @@ using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.ComponentClipboard
+namespace Base.ToolsPackage.Editor.ComponentClipboard
 {
     /// <summary>
     /// Undo aware operations used by the <see cref="ComponentClipboardWindow"/>.

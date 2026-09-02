@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A state name picked from an Animator controller.</summary>
     [AttributeSample(typeof(AnimatorStateAttribute), EAttributeCategory.Pickers,

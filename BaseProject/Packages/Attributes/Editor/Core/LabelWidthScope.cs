@@ -1,7 +1,7 @@
 using System;
 using UnityEditor;
 
-namespace Base.AttributePackage.Editor.Core
+namespace Base.AttributesPackage.Editor.Core
 {
     /// <summary>
     /// Widens the label column for one field when its label would otherwise be clipped.

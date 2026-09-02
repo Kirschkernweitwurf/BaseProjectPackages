@@ -1,4 +1,4 @@
-namespace Base.ToolPackage.Editor.AssemblyGraph
+namespace Base.ToolsPackage.Editor.AssemblyGraph
 {
     /// <summary>Whether a declared reference appears to be used by the compiled assembly.</summary>
     internal enum EReferenceStatus : byte

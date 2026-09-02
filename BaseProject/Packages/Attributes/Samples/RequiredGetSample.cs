@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A reference that fills itself and complains when it cannot.</summary>
     [RequireComponent(typeof(AudioSource))]

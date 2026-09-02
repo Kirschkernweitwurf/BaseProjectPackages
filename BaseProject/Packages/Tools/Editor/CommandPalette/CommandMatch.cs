@@ -1,4 +1,4 @@
-namespace Base.ToolPackage.Editor.CommandPalette
+namespace Base.ToolsPackage.Editor.CommandPalette
 {
     /// <summary>One entry that survived the current filter, together with its rank.</summary>
     internal readonly struct CommandMatch

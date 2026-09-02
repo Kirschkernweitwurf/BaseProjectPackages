@@ -1,8 +1,8 @@
 using System.Text.RegularExpressions;
-using Base.ToolPackage.Editor.Shared;
+using Base.ToolsPackage.Editor.Shared;
 using UnityEditor;
 
-namespace Base.ToolPackage.Editor.MenuManagerWindows.MenuItemOverview
+namespace Base.ToolsPackage.Editor.MenuManagerWindows.MenuItemOverview
 {
     /// <summary>
     /// Finds the source line of a specific <see cref="MenuItem"/> attribute so the editor

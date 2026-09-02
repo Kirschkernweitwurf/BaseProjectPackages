@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Base.AttributePackage
+namespace Base.AttributesPackage
 {
     /// <summary>
     /// Clamps a field to a maximum. Works on int and float, and component wise on Vector2, Vector3,

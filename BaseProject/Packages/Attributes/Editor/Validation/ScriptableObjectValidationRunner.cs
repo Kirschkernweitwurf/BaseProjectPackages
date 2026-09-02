@@ -1,10 +1,10 @@
 using System.Collections.Generic;
-using Base.AttributePackage.Editor.Core;
+using Base.AttributesPackage.Editor.Core;
 using Base.UtilityPackage.Logging;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Validation
+namespace Base.AttributesPackage.Editor.Validation
 {
     /// <summary>
     /// Logs validation issues on ScriptableObject assets once when entering play mode, mirroring the

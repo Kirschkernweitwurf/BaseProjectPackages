@@ -1,4 +1,4 @@
-# Base Settings Package
+# Base Settings
 
 A reusable, store-agnostic settings framework: typed persistable settings, a registry that drives load, save, revert and reset across all of them, drop-in components for the common display, audio and control settings, and a set of ready-made UI elements. Backed by `PlayerPrefs` out of the box, with the store behind an interface so it can be swapped for a file, cloud or in-memory backend without touching anything else.
 
@@ -10,10 +10,10 @@ The package carries no game-specific keys. The consuming project decides which s
 - `com.unity.inputsystem` `1.19.0` for the rebind setting and rows
 - `com.unity.localization` `1.5.11` for the `LocalizedString` titles and labels
 - `com.unity.ugui` `2.0.0` and TextMeshPro
-- `Base.ServicePackage` for the service locator and `GameServiceBehaviour`
+- `Base.ServicesPackage` for the service locator and `GameServiceBehaviour`
 - `Base.TweeningPackage` for the selection indicator animation
 - `Base.UtilityPackage` for `PersistentKey`, object pooling, logging and helpers
-- `Base.AttributePackage` for the inspector attributes
+- `Base.AttributesPackage` for the inspector attributes
 - One assembly: `Base.SettingsPackage`
 
 ## Layout

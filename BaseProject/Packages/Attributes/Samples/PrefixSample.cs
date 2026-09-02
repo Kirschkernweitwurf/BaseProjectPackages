@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A small label in front of the value.</summary>
     [AttributeSample(typeof(PrefixAttribute), EAttributeCategory.Layout,

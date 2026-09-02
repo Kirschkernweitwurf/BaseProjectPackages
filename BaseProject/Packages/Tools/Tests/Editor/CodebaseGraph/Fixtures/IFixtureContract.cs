@@ -1,4 +1,4 @@
-namespace Base.ToolPackage.Editor.Tests.Fixtures
+namespace Base.ToolsPackage.Editor.Tests.Fixtures
 {
     /// <summary>
     /// Contract shapes the liveness rules have to get right. Every member here is implemented by the

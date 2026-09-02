@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>Consecutive fields collected under one collapsible group.</summary>
     [AttributeSample(typeof(FoldoutAttribute), EAttributeCategory.Layout,

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A thumbnail under an asset reference.</summary>
     [AttributeSample(typeof(ShowAssetPreviewAttribute), EAttributeCategory.Widgets,

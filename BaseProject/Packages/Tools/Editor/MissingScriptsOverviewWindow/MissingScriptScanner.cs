@@ -6,7 +6,7 @@ using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Base.ToolPackage.Editor.MissingScriptsOverviewWindow
+namespace Base.ToolsPackage.Editor.MissingScriptsOverviewWindow
 {
     /// <summary>
     /// Finds GameObjects and assets that hold missing scripts anywhere in the project.

@@ -1,7 +1,7 @@
-using Base.ToolPackage.Editor.AssetZoo.Config;
+using Base.ToolsPackage.Editor.AssetZoo.Config;
 using Base.UtilityPackage.Logging;
 
-namespace Base.ToolPackage.Editor.AssetZoo.Layout
+namespace Base.ToolsPackage.Editor.AssetZoo.Layout
 {
     /// <summary>
     /// Factory for creating layout strategies based on the type specified in the settings.

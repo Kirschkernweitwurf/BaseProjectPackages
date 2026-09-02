@@ -1,5 +1,5 @@
 using System;
-using Base.AttributePackage;
+using Base.AttributesPackage;
 using Base.UtilityPackage.Randomization;
 using UnityEngine;
 

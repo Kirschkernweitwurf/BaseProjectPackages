@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.IO;
-using Base.ToolPackage.Editor.CodebaseGraph.Model;
+using Base.ToolsPackage.Editor.CodebaseGraph.Model;
 using UnityEditor;
 
-namespace Base.ToolPackage.Editor.AssemblyGraph.Architecture
+namespace Base.ToolsPackage.Editor.AssemblyGraph.Architecture
 {
     /// <summary>
     /// Writes the assembly edge roll-up to a file so the numbers can be checked before anything is

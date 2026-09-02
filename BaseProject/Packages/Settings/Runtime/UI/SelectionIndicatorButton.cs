@@ -1,5 +1,5 @@
 using System;
-using Base.AttributePackage;
+using Base.AttributesPackage;
 using Base.TweeningPackage.Components.System;
 using UnityEngine;
 using UnityEngine.UI;

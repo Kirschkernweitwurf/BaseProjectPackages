@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using System.IO;
-using Base.ToolPackage.Editor.AudioRules.Data;
-using Base.ToolPackage.Editor.AudioRules.Model;
+using Base.ToolsPackage.Editor.AudioRules.Data;
+using Base.ToolsPackage.Editor.AudioRules.Model;
 using Base.UtilityPackage.Logging;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.AudioRules.Scanning
+namespace Base.ToolsPackage.Editor.AudioRules.Scanning
 {
     /// <summary>
     /// The one entry point the window uses. A scan never writes anything: it collects the facts,

@@ -1,6 +1,6 @@
 using System;
 
-namespace Base.ToolPackage.Editor.MenuManagerWindows
+namespace Base.ToolsPackage.Editor.MenuManagerWindows
 {
     /// <summary>Live scan result for one entry. Holds the delegates and defaults needed to register a menu.</summary>
     internal sealed class ResolvedMenu

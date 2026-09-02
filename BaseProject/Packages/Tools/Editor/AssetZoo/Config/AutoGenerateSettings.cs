@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using Base.AttributePackage;
+using Base.AttributesPackage;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.AssetZoo.Config
+namespace Base.ToolsPackage.Editor.AssetZoo.Config
 {
     /// <summary>
     /// All settings related to scanning a project folder and turning matching assets into categories.

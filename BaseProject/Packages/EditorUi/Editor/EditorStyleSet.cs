@@ -1,6 +1,6 @@
 using UnityEditor;
 
-namespace Base.EditorUiPackage
+namespace Base.EditorUIPackage.Editor
 {
     /// <summary>
     /// Base class for a window's style cache. Styles have to be built inside a GUI call because

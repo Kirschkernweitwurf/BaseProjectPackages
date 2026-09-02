@@ -1,4 +1,4 @@
-namespace Base.ToolPackage.Editor.CommandPalette
+namespace Base.ToolsPackage.Editor.CommandPalette
 {
     /// <summary>What executing a palette command actually does.</summary>
     internal enum ECommandKind : byte

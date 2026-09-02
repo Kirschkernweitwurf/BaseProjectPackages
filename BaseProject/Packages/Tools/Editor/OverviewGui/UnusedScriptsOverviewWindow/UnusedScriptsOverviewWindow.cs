@@ -5,7 +5,7 @@ using Base.UtilityPackage.Menus;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.OverviewGui.UnusedScriptsOverviewWindow
+namespace Base.ToolsPackage.Editor.OverviewGui.UnusedScriptsOverviewWindow
 {
     /// <summary>
     /// Editor window that lists scripts that look dead and lets you ping, dismiss, or delete them.

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A list with its drawer configured.</summary>
     [AttributeSample(typeof(ListDrawerSettingsAttribute), EAttributeCategory.Collections,

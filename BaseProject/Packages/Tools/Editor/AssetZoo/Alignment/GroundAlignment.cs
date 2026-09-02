@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.AssetZoo.Alignment
+namespace Base.ToolsPackage.Editor.AssetZoo.Alignment
 {
     /// <summary>
     /// Bottom of the bounding box rests on the slot. Best for props on a floor.

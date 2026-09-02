@@ -1,4 +1,4 @@
-namespace Base.ToolPackage.Editor.AudioRules.Model
+namespace Base.ToolsPackage.Editor.AudioRules.Model
 {
     /// <summary>
     /// Everything a rule can ask about one clip, gathered once per scan. The numbers describe the

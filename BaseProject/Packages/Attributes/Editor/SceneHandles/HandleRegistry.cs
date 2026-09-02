@@ -4,7 +4,7 @@ using System.Reflection;
 using Base.UtilityPackage;
 using UnityEditor;
 
-namespace Base.AttributePackage.Editor.SceneHandles
+namespace Base.AttributesPackage.Editor.SceneHandles
 {
     /// <summary>
     /// Discovers every <see cref="IHandleDrawer"/> and caches which fields carry handle attributes.

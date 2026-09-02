@@ -1,8 +1,8 @@
 using System;
 using System.Text.RegularExpressions;
-using Base.ToolPackage.Editor.TodoOverview.Model;
+using Base.ToolsPackage.Editor.TodoOverview.Model;
 
-namespace Base.ToolPackage.Editor.TodoOverview.Scanning
+namespace Base.ToolsPackage.Editor.TodoOverview.Scanning
 {
     /// <summary>
     /// Reads the responsible person and the date out of an item's text and hands back the message that

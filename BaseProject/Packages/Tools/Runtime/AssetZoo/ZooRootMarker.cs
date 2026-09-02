@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.ToolPackage.AssetZoo
+namespace Base.ToolsPackage.AssetZoo
 {
     /// <summary>
     /// Empty marker component attached to a built zoo's root GameObject. Lets the

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.AssetZoo.Layout
+namespace Base.ToolsPackage.Editor.AssetZoo.Layout
 {
     /// <summary>
     /// Output of a layout pass: where each item goes and how big the whole block is.

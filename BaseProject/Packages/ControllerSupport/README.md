@@ -7,10 +7,10 @@ Full gamepad support for uGUI menus: navigation wiring built from on-screen posi
 - Unity `6000.3` or newer
 - `com.unity.inputsystem` `1.19.0` and TextMeshPro
 - `Base.CorePackage` for the menu layer
-- `Base.ServicePackage` for `ServiceLocator`, `GameServiceBehaviour`, `EPriority` and `PriorityTracker`
+- `Base.ServicesPackage` for `ServiceLocator`, `GameServiceBehaviour`, `EPriority` and `PriorityTracker`
 - `Base.UtilityPackage` for `CustomLogger`, `PersistentKey` and the dynamic menu attributes
-- `Base.AttributePackage` for the inspector attributes
-- `Base.EditorUiPackage` for the Navigation Groups window
+- `Base.AttributesPackage` for the inspector attributes
+- `Base.EditorUIPackage.Editor` for the Navigation Groups window
 - `Base.SettingsPackage`, optional, only for the two rumble setting components
 - Assemblies: `Base.ControllerSupportPackage`, `Base.ControllerSupportPackage.Editor` and the optional `Base.ControllerSupportPackage.Settings`
 

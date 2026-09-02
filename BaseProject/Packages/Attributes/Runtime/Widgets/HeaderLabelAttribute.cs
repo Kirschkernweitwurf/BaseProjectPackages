@@ -1,7 +1,7 @@
 using System;
 using JetBrains.Annotations;
 
-namespace Base.AttributePackage
+namespace Base.AttributesPackage
 {
     /// <summary>
     /// Shows the value of a property or parameterless method as read-only text in the component header.

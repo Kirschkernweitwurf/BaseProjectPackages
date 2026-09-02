@@ -1,4 +1,4 @@
-namespace Base.ToolPackage.Editor.PlayModeApplier
+namespace Base.ToolsPackage.Editor.PlayModeApplier
 {
     /// <summary>
     /// The kinds of events the Play Mode Saver records for the current session.

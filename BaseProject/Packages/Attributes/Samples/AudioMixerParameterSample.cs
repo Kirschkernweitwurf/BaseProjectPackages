@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Audio;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>An exposed parameter picked from a mixer.</summary>
     [AttributeSample(typeof(AudioMixerParameterAttribute), EAttributeCategory.Pickers,

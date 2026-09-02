@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A box of text next to a field.</summary>
     [AttributeSample(typeof(InfoBoxAttribute), EAttributeCategory.Layout,

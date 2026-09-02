@@ -6,7 +6,7 @@ using Object = UnityEngine.Object;
 // ReSharper disable UnusedMember.Global
 // ReSharper disable MemberCanBePrivate.Global
 
-namespace Base.ServicePackage.Tracking
+namespace Base.ServicesPackage.Tracking
 {
     /// <summary>
     /// Tracks items with associated priorities.

@@ -1,8 +1,8 @@
-using Base.AttributePackage.Editor.Core;
+using Base.AttributesPackage.Editor.Core;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Drawers
+namespace Base.AttributesPackage.Editor.Drawers
 {
     /// <summary>Draws a file path field with a browse button for <see cref="FilePathAttribute"/>.</summary>
     [CustomPropertyDrawer(typeof(FilePathAttribute))]

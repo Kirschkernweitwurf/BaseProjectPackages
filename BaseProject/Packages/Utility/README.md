@@ -1,4 +1,4 @@
-# Base Utility Package
+# Base Utility
 
 General-purpose runtime and editor helpers. It sits at the bottom of the dependency graph: no dependencies at all, so every other Base package can build on it.
 

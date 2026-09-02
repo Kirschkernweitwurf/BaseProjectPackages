@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A string or collection that cannot be left empty.</summary>
     [AttributeSample(typeof(NotNullOrEmptyAttribute), EAttributeCategory.Validation,

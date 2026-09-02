@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A string trimmed to a maximum length.</summary>
     [AttributeSample(typeof(MaxLengthAttribute), EAttributeCategory.Validation,

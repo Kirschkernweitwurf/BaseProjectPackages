@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using Base.ToolPackage.Editor.AudioRules.Data;
+using Base.ToolsPackage.Editor.AudioRules.Data;
 
-namespace Base.ToolPackage.Editor.AudioRules.Model
+namespace Base.ToolsPackage.Editor.AudioRules.Model
 {
     /// <summary>
     /// What the rules decided for one clip: the settings it should end up with, which rules took

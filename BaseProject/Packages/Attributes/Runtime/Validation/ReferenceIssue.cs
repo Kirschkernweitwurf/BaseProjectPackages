@@ -1,6 +1,6 @@
 using Object = UnityEngine.Object;
 
-namespace Base.AttributePackage
+namespace Base.AttributesPackage
 {
     /// <summary>A single validation problem found on an object, including the nested path to the field.</summary>
     internal readonly struct ReferenceIssue

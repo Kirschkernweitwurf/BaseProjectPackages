@@ -1,4 +1,4 @@
-namespace Base.EditorUiPackage
+namespace Base.EditorUIPackage.Editor
 {
     /// <summary>
     /// The USS class names of the shared Base look, so a window adds them through
@@ -9,7 +9,7 @@ namespace Base.EditorUiPackage
     /// <see cref="EditorUssTheme"/>, which paints it from the active theme. Adding a class to an
     /// element that neither knows about does nothing.
     /// </remarks>
-    public static class EditorUiClass
+    public static class EditorUIClass
     {
         /// <summary>Accent colored text.</summary>
         public const string Accent = "base-accent";

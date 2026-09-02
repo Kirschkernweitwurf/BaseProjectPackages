@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Base.EditorUiPackage
+namespace Base.EditorUIPackage.Editor
 {
     /// <summary>
     /// Recolors Unity's own reorderable list to the theme for as long as the scope is open, leaving

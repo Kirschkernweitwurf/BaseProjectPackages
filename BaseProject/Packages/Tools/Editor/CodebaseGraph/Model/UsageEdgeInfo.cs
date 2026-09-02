@@ -1,4 +1,4 @@
-namespace Base.ToolPackage.Editor.CodebaseGraph.Model
+namespace Base.ToolsPackage.Editor.CodebaseGraph.Model
 {
     /// <summary>One directed usage from a source member to a target member, with how often it occurs.</summary>
     internal sealed class UsageEdgeInfo

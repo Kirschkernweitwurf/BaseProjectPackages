@@ -1,6 +1,6 @@
 using System;
 
-namespace Base.ToolPackage.Editor.PlayModeApplier
+namespace Base.ToolsPackage.Editor.PlayModeApplier
 {
     /// <summary>
     /// Remembers what a single reference field pointed at, independent of session local instance ids.

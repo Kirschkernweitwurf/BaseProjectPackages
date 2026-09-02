@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.ToolPackage.AssetZoo
+namespace Base.ToolsPackage.AssetZoo
 {
     /// <summary>
     /// Rotates a generated zoo label so it always faces the viewing camera. In play mode it follows

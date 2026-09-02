@@ -1,4 +1,4 @@
-namespace Base.ToolPackage.Editor.NamingConventions.Data
+namespace Base.ToolsPackage.Editor.NamingConventions.Data
 {
     /// <summary>What the tool did to an asset, remembered in the history.</summary>
     internal enum EAssetNamingAction : byte

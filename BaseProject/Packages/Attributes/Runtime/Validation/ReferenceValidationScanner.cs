@@ -6,7 +6,7 @@ using Base.UtilityPackage;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Base.AttributePackage
+namespace Base.AttributesPackage
 {
     /// <summary>
     /// Runs every <see cref="IValidationRule"/> over the serialized fields of an object, at any depth.

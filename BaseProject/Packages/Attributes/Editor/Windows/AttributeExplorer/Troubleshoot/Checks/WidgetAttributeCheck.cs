@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot.Checks
+namespace Base.AttributesPackage.Editor.Windows.AttributeExplorer.Troubleshoot.Checks
 {
     /// <summary>
     /// Checks the attributes added alongside the collection and handle work: the size limits, the prefix

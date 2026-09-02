@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A large preview of the assigned object.</summary>
     [AttributeSample(typeof(PreviewObjectAttribute), EAttributeCategory.Widgets,

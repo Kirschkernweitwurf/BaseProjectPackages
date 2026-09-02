@@ -1,6 +1,6 @@
 using System;
 
-namespace Base.ToolPackage.Editor.TodoOverview.Model
+namespace Base.ToolsPackage.Editor.TodoOverview.Model
 {
     /// <summary>
     /// What a metadata pattern pulled out of an item's text: who it belongs to, when it is due, and

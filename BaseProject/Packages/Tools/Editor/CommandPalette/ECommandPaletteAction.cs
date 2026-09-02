@@ -1,4 +1,4 @@
-namespace Base.ToolPackage.Editor.CommandPalette
+namespace Base.ToolsPackage.Editor.CommandPalette
 {
     /// <summary>
     /// Something the user asked the palette to do. Keyboard, mouse and context menu all express

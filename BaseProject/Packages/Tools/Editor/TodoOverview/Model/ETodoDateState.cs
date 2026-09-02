@@ -1,4 +1,4 @@
-namespace Base.ToolPackage.Editor.TodoOverview.Model
+namespace Base.ToolsPackage.Editor.TodoOverview.Model
 {
     /// <summary>Where the date on an item sits relative to today, which is what colors its pill.</summary>
     internal enum ETodoDateState : byte

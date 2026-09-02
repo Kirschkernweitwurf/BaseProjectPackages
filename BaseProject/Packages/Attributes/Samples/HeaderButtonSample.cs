@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A button in the component header.</summary>
     [AttributeSample(typeof(HeaderButtonAttribute), EAttributeCategory.Widgets,

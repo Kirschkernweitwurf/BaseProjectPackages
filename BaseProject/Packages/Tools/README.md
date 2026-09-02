@@ -1,4 +1,4 @@
-# Base Tools Package
+# Base Tools
 
 Editor tooling for everyday project work: static analysis, project health windows, code generators, a data driven menu manager, asset identification and a set of scene and workflow utilities.
 
@@ -8,9 +8,9 @@ This package is a leaf. Nothing in the Base set references it, so it can be inst
 
 - Unity `6000.3` or newer
 - `Base.UtilityPackage` for `CustomLogger`, `PersistentKey` and the dynamic menu attributes
-- `Base.AttributePackage` for the inspector attributes on its config assets
-- `Base.EditorUiPackage` for the shared look of its windows
-- Assemblies: `Base.ToolPackage`, `Base.ToolPackage.Editor` and `Base.ToolPackage.Editor.Tests`
+- `Base.AttributesPackage` for the inspector attributes on its config assets
+- `Base.EditorUIPackage.Editor` for the shared look of its windows
+- Assemblies: `Base.ToolsPackage`, `Base.ToolsPackage.Editor` and `Base.ToolsPackage.Editor.Tests`
 
 The dynamic menu attributes the Menu Manager reads live in the Utility package rather than here, so a package can be tagged with `[DynamicMenuItem]` without depending on this one.
 
@@ -104,4 +104,4 @@ The list is built by walking the settings providers of the project, so a new pag
 
 ## Tests
 
-`Base.ToolPackage.Editor.Tests` covers the Codebase Graph's liveness rules. See `Tests/README.md` for how to make them appear in the Test Runner.
+`Base.ToolsPackage.Editor.Tests` covers the Codebase Graph's liveness rules. See `Tests/README.md` for how to make them appear in the Test Runner.

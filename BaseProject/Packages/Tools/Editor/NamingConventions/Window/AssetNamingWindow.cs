@@ -1,14 +1,14 @@
 using System.Collections.Generic;
 using System.IO;
-using Base.ToolPackage.Editor.NamingConventions.Data;
-using Base.ToolPackage.Editor.NamingConventions.Scanning;
+using Base.ToolsPackage.Editor.NamingConventions.Data;
+using Base.ToolsPackage.Editor.NamingConventions.Scanning;
 using Base.UtilityPackage.Logging;
 using Base.UtilityPackage.Menus;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Base.ToolPackage.Editor.NamingConventions.Window
+namespace Base.ToolsPackage.Editor.NamingConventions.Window
 {
     /// <summary>
     /// Lists every asset that breaks the project naming conventions and renames it on the spot.

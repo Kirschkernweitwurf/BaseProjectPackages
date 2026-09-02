@@ -1,4 +1,4 @@
-namespace Base.ToolPackage.Editor.PlayModeApplier
+namespace Base.ToolsPackage.Editor.PlayModeApplier
 {
     /// <summary>
     /// Describes how a captured object reference can be resolved again once play mode ends.

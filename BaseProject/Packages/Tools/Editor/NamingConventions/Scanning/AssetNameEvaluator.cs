@@ -1,9 +1,9 @@
 using System;
 using System.Globalization;
 using System.Text.RegularExpressions;
-using Base.ToolPackage.Editor.NamingConventions.Data;
+using Base.ToolsPackage.Editor.NamingConventions.Data;
 
-namespace Base.ToolPackage.Editor.NamingConventions.Scanning
+namespace Base.ToolsPackage.Editor.NamingConventions.Scanning
 {
     /// <summary>
     /// Checks asset file names against a rule. The suffix is split off first, then the number, so

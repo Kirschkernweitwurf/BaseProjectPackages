@@ -1,6 +1,6 @@
 using System;
 
-namespace Base.ToolPackage.Editor.MenuManagerWindows
+namespace Base.ToolsPackage.Editor.MenuManagerWindows
 {
     /// <summary>
     /// Builds the stable ids that identify an entry of the menu manager or of the command palette

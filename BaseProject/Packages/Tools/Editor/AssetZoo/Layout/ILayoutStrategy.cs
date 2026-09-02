@@ -1,7 +1,7 @@
-using Base.ToolPackage.Editor.AssetZoo.Config;
+using Base.ToolsPackage.Editor.AssetZoo.Config;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.AssetZoo.Layout
+namespace Base.ToolsPackage.Editor.AssetZoo.Layout
 {
     /// <summary>
     /// Strategy that places N items into local space. Implement this to add new arrangements

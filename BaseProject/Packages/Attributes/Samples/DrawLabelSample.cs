@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A label drawn in the Scene view.</summary>
     [AttributeSample(typeof(DrawLabelAttribute), EAttributeCategory.Widgets,

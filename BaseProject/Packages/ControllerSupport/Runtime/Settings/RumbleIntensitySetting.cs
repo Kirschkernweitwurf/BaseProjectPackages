@@ -1,17 +1,17 @@
-using Base.AttributePackage;
-using Base.ServicePackage;
+using Base.AttributesPackage;
+using Base.ControllerSupportPackage.Haptics;
+using Base.ServicesPackage;
 using Base.SettingsPackage.Components;
 using Base.UtilityPackage.Identification;
 using UnityEngine;
 
-namespace Base.ControllerSupportPackage.Haptics.Settings
+namespace Base.ControllerSupportPackage.Settings
 {
     /// <summary>
-    /// Stores whether gamepad rumble is allowed and pushes it into the <see cref="RumbleService"/>.
-    /// Both the key and the default come from the controller package, so this component, the service and
-    /// the config asset cannot drift apart.
+    /// Stores the global rumble strength and pushes it into the <see cref="RumbleService"/>, where it
+    /// scales every request. Pair it with <see cref="RumbleEnabledSetting"/> for a slider next to a toggle.
     /// </summary>
-    public sealed class RumbleEnabledSetting : BoolSettingComponent
+    public sealed class RumbleIntensitySetting : FloatSettingComponent
     {
         [Title("Rumble")]
         [Tooltip("Defaults asset. Use the same one the RumbleService references.")]
@@ -19,10 +19,10 @@ namespace Base.ControllerSupportPackage.Haptics.Settings
         [SerializeField] private RumbleConfig config;
 
         /// <inheritdoc/>
-        public override PersistentKey Key => RumbleSettingKeys.Enabled;
+        public override PersistentKey Key => RumbleSettingKeys.Intensity;
 
         /// <inheritdoc/>
-        protected override bool DefaultValue => config.RumbleEnabled;
+        protected override float DefaultValue => config.MainIntensity;
 
         private RumbleService _rumbleService;
 
@@ -38,12 +38,12 @@ namespace Base.ControllerSupportPackage.Haptics.Settings
 #endregion
 
         /// <inheritdoc/>
-        protected override void Apply(bool value)
+        protected override void Apply(float value)
         {
             if (_rumbleService == null)
                 return;
 
-            _rumbleService.SetRumbleEnabled(value);
+            _rumbleService.SetMainIntensity(value);
         }
     }
 }

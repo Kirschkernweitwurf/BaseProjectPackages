@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A reference restricted to scene objects.</summary>
     [AttributeSample(typeof(SceneObjectOnlyAttribute), EAttributeCategory.Validation,

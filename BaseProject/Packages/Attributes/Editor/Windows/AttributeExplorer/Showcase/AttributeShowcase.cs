@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
-using Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot.Samples;
+using Base.AttributesPackage.Editor.Windows.AttributeExplorer.Troubleshoot.Samples;
 using Base.UtilityPackage.Collections;
 using Base.UtilityPackage.Serialization;
 using UnityEngine;
 using UnityEngine.Audio;
 using Random = UnityEngine.Random;
 
-namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Showcase
+namespace Base.AttributesPackage.Editor.Windows.AttributeExplorer.Showcase
 {
     /// <summary>
     /// A throwaway asset whose only job is to carry one of every attribute, so the showcase tab can draw

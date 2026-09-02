@@ -1,4 +1,4 @@
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>
     /// Implemented by a component sample that needs a hierarchy around it before it means anything.

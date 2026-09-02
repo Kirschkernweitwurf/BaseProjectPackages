@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A small count shown as stars.</summary>
     [AttributeSample(typeof(RateAttribute), EAttributeCategory.Widgets,

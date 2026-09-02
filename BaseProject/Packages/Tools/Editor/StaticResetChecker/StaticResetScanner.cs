@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 using UnityEditor.PackageManager;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.StaticResetChecker
+namespace Base.ToolsPackage.Editor.StaticResetChecker
 {
     /// <summary>
     /// Pure text-based scanner for static fields that are not reset on Enter Play Mode.

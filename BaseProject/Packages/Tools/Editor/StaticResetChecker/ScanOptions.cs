@@ -1,4 +1,4 @@
-namespace Base.ToolPackage.Editor.StaticResetChecker
+namespace Base.ToolsPackage.Editor.StaticResetChecker
 {
     /// <summary>
     /// Options for scanning the project for static fields that are not reset on Enter Play Mode.

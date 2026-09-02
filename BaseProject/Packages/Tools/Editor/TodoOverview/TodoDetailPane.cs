@@ -1,8 +1,8 @@
-using Base.ToolPackage.Editor.TodoOverview.Model;
+using Base.ToolsPackage.Editor.TodoOverview.Model;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.TodoOverview
+namespace Base.ToolsPackage.Editor.TodoOverview
 {
     /// <summary>
     /// The panel under the list that shows the selected item in full. A row can only ever show the

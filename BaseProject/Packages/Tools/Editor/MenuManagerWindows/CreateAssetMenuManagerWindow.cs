@@ -1,7 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.MenuManagerWindows
+namespace Base.ToolsPackage.Editor.MenuManagerWindows
 {
     /// <summary>Window to arrange dynamic asset creation entries.</summary>
     internal sealed class CreateAssetMenuManagerWindow : MenuManagerWindowBase

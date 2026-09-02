@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using Base.ToolPackage.Editor.Shared;
+using Base.ToolsPackage.Editor.Shared;
 
-namespace Base.ToolPackage.Editor.OverviewGui.UnusedScriptsOverviewWindow
+namespace Base.ToolsPackage.Editor.OverviewGui.UnusedScriptsOverviewWindow
 {
     /// <summary>
     /// Remembers scripts the user chose to keep. Stored by GUID in a per-project file under

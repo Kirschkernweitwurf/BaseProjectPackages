@@ -1,7 +1,7 @@
 using System.IO;
 using UnityEditor;
 
-namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
+namespace Base.ToolsPackage.Editor.CodebaseGraph.Scanning
 {
     /// <summary>
     /// Reads script source. Disk is tried first because it is far cheaper than asking the asset

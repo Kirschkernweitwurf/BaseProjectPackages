@@ -1,11 +1,11 @@
 using System;
 using System.Reflection;
-using Base.AttributePackage.Editor.Core;
-using Base.AttributePackage.Editor.Core.Interfaces;
-using Base.AttributePackage.Editor.Drawers;
+using Base.AttributesPackage.Editor.Core;
+using Base.AttributesPackage.Editor.Core.Interfaces;
+using Base.AttributesPackage.Editor.Drawers;
 using Base.UtilityPackage.Logging;
 
-namespace Base.AttributePackage.Editor.Handlers
+namespace Base.AttributesPackage.Editor.Handlers
 {
     /// <summary>
     /// Runs the custom method of a <see cref="ValidateInputAttribute"/> and reports what it returns.

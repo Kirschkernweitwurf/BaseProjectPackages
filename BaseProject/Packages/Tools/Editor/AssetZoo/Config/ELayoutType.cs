@@ -1,4 +1,4 @@
-namespace Base.ToolPackage.Editor.AssetZoo.Config
+namespace Base.ToolsPackage.Editor.AssetZoo.Config
 {
     /// <summary>
     /// Layout type for the zoo. Grid is a standard grid layout.

@@ -1,13 +1,13 @@
 using System.Collections.Generic;
-using Base.ToolPackage.AssetZoo;
-using Base.ToolPackage.Editor.AssetZoo.Alignment;
-using Base.ToolPackage.Editor.AssetZoo.Config;
-using Base.ToolPackage.Editor.AssetZoo.Layout;
+using Base.ToolsPackage.AssetZoo;
+using Base.ToolsPackage.Editor.AssetZoo.Alignment;
+using Base.ToolsPackage.Editor.AssetZoo.Config;
+using Base.ToolsPackage.Editor.AssetZoo.Layout;
 using Base.UtilityPackage.Logging;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.AssetZoo.Builder
+namespace Base.ToolsPackage.Editor.AssetZoo.Builder
 {
     /// <summary>
     /// Builds an asset zoo into the active scene. Pure logic, knows nothing about the

@@ -5,7 +5,7 @@ using System.Text;
 using Base.UtilityPackage.Logging;
 using UnityEditor;
 
-namespace Base.ToolPackage.Editor.OrderManagement
+namespace Base.ToolsPackage.Editor.OrderManagement
 {
     /// <summary>Writes the generated constants file from an <see cref="OrderRegistry"/>.</summary>
     internal static class OrderCodeGenerator

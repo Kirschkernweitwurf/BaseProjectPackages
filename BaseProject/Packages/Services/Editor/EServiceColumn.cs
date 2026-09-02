@@ -1,4 +1,4 @@
-namespace Base.ServicePackage.Editor
+namespace Base.ServicesPackage.Editor
 {
     /// <summary>
     /// The columns of the service table that can be sorted by.

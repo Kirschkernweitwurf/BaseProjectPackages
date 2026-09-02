@@ -1,8 +1,8 @@
-using Base.EditorUiPackage;
+using Base.EditorUIPackage.Editor;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.BaseToolsOverview
+namespace Base.ToolsPackage.Editor.BaseToolsOverview
 {
     /// <summary>
     /// The styles the Base Tools overview draws its rows with, built on the shared editor look

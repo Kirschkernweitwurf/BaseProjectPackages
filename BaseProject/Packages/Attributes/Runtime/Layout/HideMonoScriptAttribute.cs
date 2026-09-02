@@ -1,6 +1,6 @@
 using System;
 
-namespace Base.AttributePackage
+namespace Base.AttributesPackage
 {
     /// <summary>
     /// Hides the read-only Script row at the top of the inspector for the decorated type.

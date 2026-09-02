@@ -1,5 +1,5 @@
 using System;
-using Base.AttributePackage;
+using Base.AttributesPackage;
 using Base.SaveSystemPackage.Encryption;
 using Base.SaveSystemPackage.Serialization;
 using Base.SaveSystemPackage.Slots;

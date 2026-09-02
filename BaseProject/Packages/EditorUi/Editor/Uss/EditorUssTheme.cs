@@ -3,7 +3,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Base.EditorUiPackage
+namespace Base.EditorUIPackage.Editor
 {
     /// <summary>
     /// Gives a UI Toolkit window the shared Base look and keeps it in step with the active theme.
@@ -26,7 +26,7 @@ namespace Base.EditorUiPackage
         public const string SheetGuid = "0b7c4f6a2d8e4a1cb95f3e07d41a6c58";
 
         private const long PollMilliseconds = 250;
-        private const string SheetFilter = "BaseEditorUi t:StyleSheet";
+        private const string SheetFilter = "BaseEditorUI t:StyleSheet";
 
         /// <summary>
         /// Marks the root as a Base window, attaches the shared sheet, paints it from the active
@@ -49,8 +49,8 @@ namespace Base.EditorUiPackage
             if (root == null)
                 return false;
 
-            if (!root.ClassListContains(EditorUiClass.Root))
-                root.AddToClassList(EditorUiClass.Root);
+            if (!root.ClassListContains(EditorUIClass.Root))
+                root.AddToClassList(EditorUIClass.Root);
 
             bool attached = Attach(root);
 
@@ -92,27 +92,27 @@ namespace Base.EditorUiPackage
             if (root == null)
                 return;
 
-            PaintBackground(root, EditorUiClass.Card, EditorPalette.Card);
-            PaintBackground(root, EditorUiClass.Toolbar, EditorTableStyles.HeaderColor);
-            PaintBackground(root, EditorUiClass.Separator, EditorPalette.Separator);
-            PaintBackground(root, EditorUiClass.RowAlternate, EditorPalette.Stripe);
-            PaintBackground(root, EditorUiClass.RowSelected, EditorPalette.SelectionFill);
+            PaintBackground(root, EditorUIClass.Card, EditorPalette.Card);
+            PaintBackground(root, EditorUIClass.Toolbar, EditorTableStyles.HeaderColor);
+            PaintBackground(root, EditorUIClass.Separator, EditorPalette.Separator);
+            PaintBackground(root, EditorUIClass.RowAlternate, EditorPalette.Stripe);
+            PaintBackground(root, EditorUIClass.RowSelected, EditorPalette.SelectionFill);
 
-            PaintText(root, EditorUiClass.Title, EditorPalette.Text);
-            PaintText(root, EditorUiClass.Subtitle, EditorPalette.DimText);
-            PaintText(root, EditorUiClass.SectionHeader, EditorPalette.Text);
-            PaintText(root, EditorUiClass.Dim, EditorPalette.DimText);
-            PaintText(root, EditorUiClass.Accent, EditorPalette.Accent);
-            PaintText(root, EditorUiClass.Success, EditorPalette.Success);
-            PaintText(root, EditorUiClass.Warning, EditorPalette.Warning);
-            PaintText(root, EditorUiClass.Danger, EditorPalette.Danger);
-            PaintText(root, EditorUiClass.EmptyTitle, EditorPalette.DimText);
-            PaintText(root, EditorUiClass.EmptyHint, EditorPalette.DimText);
+            PaintText(root, EditorUIClass.Title, EditorPalette.Text);
+            PaintText(root, EditorUIClass.Subtitle, EditorPalette.DimText);
+            PaintText(root, EditorUIClass.SectionHeader, EditorPalette.Text);
+            PaintText(root, EditorUIClass.Dim, EditorPalette.DimText);
+            PaintText(root, EditorUIClass.Accent, EditorPalette.Accent);
+            PaintText(root, EditorUIClass.Success, EditorPalette.Success);
+            PaintText(root, EditorUIClass.Warning, EditorPalette.Warning);
+            PaintText(root, EditorUIClass.Danger, EditorPalette.Danger);
+            PaintText(root, EditorUIClass.EmptyTitle, EditorPalette.DimText);
+            PaintText(root, EditorUIClass.EmptyHint, EditorPalette.DimText);
 
-            PaintRadius(root, EditorUiClass.Card, EditorMetrics.CardCornerRadius);
-            PaintRadius(root, EditorUiClass.Button, EditorMetrics.CardCornerRadius);
-            PaintRadius(root, EditorUiClass.Badge, EditorMetrics.PillCornerRadius);
-            PaintRadius(root, EditorUiClass.Chip, EditorMetrics.PillCornerRadius);
+            PaintRadius(root, EditorUIClass.Card, EditorMetrics.CardCornerRadius);
+            PaintRadius(root, EditorUIClass.Button, EditorMetrics.CardCornerRadius);
+            PaintRadius(root, EditorUIClass.Badge, EditorMetrics.PillCornerRadius);
+            PaintRadius(root, EditorUIClass.Chip, EditorMetrics.PillCornerRadius);
 
             PaintButtons(root);
         }
@@ -164,13 +164,13 @@ namespace Base.EditorUiPackage
 
         private static void PaintButtons(VisualElement root)
         {
-            foreach (VisualElement element in root.Query(className: EditorUiClass.ButtonPrimary).Build())
+            foreach (VisualElement element in root.Query(className: EditorUIClass.ButtonPrimary).Build())
             {
                 element.style.backgroundColor = EditorPalette.Accent;
                 element.style.color = EditorPalette.AccentText;
             }
 
-            foreach (VisualElement element in root.Query(className: EditorUiClass.ButtonSecondary).Build())
+            foreach (VisualElement element in root.Query(className: EditorUIClass.ButtonSecondary).Build())
             {
                 element.style.backgroundColor = EditorPalette.Secondary;
                 element.style.color = EditorPalette.SecondaryText;

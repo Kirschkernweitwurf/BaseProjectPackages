@@ -1,4 +1,4 @@
-namespace Base.ToolPackage.Editor.AudioRules.Data
+namespace Base.ToolsPackage.Editor.AudioRules.Data
 {
     /// <summary>
     /// One import setting a rule can write. Used as the key of the decision trace, so the window

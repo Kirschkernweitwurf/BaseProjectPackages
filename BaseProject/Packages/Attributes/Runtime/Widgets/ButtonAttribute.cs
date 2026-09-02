@@ -1,7 +1,7 @@
 using System;
 using JetBrains.Annotations;
 
-namespace Base.AttributePackage
+namespace Base.AttributesPackage
 {
     /// <summary>
     /// Draws an inspector button that invokes the decorated parameterless method.

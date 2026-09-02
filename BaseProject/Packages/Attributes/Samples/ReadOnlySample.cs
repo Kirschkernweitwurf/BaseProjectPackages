@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A field shown but never editable.</summary>
     [AttributeSample(typeof(ReadOnlyAttribute), EAttributeCategory.Conditions,

@@ -1,7 +1,7 @@
 using System;
 using JetBrains.Annotations;
 
-namespace Base.AttributePackage
+namespace Base.AttributesPackage
 {
     /// <summary>
     /// Shows a non-serialized field as a read-only value in the inspector.

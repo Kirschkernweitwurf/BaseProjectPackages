@@ -1,4 +1,4 @@
-namespace Base.ToolPackage.Editor.NamingConventions.Data
+namespace Base.ToolsPackage.Editor.NamingConventions.Data
 {
     /// <summary>An asset that breaks its rule, together with the file name that would fix it.</summary>
     internal sealed class AssetNamingViolation

@@ -1,4 +1,4 @@
-namespace Base.ServicePackage.Shutdown
+namespace Base.ServicesPackage.Shutdown
 {
     /// <summary>
     /// Interface for handling shutdown procedures.

@@ -11,7 +11,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using Object = UnityEngine.Object;
 
-namespace Base.ToolPackage.Editor.OverviewGui.UnusedAssetsOverviewWindow
+namespace Base.ToolsPackage.Editor.OverviewGui.UnusedAssetsOverviewWindow
 {
     /// <summary>
     /// Finds assets that look unused. An asset counts as used when it is reachable from an enabled

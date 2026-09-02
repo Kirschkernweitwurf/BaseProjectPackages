@@ -1,4 +1,4 @@
-namespace Base.AttributePackage
+namespace Base.AttributesPackage
 {
     /// <summary>How badly a value failed the check that looked at it.</summary>
     public enum EValidationSeverity : byte

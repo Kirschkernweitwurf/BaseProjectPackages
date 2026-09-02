@@ -1,6 +1,6 @@
 using System;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>
     /// Marks a ScriptableObject as the sample for exactly one attribute, and carries everything the

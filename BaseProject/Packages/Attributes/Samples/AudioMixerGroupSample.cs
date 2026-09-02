@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Audio;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A mixer group restricted to one mixer.</summary>
     [AttributeSample(typeof(AudioMixerGroupAttribute), EAttributeCategory.Pickers,

@@ -1,4 +1,4 @@
-namespace Base.ServicePackage.Editor
+namespace Base.ServicesPackage.Editor
 {
     /// <summary>
     /// The condition of one entry in the <see cref="ServiceLocator"/>, as the window reports it.

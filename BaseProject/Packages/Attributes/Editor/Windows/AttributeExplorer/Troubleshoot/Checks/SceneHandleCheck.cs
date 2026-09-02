@@ -4,7 +4,7 @@ using System.Reflection;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot.Checks
+namespace Base.AttributesPackage.Editor.Windows.AttributeExplorer.Troubleshoot.Checks
 {
     /// <summary>
     /// Verifies that scene handles sit on a field type they can read, and on a type that can host them.

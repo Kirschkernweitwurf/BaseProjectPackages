@@ -1,4 +1,4 @@
-namespace Base.ToolPackage.Editor.TodoOverview.Scanning
+namespace Base.ToolsPackage.Editor.TodoOverview.Scanning
 {
     /// <summary>
     /// One line of comment text lifted out of a source file, with enough position information to point

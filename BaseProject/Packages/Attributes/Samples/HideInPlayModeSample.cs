@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A field hidden while playing.</summary>
     [AttributeSample(typeof(HideInPlayModeAttribute), EAttributeCategory.Conditions,

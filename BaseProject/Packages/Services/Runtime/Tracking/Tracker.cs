@@ -4,7 +4,7 @@ using Base.UtilityPackage.Logging;
 // ReSharper disable UnusedMethodReturnValue.Global
 // ReSharper disable UnusedMember.Global
 
-namespace Base.ServicePackage.Tracking
+namespace Base.ServicesPackage.Tracking
 {
     /// <summary>
     /// Generic tracker that maps unique keys to values, which allows registration,

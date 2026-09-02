@@ -1,4 +1,4 @@
-namespace Base.AttributePackage.Editor.Core.Interfaces
+namespace Base.AttributesPackage.Editor.Core.Interfaces
 {
     /// <summary>
     /// A handler that draws a member itself instead of letting the normal field be drawn.

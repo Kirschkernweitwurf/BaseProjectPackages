@@ -1,4 +1,4 @@
-# Base Core Package
+# Base Core
 
 Reusable core systems that any Unity project can build on: menus, audio, scene loading, input, timers, state machines, object pooling, randomization and debug tooling. Service location and tweening live one layer down, in the Base Service and Base Tweening packages.
 
@@ -6,11 +6,11 @@ Reusable core systems that any Unity project can build on: menus, audio, scene l
 
 - Unity `6000.3` or newer
 - `com.unity.inputsystem` `1.19.0` and `com.unity.ugui` `2.0.0`
-- `Base.ServicePackage` for `ServiceLocator`, `GameServiceBehaviour`, the shutdown pipeline and the priority trackers every system here builds on
+- `Base.ServicesPackage` for `ServiceLocator`, `GameServiceBehaviour`, the shutdown pipeline and the priority trackers every system here builds on
 - `Base.TweeningPackage` for the menu open and close animations, the debug menu and `TweenGroupObjectPool`
 - `Base.UtilityPackage` for logging and shared helpers
-- `Base.AttributePackage` for inspector attributes such as `[Required]` and `[GetComponent]`
-- `Base.EditorUiPackage` for the shared look of its editor windows
+- `Base.AttributesPackage` for inspector attributes such as `[Required]` and `[GetComponent]`
+- `Base.EditorUIPackage.Editor` for the shared look of its editor windows
 - Assemblies: `Base.CorePackage`, `Base.CorePackage.Editor` and `Base.CorePackage.Tests`
 
 The manager prefabs, canvases and menu identifier assets these systems expect ship in `Base.ContentPackage`.

@@ -1,7 +1,7 @@
-using Base.AttributePackage.Editor.Core;
+using Base.AttributesPackage.Editor.Core;
 using UnityEditor;
 
-namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Showcase
+namespace Base.AttributesPackage.Editor.Windows.AttributeExplorer.Showcase
 {
     /// <summary>
     /// Draws the showcase asset through the real inspector pipeline, so the attributes are seen doing

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A button that opens the referenced asset.</summary>
     [AttributeSample(typeof(OpenAssetAttribute), EAttributeCategory.Widgets,

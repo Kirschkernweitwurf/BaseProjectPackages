@@ -1,4 +1,4 @@
-namespace Base.ToolPackage.Editor.MenuManagerWindows
+namespace Base.ToolsPackage.Editor.MenuManagerWindows
 {
     /// <summary>Kind of a managed menu entry.</summary>
     internal enum EMenuEntryKind : byte

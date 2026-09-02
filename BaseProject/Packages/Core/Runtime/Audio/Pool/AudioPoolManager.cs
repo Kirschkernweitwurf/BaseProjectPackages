@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Base.AttributePackage;
+using Base.AttributesPackage;
 using Base.UtilityPackage.Logging;
 using UnityEngine;
 using UnityEngine.SceneManagement;

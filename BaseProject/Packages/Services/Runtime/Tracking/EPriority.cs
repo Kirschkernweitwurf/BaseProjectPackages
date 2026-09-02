@@ -1,4 +1,4 @@
-namespace Base.ServicePackage.Tracking
+namespace Base.ServicesPackage.Tracking
 {
     /// <summary>
     /// Defines priority levels for any tracking use case.

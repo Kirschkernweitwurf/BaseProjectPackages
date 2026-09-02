@@ -1,7 +1,7 @@
 using System.Reflection;
 using Object = UnityEngine.Object;
 
-namespace Base.AttributePackage
+namespace Base.AttributesPackage
 {
     /// <summary>
     /// Fails when a <see cref="RequiredIfAttribute"/> object reference is null while its condition

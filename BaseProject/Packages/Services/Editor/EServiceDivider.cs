@@ -1,4 +1,4 @@
-namespace Base.ServicePackage.Editor
+namespace Base.ServicesPackage.Editor
 {
     /// <summary>
     /// The draggable lines between the resizable columns of the service table.

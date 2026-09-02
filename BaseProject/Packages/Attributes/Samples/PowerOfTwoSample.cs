@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>An integer snapped to a power of two.</summary>
     [AttributeSample(typeof(PowerOfTwoAttribute), EAttributeCategory.Validation,

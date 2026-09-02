@@ -1,10 +1,10 @@
 using System.Collections.Generic;
-using Base.ToolPackage.Editor.AssetZoo.Config;
+using Base.ToolsPackage.Editor.AssetZoo.Config;
 using Base.UtilityPackage.Editor;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.AssetZoo.UI
+namespace Base.ToolsPackage.Editor.AssetZoo.UI
 {
     /// <summary>
     /// Custom drawer for <see cref="LayoutSettings"/>. Keeps the foldout for

@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Base.AttributePackage
+namespace Base.AttributesPackage
 {
     /// <summary>Tints the background of a field. Accepts a hex string or an <see cref="EColor"/> preset.</summary>
     [AttributeUsage(AttributeTargets.Field)]

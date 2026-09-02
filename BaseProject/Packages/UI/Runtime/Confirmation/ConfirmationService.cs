@@ -1,8 +1,8 @@
 using System.Threading.Tasks;
-using Base.AttributePackage;
+using Base.AttributesPackage;
 using Base.CorePackage.MenuManaging;
 using Base.CorePackage.MenuManaging.Identifier;
-using Base.ServicePackage;
+using Base.ServicesPackage;
 using Base.UtilityPackage.Logging;
 using UnityEngine;
 

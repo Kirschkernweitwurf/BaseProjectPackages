@@ -1,4 +1,4 @@
-namespace Base.AttributePackage
+namespace Base.AttributesPackage
 {
     /// <summary>
     /// Which halves of a point in time <see cref="DateAttribute"/> puts on screen. The half that is

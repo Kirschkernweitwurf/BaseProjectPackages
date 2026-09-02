@@ -1,4 +1,4 @@
-using Base.AttributePackage;
+using Base.AttributesPackage;
 using Base.SettingsPackage.Display;
 using Base.UtilityPackage.Identification;
 using UnityEngine;

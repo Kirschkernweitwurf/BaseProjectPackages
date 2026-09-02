@@ -1,9 +1,9 @@
-using Base.EditorUiPackage;
+using Base.EditorUIPackage.Editor;
 using Base.UtilityPackage.Menus;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.OrderManagement
+namespace Base.ToolsPackage.Editor.OrderManagement
 {
     /// <summary>Editor window to manage constants and regenerate the generated file.</summary>
     internal sealed class OrderManagerWindow : EditorWindow

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Base.UtilityPackage;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.AssemblyGraph
+namespace Base.ToolsPackage.Editor.AssemblyGraph
 {
     /// <summary>Assigns a stable, readable color to each assembly root name.</summary>
     internal static class AssemblyColorPalette

@@ -1,8 +1,8 @@
-using Base.ToolPackage.Editor.TodoOverview.Model;
+using Base.ToolsPackage.Editor.TodoOverview.Model;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.TodoOverview
+namespace Base.ToolsPackage.Editor.TodoOverview
 {
     /// <summary>
     /// Owns the width of every column, the dividers between them and the titles above them. The
@@ -15,14 +15,14 @@ namespace Base.ToolPackage.Editor.TodoOverview
     /// </summary>
     internal sealed class TodoColumns
     {
-        private const string DateKey = "Base.ToolPackage.TodoOverview.Column.Date";
+        private const string DateKey = "Base.ToolsPackage.TodoOverview.Column.Date";
         private const string DateLabel = "Due";
-        private const string KeywordKey = "Base.ToolPackage.TodoOverview.Column.Keyword";
+        private const string KeywordKey = "Base.ToolsPackage.TodoOverview.Column.Keyword";
         private const string KeywordLabel = "Type";
-        private const string LocationKey = "Base.ToolPackage.TodoOverview.Column.Location";
+        private const string LocationKey = "Base.ToolsPackage.TodoOverview.Column.Location";
         private const string LocationLabel = "File";
         private const string MessageLabel = "Item";
-        private const string OwnerKey = "Base.ToolPackage.TodoOverview.Column.Owner";
+        private const string OwnerKey = "Base.ToolsPackage.TodoOverview.Column.Owner";
         private const string OwnerLabel = "Owner";
         private const string SortTooltip = "Sort by {0}. Click again to turn it around, once more "
             + "for the default order";

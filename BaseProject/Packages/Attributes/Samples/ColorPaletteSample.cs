@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A color restricted to a set of swatches.</summary>
     [AttributeSample(typeof(ColorPaletteAttribute), EAttributeCategory.Widgets,

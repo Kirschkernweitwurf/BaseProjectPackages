@@ -7,7 +7,7 @@ using CompilationAssembly = UnityEditor.Compilation.Assembly;
 using CompilationPipeline = UnityEditor.Compilation.CompilationPipeline;
 using PackageInfo = UnityEditor.PackageManager.PackageInfo;
 
-namespace Base.ToolPackage.Editor.CodebaseGraph.Scanning
+namespace Base.ToolsPackage.Editor.CodebaseGraph.Scanning
 {
     /// <summary>
     /// Decides which assemblies belong to the project. Everything under Assets counts, plus packages

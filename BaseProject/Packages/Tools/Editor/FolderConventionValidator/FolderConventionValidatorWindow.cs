@@ -5,9 +5,9 @@ using Base.UtilityPackage.Menus;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
-using Overview = Base.ToolPackage.Editor.OverviewGui.OverviewGui;
+using Overview = Base.ToolsPackage.Editor.OverviewGui.OverviewGui;
 
-namespace Base.ToolPackage.Editor.FolderConventionValidator
+namespace Base.ToolsPackage.Editor.FolderConventionValidator
 {
     /// <summary>
     /// Editor window that checks the project folders against a <see cref="FolderConventionConfig"/>

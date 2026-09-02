@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using Base.ControllerSupportPackage.Controller.Navigation;
-using Base.EditorUiPackage;
+using Base.EditorUIPackage.Editor;
 using Base.UtilityPackage.Menus;
 using UnityEditor;
 using UnityEngine;

@@ -1,6 +1,6 @@
 using System;
-using Base.AttributePackage;
-using Base.ServicePackage;
+using Base.AttributesPackage;
+using Base.ServicesPackage;
 using Base.SettingsPackage.Core;
 using Base.UtilityPackage.Identification;
 using Base.UtilityPackage.Logging;

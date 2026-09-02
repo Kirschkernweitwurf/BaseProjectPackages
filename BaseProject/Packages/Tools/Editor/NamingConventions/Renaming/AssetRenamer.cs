@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using System.IO;
-using Base.ToolPackage.Editor.NamingConventions.Data;
+using Base.ToolsPackage.Editor.NamingConventions.Data;
 using Base.UtilityPackage.Logging;
 using UnityEditor;
 
-namespace Base.ToolPackage.Editor.NamingConventions.Renaming
+namespace Base.ToolsPackage.Editor.NamingConventions.Renaming
 {
     /// <summary>
     /// Applies the suggested file names to the asset database and records every applied rename in

@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Base.AttributePackage.Editor.Core;
+using Base.AttributesPackage.Editor.Core;
 
-namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot.Checks
+namespace Base.AttributesPackage.Editor.Windows.AttributeExplorer.Troubleshoot.Checks
 {
     /// <summary>
     /// Verifies that attributes invoking a method point at one with a signature the renderer accepts.

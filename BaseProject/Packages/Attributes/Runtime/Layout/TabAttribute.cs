@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Base.AttributePackage
+namespace Base.AttributesPackage
 {
     /// <summary>
     /// Groups consecutive fields into tabs. Fields sharing a group form one tab bar, and fields sharing

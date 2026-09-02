@@ -1,5 +1,5 @@
 using Base.CorePackage.PriorityTrackers;
-using Base.ServicePackage;
+using Base.ServicesPackage;
 using UnityEngine;
 
 namespace Base.CorePackage.MenuManaging.Modules

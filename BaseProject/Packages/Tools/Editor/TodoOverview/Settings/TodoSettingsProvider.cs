@@ -1,9 +1,9 @@
 using System.Collections.Generic;
-using Base.EditorUiPackage;
-using Base.ToolPackage.Editor.BaseToolsOverview;
+using Base.EditorUIPackage.Editor;
+using Base.ToolsPackage.Editor.BaseToolsOverview;
 using UnityEditor;
 
-namespace Base.ToolPackage.Editor.TodoOverview.Settings
+namespace Base.ToolsPackage.Editor.TodoOverview.Settings
 {
     /// <summary>
     /// Exposes <see cref="TodoSettings"/> in the project settings, so the keywords, the notation for

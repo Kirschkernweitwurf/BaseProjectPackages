@@ -1,9 +1,9 @@
 using System.Collections.Generic;
-using Base.ToolPackage.Editor.AudioRules.Model;
-using Base.ToolPackage.Editor.AudioRules.Scanning;
+using Base.ToolsPackage.Editor.AudioRules.Model;
+using Base.ToolsPackage.Editor.AudioRules.Scanning;
 using UnityEditor;
 
-namespace Base.ToolPackage.Editor.AudioRules.Apply
+namespace Base.ToolsPackage.Editor.AudioRules.Apply
 {
     /// <summary>
     /// Writes resolved plans back onto the importers. This is the only place in the tool that

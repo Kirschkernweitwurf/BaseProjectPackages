@@ -1,8 +1,8 @@
 {
-  "name": "Base.ToolPackage.Editor.Tests",
-  "rootNamespace": "Base.ToolPackage.Editor.Tests",
+  "name": "Base.ToolsPackage.Editor.Tests",
+  "rootNamespace": "Base.ToolsPackage.Editor.Tests",
   "references": [
-    "Base.ToolPackage.Editor",
+    "Base.ToolsPackage.Editor",
     "UnityEngine.TestRunner",
     "UnityEditor.TestRunner"
   ],

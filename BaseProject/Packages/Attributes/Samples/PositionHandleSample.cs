@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A position edited with a move handle.</summary>
     [AttributeSample(typeof(PositionHandleAttribute), EAttributeCategory.Widgets,

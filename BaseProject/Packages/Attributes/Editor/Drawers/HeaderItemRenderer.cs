@@ -1,15 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Base.AttributePackage.Editor.Core;
-using Base.EditorUiPackage;
+using Base.AttributesPackage.Editor.Core;
+using Base.EditorUIPackage.Editor;
 using JetBrains.Annotations;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Base.AttributePackage.Editor.Drawers
+namespace Base.AttributesPackage.Editor.Drawers
 {
     /// <summary>
     /// Draws the controls declared by <see cref="HeaderButtonAttribute"/>,

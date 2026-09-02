@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot.Checks
+namespace Base.AttributesPackage.Editor.Windows.AttributeExplorer.Troubleshoot.Checks
 {
     /// <summary>
     /// Resolves members by name the same way the drawers and handlers do at runtime, so the window

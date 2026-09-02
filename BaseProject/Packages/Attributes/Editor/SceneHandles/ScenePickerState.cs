@@ -1,6 +1,6 @@
 using UnityEditor;
 
-namespace Base.AttributePackage.Editor.SceneHandles
+namespace Base.AttributesPackage.Editor.SceneHandles
 {
     /// <summary>
     /// Remembers which field is currently waiting for a scene view click. Only one field can be armed at

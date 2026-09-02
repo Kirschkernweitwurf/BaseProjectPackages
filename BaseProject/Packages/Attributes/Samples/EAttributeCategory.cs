@@ -1,4 +1,4 @@
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>
     /// The groups the reference list sorts its attributes into.

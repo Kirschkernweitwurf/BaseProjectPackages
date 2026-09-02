@@ -1,17 +1,17 @@
-using Base.AttributePackage.Editor.SceneHandles;
+using Base.AttributesPackage.Editor.SceneHandles;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Inspectors
+namespace Base.AttributesPackage.Editor.Inspectors
 {
     /// <summary>
-    /// Applies the attribute package inspector to all MonoBehaviour types without an own editor, and
+    /// Applies the Attributes package inspector to all MonoBehaviour types without an own editor, and
     /// hosts the scene view handles. Only the component editor does that: an asset has no transform for
     /// a handle to be positioned against.
     /// </summary>
     [CustomEditor(typeof(MonoBehaviour), true)]
     [CanEditMultipleObjects]
-    internal sealed class MonoBehaviourAttributeEditor : AttributePackageEditor
+    internal sealed class MonoBehaviourAttributeEditor : AttributesPackageEditor
     {
         // The inspector's own serializedObject must not be touched from OnSceneGUI. The scene view can
         // repaint while the inspector is mid-draw, which would leave two walks running over the same

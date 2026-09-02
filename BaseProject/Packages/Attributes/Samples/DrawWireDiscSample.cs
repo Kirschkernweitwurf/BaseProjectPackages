@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A radius drawn as a ring, without a handle.</summary>
     [AttributeSample(typeof(DrawWireDiscAttribute), EAttributeCategory.Widgets,

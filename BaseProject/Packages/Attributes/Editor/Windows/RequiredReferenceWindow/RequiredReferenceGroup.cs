@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Windows.RequiredReferenceWindow
+namespace Base.AttributesPackage.Editor.Windows.RequiredReferenceWindow
 {
     /// <summary>A set of validation issues that all live on the same object or asset.</summary>
     internal sealed class RequiredReferenceGroup

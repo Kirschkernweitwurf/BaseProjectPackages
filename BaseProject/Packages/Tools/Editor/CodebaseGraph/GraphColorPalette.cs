@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Base.UtilityPackage;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.CodebaseGraph
+namespace Base.ToolsPackage.Editor.CodebaseGraph
 {
     /// <summary>
     /// Assigns a stable, readable color to each seed name. The palette is pastel, which changes what the

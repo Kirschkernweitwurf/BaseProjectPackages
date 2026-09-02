@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Windows.AttributeExplorer.Troubleshoot.Samples
+namespace Base.AttributesPackage.Editor.Windows.AttributeExplorer.Troubleshoot.Samples
 {
     /// <summary>
     /// Deliberately broken option sources, so the samples tab can show what happens when a picker cannot

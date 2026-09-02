@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
-using Base.ToolPackage.Editor.TodoOverview.Model;
+using Base.ToolsPackage.Editor.TodoOverview.Model;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.TodoOverview.Settings
+namespace Base.ToolsPackage.Editor.TodoOverview.Settings
 {
     /// <summary>
     /// Per project settings for the todo overview, kept in <c>ProjectSettings</c> so they are version

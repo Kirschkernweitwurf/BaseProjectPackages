@@ -1,7 +1,7 @@
-using Base.EditorUiPackage;
+using Base.EditorUIPackage.Editor;
 using UnityEngine.UIElements;
 
-namespace Base.ToolPackage.Editor.CodebaseGraph
+namespace Base.ToolsPackage.Editor.CodebaseGraph
 {
     /// <summary>
     /// Attaches the codebase graph sheets and keeps the colors that mean the same thing across the

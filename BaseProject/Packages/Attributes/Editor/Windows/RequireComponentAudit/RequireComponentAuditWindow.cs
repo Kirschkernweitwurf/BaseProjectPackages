@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Base.AttributePackage.Editor.Core;
-using Base.EditorUiPackage;
+using Base.AttributesPackage.Editor.Core;
+using Base.EditorUIPackage.Editor;
 using Base.UtilityPackage.Menus;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributePackage.Editor.Windows.RequireComponentAudit
+namespace Base.AttributesPackage.Editor.Windows.RequireComponentAudit
 {
     /// <summary>
     /// Audits <see cref="GetComponentAttribute"/> fields and lists the ones whose class is missing a

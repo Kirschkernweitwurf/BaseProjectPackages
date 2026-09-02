@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Base.ToolPackage.Editor.AssemblyGraph.Architecture
+namespace Base.ToolsPackage.Editor.AssemblyGraph.Architecture
 {
     /// <summary>
     /// The type graph rolled up to assemblies: every weighted edge, plus a lookup by source and target.

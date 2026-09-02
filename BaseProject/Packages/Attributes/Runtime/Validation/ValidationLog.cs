@@ -1,4 +1,4 @@
-namespace Base.AttributePackage
+namespace Base.AttributesPackage
 {
     /// <summary>Builds the log message for a validation issue, including the overview-window pointer.</summary>
     internal static class ValidationLog

@@ -1,9 +1,9 @@
 using System.Collections.Generic;
-using Base.EditorUiPackage;
+using Base.EditorUIPackage.Editor;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.ToolPackage.Editor.BaseToolsOverview
+namespace Base.ToolsPackage.Editor.BaseToolsOverview
 {
     /// <summary>
     /// Fills the Base Tools node of the project settings, which Unity otherwise leaves blank

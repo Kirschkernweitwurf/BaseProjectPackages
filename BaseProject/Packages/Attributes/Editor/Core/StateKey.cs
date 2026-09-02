@@ -1,6 +1,6 @@
 using System;
 
-namespace Base.AttributePackage.Editor.Core
+namespace Base.AttributesPackage.Editor.Core
 {
     /// <summary>
     /// Builds the string keys used for EditorPrefs entries and for per-field editor state, so every

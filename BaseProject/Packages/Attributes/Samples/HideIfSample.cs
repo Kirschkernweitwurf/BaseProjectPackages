@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.AttributePackage.Samples
+namespace Base.AttributesPackage.Samples
 {
     /// <summary>A field hidden while a condition holds.</summary>
     [AttributeSample(typeof(HideIfAttribute), EAttributeCategory.Conditions,

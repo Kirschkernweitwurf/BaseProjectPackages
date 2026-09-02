@@ -1,4 +1,4 @@
-namespace Base.ToolPackage.Editor.AssemblyGraph
+namespace Base.ToolsPackage.Editor.AssemblyGraph
 {
     /// <summary>A single declared reference from one assembly to another.</summary>
     internal sealed class AssemblyReferenceInfo

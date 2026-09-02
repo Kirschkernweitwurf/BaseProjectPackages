@@ -4,7 +4,7 @@ using System.Reflection;
 using Base.UtilityPackage.Logging;
 using UnityEditor;
 
-namespace Base.ToolPackage.Editor.BaseToolsOverview
+namespace Base.ToolsPackage.Editor.BaseToolsOverview
 {
     /// <summary>
     /// Finds every settings page sitting under Base Tools, by building the same providers the
