@@ -117,7 +117,7 @@ namespace Base.CorePackage.Tests
 
             _machine.Stop();
 
-            Assert.That(StateMachineRegistry.GetRunning(), Does.Not.Contain(_machine),
+            Assert.That(StateMachineRegistry.GetRunning(), Has.No.Member(_machine),
                 "a stopped machine should drop out of the list");
         }
 

@@ -2,7 +2,7 @@
   "name": "com.baseprojectpackages.services",
   "displayName": "Base Services",
   "description": "The runtime kernel every other Base package builds on: a service locator with typed registration and destroyed-object aware lookups, a GameServiceBehaviour base that registers and deregisters itself, a scene bootstrapper for persistent, per-scene and gameplay manager prefabs, an ordered shutdown pipeline, and priority trackers that resolve which of several competing callers currently owns a piece of global state. Zero dependencies beyond the Base Utility and Base Attributes packages.",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "unity": "6000.3",
   "license": "SEE LICENSE IN LICENSE.md",
   "licensesUrl": "https://polyformproject.org/licenses/shield/1.0.0",
