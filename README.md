@@ -8,11 +8,11 @@ Fourteen packages, Unity 6. Everything below is in here and in use.
 
 | Package | Folder | What it is | Needs |
 |---|---|---|---|
-| Attributes | `Attributes` | 100 inspector attributes that replace the default inspector | Editor UI, Utility |
+| Attributes | `Attributes` | 100 inspector attributes that enhance the default inspector | Editor UI, Utility |
 | Content | `Content` | The prefabs and assets the other packages are wired together with | Controller Support, Save System, Settings System, UI |
 | Controller Support | `ControllerSupport` | Gamepad navigation, input glyphs, haptics | Core |
 | Core | `Core` | Menus, audio, scenes, timers, state machines, debug tooling | Tweening |
-| Editor UI | `EditorUI` | The shared skin every Base editor window is built from | - |
+| Editor UI | `EditorUI` | The shared theme every Base editor window is built from | - |
 | Localization | `Localization` | Google Sheets sync for Unity String Tables | Utility |
 | Memory Profiler | `MemoryProfiler` | Automated `.snap` capture on a timer or on scene load | Core |
 | Save System | `SaveSystem` | Async, slot-based saving with backups and migrations | Services |
@@ -56,7 +56,7 @@ Component-driven and code-driven. Drop a tween on a transform, renderer, graphic
 
 ### Save system
 
-Async and slot-based. Objects own their own data through `ISavable` and register at runtime, so gameplay code never touches files. Fixed, appending and named slot models, optional AES encryption with plain JSON in the editor, versioned migrations, crash-safe writes, checksums with automatic fallback to a backup generation, autosave behind a cooldown, and metadata with screenshot thumbnails and play-time tracking. Storage is a swappable layer, so a console save API drops in behind it.
+Async and slot-based. Objects own their own data through `ISavable` and register at runtime, so gameplay code never touches files. Fixed, appending and named slot models, optional AES encryption with plain JSON in the editor, versioned migrations, crash-safe writes, checksums with automatic fallback to a backup generation, autosave behind a cooldown and metadata with screenshot thumbnails and play-time tracking. Storage is a swappable layer, so a console save API drops in behind it.
 
 ### Settings
 
@@ -64,7 +64,7 @@ Typed persistable settings (bool, int, float, string, enum) behind a registry th
 
 ### Controller support
 
-Gamepad navigation that wires explicit navigation between elements by proximity, a focus watchdog that keeps the UI from going dead when a selection is lost, stick scrolling, input glyph prompts that follow the active device, and priority-based haptics.
+Gamepad navigation that wires explicit navigation between elements by proximity, a focus watchdog that keeps the UI from going dead when a selection is lost, stick scrolling, input glyph prompts that follow the active device and priority-based haptics.
 
 ### Editor tooling
 
@@ -81,7 +81,7 @@ Gamepad navigation that wires explicit navigation between elements by proximity,
 
 ### Utility
 
-Serializable dictionaries, sets and a flattened 2D array, `SceneReference`, `TypeReference`, `InterfaceReference`, `SerializableDateTime`, `SerializableTimeSpan` and a validated `PersistentKey`, `Awaitable` composition helpers, a tracked coroutine runner, class-tagged rich-text logging with an optional global log handler, safe assembly reflection, platform and build flags, and helpers for audio math, percentages, strings, components, rotation and time formatting.
+Serializable dictionaries, sets and a flattened 2D array, `SceneReference`, `TypeReference`, `InterfaceReference`, `SerializableDateTime`, `SerializableTimeSpan` and a validated `PersistentKey`, `Awaitable` composition helpers, a tracked coroutine runner, class-tagged rich-text logging with an optional global log handler, safe assembly reflection, platform and build flags and helpers for audio math, percentages, strings, components, rotation and time formatting.
 
 ## Installation
 
@@ -89,7 +89,7 @@ Serializable dictionaries, sets and a flattened 2D array, `SceneReference`, `Typ
 
 1. Open your project in Unity
 2. Open the **Package Manager**
-3. Click **+**, select **Install package from git URL**, and paste:
+3. Click **+**, select **Install package from git URL** and paste:
    ```
    https://github.com/Kirschkernweitwurf/BasePackageInstaller.git
    ```
@@ -100,9 +100,9 @@ Tick one package and everything it needs comes along, resolved and installed for
 
 ### Why not just paste the Git URLs
 
-These packages depend on each other, but none of them says so in its `package.json`, and that is deliberate. A `package.json` dependency is resolved through a registry, and these packages are not on one. Declaring `Base.CorePackage` as a dependency of `Base.UIPackage` would make UPM go looking for it in a registry that does not have it, and the install fails.
+These packages depend on each other, but none of them says so in its `package.json` and that is deliberate. A `package.json` dependency is resolved through a registry and these packages are not on one. Declaring `Base.CorePackage` as a dependency of `Base.UIPackage` would make UPM go looking for it in a registry that does not have it and the install fails.
 
-So the dependency graph lives in the installer instead, where it can be resolved against Git URLs. That is the piece you are doing by hand if you install by hand: adding a single Git URL gives you exactly that one package, and Unity then compiles it against a project missing everything it needs.
+So the dependency graph lives in the installer instead, where it can be resolved against Git URLs. That is the piece you are doing by hand if you install by hand: adding a single Git URL gives you exactly that one package and Unity then compiles it against a project missing everything it needs.
 
 ### Installing manually anyway
 
@@ -112,13 +112,13 @@ The Git URL for a single package is:
 https://github.com/Kirschkernweitwurf/BaseProjectPackages.git?path=BaseProject/Packages/<PackageName>
 ```
 
-`<PackageName>` is the folder name from the table above, not the display name. You also have to add everything in the **Needs** column, and whatever those need, until nothing is missing.
+`<PackageName>` is the folder name from the table above, not the display name. You also have to add everything in the **Needs** column and whatever those need, until nothing is missing.
 
 The chains get long quickly. `UI` on its own pulls in six more packages, `Content` ten. Only `Editor UI` and `Utility` stand alone.
 
 ## Optional dependencies
 
-A setting that drives another package's feature ships with that feature rather than with the Settings package, in an assembly gated behind a version define on `com.baseprojectpackages.settings`. Without the Settings package installed those assemblies simply do not compile in, and the owning package keeps working:
+A setting that drives another package's feature ships with that feature rather than with the Settings package, in an assembly gated behind a version define on `com.baseprojectpackages.settings`. Without the Settings package installed those assemblies simply do not compile in and the owning package keeps working:
 
 - `LanguageSetting` in the Localization package
 - `RumbleEnabledSetting` and `RumbleIntensitySetting` in the Controller Support package
