@@ -12,7 +12,7 @@ Fourteen packages, Unity 6. Everything below is in here and in use.
 | Content | `Content` | The prefabs and assets the other packages are wired together with | Controller Support, Save System, Settings System, UI |
 | Controller Support | `ControllerSupport` | Gamepad navigation, input glyphs, haptics | Core |
 | Core | `Core` | Menus, audio, scenes, timers, state machines, debug tooling | Tweening |
-| Editor UI | `EditorUI` | The shared skin every Base editor window is built from | nothing |
+| Editor UI | `EditorUI` | The shared skin every Base editor window is built from | - |
 | Localization | `Localization` | Google Sheets sync for Unity String Tables | Utility |
 | Memory Profiler | `MemoryProfiler` | Automated `.snap` capture on a timer or on scene load | Core |
 | Save System | `SaveSystem` | Async, slot-based saving with backups and migrations | Services |
@@ -21,7 +21,7 @@ Fourteen packages, Unity 6. Everything below is in here and in use.
 | Tools | `Tools` | Editor tooling: static analysis, project health, generators | Attributes |
 | Tweening | `Tweening` | Component-driven and code-driven tweening | Services |
 | UI | `UI` | Buttons, confirmation dialogs, small UI utilities | Core |
-| Utility | `Utility` | Serializable collections, logging, platform flags, helpers | nothing |
+| Utility | `Utility` | Serializable collections, logging, platform flags, helpers | - |
 
 **Needs** lists direct dependencies only; the installer walks the rest of the chain.
 
