@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Base.ToolsPackage.Editor.Shared;
 using Base.UtilityPackage.Menus;
 using UnityEditor;
 using UnityEngine;
@@ -412,7 +413,7 @@ namespace Base.ToolsPackage.Editor.FolderConventionValidator
         private void Rescan()
         {
             _violations.Clear();
-            _violations.AddRange(FolderConventionScanner.Scan(config));
+            _violations.AddRange(FolderConventionScanner.Scan(config, AssetDatabaseIndex.Default));
             _hasScanned = true;
             Repaint();
         }

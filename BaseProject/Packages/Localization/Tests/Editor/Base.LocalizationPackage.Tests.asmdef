@@ -1,0 +1,31 @@
+{
+  "name": "Base.LocalizationPackage.Tests",
+  "rootNamespace": "Base.LocalizationPackage.Tests",
+  "references": [
+    "Base.LocalizationPackage.Settings",
+    "Base.LocalizationPackage.Editor",
+    "GUID:2e77701fe0ceda44fb763f03ee704c37",
+    "GUID:922d81cfb9ff6984da4cb2213b66a375",
+    "GUID:8f82a2d294e14cc5930979a4e0d686ec",
+    "UnityEngine.TestRunner",
+    "UnityEditor.TestRunner",
+    "GUID:1bb27541c4d98c341871129f271f8263",
+    "GUID:c3837597513e91f44a47d8cd91c34f68",
+    "GUID:eec0964c48f6f4e40bc3ec2257ccf8c5"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": true,
+  "precompiledReferences": [
+    "nunit.framework.dll"
+  ],
+  "autoReferenced": false,
+  "defineConstraints": [
+    "UNITY_INCLUDE_TESTS"
+  ],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

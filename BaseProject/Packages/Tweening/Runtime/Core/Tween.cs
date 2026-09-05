@@ -8,8 +8,11 @@ namespace Base.TweeningPackage.Core
 {
     /// <summary>
     /// Generic tween that interpolates from a captured start value to a target value over time.
-    /// The starting value is lazily captured after any configured delay has elapsed to avoid
-    /// staleness caused by external motion/layout during the delay period.
+    /// <para>
+    /// When a <c>fromGetter</c> is supplied the start value is captured once the configured delay has
+    /// elapsed, so external motion or layout during the delay cannot make it stale. A literal
+    /// <c>from</c> value is applied at <see cref="Start"/> instead and holds through the delay.
+    /// </para>
     /// </summary>
     /// <typeparam name="T">The value type being tweened.</typeparam>
     public sealed class Tween<T> : TweenBase
@@ -20,13 +23,13 @@ namespace Base.TweeningPackage.Core
 
         /// <summary>
         /// Optional initial value used if <see cref="_fromGetter"/> is not supplied.
-        /// This value is not applied until the tween actually starts after any delay.
+        /// Applied at <see cref="Start"/> and held for the length of any delay.
         /// </summary>
         private readonly T _from;
 
         /// <summary>
-        /// Optional function that returns the current value at the moment the tween begins moving.
-        /// If provided, this is used to capture the true starting value exactly once after the delay.
+        /// Optional function that returns the current value at the moment the tween begins moving,
+        /// which is after any delay has elapsed. Read exactly once, and nothing is written before it.
         /// </summary>
         private readonly Func<T> _fromGetter;
 
@@ -70,6 +73,7 @@ namespace Base.TweeningPackage.Core
         private float _delayTimer;
         private bool _isRunning;
         private bool _isCompleted;
+        private bool _hasCaptured;
         private bool _hasStarted;
         private T _capturedFromValue;
 
@@ -105,11 +109,14 @@ namespace Base.TweeningPackage.Core
             _isCompleted = false;
             _hasStarted = false;
 
-            _capturedFromValue = _fromGetter != null
-                ? _fromGetter()
-                : _from;
+            // The start value is read at the moment movement begins. Without a delay that moment is
+            // now. With a delay in front of it a getter has to wait, or it reads a value the delay then
+            // makes stale. A literal from value cannot go stale, so it is applied now either way and
+            // holds through the delay, which is what a fade in wants.
+            _hasCaptured = false;
 
-            _setter(_capturedFromValue);
+            if (_fromGetter == null || _delay <= 0f)
+                CaptureFromValue();
 
             if (ServiceLocator.TryGet(out TweenRunner runner))
                 runner.RegisterTween(this);
@@ -156,6 +163,9 @@ namespace Base.TweeningPackage.Core
                 }
 
                 _hasStarted = true;
+
+                if (!_hasCaptured)
+                    CaptureFromValue();
             }
 
             _elapsedTime += deltaTime;
@@ -177,6 +187,17 @@ namespace Base.TweeningPackage.Core
             // The TweenRunner detects IsCompleted after this Tick returns and removes the tween.
             InvokeComplete();
             InvokeKill();
+        }
+
+        /// <summary>Reads the start value and writes it, once, at the moment movement begins.</summary>
+        private void CaptureFromValue()
+        {
+            _capturedFromValue = _fromGetter != null
+                ? _fromGetter()
+                : _from;
+
+            _setter(_capturedFromValue);
+            _hasCaptured = true;
         }
     }
 }

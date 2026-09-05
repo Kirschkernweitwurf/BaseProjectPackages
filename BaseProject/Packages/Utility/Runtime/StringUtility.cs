@@ -15,6 +15,8 @@ namespace Base.UtilityPackage
         /// <summary>
         /// Returns a nicely formatted version of a variable name, by replacing underscores with spaces,
         /// inserting spaces before capital letters and capitalizing the first letter of each word.
+        /// Leading and repeated underscores are word breaks with no word on one side, so they collapse
+        /// instead of producing a blank: <c>_isDirty</c> reads as <c>Is Dirty</c>.
         /// </summary>
         /// <param name="variableName">The raw variable name to format.</param>
         /// <returns>The formatted display name.</returns>
@@ -32,12 +34,14 @@ namespace Base.UtilityPackage
 
                 if (currentChar == '_')
                 {
-                    result.Append(' ');
+                    if (IsSeparatorNeeded(result))
+                        result.Append(' ');
+
                     wordStart = true;
                     continue;
                 }
 
-                if (i > 0
+                if (IsSeparatorNeeded(result)
                     && char.IsUpper(currentChar)
                     && char.IsLower(variableName[i - 1]))
                     result.Append(' ');
@@ -77,5 +81,9 @@ namespace Base.UtilityPackage
 
             return hash;
         }
+
+        /// <summary>A word break only means something once a word is there and is not already closed.</summary>
+        private static bool IsSeparatorNeeded(StringBuilder result)
+            => result.Length > 0 && result[result.Length - 1] != ' ';
     }
 }

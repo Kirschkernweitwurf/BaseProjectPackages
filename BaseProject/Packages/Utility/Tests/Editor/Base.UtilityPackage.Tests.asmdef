@@ -3,6 +3,7 @@
   "rootNamespace": "Base.UtilityPackage.Tests",
   "references": [
     "Base.UtilityPackage",
+    "Base.UtilityPackage.Editor",
     "UnityEngine.TestRunner",
     "UnityEditor.TestRunner"
   ],

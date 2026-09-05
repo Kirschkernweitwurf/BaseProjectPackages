@@ -1,0 +1,23 @@
+{
+  "name": "Base.TweeningPackage.PlayTests",
+  "rootNamespace": "Base.TweeningPackage.PlayTests",
+  "references": [
+    "Base.TweeningPackage",
+    "Base.ServicesPackage",
+    "UnityEngine.TestRunner",
+    "UnityEditor.TestRunner"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": true,
+  "precompiledReferences": [
+    "nunit.framework.dll"
+  ],
+  "autoReferenced": false,
+  "defineConstraints": [
+    "UNITY_INCLUDE_TESTS"
+  ],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

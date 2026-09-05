@@ -98,17 +98,26 @@ namespace Base.AttributesPackage.Editor.Core
         }
 
         // The lowest order among the members wins, so pinning any one field of a run pins the run.
+        // Seeded from the first attribute found rather than from zero: starting at zero made every
+        // positive order collapse back to it, so a field could only ever be pinned up, never pushed down.
         private static int Order(Type type, List<SerializedProperty> properties, int start, int end)
         {
             int lowest = 0;
+            bool found = false;
 
             for (int i = start; i < end; i++)
             {
                 PropertyOrderAttribute attribute = ReflectionCache.GetAttribute<PropertyOrderAttribute>(
                     ReflectionCache.GetField(type, properties[i].name));
 
-                if (attribute != null)
-                    lowest = Math.Min(lowest, attribute.Order);
+                if (attribute == null)
+                    continue;
+
+                lowest = found
+                    ? Math.Min(lowest, attribute.Order)
+                    : attribute.Order;
+
+                found = true;
             }
 
             return lowest;

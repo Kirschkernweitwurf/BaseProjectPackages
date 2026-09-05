@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Base.ToolsPackage.Editor.NamingConventions.Data;
+using Base.ToolsPackage.Editor.Shared;
 using Base.UtilityPackage.Logging;
 using UnityEditor;
 
@@ -108,7 +109,7 @@ namespace Base.ToolsPackage.Editor.NamingConventions.Scanning
         {
             Dictionary<string, List<string>> groups = new();
 
-            foreach (string path in AssetNamingScanner.CollectAssetPaths(ruleSet))
+            foreach (string path in AssetNamingScanner.CollectAssetPaths(ruleSet, AssetDatabaseIndex.Default))
             {
                 Type assetType = AssetDatabase.GetMainAssetTypeAtPath(path);
 

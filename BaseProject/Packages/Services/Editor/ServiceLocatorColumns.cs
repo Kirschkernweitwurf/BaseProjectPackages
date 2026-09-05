@@ -16,9 +16,13 @@ namespace Base.ServicesPackage.Editor
     /// </summary>
     internal sealed class ServiceLocatorColumns
     {
-        private const string InstanceWidthKey = "Base.ServicesPackage.Columns.Instance";
+        /// <summary>Preference the dragged instance column width is remembered under.</summary>
+        internal const string InstanceWidthKey = "Base.ServicesPackage.Columns.Instance";
+
+        /// <summary>Preference the dragged service column width is remembered under.</summary>
+        internal const string ServiceWidthKey = "Base.ServicesPackage.Columns.Service";
+
         private const float MinTextColumnWidth = 70f;
-        private const string ServiceWidthKey = "Base.ServicesPackage.Columns.Service";
         private const float TextPadding = 4f;
 
         // What the user dragged to, kept apart from what is actually drawn: a narrow window clamps

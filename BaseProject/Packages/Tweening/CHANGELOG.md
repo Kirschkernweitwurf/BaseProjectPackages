@@ -4,7 +4,23 @@ All notable changes to this package are recorded here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this package uses
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-Nothing has been recorded yet. The repository-level `CHANGELOG.md` at the root holds the shared
-history up to this point.
+Changes made before 1.0.11 were not recorded.
 
 ## [Unreleased]
+
+## [1.0.12] - 2026-09-05
+
+### Fixed
+
+- `TweenRunner` resets its static events on entering play mode. With domain reload disabled
+  their subscribers survived into the next session and were invoked twice.
+- `Tween<T>` reads a `fromGetter` once the delay has elapsed instead of at `Start`, which is what
+  the class always documented. With a delay in front of it the old capture read a value the delay
+  then made stale, so anything that moved the target while the tween waited was undone by a jump
+  back. A literal `from` value still applies at `Start` and holds through the delay.
+
+### Added
+
+- `documentationUrl` and `changelogUrl` in `package.json`, so the Package Manager window
+  links straight to the README and to this file.
+- A play mode test assembly, driving tweens through `TweenRunner` over real frames.

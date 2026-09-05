@@ -24,5 +24,16 @@ namespace Base.ToolsPackage.Editor.OrderManagement
 
         /// <summary>Optional text emitted as an XML summary above the constant.</summary>
         internal string Comment => comment;
+
+        /// <summary>Creates a constant. Unity fills the fields when one is read back from disk.</summary>
+        /// <param name="name">Identifier used for the generated constant.</param>
+        /// <param name="value">Value assigned to the generated constant.</param>
+        /// <param name="comment">Optional text emitted as an XML summary above it.</param>
+        internal OrderConstant(string name, int value, string comment = null)
+        {
+            this.name = name;
+            this.value = value;
+            this.comment = comment;
+        }
     }
 }

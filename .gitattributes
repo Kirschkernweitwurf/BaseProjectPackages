@@ -1,0 +1,32 @@
+# Git normalizes every text file to LF in the object store and hands it back as CRLF on
+# checkout. Without this the CRLF rule only holds on machines that happen to have
+# core.autocrlf set, so a fresh clone elsewhere would silently drop it.
+* text=auto eol=crlf
+
+# Unity YAML. Resolved by UnityYAMLMerge, which needs the files declared as mergeable.
+*.anim merge=unityyamlmerge eol=crlf
+*.asset merge=unityyamlmerge eol=crlf
+*.controller merge=unityyamlmerge eol=crlf
+*.mat merge=unityyamlmerge eol=crlf
+*.prefab merge=unityyamlmerge eol=crlf
+*.unity merge=unityyamlmerge eol=crlf
+
+# Binary assets. Git must never rewrite a byte of these.
+*.dll binary
+*.dylib binary
+*.fbx binary
+*.gif binary
+*.jpeg binary
+*.jpg binary
+*.mp3 binary
+*.obj binary
+*.ogg binary
+*.otf binary
+*.png binary
+*.psd binary
+*.so binary
+*.tga binary
+*.ttf binary
+*.unitypackage binary
+*.wav binary
+*.zip binary

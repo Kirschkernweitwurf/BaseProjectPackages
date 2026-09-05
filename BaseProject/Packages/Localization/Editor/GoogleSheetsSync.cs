@@ -12,6 +12,9 @@ namespace Base.LocalizationPackage.Editor
     /// </summary>
     internal static class GoogleSheetsSync
     {
+        /// <summary>Returned when a sync is asked for without a collection to sync.</summary>
+        internal const string MissingCollectionMessage = "No collection.";
+
         /// <summary>
         /// Shown when no String Table Collection with a <see cref="GoogleSheetsExtension"/> exists.
         /// </summary>
@@ -21,7 +24,6 @@ namespace Base.LocalizationPackage.Editor
         private const string ConfirmPushMessage =
             "This overwrites the sheets with local data for {0} collection(s). Continue?";
         private const string DialogTitle = "Localization";
-        private const string MissingCollectionMessage = "No collection.";
         private const string MissingExtensionMessage = "No Google Sheets extension.";
         private const string MissingProviderMessage = "No Sheets Service Provider set.";
         private const string MissingSpreadsheetIdMessage = "No Spreadsheet Id set.";

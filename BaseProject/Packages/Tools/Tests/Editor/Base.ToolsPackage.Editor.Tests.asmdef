@@ -2,6 +2,7 @@
   "name": "Base.ToolsPackage.Editor.Tests",
   "rootNamespace": "Base.ToolsPackage.Editor.Tests",
   "references": [
+    "Base.ToolsPackage",
     "Base.ToolsPackage.Editor",
     "UnityEngine.TestRunner",
     "UnityEditor.TestRunner"

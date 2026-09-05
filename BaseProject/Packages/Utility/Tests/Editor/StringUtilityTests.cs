@@ -10,6 +10,8 @@ namespace Base.UtilityPackage.Tests
     {
         private const string CamelCaseName = "overrideEnabled";
         private const string CapitalRunName = "myHTTPServer";
+        private const string DoubleUnderscoreName = "audio__manager";
+        private const string LeadingUnderscoreName = "_isDirty";
         private const uint OffsetBasis = 2166136261u;
         private const string UnderscoreName = "audio_manager";
 
@@ -36,13 +38,15 @@ namespace Base.UtilityPackage.Tests
             Assert.That(StringUtility.NicifyVariableName(string.Empty), Is.Empty);
         }
 
-        /// <summary>
-        /// Documents the current handling of a leading underscore: the word break is inserted before
-        /// there is a word, so the result starts with a space.
-        /// </summary>
+        /// <summary>A word break with no word in front of it has nothing to separate.</summary>
         [Test]
-        public void ALeadingUnderscoreKeepsTheSpaceItInserts()
-            => Assert.That(StringUtility.NicifyVariableName("_isDirty"), Is.EqualTo(" Is Dirty"));
+        public void ALeadingUnderscoreDoesNotOpenTheNameWithASpace()
+            => Assert.That(StringUtility.NicifyVariableName(LeadingUnderscoreName), Is.EqualTo("Is Dirty"));
+
+        /// <summary>Two underscores in a row are one word break, not two.</summary>
+        [Test]
+        public void RepeatedUnderscoresCollapseIntoOneBreak()
+            => Assert.That(StringUtility.NicifyVariableName(DoubleUnderscoreName), Is.EqualTo("Audio Manager"));
 
         /// <summary>The same text has to hash to the same value every time it is asked.</summary>
         [Test]

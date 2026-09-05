@@ -4,7 +4,23 @@ All notable changes to this package are recorded here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this package uses
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-Nothing has been recorded yet. The repository-level `CHANGELOG.md` at the root holds the shared
-history up to this point.
+Changes made before 1.6.5 were not recorded.
 
 ## [Unreleased]
+
+## [1.7.0] - 2026-09-05
+
+### Added
+
+- `documentationUrl` and `changelogUrl` in `package.json`, so the Package Manager window
+  links straight to the README and to this file.
+- An `AssemblyInfo` opening the editor assembly's internals to the test assembly, which references
+  the editor assembly now too. Its six files could not be named by any test.
+- Tests for `NavigationValidator`, covering nested and switched off selectables, the wiring of
+  the added element, and the step being safe to run at the head of every rebuild.
+- Tests for the rumble setting keys.
+
+### Changed
+
+- The test assembly references `Base.ControllerSupportPackage.Settings`, whose two files could
+  not be named by any test before.

@@ -16,6 +16,9 @@ namespace Base.AttributesPackage.Editor.Core
         private const float ButtonPadding = 12f;
         private const float MinimumWidth = 40f;
 
+        private bool _measured;
+        private float _minButtonWidth;
+
         /// <summary>Display label per button.</summary>
         internal string[] Labels { get; private set; }
 
@@ -26,7 +29,21 @@ namespace Base.AttributesPackage.Editor.Core
         internal bool IsFlags { get; private set; }
 
         /// <summary>Width the widest label needs, used to decide how many buttons fit per row.</summary>
-        internal float MinButtonWidth { get; private set; }
+        /// <remarks>
+        /// Measured the first time it is asked for rather than when the layout is built. Measuring
+        /// reads the editor styles, which only exist while something is being drawn, so doing it in
+        /// <see cref="Build"/> would tie building a layout to being inside a repaint.
+        /// </remarks>
+        internal float MinButtonWidth
+        {
+            get
+            {
+                if (!_measured)
+                    MeasureButtonWidth();
+
+                return _minButtonWidth;
+            }
+        }
 
         private EnumButtonLayout() { }
 
@@ -48,7 +65,6 @@ namespace Base.AttributesPackage.Editor.Core
             if (layout.Labels == null || layout.Labels.Length == 0)
                 return null;
 
-            layout.MeasureButtonWidth();
             return layout;
         }
 
@@ -86,7 +102,8 @@ namespace Base.AttributesPackage.Editor.Core
             foreach (string label in Labels)
                 widest = Mathf.Max(widest, EditorStyles.miniButton.CalcSize(new GUIContent(label)).x + ButtonPadding);
 
-            MinButtonWidth = widest;
+            _minButtonWidth = widest;
+            _measured = true;
         }
     }
 }

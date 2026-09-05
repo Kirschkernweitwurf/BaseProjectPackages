@@ -52,12 +52,15 @@ namespace Base.SaveSystemPackage.Encryption
         /// Every encryptor that might be needed to read. Include NoOp and AES so both dev and build
         /// saves can be loaded.
         /// </param>
-        /// <exception cref="ArgumentNullException">When the serializer or the write encryptor is null.</exception>
+        /// <exception cref="ArgumentNullException">When any of the three arguments is null.</exception>
         public SaveCodec(ISaveSerializer serializer, ISaveEncryptor writeEncryptor,
             IEnumerable<ISaveEncryptor> readEncryptors)
         {
             _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
             _writeEncryptor = writeEncryptor ?? throw new ArgumentNullException(nameof(writeEncryptor));
+
+            if (readEncryptors == null)
+                throw new ArgumentNullException(nameof(readEncryptors));
 
             foreach (ISaveEncryptor encryptor in readEncryptors)
             {

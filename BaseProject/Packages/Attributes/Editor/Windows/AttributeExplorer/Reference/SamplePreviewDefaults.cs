@@ -1,5 +1,4 @@
 using System;
-using Base.AttributesPackage.Editor.Collections;
 using Base.AttributesPackage.Editor.Core;
 
 namespace Base.AttributesPackage.Editor.Windows.AttributeExplorer.Reference
@@ -17,10 +16,6 @@ namespace Base.AttributesPackage.Editor.Windows.AttributeExplorer.Reference
     {
         /// <summary>Marks every property of the sample type as unseen again.</summary>
         /// <param name="sampleType">The sample type about to be shown.</param>
-        internal static void Reapply(Type sampleType)
-        {
-            FirstDraw.Forget(sampleType);
-            ListDrawerState.Forget(sampleType);
-        }
+        internal static void Reapply(Type sampleType) => FirstDraw.Forget(sampleType);
     }
 }

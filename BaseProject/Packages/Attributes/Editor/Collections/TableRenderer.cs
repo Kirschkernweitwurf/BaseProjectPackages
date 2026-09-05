@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Base.AttributesPackage.Editor.Core;
 using Base.UtilityPackage.Editor;
 using UnityEditor;
 using UnityEditorInternal;
@@ -39,7 +40,7 @@ namespace Base.AttributesPackage.Editor.Collections
         internal static void Draw(SerializedProperty property, GUIContent label, Type elementType,
             TableAttribute attribute, bool canResize = true)
         {
-            if (ListDrawerState.IsFirstDraw(property))
+            if (FirstDraw.IsFirst(property))
                 property.isExpanded = true;
 
             EditorGUILayout.BeginHorizontal();

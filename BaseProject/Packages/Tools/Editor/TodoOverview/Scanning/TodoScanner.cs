@@ -25,7 +25,7 @@ namespace Base.ToolsPackage.Editor.TodoOverview.Scanning
         internal static List<TodoEntry> Scan(TodoSettings settings)
         {
             List<TodoEntry> entries = new();
-            TodoPatterns patterns = TodoPatterns.Create(settings);
+            TodoPatterns patterns = TodoPatterns.Create(TodoPatternInput.From(settings));
 
             if (!patterns.HasKeywords)
                 return entries;

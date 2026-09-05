@@ -190,7 +190,17 @@ namespace Base.ToolsPackage.Editor.StaticResetChecker
                 .ToList();
         }
 
-        private static void ScanFile(string source, string assetPath, string absolutePath, ScanOptions options,
+        /// <summary>
+        /// Reads one file's text and adds every static it finds no reset for. This is the whole of the
+        /// analysis: <see cref="Scan"/> only walks the disk and hands the text over, so pointing this
+        /// at a source string covers the rules without a project having to be arranged around them.
+        /// </summary>
+        /// <param name="source">The full text of the file.</param>
+        /// <param name="assetPath">Project relative path, shown in the window.</param>
+        /// <param name="absolutePath">Path on disk, used to open the file at the line.</param>
+        /// <param name="options">What counts as a reset and what is passed over.</param>
+        /// <param name="results">Receives one finding per unreset static.</param>
+        internal static void ScanFile(string source, string assetPath, string absolutePath, ScanOptions options,
             List<Finding> results)
         {
             ScanContext context = new()

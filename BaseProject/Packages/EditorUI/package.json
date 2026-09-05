@@ -2,8 +2,10 @@
   "name": "com.baseprojectpackages.editorui",
   "displayName": "Base Editor UI",
   "description": "The shared look of the Base editor windows, driven by a theme asset the user owns: skin-aware colors for both editor skins, the accent, stripe, hover, selection and separator colors every window strips its rows with, the metrics they lay rows out by, the corner radii of cards, pills and buttons, rounded nine-sliced backgrounds, badge measuring and drawing, and draggable column dividers that persist their widths. Every color and size is editable from a project settings page with a live preview, and a change reaches every open window at once. Editor only, with no dependencies, so any tool assembly can reference it.",
-  "version": "1.1.3",
+  "version": "1.1.4",
   "unity": "6000.3",
+  "documentationUrl": "https://github.com/Kirschkernweitwurf/BaseProjectPackages/blob/main/BaseProject/Packages/EditorUI/README.md",
+  "changelogUrl": "https://github.com/Kirschkernweitwurf/BaseProjectPackages/blob/main/BaseProject/Packages/EditorUI/CHANGELOG.md",
   "license": "SEE LICENSE IN LICENSE.md",
   "licensesUrl": "https://polyformproject.org/licenses/shield/1.0.0",
   "author": {

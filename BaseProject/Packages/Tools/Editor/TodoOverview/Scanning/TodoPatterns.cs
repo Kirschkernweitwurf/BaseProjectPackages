@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Base.ToolsPackage.Editor.TodoOverview.Model;
-using Base.ToolsPackage.Editor.TodoOverview.Settings;
 using UnityEngine;
 
 namespace Base.ToolsPackage.Editor.TodoOverview.Scanning
@@ -51,12 +50,12 @@ namespace Base.ToolsPackage.Editor.TodoOverview.Scanning
         private readonly List<Regex> _metadata = new();
         private readonly List<string> _words = new();
 
-        private TodoPatterns(TodoSettings settings)
+        private TodoPatterns(TodoPatternInput input)
         {
-            Continuation = settings.Continuation;
-            DateFormats = BuildFormats(settings.DateFormats);
+            Continuation = input.Continuation;
+            DateFormats = BuildFormats(input.DateFormats);
 
-            foreach (TodoTag tag in settings.Tags)
+            foreach (TodoTag tag in input.Tags)
             {
                 if (!tag.Enabled || string.IsNullOrWhiteSpace(tag.Keyword))
                     continue;
@@ -69,16 +68,16 @@ namespace Base.ToolsPackage.Editor.TodoOverview.Scanning
                 _words.Add(keyword);
             }
 
-            Keywords = BuildKeywords(_words, settings.CaseSensitive);
+            Keywords = BuildKeywords(_words, input.CaseSensitive);
 
-            foreach (string pattern in settings.MetadataPatterns)
+            foreach (string pattern in input.MetadataPatterns)
                 AddMetadata(pattern);
         }
 
-        /// <summary>Builds the compiled patterns from the project settings.</summary>
-        /// <param name="settings">The settings to compile.</param>
+        /// <summary>Builds the compiled patterns from the values a scan was configured with.</summary>
+        /// <param name="input">The keywords, notations and formats to compile.</param>
         /// <returns>The compiled patterns.</returns>
-        internal static TodoPatterns Create(TodoSettings settings) => new(settings);
+        internal static TodoPatterns Create(TodoPatternInput input) => new(input);
 
         /// <summary>
         /// Whether a file mentions any keyword at all. Reading a file is cheap next to lexing it, so

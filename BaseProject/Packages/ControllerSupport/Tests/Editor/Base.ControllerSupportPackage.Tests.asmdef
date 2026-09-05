@@ -2,12 +2,16 @@
   "name": "Base.ControllerSupportPackage.Tests",
   "rootNamespace": "Base.ControllerSupportPackage.Tests",
   "references": [
+    "Base.ControllerSupportPackage.Settings",
     "Base.ControllerSupportPackage",
+    "Base.ControllerSupportPackage.Editor",
     "Base.ServicesPackage",
     "Base.UtilityPackage",
     "UnityEngine.UI",
     "UnityEngine.TestRunner",
-    "UnityEditor.TestRunner"
+    "UnityEditor.TestRunner",
+    "GUID:1bb27541c4d98c341871129f271f8263",
+    "GUID:c3837597513e91f44a47d8cd91c34f68"
   ],
   "includePlatforms": [
     "Editor"

@@ -4,7 +4,17 @@ All notable changes to this package are recorded here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this package uses
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-Nothing has been recorded yet. The repository-level `CHANGELOG.md` at the root holds the shared
-history up to this point.
+Changes made before 2.1.4 were not recorded.
 
 ## [Unreleased]
+
+## [2.1.5] - 2026-09-05
+
+### Added
+
+- `documentationUrl` and `changelogUrl` in `package.json`, so the Package Manager window
+  links straight to the README and to this file.
+- An `AssemblyInfo` opening the editor assembly's internals to the test assembly, which references
+  the editor assembly now too. Its 28 files could not be named by any test.
+- Tests for `StateMachineLayout`, covering columns by distance from the entry state, unreachable
+  states being parked behind, any state targets, and columns being centred.

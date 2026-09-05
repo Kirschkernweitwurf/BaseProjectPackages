@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Base.ToolsPackage.Editor.NamingConventions.Data;
+using Base.ToolsPackage.Editor.Shared;
 using Base.UtilityPackage.Logging;
 using UnityEditor;
 
@@ -13,6 +14,8 @@ namespace Base.ToolsPackage.Editor.NamingConventions.Scanning
         private const string AssetsRoot = "Assets/";
         private const string PackagesRoot = "Packages/";
         private const int ProgressStep = 200;
+        private const string MissingIndexMessage =
+            "Collecting assets needs an asset index to read the project through.";
         private const string ProgressTitle = "Asset Naming Conventions";
 
         /// <summary>Returns every asset that breaks the first rule matching it.</summary>
@@ -26,7 +29,7 @@ namespace Base.ToolsPackage.Editor.NamingConventions.Scanning
                 return violations;
             }
 
-            List<string> paths = CollectAssetPaths(ruleSet);
+            List<string> paths = CollectAssetPaths(ruleSet, AssetDatabaseIndex.Default);
 
             try
             {
@@ -50,7 +53,12 @@ namespace Base.ToolsPackage.Editor.NamingConventions.Scanning
         }
 
         /// <summary>Returns every asset path that takes part in a scan.</summary>
-        public static List<string> CollectAssetPaths(AssetNamingRuleSet ruleSet)
+        /// <param name="ruleSet">The rules that say what is in scope.</param>
+        /// <param name="index">
+        /// The project to read. Pass <see cref="AssetDatabaseIndex.Default"/> for the live one.
+        /// </param>
+        /// <returns>Every path that takes part in a scan, in the order the project reports them.</returns>
+        public static List<string> CollectAssetPaths(AssetNamingRuleSet ruleSet, IAssetIndex index)
         {
             List<string> paths = new();
 
@@ -60,9 +68,15 @@ namespace Base.ToolsPackage.Editor.NamingConventions.Scanning
                 return paths;
             }
 
-            foreach (string path in AssetDatabase.GetAllAssetPaths())
+            if (index == null)
             {
-                if (!IsScannable(ruleSet, path))
+                CustomLogger.LogError(MissingIndexMessage, ruleSet);
+                return paths;
+            }
+
+            foreach (string path in index.GetAllAssetPaths())
+            {
+                if (!IsScannable(ruleSet, index, path))
                     continue;
 
                 paths.Add(path);
@@ -71,7 +85,7 @@ namespace Base.ToolsPackage.Editor.NamingConventions.Scanning
             return paths;
         }
 
-        private static bool IsScannable(AssetNamingRuleSet ruleSet, string path)
+        private static bool IsScannable(AssetNamingRuleSet ruleSet, IAssetIndex index, string path)
         {
             bool isInProject = path.StartsWith(AssetsRoot, StringComparison.Ordinal)
                 || ruleSet.IncludePackages && path.StartsWith(PackagesRoot, StringComparison.Ordinal);
@@ -79,7 +93,7 @@ namespace Base.ToolsPackage.Editor.NamingConventions.Scanning
             if (!isInProject)
                 return false;
 
-            if (AssetDatabase.IsValidFolder(path))
+            if (index.IsValidFolder(path))
                 return false;
 
             return !ruleSet.IsIgnoredPath(path);

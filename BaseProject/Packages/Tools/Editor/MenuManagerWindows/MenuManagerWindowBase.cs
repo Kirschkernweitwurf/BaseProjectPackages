@@ -17,6 +17,7 @@ namespace Base.ToolsPackage.Editor.MenuManagerWindows
     /// </summary>
     internal abstract class MenuManagerWindowBase : EditorWindow
     {
+        /// <summary>Menu priority both manager windows are listed at, so they sit next to each other.</summary>
         protected const int MenuPriority = 0;
         private const float DividerHeight = 8f;
         private const double FocusSeconds = 4d;

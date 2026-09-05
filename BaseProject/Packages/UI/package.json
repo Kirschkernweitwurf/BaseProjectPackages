@@ -2,8 +2,10 @@
   "name": "com.baseprojectpackages.ui",
   "displayName": "Base UI",
   "description": "Reusable Unity UI building blocks: click-driven button components for opening and closing menus, loading scenes and opening links, an awaitable confirmation dialog service and utility components such as camera-facing billboards, a world-space canvas wrapper, an FPS counter and a StreamingAssets-based build version display.",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "unity": "6000.3",
+  "documentationUrl": "https://github.com/Kirschkernweitwurf/BaseProjectPackages/blob/main/BaseProject/Packages/UI/README.md",
+  "changelogUrl": "https://github.com/Kirschkernweitwurf/BaseProjectPackages/blob/main/BaseProject/Packages/UI/CHANGELOG.md",
   "license": "SEE LICENSE IN LICENSE.md",
   "licensesUrl": "https://polyformproject.org/licenses/shield/1.0.0",
   "author": {

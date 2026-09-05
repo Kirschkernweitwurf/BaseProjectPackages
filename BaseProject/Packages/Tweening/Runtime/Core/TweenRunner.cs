@@ -128,6 +128,18 @@ namespace Base.TweeningPackage.Core
                 _pendingRemovals.Add(tween);
         }
 
+        /// <summary>
+        /// With domain reload disabled, subscribers registered in a previous play mode session survive
+        /// into the next one and would be invoked a second time. Drop them before anything runs.
+        /// </summary>
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ResetStaticEvents()
+        {
+            OnTweenRegistered = null;
+            OnTweenUpdated = null;
+            OnTweenDeregistered = null;
+        }
+
         private void ProcessTweens(float deltaTime)
         {
             _isUpdating = true;

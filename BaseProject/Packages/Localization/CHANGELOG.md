@@ -4,7 +4,24 @@ All notable changes to this package are recorded here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this package uses
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-Nothing has been recorded yet. The repository-level `CHANGELOG.md` at the root holds the shared
-history up to this point.
+Changes made before 1.2.1 were not recorded.
 
 ## [Unreleased]
+
+## [1.3.0] - 2026-09-05
+
+### Added
+
+- `documentationUrl` and `changelogUrl` in `package.json`, so the Package Manager window
+  links straight to the README and to this file.
+- A test assembly, the first this package has had, with an `AssemblyInfo` opening the editor
+  assembly's internals to it.
+- Tests for the sync guards and `SyncResult`.
+- Tests for the language setting key, which nothing else in the code pins.
+
+### Changed
+
+- `GoogleSheetsSync.MissingCollectionMessage` is internal, so a test can name the reason a sync
+  was refused instead of repeating the text.
+- The test assembly references `Base.LocalizationPackage.Settings`, whose one file could not be
+  named by any test before.

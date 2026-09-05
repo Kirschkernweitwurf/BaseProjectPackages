@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
+using Base.ToolsPackage.Editor.Shared;
 using Base.UtilityPackage.Logging;
 using UnityEditor;
 
@@ -14,6 +15,7 @@ namespace Base.ToolsPackage.Editor.FolderConventionValidator
     internal static class FolderConventionScanner
     {
         private const string AssetSearchFilter = "t:Object";
+        private const string MissingIndexMessage = "Scanning needs an asset index to read the project through.";
         private const string AssetsRoot = "Assets";
         private const string PackagesRoot = "Packages";
         private const char PathSeparator = '/';
@@ -24,7 +26,12 @@ namespace Base.ToolsPackage.Editor.FolderConventionValidator
         private static readonly Regex SnakeCase = new("^[a-z0-9]+(_[a-z0-9]+)*$", RegexOptions.Compiled);
 
         /// <summary>Scans the project and returns every violation, sorted by path.</summary>
-        internal static List<FolderViolation> Scan(FolderConventionConfig config)
+        /// <param name="config">The rules to check against.</param>
+        /// <param name="index">
+        /// The project to read. Pass <see cref="AssetDatabaseIndex.Default"/> for the live one.
+        /// </param>
+        /// <returns>Every violation that was found, sorted by path.</returns>
+        internal static List<FolderViolation> Scan(FolderConventionConfig config, IAssetIndex index)
         {
             List<FolderViolation> violations = new();
 
@@ -34,17 +41,23 @@ namespace Base.ToolsPackage.Editor.FolderConventionValidator
                 return violations;
             }
 
+            if (index == null)
+            {
+                CustomLogger.LogError(MissingIndexMessage, config);
+                return violations;
+            }
+
             string root = Normalize(config.RootFolder);
 
-            if (!AssetDatabase.IsValidFolder(root))
+            if (!index.IsValidFolder(root))
             {
                 CustomLogger.LogWarning($"The root folder \"{root}\" does not exist.", config);
                 return violations;
             }
 
-            CollectMissingFolders(config, violations);
-            CollectLooseAssets(config, root, violations);
-            CollectFolderViolations(config, root, 0, violations);
+            CollectMissingFolders(config, index, violations);
+            CollectLooseAssets(config, index, root, violations);
+            CollectFolderViolations(config, index, root, 0, violations);
 
             violations.Sort(Compare);
             return violations;
@@ -92,7 +105,8 @@ namespace Base.ToolsPackage.Editor.FolderConventionValidator
             return AssetDatabase.IsValidFolder(normalized);
         }
 
-        private static void CollectMissingFolders(FolderConventionConfig config, List<FolderViolation> violations)
+        private static void CollectMissingFolders(FolderConventionConfig config, IAssetIndex index,
+            List<FolderViolation> violations)
         {
             foreach (string entry in config.RequiredFolders)
             {
@@ -101,7 +115,7 @@ namespace Base.ToolsPackage.Editor.FolderConventionValidator
 
                 string path = Normalize(entry);
 
-                if (AssetDatabase.IsValidFolder(path))
+                if (index.IsValidFolder(path))
                     continue;
 
                 violations.Add(new FolderViolation(EFolderViolationType.MissingFolder, path,
@@ -109,20 +123,15 @@ namespace Base.ToolsPackage.Editor.FolderConventionValidator
             }
         }
 
-        private static void CollectLooseAssets(FolderConventionConfig config, string root,
+        private static void CollectLooseAssets(FolderConventionConfig config, IAssetIndex index, string root,
             List<FolderViolation> violations)
         {
             if (config.AllowLooseAssetsInRoot)
                 return;
 
-            foreach (string guid in AssetDatabase.FindAssets(AssetSearchFilter, new[]
-                     {
-                         root
-                     }))
+            foreach (string path in index.FindAssetPaths(AssetSearchFilter, root))
             {
-                string path = AssetDatabase.GUIDToAssetPath(guid);
-
-                if (AssetDatabase.IsValidFolder(path))
+                if (index.IsValidFolder(path))
                     continue;
 
                 if (GetParentFolder(path) != root)
@@ -134,10 +143,10 @@ namespace Base.ToolsPackage.Editor.FolderConventionValidator
         }
 
         // Depth is counted from the root, so a direct child sits at level one.
-        private static void CollectFolderViolations(FolderConventionConfig config, string folder, int depth,
-            List<FolderViolation> violations)
+        private static void CollectFolderViolations(FolderConventionConfig config, IAssetIndex index, string folder,
+            int depth, List<FolderViolation> violations)
         {
-            foreach (string subFolder in AssetDatabase.GetSubFolders(folder))
+            foreach (string subFolder in index.GetSubFolders(folder))
             {
                 string name = Path.GetFileName(subFolder);
 
@@ -147,7 +156,7 @@ namespace Base.ToolsPackage.Editor.FolderConventionValidator
                 int childDepth = depth + 1;
                 CollectNameViolations(config, subFolder, name, violations);
                 CollectDepthViolation(config, subFolder, childDepth, violations);
-                CollectFolderViolations(config, subFolder, childDepth, violations);
+                CollectFolderViolations(config, index, subFolder, childDepth, violations);
             }
         }
 
