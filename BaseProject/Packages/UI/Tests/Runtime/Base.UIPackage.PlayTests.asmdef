@@ -2,9 +2,9 @@
   "name": "Base.UIPackage.PlayTests",
   "rootNamespace": "Base.UIPackage.PlayTests",
   "references": [
-    "Base.UIPackage",
-    "Base.CorePackage.CameraUtility",
-    "Base.ServicesPackage",
+    "GUID:f12f20722d8f4234b8dfcce9e344fb31",
+    "GUID:32606d983e1f4baea85ddeb05ed9e10f",
+    "GUID:197b6d0582f34e28ad8ccd70c0b1c826",
     "UnityEngine.TestRunner",
     "UnityEditor.TestRunner"
   ],
@@ -12,13 +12,9 @@
   "excludePlatforms": [],
   "allowUnsafeCode": false,
   "overrideReferences": true,
-  "precompiledReferences": [
-    "nunit.framework.dll"
-  ],
+  "precompiledReferences": ["nunit.framework.dll"],
   "autoReferenced": false,
-  "defineConstraints": [
-    "UNITY_INCLUDE_TESTS"
-  ],
+  "defineConstraints": ["UNITY_INCLUDE_TESTS"],
   "versionDefines": [],
   "noEngineReferences": false
 }

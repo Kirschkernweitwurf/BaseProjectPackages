@@ -2,7 +2,7 @@ using System;
 using Base.ToolsPackage.Editor.TodoOverview.Scanning;
 using NUnit.Framework;
 
-namespace Base.ToolsPackage.Editor.Tests
+namespace Base.ToolsPackage.Editor.Tests.TodoOverview
 {
     /// <summary>
     /// Covers how a date in a comment is read. The whole point of configured formats is that 08.09.26

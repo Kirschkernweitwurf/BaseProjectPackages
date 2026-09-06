@@ -8,10 +8,16 @@ Changes made before 1.0.11 were not recorded.
 
 ## [Unreleased]
 
-## [1.1.2] - 2026-09-06
+## [1.1.3] - 2026-09-06
 
 ### Changed
 
+- Assembly references are GUIDs rather than names, matching the ones already written that way.
+  A GUID reference survives an assembly being renamed; a name reference silently stops
+  resolving. Unity's own assemblies stay named, since they have no GUID to point at.
+- Every inherited style value in the service locator window now names `EditorTableStyles` rather
+  than reaching it through `ServiceLocatorStyles`.
+- Disposing the styles reads as one line. `EditorStyleSet` is an ordinary C# object.
 - `ServiceLocatorWindow` is 731 lines instead of 843. The state badges and their tooltips moved into
   `ServiceLocatorBadges`, the tab separated export into `ServiceLocatorReport`, and the sort column,
   its direction and the comparison into `ServiceLocatorSorting`. The same three pieces came out of
@@ -19,6 +25,9 @@ Changes made before 1.0.11 were not recorded.
 
 ### Fixed
 
+- The service locator column layout no longer computes a remainder nothing reads.
+- A tracker test asserts the item is there before reading it, so a regression fails as an
+  assertion rather than as a dereference.
 - Stray blank line runs, and the comment explaining why `StateBadges` is declared after the three
   badges it holds is back on that array. It had come loose and was sitting alone in the field block,
   the same way it had in the Event Bus window.

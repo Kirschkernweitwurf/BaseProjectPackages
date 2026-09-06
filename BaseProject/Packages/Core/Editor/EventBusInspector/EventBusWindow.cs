@@ -174,8 +174,7 @@ namespace Base.CorePackage.Editor.EventBusInspector
 
             // A window torn down before it ever drew has no styles to release, and a plain C# field
             // is a real null here rather than a destroyed Unity object.
-            if (_styles != null)
-                _styles.Dispose();
+            _styles?.Dispose();
         }
 #endregion
 
@@ -211,12 +210,12 @@ namespace Base.CorePackage.Editor.EventBusInspector
                 return;
             }
 
-            float size = EventBusStyles.IconSize;
+            float size = EditorTableStyles.IconSize;
             Rect iconRect = new(cell.x, cell.y + (cell.height - size) * 0.5f, size, size);
 
             GUI.DrawTexture(iconRect, icon, ScaleMode.ScaleToFit);
 
-            float offset = size + EventBusStyles.IconGap;
+            float offset = size + EditorTableStyles.IconGap;
             Rect label = new(cell.x + offset, cell.y, Mathf.Max(0f, cell.width - offset), cell.height);
 
             GUI.Label(label, content, style);
@@ -234,9 +233,9 @@ namespace Base.CorePackage.Editor.EventBusInspector
         // the card when the list is long enough to scroll.
         private static Rect TableArea(Rect card, int rowCount)
         {
-            float content = EventBusStyles.CardPadding * 2f
-                + EventBusStyles.HeaderHeight
-                + rowCount * EventBusStyles.RowHeight;
+            float content = EditorTableStyles.CardPadding * 2f
+                + EditorTableStyles.HeaderHeight
+                + rowCount * EditorTableStyles.RowHeight;
 
             return new Rect(card.x, card.y, card.width, Mathf.Min(card.height, content));
         }
@@ -451,7 +450,7 @@ namespace Base.CorePackage.Editor.EventBusInspector
 
                 GUI.SetNextControlName(SearchControlName);
                 _search = GUILayout.TextField(_search, EditorStyles.toolbarSearchField,
-                    GUILayout.Width(EventBusStyles.SearchWidth));
+                    GUILayout.Width(EditorTableStyles.SearchWidth));
 
                 _leaksOnly = GUILayout.Toggle(_leaksOnly, LeaksContent, EditorStyles.toolbarButton);
 
@@ -461,19 +460,19 @@ namespace Base.CorePackage.Editor.EventBusInspector
                 GUILayout.FlexibleSpace();
 
                 if (GUILayout.Button(ExpandLabel, EditorStyles.toolbarButton,
-                        GUILayout.Width(EventBusStyles.ToolbarButtonWidth)))
+                        GUILayout.Width(EditorTableStyles.ToolbarButtonWidth)))
                     _pendingExpandAll = true;
 
                 if (GUILayout.Button(CollapseLabel, EditorStyles.toolbarButton,
-                        GUILayout.Width(EventBusStyles.ToolbarButtonWidth)))
+                        GUILayout.Width(EditorTableStyles.ToolbarButtonWidth)))
                     _pendingExpandAll = false;
 
                 if (GUILayout.Button(CopyContent, EditorStyles.toolbarButton,
-                        GUILayout.Width(EventBusStyles.ToolbarButtonWidth)))
+                        GUILayout.Width(EditorTableStyles.ToolbarButtonWidth)))
                     EditorGUIUtility.systemCopyBuffer = EventBusReport.Build(_model.Rows);
 
                 if (GUILayout.Button(RefreshLabel, EditorStyles.toolbarButton,
-                        GUILayout.Width(EventBusStyles.ToolbarButtonWidth)))
+                        GUILayout.Width(EditorTableStyles.ToolbarButtonWidth)))
                     _needsRebuild = true;
             }
         }
@@ -498,9 +497,9 @@ namespace Base.CorePackage.Editor.EventBusInspector
         // readable without expanding a single event.
         private void DrawSummaryBar()
         {
-            Rect bar = GUILayoutUtility.GetRect(0f, EventBusStyles.SummaryHeight, GUILayout.ExpandWidth(true));
-            Rect line = new(bar.x + EventBusStyles.OuterMargin, bar.y, bar.width - EventBusStyles.OuterMargin * 2f,
-                bar.height);
+            Rect bar = GUILayoutUtility.GetRect(0f, EditorTableStyles.SummaryHeight, GUILayout.ExpandWidth(true));
+            Rect line = new(bar.x + EditorTableStyles.OuterMargin, bar.y,
+                bar.width - EditorTableStyles.OuterMargin * 2f, bar.height);
 
             GUI.Label(line, string.Format(SummaryFormat, _model.Filtered.Count, _model.Entries.Count,
                     _model.HandlerCount),
@@ -515,12 +514,12 @@ namespace Base.CorePackage.Editor.EventBusInspector
                 ? EventBusBadges.LeakText(_model.LeakCount, _model.HandlerCount)
                 : SummaryOkText;
 
-            float width = EditorRows.MeasureBadge(text, _styles.Badge, EventBusStyles.MinBadgeWidth);
+            float width = EditorRows.MeasureBadge(text, _styles.Badge, EditorTableStyles.MinBadgeWidth);
             Rect pill = new(line.xMax - width, line.y, width, line.height);
 
             DrawPill(pill, text, hasLeaks
-                ? EventBusStyles.SummaryProblemColor
-                : EventBusStyles.SummaryOkColor);
+                ? EditorTableStyles.SummaryProblemColor
+                : EditorTableStyles.SummaryOkColor);
         }
 
         // One texture tinted through GUI.color rather than one per fill, so every pill in the window
@@ -560,15 +559,15 @@ namespace Base.CorePackage.Editor.EventBusInspector
         }
 
         private float MeasureBadge(string text)
-            => EditorRows.MeasureBadge(text, _styles.Badge, EventBusStyles.MinBadgeWidth);
+            => EditorRows.MeasureBadge(text, _styles.Badge, EditorTableStyles.MinBadgeWidth);
 
         private void DrawTable()
         {
-            GUILayout.Space(EventBusStyles.OuterMargin);
+            GUILayout.Space(EditorTableStyles.OuterMargin);
 
             using (new EditorGUILayout.HorizontalScope())
             {
-                GUILayout.Space(EventBusStyles.OuterMargin);
+                GUILayout.Space(EditorTableStyles.OuterMargin);
 
                 using (EditorGUILayout.VerticalScope card = new(_styles.Card))
                 {
@@ -582,18 +581,18 @@ namespace Base.CorePackage.Editor.EventBusInspector
                         _columns.DrawAndProcessDividers(TableArea(card.rect, _model.Rows.Count));
                 }
 
-                GUILayout.Space(EventBusStyles.OuterMargin);
+                GUILayout.Space(EditorTableStyles.OuterMargin);
             }
 
-            GUILayout.Space(EventBusStyles.OuterMargin);
+            GUILayout.Space(EditorTableStyles.OuterMargin);
         }
 
         private void DrawHeader()
         {
-            Rect header = GUILayoutUtility.GetRect(0f, EventBusStyles.HeaderHeight, GUILayout.ExpandWidth(true));
+            Rect header = GUILayoutUtility.GetRect(0f, EditorTableStyles.HeaderHeight, GUILayout.ExpandWidth(true));
 
             if (Event.current.type == EventType.Repaint)
-                EditorGUI.DrawRect(header, EventBusStyles.HeaderColor);
+                EditorGUI.DrawRect(header, EditorTableStyles.HeaderColor);
 
             _columns.Recalculate(header, _badgeColumnWidth);
 
@@ -616,7 +615,7 @@ namespace Base.CorePackage.Editor.EventBusInspector
             if (_sorting.Column == column)
             {
                 float titleWidth = _styles.Header.CalcSize(new GUIContent(title)).x;
-                Rect arrow = new(cell.x + titleWidth + EventBusStyles.HeaderArrowGap, cell.y,
+                Rect arrow = new(cell.x + titleWidth + EditorTableStyles.HeaderArrowGap, cell.y,
                     EditorMetrics.SortArrowWidth, cell.height);
 
                 EditorRows.DrawSortArrow(arrow, _sorting.Order, EditorPalette.Text);
@@ -671,7 +670,7 @@ namespace Base.CorePackage.Editor.EventBusInspector
 
         private bool DrawRow(int index, EventBusRow row)
         {
-            Rect area = GUILayoutUtility.GetRect(0f, EventBusStyles.RowHeight, GUILayout.ExpandWidth(true));
+            Rect area = GUILayoutUtility.GetRect(0f, EditorTableStyles.RowHeight, GUILayout.ExpandWidth(true));
             bool isHovered = area.Contains(Event.current.mousePosition);
 
             if (row.IsHeader)
@@ -730,7 +729,7 @@ namespace Base.CorePackage.Editor.EventBusInspector
             if (handler.IsLeak && Event.current.type == EventType.Repaint)
                 EditorGUI.DrawRect(area, EventBusStyles.LeakRowColor);
 
-            EditorRows.DrawIndentGuides(new Rect(area.x + EventBusStyles.RowInset, area.y, area.width, area.height),
+            EditorRows.DrawIndentGuides(new Rect(area.x + EditorTableStyles.RowInset, area.y, area.width, area.height),
                 1, EventBusStyles.GuideColor);
 
             GUIContent state = EventBusBadges.StateContent(handler.State);
@@ -765,8 +764,8 @@ namespace Base.CorePackage.Editor.EventBusInspector
             bool isHovered = button.Contains(Event.current.mousePosition);
 
             DrawPillBackground(button, isHovered
-                ? EventBusStyles.PingHoverColor
-                : EventBusStyles.PingRestColor);
+                ? EditorTableStyles.PingHoverColor
+                : EditorTableStyles.PingRestColor);
 
             if (GUI.Button(button, PingContent, isHovered
                     ? _styles.PingHot
@@ -851,11 +850,11 @@ namespace Base.CorePackage.Editor.EventBusInspector
             if (Event.current.type != EventType.Repaint)
                 return;
 
-            Rect icon = EventBusStyles.EmptyIconRect(area);
+            Rect icon = EditorTableStyles.EmptyIconRect(area);
 
             GUI.DrawTexture(icon, EditorIcons.Script, ScaleMode.ScaleToFit, true, 0f, EditorPalette.DimText, 0f, 0f);
 
-            Rect title = new(area.x, icon.yMax + EventBusStyles.EmptyLineGap, area.width, EditorMetrics.RowHeight);
+            Rect title = new(area.x, icon.yMax + EditorTableStyles.EmptyLineGap, area.width, EditorMetrics.RowHeight);
 
             GUI.Label(title, message, _styles.EmptyTitle);
 

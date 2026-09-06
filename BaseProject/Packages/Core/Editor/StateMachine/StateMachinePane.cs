@@ -16,7 +16,6 @@ namespace Base.CorePackage.Editor.StateMachine
         private readonly VisualElement _headerRight = new();
 
         private readonly Label _note = new();
-        private readonly Label _title;
 
         /// <summary>Builds a pane.</summary>
         /// <param name="title">The headline shown in the header.</param>
@@ -27,8 +26,8 @@ namespace Base.CorePackage.Editor.StateMachine
             VisualElement header = new();
             header.AddToClassList(StateMachineStyle.PaneHeaderClass);
 
-            _title = new Label(title);
-            _title.AddToClassList(StateMachineStyle.PaneTitleClass);
+            Label titleLabel = new(title);
+            titleLabel.AddToClassList(StateMachineStyle.PaneTitleClass);
 
             _note.AddToClassList(StateMachineStyle.PaneNoteClass);
 
@@ -36,7 +35,7 @@ namespace Base.CorePackage.Editor.StateMachine
             _headerRight.style.flexGrow = 1f;
             _headerRight.style.justifyContent = Justify.FlexEnd;
 
-            header.Add(_title);
+            header.Add(titleLabel);
             header.Add(_note);
             header.Add(_headerRight);
 

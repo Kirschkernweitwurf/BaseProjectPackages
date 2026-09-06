@@ -13,7 +13,7 @@ namespace Base.AttributesPackage.Editor.Core
     internal static class LeadingGutter
     {
         /// <summary>Width of the arrow, which is the whole step.</summary>
-        internal const float Width = 13f;
+        private const float Width = 13f;
 
         private const float IndentStep = 15f;
 

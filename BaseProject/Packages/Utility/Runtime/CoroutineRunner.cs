@@ -180,15 +180,26 @@ namespace Base.UtilityPackage
         /// </summary>
         private Coroutine StartTracked(IEnumerator coroutine)
         {
+            // Unity runs a coroutine up to its first yield inside StartCoroutine, so one that never
+            // yields is already finished by the time the handle exists. The tracker would then remove
+            // a handle that was still null and the real one would be added afterwards and never taken
+            // out again, which is a set that grows for the lifetime of the runner.
+            bool finished = false;
             Coroutine handle = null;
+
             handle = StartCoroutine(Tracked());
-            _coroutines.Add(handle);
+
+            if (!finished)
+                _coroutines.Add(handle);
+
             return handle;
 
             IEnumerator Tracked()
             {
                 while (coroutine.MoveNext())
                     yield return coroutine.Current;
+
+                finished = true;
 
                 _coroutines.Remove(handle);
             }

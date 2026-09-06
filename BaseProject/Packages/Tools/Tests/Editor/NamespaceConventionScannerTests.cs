@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Base.ToolsPackage.Editor.NamespaceConventionValidator;
+using Base.ToolsPackage.Editor.Tests.FolderConventionValidator;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;

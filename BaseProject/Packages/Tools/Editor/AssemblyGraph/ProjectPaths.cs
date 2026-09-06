@@ -10,6 +10,7 @@ namespace Base.ToolsPackage.Editor.AssemblyGraph
         /// <param name="assetPath">Path relative to the project root, such as a script or asmdef path.</param>
         /// <returns>The absolute path.</returns>
         internal static string ToAbsolute(string assetPath)
-            => Path.Combine(Directory.GetParent(Application.dataPath).FullName, assetPath);
+            => Path.Combine(Directory.GetParent(Application.dataPath)?.FullName ?? Application.dataPath,
+                assetPath);
     }
 }

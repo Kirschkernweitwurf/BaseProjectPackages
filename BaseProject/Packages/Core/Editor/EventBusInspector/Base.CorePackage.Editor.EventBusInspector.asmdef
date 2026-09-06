@@ -2,14 +2,12 @@
   "name": "Base.CorePackage.Editor.EventBusInspector",
   "rootNamespace": "Base.CorePackage.Editor.EventBusInspector",
   "references": [
-    "Base.CorePackage.EventBus",
     "GUID:197b6d0582f34e28ad8ccd70c0b1c826",
     "GUID:8f82a2d294e14cc5930979a4e0d686ec",
-    "GUID:922d81cfb9ff6984da4cb2213b66a375"
+    "GUID:922d81cfb9ff6984da4cb2213b66a375",
+    "GUID:c91f48944d7a41559eebf5bca57d2a97"
   ],
-  "includePlatforms": [
-    "Editor"
-  ],
+  "includePlatforms": ["Editor"],
   "excludePlatforms": [],
   "allowUnsafeCode": false,
   "overrideReferences": false,

@@ -7,7 +7,7 @@ using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 
-namespace Base.ToolsPackage.Editor.Tests
+namespace Base.ToolsPackage.Editor.Tests.TodoOverview
 {
     /// <summary>
     /// Covers what a scan is compiled into. A keyword that matches inside a longer word turns every
@@ -41,7 +41,8 @@ namespace Base.ToolsPackage.Editor.Tests
 
         /// <summary>A keyword of only whitespace is not a keyword, so it is dropped rather than compiled.</summary>
         [Test]
-        public void ABlankKeywordIsDropped() => Assert.That(PatternsFor(Tag("   ", true)).HasKeywords, Is.False);
+        public void ABlankKeywordIsDropped()
+            => Assert.That(PatternsFor(Tag("   ", true)).HasKeywords, Is.False);
 
         /// <summary>
         /// The keyword has to stand on its own. Without that, a comment mentioning "todos" or a class
@@ -66,11 +67,7 @@ namespace Base.ToolsPackage.Editor.Tests
         [Test]
         public void ASensitiveScanFindsOnlyTheConfiguredCasing()
         {
-            Regex keywords = Patterns(new[]
-                {
-                    Tag(Keyword, true)
-                }, NoPatterns, true)
-                .Keywords;
+            Regex keywords = Patterns(new[] { Tag(Keyword, true) }, NoPatterns, caseSensitive: true).Keywords;
 
             Assert.That(keywords.IsMatch("// TODO fix"), Is.True);
             Assert.That(keywords.IsMatch("// todo fix"), Is.False);
@@ -83,10 +80,7 @@ namespace Base.ToolsPackage.Editor.Tests
         [Test]
         public void ThePreCheckIgnoresCasingEvenForASensitiveScan()
         {
-            TodoPatterns patterns = Patterns(new[]
-            {
-                Tag(Keyword, true)
-            }, NoPatterns, true);
+            TodoPatterns patterns = Patterns(new[] { Tag(Keyword, true) }, NoPatterns, caseSensitive: true);
 
             Assert.That(patterns.ContainsKeyword("// todo fix this"), Is.True);
         }
@@ -107,12 +101,8 @@ namespace Base.ToolsPackage.Editor.Tests
         {
             LogAssert.Expect(LogType.Warning, new Regex(InvalidPatternWarning));
 
-            TodoPatterns patterns = Patterns(NoTags, new[]
-                {
-                    InvalidPattern,
-                    ValidPattern
-                },
-                false);
+            TodoPatterns patterns = Patterns(NoTags, new[] { InvalidPattern, ValidPattern },
+                caseSensitive: false);
 
             Assert.That(patterns.Metadata, Has.Count.EqualTo(1));
         }
@@ -122,11 +112,7 @@ namespace Base.ToolsPackage.Editor.Tests
         public void BlankDateFormatsAreDroppedAndTheRestAreTrimmed()
         {
             TodoPatterns patterns = TodoPatterns.Create(new TodoPatternInput(NoTags, NoPatterns,
-                new[]
-                {
-                    "  dd.MM.yy  ",
-                    "   "
-                }, ETodoContinuation.SingleLine, false));
+                new[] { "  dd.MM.yy  ", "   " }, ETodoContinuation.SingleLine, false));
 
             Assert.That(patterns.DateFormats, Has.Length.EqualTo(1));
             Assert.That(patterns.DateFormats[0], Is.EqualTo("dd.MM.yy"));
@@ -134,18 +120,16 @@ namespace Base.ToolsPackage.Editor.Tests
 
         /// <summary>The compiler reads plain values, so a missing list is a bug rather than an empty scan.</summary>
         [Test]
-        public void AMissingListIsRefused() => Assert.Throws<ArgumentNullException>(() => new TodoPatternInput(null,
-            NoPatterns, NoPatterns,
-            ETodoContinuation.SingleLine, false));
+        public void AMissingListIsRefused()
+            => Assert.Throws<ArgumentNullException>(() => new TodoPatternInput(null, NoPatterns, NoPatterns,
+                ETodoContinuation.SingleLine, false));
 
         /// <summary>One keyword definition in the color the color does not matter in.</summary>
         private static TodoTag Tag(string keyword, bool enabled) => new(keyword, Color.white, enabled);
 
         /// <summary>Patterns compiled for one keyword, with nothing else configured.</summary>
-        private static TodoPatterns PatternsFor(TodoTag tag) => Patterns(new[]
-        {
-            tag
-        }, NoPatterns, false);
+        private static TodoPatterns PatternsFor(TodoTag tag)
+            => Patterns(new[] { tag }, NoPatterns, caseSensitive: false);
 
         /// <summary>Patterns compiled from the given keywords and notations.</summary>
         private static TodoPatterns Patterns(IReadOnlyList<TodoTag> tags, IReadOnlyList<string> metadata,

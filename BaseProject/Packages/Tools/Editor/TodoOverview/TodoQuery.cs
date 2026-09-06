@@ -13,7 +13,7 @@ namespace Base.ToolsPackage.Editor.TodoOverview
     internal static class TodoQuery
     {
         /// <summary>The section and dropdown entry items without a responsible person land in.</summary>
-        internal const string Unassigned = "Unassigned";
+        private const string Unassigned = "Unassigned";
 
         private static readonly char[] SearchSeparators =
         {

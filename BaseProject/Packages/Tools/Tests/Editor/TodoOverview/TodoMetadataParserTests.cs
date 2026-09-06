@@ -4,7 +4,7 @@ using Base.ToolsPackage.Editor.TodoOverview.Model;
 using Base.ToolsPackage.Editor.TodoOverview.Scanning;
 using NUnit.Framework;
 
-namespace Base.ToolsPackage.Editor.Tests
+namespace Base.ToolsPackage.Editor.Tests.TodoOverview
 {
     /// <summary>
     /// Covers how an item is split into message, owner and date. Every pattern is tried in turn and

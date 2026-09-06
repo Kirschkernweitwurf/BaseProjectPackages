@@ -9,10 +9,10 @@ namespace Base.AttributesPackage.Editor.Collections
     internal static class CollectionGui
     {
         /// <summary>Cancel label of the delete confirmation dialog.</summary>
-        internal const string ConfirmCancel = "Cancel";
+        private const string ConfirmCancel = "Cancel";
 
         /// <summary>Accept label of the delete confirmation dialog.</summary>
-        internal const string ConfirmDelete = "Delete";
+        private const string ConfirmDelete = "Delete";
 
         /// <summary>
         /// Removes an element, working around the two-step delete Unity does on object references.

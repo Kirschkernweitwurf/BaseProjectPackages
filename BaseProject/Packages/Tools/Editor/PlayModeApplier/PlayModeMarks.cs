@@ -12,9 +12,9 @@ namespace Base.ToolsPackage.Editor.PlayModeApplier
     internal static class PlayModeMarks
     {
         /// <summary>Components marked during the current play session.</summary>
-        internal static IReadOnlyList<Component> Components => _marked;
+        internal static IReadOnlyList<Component> Components => Marked;
 
-        private static readonly List<Component> _marked = new();
+        private static readonly List<Component> Marked = new();
 
         /// <summary>Marks a component. Marking the same component twice is a no-op.</summary>
         internal static void Add(Component component)
@@ -22,39 +22,39 @@ namespace Base.ToolsPackage.Editor.PlayModeApplier
             if (component == null)
                 return;
 
-            if (_marked.Contains(component))
+            if (Marked.Contains(component))
                 return;
 
-            _marked.Add(component);
+            Marked.Add(component);
         }
 
         /// <summary>Removes a mark.</summary>
-        internal static void Remove(Component component) => _marked.Remove(component);
+        internal static void Remove(Component component) => Marked.Remove(component);
 
         /// <summary>Removes a mark by list index.</summary>
         internal static void RemoveAt(int index)
         {
             if (index < 0
-                || index >= _marked.Count)
+                || index >= Marked.Count)
                 return;
 
-            _marked.RemoveAt(index);
+            Marked.RemoveAt(index);
         }
 
         /// <summary>Returns true when the component is already marked.</summary>
-        internal static bool HasComponent(Component component) => component != null && _marked.Contains(component);
+        internal static bool HasComponent(Component component) => component != null && Marked.Contains(component);
 
         /// <summary>Drops marks whose objects have been destroyed.</summary>
         internal static void Prune()
         {
-            for (int index = _marked.Count - 1; index >= 0; index--)
+            for (int index = Marked.Count - 1; index >= 0; index--)
             {
-                if (_marked[index] == null)
-                    _marked.RemoveAt(index);
+                if (Marked[index] == null)
+                    Marked.RemoveAt(index);
             }
         }
 
         /// <summary>Drops every mark.</summary>
-        internal static void Clear() => _marked.Clear();
+        internal static void Clear() => Marked.Clear();
     }
 }

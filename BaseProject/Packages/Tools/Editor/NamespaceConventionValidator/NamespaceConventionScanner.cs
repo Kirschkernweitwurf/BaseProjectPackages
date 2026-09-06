@@ -93,7 +93,7 @@ namespace Base.ToolsPackage.Editor.NamespaceConventionValidator
         /// <param name="assemblyFolders">The assembly folders, longest path first.</param>
         /// <param name="rootNamespaceByFolder">The root namespace of each assembly folder.</param>
         /// <returns>The expected namespace, or an empty string when nothing can be measured from.</returns>
-        internal static string Expected(string folder, string root, string rootNamespace,
+        private static string Expected(string folder, string root, string rootNamespace,
             IReadOnlyList<string> assemblyFolders, IReadOnlyDictionary<string, string> rootNamespaceByFolder)
         {
             foreach (string assemblyFolder in assemblyFolders)

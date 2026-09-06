@@ -146,9 +146,7 @@ namespace Base.EditorUIPackage.Editor
         /// <param name="options">Extra layout options, usually a height.</param>
         /// <returns>True when the button was pressed.</returns>
         public static bool PrimaryButton(EditorWindowStyles styles, string label, params GUILayoutOption[] options)
-            => Button(styles == null
-                ? null
-                : styles.PrimaryButton, label, options);
+            => Button(styles?.PrimaryButton, label, options);
 
         /// <summary>
         /// Draws an action next to the primary one.
@@ -158,9 +156,7 @@ namespace Base.EditorUIPackage.Editor
         /// <param name="options">Extra layout options, usually a width.</param>
         /// <returns>True when the button was pressed.</returns>
         public static bool SecondaryButton(EditorWindowStyles styles, string label, params GUILayoutOption[] options)
-            => Button(styles == null
-                ? null
-                : styles.SecondaryButton, label, options);
+            => Button(styles?.SecondaryButton, label, options);
 
         /// <summary>
         /// Draws the status line at the foot of the window, and nothing at all when there is no

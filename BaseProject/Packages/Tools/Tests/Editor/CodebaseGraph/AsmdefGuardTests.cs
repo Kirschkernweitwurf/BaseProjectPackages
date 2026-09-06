@@ -6,7 +6,7 @@ using UnityEditorInternal;
 using UnityEngine;
 using PackageInfo = UnityEditor.PackageManager.PackageInfo;
 
-namespace Base.ToolsPackage.Editor.Tests
+namespace Base.ToolsPackage.Editor.Tests.CodebaseGraph
 {
     /// <summary>
     /// Checks that an assembly compiled out behind a define constraint can be compiled back in.

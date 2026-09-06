@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Base.ToolsPackage.Editor.AssemblyGraph;
 using NUnit.Framework;
 
-namespace Base.ToolsPackage.Editor.Tests
+namespace Base.ToolsPackage.Editor.Tests.AssemblyGraph
 {
     /// <summary>
     /// Covers the line parsing behind the source side of the reference check. A using directive is

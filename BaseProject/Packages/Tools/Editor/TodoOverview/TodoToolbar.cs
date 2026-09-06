@@ -168,13 +168,15 @@ namespace Base.ToolsPackage.Editor.TodoOverview
             return rect.xMax + TodoStyles.Gap;
         }
 
-        private static float DrawGroupDropdown(float x, float y, TodoFilter filter, Action onFilterChanged)
+        // The last control on the left, so unlike the two before it nothing needs to know where it
+        // ended and there is no width to hand back.
+        private static void DrawGroupDropdown(float x, float y, TodoFilter filter, Action onFilterChanged)
         {
             Rect rect = new(x, y, DropdownWidth, TodoStyles.ButtonHeight);
             GUIContent content = new(string.Format(GroupFormat, filter.Grouping), GroupTooltip);
 
             if (!TodoChrome.DrawDropdown(rect, content))
-                return rect.xMax + TodoStyles.Gap;
+                return;
 
             GenericMenu menu = new();
 
@@ -187,8 +189,6 @@ namespace Base.ToolsPackage.Editor.TodoOverview
             }
 
             menu.DropDown(rect);
-
-            return rect.xMax + TodoStyles.Gap;
         }
 
         private static float DrawRefreshButton(float right, float y, Action onRescan)

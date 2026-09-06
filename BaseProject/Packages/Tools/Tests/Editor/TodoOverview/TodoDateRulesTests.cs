@@ -2,7 +2,7 @@ using System;
 using Base.ToolsPackage.Editor.TodoOverview.Model;
 using NUnit.Framework;
 
-namespace Base.ToolsPackage.Editor.Tests
+namespace Base.ToolsPackage.Editor.Tests.TodoOverview
 {
     /// <summary>
     /// Covers what a date on an item is taken to mean and how loudly it then asks to be looked at.

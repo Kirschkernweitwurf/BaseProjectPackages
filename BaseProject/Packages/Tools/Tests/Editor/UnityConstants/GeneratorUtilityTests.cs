@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Base.ToolsPackage.Editor.UnityConstants;
 using NUnit.Framework;
 
-namespace Base.ToolsPackage.Editor.Tests
+namespace Base.ToolsPackage.Editor.Tests.UnityConstants
 {
     /// <summary>
     /// Covers the part of code generation that turns a tag or layer name into something a compiler
@@ -90,6 +90,7 @@ namespace Base.ToolsPackage.Editor.Tests
 
         /// <summary>A plain value passes through the escaping untouched.</summary>
         [Test]
-        public void APlainValueIsNotEscaped() => Assert.That(GeneratorUtility.Escape("Player"), Is.EqualTo("Player"));
+        public void APlainValueIsNotEscaped()
+            => Assert.That(GeneratorUtility.Escape("Player"), Is.EqualTo("Player"));
     }
 }

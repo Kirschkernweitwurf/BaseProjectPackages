@@ -14,7 +14,7 @@ namespace Base.ToolsPackage.Editor.AssemblyGraph
         private const string TextKey = "Base.ToolsPackage.AssemblyGraph.BackupText";
 
         /// <summary>Asset path of the stored file, or an empty string when nothing is stored.</summary>
-        internal static string BackupPath => SessionState.GetString(PathKey, string.Empty);
+        private static string BackupPath => SessionState.GetString(PathKey, string.Empty);
 
         /// <summary>True when a rewrite from this session can still be undone.</summary>
         internal static bool HasBackup => !string.IsNullOrEmpty(BackupPath);
@@ -45,7 +45,7 @@ namespace Base.ToolsPackage.Editor.AssemblyGraph
         }
 
         /// <summary>Drops the stored file.</summary>
-        internal static void Clear()
+        private static void Clear()
         {
             SessionState.EraseString(PathKey);
             SessionState.EraseString(TextKey);

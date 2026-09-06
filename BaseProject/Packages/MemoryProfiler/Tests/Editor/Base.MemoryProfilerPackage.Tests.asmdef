@@ -2,23 +2,17 @@
   "name": "Base.MemoryProfilerPackage.Tests",
   "rootNamespace": "Base.MemoryProfilerPackage.Tests",
   "references": [
-    "Base.MemoryProfilerPackage",
+    "GUID:05347c051a8616d40b9c2f81b2df4dd9",
     "UnityEngine.TestRunner",
     "UnityEditor.TestRunner"
   ],
-  "includePlatforms": [
-    "Editor"
-  ],
+  "includePlatforms": ["Editor"],
   "excludePlatforms": [],
   "allowUnsafeCode": false,
   "overrideReferences": true,
-  "precompiledReferences": [
-    "nunit.framework.dll"
-  ],
+  "precompiledReferences": ["nunit.framework.dll"],
   "autoReferenced": false,
-  "defineConstraints": [
-    "UNITY_INCLUDE_TESTS"
-  ],
+  "defineConstraints": ["UNITY_INCLUDE_TESTS"],
   "versionDefines": [],
   "noEngineReferences": false
 }

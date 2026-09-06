@@ -2,11 +2,12 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Base.ToolsPackage.Editor.NamingConventions.Data;
 using Base.ToolsPackage.Editor.NamingConventions.Scanning;
+using Base.ToolsPackage.Editor.Tests.FolderConventionValidator;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 
-namespace Base.ToolsPackage.Editor.Tests
+namespace Base.ToolsPackage.Editor.Tests.NamingConventions
 {
     /// <summary>
     /// Covers which assets a naming scan looks at in the first place. Everything downstream trusts
@@ -155,6 +156,7 @@ namespace Base.ToolsPackage.Editor.Tests
         }
 
         /// <summary>Runs the collection against the given layout.</summary>
-        private List<string> Collect(FakeAssetIndex index) => AssetNamingScanner.CollectAssetPaths(_ruleSet, index);
+        private List<string> Collect(FakeAssetIndex index)
+            => AssetNamingScanner.CollectAssetPaths(_ruleSet, index);
     }
 }

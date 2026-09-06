@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Base.ToolsPackage.Editor.AudioRules.Data;
 
 namespace Base.ToolsPackage.Editor.AudioRules.Model
 {

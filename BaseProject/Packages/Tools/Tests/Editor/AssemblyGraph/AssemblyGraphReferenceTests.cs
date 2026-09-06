@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Base.ToolsPackage.Editor.AssemblyGraph;
 using NUnit.Framework;
 
-namespace Base.ToolsPackage.Editor.Tests
+namespace Base.ToolsPackage.Editor.Tests.AssemblyGraph
 {
     /// <summary>
     /// Runs the reference check over the project and asserts the two cases it used to get wrong: an

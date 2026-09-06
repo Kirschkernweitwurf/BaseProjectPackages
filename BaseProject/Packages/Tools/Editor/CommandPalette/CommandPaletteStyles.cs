@@ -123,13 +123,13 @@ namespace Base.ToolsPackage.Editor.CommandPalette
         }, DimColor());
 
         /// <summary>Centered label inside a chip, for a chip whose fill is dark.</summary>
-        internal static GUIStyle ChipLabel => _chipLabel ??= Pin(new GUIStyle(EditorStyles.miniBoldLabel)
+        private static GUIStyle ChipLabel => _chipLabel ??= Pin(new GUIStyle(EditorStyles.miniBoldLabel)
         {
             alignment = TextAnchor.MiddleCenter
         }, TextColor());
 
         /// <summary>Centered label inside a chip, for a chip whose fill is bright.</summary>
-        internal static GUIStyle ChipLabelOnBright => _chipLabelOnBright ??= Pin(
+        private static GUIStyle ChipLabelOnBright => _chipLabelOnBright ??= Pin(
             new GUIStyle(EditorStyles.miniBoldLabel)
             {
                 alignment = TextAnchor.MiddleCenter

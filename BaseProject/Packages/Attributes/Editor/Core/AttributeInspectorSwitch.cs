@@ -24,7 +24,7 @@ namespace Base.AttributesPackage.Editor.Core
     internal static class AttributeInspectorSwitch
     {
         /// <summary>The editor preference the switch is stored under. Per user, per machine.</summary>
-        internal const string DisabledPreferenceKey = "Base.AttributesPackage.InspectorDisabled";
+        private const string DisabledPreferenceKey = "Base.AttributesPackage.InspectorDisabled";
 
         private const BindingFlags MemberFlags = BindingFlags.Instance
             | BindingFlags.Static

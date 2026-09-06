@@ -74,6 +74,7 @@ namespace Base.ToolsPackage.Editor.CodebaseGraph
         /// <param name="filter">Current toolbar state.</param>
         /// <param name="namespaceName">Namespace to restrict to, or null for all.</param>
         /// <param name="focus">Type to center the view on, or null.</param>
+        /// <param name="total">How many types matched before the list was capped.</param>
         /// <returns>The entries to draw.</returns>
         internal static List<GraphEntry> BuildTypes(CodebaseGraphData graph,
             GraphFilter filter,

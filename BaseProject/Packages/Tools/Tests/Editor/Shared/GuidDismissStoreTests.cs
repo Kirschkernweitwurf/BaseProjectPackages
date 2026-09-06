@@ -7,7 +7,7 @@ using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 
-namespace Base.ToolsPackage.Editor.Tests
+namespace Base.ToolsPackage.Editor.Tests.Shared
 {
     /// <summary>
     /// Covers the list of assets a scan was told to leave alone. Three tools share it and the file is

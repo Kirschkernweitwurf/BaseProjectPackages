@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Reflection;
-using Base.AttributesPackage.Editor.Drawers;
 using UnityEditor;
 using UnityEditorInternal;
 
@@ -31,7 +30,7 @@ namespace Base.AttributesPackage.Editor.Core
         private const BindingFlags FieldFlags = BindingFlags.NonPublic | BindingFlags.Static;
         private const string HeaderItemsField = "s_EditorHeaderItemsMethods";
 
-        private static readonly FieldInfo _headerItems;
+        private static readonly FieldInfo HeaderItems;
 
         static HeaderItemInjector()
         {
@@ -41,9 +40,9 @@ namespace Base.AttributesPackage.Editor.Core
             if (AttributeInspectorSwitch.IsDisabled)
                 return;
 
-            _headerItems = typeof(EditorGUIUtility).GetField(HeaderItemsField, FieldFlags);
+            HeaderItems = typeof(EditorGUIUtility).GetField(HeaderItemsField, FieldFlags);
 
-            if (_headerItems == null)
+            if (HeaderItems == null)
                 return;
 
             EditorApplication.update += TryInject;
@@ -53,7 +52,7 @@ namespace Base.AttributesPackage.Editor.Core
         {
             // Null means Unity has not drawn a header yet. Keep waiting rather than creating the list,
             // which would suppress Unity's own header items.
-            if (_headerItems.GetValue(null) is not IList items)
+            if (HeaderItems.GetValue(null) is not IList items)
                 return;
 
             EditorApplication.update -= TryInject;

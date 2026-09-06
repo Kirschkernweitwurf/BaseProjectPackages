@@ -2,24 +2,18 @@
   "name": "Base.UtilityPackage.Tests",
   "rootNamespace": "Base.UtilityPackage.Tests",
   "references": [
-    "Base.UtilityPackage",
-    "Base.UtilityPackage.Editor",
+    "GUID:922d81cfb9ff6984da4cb2213b66a375",
+    "GUID:23e24c01ae3d7b347a00cb4924eb02c5",
     "UnityEngine.TestRunner",
     "UnityEditor.TestRunner"
   ],
-  "includePlatforms": [
-    "Editor"
-  ],
+  "includePlatforms": ["Editor"],
   "excludePlatforms": [],
   "allowUnsafeCode": false,
   "overrideReferences": true,
-  "precompiledReferences": [
-    "nunit.framework.dll"
-  ],
+  "precompiledReferences": ["nunit.framework.dll"],
   "autoReferenced": false,
-  "defineConstraints": [
-    "UNITY_INCLUDE_TESTS"
-  ],
+  "defineConstraints": ["UNITY_INCLUDE_TESTS"],
   "versionDefines": [],
   "noEngineReferences": false
 }

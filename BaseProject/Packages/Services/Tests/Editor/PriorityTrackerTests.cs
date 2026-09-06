@@ -137,6 +137,7 @@ namespace Base.ServicesPackage.Tests
 
             _tracker.Add(FirstItem, (uint)EPriority.Low, _firstCaller);
 
+            Assert.That(_tracker.CurrentTrackedItem, Is.Not.Null);
             Assert.That(_tracker.CurrentTrackedItem.Order, Is.EqualTo(0));
         }
 

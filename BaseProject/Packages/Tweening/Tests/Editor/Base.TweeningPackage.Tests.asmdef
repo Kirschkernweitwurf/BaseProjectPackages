@@ -2,24 +2,18 @@
   "name": "Base.TweeningPackage.Tests",
   "rootNamespace": "Base.TweeningPackage.Tests",
   "references": [
-    "Base.TweeningPackage",
-    "Base.ServicesPackage",
+    "GUID:67ff391e2593426985f327eba2b5d9a3",
+    "GUID:197b6d0582f34e28ad8ccd70c0b1c826",
     "UnityEngine.TestRunner",
     "UnityEditor.TestRunner"
   ],
-  "includePlatforms": [
-    "Editor"
-  ],
+  "includePlatforms": ["Editor"],
   "excludePlatforms": [],
   "allowUnsafeCode": false,
   "overrideReferences": true,
-  "precompiledReferences": [
-    "nunit.framework.dll"
-  ],
+  "precompiledReferences": ["nunit.framework.dll"],
   "autoReferenced": false,
-  "defineConstraints": [
-    "UNITY_INCLUDE_TESTS"
-  ],
+  "defineConstraints": ["UNITY_INCLUDE_TESTS"],
   "versionDefines": [],
   "noEngineReferences": false
 }

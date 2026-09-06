@@ -336,11 +336,9 @@ namespace Base.ToolsPackage.Editor.AssemblyGraph
 
         private void UpdateToolbarState(int visibleCount)
         {
-            if (_clearFocusButton != null)
-                _clearFocusButton.SetEnabled(HasFocus);
+            _clearFocusButton?.SetEnabled(HasFocus);
 
-            if (_restoreButton != null)
-                _restoreButton.SetEnabled(AsmdefBackupStore.HasBackup);
+            _restoreButton?.SetEnabled(AsmdefBackupStore.HasBackup);
 
             if (_statusLabel == null)
                 return;
@@ -391,8 +389,7 @@ namespace Base.ToolsPackage.Editor.AssemblyGraph
 
         private void SetStatus(string message)
         {
-            if (_restoreButton != null)
-                _restoreButton.SetEnabled(AsmdefBackupStore.HasBackup);
+            _restoreButton?.SetEnabled(AsmdefBackupStore.HasBackup);
 
             if (_statusLabel == null)
                 return;

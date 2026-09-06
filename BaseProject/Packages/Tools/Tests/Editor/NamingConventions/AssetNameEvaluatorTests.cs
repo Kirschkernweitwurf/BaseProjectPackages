@@ -2,7 +2,7 @@ using Base.ToolsPackage.Editor.NamingConventions.Data;
 using Base.ToolsPackage.Editor.NamingConventions.Scanning;
 using NUnit.Framework;
 
-namespace Base.ToolsPackage.Editor.Tests
+namespace Base.ToolsPackage.Editor.Tests.NamingConventions
 {
     /// <summary>
     /// Covers the file name check on top of the shared rule: the trailing number and where it belongs.

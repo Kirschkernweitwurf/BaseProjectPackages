@@ -2,14 +2,12 @@
   "name": "Base.ToolsPackage.Editor.MenuManagerWindows",
   "rootNamespace": "Base.ToolsPackage.Editor.MenuManagerWindows",
   "references": [
-    "Base.ToolsPackage.Editor.MenuManagerModel",
-    "Base.ToolsPackage.Editor.Shared",
+    "GUID:8dbfaad5ef3c4ef09de709c365799af6",
+    "GUID:9b86a32456684fa68fffc3e72a35e9a4",
     "GUID:8f82a2d294e14cc5930979a4e0d686ec",
     "GUID:922d81cfb9ff6984da4cb2213b66a375"
   ],
-  "includePlatforms": [
-    "Editor"
-  ],
+  "includePlatforms": ["Editor"],
   "excludePlatforms": [],
   "allowUnsafeCode": false,
   "overrideReferences": false,
