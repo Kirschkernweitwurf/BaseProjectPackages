@@ -72,16 +72,9 @@ namespace Base.CorePackage.Editor.EventBusInspector
         // None of these are created where they are declared. A window Unity restores after a domain
         // reload can reach its first GUI pass without any field initializer having run, and then
         // every one of them is null. EnsureInitialized is called from the GUI pass for that reason.
-        private List<EventBusBehaviour> _buses;
-        private List<EventTypeEntry> _entries;
         private HashSet<Type> _expanded;
-        private List<EventTypeEntry> _filtered;
-        private List<EventBusRow> _rows;
-
-        // Reused scratch list, so ordering the subscribers of every event does not allocate a list
-        // per event on every rebuild.
-        private List<HandlerEntry> _sorted;
         private EventBusColumns _columns;
+        private EventBusModel _model;
         private EventBusStyles _styles;
 
         // Reused rather than allocated per row. A pill is a tinted rectangle with plain text on it,
@@ -89,13 +82,9 @@ namespace Base.CorePackage.Editor.EventBusInspector
         private GUIContent _stateTooltip;
 
         private float _badgeColumnWidth;
-        private int _busIndex;
-        private string[] _busLabels;
-        private int _handlerCount;
         private int _hoveredIndex = -1;
         private bool _isInitialized;
         private bool _isPlaying;
-        private int _leakCount;
         private bool _leaksOnly;
         private bool _needsFilter;
         private bool _needsRebuild;
@@ -145,7 +134,7 @@ namespace Base.CorePackage.Editor.EventBusInspector
             DrawToolbar();
             DrawSummaryBar();
 
-            if (_buses.Count == 0)
+            if (_model.Buses.Count == 0)
             {
                 DrawEmptyState(_isPlaying
                     ? NoBusMessage
@@ -154,12 +143,12 @@ namespace Base.CorePackage.Editor.EventBusInspector
                 return;
             }
 
-            if (_buses.Count > 1)
+            if (_model.Buses.Count > 1)
                 EditorGUILayout.HelpBox(MultipleBusesMessage, MessageType.Warning);
 
             // A bus sitting in an unplayed scene is empty for a different reason than one that is
             // running, and the hint that helps is different too.
-            if (_entries.Count == 0)
+            if (_model.Entries.Count == 0)
             {
                 DrawEmptyState(EmptyMessage, _isPlaying
                     ? EmptyHint
@@ -168,7 +157,7 @@ namespace Base.CorePackage.Editor.EventBusInspector
                 return;
             }
 
-            if (_rows.Count == 0)
+            if (_model.Rows.Count == 0)
             {
                 DrawEmptyState(NoMatchMessage, NoMatchHint);
                 return;
@@ -254,16 +243,11 @@ namespace Base.CorePackage.Editor.EventBusInspector
 
         private void EnsureInitialized()
         {
-            _busLabels ??= Array.Empty<string>();
-            _buses ??= new List<EventBusBehaviour>();
             _columns ??= new EventBusColumns();
-            _entries ??= new List<EventTypeEntry>();
             _expanded ??= new HashSet<Type>();
-            _sorting ??= new EventBusSorting();
-            _filtered ??= new List<EventTypeEntry>();
-            _rows ??= new List<EventBusRow>();
+            _model ??= new EventBusModel();
             _search ??= string.Empty;
-            _sorted ??= new List<HandlerEntry>();
+            _sorting ??= new EventBusSorting();
             _stateTooltip ??= new GUIContent();
             _styles ??= new EventBusStyles();
 
@@ -333,7 +317,7 @@ namespace Base.CorePackage.Editor.EventBusInspector
             if (!expand)
                 return;
 
-            foreach (EventTypeEntry entry in _entries)
+            foreach (EventTypeEntry entry in _model.Entries)
                 _expanded.Add(entry.EventType);
         }
 
@@ -392,10 +376,10 @@ namespace Base.CorePackage.Editor.EventBusInspector
 
         private void MoveSelection(int step)
         {
-            if (_rows.Count == 0)
+            if (_model.Rows.Count == 0)
                 return;
 
-            _selectedIndex = Mathf.Clamp(_selectedIndex + step, 0, _rows.Count - 1);
+            _selectedIndex = Mathf.Clamp(_selectedIndex + step, 0, _model.Rows.Count - 1);
 
             Event.current.Use();
             Repaint();
@@ -405,10 +389,10 @@ namespace Base.CorePackage.Editor.EventBusInspector
         // belongs to instead, which is how every tree in the editor behaves.
         private void SetSelectedExpanded(bool expand)
         {
-            if (_selectedIndex < 0 || _selectedIndex >= _rows.Count)
+            if (_selectedIndex < 0 || _selectedIndex >= _model.Rows.Count)
                 return;
 
-            EventBusRow row = _rows[_selectedIndex];
+            EventBusRow row = _model.Rows[_selectedIndex];
 
             if (!row.IsHeader && !expand)
             {
@@ -429,9 +413,9 @@ namespace Base.CorePackage.Editor.EventBusInspector
 
         private void SelectHeaderOf(EventTypeEntry entry)
         {
-            for (int i = 0; i < _rows.Count; i++)
+            for (int i = 0; i < _model.Rows.Count; i++)
             {
-                if (!_rows[i].IsHeader || _rows[i].Event != entry)
+                if (!_model.Rows[i].IsHeader || _model.Rows[i].Event != entry)
                     continue;
 
                 _selectedIndex = i;
@@ -443,10 +427,10 @@ namespace Base.CorePackage.Editor.EventBusInspector
 
         private void ActivateSelected()
         {
-            if (_selectedIndex < 0 || _selectedIndex >= _rows.Count)
+            if (_selectedIndex < 0 || _selectedIndex >= _model.Rows.Count)
                 return;
 
-            EventBusRow row = _rows[_selectedIndex];
+            EventBusRow row = _model.Rows[_selectedIndex];
 
             if (row.IsHeader)
                 _pendingToggle = row.Event.EventType;
@@ -486,7 +470,7 @@ namespace Base.CorePackage.Editor.EventBusInspector
 
                 if (GUILayout.Button(CopyContent, EditorStyles.toolbarButton,
                         GUILayout.Width(EventBusStyles.ToolbarButtonWidth)))
-                    EditorGUIUtility.systemCopyBuffer = EventBusReport.Build(_rows);
+                    EditorGUIUtility.systemCopyBuffer = EventBusReport.Build(_model.Rows);
 
                 if (GUILayout.Button(RefreshLabel, EditorStyles.toolbarButton,
                         GUILayout.Width(EventBusStyles.ToolbarButtonWidth)))
@@ -498,12 +482,12 @@ namespace Base.CorePackage.Editor.EventBusInspector
         // deferred to the layout event, so the control never appears or vanishes mid pass.
         private void DrawBusPicker()
         {
-            if (_buses.Count < 2)
+            if (_model.Buses.Count < 2)
                 return;
 
             EditorGUI.BeginChangeCheck();
 
-            _busIndex = EditorGUILayout.Popup(_busIndex, _busLabels, EditorStyles.toolbarPopup,
+            _model.BusIndex = EditorGUILayout.Popup(_model.BusIndex, _model.BusLabels, EditorStyles.toolbarPopup,
                 GUILayout.Width(EventBusStyles.BusPopupWidth));
 
             if (EditorGUI.EndChangeCheck())
@@ -518,16 +502,17 @@ namespace Base.CorePackage.Editor.EventBusInspector
             Rect line = new(bar.x + EventBusStyles.OuterMargin, bar.y, bar.width - EventBusStyles.OuterMargin * 2f,
                 bar.height);
 
-            GUI.Label(line, string.Format(SummaryFormat, _filtered.Count, _entries.Count, _handlerCount),
+            GUI.Label(line, string.Format(SummaryFormat, _model.Filtered.Count, _model.Entries.Count,
+                    _model.HandlerCount),
                 _styles.Summary);
 
-            if (_entries.Count == 0)
+            if (_model.Entries.Count == 0)
                 return;
 
-            bool hasLeaks = _leakCount > 0;
+            bool hasLeaks = _model.LeakCount > 0;
 
             string text = hasLeaks
-                ? EventBusBadges.LeakText(_leakCount, _handlerCount)
+                ? EventBusBadges.LeakText(_model.LeakCount, _model.HandlerCount)
                 : SummaryOkText;
 
             float width = EditorRows.MeasureBadge(text, _styles.Badge, EventBusStyles.MinBadgeWidth);
@@ -570,7 +555,7 @@ namespace Base.CorePackage.Editor.EventBusInspector
             foreach (GUIContent badge in EventBusBadges.StateBadges)
                 _badgeColumnWidth = Mathf.Max(_badgeColumnWidth, MeasureBadge(badge.text));
 
-            foreach (EventTypeEntry entry in _filtered)
+            foreach (EventTypeEntry entry in _model.Filtered)
                 _badgeColumnWidth = Mathf.Max(_badgeColumnWidth, MeasureBadge(EventBusBadges.CountText(entry)));
         }
 
@@ -594,7 +579,7 @@ namespace Base.CorePackage.Editor.EventBusInspector
                     // row rather than only in the header. The group rectangle is only real once the
                     // layout pass has run.
                     if (Event.current.type != EventType.Layout)
-                        _columns.DrawAndProcessDividers(TableArea(card.rect, _rows.Count));
+                        _columns.DrawAndProcessDividers(TableArea(card.rect, _model.Rows.Count));
                 }
 
                 GUILayout.Space(EventBusStyles.OuterMargin);
@@ -661,9 +646,9 @@ namespace Base.CorePackage.Editor.EventBusInspector
 
             int hovered = -1;
 
-            for (int i = 0; i < _rows.Count; i++)
+            for (int i = 0; i < _model.Rows.Count; i++)
             {
-                if (DrawRow(i, _rows[i]))
+                if (DrawRow(i, _model.Rows[i]))
                     hovered = i;
             }
 
@@ -880,6 +865,31 @@ namespace Base.CorePackage.Editor.EventBusInspector
             GUI.Label(hintArea, hint, _styles.EmptyHint);
         }
 
+        private void Rebuild()
+        {
+            _model.Read();
+
+            ApplyFilter();
+        }
+
+        private void ApplyFilter()
+        {
+            _model.Filter(_search, _leaksOnly, _expanded, _sorting);
+
+            ClampSelection();
+        }
+
+        private void RebuildRows()
+        {
+            _model.BuildRows(_leaksOnly, _expanded, _sorting);
+
+            ClampSelection();
+        }
+
+        // The list the selection indexes into just changed under it, and a stale index would either
+        // highlight the wrong row or point past the end.
+        private void ClampSelection() => _selectedIndex = Mathf.Min(_selectedIndex, _model.Rows.Count - 1);
+
         // Subscriptions come and go while the game runs and nothing in the editor raises an event for
         // it, so reading the bus again on a timer is the only way to stay current.
         private void PollWhilePlaying()
@@ -901,108 +911,6 @@ namespace Base.CorePackage.Editor.EventBusInspector
             _needsRebuild = true;
 
             Repaint();
-        }
-
-        private void Rebuild()
-        {
-            RebuildBuses();
-            RebuildEntries();
-            ApplyFilter();
-        }
-
-        private void RebuildBuses()
-        {
-            _buses.Clear();
-            _buses.AddRange(FindObjectsByType<EventBusBehaviour>(FindObjectsInactive.Include,
-                FindObjectsSortMode.InstanceID));
-
-            if (_busLabels.Length != _buses.Count)
-                _busLabels = new string[_buses.Count];
-
-            for (int i = 0; i < _buses.Count; i++)
-                _busLabels[i] = SceneLabel.Describe(_buses[i]);
-
-            _busIndex = Mathf.Clamp(_busIndex, 0, Mathf.Max(0, _buses.Count - 1));
-        }
-
-        private void RebuildEntries()
-        {
-            _entries.Clear();
-
-            _handlerCount = 0;
-            _leakCount = 0;
-
-            if (_buses.Count == 0)
-                return;
-
-            EventBusBehaviour bus = _buses[_busIndex];
-
-            if (bus == null)
-                return;
-
-            foreach (KeyValuePair<Type, Delegate> pair in bus.Handlers)
-            {
-                EventTypeEntry entry = new(pair.Key, pair.Value);
-
-                _entries.Add(entry);
-
-                _handlerCount += entry.Handlers.Count;
-                _leakCount += entry.LeakCount;
-            }
-        }
-
-        private void ApplyFilter()
-        {
-            _filtered.Clear();
-
-            foreach (EventTypeEntry entry in _entries)
-            {
-                if (_leaksOnly && !entry.HasLeaks)
-                    continue;
-
-                if (entry.Matches(_search))
-                    _filtered.Add(entry);
-            }
-
-            // The bus keeps a dictionary, so its order is arbitrary either way and the rows have to
-            // be put in some order before they are drawn.
-            _filtered.Sort(_sorting.CompareEvents);
-
-            RebuildRows();
-        }
-
-        private void RebuildRows()
-        {
-            _rows.Clear();
-
-            foreach (EventTypeEntry entry in _filtered)
-            {
-                _rows.Add(new EventBusRow(entry, null));
-
-                if (!_expanded.Contains(entry.EventType))
-                    continue;
-
-                _sorted.Clear();
-
-                foreach (HandlerEntry handler in entry.Handlers)
-                {
-                    if (_leaksOnly && !handler.IsLeak)
-                        continue;
-
-                    _sorted.Add(handler);
-                }
-
-                // Sorted per event rather than across the whole table, because a subscriber only
-                // means anything under the event it is subscribed to.
-                _sorted.Sort(_sorting.CompareHandlers);
-
-                foreach (HandlerEntry handler in _sorted)
-                    _rows.Add(new EventBusRow(entry, handler));
-            }
-
-            // The list the selection indexes into just changed under it, and a stale index would
-            // either highlight the wrong row or point past the end.
-            _selectedIndex = Mathf.Min(_selectedIndex, _rows.Count - 1);
         }
 
         // Handler and Target say nothing about an event, so those two columns leave the events in

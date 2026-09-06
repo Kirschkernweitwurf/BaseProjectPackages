@@ -8,7 +8,7 @@ Changes made before 1.0.11 were not recorded.
 
 ## [Unreleased]
 
-## [1.1.1] - 2026-09-06
+## [1.1.2] - 2026-09-06
 
 ### Changed
 

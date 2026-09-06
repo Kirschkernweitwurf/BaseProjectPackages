@@ -31,8 +31,6 @@ namespace Base.AttributesPackage.Editor.Drawers
         private const string ConfirmLabel = "Confirm";
         private const float Gap = 2f;
 
-        private const BindingFlags MemberFlags =
-            BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
         private const float MinimumWidth = 40f;
         private const string UndoFormat = "Header button {0}";
 
@@ -62,62 +60,10 @@ namespace Base.AttributesPackage.Editor.Drawers
             if (Items.TryGetValue(type, out HeaderItem[] cached))
                 return cached;
 
-            List<HeaderItem> items = new();
-
-            CollectMethods(type, items);
-            CollectProperties(type, items);
-
-            HeaderItem[] result = items.ToArray();
+            HeaderItem[] result = HeaderItemCollector.Collect(type);
             Items[type] = result;
+
             return result;
-        }
-
-        private static void CollectMethods(Type type, List<HeaderItem> items)
-        {
-            foreach (MethodInfo method in type.GetMethods(MemberFlags))
-            {
-                HeaderButtonAttribute button = method.GetCustomAttribute<HeaderButtonAttribute>();
-                if (button != null && method.GetParameters().Length == 0)
-                {
-                    string label = string.IsNullOrEmpty(button.Label)
-                        ? ObjectNames.NicifyVariableName(method.Name)
-                        : button.Label;
-
-                    items.Add(new HeaderItem(method, EHeaderItemKind.Button, button, label, button.Width));
-                    continue;
-                }
-
-                HeaderLabelAttribute methodLabel = method.GetCustomAttribute<HeaderLabelAttribute>();
-                if (methodLabel != null
-                    && method.GetParameters().Length == 0
-                    && method.ReturnType != typeof(void))
-                {
-                    items.Add(new HeaderItem(method, EHeaderItemKind.Label, null, null, methodLabel.Width));
-                    continue;
-                }
-
-                HeaderDrawAttribute draw = method.GetCustomAttribute<HeaderDrawAttribute>();
-                if (draw != null && TakesRect(method))
-                    items.Add(new HeaderItem(method, EHeaderItemKind.Draw, null, null, draw.Width));
-            }
-        }
-
-        private static void CollectProperties(Type type, List<HeaderItem> items)
-        {
-            foreach (PropertyInfo property in type.GetProperties(MemberFlags))
-            {
-                HeaderLabelAttribute label = property.GetCustomAttribute<HeaderLabelAttribute>();
-
-                if (label != null && property.CanRead)
-                    items.Add(new HeaderItem(property, EHeaderItemKind.Label, null, null, label.Width));
-            }
-        }
-
-        private static bool TakesRect(MethodInfo method)
-        {
-            ParameterInfo[] parameters = method.GetParameters();
-
-            return parameters.Length == 1 && parameters[0].ParameterType == typeof(Rect);
         }
 
         // Bound by HeaderItemInjector through DrawMethodName, so no compiled instruction calls it and a
@@ -173,9 +119,9 @@ namespace Base.AttributesPackage.Editor.Drawers
 
         private static void DrawButton(Rect rect, in HeaderItem item, Object[] targets)
         {
-            GUIContent content = new(item.Label, Describe(item));
+            GUIContent content = new(item.Label, HeaderItemCollector.Describe(item));
 
-            using (new EditorGUI.DisabledScope(!IsEnabled(item.Button.Mode)))
+            using (new EditorGUI.DisabledScope(!HeaderItemCollector.IsEnabled(item.Button.Mode)))
             {
                 if (GUI.Button(rect, content, EditorStyles.miniButton) && Confirm(item))
                     Run(targets, item);
@@ -233,28 +179,6 @@ namespace Base.AttributesPackage.Editor.Drawers
             }
 
             InternalEditorUtility.RepaintAllViews();
-        }
-
-        private static string Describe(in HeaderItem item)
-        {
-            string name = item.Member.Name;
-
-            return item.Label == name
-                ? name
-                : $"{name}()";
-        }
-
-        private static bool IsEnabled(EButtonMode mode)
-        {
-            switch (mode)
-            {
-                case EButtonMode.PlayMode:
-                    return Application.isPlaying;
-                case EButtonMode.EditMode:
-                    return !Application.isPlaying;
-                default:
-                    return true;
-            }
         }
 
         private static bool Confirm(in HeaderItem item)

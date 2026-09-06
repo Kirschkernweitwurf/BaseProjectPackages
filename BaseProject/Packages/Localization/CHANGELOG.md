@@ -8,6 +8,27 @@ Changes made before 1.2.1 were not recorded.
 
 ## [Unreleased]
 
+## [1.3.2] - 2026-09-06
+
+### Added
+
+- `LanguageSettingLocaleTests`, covering which language the component answers with when the stored
+  index no longer points at anything. The list lives in the scene and the value on disk does not, so
+  the two drift apart the moment a language is added or removed.
+
+### Changed
+
+- `LanguageSetting` names its two serialized fields, so a test can fill in a locale list without
+  spelling the field names out.
+
+### Fixed
+
+- Edit mode tests build their objects outside any scene. They used to be created in whatever scene
+  happened to be open, so every run put them in it and a run that never reached its teardown left
+  them there to be saved with it. They go through `EditorUtility.CreateGameObjectWithHideFlags` now,
+  which never puts them in a scene at all, so they cannot show up in the hierarchy or be saved
+  however the run ends.
+
 ## [1.3.0] - 2026-09-05
 
 ### Added

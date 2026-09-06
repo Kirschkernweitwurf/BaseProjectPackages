@@ -84,7 +84,7 @@ namespace Base.SaveSystemPackage.Tests
         [Test]
         public void LeavingAFieldOutKeepsIt()
         {
-            SaveMetadata named = _metadata.With(displayName: "Chapter Two", totalPlayTime: TimeSpan.FromHours(2));
+            SaveMetadata named = _metadata.With("Chapter Two", totalPlayTime: TimeSpan.FromHours(2));
             SaveMetadata resaved = named.With(lastSavedUtc: _created.AddHours(1));
 
             Assert.That(resaved.DisplayName, Is.EqualTo("Chapter Two"));

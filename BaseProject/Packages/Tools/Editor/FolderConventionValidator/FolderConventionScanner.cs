@@ -15,8 +15,8 @@ namespace Base.ToolsPackage.Editor.FolderConventionValidator
     internal static class FolderConventionScanner
     {
         private const string AssetSearchFilter = "t:Object";
-        private const string MissingIndexMessage = "Scanning needs an asset index to read the project through.";
         private const string AssetsRoot = "Assets";
+        private const string MissingIndexMessage = "Scanning needs an asset index to read the project through.";
         private const string PackagesRoot = "Packages";
         private const char PathSeparator = '/';
 

@@ -13,8 +13,8 @@ namespace Base.AttributesPackage.Tests
     public sealed class ElementLabelTests
     {
         private const int FirstIndex = 0;
-        private const string GivenName = "Kitchen Lamp";
         private const int GivenAmount = 42;
+        private const string GivenName = "Kitchen Lamp";
 
         private ElementLabelProbe _probe;
         private SerializedObject _serialized;

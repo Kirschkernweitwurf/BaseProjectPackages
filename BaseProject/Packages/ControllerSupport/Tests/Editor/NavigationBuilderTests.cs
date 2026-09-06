@@ -238,7 +238,8 @@ namespace Base.ControllerSupportPackage.Tests
 
         private GameObject Create(Vector3 position)
         {
-            GameObject created = new(nameof(NavigableElement));
+            GameObject created = EditorUtility.CreateGameObjectWithHideFlags(nameof(NavigableElement),
+                HideFlags.HideAndDontSave);
 
             created.transform.position = position;
             _created.Add(created);

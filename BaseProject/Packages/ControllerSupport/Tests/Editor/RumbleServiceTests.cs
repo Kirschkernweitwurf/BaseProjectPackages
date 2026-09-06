@@ -2,6 +2,7 @@ using System.Text.RegularExpressions;
 using Base.ControllerSupportPackage.Haptics;
 using Base.ServicesPackage.Tracking;
 using NUnit.Framework;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.TestTools;
 using Object = UnityEngine.Object;
@@ -32,7 +33,8 @@ namespace Base.ControllerSupportPackage.Tests
         [SetUp]
         public void Build()
         {
-            _serviceObject = new GameObject(typeof(RumbleService).Name);
+            _serviceObject = EditorUtility.CreateGameObjectWithHideFlags(typeof(RumbleService).Name,
+                HideFlags.HideAndDontSave);
             _service = _serviceObject.AddComponent<RumbleService>();
             _firstCaller = new object();
             _secondCaller = new object();

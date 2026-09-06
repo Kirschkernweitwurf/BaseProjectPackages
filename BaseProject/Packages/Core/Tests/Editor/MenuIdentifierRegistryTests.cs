@@ -29,7 +29,11 @@ namespace Base.CorePackage.Tests
             _pause = Create<MenuIdentifier>(PauseName);
             _settings = Create<MenuIdentifier>(SettingsName);
 
-            _registry.SetEntries(new[] { _pause, _settings });
+            _registry.SetEntries(new[]
+            {
+                _pause,
+                _settings
+            });
         }
 
         /// <summary>Assets created in a test are not saved anywhere, so they are destroyed here.</summary>
@@ -79,7 +83,11 @@ namespace Base.CorePackage.Tests
         [Test]
         public void AMissingEntryIsSkipped()
         {
-            _registry.SetEntries(new[] { null, _settings });
+            _registry.SetEntries(new[]
+            {
+                null,
+                _settings
+            });
 
             Assert.That(_registry.TryGet(SettingsName, out MenuIdentifier found), Is.True);
             Assert.That(found, Is.SameAs(_settings));
@@ -87,18 +95,26 @@ namespace Base.CorePackage.Tests
 
         /// <summary>The same entries in the same order count as unchanged.</summary>
         [Test]
-        public void TheSameEntriesInTheSameOrderAreEqual()
-            => Assert.That(_registry.EntriesEqual(new[] { _pause, _settings }), Is.True);
+        public void TheSameEntriesInTheSameOrderAreEqual() => Assert.That(_registry.EntriesEqual(new[]
+        {
+            _pause,
+            _settings
+        }), Is.True);
 
         /// <summary>A different order is a change, since the asset stores the order.</summary>
         [Test]
-        public void ADifferentOrderIsNotEqual()
-            => Assert.That(_registry.EntriesEqual(new[] { _settings, _pause }), Is.False);
+        public void ADifferentOrderIsNotEqual() => Assert.That(_registry.EntriesEqual(new[]
+        {
+            _settings,
+            _pause
+        }), Is.False);
 
         /// <summary>A different count is a change.</summary>
         [Test]
-        public void ADifferentCountIsNotEqual()
-            => Assert.That(_registry.EntriesEqual(new[] { _pause }), Is.False);
+        public void ADifferentCountIsNotEqual() => Assert.That(_registry.EntriesEqual(new[]
+        {
+            _pause
+        }), Is.False);
 
         /// <summary>Nothing compared against nothing counts as unchanged.</summary>
         [Test]

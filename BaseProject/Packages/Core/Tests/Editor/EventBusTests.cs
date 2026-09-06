@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using NUnit.Framework;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.TestTools;
 using EventBusService = Base.CorePackage.EventBus.EventBus;
@@ -27,7 +28,8 @@ namespace Base.CorePackage.Tests
         [OneTimeSetUp]
         public void BuildBus()
         {
-            _busObject = new GameObject(typeof(EventBusService).Name);
+            _busObject = EditorUtility.CreateGameObjectWithHideFlags(typeof(EventBusService).Name,
+                HideFlags.HideAndDontSave);
             _bus = _busObject.AddComponent<EventBusService>();
         }
 

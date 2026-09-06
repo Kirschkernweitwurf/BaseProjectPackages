@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using Unity.Profiling.Memory;
 using UnityEditor;
 using UnityEngine;
 
@@ -10,7 +11,9 @@ namespace Base.MemoryProfilerPackage.Tests
     /// </summary>
     public sealed class MemoryProfilerConfigSoTests
     {
+        private const float AboveMinimum = 45f;
         private const float BelowMinimum = 0f;
+        private const float DefaultIntervalSeconds = 30f;
 
         private MemoryProfilerConfigSo _config;
 
@@ -73,6 +76,45 @@ namespace Base.MemoryProfilerPackage.Tests
 
             Assert.That(_config.IntervalSeconds, Is.EqualTo(MemoryProfilerConfigSo.MinIntervalSeconds));
         }
+
+        /// <summary>
+        /// The interval decides how often a session writes a snapshot, and a snapshot is not cheap. A
+        /// default nobody picked would either fill the folder or capture too rarely to be worth having.
+        /// </summary>
+        [Test]
+        public void AFreshConfigCapturesTwiceAMinute()
+            => Assert.That(_config.IntervalSeconds, Is.EqualTo(DefaultIntervalSeconds));
+
+        /// <summary>
+        /// The clamp only exists to catch a value below the floor, so a longer interval than the
+        /// default has to survive being edited rather than being pulled back to it.
+        /// </summary>
+        [Test]
+        public void AnIntervalAboveTheFloorIsLeftAlone()
+        {
+            SerializedObject serialized = new(_config);
+
+            serialized.FindProperty(MemoryProfilerConfigSo.IntervalSecondsField).floatValue = AboveMinimum;
+            serialized.ApplyModifiedProperties();
+
+            Assert.That(_config.IntervalSeconds, Is.EqualTo(AboveMinimum));
+        }
+
+        /// <summary>
+        /// The flags decide what a snapshot actually contains. None of them set writes a file that
+        /// opens empty, which looks like a working capture until somebody tries to read it.
+        /// </summary>
+        [Test]
+        public void AFreshConfigCapturesSomething()
+            => Assert.That(_config.SnapshotFlags, Is.Not.EqualTo(default(CaptureFlags)));
+
+        /// <summary>
+        /// The baked path is filled in by the build hook and cleared again afterwards, so an asset that
+        /// was never built with carries none. A committed one holding a path is one machine's.
+        /// </summary>
+        [Test]
+        public void AFreshConfigCarriesNoBakedPath()
+            => Assert.That(_config.BakedStoragePath, Is.Empty);
 
         /// <summary>
         /// The runner loads the asset by this path, so the folder it is filed under and the name the

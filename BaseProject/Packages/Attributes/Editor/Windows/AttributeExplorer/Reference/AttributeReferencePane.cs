@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace Base.AttributesPackage.Editor.Windows.AttributeExplorer.Reference
 {
@@ -82,13 +81,9 @@ namespace Base.AttributesPackage.Editor.Windows.AttributeExplorer.Reference
         }
 
         private readonly AttributeReferenceList _list = new();
+        private readonly AttributeSamplePreview _preview = new();
 
         private AttributeSampleEntry _selected;
-        private Object _instance;
-        private GameObject _host;
-        private UnityEditor.Editor _editor;
-        private MonoScript _script;
-        private string _snippet = string.Empty;
         private EditorWindow _owner;
         private float _contentWidth = MinimumWidth;
 
@@ -106,11 +101,6 @@ namespace Base.AttributesPackage.Editor.Windows.AttributeExplorer.Reference
         /// <param name="entry">The entry to show.</param>
         internal void Select(in AttributeSampleEntry entry)
         {
-            bool sameSample = _instance != null && _instance.GetType() == entry.SampleType;
-
-            if (!sameSample)
-                Release();
-
             selectedTitle = entry.Title;
             selectedCategory = entry.CategoryName;
             _selected = entry;
@@ -119,23 +109,7 @@ namespace Base.AttributesPackage.Editor.Windows.AttributeExplorer.Reference
             focusedCard = -1;
 
             Unfocus();
-
-            if (!sameSample)
-            {
-                // Never saved, so nothing here can be committed by accident.
-                _instance = AttributeSampleHost.CreatePreview(entry.SampleType, entry.Title, out _host);
-
-                _editor = UnityEditor.Editor.CreateEditor(_instance);
-                _script = Script(_instance);
-            }
-
-            // A page is opened to be read, not continued, so the sample presents as authored rather
-            // than as the last reader happened to leave it.
-            SamplePreviewDefaults.Reapply(entry.SampleType);
-
-            _snippet = _script == null
-                ? string.Empty
-                : AttributeSampleSource.Extract(_script.text, entry.SampleType.Name);
+            _preview.Show(entry);
         }
 
         /// <summary>Shows the page for a whole category instead of a single attribute.</summary>
@@ -193,24 +167,7 @@ namespace Base.AttributesPackage.Editor.Windows.AttributeExplorer.Reference
         }
 
         /// <summary>Destroys the in-memory sample. Call when the owning window closes.</summary>
-        internal void Release()
-        {
-            if (_editor != null)
-                Object.DestroyImmediate(_editor);
-
-            AttributeSampleHost.DestroyPreview(_host);
-
-            // A component sample is destroyed together with the object it lives on, so only an asset
-            // sample is left to clean up on its own.
-            if (_host == null && _instance != null)
-                Object.DestroyImmediate(_instance);
-
-            _editor = null;
-            _instance = null;
-            _host = null;
-            _script = null;
-            _snippet = string.Empty;
-        }
+        internal void Release() => _preview.Release();
 
         // A field left mid-edit otherwise keeps the keyboard across the page change, so the next arrow
         // key edits a value on a page nobody is looking at any more.
@@ -235,13 +192,6 @@ namespace Base.AttributesPackage.Editor.Windows.AttributeExplorer.Reference
             EditorGUI.DrawRect(new Rect(rect.x, rect.y, 1f, rect.height), color);
             EditorGUI.DrawRect(new Rect(rect.xMax - 1f, rect.y, 1f, rect.height), color);
         }
-
-        private static MonoScript Script(Object instance) => instance switch
-        {
-            MonoBehaviour behaviour => MonoScript.FromMonoBehaviour(behaviour),
-            ScriptableObject asset => MonoScript.FromScriptableObject(asset),
-            _ => null
-        };
 
         /// <summary>Repaints the window this pane belongs to.</summary>
         private void Repaint()
@@ -505,10 +455,10 @@ namespace Base.AttributesPackage.Editor.Windows.AttributeExplorer.Reference
 
         private void DrawContent(AttributeExplorerStyles styles)
         {
-            if (_instance == null && !string.IsNullOrEmpty(selectedTitle))
+            if (_preview.Instance == null && !string.IsNullOrEmpty(selectedTitle))
                 Restore();
 
-            if (_editor == null && string.IsNullOrEmpty(selectedCategory))
+            if (_preview.Editor == null && string.IsNullOrEmpty(selectedCategory))
             {
                 GUILayout.FlexibleSpace();
 
@@ -523,7 +473,7 @@ namespace Base.AttributesPackage.Editor.Windows.AttributeExplorer.Reference
             contentScroll = EditorGUILayout.BeginScrollView(contentScroll);
             EditorGUILayout.BeginVertical(styles.ContentPane);
 
-            if (_editor == null)
+            if (_preview.Editor == null)
                 DrawCategoryPage(styles);
             else
                 DrawAttributePage(styles);
@@ -676,7 +626,7 @@ namespace Base.AttributesPackage.Editor.Windows.AttributeExplorer.Reference
             EditorGUILayout.LabelField(PreviewHeading, styles.Section);
 
             EditorGUILayout.BeginVertical(styles.Card);
-            _editor.OnInspectorGUI();
+            _preview.Editor.OnInspectorGUI();
             EditorGUILayout.EndVertical();
 
             GUILayout.Space(AttributeExplorerStyles.SectionGap);
@@ -740,23 +690,23 @@ namespace Base.AttributesPackage.Editor.Windows.AttributeExplorer.Reference
 
             GUILayout.Space(ActionGap);
 
-            using (new EditorGUI.DisabledScope(string.IsNullOrEmpty(_snippet)))
+            using (new EditorGUI.DisabledScope(string.IsNullOrEmpty(_preview.Snippet)))
             {
                 if (GUILayout.Button(CopyLabel, GUILayout.Height(ActionHeight),
                         GUILayout.Width(CopySnippetWidth)))
                 {
-                    EditorGUIUtility.systemCopyBuffer = _snippet;
+                    EditorGUIUtility.systemCopyBuffer = _preview.Snippet;
                     Notify(CopiedContent);
                 }
             }
 
             GUILayout.Space(ActionGap);
 
-            using (new EditorGUI.DisabledScope(_script == null))
+            using (new EditorGUI.DisabledScope(_preview.Script == null))
             {
                 if (GUILayout.Button(OpenLabel, GUILayout.Height(ActionHeight),
                         GUILayout.Width(OpenFileWidth)))
-                    AssetDatabase.OpenAsset(_script);
+                    AssetDatabase.OpenAsset(_preview.Script);
             }
 
             // Only a component sample offers this. A scene handle draws for the selected object and a
@@ -780,11 +730,11 @@ namespace Base.AttributesPackage.Editor.Windows.AttributeExplorer.Reference
             //
             // Given an explicit rect rather than left to the layout. A text area that does not wrap is as
             // wide as its longest line, and the window then refuses to be made narrower than that.
-            float height = styles.Source.CalcHeight(ScratchContent.For(_snippet), _contentWidth);
+            float height = styles.Source.CalcHeight(ScratchContent.For(_preview.Snippet), _contentWidth);
             Rect area = GUILayoutUtility.GetRect(_contentWidth, height, GUILayout.ExpandWidth(false));
 
             using (new EditorGUI.DisabledScope(true))
-                EditorGUI.TextArea(area, _snippet, styles.Source);
+                EditorGUI.TextArea(area, _preview.Snippet, styles.Source);
         }
 
         private void Wrapped(string text, GUIStyle style)

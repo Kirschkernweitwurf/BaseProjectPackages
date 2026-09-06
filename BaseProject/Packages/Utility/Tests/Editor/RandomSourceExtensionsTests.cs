@@ -41,8 +41,8 @@ namespace Base.UtilityPackage.Tests
 
         /// <summary>A float draw stays inside the unit range it advertises.</summary>
         [Test]
-        public void AFloatDrawStaysInTheUnitRange()
-            => Assert.That(Draw(() => _random.NextFloat()), Is.All.GreaterThanOrEqualTo(0f).And.LessThan(1f));
+        public void AFloatDrawStaysInTheUnitRange() => Assert.That(Draw(() => _random.NextFloat()),
+            Is.All.GreaterThanOrEqualTo(0f).And.LessThan(1f));
 
         /// <summary>An integer draw stays inside the range, upper bound excluded.</summary>
         [Test]
@@ -51,9 +51,9 @@ namespace Base.UtilityPackage.Tests
 
         /// <summary>A float range stays inside its bounds.</summary>
         [Test]
-        public void AFloatRangeStaysInsideItsBounds()
-            => Assert.That(Draw(() => _random.Range(MinBound, (float)MaxBound)),
-                Is.All.GreaterThanOrEqualTo((float)MinBound).And.LessThan((float)MaxBound));
+        public void AFloatRangeStaysInsideItsBounds() => Assert.That(
+            Draw(() => _random.Range(MinBound, (float)MaxBound)),
+            Is.All.GreaterThanOrEqualTo((float)MinBound).And.LessThan((float)MaxBound));
 
         /// <summary>A range that holds nothing hands back its lower bound instead of throwing.</summary>
         [Test]
@@ -76,8 +76,7 @@ namespace Base.UtilityPackage.Tests
 
         /// <summary>A sign is one of two values and never anything else.</summary>
         [Test]
-        public void ASignIsEitherUpOrDown()
-            => Assert.That(DrawSigns(), Is.All.Matches<int>(IsUpOrDown));
+        public void ASignIsEitherUpOrDown() => Assert.That(DrawSigns(), Is.All.Matches<int>(IsUpOrDown));
 
         /// <summary>Both outcomes of a boolean draw have to actually come up.</summary>
         [Test]
@@ -108,7 +107,13 @@ namespace Base.UtilityPackage.Tests
         [Test]
         public void APickComesFromTheGivenList()
         {
-            List<string> items = new() { FirstItem, SecondItem, ThirdItem };
+            List<string> items = new()
+            {
+                FirstItem,
+                SecondItem,
+                ThirdItem
+            };
+
             List<string> picks = new();
 
             for (int index = 0; index < DrawCount; index++)
@@ -121,47 +126,83 @@ namespace Base.UtilityPackage.Tests
         [Test]
         public void AShuffleKeepsEveryItem()
         {
-            List<int> items = new() { 1, 2, 3, 4, 5, 6, 7, 8 };
+            List<int> items = new()
+            {
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8
+            };
 
             _random.Shuffle(items);
 
-            Assert.That(items, Is.EquivalentTo(new[] { 1, 2, 3, 4, 5, 6, 7, 8 }));
+            Assert.That(items, Is.EquivalentTo(new[]
+            {
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8
+            }));
         }
 
         /// <summary>A shuffle has to actually change the order at some point.</summary>
         [Test]
         public void AShuffleChangesTheOrder()
         {
-            List<int> items = new() { 1, 2, 3, 4, 5, 6, 7, 8 };
+            List<int> items = new()
+            {
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8
+            };
 
             _random.Shuffle(items);
 
-            Assert.That(items, Is.Not.EqualTo(new[] { 1, 2, 3, 4, 5, 6, 7, 8 }));
+            Assert.That(items, Is.Not.EqualTo(new[]
+            {
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8
+            }));
         }
 
         /// <summary>A point on the circle sits exactly one unit from the origin.</summary>
         [Test]
-        public void APointOnTheCircleHasUnitLength()
-            => Assert.That(Draw(() => _random.OnUnitCircle().magnitude),
-                Is.All.EqualTo(Magnitude).Within(Tolerance));
+        public void APointOnTheCircleHasUnitLength() => Assert.That(Draw(() => _random.OnUnitCircle().magnitude),
+            Is.All.EqualTo(Magnitude).Within(Tolerance));
 
         /// <summary>A point inside the circle never leaves it.</summary>
         [Test]
-        public void APointInsideTheCircleStaysInside()
-            => Assert.That(Draw(() => _random.InsideUnitCircle().magnitude),
-                Is.All.LessThanOrEqualTo(Magnitude + Tolerance));
+        public void APointInsideTheCircleStaysInside() => Assert.That(Draw(() => _random.InsideUnitCircle().magnitude),
+            Is.All.LessThanOrEqualTo(Magnitude + Tolerance));
 
         /// <summary>A point on the sphere sits exactly one unit from the origin.</summary>
         [Test]
-        public void APointOnTheSphereHasUnitLength()
-            => Assert.That(Draw(() => _random.OnUnitSphere().magnitude),
-                Is.All.EqualTo(Magnitude).Within(Tolerance));
+        public void APointOnTheSphereHasUnitLength() => Assert.That(Draw(() => _random.OnUnitSphere().magnitude),
+            Is.All.EqualTo(Magnitude).Within(Tolerance));
 
         /// <summary>A point inside the sphere never leaves it.</summary>
         [Test]
-        public void APointInsideTheSphereStaysInside()
-            => Assert.That(Draw(() => _random.InsideUnitSphere().magnitude),
-                Is.All.LessThanOrEqualTo(Magnitude + Tolerance));
+        public void APointInsideTheSphereStaysInside() => Assert.That(Draw(() => _random.InsideUnitSphere().magnitude),
+            Is.All.LessThanOrEqualTo(Magnitude + Tolerance));
 
         /// <summary>A missing source reports itself and hands back a harmless value.</summary>
         [Test]

@@ -42,7 +42,11 @@ namespace Base.SaveSystemPackage.Tests
         {
             LogAssert.Expect(LogType.Warning, new Regex(nameof(Vector3)));
 
-            Assert.That(SerializationUtilities.ToVector3(new[] { 1f, 2f }), Is.EqualTo(Vector3.zero));
+            Assert.That(SerializationUtilities.ToVector3(new[]
+            {
+                1f,
+                2f
+            }), Is.EqualTo(Vector3.zero));
         }
 
         /// <summary>A missing array is reported rather than walked into.</summary>

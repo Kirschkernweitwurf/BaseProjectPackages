@@ -177,6 +177,9 @@ namespace Base.ToolsPackage.Editor.Tests
             return types;
         }
 
+        /// <summary>The serialized name an auto property's backing field is compiled into.</summary>
+        private static string BackingFieldFor(string propertyName) => string.Format(BackingFieldFormat, propertyName);
+
         /// <summary>Runs the scanner against the given layout.</summary>
         private List<FolderViolation> Scan(FakeAssetIndex index) => FolderConventionScanner.Scan(_config, index);
 
@@ -208,8 +211,5 @@ namespace Base.ToolsPackage.Editor.Tests
             serialized.ApplyModifiedProperties();
             serialized.Dispose();
         }
-
-        /// <summary>The serialized name an auto property's backing field is compiled into.</summary>
-        private static string BackingFieldFor(string propertyName) => string.Format(BackingFieldFormat, propertyName);
     }
 }

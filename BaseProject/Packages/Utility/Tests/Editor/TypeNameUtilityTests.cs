@@ -25,20 +25,18 @@ namespace Base.UtilityPackage.Tests
 
         /// <summary>No name in means an empty string out, not a crash.</summary>
         [Test]
-        public void TrimArityAnswersEmptyForNoName()
-            => Assert.That(TypeNameUtility.TrimArity(null), Is.Empty);
+        public void TrimArityAnswersEmptyForNoName() => Assert.That(TypeNameUtility.TrimArity(null), Is.Empty);
 
         /// <summary>A generic type reads the way it is written in source.</summary>
         [Test]
-        public void AGenericTypeSpellsOutItsArgument()
-            => Assert.That(TypeNameUtility.Format(typeof(List<int>)),
-                Is.EqualTo($"{nameof(List<int>)}<{nameof(Int32)}>"));
+        public void AGenericTypeSpellsOutItsArgument() => Assert.That(TypeNameUtility.Format(typeof(List<int>)),
+            Is.EqualTo($"{nameof(List<int>)}<{nameof(Int32)}>"));
 
         /// <summary>Two arguments are separated, not run together.</summary>
         [Test]
-        public void AGenericTypeSeparatesSeveralArguments()
-            => Assert.That(TypeNameUtility.Format(typeof(Dictionary<string, int>)),
-                Is.EqualTo($"{nameof(Dictionary<string, int>)}<{nameof(String)}, {nameof(Int32)}>"));
+        public void AGenericTypeSeparatesSeveralArguments() => Assert.That(
+            TypeNameUtility.Format(typeof(Dictionary<string, int>)),
+            Is.EqualTo($"{nameof(Dictionary<string, int>)}<{nameof(String)}, {nameof(Int32)}>"));
 
         /// <summary>An array is the element name plus brackets.</summary>
         [Test]
@@ -47,15 +45,15 @@ namespace Base.UtilityPackage.Tests
 
         /// <summary>A nested type is only findable through the chain it is declared in.</summary>
         [Test]
-        public void ANestedTypeIsQualifiedByTheTypesAroundIt()
-            => Assert.That(TypeNameUtility.FormatShortName(typeof(Outer.Inner)),
-                Is.EqualTo($"{nameof(TypeNameUtilityTests)}.{nameof(Outer)}.{nameof(Outer.Inner)}"));
+        public void ANestedTypeIsQualifiedByTheTypesAroundIt() => Assert.That(
+            TypeNameUtility.FormatShortName(typeof(Outer.Inner)),
+            Is.EqualTo($"{nameof(TypeNameUtilityTests)}.{nameof(Outer)}.{nameof(Outer.Inner)}"));
 
         /// <summary>The full name carries the namespace in front of the short name.</summary>
         [Test]
-        public void AFullNameCarriesTheNamespace()
-            => Assert.That(TypeNameUtility.FormatFullName(typeof(TypeNameUtilityTests)),
-                Is.EqualTo($"{typeof(TypeNameUtilityTests).Namespace}.{nameof(TypeNameUtilityTests)}"));
+        public void AFullNameCarriesTheNamespace() => Assert.That(
+            TypeNameUtility.FormatFullName(typeof(TypeNameUtilityTests)),
+            Is.EqualTo($"{typeof(TypeNameUtilityTests).Namespace}.{nameof(TypeNameUtilityTests)}"));
 
         /// <summary>No type in means an empty string out, from every entry point.</summary>
         [Test]

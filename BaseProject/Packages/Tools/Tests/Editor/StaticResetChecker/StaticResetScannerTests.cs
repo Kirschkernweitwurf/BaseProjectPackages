@@ -112,8 +112,7 @@ namespace Base.ToolsPackage.Editor.Tests
         /// class in the project into the report.
         /// </summary>
         [Test]
-        public void AStaticMethodIsNotAField()
-            => Assert.That(Scan("static void DoWork() { }"), Is.Empty);
+        public void AStaticMethodIsNotAField() => Assert.That(Scan("static void DoWork() { }"), Is.Empty);
 
         /// <summary>
         /// The word appearing inside a string is not a declaration. The scanner blanks strings before

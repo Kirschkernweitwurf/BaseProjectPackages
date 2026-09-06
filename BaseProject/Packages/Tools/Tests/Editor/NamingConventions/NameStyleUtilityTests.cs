@@ -139,9 +139,9 @@ namespace Base.ToolsPackage.Editor.Tests
         /// A run of capitals is one word, so an acronym does not turn into one word per letter.
         /// </summary>
         [Test]
-        public void ARunOfCapitalsStaysOneWord()
-            => Assert.That(NameStyleUtility.Convert("HTTPServer", ENamingStyle.LowerSnakeCase),
-                Is.EqualTo("http_server"));
+        public void ARunOfCapitalsStaysOneWord() => Assert.That(
+            NameStyleUtility.Convert("HTTPServer", ENamingStyle.LowerSnakeCase),
+            Is.EqualTo("http_server"));
 
         /// <summary>Rewriting into the mixed snake style rewrites each segment on its own.</summary>
         [Test]

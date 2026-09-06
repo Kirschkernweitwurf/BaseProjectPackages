@@ -16,7 +16,7 @@ namespace Base.CorePackage.StateMachine
     /// <example>
     /// <code>
     /// StateMachine&lt;Enemy&gt; machine = new(this, "Enemy");
-    ///
+    /// 
     /// machine.AddTransition(patrol, chase, static enemy =&gt; enemy.CanSeePlayer, "SeesPlayer");
     /// machine.AddAnyTransition(dead, static enemy =&gt; enemy.Health &lt;= 0, "Died", priority: 10);
     /// machine.Start(patrol);

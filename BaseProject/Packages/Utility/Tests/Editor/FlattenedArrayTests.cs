@@ -62,7 +62,15 @@ namespace Base.UtilityPackage.Tests
 
             List<int> visited = new(_grid);
 
-            Assert.That(visited, Is.EqualTo(new List<int> { 0, 1, 2, 10, 11, 12 }));
+            Assert.That(visited, Is.EqualTo(new List<int>
+            {
+                0,
+                1,
+                2,
+                10,
+                11,
+                12
+            }));
         }
 
         /// <summary>A negative size cannot describe a grid, so it is refused right away.</summary>

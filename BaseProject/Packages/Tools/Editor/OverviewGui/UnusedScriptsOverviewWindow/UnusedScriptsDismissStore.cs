@@ -16,10 +16,10 @@ namespace Base.ToolsPackage.Editor.OverviewGui.UnusedScriptsOverviewWindow
     {
         private const string FilePath = "ProjectSettings/UnusedScriptsDismissed.json";
 
-        private static readonly GuidDismissStore Store = new(FilePath);
-
         /// <summary>How many scripts are currently dismissed, shown beside the clear button.</summary>
         internal static int Count => Store.Count;
+
+        private static readonly GuidDismissStore Store = new(FilePath);
 
         /// <summary>True when the script was dismissed.</summary>
         /// <param name="guid">GUID of the script to test.</param>

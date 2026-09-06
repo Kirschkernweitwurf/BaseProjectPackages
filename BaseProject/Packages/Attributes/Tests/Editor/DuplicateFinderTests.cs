@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using NUnit.Framework;
+using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -197,7 +198,8 @@ namespace Base.AttributesPackage.Tests
 
         private GameObject Created()
         {
-            GameObject created = new(nameof(DuplicateFinderTests));
+            GameObject created = EditorUtility.CreateGameObjectWithHideFlags(nameof(DuplicateFinderTests),
+                HideFlags.HideAndDontSave);
 
             _created.Add(created);
 

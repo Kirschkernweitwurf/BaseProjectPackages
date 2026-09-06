@@ -16,19 +16,19 @@ namespace Base.UtilityPackage.Tests
 
         /// <summary>A normalized value scales up to the percentage a player sees.</summary>
         [Test]
-        public void ANormalizedValueBecomesAPercentage()
-            => Assert.That(PercentageUtils.ToPercent(Normalized), Is.EqualTo(Percent).Within(Tolerance));
+        public void ANormalizedValueBecomesAPercentage() => Assert.That(PercentageUtils.ToPercent(Normalized),
+            Is.EqualTo(Percent).Within(Tolerance));
 
         /// <summary>A percentage scales back down to the value the code works in.</summary>
         [Test]
-        public void APercentageBecomesANormalizedValue()
-            => Assert.That(PercentageUtils.FromPercent(Percent), Is.EqualTo(Normalized).Within(Tolerance));
+        public void APercentageBecomesANormalizedValue() => Assert.That(PercentageUtils.FromPercent(Percent),
+            Is.EqualTo(Normalized).Within(Tolerance));
 
         /// <summary>Going out and back has to land on the value it started from.</summary>
         [Test]
-        public void TheConversionsUndoEachOther()
-            => Assert.That(PercentageUtils.FromPercent(PercentageUtils.ToPercent(Normalized)),
-                Is.EqualTo(Normalized).Within(Tolerance));
+        public void TheConversionsUndoEachOther() => Assert.That(
+            PercentageUtils.FromPercent(PercentageUtils.ToPercent(Normalized)),
+            Is.EqualTo(Normalized).Within(Tolerance));
 
         /// <summary>
         /// The formatted value carries the symbol and the whole number. The decimal separator is left

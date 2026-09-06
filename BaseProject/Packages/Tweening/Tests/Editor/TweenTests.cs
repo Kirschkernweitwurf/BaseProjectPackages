@@ -4,6 +4,7 @@ using Base.ServicesPackage;
 using Base.TweeningPackage.Core;
 using Base.TweeningPackage.Core.Data;
 using NUnit.Framework;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.TestTools;
 using Object = UnityEngine.Object;
@@ -35,7 +36,8 @@ namespace Base.TweeningPackage.Tests
         [OneTimeSetUp]
         public void BuildRunner()
         {
-            _runnerObject = new GameObject(typeof(TweenRunner).Name);
+            _runnerObject = EditorUtility.CreateGameObjectWithHideFlags(typeof(TweenRunner).Name,
+                HideFlags.HideAndDontSave);
 
             ServiceLocator.Register(_runnerObject.AddComponent<TweenRunner>());
         }
@@ -57,7 +59,8 @@ namespace Base.TweeningPackage.Tests
         [SetUp]
         public void Build()
         {
-            _target = new GameObject(nameof(TweenTests));
+            _target = EditorUtility.CreateGameObjectWithHideFlags(nameof(TweenTests),
+                HideFlags.HideAndDontSave);
             _value = float.NaN;
             _events = new List<string>();
         }

@@ -174,7 +174,7 @@ namespace Base.AttributesPackage.Tests
             SerializedProperty property = _serialized.FindProperty(NumericClampProbe.TextField);
             property.stringValue = "unchanged";
 
-            Assert.That(() => NumericPropertyClamp.Apply(property, Floor, Ceiling), Throws.Nothing);
+            Assert.That(code: () => NumericPropertyClamp.Apply(property, Floor, Ceiling), Throws.Nothing);
             Assert.That(property.stringValue, Is.EqualTo("unchanged"));
         }
 

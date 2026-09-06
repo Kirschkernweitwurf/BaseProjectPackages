@@ -8,11 +8,10 @@ namespace Base.AttributesPackage.Tests
     /// </summary>
     internal sealed class ArraySizeProbe : ScriptableObject
     {
-        /// <summary>Serialized name of the array locked to an exact count.</summary>
-        internal const string FixedField = nameof(fixedArray);
-
         /// <summary>Serialized name of the array whose bounds are equal.</summary>
         internal const string EqualBoundsField = nameof(equalBoundsArray);
+        /// <summary>Serialized name of the array locked to an exact count.</summary>
+        internal const string FixedField = nameof(fixedArray);
 
         /// <summary>Serialized name of the array with a floor and no ceiling.</summary>
         internal const string MinimumOnlyField = nameof(minimumOnlyArray);

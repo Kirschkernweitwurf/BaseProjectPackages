@@ -19,7 +19,6 @@ namespace Base.ToolsPackage.Editor.CodebaseGraph
     /// </summary>
     internal sealed class CodebaseGraphWindow : EditorWindow
     {
-        private const string AllTypesSegment = "All types";
         private const string ClearFocusLabel = "Clear focus";
         private const int DefaultDetailHeight = 300;
         private const int DefaultListWidth = 340;
@@ -32,8 +31,6 @@ namespace Base.ToolsPackage.Editor.CodebaseGraph
             + "toolbar. Then press this again.";
 
         private const string ExportScopeLabel = "Export scope";
-        private const string FocusNoticeFormat = "showing {0} and its neighbors, {1} step{2} out";
-        private const string MembersHeadingFormat = "Members of {0}";
         private const string MenuPath = "Tools/Base Packages/Code/Health/Codebase Graph";
         private const string MiniMapHiddenLabel = "Minimap";
         private const string MiniMapShownLabel = "Minimap, click to hide";
@@ -41,17 +38,9 @@ namespace Base.ToolsPackage.Editor.CodebaseGraph
         private const float MinimumWindowWidth = 1100f;
         private const string MissingSheetMessage = "The codebase graph style sheet was not found, so the "
             + "window is drawn unstyled.";
-        private const string NamespacesHeadingFormat = "Namespaces ({0})";
-        private const string NamespacesSegment = "All namespaces";
         private const string ScanLabel = "Scan project";
-        private const string SearchCappedHeadingFormat = "Showing {0} of {1} matches for \"{2}\"";
         private const long SearchDebounceMilliseconds = 180;
-        private const string SearchHeadingFormat = "{0} matches for \"{1}\"";
-        private const string SearchSegmentFormat = "Search: {0}";
-        private const string TypesCappedHeadingFormat = "Types in {0}, showing {1} of {2}. Narrow the "
-            + "filter to see the rest.";
 
-        private const string TypesHeadingFormat = "Types in {0}";
         private const string WindowTitle = "Codebase Graph";
 
         [SerializeField] private EGraphScope savedScope;
@@ -65,11 +54,10 @@ namespace Base.ToolsPackage.Editor.CodebaseGraph
         [SerializeField] private string savedSearch;
         [SerializeField] private string savedTypeName;
 
-        private bool HasFocus => _focusedNamespace != null || _focusedType != null || _focusedMember != null;
-
         private bool IsSearching => !string.IsNullOrEmpty(_filter.Search)
             && _filter.SearchScope != ESearchScope.CurrentLevel;
 
+        private readonly CodebaseGraphNavigation _navigation = new();
         private readonly GraphFilter _filter = new();
 
         private CodebaseGraphData _graph;
@@ -89,13 +77,6 @@ namespace Base.ToolsPackage.Editor.CodebaseGraph
         private IVisualElementScheduledItem _searchDebounce;
         private int _searchTotal;
         private int _typeTotal;
-
-        private EGraphScope _scope = EGraphScope.Namespace;
-        private string _currentNamespace;
-        private TypeNodeInfo _currentType;
-        private NamespaceNodeInfo _focusedNamespace;
-        private TypeNodeInfo _focusedType;
-        private MemberNodeInfo _focusedMember;
 
 #region Unity Callbacks
         private void OnDisable() => DismissalStore.Changed -= ApplyFilter;
@@ -312,17 +293,17 @@ namespace Base.ToolsPackage.Editor.CodebaseGraph
         private void RestoreNavigation()
         {
             ClearSelection();
-            ClearFocusState();
+            _navigation.ClearFocus();
 
-            _currentNamespace = string.IsNullOrEmpty(savedNamespace)
+            _navigation.CurrentNamespace = string.IsNullOrEmpty(savedNamespace)
                 ? null
                 : savedNamespace;
 
-            _currentType = FindTypeByFullName(savedTypeName);
-            _scope = savedScope;
+            _navigation.CurrentType = CodebaseGraphNavigation.FindType(_graph, savedTypeName);
+            _navigation.Scope = savedScope;
 
-            if (_scope == EGraphScope.Member && _currentType == null)
-                _scope = EGraphScope.Type;
+            if (_navigation.Scope == EGraphScope.Member && _navigation.CurrentType == null)
+                _navigation.Scope = EGraphScope.Type;
 
             RestoreFilter();
         }
@@ -344,9 +325,9 @@ namespace Base.ToolsPackage.Editor.CodebaseGraph
 
         private void SaveNavigation()
         {
-            savedScope = _scope;
-            savedNamespace = _currentNamespace;
-            savedTypeName = _currentType?.FullName;
+            savedScope = _navigation.Scope;
+            savedNamespace = _navigation.CurrentNamespace;
+            savedTypeName = _navigation.CurrentType?.FullName;
             savedAssembly = _filter.AssemblyName;
             savedEdgeMode = _filter.EdgeMode;
             savedLayoutMode = _filter.LayoutMode;
@@ -354,20 +335,6 @@ namespace Base.ToolsPackage.Editor.CodebaseGraph
             savedFinding = _filter.Finding;
             savedHops = _filter.Hops;
             savedSearch = _filter.Search;
-        }
-
-        private TypeNodeInfo FindTypeByFullName(string fullName)
-        {
-            if (_graph == null || string.IsNullOrEmpty(fullName))
-                return null;
-
-            foreach (TypeNodeInfo type in _graph.Types.Values)
-            {
-                if (type.FullName == fullName)
-                    return type;
-            }
-
-            return null;
         }
 
         private void ClearSelection()
@@ -400,13 +367,6 @@ namespace Base.ToolsPackage.Editor.CodebaseGraph
             ClearSelection();
         }
 
-        private void ClearFocusState()
-        {
-            _focusedNamespace = null;
-            _focusedType = null;
-            _focusedMember = null;
-        }
-
         private void ApplyFilter()
         {
             if (_graphView == null)
@@ -424,14 +384,17 @@ namespace Base.ToolsPackage.Editor.CodebaseGraph
             List<GraphEntry> entries = BuildEntries();
             _entries = entries;
 
-            _listPane.SetEntries(BuildHeading(entries.Count), entries);
+            string heading = _navigation.Heading(IsSearching, _filter.Search, entries.Count,
+                _searchTotal, _typeTotal);
+
+            _listPane.SetEntries(heading, entries);
             _graphView.SetEdgeMode(_filter.EdgeMode);
             _graphView.SetLayoutMode(_filter.LayoutMode);
-            _graphView.Rebuild(entries, ResolveFocusedId());
+            _graphView.Rebuild(entries, _navigation.FocusedId);
             SetEmptyStateVisible(entries.Count == 0, EmptyFilterText);
 
-            _breadcrumb.SetPath(BuildPath());
-            _breadcrumb.SetFocus(BuildFocusNotice());
+            _breadcrumb.SetPath(_navigation.Path(IsSearching, _filter.Search));
+            _breadcrumb.SetFocus(_navigation.FocusNotice(_filter.Hops));
 
             _tabbedPane.SetCounts();
             UpdateStatus(entries.Count);
@@ -442,7 +405,7 @@ namespace Base.ToolsPackage.Editor.CodebaseGraph
         {
             _listPane.SetEntries(string.Empty, new List<GraphEntry>());
             _graphView.Rebuild(new List<GraphEntry>(), null);
-            _breadcrumb.SetPath(BuildPath());
+            _breadcrumb.SetPath(_navigation.Path(IsSearching, _filter.Search));
             _breadcrumb.SetFocus(string.Empty);
             _statusLabel.text = string.Empty;
             SetEmptyStateVisible(true, text);
@@ -465,98 +428,22 @@ namespace Base.ToolsPackage.Editor.CodebaseGraph
                 return found;
             }
 
-            switch (_scope)
+            switch (_navigation.Scope)
             {
                 case EGraphScope.Type:
                     return GraphEntryFactory.BuildTypes(_graph,
                         _filter,
-                        _currentNamespace,
-                        _focusedType,
+                        _navigation.CurrentNamespace,
+                        _navigation.FocusedType,
                         out _typeTotal);
 
                 case EGraphScope.Member:
-                    return GraphEntryFactory.BuildMembers(_graph, _filter, _currentType, _focusedMember);
+                    return GraphEntryFactory.BuildMembers(_graph, _filter, _navigation.CurrentType,
+                        _navigation.FocusedMember);
 
                 default:
-                    return GraphEntryFactory.BuildNamespaces(_graph, _filter, _focusedNamespace);
+                    return GraphEntryFactory.BuildNamespaces(_graph, _filter, _navigation.FocusedNamespace);
             }
-        }
-
-        private string BuildHeading(int shownCount)
-        {
-            if (IsSearching)
-                return shownCount < _searchTotal
-                    ? string.Format(SearchCappedHeadingFormat, shownCount, _searchTotal, _filter.Search)
-                    : string.Format(SearchHeadingFormat, shownCount, _filter.Search);
-
-            switch (_scope)
-            {
-                case EGraphScope.Type:
-                    return shownCount < _typeTotal
-                        ? string.Format(TypesCappedHeadingFormat,
-                            _currentNamespace ?? AllTypesSegment,
-                            shownCount,
-                            _typeTotal)
-                        : string.Format(TypesHeadingFormat, _currentNamespace ?? AllTypesSegment);
-
-                case EGraphScope.Member:
-                    return _currentType == null
-                        ? string.Empty
-                        : string.Format(MembersHeadingFormat, _currentType.ShortName);
-
-                default:
-                    return string.Format(NamespacesHeadingFormat, shownCount);
-            }
-        }
-
-        private List<string> BuildPath()
-        {
-            List<string> path = new()
-            {
-                NamespacesSegment
-            };
-
-            if (IsSearching)
-            {
-                path.Add(string.Format(SearchSegmentFormat, _filter.Search));
-                return path;
-            }
-
-            if (_scope == EGraphScope.Namespace)
-                return path;
-
-            path.Add(_currentNamespace ?? AllTypesSegment);
-
-            if (_scope == EGraphScope.Member && _currentType != null)
-                path.Add(_currentType.ShortName);
-
-            return path;
-        }
-
-        private string BuildFocusNotice()
-        {
-            string focusedName = _focusedMember?.Name ?? _focusedType?.ShortName ?? _focusedNamespace?.Name;
-            if (string.IsNullOrEmpty(focusedName))
-                return string.Empty;
-
-            string plural = _filter.Hops == 1
-                ? string.Empty
-                : CodebaseGraphStyle.SClass;
-
-            return string.Format(FocusNoticeFormat, focusedName, _filter.Hops, plural);
-        }
-
-        private string ResolveFocusedId()
-        {
-            if (_focusedMember != null)
-                return GraphEntryFactory.MakeMemberId(_focusedMember.Key);
-
-            if (_focusedType != null)
-                return GraphEntryFactory.MakeTypeId(_focusedType.Key);
-
-            return _focusedNamespace != null
-                ? GraphEntryFactory.MakeNamespaceId(_focusedNamespace.Name)
-                : null;
         }
 
         private void UpdateStatus(int shownCount) => _statusLabel.text =
@@ -570,19 +457,19 @@ namespace Base.ToolsPackage.Editor.CodebaseGraph
 
         private void OnBreadcrumbClicked(int index)
         {
-            ClearFocusState();
+            _navigation.ClearFocus();
             ClearSelection();
 
             if (index == 0)
             {
-                _scope = EGraphScope.Namespace;
-                _currentNamespace = null;
-                _currentType = null;
+                _navigation.Scope = EGraphScope.Namespace;
+                _navigation.CurrentNamespace = null;
+                _navigation.CurrentType = null;
             }
             else
             {
-                _scope = EGraphScope.Type;
-                _currentType = null;
+                _navigation.Scope = EGraphScope.Type;
+                _navigation.CurrentType = null;
             }
 
             ApplyFilter();
@@ -590,19 +477,19 @@ namespace Base.ToolsPackage.Editor.CodebaseGraph
 
         private void GoBack()
         {
-            ClearFocusState();
+            _navigation.ClearFocus();
             ClearSelection();
 
-            switch (_scope)
+            switch (_navigation.Scope)
             {
                 case EGraphScope.Member:
-                    _scope = EGraphScope.Type;
-                    _currentType = null;
+                    _navigation.Scope = EGraphScope.Type;
+                    _navigation.CurrentType = null;
                     break;
 
                 case EGraphScope.Type:
-                    _scope = EGraphScope.Namespace;
-                    _currentNamespace = null;
+                    _navigation.Scope = EGraphScope.Namespace;
+                    _navigation.CurrentNamespace = null;
                     break;
             }
 
@@ -611,10 +498,10 @@ namespace Base.ToolsPackage.Editor.CodebaseGraph
 
         private void ClearFocus()
         {
-            if (!HasFocus)
+            if (!_navigation.HasFocus)
                 return;
 
-            ClearFocusState();
+            _navigation.ClearFocus();
             ApplyFilter();
         }
 
@@ -640,18 +527,18 @@ namespace Base.ToolsPackage.Editor.CodebaseGraph
             if (!entry.CanDrillDown)
                 return;
 
-            ClearFocusState();
+            _navigation.ClearFocus();
             _toolbar.ClearSearch();
 
             if (entry.Namespace != null)
             {
-                _scope = EGraphScope.Type;
-                _currentNamespace = entry.Namespace.Name;
+                _navigation.Scope = EGraphScope.Type;
+                _navigation.CurrentNamespace = entry.Namespace.Name;
             }
             else if (entry.Type != null)
             {
-                _scope = EGraphScope.Member;
-                _currentType = entry.Type;
+                _navigation.Scope = EGraphScope.Member;
+                _navigation.CurrentType = entry.Type;
             }
 
             ClearSelection();
@@ -674,7 +561,7 @@ namespace Base.ToolsPackage.Editor.CodebaseGraph
         {
             if (entry.Member != null)
             {
-                _focusedMember = _focusedMember == entry.Member
+                _navigation.FocusedMember = _navigation.FocusedMember == entry.Member
                     ? null
                     : entry.Member;
 
@@ -683,7 +570,7 @@ namespace Base.ToolsPackage.Editor.CodebaseGraph
 
             if (entry.Namespace != null)
             {
-                _focusedNamespace = _focusedNamespace == entry.Namespace
+                _navigation.FocusedNamespace = _navigation.FocusedNamespace == entry.Namespace
                     ? null
                     : entry.Namespace;
 
@@ -693,7 +580,7 @@ namespace Base.ToolsPackage.Editor.CodebaseGraph
             if (entry.Type == null)
                 return false;
 
-            _focusedType = _focusedType == entry.Type
+            _navigation.FocusedType = _navigation.FocusedType == entry.Type
                 ? null
                 : entry.Type;
 
@@ -732,9 +619,9 @@ namespace Base.ToolsPackage.Editor.CodebaseGraph
         /// </summary>
         private void ExportScope()
         {
-            if (!string.IsNullOrEmpty(_currentNamespace))
+            if (!string.IsNullOrEmpty(_navigation.CurrentNamespace))
             {
-                CodebaseGraphReportIo.ExportScope(_graph, _currentNamespace, false);
+                CodebaseGraphReportIo.ExportScope(_graph, _navigation.CurrentNamespace, false);
                 return;
             }
 
@@ -766,7 +653,7 @@ namespace Base.ToolsPackage.Editor.CodebaseGraph
 
         private void OnNeighborChanged()
         {
-            if (HasFocus)
+            if (_navigation.HasFocus)
                 ApplyFilter();
         }
 

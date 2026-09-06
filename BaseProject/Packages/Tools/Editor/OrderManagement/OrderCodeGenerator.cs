@@ -27,6 +27,7 @@ namespace Base.ToolsPackage.Editor.OrderManagement
 
             string code = BuildCode(registry.GeneratedNamespace, registry.RootClassName, registry.Constants,
                 out int count);
+
             string fileName = registry.RootClassName + FileExtension;
             string fullPath = Path.GetFullPath(Path.Combine(registry.OutputDirectory, fileName));
             string directory = Path.GetDirectoryName(fullPath);

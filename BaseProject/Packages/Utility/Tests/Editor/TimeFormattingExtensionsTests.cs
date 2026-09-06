@@ -21,18 +21,18 @@ namespace Base.UtilityPackage.Tests
 
         /// <summary>Once there is a minute, both units are named.</summary>
         [Test]
-        public void MinutesAreNamedNextToSeconds()
-            => Assert.That(MinuteDuration.ToMinutesSecondsText(), Is.EqualTo("1 minute and 30 seconds"));
+        public void MinutesAreNamedNextToSeconds() => Assert.That(MinuteDuration.ToMinutesSecondsText(),
+            Is.EqualTo("1 minute and 30 seconds"));
 
         /// <summary>Once there is an hour, all three units are named.</summary>
         [Test]
-        public void HoursAreNamedNextToMinutesAndSeconds()
-            => Assert.That(FullDuration.ToMinutesSecondsText(), Is.EqualTo("2 hours, 5 minutes and 30 seconds"));
+        public void HoursAreNamedNextToMinutesAndSeconds() => Assert.That(FullDuration.ToMinutesSecondsText(),
+            Is.EqualTo("2 hours, 5 minutes and 30 seconds"));
 
         /// <summary>A value of one drops the plural, so "1 seconds" cannot happen.</summary>
         [Test]
-        public void ASingleUnitIsNamedInTheSingular()
-            => Assert.That(SingularDuration.ToMinutesSecondsText(), Is.EqualTo("1 minute and 1 second"));
+        public void ASingleUnitIsNamedInTheSingular() => Assert.That(SingularDuration.ToMinutesSecondsText(),
+            Is.EqualTo("1 minute and 1 second"));
 
         /// <summary>A negative duration is treated as none, not as a countdown into the past.</summary>
         [Test]

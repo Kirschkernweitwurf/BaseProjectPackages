@@ -2,11 +2,11 @@
   "name": "Base.ToolsPackage.Editor.CommandPalette",
   "rootNamespace": "Base.ToolsPackage.Editor.CommandPalette",
   "references": [
-        "Base.ToolsPackage.Editor.MenuManagerModel",
-        "Base.ToolsPackage.Editor.Shared",
-        "GUID:8f82a2d294e14cc5930979a4e0d686ec",
-        "GUID:922d81cfb9ff6984da4cb2213b66a375"
-    ],
+    "Base.ToolsPackage.Editor.MenuManagerModel",
+    "Base.ToolsPackage.Editor.Shared",
+    "GUID:8f82a2d294e14cc5930979a4e0d686ec",
+    "GUID:922d81cfb9ff6984da4cb2213b66a375"
+  ],
   "includePlatforms": [
     "Editor"
   ],

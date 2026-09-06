@@ -55,8 +55,7 @@ namespace Base.UtilityPackage.Tests
 
         /// <summary>Removing something that was never there reports it instead of throwing.</summary>
         [Test]
-        public void RemovingAMissingItemReportsFalse()
-            => Assert.That(_set.Remove(Alpha), Is.False);
+        public void RemovingAMissingItemReportsFalse() => Assert.That(_set.Remove(Alpha), Is.False);
 
         /// <summary>Clearing has to leave the set as empty as a fresh one.</summary>
         [Test]
@@ -74,38 +73,79 @@ namespace Base.UtilityPackage.Tests
         public void UnionAddsOnlyWhatIsMissing()
         {
             _set.Add(Alpha);
-            _set.UnionWith(new List<string> { Alpha, Beta });
+            _set.UnionWith(new List<string>
+            {
+                Alpha,
+                Beta
+            });
 
             Assert.That(_set.Count, Is.EqualTo(2));
-            Assert.That(_set.SetEquals(new List<string> { Alpha, Beta }), Is.True);
+            Assert.That(_set.SetEquals(new List<string>
+            {
+                Alpha,
+                Beta
+            }), Is.True);
         }
 
         /// <summary>An intersection keeps only what both sides hold.</summary>
         [Test]
         public void IntersectKeepsOnlyTheSharedItems()
         {
-            _set.UnionWith(new List<string> { Alpha, Beta, Gamma });
-            _set.IntersectWith(new List<string> { Beta, Gamma });
+            _set.UnionWith(new List<string>
+            {
+                Alpha,
+                Beta,
+                Gamma
+            });
 
-            Assert.That(_set.SetEquals(new List<string> { Beta, Gamma }), Is.True);
+            _set.IntersectWith(new List<string>
+            {
+                Beta,
+                Gamma
+            });
+
+            Assert.That(_set.SetEquals(new List<string>
+            {
+                Beta,
+                Gamma
+            }), Is.True);
         }
 
         /// <summary>An exception removes exactly the given items.</summary>
         [Test]
         public void ExceptRemovesTheGivenItems()
         {
-            _set.UnionWith(new List<string> { Alpha, Beta });
-            _set.ExceptWith(new List<string> { Alpha });
+            _set.UnionWith(new List<string>
+            {
+                Alpha,
+                Beta
+            });
 
-            Assert.That(_set.SetEquals(new List<string> { Beta }), Is.True);
+            _set.ExceptWith(new List<string>
+            {
+                Alpha
+            });
+
+            Assert.That(_set.SetEquals(new List<string>
+            {
+                Beta
+            }), Is.True);
         }
 
         /// <summary>A bulk operation has to reach the serialized items, not only the runtime set.</summary>
         [Test]
         public void ABulkOperationRewritesTheSerializedItems()
         {
-            _set.UnionWith(new List<string> { Alpha, Beta });
-            _set.ExceptWith(new List<string> { Alpha });
+            _set.UnionWith(new List<string>
+            {
+                Alpha,
+                Beta
+            });
+
+            _set.ExceptWith(new List<string>
+            {
+                Alpha
+            });
 
             Assert.That(ToJson(_set), Does.Not.Contain(Alpha));
             Assert.That(ToJson(_set), Does.Contain(Beta));
@@ -115,11 +155,19 @@ namespace Base.UtilityPackage.Tests
         [Test]
         public void TheSetSurvivesASerializationRoundTrip()
         {
-            _set.UnionWith(new List<string> { Alpha, Beta });
+            _set.UnionWith(new List<string>
+            {
+                Alpha,
+                Beta
+            });
 
             SerializableHashSet<string> restored = FromJson(ToJson(_set));
 
-            Assert.That(restored.SetEquals(new List<string> { Alpha, Beta }), Is.True);
+            Assert.That(restored.SetEquals(new List<string>
+            {
+                Alpha,
+                Beta
+            }), Is.True);
         }
 
         /// <summary>Duplicates authored in the inspector collapse into a single item.</summary>
@@ -149,9 +197,8 @@ namespace Base.UtilityPackage.Tests
 
         // The JSON is built from the field name constant the drawer already uses, so a rename of the
         // serialized field breaks the build here instead of silently invalidating the test data.
-        private static string BuildDuplicateJson()
-            => $"{{\"{Host.ItemsField}\":"
-                + $"{{\"{SerializableHashSet<string>.ItemsField}\":[\"{Alpha}\",\"{Alpha}\"]}}}}";
+        private static string BuildDuplicateJson() => $"{{\"{Host.ItemsField}\":"
+            + $"{{\"{SerializableHashSet<string>.ItemsField}\":[\"{Alpha}\",\"{Alpha}\"]}}}}";
 
         private static string ToJson(SerializableHashSet<string> set)
         {

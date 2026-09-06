@@ -36,6 +36,7 @@ namespace Base.CorePackage.Tests
                 Assert.That(settings.Evaluate(position), Is.InRange(-Tolerance, 1f + Tolerance), "one axis");
                 Assert.That(settings.Evaluate(new Vector2(position, position)), Is.InRange(-Tolerance, 1f + Tolerance),
                     "plane");
+
                 Assert.That(settings.Evaluate(new Vector3(position, position, position)),
                     Is.InRange(-Tolerance, 1f + Tolerance), "space");
             }

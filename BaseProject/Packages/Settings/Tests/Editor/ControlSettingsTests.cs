@@ -1,5 +1,6 @@
 using Base.SettingsPackage.Controls;
 using NUnit.Framework;
+using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -23,7 +24,8 @@ namespace Base.SettingsPackage.Tests
         [SetUp]
         public void Build()
         {
-            _object = new GameObject(typeof(ControlSettings).Name);
+            _object = EditorUtility.CreateGameObjectWithHideFlags(typeof(ControlSettings).Name,
+                HideFlags.HideAndDontSave);
             _controls = _object.AddComponent<ControlSettings>();
             _changes = 0;
 

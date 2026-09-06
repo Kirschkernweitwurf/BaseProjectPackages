@@ -90,7 +90,6 @@ namespace Base.ToolsPackage.Editor.Tests
 
         /// <summary>A plain value passes through the escaping untouched.</summary>
         [Test]
-        public void APlainValueIsNotEscaped()
-            => Assert.That(GeneratorUtility.Escape("Player"), Is.EqualTo("Player"));
+        public void APlainValueIsNotEscaped() => Assert.That(GeneratorUtility.Escape("Player"), Is.EqualTo("Player"));
     }
 }

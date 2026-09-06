@@ -43,8 +43,11 @@ namespace Base.SettingsPackage.Tests
 
         /// <summary>The order settings were registered in is the order they are applied in.</summary>
         [Test]
-        public void TheRegistrationOrderIsKept()
-            => Assert.That(_registry.Settings, Is.EqualTo(new ISetting[] { _first, _second }));
+        public void TheRegistrationOrderIsKept() => Assert.That(_registry.Settings, Is.EqualTo(new ISetting[]
+        {
+            _first,
+            _second
+        }));
 
         /// <summary>The registry answers whether it holds a key.</summary>
         [Test]

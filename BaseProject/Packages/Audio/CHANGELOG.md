@@ -6,7 +6,7 @@ All notable changes to this package are recorded here. The format follows
 
 ## [Unreleased]
 
-## [1.1.0] - 2026-09-06
+## [1.1.1] - 2026-09-06
 
 ### Added
 
@@ -20,6 +20,14 @@ All notable changes to this package are recorded here. The format follows
   source configurator stay internal instead of being widened to be reachable.
 - Constants on `AudioManager` and `AudioPoolManager` naming their serialized fields, so a test can
   wire a manager before it is switched on without spelling the field names out.
+
+### Fixed
+
+- Edit mode tests build their objects outside any scene. They used to be created in whatever scene
+  happened to be open, so every run put them in it and a run that never reached its teardown left
+  them there to be saved with it. They go through `EditorUtility.CreateGameObjectWithHideFlags` now,
+  which never puts them in a scene at all, so they cannot show up in the hierarchy or be saved
+  however the run ends.
 
 ## [1.0.0] - 2026-09-06
 

@@ -54,8 +54,7 @@ namespace Base.TweeningPackage.Tests
         /// <summary>Every easing type resolves to a curve, so a tween is never left without one.</summary>
         /// <param name="type">The easing under test.</param>
         [TestCaseSource(nameof(AllTypes))]
-        public void EveryTypeResolvesToACurve(EEasingType type)
-            => Assert.That(Easings.Get(type), Is.Not.Null);
+        public void EveryTypeResolvesToACurve(EEasingType type) => Assert.That(Easings.Get(type), Is.Not.Null);
 
         /// <summary>Every curve starts at nothing, so a tween begins at its start value.</summary>
         /// <param name="type">The easing under test.</param>
@@ -72,8 +71,7 @@ namespace Base.TweeningPackage.Tests
         /// <summary>Every curve stays a real number in between, so no tween lands on nothing at all.</summary>
         /// <param name="type">The easing under test.</param>
         [TestCaseSource(nameof(AllTypes))]
-        public void EveryCurveStaysFinite(EEasingType type)
-            => Assert.That(Sample(type), Is.All.Matches<float>(IsReal));
+        public void EveryCurveStaysFinite(EEasingType type) => Assert.That(Sample(type), Is.All.Matches<float>(IsReal));
 
         /// <summary>A straight line hands its input straight back.</summary>
         [Test]
@@ -82,16 +80,14 @@ namespace Base.TweeningPackage.Tests
 
         /// <summary>A type this build does not know falls back to a straight line.</summary>
         [Test]
-        public void AnUnknownTypeFallsBackToLinear()
-            => Assert.That(Easings.Get((EEasingType)byte.MaxValue)(0.25f),
-                Is.EqualTo(0.25f).Within(EndpointTolerance));
+        public void AnUnknownTypeFallsBackToLinear() => Assert.That(Easings.Get((EEasingType)byte.MaxValue)(0.25f),
+            Is.EqualTo(0.25f).Within(EndpointTolerance));
 
         /// <summary>An ease in starts slowly, so it sits below a straight line early on.</summary>
         /// <param name="type">The easing under test.</param>
         [TestCase(EEasingType.EaseInQuad)]
         [TestCase(EEasingType.EaseInExpo)]
-        public void AnEaseInStartsSlowly(EEasingType type)
-            => Assert.That(Easings.Get(type)(0.25f), Is.LessThan(0.25f));
+        public void AnEaseInStartsSlowly(EEasingType type) => Assert.That(Easings.Get(type)(0.25f), Is.LessThan(0.25f));
 
         /// <summary>An ease out starts quickly, so it sits above a straight line early on.</summary>
         /// <param name="type">The easing under test.</param>
@@ -125,7 +121,7 @@ namespace Base.TweeningPackage.Tests
         [Test]
         public void TheBounceCurvesMirrorEachOther()
         {
-            float[] mirrored = Array.ConvertAll(Sample(EEasingType.EaseOutBounce), value => 1f - value);
+            float[] mirrored = Array.ConvertAll(Sample(EEasingType.EaseOutBounce), converter: value => 1f - value);
 
             Array.Reverse(mirrored);
 
@@ -134,9 +130,8 @@ namespace Base.TweeningPackage.Tests
 
         /// <summary>A bounce lands rather than overshoots, so it stays inside its range.</summary>
         [Test]
-        public void TheBounceCurveStaysInRange()
-            => Assert.That(Sample(EEasingType.EaseOutBounce),
-                Is.All.InRange(-EndpointTolerance, 1f + EndpointTolerance));
+        public void TheBounceCurveStaysInRange() => Assert.That(Sample(EEasingType.EaseOutBounce),
+            Is.All.InRange(-EndpointTolerance, 1f + EndpointTolerance));
 
         // A fixed sweep across the curve. Sampling into an array lets each test state one property of
         // the whole shape instead of asserting once per point.

@@ -13,9 +13,6 @@ namespace Base.AttributesPackage.Tests
     {
         private const float Tolerance = 0.001f;
 
-        /// <summary>Every preset the enum offers. One test case is generated per entry.</summary>
-        private static IEnumerable<EColor> EveryPreset() => (EColor[])Enum.GetValues(typeof(EColor));
-
         /// <summary>A color is fully opaque, since a translucent one would wash out what it sits on.</summary>
         /// <param name="preset">The preset under test.</param>
         [TestCaseSource(nameof(EveryPreset))]
@@ -27,8 +24,7 @@ namespace Base.AttributesPackage.Tests
         /// for no explicit choice and deliberately falls back onto another entry.
         /// </summary>
         [Test]
-        public void EveryNamedPresetHasItsOwnColor()
-            => Assert.That(NamedColors(), Is.Unique);
+        public void EveryNamedPresetHasItsOwnColor() => Assert.That(NamedColors(), Is.Unique);
 
         /// <summary>Making no choice falls back to the neutral entry rather than to nothing.</summary>
         [Test]
@@ -42,8 +38,10 @@ namespace Base.AttributesPackage.Tests
 
         /// <summary>The same preset always resolves to the same color.</summary>
         [Test]
-        public void ThePaletteIsStable()
-            => Assert.That(EColor.Blue.ToColor(), Is.EqualTo(EColor.Blue.ToColor()));
+        public void ThePaletteIsStable() => Assert.That(EColor.Blue.ToColor(), Is.EqualTo(EColor.Blue.ToColor()));
+
+        /// <summary>Every preset the enum offers. One test case is generated per entry.</summary>
+        private static IEnumerable<EColor> EveryPreset() => (EColor[])Enum.GetValues(typeof(EColor));
 
         // Gathering the colors here keeps the distinctness test down to the one thing it asserts.
         private static List<Color> NamedColors()

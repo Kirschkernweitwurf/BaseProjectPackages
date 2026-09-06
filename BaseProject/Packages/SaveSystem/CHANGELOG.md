@@ -8,10 +8,15 @@ Changes made before 1.3.10 were not recorded.
 
 ## [Unreleased]
 
-## [1.4.1] - 2026-09-06
+## [1.4.2] - 2026-09-06
 
 ### Fixed
 
+- Edit mode tests build their objects outside any scene. They used to be created in whatever scene
+  happened to be open, so every run put them in it and a run that never reached its teardown left
+  them there to be saved with it. They go through `EditorUtility.CreateGameObjectWithHideFlags` now,
+  which never puts them in a scene at all, so they cannot show up in the hierarchy or be saved
+  however the run ends.
 - Stray blank line runs in `SavableRegistryTests` and `SaveMigrationChainTests`.
 
 ## [1.4.0] - 2026-09-05

@@ -139,9 +139,7 @@ namespace Base.UtilityPackage.Tests
         /// <summary>A seed built at runtime has to differ from the next one, or replays collide.</summary>
         [Test]
         public void CreatedSeedsDiffer()
-        {
-            Assert.That(SeededRandom.CreateSeed(), Is.Not.EqualTo(SeededRandom.CreateSeed()));
-        }
+            => Assert.That(SeededRandom.CreateSeed(), Is.Not.EqualTo(SeededRandom.CreateSeed()));
 
         /// <summary>Two generators on unrelated seeds must not agree from the first draw on.</summary>
         [Test]

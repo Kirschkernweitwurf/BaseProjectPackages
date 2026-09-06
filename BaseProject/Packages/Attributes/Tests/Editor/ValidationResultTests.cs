@@ -44,9 +44,8 @@ namespace Base.AttributesPackage.Tests
 
         /// <summary>A warning and an error are told apart, so they can be drawn differently.</summary>
         [Test]
-        public void AWarningAndAnErrorAreToldApart()
-            => Assert.That(ValidationResult.Error(Message).Severity,
-                Is.Not.EqualTo(ValidationResult.Warning(Message).Severity));
+        public void AWarningAndAnErrorAreToldApart() => Assert.That(ValidationResult.Error(Message).Severity,
+            Is.Not.EqualTo(ValidationResult.Warning(Message).Severity));
 
         /// <summary>
         /// A result without words falls back to whatever the attribute says, so a validator may leave
@@ -58,7 +57,6 @@ namespace Base.AttributesPackage.Tests
 
         /// <summary>An untouched result passes, so a default value never blocks anything.</summary>
         [Test]
-        public void AnUntouchedResultPasses()
-            => Assert.That(default(ValidationResult).IsValid, Is.True);
+        public void AnUntouchedResultPasses() => Assert.That(default(ValidationResult).IsValid, Is.True);
     }
 }

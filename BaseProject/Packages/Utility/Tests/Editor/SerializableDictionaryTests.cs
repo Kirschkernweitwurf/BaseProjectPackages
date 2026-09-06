@@ -69,8 +69,7 @@ namespace Base.UtilityPackage.Tests
 
         /// <summary>Removing something that was never there reports it instead of throwing.</summary>
         [Test]
-        public void RemovingAMissingKeyReportsFalse()
-            => Assert.That(_dictionary.Remove(Alpha), Is.False);
+        public void RemovingAMissingKeyReportsFalse() => Assert.That(_dictionary.Remove(Alpha), Is.False);
 
         /// <summary>Clearing has to leave the dictionary as empty as a fresh one.</summary>
         [Test]

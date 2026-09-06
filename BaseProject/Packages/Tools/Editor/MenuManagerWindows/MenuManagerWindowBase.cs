@@ -21,7 +21,6 @@ namespace Base.ToolsPackage.Editor.MenuManagerWindows
         /// <summary>Menu priority both manager windows are listed at, so they sit next to each other.</summary>
         protected const int MenuPriority = 0;
         private const float DividerHeight = 8f;
-        private const double FocusSeconds = 4d;
         private const float FoldWidth = 14f;
         private const float GripWidth = 18f;
         private const float HeaderHeight = 24f;
@@ -61,6 +60,7 @@ namespace Base.ToolsPackage.Editor.MenuManagerWindows
 
         private readonly HashSet<List<MenuNode>> _lockedLists = new();
         private readonly List<MenuRow> _rows = new();
+        private readonly MenuRowFocus _focus = new();
 
         private Dictionary<string, ResolvedMenu> _resolved = new();
         private MenuDragController _drag;
@@ -71,10 +71,6 @@ namespace Base.ToolsPackage.Editor.MenuManagerWindows
         private Vector2 _scroll;
         private string _hoverPreview = string.Empty;
         private int _activeSplitter = NoSplitter;
-
-        private string _focusId;
-        private double _focusUntil;
-        private bool _focusScrollPending;
 
 #region Unity Callbacks
         private void OnEnable()
@@ -154,9 +150,7 @@ namespace Base.ToolsPackage.Editor.MenuManagerWindows
             if (_overlay == null)
                 _overlay = MenuOverlay.instance;
 
-            _focusId = entryId;
-            _focusUntil = EditorApplication.timeSinceStartup + FocusSeconds;
-            _focusScrollPending = true;
+            _focus.Begin(entryId);
 
             // A hit in the shipped tree is invisible while that section is folded away.
             if (MenuTree.Expand(_registry.RootFor(Kind), entryId))
@@ -221,38 +215,31 @@ namespace Base.ToolsPackage.Editor.MenuManagerWindows
             Repaint();
         }
 
-        private bool IsFocused(MenuEntry entry) => _focusId != null
-            && entry != null
-            && entry.Id == _focusId;
-
+        // Keeps the highlight redrawing down to its own expiry, so it fades out on time rather than
+        // whenever the window is next repainted for some other reason.
         private void ExpireFocus()
         {
-            if (_focusId == null)
+            if (!_focus.IsActive)
                 return;
 
-            if (EditorApplication.timeSinceStartup > _focusUntil)
-            {
-                _focusId = null;
-                _focusScrollPending = false;
-            }
+            _focus.Expire();
 
-            Repaint(); // Keep the highlight animating down to its own expiry.
+            Repaint();
         }
 
         private void ScrollToFocus(Event current)
         {
-            if (!_focusScrollPending
-                || _focusId == null
+            if (!_focus.IsScrollPending
                 || current.type != EventType.Repaint)
                 return;
 
             foreach (MenuRow row in _rows)
             {
-                if (!IsFocused(row.Entry))
+                if (!_focus.Matches(row.Entry))
                     continue;
 
                 _scroll.y = Mathf.Max(0f, row.Rect.y - position.height * 0.35f);
-                _focusScrollPending = false;
+                _focus.ScrollDone();
                 Repaint();
                 return;
             }
@@ -617,7 +604,7 @@ namespace Base.ToolsPackage.Editor.MenuManagerWindows
             if (current.type == EventType.Repaint && isSource)
                 EditorGUI.DrawRect(full, MenuManagerTheme.SelectionColor());
 
-            if (current.type == EventType.Repaint && IsFocused(entry))
+            if (current.type == EventType.Repaint && _focus.Matches(entry))
                 EditorGUI.DrawRect(full, MenuManagerTheme.FocusColor());
 
             if (current.type == EventType.Repaint

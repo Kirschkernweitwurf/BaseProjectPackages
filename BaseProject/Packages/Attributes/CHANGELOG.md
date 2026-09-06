@@ -8,10 +8,33 @@ Changes made before 1.7.5 were not recorded.
 
 ## [Unreleased]
 
-## [1.8.1] - 2026-09-06
+## [1.8.2] - 2026-09-06
+
+### Added
+
+- `HeaderItemCollectorTests`, covering which header controls a type declares and which are passed
+  over. Every rule there fails silently: a method carrying the attribute but the wrong signature is
+  skipped rather than reported, so a button that never appears looks like one nobody wrote.
+
+### Changed
+
+- Reading which header controls a type declares moved out of `HeaderItemRenderer` into
+  `HeaderItemCollector`, together with the tooltip text and the play mode check. None of the three
+  draws anything, and behind the renderer none of them could be reached without a live header.
+- The live sample behind an attribute page moved out of `AttributeReferencePane` into
+  `AttributeSamplePreview`. The object carrying the attribute, the inspector drawing it, the script
+  it came from and the snippet read out of that script are one lifetime: built together, reused
+  together when the same page is opened twice, and destroyed together or a temporary object and an
+  editor are left behind on every page turn. Clearing the keyboard focus now happens before that
+  teardown rather than after it, which is the safer order of the two.
 
 ### Fixed
 
+- Edit mode tests build their objects outside any scene. They used to be created in whatever scene
+  happened to be open, so every run put them in it and a run that never reached its teardown left
+  them there to be saved with it. They go through `EditorUtility.CreateGameObjectWithHideFlags` now,
+  which never puts them in a scene at all, so they cannot show up in the hierarchy or be saved
+  however the run ends.
 - Three stray blank line runs and a comment that had come loose from the string it describes.
   `RequireComponentAuditWindow` carried an explanation of why `Description` is declared after the
   two labels it reads, sitting below that field with seven blank lines under it.

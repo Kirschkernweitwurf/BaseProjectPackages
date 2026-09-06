@@ -27,13 +27,13 @@ namespace Base.ToolsPackage.Editor.AssetZoo.UI
         private const string ListTitle = "Categories";
         private const string NewCategoryName = "Category";
 
+        /// <summary>How many categories the config holds.</summary>
+        public int Count => _categories.arraySize;
+
         private readonly EditorList _list;
         private readonly SerializedProperty _categories;
 
         private string _filter = string.Empty;
-
-        /// <summary>How many categories the config holds.</summary>
-        public int Count => _categories.arraySize;
 
         /// <summary>Creates the view over the categories array of one config.</summary>
         /// <param name="categories">The categories array property.</param>

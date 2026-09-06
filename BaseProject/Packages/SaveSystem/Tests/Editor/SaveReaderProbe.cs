@@ -15,10 +15,6 @@ namespace Base.SaveSystemPackage.Tests
     {
         private readonly Dictionary<string, SaveMetadata> _saves = new();
 
-        /// <summary>Files metadata under a slot, so the reader reports that slot as taken.</summary>
-        /// <param name="metadata">The metadata to hand out for its own slot.</param>
-        internal void Add(SaveMetadata metadata) => _saves[metadata.SlotId] = metadata;
-
         /// <inheritdoc/>
         public Awaitable<ESaveLoadResult> LoadAsync(string slotId, CancellationToken ct = default)
             => AwaitableUtility.FromResult(ESaveLoadResult.Success);
@@ -38,5 +34,9 @@ namespace Base.SaveSystemPackage.Tests
         /// <inheritdoc/>
         public Awaitable<IReadOnlyList<SaveMetadata>> ListSavesAsync(CancellationToken ct = default)
             => AwaitableUtility.FromResult<IReadOnlyList<SaveMetadata>>(new List<SaveMetadata>(_saves.Values));
+
+        /// <summary>Files metadata under a slot, so the reader reports that slot as taken.</summary>
+        /// <param name="metadata">The metadata to hand out for its own slot.</param>
+        internal void Add(SaveMetadata metadata) => _saves[metadata.SlotId] = metadata;
     }
 }

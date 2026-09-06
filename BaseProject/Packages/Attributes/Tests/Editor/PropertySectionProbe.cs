@@ -9,20 +9,19 @@ namespace Base.AttributesPackage.Tests
     /// </summary>
     internal sealed class PropertySectionProbe : ScriptableObject
     {
-        /// <summary>Serialized name of the field that opens the first section.</summary>
-        internal const string FirstTitleField = nameof(firstTitle);
-
         /// <summary>Serialized name of the plain field in the first section.</summary>
         internal const string FirstBodyField = nameof(firstBody);
-
-        /// <summary>Serialized name of the field that opens the second section.</summary>
-        internal const string SecondTitleField = nameof(secondTitle);
+        /// <summary>Serialized name of the field that opens the first section.</summary>
+        internal const string FirstTitleField = nameof(firstTitle);
 
         /// <summary>Serialized name of the plain field in the second section.</summary>
         internal const string SecondBodyField = nameof(secondBody);
 
         /// <summary>Serialized name of the pinned field in the second section.</summary>
         internal const string SecondPinnedField = nameof(secondPinned);
+
+        /// <summary>Serialized name of the field that opens the second section.</summary>
+        internal const string SecondTitleField = nameof(secondTitle);
 
         [SerializeField] [Title("First")] private int firstTitle;
         [SerializeField] private int firstBody;

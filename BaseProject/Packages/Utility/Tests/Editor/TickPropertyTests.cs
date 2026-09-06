@@ -76,14 +76,13 @@ namespace Base.UtilityPackage.Tests
         /// elsewhere is not silently matched on the wrong field.
         /// </summary>
         [Test]
-        public void TheCountIsLookedUpUnderTheNameTheCallerGave()
-            => Assert.That(TickProperty.Resolve(Property(TickPropertyProbe.WrapperField), "notTheTickField"),
-                Is.Null);
+        public void TheCountIsLookedUpUnderTheNameTheCallerGave() => Assert.That(
+            TickProperty.Resolve(Property(TickPropertyProbe.WrapperField), "notTheTickField"),
+            Is.Null);
 
         /// <summary>Nothing in means nothing out, not a crash.</summary>
         [Test]
-        public void NothingResolvesToNothing()
-            => Assert.That(Resolve(null), Is.Null);
+        public void NothingResolvesToNothing() => Assert.That(Resolve(null), Is.Null);
 
         /// <summary>Resolves the tick count of the given property.</summary>
         private static SerializedProperty Resolve(SerializedProperty property)

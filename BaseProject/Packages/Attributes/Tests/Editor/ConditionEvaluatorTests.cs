@@ -55,8 +55,7 @@ namespace Base.AttributesPackage.Tests
         [Test]
         public void AnEditThatHasNotBeenAppliedIsAlreadyVisible()
         {
-            SerializedProperty flag = _editor.serializedObject.FindProperty(
-                ConditionContextProbe.SerializedFlagField);
+            SerializedProperty flag = _editor.serializedObject.FindProperty(ConditionContextProbe.SerializedFlagField);
 
             flag.boolValue = true;
 
@@ -85,8 +84,7 @@ namespace Base.AttributesPackage.Tests
         /// hides the thing that points at it.
         /// </summary>
         [Test]
-        public void AMemberThatCannotBeFoundCountsAsTrue()
-            => Assert.That(Resolve(MissingMember), Is.True);
+        public void AMemberThatCannotBeFoundCountsAsTrue() => Assert.That(Resolve(MissingMember), Is.True);
 
         /// <summary>A serialized member that is not a bool cannot answer either, so it counts as true.</summary>
         [Test]

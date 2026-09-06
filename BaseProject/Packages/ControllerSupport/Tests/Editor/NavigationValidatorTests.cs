@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 using Base.ControllerSupportPackage.Controller.Navigation;
 using Base.ControllerSupportPackage.Editor;
 using NUnit.Framework;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.TestTools;
 using UnityEngine.UI;
@@ -124,7 +125,8 @@ namespace Base.ControllerSupportPackage.Tests
         /// <summary>Creates an object and remembers it so the teardown can clean it up.</summary>
         private GameObject CreateHost(string name)
         {
-            GameObject host = new(name);
+            GameObject host = EditorUtility.CreateGameObjectWithHideFlags(name,
+                HideFlags.HideAndDontSave);
             _hosts.Add(host);
 
             return host;

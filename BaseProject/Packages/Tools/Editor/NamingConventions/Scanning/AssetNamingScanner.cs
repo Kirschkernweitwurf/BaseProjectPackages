@@ -12,10 +12,10 @@ namespace Base.ToolsPackage.Editor.NamingConventions.Scanning
     internal static class AssetNamingScanner
     {
         private const string AssetsRoot = "Assets/";
-        private const string PackagesRoot = "Packages/";
-        private const int ProgressStep = 200;
         private const string MissingIndexMessage =
             "Collecting assets needs an asset index to read the project through.";
+        private const string PackagesRoot = "Packages/";
+        private const int ProgressStep = 200;
         private const string ProgressTitle = "Asset Naming Conventions";
 
         /// <summary>Returns every asset that breaks the first rule matching it.</summary>

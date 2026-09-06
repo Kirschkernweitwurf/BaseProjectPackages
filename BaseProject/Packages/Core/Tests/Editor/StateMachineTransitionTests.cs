@@ -41,7 +41,7 @@ namespace Base.CorePackage.Tests
         [Test]
         public void ClosedConditionKeepsTheMachineInPlace()
         {
-            _machine.AddTransition(_start, _left, static probe => probe.GoLeft);
+            _machine.AddTransition(_start, _left, condition: static probe => probe.GoLeft);
             _machine.Start(_start);
 
             _machine.Tick(1f);
@@ -53,8 +53,8 @@ namespace Base.CorePackage.Tests
         [Test]
         public void HigherPriorityWinsOverDeclarationOrder()
         {
-            _machine.AddTransition(_start, _left, static probe => probe.GoLeft);
-            _machine.AddTransition(_start, _right, static probe => probe.GoRight, priority: 5);
+            _machine.AddTransition(_start, _left, condition: static probe => probe.GoLeft);
+            _machine.AddTransition(_start, _right, condition: static probe => probe.GoRight, priority: 5);
 
             _machine.Start(_start);
 
@@ -70,8 +70,8 @@ namespace Base.CorePackage.Tests
         [Test]
         public void EqualPrioritiesKeepDeclarationOrder()
         {
-            _machine.AddTransition(_start, _left, static probe => probe.GoLeft);
-            _machine.AddTransition(_start, _right, static probe => probe.GoRight);
+            _machine.AddTransition(_start, _left, condition: static probe => probe.GoLeft);
+            _machine.AddTransition(_start, _right, condition: static probe => probe.GoRight);
 
             _machine.Start(_start);
 
@@ -87,8 +87,8 @@ namespace Base.CorePackage.Tests
         [Test]
         public void AnyStateTransitionIsAskedFirst()
         {
-            _machine.AddTransition(_start, _left, static probe => probe.GoLeft);
-            _machine.AddAnyTransition(_right, static probe => probe.GoRight);
+            _machine.AddTransition(_start, _left, condition: static probe => probe.GoLeft);
+            _machine.AddAnyTransition(_right, condition: static probe => probe.GoRight);
 
             _machine.Start(_start);
 
@@ -104,7 +104,7 @@ namespace Base.CorePackage.Tests
         [Test]
         public void AnyStateTransitionDoesNotReenterTheActiveState()
         {
-            _machine.AddAnyTransition(_start, static _ => true);
+            _machine.AddAnyTransition(_start, condition: static _ => true);
             _machine.Start(_start);
 
             _machine.Tick(1f);

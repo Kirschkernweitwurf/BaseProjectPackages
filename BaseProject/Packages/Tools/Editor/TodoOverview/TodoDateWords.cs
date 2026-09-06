@@ -16,9 +16,9 @@ namespace Base.ToolsPackage.Editor.TodoOverview
         private const string DueColumn = "Due";
         private const string DueFilter = "Overdue";
         private const string DueFilterTooltip = "Show only the items whose deadline has passed";
+        private const string DueInFormat = "Due in {0} days";
         private const string DueToday = "Due today";
         private const string DueTomorrow = "Due tomorrow";
-        private const string DueInFormat = "Due in {0} days";
         private const string OverdueFormat = "Overdue by {0} days";
         private const string OverdueYesterday = "Was due yesterday";
         private const string WrittenAgoFormat = "Written {0} days ago";

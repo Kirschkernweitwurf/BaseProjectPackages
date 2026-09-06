@@ -57,8 +57,8 @@ namespace Base.ToolsPackage.Editor.Tests
         /// segment is the command's own name and the rest is only where it was filed.
         /// </summary>
         [Test]
-        public void ARunInsideTheLeafOutranksTheSameRunEarlierInThePath()
-            => Assert.That(ScoreOf(LeafSubstringPath), Is.GreaterThan(ScoreOf(NonLeafSubstringPath)));
+        public void ARunInsideTheLeafOutranksTheSameRunEarlierInThePath() => Assert.That(ScoreOf(LeafSubstringPath),
+            Is.GreaterThan(ScoreOf(NonLeafSubstringPath)));
 
         /// <summary>
         /// The characters only have to appear in order, which is what lets a few letters reach a long
@@ -100,8 +100,8 @@ namespace Base.ToolsPackage.Editor.Tests
         }
 
         /// <summary>Builds an entry that does nothing when run, since only its path is scored.</summary>
-        private static CommandEntry Entry(string path)
-            => new(path, path, null, ECommandKind.MenuItem, EAssetOrigin.Project, () => { });
+        private static CommandEntry Entry(string path) => new(path, path, null, ECommandKind.MenuItem,
+            EAssetOrigin.Project, execute: () => { });
 
         /// <summary>Scores the given path against the shared term.</summary>
         private int ScoreOf(string path)

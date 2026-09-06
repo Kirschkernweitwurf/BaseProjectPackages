@@ -2,16 +2,16 @@
   "name": "Base.CorePackage.Tests",
   "rootNamespace": "Base.CorePackage.Tests",
   "references": [
-        "Base.CorePackage",
-        "Base.CorePackage.Editor.StateMachine",
-        "Base.CorePackage.EventBus",
-        "Base.CorePackage.MenuManaging",
-        "Base.CorePackage.StateMachine",
-        "Base.ServicesPackage",
-        "Base.UtilityPackage",
-        "UnityEngine.TestRunner",
-        "UnityEditor.TestRunner"
-    ],
+    "Base.CorePackage",
+    "Base.CorePackage.Editor.StateMachine",
+    "Base.CorePackage.EventBus",
+    "Base.CorePackage.MenuManaging",
+    "Base.CorePackage.StateMachine",
+    "Base.ServicesPackage",
+    "Base.UtilityPackage",
+    "UnityEngine.TestRunner",
+    "UnityEditor.TestRunner"
+  ],
   "includePlatforms": [
     "Editor"
   ],

@@ -56,6 +56,7 @@ bool confirmed = await confirmation.ShowConfirmationAsync(new ConfirmationReques
 | `FpsCounter` | Shows the current frames per second in a `TMP_Text`, hidden in release builds unless explicitly enabled |
 | `BuildVersion` | Displays the version and build number read from `version.txt` in StreamingAssets |
 | `BuildVersionFile` | Reads, counts and formats that file, apart from the component that shows it |
+| `FpsSampler` | Smooths the frame time and decides when the counter has a new number to show |
 | `BuildVersionProcessor` | Build step that writes the date-version and increments the build number into that file before every build |
 
 `SceneLoader` sits behind `LoadSceneButton` and `ConfirmedLoadSceneButton` as the shared resolving, awaiting and error-logging path, so both behave identically.

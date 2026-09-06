@@ -2,8 +2,8 @@
   "name": "Base.ToolsPackage.Editor.Identification",
   "rootNamespace": "Base.ToolsPackage.Editor.Identification",
   "references": [
-        "GUID:922d81cfb9ff6984da4cb2213b66a375"
-    ],
+    "GUID:922d81cfb9ff6984da4cb2213b66a375"
+  ],
   "includePlatforms": [
     "Editor"
   ],

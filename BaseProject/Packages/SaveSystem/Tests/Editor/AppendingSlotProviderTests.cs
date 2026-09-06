@@ -78,6 +78,14 @@ namespace Base.SaveSystemPackage.Tests
             Assert.That(TimestampOf(second), Is.GreaterThanOrEqualTo(TimestampOf(first)));
         }
 
+        /// <summary>A provider needs both halves: one to list saves, one to prune them.</summary>
+        [Test]
+        public void AReaderAndAWriterAreRequired()
+        {
+            Assert.Throws<ArgumentNullException>(() => new AppendingSlotProvider(null, new SaveWriterProbe()));
+            Assert.Throws<ArgumentNullException>(() => new AppendingSlotProvider(new SaveReaderProbe(), null));
+        }
+
         // An id reads as prefix, timestamp, unique suffix. Only the middle segment carries the time.
         private static long TimestampOf(string slotId)
         {
@@ -86,14 +94,6 @@ namespace Base.SaveSystemPackage.Tests
             Assert.That(segments, Has.Length.EqualTo(SegmentCount), $"'{slotId}' is not shaped as expected");
 
             return long.Parse(segments[TimestampSegment], CultureInfo.InvariantCulture);
-        }
-
-        /// <summary>A provider needs both halves: one to list saves, one to prune them.</summary>
-        [Test]
-        public void AReaderAndAWriterAreRequired()
-        {
-            Assert.Throws<ArgumentNullException>(() => new AppendingSlotProvider(null, new SaveWriterProbe()));
-            Assert.Throws<ArgumentNullException>(() => new AppendingSlotProvider(new SaveReaderProbe(), null));
         }
     }
 }

@@ -1,0 +1,18 @@
+{
+  "name": "Base.CorePackage.ObjectPooling",
+  "rootNamespace": "Base.CorePackage.ObjectPooling",
+  "references": [
+        "GUID:c3837597513e91f44a47d8cd91c34f68",
+        "GUID:67ff391e2593426985f327eba2b5d9a3",
+        "GUID:922d81cfb9ff6984da4cb2213b66a375"
+    ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

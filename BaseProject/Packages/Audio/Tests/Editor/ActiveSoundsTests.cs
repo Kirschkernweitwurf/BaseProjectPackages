@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using NUnit.Framework;
+using UnityEditor;
 using UnityEngine;
 
 namespace Base.AudioPackage.Tests
@@ -23,7 +24,8 @@ namespace Base.AudioPackage.Tests
         public void Prepare()
         {
             _activeSounds = new ActiveSounds();
-            _root = new GameObject(RootName);
+            _root = EditorUtility.CreateGameObjectWithHideFlags(RootName,
+                HideFlags.HideAndDontSave);
             _container = AudioTestObjects.CreateContainer();
             _otherContainer = AudioTestObjects.CreateContainer();
         }

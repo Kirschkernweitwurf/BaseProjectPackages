@@ -91,8 +91,7 @@ namespace Base.AttributesPackage.Tests
 
         /// <summary>An exact count leaves nothing to add or remove, so the controls come off.</summary>
         [Test]
-        public void AnExactCountLocksTheSize()
-            => Assert.That(CanResize(ArraySizeProbe.FixedField), Is.False);
+        public void AnExactCountLocksTheSize() => Assert.That(CanResize(ArraySizeProbe.FixedField), Is.False);
 
         /// <summary>
         /// A floor equal to its ceiling is an exact count written the long way, and has to lock the same.
@@ -109,8 +108,7 @@ namespace Base.AttributesPackage.Tests
 
         /// <summary>A range still leaves room to move within it, so the controls stay.</summary>
         [Test]
-        public void ARangeStillAllowsResizing()
-            => Assert.That(CanResize(ArraySizeProbe.RangedField), Is.True);
+        public void ARangeStillAllowsResizing() => Assert.That(CanResize(ArraySizeProbe.RangedField), Is.True);
 
         /// <summary>A floor with no ceiling can always grow, so the controls stay.</summary>
         [Test]
@@ -119,8 +117,7 @@ namespace Base.AttributesPackage.Tests
 
         /// <summary>A field nobody bounded is free, which is the common case.</summary>
         [Test]
-        public void AnUnmarkedArrayAllowsResizing()
-            => Assert.That(CanResize(ArraySizeProbe.PlainField), Is.True);
+        public void AnUnmarkedArrayAllowsResizing() => Assert.That(CanResize(ArraySizeProbe.PlainField), Is.True);
 
         /// <summary>Reads the bounds of the named field.</summary>
         private bool TryGet(string fieldName, out int minimum, out int maximum)

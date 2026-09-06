@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Base.TweeningPackage.Core;
 using NUnit.Framework;
+using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -26,7 +27,8 @@ namespace Base.TweeningPackage.Tests
         [SetUp]
         public void Build()
         {
-            _runnerObject = new GameObject(typeof(TweenRunner).Name);
+            _runnerObject = EditorUtility.CreateGameObjectWithHideFlags(typeof(TweenRunner).Name,
+                HideFlags.HideAndDontSave);
             _runner = _runnerObject.AddComponent<TweenRunner>();
             _registered = new List<ITween>();
             _deregistered = new List<ITween>();

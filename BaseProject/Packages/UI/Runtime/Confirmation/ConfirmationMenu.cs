@@ -56,8 +56,8 @@ namespace Base.UIPackage.Confirmation
         public void Show(ConfirmationRequest request, Action onConfirm, Action onCancel)
         {
             messageText.text = request.Message;
-            confirmButtonText.text = ResolveLabel(request.ConfirmText, defaultConfirmText);
-            cancelButtonText.text = ResolveLabel(request.CancelText, defaultCancelText);
+            confirmButtonText.text = request.ResolveConfirmText(defaultConfirmText);
+            cancelButtonText.text = request.ResolveCancelText(defaultCancelText);
 
             _onConfirm = onConfirm;
             _onCancel = onCancel;
@@ -75,10 +75,6 @@ namespace Base.UIPackage.Confirmation
 
             Close();
         }
-
-        private static string ResolveLabel(string label, string fallback) => string.IsNullOrEmpty(label)
-            ? fallback
-            : label;
 
         private void HandleConfirm() => _onConfirm?.Invoke();
 

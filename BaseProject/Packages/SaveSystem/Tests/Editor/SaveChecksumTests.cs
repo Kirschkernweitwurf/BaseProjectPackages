@@ -16,7 +16,13 @@ namespace Base.SaveSystemPackage.Tests
         [Test]
         public void TheSamePayloadHashesTheSame()
         {
-            byte[] payload = { 1, 2, 3, 4 };
+            byte[] payload =
+            {
+                1,
+                2,
+                3,
+                4
+            };
 
             Assert.That(SaveChecksum.Compute(payload), Is.EqualTo(SaveChecksum.Compute(payload)));
         }
@@ -25,8 +31,21 @@ namespace Base.SaveSystemPackage.Tests
         [Test]
         public void AChangedByteChangesTheHash()
         {
-            byte[] original = { 1, 2, 3, 4 };
-            byte[] damaged = { 1, 2, 9, 4 };
+            byte[] original =
+            {
+                1,
+                2,
+                3,
+                4
+            };
+
+            byte[] damaged =
+            {
+                1,
+                2,
+                9,
+                4
+            };
 
             Assert.That(SaveChecksum.Compute(damaged), Is.Not.EqualTo(SaveChecksum.Compute(original)));
         }
@@ -35,8 +54,17 @@ namespace Base.SaveSystemPackage.Tests
         [Test]
         public void ReorderedBytesHashDifferently()
         {
-            byte[] original = { 1, 2 };
-            byte[] swapped = { 2, 1 };
+            byte[] original =
+            {
+                1,
+                2
+            };
+
+            byte[] swapped =
+            {
+                2,
+                1
+            };
 
             Assert.That(SaveChecksum.Compute(swapped), Is.Not.EqualTo(SaveChecksum.Compute(original)));
         }
@@ -68,7 +96,13 @@ namespace Base.SaveSystemPackage.Tests
 
             SaveChecksum.Write(0x04030201u, buffer, 0);
 
-            Assert.That(buffer, Is.EqualTo(new byte[] { 0x01, 0x02, 0x03, 0x04 }));
+            Assert.That(buffer, Is.EqualTo(new byte[]
+            {
+                0x01,
+                0x02,
+                0x03,
+                0x04
+            }));
         }
 
         /// <summary>Writing at an offset leaves the bytes around it alone.</summary>

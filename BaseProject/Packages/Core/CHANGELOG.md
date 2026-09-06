@@ -8,10 +8,21 @@ Changes made before 2.1.4 were not recorded.
 
 ## [Unreleased]
 
-## [4.0.0] - 2026-09-06
+## [4.0.1] - 2026-09-06
 
 ### Changed
 
+- `EventBusWindow` is 919 lines instead of 1010. What it lists moved into `EventBusModel`: the buses
+  in the loaded scenes, the events the chosen one holds, the filtered set and the rows. The window
+  keeps what was asked for, which is the search text, the leak filter, the expansion set and the
+  sort, and hands those in. The model is rebuilt four times a second while play mode runs and the
+  drawing is not, which is the line the two were split along.
+- The tooltip system, the raycast helpers and the object pools each moved into their own assembly.
+  They shared one with the activation helpers and the noise generator while having nothing to do with
+  any of them, so `Base.CorePackage` needed TextMeshPro, the Input System, the tweening package and
+  the service locator to compile two components that need none of it. It needs the attributes and the
+  utility helpers now, and nothing else. No file moved, so nothing that already points at these
+  scripts has to be repointed.
 - `EventBusWindow` is 1010 lines instead of 1157. The state badges and their tooltips moved into
   `EventBusBadges`, the tab separated export into `EventBusReport`, and the sort column, its
   direction and both comparisons into `EventBusSorting`. A comment that had come loose from the
@@ -23,6 +34,11 @@ Changes made before 2.1.4 were not recorded.
 
 ### Fixed
 
+- Edit mode tests build their objects outside any scene. They used to be created in whatever scene
+  happened to be open, so every run put them in it and a run that never reached its teardown left
+  them there to be saved with it. They go through `EditorUtility.CreateGameObjectWithHideFlags` now,
+  which never puts them in a scene at all, so they cannot show up in the hierarchy or be saved
+  however the run ends.
 - Releasing a service on the way out no longer reports it as missing. `MenuManager.Shutdown`,
   `MenuCursorModule`, `MenuTimeScaleModule` and `MenuInputMapModule` all used the reporting lookup, so
   a scene unload that took the service down first turned a clean teardown into one error per object.

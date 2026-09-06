@@ -106,9 +106,8 @@ namespace Base.ToolsPackage.Editor.TodoOverview.Settings
 
         // Compared channel by channel rather than with the equality operator, because a color that
         // made a round trip through the color well comes back a hair off the one it was set from.
-        private static bool Approximately(Color left, Color right)
-            => Mathf.Approximately(left.r, right.r)
-                && Mathf.Approximately(left.g, right.g)
-                && Mathf.Approximately(left.b, right.b);
+        private static bool Approximately(Color left, Color right) => Mathf.Approximately(left.r, right.r)
+            && Mathf.Approximately(left.g, right.g)
+            && Mathf.Approximately(left.b, right.b);
     }
 }

@@ -43,7 +43,11 @@ namespace Base.CorePackage.Tests
         {
             _machine.Start(_start);
 
-            Assert.That(_probe.Entered, Is.EqualTo(new[] { Start }), "only the initial state should be entered");
+            Assert.That(_probe.Entered, Is.EqualTo(new[]
+            {
+                Start
+            }), "only the initial state should be entered");
+
             Assert.That(_machine.InitialStateName, Is.EqualTo(Start), "the machine should report where it began");
         }
 
@@ -56,7 +60,11 @@ namespace Base.CorePackage.Tests
 
             _machine.Tick(1f);
 
-            Assert.That(_probe.Exited, Is.EqualTo(new[] { Start }), "the old state should be left");
+            Assert.That(_probe.Exited, Is.EqualTo(new[]
+            {
+                Start
+            }), "the old state should be left");
+
             Assert.That(_probe.LastEntered(), Is.EqualTo(Left), "the new state should be entered afterwards");
         }
 
@@ -64,7 +72,7 @@ namespace Base.CorePackage.Tests
         [Test]
         public void TimeInStateResetsOnASwitch()
         {
-            _machine.AddTransition(_start, _left, static probe => probe.GoLeft);
+            _machine.AddTransition(_start, _left, condition: static probe => probe.GoLeft);
             _machine.Start(_start);
 
             _machine.Tick(0.5f);
@@ -101,7 +109,11 @@ namespace Base.CorePackage.Tests
             _machine.Stop();
             _machine.Tick(1f);
 
-            Assert.That(_probe.Exited, Is.EqualTo(new[] { Start }), "the active state should be left on stop");
+            Assert.That(_probe.Exited, Is.EqualTo(new[]
+            {
+                Start
+            }), "the active state should be left on stop");
+
             Assert.That(_machine.IsRunning, Is.False, "a stopped machine should stay stopped");
             Assert.That(_probe.LastEntered(), Is.EqualTo(Start), "no transition should fire after a stop");
         }
@@ -130,7 +142,12 @@ namespace Base.CorePackage.Tests
 
             _machine.Start(_start);
 
-            Assert.That(_machine.StateNames, Is.EquivalentTo(new[] { Start, Left, Right }),
+            Assert.That(_machine.StateNames, Is.EquivalentTo(new[]
+                {
+                    Start,
+                    Left,
+                    Right
+                }),
                 "every state the machine was told about should be reported");
 
             IReadOnlyList<StateMachineEdge> edges = _machine.Edges;

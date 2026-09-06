@@ -20,13 +20,11 @@ namespace Base.CorePackage.Tests
 
         /// <summary>Nothing to lay out yields no placements rather than an empty drawing.</summary>
         [Test]
-        public void AMachineWithNoStatesIsNotLaidOut()
-            => Assert.That(Calculate(new StateMachineShape()), Is.Empty);
+        public void AMachineWithNoStatesIsNotLaidOut() => Assert.That(Calculate(new StateMachineShape()), Is.Empty);
 
         /// <summary>Nothing at all is not laid out either.</summary>
         [Test]
-        public void NothingIsNotLaidOut()
-            => Assert.That(StateMachineLayout.Calculate(null, false), Is.Empty);
+        public void NothingIsNotLaidOut() => Assert.That(StateMachineLayout.Calculate(null, false), Is.Empty);
 
         /// <summary>Every state the machine knows gets a position, reachable or not.</summary>
         [Test]

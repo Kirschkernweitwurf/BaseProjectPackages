@@ -24,8 +24,8 @@ namespace Base.ToolsPackage.Editor.ExecutionOrderOverview
         /// <param name="script">The script to scan.</param>
         /// <param name="type">The type declared in it, used for the fallback line.</param>
         /// <returns>The line and column to place the cursor at, or zeros when nothing was found.</returns>
-        internal static (int Line, int Column) Find(MonoScript script, Type type)
-            => AttributeSourceLocator.Find(script, AttributeToken,
-                AttributeSourceLocator.ClassDeclaration(type?.Name));
+        internal static (int Line, int Column) Find(MonoScript script, Type type) => AttributeSourceLocator.Find(script,
+            AttributeToken,
+            AttributeSourceLocator.ClassDeclaration(type?.Name));
     }
 }

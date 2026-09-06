@@ -15,22 +15,21 @@ namespace Base.AttributesPackage.Tests
 
         /// <summary>Unity speaks in forward slashes wherever the picker came from.</summary>
         [Test]
-        public void BackslashesBecomeForwardSlashes()
-            => Assert.That(PathUtility.Normalize(@"Assets\Art\Textures"), Is.EqualTo("Assets/Art/Textures"));
+        public void BackslashesBecomeForwardSlashes() => Assert.That(PathUtility.Normalize(@"Assets\Art\Textures"),
+            Is.EqualTo("Assets/Art/Textures"));
 
         /// <summary>Nothing in means nothing out, not a crash.</summary>
         [Test]
-        public void AMissingPathNormalizesToNothing()
-            => Assert.That(PathUtility.Normalize(null), Is.Null);
+        public void AMissingPathNormalizesToNothing() => Assert.That(PathUtility.Normalize(null), Is.Null);
 
         /// <summary>
         /// An absolute path inside the project becomes a project path, which is the only form that
         /// survives being committed and opened somewhere else.
         /// </summary>
         [Test]
-        public void APathInsideTheProjectBecomesProjectRelative()
-            => Assert.That(PathUtility.ToProjectRelative(Application.dataPath + "/Art/Textures"),
-                Is.EqualTo("Assets/Art/Textures"));
+        public void APathInsideTheProjectBecomesProjectRelative() => Assert.That(
+            PathUtility.ToProjectRelative(Application.dataPath + "/Art/Textures"),
+            Is.EqualTo("Assets/Art/Textures"));
 
         /// <summary>The project folder itself is the root, not an empty string.</summary>
         [Test]
@@ -50,18 +49,18 @@ namespace Base.AttributesPackage.Tests
         /// neither what the picker returns nor what the inspector shows.
         /// </summary>
         [Test]
-        public void AResourcesPathDropsTheFolderAndTheExtension()
-            => Assert.That(PathUtility.ToResourcesPath("Assets/Art/Resources/Icons/Play.png"),
-                Is.EqualTo("Icons/Play"));
+        public void AResourcesPathDropsTheFolderAndTheExtension() => Assert.That(
+            PathUtility.ToResourcesPath("Assets/Art/Resources/Icons/Play.png"),
+            Is.EqualTo("Icons/Play"));
 
         /// <summary>
         /// Only the last Resources folder counts, since that is the one Unity loads relative to when
         /// they are nested.
         /// </summary>
         [Test]
-        public void TheLastResourcesFolderIsTheOneThatCounts()
-            => Assert.That(PathUtility.ToResourcesPath("Assets/Resources/Packs/Resources/Play.png"),
-                Is.EqualTo("Play"));
+        public void TheLastResourcesFolderIsTheOneThatCounts() => Assert.That(
+            PathUtility.ToResourcesPath("Assets/Resources/Packs/Resources/Play.png"),
+            Is.EqualTo("Play"));
 
         /// <summary>An asset outside a Resources folder cannot be loaded that way, so there is no path.</summary>
         [Test]

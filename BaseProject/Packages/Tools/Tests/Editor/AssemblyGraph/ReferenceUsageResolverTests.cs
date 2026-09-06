@@ -87,26 +87,23 @@ namespace Base.ToolsPackage.Editor.Tests
 
         private static ReferenceUsageResolver Build(Dictionary<string, HashSet<string>> metadata,
             Dictionary<string, HashSet<string>> ancestry,
-            Dictionary<string, HashSet<string>> namespaces)
-            => new(metadata, ancestry, namespaces);
+            Dictionary<string, HashSet<string>> namespaces) => new(metadata, ancestry, namespaces);
 
         private static EReferenceStatus Resolve(ReferenceUsageResolver resolver, string referenceName)
             => resolver.Resolve(resolver.CollectCredited(Consumer),
                 referenceName,
                 new HashSet<string>(StringComparer.Ordinal));
 
-        private static Dictionary<string, HashSet<string>> Empty()
-            => new(StringComparer.Ordinal);
+        private static Dictionary<string, HashSet<string>> Empty() => new(StringComparer.Ordinal);
 
-        private static Dictionary<string, HashSet<string>> Link(string key, string value)
-            => new(StringComparer.Ordinal)
+        private static Dictionary<string, HashSet<string>> Link(string key, string value) => new(StringComparer.Ordinal)
+        {
             {
+                key, new HashSet<string>(StringComparer.Ordinal)
                 {
-                    key, new HashSet<string>(StringComparer.Ordinal)
-                    {
-                        value
-                    }
+                    value
                 }
-            };
+            }
+        };
     }
 }

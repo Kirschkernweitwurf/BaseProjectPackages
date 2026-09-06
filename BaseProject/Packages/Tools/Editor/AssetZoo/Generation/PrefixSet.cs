@@ -8,10 +8,6 @@ namespace Base.ToolsPackage.Editor.AssetZoo.Generation
     /// </summary>
     internal sealed class PrefixSet
     {
-        private readonly Dictionary<string, int> _orders;
-        private readonly List<string> _detected;
-        private readonly List<string> _suspects;
-
         /// <summary>
         /// Prefixes the scan recognized without being told about them.
         /// </summary>
@@ -27,6 +23,10 @@ namespace Base.ToolsPackage.Editor.AssetZoo.Generation
         /// Sort order for assets that carry no prefix at all. Sits behind every known prefix.
         /// </summary>
         public int NoPrefixOrder => _orders.Count;
+
+        private readonly Dictionary<string, int> _orders;
+        private readonly List<string> _detected;
+        private readonly List<string> _suspects;
 
         /// <summary>Creates a set from the prefixes resolved for one scan.</summary>
         /// <param name="orders">Prefix to sort order, in the order the prefixes should appear.</param>

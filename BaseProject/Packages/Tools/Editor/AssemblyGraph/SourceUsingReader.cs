@@ -20,8 +20,8 @@ namespace Base.ToolsPackage.Editor.AssemblyGraph
         private const string GlobalPrefix = "global ";
         private const char NamespaceSeparator = '.';
         private const char OpenParenthesis = '(';
-        private const string StaticPrefix = "static ";
         private const char StatementEnd = ';';
+        private const string StaticPrefix = "static ";
         private const string UsingPrefix = "using ";
 
         /// <summary>Reads every using directive in the given source files.</summary>

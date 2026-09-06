@@ -8,10 +8,15 @@ Changes made before 1.0.11 were not recorded.
 
 ## [Unreleased]
 
-## [1.0.13] - 2026-09-06
+## [1.0.14] - 2026-09-06
 
 ### Fixed
 
+- Edit mode tests build their objects outside any scene. They used to be created in whatever scene
+  happened to be open, so every run put them in it and a run that never reached its teardown left
+  them there to be saved with it. They go through `EditorUtility.CreateGameObjectWithHideFlags` now,
+  which never puts them in a scene at all, so they cannot show up in the hierarchy or be saved
+  however the run ends.
 - Stopping a tween no longer reports a missing runner. `Tween.Stop` runs on shutdown as well, where
   the runner is already gone, and it used the reporting lookup to unregister from it, so every tween
   reported the same thing at once. It uses the optional lookup now. `Play` is unchanged and still

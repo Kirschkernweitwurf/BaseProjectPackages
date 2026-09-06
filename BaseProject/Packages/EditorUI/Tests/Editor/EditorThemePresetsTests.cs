@@ -20,19 +20,6 @@ namespace Base.EditorUIPackage.Editor.Tests
         private const float LegibleTextContrast = 7f;
         private const int SwatchCount = 5;
 
-        /// <summary>Every preset, once for the dark skin and once for the light one.</summary>
-        private static IEnumerable<TestCaseData> EveryPresetAndSkin()
-        {
-            foreach (EEditorThemePreset preset in EditorThemePresets.CreateOrder())
-            {
-                yield return new TestCaseData(preset, true).SetName($"{preset} on the dark skin");
-                yield return new TestCaseData(preset, false).SetName($"{preset} on the light skin");
-            }
-        }
-
-        /// <summary>Every preset, for the checks that do not depend on the skin.</summary>
-        private static IEnumerable<EEditorThemePreset> EveryPreset() => EditorThemePresets.CreateOrder();
-
         /// <summary>Body text clears the accessibility target against the window fill.</summary>
         /// <param name="preset">The palette under test.</param>
         /// <param name="isDarkMode">Which editor skin the palette is sampled for.</param>
@@ -91,7 +78,13 @@ namespace Base.EditorUIPackage.Editor.Tests
         {
             EditorThemeColors colors = EditorThemePresets.CreateColors(preset, isDarkMode);
 
-            Assert.That(new[] { colors.Background.a, colors.Card.a, colors.Text.a, colors.Accent.a },
+            Assert.That(new[]
+                {
+                    colors.Background.a,
+                    colors.Card.a,
+                    colors.Text.a,
+                    colors.Accent.a
+                },
                 Is.All.EqualTo(1f).Within(0.001f));
         }
 
@@ -113,22 +106,21 @@ namespace Base.EditorUIPackage.Editor.Tests
         /// <summary>The two editor skins get different palettes, not the same one twice.</summary>
         /// <param name="preset">The palette under test.</param>
         [TestCaseSource(nameof(EveryPreset))]
-        public void TheTwoSkinsGetDifferentPalettes(EEditorThemePreset preset)
-            => Assert.That(EditorThemePresets.CreateColors(preset, false).Background,
-                Is.Not.EqualTo(EditorThemePresets.CreateColors(preset, true).Background));
+        public void TheTwoSkinsGetDifferentPalettes(EEditorThemePreset preset) => Assert.That(
+            EditorThemePresets.CreateColors(preset, false).Background,
+            Is.Not.EqualTo(EditorThemePresets.CreateColors(preset, true).Background));
 
         /// <summary>A dark palette is darker than its light counterpart, not merely different.</summary>
         /// <param name="preset">The palette under test.</param>
         [TestCaseSource(nameof(EveryPreset))]
-        public void TheDarkPaletteIsTheDarkerOne(EEditorThemePreset preset)
-            => Assert.That(Brightness(EditorThemePresets.CreateColors(preset, true).Background),
-                Is.LessThan(Brightness(EditorThemePresets.CreateColors(preset, false).Background)));
+        public void TheDarkPaletteIsTheDarkerOne(EEditorThemePreset preset) => Assert.That(
+            Brightness(EditorThemePresets.CreateColors(preset, true).Background),
+            Is.LessThan(Brightness(EditorThemePresets.CreateColors(preset, false).Background)));
 
         /// <summary>The order covers every preset exactly once, so none is unreachable in settings.</summary>
         [Test]
-        public void TheOrderCoversEveryPresetOnce()
-            => Assert.That(EditorThemePresets.CreateOrder(),
-                Is.EquivalentTo((EEditorThemePreset[])Enum.GetValues(typeof(EEditorThemePreset))));
+        public void TheOrderCoversEveryPresetOnce() => Assert.That(EditorThemePresets.CreateOrder(),
+            Is.EquivalentTo((EEditorThemePreset[])Enum.GetValues(typeof(EEditorThemePreset))));
 
         /// <summary>Two different presets do not resolve to the same accent.</summary>
         [Test]
@@ -147,15 +139,28 @@ namespace Base.EditorUIPackage.Editor.Tests
         /// reach into the preset every other window reads.
         /// </summary>
         [Test]
-        public void EverySetOfColorsIsItsOwnObject()
-            => Assert.That(EditorThemePresets.CreateColors(EEditorThemePreset.Slate, true),
-                Is.Not.SameAs(EditorThemePresets.CreateColors(EEditorThemePreset.Slate, true)));
+        public void EverySetOfColorsIsItsOwnObject() => Assert.That(
+            EditorThemePresets.CreateColors(EEditorThemePreset.Slate, true),
+            Is.Not.SameAs(EditorThemePresets.CreateColors(EEditorThemePreset.Slate, true)));
 
         /// <summary>The same preset always produces the same colors.</summary>
         [Test]
-        public void ThePresetsAreStable()
-            => Assert.That(EditorThemePresets.CreateColors(EEditorThemePreset.Harbor, true).Text,
-                Is.EqualTo(EditorThemePresets.CreateColors(EEditorThemePreset.Harbor, true).Text));
+        public void ThePresetsAreStable() => Assert.That(
+            EditorThemePresets.CreateColors(EEditorThemePreset.Harbor, true).Text,
+            Is.EqualTo(EditorThemePresets.CreateColors(EEditorThemePreset.Harbor, true).Text));
+
+        /// <summary>Every preset, once for the dark skin and once for the light one.</summary>
+        private static IEnumerable<TestCaseData> EveryPresetAndSkin()
+        {
+            foreach (EEditorThemePreset preset in EditorThemePresets.CreateOrder())
+            {
+                yield return new TestCaseData(preset, true).SetName($"{preset} on the dark skin");
+                yield return new TestCaseData(preset, false).SetName($"{preset} on the light skin");
+            }
+        }
+
+        /// <summary>Every preset, for the checks that do not depend on the skin.</summary>
+        private static IEnumerable<EEditorThemePreset> EveryPreset() => EditorThemePresets.CreateOrder();
 
         private static float Brightness(Color color) => color.r + color.g + color.b;
     }

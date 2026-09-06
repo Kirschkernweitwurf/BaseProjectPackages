@@ -8,10 +8,15 @@ Changes made before 1.6.5 were not recorded.
 
 ## [Unreleased]
 
-## [1.7.2] - 2026-09-06
+## [1.7.3] - 2026-09-06
 
 ### Fixed
 
+- Edit mode tests build their objects outside any scene. They used to be created in whatever scene
+  happened to be open, so every run put them in it and a run that never reached its teardown left
+  them there to be saved with it. They go through `EditorUtility.CreateGameObjectWithHideFlags` now,
+  which never puts them in a scene at all, so they cannot show up in the hierarchy or be saved
+  however the run ends.
 - A stray blank line run in `RumbleServiceTests`.
 
 ## [1.7.1] - 2026-09-06

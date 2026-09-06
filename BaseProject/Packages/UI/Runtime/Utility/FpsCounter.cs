@@ -10,16 +10,10 @@ namespace Base.UIPackage.Utility
     /// </summary>
     public sealed class FpsCounter : MonoBehaviour
     {
-        private const float SmoothingFactor = 0.1f;
-        private const int UnsetFps = -1;
-        private const float UpdateInterval = 0.5f;
-
         [SerializeField] private bool showInReleaseBuilds;
         [Required] [SerializeField] private TMP_Text fpsText;
 
-        private float _deltaTime;
-        private float _timer;
-        private int _lastFps = UnsetFps;
+        private readonly FpsSampler _sampler = new();
 
 #region Unity Callbacks
         private void Awake()
@@ -30,20 +24,8 @@ namespace Base.UIPackage.Utility
 
         private void Update()
         {
-            _deltaTime += (Time.unscaledDeltaTime - _deltaTime) * SmoothingFactor;
-
-            _timer += Time.unscaledDeltaTime;
-            if (_timer < UpdateInterval)
-                return;
-
-            _timer = 0f;
-
-            int fps = Mathf.CeilToInt(1f / _deltaTime);
-            if (fps == _lastFps)
-                return;
-
-            _lastFps = fps;
-            fpsText.text = $"{fps} FPS";
+            if (_sampler.TryRead(Time.unscaledDeltaTime, out int fps))
+                fpsText.text = $"{fps} FPS";
         }
 #endregion
     }

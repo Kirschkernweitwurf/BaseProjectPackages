@@ -28,8 +28,8 @@ namespace Base.ToolsPackage.Editor.MenuManagerWindows.CreateAssetMenuOverview
         /// <param name="script">The script to scan.</param>
         /// <param name="typeName">Name of the type carrying the attribute, used for the fallback line.</param>
         /// <returns>The line and column to place the cursor at, or zeros when nothing was found.</returns>
-        internal static (int Line, int Column) Find(MonoScript script, string typeName)
-            => AttributeSourceLocator.Find(script, AttributeToken,
-                AttributeSourceLocator.ClassDeclaration(typeName), OrderPattern);
+        internal static (int Line, int Column) Find(MonoScript script, string typeName) => AttributeSourceLocator.Find(
+            script, AttributeToken,
+            AttributeSourceLocator.ClassDeclaration(typeName), OrderPattern);
     }
 }

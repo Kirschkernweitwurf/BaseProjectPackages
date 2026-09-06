@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using NUnit.Framework;
+using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -248,7 +249,8 @@ namespace Base.AttributesPackage.Tests
 
         private GameObject Asset()
         {
-            GameObject created = new(nameof(ValidationProbe));
+            GameObject created = EditorUtility.CreateGameObjectWithHideFlags(nameof(ValidationProbe),
+                HideFlags.HideAndDontSave);
 
             _created.Add(created);
 

@@ -9,9 +9,6 @@ namespace Base.CorePackage.Tests
     /// </summary>
     internal sealed class StateMachineShape : IStateMachineInfo
     {
-        private readonly List<StateMachineEdge> _edges = new();
-        private readonly List<string> _stateNames = new();
-
         /// <inheritdoc/>
         public string Name => nameof(StateMachineShape);
 
@@ -38,6 +35,9 @@ namespace Base.CorePackage.Tests
 
         /// <inheritdoc/>
         public bool IsRunning => false;
+
+        private readonly List<StateMachineEdge> _edges = new();
+        private readonly List<string> _stateNames = new();
 
         /// <summary>Adds states in the order the machine was told about them.</summary>
         /// <param name="names">The state names to add.</param>

@@ -3,6 +3,7 @@ using Base.SaveSystemPackage.Settings;
 using Base.SaveSystemPackage.Unity.Autosave;
 using Base.UtilityPackage.Identification;
 using NUnit.Framework;
+using UnityEditor;
 using UnityEngine;
 
 namespace Base.SaveSystemPackage.Tests
@@ -83,7 +84,8 @@ namespace Base.SaveSystemPackage.Tests
         /// </summary>
         private T Create<T>() where T : Component
         {
-            GameObject host = new(typeof(T).Name);
+            GameObject host = EditorUtility.CreateGameObjectWithHideFlags(typeof(T).Name,
+                HideFlags.HideAndDontSave);
             host.SetActive(false);
             _hosts.Add(host);
 

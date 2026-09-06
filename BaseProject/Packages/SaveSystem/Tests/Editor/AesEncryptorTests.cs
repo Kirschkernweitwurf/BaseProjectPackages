@@ -18,9 +18,9 @@ namespace Base.SaveSystemPackage.Tests
     public sealed class AesEncryptorTests
     {
         private const string OtherPassphrase = "a different passphrase";
-        private const string Salt = "a salt of our own";
         private const string Passphrase = "the passphrase";
         private const string PlainText = "The quick brown fox jumps over the lazy dog.";
+        private const string Salt = "a salt of our own";
 
         private AesEncryptor _encryptor;
         private AesEncryptor _other;
@@ -39,8 +39,7 @@ namespace Base.SaveSystemPackage.Tests
 
         /// <summary>The encryptor reports which algorithm wrote the file.</summary>
         [Test]
-        public void TheAlgorithmIsReported()
-            => Assert.That(_encryptor.Algorithm, Is.EqualTo(EEncryptionAlgorithm.Aes));
+        public void TheAlgorithmIsReported() => Assert.That(_encryptor.Algorithm, Is.EqualTo(EEncryptionAlgorithm.Aes));
 
         /// <summary>What was encrypted comes back byte for byte.</summary>
         [Test]

@@ -56,10 +56,10 @@ namespace Base.ToolsPackage.Editor.AssetZoo.UI
         private const string WindowTabTitle = "Asset Zoo";
         private const string WindowTitle = "Asset Zoo Builder";
 
+        [SerializeField] private ZooConfig config;
+
         private readonly ZooBuilder _builder = new();
         private readonly EditorWindowStyles _styles = new();
-
-        [SerializeField] private ZooConfig config;
 
         private ZooCategoryListView _list;
         private SerializedObject _serializedConfig;

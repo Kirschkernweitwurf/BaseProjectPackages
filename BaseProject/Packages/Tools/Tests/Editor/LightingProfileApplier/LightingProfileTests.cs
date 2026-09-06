@@ -34,11 +34,27 @@ namespace Base.ToolsPackage.Editor.Tests
 
         private static readonly string[] SettingNames =
         {
-            "skybox", "ambientMode", "ambientSkyColor", "ambientEquatorColor", "ambientGroundColor",
-            "ambientIntensity", "subtractiveShadowColor", "fog", "fogMode", "fogColor", "fogDensity",
-            "fogStartDistance", "fogEndDistance", "defaultReflectionMode", "defaultReflectionResolution",
-            "customReflectionTexture", "reflectionIntensity", "reflectionBounces", "haloStrength",
-            "flareStrength", "flareFadeSpeed"
+            "skybox",
+            "ambientMode",
+            "ambientSkyColor",
+            "ambientEquatorColor",
+            "ambientGroundColor",
+            "ambientIntensity",
+            "subtractiveShadowColor",
+            "fog",
+            "fogMode",
+            "fogColor",
+            "fogDensity",
+            "fogStartDistance",
+            "fogEndDistance",
+            "defaultReflectionMode",
+            "defaultReflectionResolution",
+            "customReflectionTexture",
+            "reflectionIntensity",
+            "reflectionBounces",
+            "haloStrength",
+            "flareStrength",
+            "flareFadeSpeed"
         };
 
         private readonly List<Object> _created = new();
@@ -106,7 +122,7 @@ namespace Base.ToolsPackage.Editor.Tests
         /// </summary>
         [Test]
         public void AFreshProfileAppliesWithoutComplaint()
-            => Assert.That(() => CreateProfile().Apply(), Throws.Nothing);
+            => Assert.That(code: () => CreateProfile().Apply(), Throws.Nothing);
 
         /// <summary>The number of settings listed here has to match what the profile stores.</summary>
         [Test]
@@ -156,27 +172,6 @@ namespace Base.ToolsPackage.Editor.Tests
         private static PropertyInfo Property(string name)
             => typeof(RenderSettings).GetProperty(name, BindingFlags.Static | BindingFlags.Public);
 
-        /// <summary>A value of the given type, different between the two passes.</summary>
-        private object ValueFor(string name, Type type, bool second)
-        {
-            if (type == typeof(bool))
-                return second;
-
-            if (type == typeof(float))
-                return second ? SecondNumber : FirstNumber;
-
-            if (type == typeof(int))
-                return NumberFor(name, second);
-
-            if (type == typeof(Color))
-                return second ? Color.magenta : Color.cyan;
-
-            if (type.IsEnum)
-                return Enum.GetValues(type).GetValue(second ? 1 : 0);
-
-            return second ? Made(type) : null;
-        }
-
         /// <summary>
         /// Two integers that survive the clamping Unity puts on them. Bounces tops out low enough that
         /// a resolution sized number would be clamped to the same value on both passes.
@@ -184,9 +179,54 @@ namespace Base.ToolsPackage.Editor.Tests
         private static int NumberFor(string name, bool second)
         {
             if (name.Contains(nameof(RenderSettings.reflectionBounces)))
-                return second ? SecondBounces : FirstBounces;
+                return second
+                    ? SecondBounces
+                    : FirstBounces;
 
-            return second ? SecondResolution : FirstResolution;
+            return second
+                ? SecondResolution
+                : FirstResolution;
+        }
+
+        /// <summary>Any shader at all, since the material is never rendered and only has to exist.</summary>
+        private static Shader AnyShader()
+        {
+            Shader shader = Shader.Find(UnlitShader);
+
+            if (shader == null)
+                shader = Shader.Find(FallbackShader);
+
+            return shader;
+        }
+
+        /// <summary>A value of the given type, different between the two passes.</summary>
+        private object ValueFor(string name, Type type, bool second)
+        {
+            if (type == typeof(bool))
+                return second;
+
+            if (type == typeof(float))
+                return second
+                    ? SecondNumber
+                    : FirstNumber;
+
+            if (type == typeof(int))
+                return NumberFor(name, second);
+
+            if (type == typeof(Color))
+                return second
+                    ? Color.magenta
+                    : Color.cyan;
+
+            if (type.IsEnum)
+                return Enum.GetValues(type)
+                    .GetValue(second
+                        ? 1
+                        : 0);
+
+            return second
+                ? Made(type)
+                : null;
         }
 
         /// <summary>Writes one of the two value sets into every setting the profile stores.</summary>
@@ -209,17 +249,6 @@ namespace Base.ToolsPackage.Editor.Tests
             _created.Add(made);
 
             return made;
-        }
-
-        /// <summary>Any shader at all, since the material is never rendered and only has to exist.</summary>
-        private static Shader AnyShader()
-        {
-            Shader shader = Shader.Find(UnlitShader);
-
-            if (shader == null)
-                shader = Shader.Find(FallbackShader);
-
-            return shader;
         }
 
         /// <summary>A profile that is never saved, remembered so the teardown can destroy it.</summary>

@@ -28,7 +28,12 @@ namespace Base.SaveSystemPackage.Tests
         private const string ProbeLabel = "Chapter Two";
         private const int ProbeScore = 42;
 
-        private static readonly byte[] Magic = { (byte)'B', (byte)'S', (byte)'V' };
+        private static readonly byte[] Magic =
+        {
+            (byte)'B',
+            (byte)'S',
+            (byte)'V'
+        };
 
         private static AesEncryptor _encryptor;
         private static AesEncryptor _otherEncryptor;
@@ -196,7 +201,10 @@ namespace Base.SaveSystemPackage.Tests
         [Test]
         public void ACodecNeedsASerializerAndAWriteEncryptor()
         {
-            List<ISaveEncryptor> readers = new() { new NoOpEncryptor() };
+            List<ISaveEncryptor> readers = new()
+            {
+                new NoOpEncryptor()
+            };
 
             Assert.Throws<ArgumentNullException>(() => new SaveCodec(null, new NoOpEncryptor(), readers));
             Assert.Throws<ArgumentNullException>(() => new SaveCodec(new JsonUtilitySerializer(), null, readers));
@@ -218,10 +226,16 @@ namespace Base.SaveSystemPackage.Tests
         };
 
         private static SaveCodec PlainCodec() => new(new JsonUtilitySerializer(), new NoOpEncryptor(),
-            new List<ISaveEncryptor> { new NoOpEncryptor() });
+            new List<ISaveEncryptor>
+            {
+                new NoOpEncryptor()
+            });
 
-        private static SaveCodec EncryptingCodec(ISaveEncryptor encryptor)
-            => new(new JsonUtilitySerializer(), encryptor, new List<ISaveEncryptor> { encryptor });
+        private static SaveCodec EncryptingCodec(ISaveEncryptor encryptor) => new(new JsonUtilitySerializer(),
+            encryptor, new List<ISaveEncryptor>
+            {
+                encryptor
+            });
 
         // Format version one had no checksum, so the bytes are assembled by hand rather than by a
         // codec that no longer writes that layout.

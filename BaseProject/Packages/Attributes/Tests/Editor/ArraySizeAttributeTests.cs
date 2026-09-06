@@ -21,8 +21,7 @@ namespace Base.AttributesPackage.Tests
 
         /// <summary>A count of nothing is still an exact count, so it locks the array too.</summary>
         [Test]
-        public void ACountOfNothingStillLocksTheArray()
-            => Assert.That(new ArraySizeAttribute(0).IsFixed, Is.True);
+        public void ACountOfNothingStillLocksTheArray() => Assert.That(new ArraySizeAttribute(0).IsFixed, Is.True);
 
         /// <summary>An attribute with no bounds at all leaves the array open.</summary>
         [Test]

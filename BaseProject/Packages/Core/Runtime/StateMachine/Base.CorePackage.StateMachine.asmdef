@@ -2,8 +2,8 @@
   "name": "Base.CorePackage.StateMachine",
   "rootNamespace": "Base.CorePackage.StateMachine",
   "references": [
-        "GUID:922d81cfb9ff6984da4cb2213b66a375"
-    ],
+    "GUID:922d81cfb9ff6984da4cb2213b66a375"
+  ],
   "includePlatforms": [],
   "excludePlatforms": [],
   "allowUnsafeCode": false,

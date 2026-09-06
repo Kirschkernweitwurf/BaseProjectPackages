@@ -155,7 +155,6 @@ namespace Base.ToolsPackage.Editor.Tests
         }
 
         /// <summary>Runs the collection against the given layout.</summary>
-        private List<string> Collect(FakeAssetIndex index)
-            => AssetNamingScanner.CollectAssetPaths(_ruleSet, index);
+        private List<string> Collect(FakeAssetIndex index) => AssetNamingScanner.CollectAssetPaths(_ruleSet, index);
     }
 }

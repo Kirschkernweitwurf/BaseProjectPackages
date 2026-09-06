@@ -12,6 +12,9 @@ namespace Base.AttributesPackage.Tests
         /// <summary>Name of the private field, so a test can point a condition at it by name.</summary>
         public const string PrivateFlagName = nameof(_privateFlag);
 
+        /// <summary>A property the condition can read.</summary>
+        public bool PropertyFlag { get; set; }
+
         /// <summary>A public field the condition can read.</summary>
         public bool PublicFlag;
 
@@ -19,9 +22,6 @@ namespace Base.AttributesPackage.Tests
         public int Count;
 
         private bool _privateFlag;
-
-        /// <summary>A property the condition can read.</summary>
-        public bool PropertyFlag { get; set; }
 
         /// <summary>Sets the private field, so a test can drive it from outside.</summary>
         /// <param name="value">The value to store.</param>

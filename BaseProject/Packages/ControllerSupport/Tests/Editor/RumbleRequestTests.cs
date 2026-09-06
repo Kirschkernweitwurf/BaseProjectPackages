@@ -81,7 +81,7 @@ namespace Base.ControllerSupportPackage.Tests
         [Test]
         public void ALoopingRequestNeverFinishesOnItsOwn()
         {
-            RumblePatternData looping = new(1f, Flat(1f), Flat(1f), loop: true);
+            RumblePatternData looping = new(1f, Flat(1f), Flat(1f), true);
             RumbleRequest request = new(looping, _caller, FullIntensity);
 
             request.Advance();

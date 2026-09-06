@@ -15,6 +15,14 @@ namespace Base.ToolsPackage.Editor.AssetZoo.Config
     internal class AutoGenerateSettings
     {
         /// <summary>
+        /// Separator used when none is set.
+        /// </summary>
+        public const string DefaultSeparator = "_";
+        /// <summary>
+        /// Depth value that disables the depth limit.
+        /// </summary>
+        public const int UnlimitedDepth = -1;
+        /// <summary>
         /// Longest a name part may be to still be considered a prefix by detection.
         /// </summary>
         private const int DefaultMaxPrefixLength = 4;
@@ -23,17 +31,9 @@ namespace Base.ToolsPackage.Editor.AssetZoo.Config
         /// </summary>
         private const int DefaultMinPrefixOccurrences = 2;
         /// <summary>
-        /// Separator used when none is set.
-        /// </summary>
-        public const string DefaultSeparator = "_";
-        /// <summary>
         /// Smallest value the prefix detection limits accept.
         /// </summary>
         private const int MinDetectionLimit = 1;
-        /// <summary>
-        /// Depth value that disables the depth limit.
-        /// </summary>
-        public const int UnlimitedDepth = -1;
 
         [field: Tooltip("Folder to scan. Subfolders are included up to the search depth.")]
         [field: FolderPath]

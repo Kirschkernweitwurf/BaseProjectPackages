@@ -8,6 +8,14 @@ Changes made before 1.3.2 were not recorded.
 
 ## [Unreleased]
 
+## [1.3.6] - 2026-09-06
+
+### Added
+
+- Four more cases on the config: the default interval, the flags that decide whether a snapshot
+  holds anything at all, the absence of a baked path on a fresh asset, and an interval above the
+  floor surviving an edit. The clamp was only covered downwards before.
+
 ## [1.3.4] - 2026-09-06
 
 ### Changed

@@ -16,10 +16,10 @@ namespace Base.ToolsPackage.Editor.OverviewGui.UnusedAssetsOverviewWindow
     {
         private const string FilePath = "ProjectSettings/UnusedAssetsDismissed.json";
 
-        private static readonly GuidDismissStore Store = new(FilePath);
-
         /// <summary>How many assets are currently dismissed, shown beside the clear button.</summary>
         internal static int Count => Store.Count;
+
+        private static readonly GuidDismissStore Store = new(FilePath);
 
         /// <summary>True when the asset was dismissed.</summary>
         /// <param name="guid">GUID of the asset to test.</param>

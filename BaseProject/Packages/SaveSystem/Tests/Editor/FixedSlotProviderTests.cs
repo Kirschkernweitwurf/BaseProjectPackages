@@ -50,9 +50,9 @@ namespace Base.SaveSystemPackage.Tests
 
         /// <summary>A slot beyond the configured set does not exist and is refused.</summary>
         [Test]
-        public void ASlotBeyondTheSetIsRefused()
-            => Assert.That(_provider.TryResolveSaveTarget(FixedSlotProvider.SlotId(SlotCount), out string _),
-                Is.False);
+        public void ASlotBeyondTheSetIsRefused() => Assert.That(
+            _provider.TryResolveSaveTarget(FixedSlotProvider.SlotId(SlotCount), out string _),
+            Is.False);
 
         /// <summary>Something that is not a slot id at all is refused.</summary>
         [Test]

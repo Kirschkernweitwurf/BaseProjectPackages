@@ -8,15 +8,24 @@ Changes made before 1.4.2 were not recorded.
 
 ## [Unreleased]
 
-## [1.5.0] - 2026-09-06
+## [1.5.1] - 2026-09-06
 
 ### Added
 
+- `FpsSamplerTests` and `SceneLoaderTests`. Between them and the version file, that is every
+  piece of this package that can be wrong without anyone noticing on screen.
+- `ConfirmationRequestTests`, covering what an omitted button label falls back to.
 - An edit mode test assembly, `Base.UIPackage.Tests`, covering the version file. Together with the
   billboard play tests, that is the logic in this package that can be wrong without anyone noticing.
 
 ### Changed
 
+- The frame rate smoothing and the update throttle moved out of `FpsCounter` into
+  `FpsSampler`. Both sat inside `Update` reading `Time.unscaledDeltaTime`, so neither could be
+  driven by a test. `FpsCounter` keeps the component and the label.
+- The button label fallback moved out of `ConfirmationMenu` onto `ConfirmationRequest`. Reading an
+  empty label as "use the default" is a decision the request makes, and behind the menu it could
+  only be reached by standing up a live menu with buttons and text to draw it with.
 - The version file reading, counting and formatting moved out of `BuildVersion` into
   `BuildVersionFile`. All three sat behind a MonoBehaviour pointed at one fixed path, which is why
   none of them could be covered. `BuildVersion` keeps the component and the path.

@@ -17,26 +17,24 @@ namespace Base.UtilityPackage.Tests
 
         /// <summary>Full volume is the point the scale is measured from.</summary>
         [Test]
-        public void FullVolumeIsZeroDecibels()
-            => Assert.That(AudioMathUtility.ConvertLinearToDecibel(1f), Is.EqualTo(0f).Within(LinearTolerance));
+        public void FullVolumeIsZeroDecibels() => Assert.That(AudioMathUtility.ConvertLinearToDecibel(1f),
+            Is.EqualTo(0f).Within(LinearTolerance));
 
         /// <summary>Halving the linear value drops the volume by about six decibels.</summary>
         [Test]
-        public void HalfVolumeIsAboutSixDecibelsDown()
-            => Assert.That(AudioMathUtility.ConvertLinearToDecibel(HalfVolume),
-                Is.EqualTo(HalfVolumeDecibels).Within(DecibelTolerance));
+        public void HalfVolumeIsAboutSixDecibelsDown() => Assert.That(
+            AudioMathUtility.ConvertLinearToDecibel(HalfVolume),
+            Is.EqualTo(HalfVolumeDecibels).Within(DecibelTolerance));
 
         /// <summary>Silence has to clamp to the floor, since the logarithm has no value at zero.</summary>
         [Test]
-        public void SilenceClampsToTheFloor()
-            => Assert.That(AudioMathUtility.ConvertLinearToDecibel(0f),
-                Is.EqualTo(SilenceDecibels).Within(LinearTolerance));
+        public void SilenceClampsToTheFloor() => Assert.That(AudioMathUtility.ConvertLinearToDecibel(0f),
+            Is.EqualTo(SilenceDecibels).Within(LinearTolerance));
 
         /// <summary>A negative value is below silence, so it clamps to the same floor.</summary>
         [Test]
-        public void ANegativeVolumeClampsToTheFloor()
-            => Assert.That(AudioMathUtility.ConvertLinearToDecibel(-1f),
-                Is.EqualTo(SilenceDecibels).Within(LinearTolerance));
+        public void ANegativeVolumeClampsToTheFloor() => Assert.That(AudioMathUtility.ConvertLinearToDecibel(-1f),
+            Is.EqualTo(SilenceDecibels).Within(LinearTolerance));
 
         /// <summary>Converting out and back has to land on the value it started from.</summary>
         [Test]

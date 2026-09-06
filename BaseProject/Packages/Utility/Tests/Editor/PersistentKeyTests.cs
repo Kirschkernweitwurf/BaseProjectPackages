@@ -53,13 +53,11 @@ namespace Base.UtilityPackage.Tests
 
         /// <summary>A control character has no place in a key that is written to disk.</summary>
         [Test]
-        public void ControlCharactersAreRefused()
-            => Assert.That(PersistentKey.IsValid("Audio\nMaster"), Is.False);
+        public void ControlCharactersAreRefused() => Assert.That(PersistentKey.IsValid("Audio\nMaster"), Is.False);
 
         /// <summary>An oversized key is an accident, not an intent, so it is refused.</summary>
         [Test]
-        public void AnOversizedKeyIsRefused()
-            => Assert.That(PersistentKey.IsValid(new string('a', 129)), Is.False);
+        public void AnOversizedKeyIsRefused() => Assert.That(PersistentKey.IsValid(new string('a', 129)), Is.False);
 
         /// <summary>A key right at the limit is still fine.</summary>
         [Test]
@@ -116,7 +114,7 @@ namespace Base.UtilityPackage.Tests
         [Test]
         public void TheDefaultKeyIsEmpty()
         {
-            PersistentKey key = default(PersistentKey);
+            PersistentKey key = default;
 
             Assert.That(key.IsEmpty, Is.True);
             Assert.That(key.Value, Is.Null);

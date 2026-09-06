@@ -10,9 +10,6 @@ namespace Base.CorePackage.Tests
     /// </summary>
     internal sealed class StateMachineProbe
     {
-        private readonly List<string> _entered = new();
-        private readonly List<string> _exited = new();
-
         /// <summary>Names of the states that were entered, in order.</summary>
         internal IReadOnlyList<string> Entered => _entered;
 
@@ -28,13 +25,16 @@ namespace Base.CorePackage.Tests
         /// <summary>Set by a test to open the second transition.</summary>
         internal bool GoRight { get; set; }
 
+        private readonly List<string> _entered = new();
+        private readonly List<string> _exited = new();
+
         /// <summary>Builds a state that reports everything it is asked to do into this probe.</summary>
         /// <param name="name">The name of the state.</param>
         /// <returns>The state, ready to be added to a machine.</returns>
         internal IState<StateMachineProbe> CreateState(string name) => new DelegateState<StateMachineProbe>(name,
-            probe => probe._entered.Add(name),
-            static (probe, _) => probe.Ticks++,
-            probe => probe._exited.Add(name));
+            onEnter: probe => probe._entered.Add(name),
+            onTick: static (probe, _) => probe.Ticks++,
+            onExit: probe => probe._exited.Add(name));
 
         /// <summary>The last state that was entered, or an empty string when none was.</summary>
         /// <returns>The name of the state entered last.</returns>

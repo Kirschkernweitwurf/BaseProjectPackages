@@ -1,6 +1,7 @@
 using System.Text.RegularExpressions;
 using Base.AudioPackage.Pool;
 using NUnit.Framework;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.TestTools;
 
@@ -32,13 +33,20 @@ namespace Base.AudioPackage.Tests
         [SetUp]
         public void Prepare()
         {
-            _root = new GameObject(RootName);
+            _root = EditorUtility.CreateGameObjectWithHideFlags(RootName,
+                HideFlags.HideAndDontSave);
 
-            GameObject prefabHost = new(PrefabName);
+            // The prefab is built the same way, because Instantiate copies the flags onto every clone
+            // the pool makes, and a clone left behind is what would otherwise reach the scene.
+            GameObject prefabHost = EditorUtility.CreateGameObjectWithHideFlags(PrefabName,
+                HideFlags.HideAndDontSave);
+
             prefabHost.transform.SetParent(_root.transform);
             _prefab = prefabHost.AddComponent<AudioSource>();
 
-            GameObject parentHost = new(ParentName);
+            GameObject parentHost = EditorUtility.CreateGameObjectWithHideFlags(ParentName,
+                HideFlags.HideAndDontSave);
+
             parentHost.transform.SetParent(_root.transform);
             _poolParent = parentHost.transform;
         }

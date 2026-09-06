@@ -17,18 +17,18 @@ namespace Base.UtilityPackage.Tests
 
         /// <summary>A capital in the middle of a word starts a new word.</summary>
         [Test]
-        public void CamelCaseBecomesSeparateWords()
-            => Assert.That(StringUtility.NicifyVariableName(CamelCaseName), Is.EqualTo("Override Enabled"));
+        public void CamelCaseBecomesSeparateWords() => Assert.That(StringUtility.NicifyVariableName(CamelCaseName),
+            Is.EqualTo("Override Enabled"));
 
         /// <summary>An underscore is a word break, not a character to keep.</summary>
         [Test]
-        public void UnderscoresBecomeWordBreaks()
-            => Assert.That(StringUtility.NicifyVariableName(UnderscoreName), Is.EqualTo("Audio Manager"));
+        public void UnderscoresBecomeWordBreaks() => Assert.That(StringUtility.NicifyVariableName(UnderscoreName),
+            Is.EqualTo("Audio Manager"));
 
         /// <summary>An acronym must not be torn apart into single letters.</summary>
         [Test]
-        public void RunsOfCapitalsStayTogether()
-            => Assert.That(StringUtility.NicifyVariableName(CapitalRunName), Is.EqualTo("My HTTPServer"));
+        public void RunsOfCapitalsStayTogether() => Assert.That(StringUtility.NicifyVariableName(CapitalRunName),
+            Is.EqualTo("My HTTPServer"));
 
         /// <summary>Nothing in means nothing out, not a crash.</summary>
         [Test]
@@ -68,12 +68,12 @@ namespace Base.UtilityPackage.Tests
 
         /// <summary>Two different strings must not land on the same value.</summary>
         [Test]
-        public void DifferentTextHashesDifferently()
-            => Assert.That(StringUtility.GetStableHash("Beta"), Is.Not.EqualTo(StringUtility.GetStableHash("Alpha")));
+        public void DifferentTextHashesDifferently() => Assert.That(StringUtility.GetStableHash("Beta"),
+            Is.Not.EqualTo(StringUtility.GetStableHash("Alpha")));
 
         /// <summary>Case is part of the text, so it has to change the hash.</summary>
         [Test]
-        public void CaseChangesTheHash()
-            => Assert.That(StringUtility.GetStableHash("alpha"), Is.Not.EqualTo(StringUtility.GetStableHash("Alpha")));
+        public void CaseChangesTheHash() => Assert.That(StringUtility.GetStableHash("alpha"),
+            Is.Not.EqualTo(StringUtility.GetStableHash("Alpha")));
     }
 }

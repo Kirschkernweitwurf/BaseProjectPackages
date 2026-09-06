@@ -13,14 +13,13 @@ namespace Base.SaveSystemPackage.Tests
     /// </summary>
     internal sealed class SaveWriterProbe : ISaveWriter
     {
-        private readonly List<string> _deleted = new();
-
         /// <summary>The slots the writer was asked to delete, in order.</summary>
         internal IReadOnlyList<string> Deleted => _deleted;
 
+        private readonly List<string> _deleted = new();
+
         /// <inheritdoc/>
-        public Awaitable SaveAsync(SaveRequest request, CancellationToken ct = default)
-            => AwaitableUtility.Completed();
+        public Awaitable SaveAsync(SaveRequest request, CancellationToken ct = default) => AwaitableUtility.Completed();
 
         /// <inheritdoc/>
         public Awaitable DeleteAsync(string slotId, CancellationToken ct = default)

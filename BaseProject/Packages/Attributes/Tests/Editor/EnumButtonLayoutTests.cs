@@ -99,9 +99,9 @@ namespace Base.AttributesPackage.Tests
 
         /// <summary>A flag written in one word is spaced out, matching how Unity labels a plain enum.</summary>
         [Test]
-        public void AFlagLabelIsSpacedOut()
-            => Assert.That(Build(typeof(EProbeFlags), EnumButtonProbe.FlagsField).Labels,
-                Contains.Item(NicifiedSecond));
+        public void AFlagLabelIsSpacedOut() => Assert.That(
+            Build(typeof(EProbeFlags), EnumButtonProbe.FlagsField).Labels,
+            Contains.Item(NicifiedSecond));
 
         /// <summary>
         /// An enum with nothing to draw yields no layout, which is the drawer's signal to fall back to

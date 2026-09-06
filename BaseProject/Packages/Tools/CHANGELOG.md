@@ -8,10 +8,14 @@ Changes made before 2.0.10 were not recorded.
 
 ## [Unreleased]
 
-## [3.1.0] - 2026-09-06
+## [3.1.1] - 2026-09-06
 
 ### Added
 
+- `ComponentPastePlanTests`, covering what a component paste is going to do before it does it. The
+  plan is what the window previews and what the paste then carries out, so a wrong one either
+  overwrites something that should have been left alone or adds a duplicate beside the component it
+  should have replaced, neither of which says anything.
 - `MenuItemConventionTests`, which pins the three places in this package that use Unity's
   `[MenuItem]` instead of the Menu Manager, and checks that both manager windows keep an entry
   that does not depend on the registration they exist to repair.
@@ -35,6 +39,17 @@ Changes made before 2.0.10 were not recorded.
 
 ### Changed
 
+- `Base.ToolsPackage.Editor.ComponentClipboard` is reachable from the test assembly, through an
+  `AssemblyInfo` rather than by widening anything. It had no coverage before, because nothing
+  referenced it.
+- `CodebaseGraphWindow` is 692 lines instead of 807. Where the reader is looking moved into
+  `CodebaseGraphNavigation`: the level being browsed, the namespace or type open at it, and the entry
+  the graph is pointed at. The heading, the breadcrumb and the focus notice went with that state
+  rather than staying behind it, because all three are built from nothing else. The window keeps its
+  serialized copy for surviving a reload, which is read into and written out of the new type.
+- The temporary highlight the menu manager windows show when an overview links straight to one entry
+  moved into `MenuRowFocus`. Its id, its expiry and the pending scroll were three loose fields on the
+  window with four methods reaching into them, and nothing said they belonged together.
 - `TodoOverviewWindow` is 634 lines instead of 842. The search field, the owner, sort and group
   dropdowns and the three buttons across the top moved into `TodoToolbar`, together with the twenty
   labels and tooltips only they used. The window is told whether a control changed the filter or

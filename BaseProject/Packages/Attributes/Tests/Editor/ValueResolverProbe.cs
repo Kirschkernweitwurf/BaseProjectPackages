@@ -26,6 +26,9 @@ namespace Base.AttributesPackage.Tests
         /// <summary>The text a public field holds.</summary>
         public const string PublicValue = "public";
 
+        /// <summary>A readable property the resolver can read.</summary>
+        public string TextProperty => PropertyValue;
+
         /// <summary>A public field the resolver can read.</summary>
         public string PublicText = PublicValue;
 
@@ -33,9 +36,6 @@ namespace Base.AttributesPackage.Tests
         public string MissingText;
 
         private string _privateText = PrivateValue;
-
-        /// <summary>A readable property the resolver can read.</summary>
-        public string TextProperty => PropertyValue;
 
         /// <summary>A method the resolver can call.</summary>
         /// <returns>A fixed piece of text.</returns>

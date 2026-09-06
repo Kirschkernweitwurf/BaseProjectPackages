@@ -112,9 +112,11 @@ namespace Base.AttributesPackage.Tests
 
         /// <summary>No object to read from means there is nothing to hold back the rule either.</summary>
         [Test]
-        public void NoObjectMeansTheConditionHolds()
-            => Assert.That(ConditionMembers.Evaluate(null, EConditionMode.All,
-                new[] { nameof(ConditionProbe.PublicFlag) }), Is.True);
+        public void NoObjectMeansTheConditionHolds() => Assert.That(ConditionMembers.Evaluate(null, EConditionMode.All,
+            new[]
+            {
+                nameof(ConditionProbe.PublicFlag)
+            }), Is.True);
 
         private bool Evaluate(EConditionMode mode, params string[] members)
             => ConditionMembers.Evaluate(_probe, mode, members);

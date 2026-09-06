@@ -23,26 +23,26 @@ namespace Base.AttributesPackage.Tests
         /// come out mangled.
         /// </summary>
         [Test]
-        public void ANameWithoutTheSuffixIsLeftAlone()
-            => Assert.That(AttributeNames.Display(typeof(NotSuffixed)), Is.EqualTo(nameof(NotSuffixed)));
+        public void ANameWithoutTheSuffixIsLeftAlone() => Assert.That(AttributeNames.Display(typeof(NotSuffixed)),
+            Is.EqualTo(nameof(NotSuffixed)));
 
         /// <summary>
         /// The generic and the type form have to agree, since diagnostics use whichever they happen to
         /// hold and the same attribute must not read two ways.
         /// </summary>
         [Test]
-        public void BothFormsNameTheSameAttributeTheSameWay()
-            => Assert.That(AttributeNames.Display<RequiredAttribute>(),
-                Is.EqualTo(AttributeNames.Display(typeof(RequiredAttribute))));
+        public void BothFormsNameTheSameAttributeTheSameWay() => Assert.That(
+            AttributeNames.Display<RequiredAttribute>(),
+            Is.EqualTo(AttributeNames.Display(typeof(RequiredAttribute))));
 
         /// <summary>
         /// A usage hint reads as the attribute is written in code, brackets included, so somebody can
         /// copy it out of the message.
         /// </summary>
         [Test]
-        public void AUsageHintReadsAsTheAttributeIsWritten()
-            => Assert.That(AttributeNames.Usage<TitleAttribute>(Requirement),
-                Is.EqualTo($"Use [Title] with {Requirement}."));
+        public void AUsageHintReadsAsTheAttributeIsWritten() => Assert.That(
+            AttributeNames.Usage<TitleAttribute>(Requirement),
+            Is.EqualTo($"Use [Title] with {Requirement}."));
 
         /// <summary>An attribute whose name is nothing but the suffix has nothing left to show.</summary>
         [Test]

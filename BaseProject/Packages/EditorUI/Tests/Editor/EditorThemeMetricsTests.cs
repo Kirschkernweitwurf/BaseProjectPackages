@@ -112,8 +112,8 @@ namespace Base.EditorUIPackage.Editor.Tests
         // Only the three values a test varies are spelled out; the rest are the defaults so the
         // constructor call does not drown the assertion it belongs to. The corner radius drives both
         // the card and the pill, since a test that varies one wants to see the other clamp too.
-        private static EditorThemeMetrics Build(float rowHeight, int titleFontSize, int cornerRadius)
-            => new(16f, 14f, cornerRadius, 11, 8f, 1f, 20f, 0.06f, 14f, 8f, cornerRadius, 18f, 0.08f, rowHeight,
-                6f, 12f, 1f, 8f, 4f, titleFontSize);
+        private static EditorThemeMetrics Build(float rowHeight, int titleFontSize, int cornerRadius) => new(16f, 14f,
+            cornerRadius, 11, 8f, 1f, 20f, 0.06f, 14f, 8f, cornerRadius, 18f, 0.08f, rowHeight,
+            6f, 12f, 1f, 8f, 4f, titleFontSize);
     }
 }

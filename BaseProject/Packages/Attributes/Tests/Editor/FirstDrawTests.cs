@@ -101,8 +101,7 @@ namespace Base.AttributesPackage.Tests
 
         /// <summary>Nothing to forget is not an error, so a missing type is simply ignored.</summary>
         [Test]
-        public void ForgettingNothingIsHarmless()
-            => Assert.DoesNotThrow(() => FirstDraw.Forget(null));
+        public void ForgettingNothingIsHarmless() => Assert.DoesNotThrow(() => FirstDraw.Forget(null));
 
         /// <summary>The string array of the given host.</summary>
         private static SerializedProperty NamesOf(SerializedObject host)

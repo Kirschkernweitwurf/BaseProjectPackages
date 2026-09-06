@@ -24,8 +24,7 @@ namespace Base.EditorUIPackage.Editor.Tests
 
         /// <summary>Two sets built the same way are the same set.</summary>
         [Test]
-        public void TwoIdenticalSetsMatch()
-            => Assert.That(Build(Unchanged).Matches(Build(Unchanged)), Is.True);
+        public void TwoIdenticalSetsMatch() => Assert.That(Build(Unchanged).Matches(Build(Unchanged)), Is.True);
 
         /// <summary>A set matches itself, which is the case the settings page hits every repaint.</summary>
         [Test]
@@ -41,8 +40,7 @@ namespace Base.EditorUIPackage.Editor.Tests
         /// reported as still matching one.
         /// </summary>
         [Test]
-        public void ComparingAgainstNothingDoesNotMatch()
-            => Assert.That(Build(Unchanged).Matches(null), Is.False);
+        public void ComparingAgainstNothingDoesNotMatch() => Assert.That(Build(Unchanged).Matches(null), Is.False);
 
         /// <summary>
         /// Every color the constructor takes has to be one the comparison looks at. Any slot that

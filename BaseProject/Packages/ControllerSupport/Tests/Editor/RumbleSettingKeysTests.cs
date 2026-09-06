@@ -3,6 +3,7 @@ using Base.ControllerSupportPackage.Haptics;
 using Base.ControllerSupportPackage.Settings;
 using Base.UtilityPackage.Identification;
 using NUnit.Framework;
+using UnityEditor;
 using UnityEngine;
 
 namespace Base.ControllerSupportPackage.Tests
@@ -68,7 +69,8 @@ namespace Base.ControllerSupportPackage.Tests
         /// </summary>
         private T Create<T>() where T : Component
         {
-            GameObject host = new(typeof(T).Name);
+            GameObject host = EditorUtility.CreateGameObjectWithHideFlags(typeof(T).Name,
+                HideFlags.HideAndDontSave);
             host.SetActive(false);
             _hosts.Add(host);
 

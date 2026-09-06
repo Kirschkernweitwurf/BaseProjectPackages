@@ -72,7 +72,7 @@ namespace Base.ToolsPackage.Editor.AssetZoo.Generation
 
             List<string> firstTokens = names.Select(name => name.Parts[0]).ToList();
             PrefixSet prefixes = PrefixDetector.Build(knownPrefixes, firstTokens, settings.AutoDetectPrefixes,
-                minOccurrences: settings.MinPrefixOccurrences, maxLength: settings.MaxPrefixLength, comparer);
+                settings.MinPrefixOccurrences, settings.MaxPrefixLength, comparer);
 
             Dictionary<string, List<ScannedAsset>> groups = BuildGroups(names, separator, prefixes,
                 out int unloadable);
@@ -312,24 +312,6 @@ namespace Base.ToolsPackage.Editor.AssetZoo.Generation
             return string.Join(ReportSeparator, tokens.Take(MaxReportedTokens)) + ReportEllipsis;
         }
 
-        private readonly struct ScannedName
-        {
-            /// <summary>Asset path the name was taken from.</summary>
-            public string Path { get; }
-
-            /// <summary>The name split by the separator, at least <see cref="MinNameParts"/> long.</summary>
-            public string[] Parts { get; }
-
-            /// <summary>Records one asset name before it is known what its prefix is.</summary>
-            /// <param name="path">Asset path the name was taken from.</param>
-            /// <param name="parts">The name split by the separator.</param>
-            public ScannedName(string path, string[] parts)
-            {
-                Path = path;
-                Parts = parts;
-            }
-        }
-
         private readonly struct ScannedAsset
         {
             /// <summary>The prefab the zoo places.</summary>
@@ -353,6 +335,24 @@ namespace Base.ToolsPackage.Editor.AssetZoo.Generation
                 Asset = asset;
                 SortKey = sortKey;
                 PrefixOrder = prefixOrder;
+            }
+        }
+
+        private readonly struct ScannedName
+        {
+            /// <summary>Asset path the name was taken from.</summary>
+            public string Path { get; }
+
+            /// <summary>The name split by the separator, at least <see cref="MinNameParts"/> long.</summary>
+            public string[] Parts { get; }
+
+            /// <summary>Records one asset name before it is known what its prefix is.</summary>
+            /// <param name="path">Asset path the name was taken from.</param>
+            /// <param name="parts">The name split by the separator.</param>
+            public ScannedName(string path, string[] parts)
+            {
+                Path = path;
+                Parts = parts;
             }
         }
     }

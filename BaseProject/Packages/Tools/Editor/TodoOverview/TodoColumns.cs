@@ -130,6 +130,7 @@ namespace Base.ToolsPackage.Editor.TodoOverview
             hit |= TryDrawTitle(Cell(row, OwnerRect(row)), OwnerLabel, ETodoSort.Owner, filter, ref clicked);
             hit |= TryDrawTitle(Cell(row, DateRect(row)), TodoDateWords.Column(dateMeaning), ETodoSort.Date,
                 filter, ref clicked);
+
             hit |= TryDrawTitle(Cell(row, LocationRect(row)), LocationLabel, ETodoSort.Location, filter,
                 ref clicked);
 

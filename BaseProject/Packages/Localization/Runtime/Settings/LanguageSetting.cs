@@ -14,6 +14,12 @@ namespace Base.LocalizationPackage.Settings
     /// </summary>
     public sealed class LanguageSetting : IntSettingComponent
     {
+        /// <summary>The serialized name of the locale list, for tests that fill one in.</summary>
+        internal const string AvailableLocalesField = nameof(availableLocales);
+
+        /// <summary>The serialized name of the starting index, for tests that set one.</summary>
+        internal const string DefaultIndexField = nameof(defaultIndex);
+
         [Title("Language")]
         [Tooltip("Locales exposed to the player, in the order they appear in the menu.")]
         [SerializeField] [NotNullOrEmpty] private Locale[] availableLocales;

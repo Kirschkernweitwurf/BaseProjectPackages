@@ -41,7 +41,9 @@ namespace Base.AudioPackage.Tests
         /// <returns>The new source.</returns>
         internal static AudioSource CreateSource(Transform parent)
         {
-            GameObject host = new(SourceName);
+            GameObject host = EditorUtility.CreateGameObjectWithHideFlags(SourceName,
+                HideFlags.HideAndDontSave);
+
             host.transform.SetParent(parent);
 
             return host.AddComponent<AudioSource>();

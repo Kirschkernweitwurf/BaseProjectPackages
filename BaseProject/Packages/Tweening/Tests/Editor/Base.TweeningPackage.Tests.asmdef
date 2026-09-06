@@ -2,11 +2,11 @@
   "name": "Base.TweeningPackage.Tests",
   "rootNamespace": "Base.TweeningPackage.Tests",
   "references": [
-        "Base.TweeningPackage",
-        "Base.ServicesPackage",
-        "UnityEngine.TestRunner",
-        "UnityEditor.TestRunner"
-    ],
+    "Base.TweeningPackage",
+    "Base.ServicesPackage",
+    "UnityEngine.TestRunner",
+    "UnityEditor.TestRunner"
+  ],
   "includePlatforms": [
     "Editor"
   ],

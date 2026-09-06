@@ -38,49 +38,43 @@ namespace Base.AttributesPackage.Tests
 
         /// <summary>The name is the argument without its prefix.</summary>
         [Test]
-        public void TheNameIsTheArgumentWithoutThePrefix()
-            => Assert.That(ValueResolver.MemberName(Prefix + nameof(ValueResolverProbe.PublicText)),
-                Is.EqualTo(nameof(ValueResolverProbe.PublicText)));
+        public void TheNameIsTheArgumentWithoutThePrefix() => Assert.That(
+            ValueResolver.MemberName(Prefix + nameof(ValueResolverProbe.PublicText)),
+            Is.EqualTo(nameof(ValueResolverProbe.PublicText)));
 
         /// <summary>A literal has no prefix to strip, so it comes back whole.</summary>
         [Test]
-        public void ALiteralKeepsItsWholeName()
-            => Assert.That(ValueResolver.MemberName(Literal), Is.EqualTo(Literal));
+        public void ALiteralKeepsItsWholeName() => Assert.That(ValueResolver.MemberName(Literal), Is.EqualTo(Literal));
 
         /// <summary>Text that names nothing is used as it was typed, which is the common case.</summary>
         [Test]
-        public void ALiteralIsUsedAsWritten()
-            => Assert.That(Resolve(Literal), Is.EqualTo(Literal));
+        public void ALiteralIsUsedAsWritten() => Assert.That(Resolve(Literal), Is.EqualTo(Literal));
 
         /// <summary>A field is read.</summary>
         [Test]
-        public void AFieldReferenceIsRead()
-            => Assert.That(Resolve(Prefix + nameof(ValueResolverProbe.PublicText)),
-                Is.EqualTo(ValueResolverProbe.PublicValue));
+        public void AFieldReferenceIsRead() => Assert.That(Resolve(Prefix + nameof(ValueResolverProbe.PublicText)),
+            Is.EqualTo(ValueResolverProbe.PublicValue));
 
         /// <summary>
         /// A private field is read too, so a reference can point at the serialized backing field it
         /// sits next to rather than needing a property put in front of it.
         /// </summary>
         [Test]
-        public void APrivateFieldReferenceIsRead()
-            => Assert.That(Resolve(Prefix + ValueResolverProbe.PrivateTextName),
-                Is.EqualTo(ValueResolverProbe.PrivateValue));
+        public void APrivateFieldReferenceIsRead() => Assert.That(Resolve(Prefix + ValueResolverProbe.PrivateTextName),
+            Is.EqualTo(ValueResolverProbe.PrivateValue));
 
         /// <summary>A property is read.</summary>
         [Test]
-        public void APropertyReferenceIsRead()
-            => Assert.That(Resolve(Prefix + nameof(ValueResolverProbe.TextProperty)),
-                Is.EqualTo(ValueResolverProbe.PropertyValue));
+        public void APropertyReferenceIsRead() => Assert.That(Resolve(Prefix + nameof(ValueResolverProbe.TextProperty)),
+            Is.EqualTo(ValueResolverProbe.PropertyValue));
 
         /// <summary>
         /// A method is called, which is what lets a caption say what it is about to do rather than
         /// naming a value that already exists.
         /// </summary>
         [Test]
-        public void AMethodReferenceIsCalled()
-            => Assert.That(Resolve(Prefix + nameof(ValueResolverProbe.TextMethod)),
-                Is.EqualTo(ValueResolverProbe.MethodValue));
+        public void AMethodReferenceIsCalled() => Assert.That(Resolve(Prefix + nameof(ValueResolverProbe.TextMethod)),
+            Is.EqualTo(ValueResolverProbe.MethodValue));
 
         /// <summary>
         /// A member holding nothing shows nothing, rather than the word a null reference would print
@@ -111,9 +105,9 @@ namespace Base.AttributesPackage.Tests
 
         /// <summary>A member with no name is not a member.</summary>
         [Test]
-        public void ReadingWithoutANameFails()
-            => Assert.That(ValueResolver.TryRead(typeof(ValueResolverProbe), _probe, string.Empty, out object _),
-                Is.False);
+        public void ReadingWithoutANameFails() => Assert.That(
+            ValueResolver.TryRead(typeof(ValueResolverProbe), _probe, string.Empty, out object _),
+            Is.False);
 
         /// <summary>A method that returns nothing has no value to show, so it is refused.</summary>
         [Test]
@@ -138,7 +132,6 @@ namespace Base.AttributesPackage.Tests
         /// A context carrying only the owner, since resolving a text argument reads nothing else off
         /// it. This is also the shape it has inside a nested serializable type.
         /// </summary>
-        private MemberContext Context()
-            => new(null, null, null, typeof(ValueResolverProbe), _probe, null, null);
+        private MemberContext Context() => new(null, null, null, typeof(ValueResolverProbe), _probe, null, null);
     }
 }

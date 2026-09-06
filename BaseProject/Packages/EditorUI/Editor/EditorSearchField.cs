@@ -23,8 +23,8 @@ namespace Base.EditorUIPackage.Editor
         private const string ClearTooltip = "Clear the search";
         private const float ClearWidth = 16f;
         private const float IconGap = 4f;
-        private const float IconSize = 14f;
         private const string IconName = "Search Icon";
+        private const float IconSize = 14f;
         private const float SideInset = 5f;
 
         /// <summary>

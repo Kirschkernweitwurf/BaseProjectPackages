@@ -8,14 +8,14 @@ namespace Base.ToolsPackage.Editor.AssemblyGraph
         /// <summary>Name of the assembly.</summary>
         public string Name { get; }
 
+        /// <summary>Every reference this assembly declares.</summary>
+        public List<AssemblyReferenceInfo> References { get; }
+
         /// <summary>Asset path of the asmdef file. Null for predefined or precompiled assemblies.</summary>
         internal string AsmdefPath { get; }
 
         /// <summary>Category the assembly falls into.</summary>
         internal EAssemblyKind Kind { get; }
-
-        /// <summary>Every reference this assembly declares.</summary>
-        public List<AssemblyReferenceInfo> References { get; }
 
         /// <summary>True when the assembly is defined by an asmdef file.</summary>
         internal bool HasAsmdef => !string.IsNullOrEmpty(AsmdefPath);

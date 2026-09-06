@@ -2,9 +2,9 @@
   "name": "Base.CorePackage.DebugDrawing",
   "rootNamespace": "Base.CorePackage.DebugDrawing",
   "references": [
-        "Base.CorePackage.DebugMenu",
-        "GUID:922d81cfb9ff6984da4cb2213b66a375"
-    ],
+    "Base.CorePackage.DebugMenu",
+    "GUID:922d81cfb9ff6984da4cb2213b66a375"
+  ],
   "includePlatforms": [],
   "excludePlatforms": [],
   "allowUnsafeCode": false,

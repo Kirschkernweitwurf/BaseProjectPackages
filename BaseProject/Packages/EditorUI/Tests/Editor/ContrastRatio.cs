@@ -15,15 +15,14 @@ namespace Base.EditorUIPackage.Editor.Tests
     /// </remarks>
     internal static class ContrastRatio
     {
+        private const float BlueWeight = 0.0722f;
         private const float ChannelBreak = 0.03928f;
         private const float ChannelOffset = 0.055f;
         private const float ChannelScale = 1.055f;
         private const float ChannelSlope = 12.92f;
         private const float Exponent = 2.4f;
-        private const float LuminanceOffset = 0.05f;
-
-        private const float BlueWeight = 0.0722f;
         private const float GreenWeight = 0.7152f;
+        private const float LuminanceOffset = 0.05f;
         private const float RedWeight = 0.2126f;
 
         /// <summary>The contrast between two colors, from 1 for identical to 21 for black on white.</summary>

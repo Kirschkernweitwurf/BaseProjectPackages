@@ -15,7 +15,6 @@ namespace Base.TweeningPackage.Tests
     /// </summary>
     public sealed class TweenSequenceTests
     {
-
         private List<string> _events;
 
         /// <summary>Every test starts with an empty event log.</summary>
@@ -32,7 +31,11 @@ namespace Base.TweeningPackage.Tests
             sequence.Start();
 
             Assert.That(sequence.IsCompleted, Is.True);
-            Assert.That(_events, Is.EqualTo(new[] { "Complete", "Kill" }));
+            Assert.That(_events, Is.EqualTo(new[]
+            {
+                "Complete",
+                "Kill"
+            }));
         }
 
         /// <summary>A sequential run starts only the first child.</summary>
@@ -79,7 +82,11 @@ namespace Base.TweeningPackage.Tests
 
             Assert.That(sequence.IsCompleted, Is.True);
             Assert.That(sequence.IsRunning, Is.False);
-            Assert.That(_events, Is.EqualTo(new[] { "Complete", "Kill" }));
+            Assert.That(_events, Is.EqualTo(new[]
+            {
+                "Complete",
+                "Kill"
+            }));
         }
 
         /// <summary>A parallel run starts every child at once.</summary>
@@ -113,7 +120,11 @@ namespace Base.TweeningPackage.Tests
             second.Finish();
 
             Assert.That(sequence.IsCompleted, Is.True);
-            Assert.That(_events, Is.EqualTo(new[] { "Complete", "Kill" }));
+            Assert.That(_events, Is.EqualTo(new[]
+            {
+                "Complete",
+                "Kill"
+            }));
         }
 
         /// <summary>Cancelling stops every child without completing any of them.</summary>
@@ -131,7 +142,10 @@ namespace Base.TweeningPackage.Tests
             Assert.That(first.StopCount, Is.EqualTo(1));
             Assert.That(second.StopCount, Is.EqualTo(1));
             Assert.That(first.WasStoppedWithComplete, Is.False);
-            Assert.That(_events, Is.EqualTo(new[] { "Kill" }));
+            Assert.That(_events, Is.EqualTo(new[]
+            {
+                "Kill"
+            }));
         }
 
         /// <summary>Stopping with a snap carries that through to every child.</summary>
@@ -148,7 +162,11 @@ namespace Base.TweeningPackage.Tests
 
             Assert.That(first.WasStoppedWithComplete, Is.True);
             Assert.That(second.WasStoppedWithComplete, Is.True);
-            Assert.That(_events, Is.EqualTo(new[] { "Complete", "Kill" }));
+            Assert.That(_events, Is.EqualTo(new[]
+            {
+                "Complete",
+                "Kill"
+            }));
         }
 
         /// <summary>Stopping a finished sequence changes nothing.</summary>
@@ -163,7 +181,12 @@ namespace Base.TweeningPackage.Tests
             only.Finish();
             sequence.Stop();
 
-            Assert.That(_events, Is.EqualTo(new[] { "Complete", "Kill" }));
+            Assert.That(_events, Is.EqualTo(new[]
+            {
+                "Complete",
+                "Kill"
+            }));
+
             Assert.That(only.StopCount, Is.EqualTo(0));
         }
 
@@ -179,7 +202,11 @@ namespace Base.TweeningPackage.Tests
             Listen(sequence);
             sequence.Start();
 
-            Assert.That(_events, Is.EqualTo(new[] { "Complete", "Kill" }), "the sequence stayed empty");
+            Assert.That(_events, Is.EqualTo(new[]
+            {
+                "Complete",
+                "Kill"
+            }), "the sequence stayed empty");
         }
 
         /// <summary>A sequence is driven by its children, so ticking it does nothing itself.</summary>

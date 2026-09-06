@@ -2,7 +2,7 @@
   "name": "com.baseprojectpackages.attributes",
   "displayName": "Base Attributes",
   "description": "Inspector attributes for Unity that replace the default MonoBehaviour and ScriptableObject inspectors: titles, validation, conditional fields, auto-assignment, pickers, buttons and widgets.",
-  "version": "1.8.1",
+  "version": "1.8.2",
   "unity": "6000.3",
   "documentationUrl": "https://github.com/Kirschkernweitwurf/BaseProjectPackages/blob/main/BaseProject/Packages/Attributes/README.md",
   "changelogUrl": "https://github.com/Kirschkernweitwurf/BaseProjectPackages/blob/main/BaseProject/Packages/Attributes/CHANGELOG.md",

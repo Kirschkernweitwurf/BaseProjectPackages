@@ -33,7 +33,13 @@ namespace Base.UtilityPackage.Tests
         [Test]
         public void ARandomElementComesFromTheList()
         {
-            List<string> items = new() { FirstItem, SecondItem, ThirdItem };
+            List<string> items = new()
+            {
+                FirstItem,
+                SecondItem,
+                ThirdItem
+            };
+
             List<string> picks = new();
 
             for (int index = 0; index < DrawCount; index++)
@@ -46,7 +52,10 @@ namespace Base.UtilityPackage.Tests
         [Test]
         public void AnArrayPicksTheSameWay()
         {
-            string[] items = { FirstItem };
+            string[] items =
+            {
+                FirstItem
+            };
 
             Assert.That(items.GetRandomElement(), Is.EqualTo(FirstItem));
         }

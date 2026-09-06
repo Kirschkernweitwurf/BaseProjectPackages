@@ -7,6 +7,7 @@
     "Base.ToolsPackage.Editor.AssemblyGraph",
     "Base.ToolsPackage.Editor.CodebaseGraph",
     "Base.ToolsPackage.Editor.CommandPalette",
+    "Base.ToolsPackage.Editor.ComponentClipboard",
     "Base.ToolsPackage.Editor.FolderConventionValidator",
     "Base.ToolsPackage.Editor.MenuManagerModel",
     "Base.ToolsPackage.Editor.MenuManagerWindows",

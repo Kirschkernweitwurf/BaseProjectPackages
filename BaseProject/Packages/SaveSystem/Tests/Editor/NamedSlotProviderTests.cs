@@ -60,7 +60,6 @@ namespace Base.SaveSystemPackage.Tests
 
         /// <summary>A provider without a reader could never list its slots.</summary>
         [Test]
-        public void AReaderIsRequired()
-            => Assert.Throws<ArgumentNullException>(() => new NamedSlotProvider(null));
+        public void AReaderIsRequired() => Assert.Throws<ArgumentNullException>(() => new NamedSlotProvider(null));
     }
 }

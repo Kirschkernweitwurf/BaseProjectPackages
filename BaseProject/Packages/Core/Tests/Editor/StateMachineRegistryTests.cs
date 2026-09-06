@@ -76,20 +76,6 @@ namespace Base.CorePackage.Tests
             Assert.That(TimesListed(_machine), Is.EqualTo(1));
         }
 
-        // The registry is global, so the count is taken for one machine rather than over the list.
-        private static int TimesListed(IStateMachineInfo machine)
-        {
-            int listed = 0;
-
-            foreach (IStateMachineInfo running in StateMachineRegistry.GetRunning())
-            {
-                if (ReferenceEquals(running, machine))
-                    listed++;
-            }
-
-            return listed;
-        }
-
         /// <summary>Several machines running at once are all listed.</summary>
         [Test]
         public void SeveralRunningMachinesAreAllListed()
@@ -104,6 +90,20 @@ namespace Base.CorePackage.Tests
             Assert.That(StateMachineRegistry.GetRunning(), Contains.Item(other));
 
             other.Dispose();
+        }
+
+        // The registry is global, so the count is taken for one machine rather than over the list.
+        private static int TimesListed(IStateMachineInfo machine)
+        {
+            int listed = 0;
+
+            foreach (IStateMachineInfo running in StateMachineRegistry.GetRunning())
+            {
+                if (ReferenceEquals(running, machine))
+                    listed++;
+            }
+
+            return listed;
         }
     }
 }

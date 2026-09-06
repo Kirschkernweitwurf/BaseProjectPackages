@@ -34,7 +34,7 @@ namespace Base.ControllerSupportPackage.Tests
         [Test]
         public void APatternKeepsWhatItWasBuiltWith()
         {
-            RumblePatternData pattern = new(2f, Flat(0.25f), Flat(0.75f), loop: true, useUnscaledTime: false);
+            RumblePatternData pattern = new(2f, Flat(0.25f), Flat(0.75f), true, false);
 
             Assert.That(pattern.Duration, Is.EqualTo(2f).Within(Tolerance));
             Assert.That(pattern.Loop, Is.True);

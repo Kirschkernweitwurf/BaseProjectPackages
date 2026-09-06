@@ -18,9 +18,9 @@ namespace Base.TweeningPackage.PlayTests
     {
         private const string DestroyedTargetMessage = "was destroyed";
         private const float Duration = 0.1f;
+        private const float LiveDuration = 2f;
         private const float LongDelay = 10f;
         private const float MovedStartValue = 0.5f;
-        private const float LiveDuration = 2f;
         private const float MovedTolerance = 0.05f;
         private const float ShortDelay = 0.1f;
         private const float StartValue = 0f;
@@ -76,7 +76,7 @@ namespace Base.TweeningPackage.PlayTests
             CreateRunner();
             GameObject target = CreateHost(nameof(ATweenReachesItsTargetValueOnceItsDurationHasPassed));
 
-            Tween<float> tween = CreateTween(target, delay: 0f);
+            Tween<float> tween = CreateTween(target, 0f);
             tween.Start();
 
             yield return WaitUntilFinished(tween);
@@ -98,7 +98,7 @@ namespace Base.TweeningPackage.PlayTests
             TweenRunner.OnTweenRegistered += CountRegistered;
             TweenRunner.OnTweenDeregistered += CountDeregistered;
 
-            Tween<float> tween = CreateTween(target, delay: 0f);
+            Tween<float> tween = CreateTween(target, 0f);
             tween.Start();
 
             yield return WaitUntilFinished(tween);
@@ -118,7 +118,7 @@ namespace Base.TweeningPackage.PlayTests
             CreateRunner();
             GameObject target = CreateHost(nameof(ATweenStopsWhenItsTargetIsDestroyed));
 
-            Tween<float> tween = CreateTween(target, delay: LongDelay);
+            Tween<float> tween = CreateTween(target, LongDelay);
             tween.Start();
 
             LogAssert.Expect(LogType.Warning, new Regex(DestroyedTargetMessage));
@@ -143,7 +143,7 @@ namespace Base.TweeningPackage.PlayTests
 
             _observed = float.NaN;
 
-            Tween<float> tween = CreateTween(target, delay: LongDelay);
+            Tween<float> tween = CreateTween(target, LongDelay);
             tween.Start();
 
             Assert.That(_observed, Is.EqualTo(StartValue).Within(Tolerance));
@@ -199,25 +199,23 @@ namespace Base.TweeningPackage.PlayTests
         }
 
         /// <summary>Builds a float tween starting from a literal value.</summary>
-        private Tween<float> CreateTween(Object target, float delay) => new(
-            to: TargetValue,
-            duration: Duration,
-            setter: Record,
-            lerpFunc: Mathf.LerpUnclamped,
-            ease: null,
-            targetObj: target,
-            delay: delay,
+        private Tween<float> CreateTween(Object target, float delay) => new(TargetValue,
+            Duration,
+            Record,
+            Mathf.LerpUnclamped,
+            null,
+            target,
+            delay,
             from: StartValue);
 
         /// <summary>Builds a delayed float tween that reads its start value when it begins moving.</summary>
-        private Tween<float> CreateLiveTween(Object target) => new(
-            to: TargetValue,
-            duration: LiveDuration,
-            setter: Record,
-            lerpFunc: Mathf.LerpUnclamped,
-            ease: null,
-            targetObj: target,
-            delay: ShortDelay,
+        private Tween<float> CreateLiveTween(Object target) => new(TargetValue,
+            LiveDuration,
+            Record,
+            Mathf.LerpUnclamped,
+            null,
+            target,
+            ShortDelay,
             fromGetter: () => _liveStart);
 
         /// <summary>Spins until the tween writes anything at all, so a stall fails instead of hanging.</summary>

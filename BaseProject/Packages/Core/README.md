@@ -11,9 +11,10 @@ Reusable core systems that any Unity project can build on: menus, scene loading,
 - `Base.UtilityPackage` for logging and shared helpers
 - `Base.AttributesPackage` for inspector attributes such as `[Required]` and `[GetComponent]`
 - `Base.EditorUIPackage.Editor` for the shared look of its editor windows
-- Assemblies: one per system, `Base.CorePackage` for the small ones nothing outside this package
-  depends on, plus `Base.CorePackage.Editor` and `Base.CorePackage.Tests`. Run the Assembly Graph
-  window for the current shape rather than keeping a list here in step by hand.
+- Assemblies: one per system, `Base.CorePackage` for the activation helpers and the noise generator,
+  which need nothing but the attributes and the utility helpers, plus `Base.CorePackage.Editor` and
+  `Base.CorePackage.Tests`. Run the Assembly Graph window for the current shape rather than keeping a
+  list here in step by hand.
 
 The manager prefabs, canvases and menu identifier assets these systems expect ship in `Base.ContentPackage`.
 

@@ -2,7 +2,7 @@
   "name": "com.baseprojectpackages.localization",
   "displayName": "Base Localization",
   "description": "Editor tooling for syncing Unity String Table Collections with Google Sheets. Adds one-click Pull and Push for single or all collections through menu items and a dedicated sync window, with up-front validation, progress reporting and per-collection success or failure logging.",
-  "version": "1.3.0",
+  "version": "1.3.2",
   "unity": "6000.3",
   "documentationUrl": "https://github.com/Kirschkernweitwurf/BaseProjectPackages/blob/main/BaseProject/Packages/Localization/README.md",
   "changelogUrl": "https://github.com/Kirschkernweitwurf/BaseProjectPackages/blob/main/BaseProject/Packages/Localization/CHANGELOG.md",

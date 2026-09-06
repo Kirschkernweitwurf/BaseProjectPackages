@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Base.LocalizationPackage.Settings;
 using Base.UtilityPackage.Identification;
 using NUnit.Framework;
+using UnityEditor;
 using UnityEngine;
 
 namespace Base.LocalizationPackage.Tests
@@ -65,7 +66,8 @@ namespace Base.LocalizationPackage.Tests
         /// </summary>
         private LanguageSetting Create()
         {
-            GameObject host = new(nameof(LanguageSetting));
+            GameObject host = EditorUtility.CreateGameObjectWithHideFlags(nameof(LanguageSetting),
+                HideFlags.HideAndDontSave);
             host.SetActive(false);
             _hosts.Add(host);
 
