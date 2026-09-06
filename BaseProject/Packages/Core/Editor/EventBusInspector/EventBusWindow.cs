@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Base.EditorUIPackage.Editor;
 using Base.UtilityPackage.Menus;
 using UnityEditor;
@@ -40,7 +39,6 @@ namespace Base.CorePackage.Editor.EventBusInspector
         private const string EventHeader = "Event / Subscriber";
         private const string ExpandLabel = "Expand";
         private const string HandlerHeader = "Handler";
-        private const string LeakCountFormat = "{0} of {1} leaked";
         private const string LeaksLabel = "Leaks only";
         private const string LeaksTooltip = "Show only subscriptions whose object was destroyed. Those "
             + "handlers still run on every publish and keep the destroyed object alive.";
@@ -55,9 +53,6 @@ namespace Base.CorePackage.Editor.EventBusInspector
         private const string PingLabel = "Ping";
         private const double RefreshInterval = 0.25d;
         private const string RefreshLabel = "Refresh";
-        private const string ReportEventFormat = "{0}\t\t\t\t{1}";
-        private const string ReportHandlerFormat = "\t{0}\t{1}\t{2}\t{3}";
-        private const string ReportHeader = "Event\tSubscriber\tHandler\tTarget\tState";
         private const string SearchControlName = "EventBusSearch";
         private const string SelectItem = "Select Subscriber";
         private const string StateHeader = "State";
@@ -65,47 +60,14 @@ namespace Base.CorePackage.Editor.EventBusInspector
         private const string SummaryOkText = "No leaks";
         private const string TargetHeader = "Target";
         private const string WindowTitle = "Event Bus";
-        private static readonly GUIContent DestroyedContent = new("Destroyed",
-            "The object this handler runs on was destroyed but never unsubscribed. It still fires on "
-            + "every publish and keeps the destroyed object alive.");
-        private static readonly GUIContent LiveContent = new("Live",
-            "The handler runs on a Unity object that is still alive.");
-        private static readonly GUIContent PlainContent = new("Object",
-            "The handler runs on a plain C# object. Unity does not manage its lifetime, so whether this "
-            + "is a leak depends on who owns it.");
-        private static readonly GUIContent StaticContent = new("Static",
-            "The handler is a static method, so it has no instance that could outlive its subscription.");
-        private static readonly GUIContent[] StateBadges =
-        {
-            DestroyedContent,
-            LiveContent,
-            PlainContent,
-            StaticContent
-        };
+
         private static readonly GUIContent CopyContent = new(CopyLabel, CopyTooltip);
-
-
-
-
         private static readonly GUIContent LeaksContent = new(LeaksLabel, LeaksTooltip);
 
         private static readonly GUIContent PingContent = new(PingLabel,
             "Select this subscriber and highlight it in the hierarchy.");
+
         private static readonly string NoBusMessage = $"No {typeof(EventBusBehaviour).Name} in the loaded scenes";
-
-
-
-
-
-
-
-
-
-        // The badge column is measured from these rather than from the rows, so its width cannot
-        // depend on how many subscribers happen to be listed. Declared after the four it holds,
-        // because static field initializers run in the order they are written.
-
-
 
         // None of these are created where they are declared. A window Unity restores after a domain
         // reload can reach its first GUI pass without any field initializer having run, and then
@@ -143,8 +105,7 @@ namespace Base.CorePackage.Editor.EventBusInspector
         private string _search;
         private Vector2 _scroll;
         private int _selectedIndex = -1;
-        private EEventColumn _sortColumn;
-        private ESortOrder _sortOrder;
+        private EventBusSorting _sorting;
 
 #region Unity Callbacks
         private void OnEnable()
@@ -242,36 +203,6 @@ namespace Base.CorePackage.Editor.EventBusInspector
             window.Show();
         }
 
-        private static GUIContent StateContent(EHandlerState state) => state switch
-        {
-            EHandlerState.Destroyed => DestroyedContent,
-            EHandlerState.Live => LiveContent,
-            EHandlerState.Static => StaticContent,
-            _ => PlainContent
-        };
-
-        private static Color StateColor(EHandlerState state) => state switch
-        {
-            EHandlerState.Destroyed => EventBusStyles.DestroyedBadgeColor,
-            EHandlerState.Live => EventBusStyles.LiveBadgeColor,
-            _ => EventBusStyles.NeutralBadgeColor
-        };
-
-        private static string CountText(EventTypeEntry entry) => entry.HasLeaks
-            ? string.Format(LeakCountFormat, entry.LeakCount, entry.Handlers.Count)
-            : entry.Handlers.Count.ToString();
-
-        private static string ReportRow(EventBusRow row)
-        {
-            if (row.IsHeader)
-                return string.Format(ReportEventFormat, row.Event.TypeName, CountText(row.Event));
-
-            HandlerEntry handler = row.Handler;
-
-            return string.Format(ReportHandlerFormat, handler.SubscriberName, handler.MethodName,
-                handler.TargetName, StateContent(handler.State).text);
-        }
-
         private static void Ping(HandlerEntry handler)
         {
             if (handler == null || !handler.CanPing)
@@ -321,11 +252,6 @@ namespace Base.CorePackage.Editor.EventBusInspector
             return new Rect(card.x, card.y, card.width, Mathf.Min(card.height, content));
         }
 
-        private static int Ordinal(string first, string second)
-            => string.Compare(first, second, StringComparison.Ordinal);
-
-        // Called from the first GUI pass as well, because a restored window can get there without
-        // OnEnable having run and with every field still null.
         private void EnsureInitialized()
         {
             _busLabels ??= Array.Empty<string>();
@@ -333,6 +259,7 @@ namespace Base.CorePackage.Editor.EventBusInspector
             _columns ??= new EventBusColumns();
             _entries ??= new List<EventTypeEntry>();
             _expanded ??= new HashSet<Type>();
+            _sorting ??= new EventBusSorting();
             _filtered ??= new List<EventTypeEntry>();
             _rows ??= new List<EventBusRow>();
             _search ??= string.Empty;
@@ -346,7 +273,7 @@ namespace Base.CorePackage.Editor.EventBusInspector
             // A value type cannot be asked whether it was ever set, so the ones whose zero value is
             // the wrong answer are restored under a flag the same reload clears.
             _isInitialized = true;
-            _sortOrder = ESortOrder.Default;
+            _sorting.Reset();
         }
 
         // Every change that adds or removes a row is applied on the layout event and never mid pass.
@@ -559,7 +486,7 @@ namespace Base.CorePackage.Editor.EventBusInspector
 
                 if (GUILayout.Button(CopyContent, EditorStyles.toolbarButton,
                         GUILayout.Width(EventBusStyles.ToolbarButtonWidth)))
-                    CopyReport();
+                    EditorGUIUtility.systemCopyBuffer = EventBusReport.Build(_rows);
 
                 if (GUILayout.Button(RefreshLabel, EditorStyles.toolbarButton,
                         GUILayout.Width(EventBusStyles.ToolbarButtonWidth)))
@@ -600,7 +527,7 @@ namespace Base.CorePackage.Editor.EventBusInspector
             bool hasLeaks = _leakCount > 0;
 
             string text = hasLeaks
-                ? string.Format(LeakCountFormat, _leakCount, _handlerCount)
+                ? EventBusBadges.LeakText(_leakCount, _handlerCount)
                 : SummaryOkText;
 
             float width = EditorRows.MeasureBadge(text, _styles.Badge, EventBusStyles.MinBadgeWidth);
@@ -640,11 +567,11 @@ namespace Base.CorePackage.Editor.EventBusInspector
         {
             _badgeColumnWidth = MeasureBadge(StateHeader);
 
-            foreach (GUIContent badge in StateBadges)
+            foreach (GUIContent badge in EventBusBadges.StateBadges)
                 _badgeColumnWidth = Mathf.Max(_badgeColumnWidth, MeasureBadge(badge.text));
 
             foreach (EventTypeEntry entry in _filtered)
-                _badgeColumnWidth = Mathf.Max(_badgeColumnWidth, MeasureBadge(CountText(entry)));
+                _badgeColumnWidth = Mathf.Max(_badgeColumnWidth, MeasureBadge(EventBusBadges.CountText(entry)));
         }
 
         private float MeasureBadge(string text)
@@ -701,13 +628,13 @@ namespace Base.CorePackage.Editor.EventBusInspector
         {
             GUI.Label(cell, title, _styles.Header);
 
-            if (_sortColumn == column)
+            if (_sorting.Column == column)
             {
                 float titleWidth = _styles.Header.CalcSize(new GUIContent(title)).x;
                 Rect arrow = new(cell.x + titleWidth + EventBusStyles.HeaderArrowGap, cell.y,
                     EditorMetrics.SortArrowWidth, cell.height);
 
-                EditorRows.DrawSortArrow(arrow, _sortOrder, EditorPalette.Text);
+                EditorRows.DrawSortArrow(arrow, _sorting.Order, EditorPalette.Text);
             }
 
             Event current = Event.current;
@@ -721,32 +648,11 @@ namespace Base.CorePackage.Editor.EventBusInspector
             if (_columns.IsOverDivider(current.mousePosition, header))
                 return;
 
-            CycleSort(column);
-            current.Use();
-        }
-
-        // First click sorts, second reverses, third hands the order back to the window. A different
-        // column always starts that cycle over rather than inheriting the previous direction.
-        private void CycleSort(EEventColumn column)
-        {
-            if (_sortColumn != column)
-            {
-                _sortColumn = column;
-                _sortOrder = ESortOrder.Ascending;
-            }
-            else
-            {
-                _sortOrder = _sortOrder switch
-                {
-                    ESortOrder.Ascending => ESortOrder.Descending,
-                    ESortOrder.Descending => ESortOrder.Default,
-                    _ => ESortOrder.Ascending
-                };
-            }
-
+            _sorting.Cycle(column);
             _needsFilter = true;
 
             Repaint();
+            current.Use();
         }
 
         private void DrawRows()
@@ -827,7 +733,7 @@ namespace Base.CorePackage.Editor.EventBusInspector
                     ? EditorIcons.Error
                     : null);
 
-            DrawPill(_columns.Badge(area), CountText(entry), entry.HasLeaks
+            DrawPill(_columns.Badge(area), EventBusBadges.CountText(entry), entry.HasLeaks
                 ? EventBusStyles.DestroyedBadgeColor
                 : EventBusStyles.CountBadgeColor);
         }
@@ -842,7 +748,7 @@ namespace Base.CorePackage.Editor.EventBusInspector
             EditorRows.DrawIndentGuides(new Rect(area.x + EventBusStyles.RowInset, area.y, area.width, area.height),
                 1, EventBusStyles.GuideColor);
 
-            GUIContent state = StateContent(handler.State);
+            GUIContent state = EventBusBadges.StateContent(handler.State);
             Rect badgeCell = _columns.Badge(area);
 
             DrawLabelWithIcon(_columns.Subscriber(area, EventBusStyles.Indent),
@@ -853,7 +759,7 @@ namespace Base.CorePackage.Editor.EventBusInspector
             GUI.Label(_columns.Method(area), handler.MethodName, _styles.Detail);
             GUI.Label(_columns.Target(area), handler.TargetName, _styles.Detail);
 
-            DrawPill(badgeCell, state.text, StateColor(handler.State));
+            DrawPill(badgeCell, state.text, EventBusBadges.StateColor(handler.State));
 
             // Laid over the pill with no text of its own, purely so hovering it explains what the
             // state means. A pill is drawn, not a control, so there is nowhere else to put a tooltip.
@@ -946,7 +852,7 @@ namespace Base.CorePackage.Editor.EventBusInspector
                 func: () => EditorGUIUtility.systemCopyBuffer = row.Event.EventType.FullName);
 
             menu.AddItem(new GUIContent(CopyRowItem), false,
-                func: () => EditorGUIUtility.systemCopyBuffer = ReportRow(row));
+                func: () => EditorGUIUtility.systemCopyBuffer = EventBusReport.Row(row));
 
             menu.ShowAsContext();
         }
@@ -972,18 +878,6 @@ namespace Base.CorePackage.Editor.EventBusInspector
                 area.yMax - title.yMax);
 
             GUI.Label(hintArea, hint, _styles.EmptyHint);
-        }
-
-        private void CopyReport()
-        {
-            StringBuilder builder = new();
-
-            builder.AppendLine(ReportHeader);
-
-            foreach (EventBusRow row in _rows)
-                builder.AppendLine(ReportRow(row));
-
-            EditorGUIUtility.systemCopyBuffer = builder.ToString();
         }
 
         // Subscriptions come and go while the game runs and nothing in the editor raises an event for
@@ -1072,7 +966,7 @@ namespace Base.CorePackage.Editor.EventBusInspector
 
             // The bus keeps a dictionary, so its order is arbitrary either way and the rows have to
             // be put in some order before they are drawn.
-            _filtered.Sort(CompareEvents);
+            _filtered.Sort(_sorting.CompareEvents);
 
             RebuildRows();
         }
@@ -1100,7 +994,7 @@ namespace Base.CorePackage.Editor.EventBusInspector
 
                 // Sorted per event rather than across the whole table, because a subscriber only
                 // means anything under the event it is subscribed to.
-                _sorted.Sort(CompareHandlers);
+                _sorted.Sort(_sorting.CompareHandlers);
 
                 foreach (HandlerEntry handler in _sorted)
                     _rows.Add(new EventBusRow(entry, handler));
@@ -1113,46 +1007,5 @@ namespace Base.CorePackage.Editor.EventBusInspector
 
         // Handler and Target say nothing about an event, so those two columns leave the events in
         // name order and only reorder the subscribers underneath them.
-        private int CompareEvents(EventTypeEntry first, EventTypeEntry second)
-        {
-            if (_sortOrder == ESortOrder.Default)
-                return Ordinal(first.TypeName, second.TypeName);
-
-            int result = _sortColumn switch
-            {
-                EEventColumn.State => first.Handlers.Count.CompareTo(second.Handlers.Count),
-                _ => Ordinal(first.TypeName, second.TypeName)
-            };
-
-            if (result == 0)
-                result = Ordinal(first.TypeName, second.TypeName);
-
-            return Direct(result);
-        }
-
-        private int CompareHandlers(HandlerEntry first, HandlerEntry second)
-        {
-            if (_sortOrder == ESortOrder.Default)
-                return 0;
-
-            int result = _sortColumn switch
-            {
-                EEventColumn.Handler => Ordinal(first.MethodName, second.MethodName),
-                EEventColumn.State => first.State.CompareTo(second.State),
-                EEventColumn.Target => Ordinal(first.TargetName, second.TargetName),
-                _ => Ordinal(first.SubscriberName, second.SubscriberName)
-            };
-
-            // Rows that tie fall back to the subscribing type, so a column with few distinct values
-            // does not let its rows swap places between two reads a quarter of a second apart.
-            if (result == 0)
-                result = Ordinal(first.SubscriberName, second.SubscriberName);
-
-            return Direct(result);
-        }
-
-        private int Direct(int result) => _sortOrder == ESortOrder.Descending
-            ? -result
-            : result;
     }
 }

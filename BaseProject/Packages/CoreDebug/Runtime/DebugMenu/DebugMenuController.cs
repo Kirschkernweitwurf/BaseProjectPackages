@@ -45,7 +45,9 @@ namespace Base.CorePackage.DebugMenu
             cheatConsoleButton.onClick.RemoveListener(ShowCheatConsole);
             logConsoleButton.onClick.RemoveListener(ShowLogConsole);
 
-            if (ServiceLocator.TryGet(out InputManager inputManager))
+            // Optional on the way out. Disabling runs on a scene unload, where the input service may
+            // already be gone, and reporting that would fill the console on every scene change.
+            if (ServiceLocator.TryGetOptional(out InputManager inputManager))
                 inputManager.BaseInputActions.Permanent.ToggleCheatConsole.performed -= OnToggleConsole;
         }
 #endregion

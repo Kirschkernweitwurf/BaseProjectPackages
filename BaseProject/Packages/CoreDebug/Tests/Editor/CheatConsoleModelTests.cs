@@ -25,7 +25,6 @@ namespace Base.CorePackage.Debug.Tests
         private const string ToggleCommand = "toggle";
         private const string UnknownCommand = "nonsense";
 
-
         private CheatCommandProbe _probe;
         private CheatConsoleModel _model;
 

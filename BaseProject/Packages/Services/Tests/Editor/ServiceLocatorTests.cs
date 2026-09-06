@@ -17,7 +17,6 @@ namespace Base.ServicesPackage.Tests
         private const string First = "First";
         private const string Second = "Second";
 
-
         private UnityServiceProbe _probe;
 
         /// <summary>

@@ -17,7 +17,6 @@ namespace Base.SaveSystemPackage.Tests
     {
         private const string PlayerKey = "Player";
 
-
         private SavableRegistry _registry;
 
         /// <summary>Every test starts from an empty registry.</summary>

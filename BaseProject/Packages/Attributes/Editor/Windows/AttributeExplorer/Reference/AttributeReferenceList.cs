@@ -35,7 +35,6 @@ namespace Base.AttributesPackage.Editor.Windows.AttributeExplorer.Reference
         /// <summary>The rows as they were last drawn, headers included, in the order they appear.</summary>
         internal IReadOnlyList<AttributeSampleRow> Rows => _rows;
 
-
         private readonly List<AttributeSampleEntry> _matches = new();
         private readonly List<AttributeSampleRow> _rows = new();
 

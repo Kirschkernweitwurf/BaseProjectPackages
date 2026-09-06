@@ -2,7 +2,7 @@
   "name": "com.baseprojectpackages.tweening",
   "displayName": "Base Tweening",
   "description": "A component-driven tweening system for Unity. Drop a tween component on a transform, renderer, graphic or text and drive position, rotation, scale, color, alpha, fill and text values from reusable profile assets. Groups sequence and reverse whole hierarchies for menu enter and exit animations, with per-tween delay, easing, looping and ping-pong, all editable through a custom inspector.",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "unity": "6000.3",
   "documentationUrl": "https://github.com/Kirschkernweitwurf/BaseProjectPackages/blob/main/BaseProject/Packages/Tweening/README.md",
   "changelogUrl": "https://github.com/Kirschkernweitwurf/BaseProjectPackages/blob/main/BaseProject/Packages/Tweening/CHANGELOG.md",

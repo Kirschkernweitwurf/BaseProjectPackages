@@ -48,10 +48,6 @@ namespace Base.ToolsPackage.Editor.NamingConventions.Window
 
         private static readonly GUIContent ClearHistoryContent = new("Clear", "Drop the whole history");
 
-
-
-
-
         private static readonly GUIContent CreateContent = new("Create Rule Set",
             "Create the rule set asset so the conventions are versioned with the project");
 

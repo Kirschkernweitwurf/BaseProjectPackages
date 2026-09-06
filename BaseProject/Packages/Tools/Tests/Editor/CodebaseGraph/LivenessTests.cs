@@ -19,23 +19,21 @@ namespace Base.ToolsPackage.Editor.Tests
     /// </summary>
     public sealed class LivenessTests
     {
-        private const string Behaviour = "Base.ToolsPackage.Editor.Tests.Fixtures.FixtureBehaviour";
-        private const string Constants = "Base.ToolsPackage.Editor.Tests.Fixtures.FixtureConstants";
-        private const string Contract = "Base.ToolsPackage.Editor.Tests.Fixtures.IFixtureContract";
-        private const string DeadCode = "Base.ToolsPackage.Editor.Tests.Fixtures.FixtureDeadCode";
+        private const string Behaviour = FixturesNamespace + ".FixtureBehaviour";
+        private const string Constants = FixturesNamespace + ".FixtureConstants";
+        private const string Contract = FixturesNamespace + ".IFixtureContract";
+        private const string DeadCode = FixturesNamespace + ".FixtureDeadCode";
         private const string DescribeMember = "Describe";
-        private const string NestingHost = "Base.ToolsPackage.Editor.Tests.Fixtures.FixtureNestingHost";
+        private const string FixturesNamespace = "Base.ToolsPackage.Editor.Tests.CodebaseGraph.Fixtures";
+        private const string NestingHost = FixturesNamespace + ".FixtureNestingHost";
         private const string NestingUnused = NestingHost + ".Unused";
-        private const string Orphan = "Base.ToolsPackage.Editor.Tests.Fixtures.IFixtureOrphan";
+        private const string Orphan = FixturesNamespace + ".IFixtureOrphan";
         private const string OrphanedMember = "Orphaned";
-
-        private const string PublishedConstants = "Base.ToolsPackage.Editor.Tests.Fixtures."
-            + "FixturePublishedConstants";
-
+        private const string PublishedConstants = FixturesNamespace + ".FixturePublishedConstants";
         private const string PublishedConstName = "PublishedLabel";
         private const string SharedConstName = "SharedLabel";
         private const string UnreadConstName = "UnreadLabel";
-        private const string Vector = "Base.ToolsPackage.Editor.Tests.Fixtures.FixtureVector";
+        private const string Vector = FixturesNamespace + ".FixtureVector";
 
         private GraphProbe _probe;
 

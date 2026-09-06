@@ -17,7 +17,6 @@ namespace Base.ServicesPackage.Tests
         private const string OtherKey = "Beta";
         private const string SecondValue = "Second";
 
-
         private Tracker<string, string> _tracker;
 
         /// <summary>Every test starts from an empty tracker.</summary>

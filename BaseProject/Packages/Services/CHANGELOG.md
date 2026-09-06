@@ -8,6 +8,21 @@ Changes made before 1.0.11 were not recorded.
 
 ## [Unreleased]
 
+## [1.1.1] - 2026-09-06
+
+### Changed
+
+- `ServiceLocatorWindow` is 731 lines instead of 843. The state badges and their tooltips moved into
+  `ServiceLocatorBadges`, the tab separated export into `ServiceLocatorReport`, and the sort column,
+  its direction and the comparison into `ServiceLocatorSorting`. The same three pieces came out of
+  the Event Bus window, which is the same window over a different table, so the two now read alike.
+
+### Fixed
+
+- Stray blank line runs, and the comment explaining why `StateBadges` is declared after the three
+  badges it holds is back on that array. It had come loose and was sitting alone in the field block,
+  the same way it had in the Event Bus window.
+
 ## [1.1.0] - 2026-09-05
 
 ### Added

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Base.EditorUIPackage.Editor;
 using Base.UtilityPackage.Menus;
 using UnityEditor;
@@ -45,8 +44,6 @@ namespace Base.ServicesPackage.Editor
             + "deregistering, or that are filed under a type they do not implement.";
         private const double RefreshInterval = 0.25d;
         private const string RefreshLabel = "Refresh";
-        private const string ReportHeader = "Service\tInstance\tLocation\tState";
-        private const string RowFormat = "{0}\t{1}\t{2}\t{3}";
         private const string SearchControlName = "ServiceLocatorSearch";
         private const string SelectItem = "Select";
         private const string ServiceHeader = "Service";
@@ -61,36 +58,10 @@ namespace Base.ServicesPackage.Editor
         private const string SummaryProblemsFormat = "{0} problems";
         private const string WindowTitle = "Service Locator";
 
-        private static readonly GUIContent AliveContent = new("Alive",
-            "The instance is usable and implements the type it is filed under.");
-        private static readonly GUIContent DestroyedContent = new("Destroyed",
-            "The instance was destroyed without deregistering. The next lookup logs an error and drops "
-            + "the entry.");
-        private static readonly GUIContent MismatchContent = new("Mismatch",
-            "The instance does not implement the type it is filed under, so every lookup for that type "
-            + "fails.");
-        private static readonly GUIContent[] StateBadges =
-        {
-            AliveContent,
-            DestroyedContent,
-            MismatchContent
-        };
         private static readonly GUIContent CopyContent = new(CopyLabel, CopyTooltip);
-
-
-
-
-
         private static readonly GUIContent PingContent = new(PingLabel,
             "Select this object and highlight it in the hierarchy.");
         private static readonly GUIContent ProblemsContent = new(ProblemsLabel, ProblemsTooltip);
-
-
-        // The badge column is measured from these rather than from the rows, so its width cannot
-        // depend on how many services happen to be registered. Declared after the three it holds,
-        // because static field initializers run in the order they are written.
-
-
         // None of these are created where they are declared. A window Unity restores after a domain
         // reload can reach its first GUI pass without any field initializer having run, and then
         // every one of them is null. EnsureInitialized is called from the GUI pass for that reason.
@@ -114,8 +85,7 @@ namespace Base.ServicesPackage.Editor
         private string _search;
         private Vector2 _scroll;
         private int _selectedIndex = -1;
-        private EServiceColumn _sortColumn;
-        private ESortOrder _sortOrder;
+        private ServiceLocatorSorting _sorting;
         private float _stateColumnWidth;
 
 #region Unity Callbacks
@@ -207,30 +177,6 @@ namespace Base.ServicesPackage.Editor
             window.Show();
         }
 
-        private static GUIContent StateContent(EServiceState state) => state switch
-        {
-            EServiceState.Destroyed => DestroyedContent,
-            EServiceState.Mismatch => MismatchContent,
-            _ => AliveContent
-        };
-
-        private static Color StateColor(EServiceState state) => state switch
-        {
-            EServiceState.Destroyed => ServiceLocatorStyles.DestroyedBadgeColor,
-            EServiceState.Mismatch => ServiceLocatorStyles.MismatchBadgeColor,
-            _ => ServiceLocatorStyles.AliveBadgeColor
-        };
-
-        private static Texture StateIcon(EServiceState state) => state switch
-        {
-            EServiceState.Destroyed => EditorIcons.Error,
-            EServiceState.Mismatch => EditorIcons.Warning,
-            _ => null
-        };
-
-        private static string ReportRow(ServiceRegistrationEntry entry) => string.Format(RowFormat, entry.TypeName,
-            entry.InstanceTypeName, entry.Location, StateContent(entry.State).text);
-
         private static void Ping(ServiceRegistrationEntry entry)
         {
             if (!entry.CanPing)
@@ -259,15 +205,13 @@ namespace Base.ServicesPackage.Editor
             return new Rect(card.x, card.y, card.width, Mathf.Min(card.height, content));
         }
 
-        private static int Ordinal(string first, string second)
-            => string.Compare(first, second, StringComparison.Ordinal);
-
         // Called from the first GUI pass as well, because a restored window can get there without
         // OnEnable having run and with every field still null.
         private void EnsureInitialized()
         {
             _columns ??= new ServiceLocatorColumns();
             _entries ??= new List<ServiceRegistrationEntry>();
+            _sorting ??= new ServiceLocatorSorting();
             _filtered ??= new List<ServiceRegistrationEntry>();
             _search ??= string.Empty;
             _stateTooltip ??= new GUIContent();
@@ -279,7 +223,7 @@ namespace Base.ServicesPackage.Editor
             // A value type cannot be asked whether it was ever set, so the ones whose zero value is
             // the wrong answer are restored under a flag the same reload clears.
             _isInitialized = true;
-            _sortOrder = ESortOrder.Default;
+            _sorting.Reset();
         }
 
         // Every change that adds or removes a row is applied on the layout event and never mid pass.
@@ -384,7 +328,7 @@ namespace Base.ServicesPackage.Editor
 
                 if (GUILayout.Button(CopyContent, EditorStyles.toolbarButton,
                         GUILayout.Width(ServiceLocatorStyles.ToolbarButtonWidth)))
-                    CopyReport();
+                    EditorGUIUtility.systemCopyBuffer = ServiceLocatorReport.Build(_filtered);
 
                 if (GUILayout.Button(RefreshLabel, EditorStyles.toolbarButton,
                         GUILayout.Width(ServiceLocatorStyles.ToolbarButtonWidth)))
@@ -449,7 +393,7 @@ namespace Base.ServicesPackage.Editor
         {
             _stateColumnWidth = MeasureBadge(StateHeader);
 
-            foreach (GUIContent badge in StateBadges)
+            foreach (GUIContent badge in ServiceLocatorBadges.StateBadges)
                 _stateColumnWidth = Mathf.Max(_stateColumnWidth, MeasureBadge(badge.text));
         }
 
@@ -505,13 +449,13 @@ namespace Base.ServicesPackage.Editor
         {
             GUI.Label(cell, title, _styles.Header);
 
-            if (_sortColumn == column)
+            if (_sorting.Column == column)
             {
                 float titleWidth = _styles.Header.CalcSize(new GUIContent(title)).x;
                 Rect arrow = new(cell.x + titleWidth + ServiceLocatorStyles.HeaderArrowGap, cell.y,
                     EditorMetrics.SortArrowWidth, cell.height);
 
-                EditorRows.DrawSortArrow(arrow, _sortOrder, EditorPalette.Text);
+                EditorRows.DrawSortArrow(arrow, _sorting.Order, EditorPalette.Text);
             }
 
             Event current = Event.current;
@@ -525,32 +469,11 @@ namespace Base.ServicesPackage.Editor
             if (_columns.IsOverDivider(current.mousePosition, header))
                 return;
 
-            CycleSort(column);
-            current.Use();
-        }
-
-        // First click sorts, second reverses, third hands the order back to the window. A different
-        // column always starts that cycle over rather than inheriting the previous direction.
-        private void CycleSort(EServiceColumn column)
-        {
-            if (_sortColumn != column)
-            {
-                _sortColumn = column;
-                _sortOrder = ESortOrder.Ascending;
-            }
-            else
-            {
-                _sortOrder = _sortOrder switch
-                {
-                    ESortOrder.Ascending => ESortOrder.Descending,
-                    ESortOrder.Descending => ESortOrder.Default,
-                    _ => ESortOrder.Ascending
-                };
-            }
-
+            _sorting.Cycle(column);
             _needsFilter = true;
 
             Repaint();
+            current.Use();
         }
 
         private void DrawRows()
@@ -592,14 +515,14 @@ namespace Base.ServicesPackage.Editor
             if (entry.IsProblem && Event.current.type == EventType.Repaint)
                 EditorGUI.DrawRect(row, ServiceLocatorStyles.ProblemRowColor);
 
-            GUIContent state = StateContent(entry.State);
+            GUIContent state = ServiceLocatorBadges.StateContent(entry.State);
             Rect stateCell = _columns.State(row);
 
             DrawName(_columns.Service(row), entry);
             GUI.Label(_columns.Instance(row), entry.InstanceTypeName, _styles.Detail);
             GUI.Label(_columns.Location(row), entry.Location, _styles.Detail);
 
-            DrawPill(stateCell, state.text, StateColor(entry.State));
+            DrawPill(stateCell, state.text, ServiceLocatorBadges.StateColor(entry.State));
 
             // Laid over the pill with no text of its own, purely so hovering it explains what the
             // state means. A pill is drawn, not a control, so there is nowhere else to put a tooltip.
@@ -618,7 +541,7 @@ namespace Base.ServicesPackage.Editor
         // and stays recognizable for anyone who cannot separate the two tints by color alone.
         private void DrawName(Rect cell, ServiceRegistrationEntry entry)
         {
-            Texture icon = StateIcon(entry.State);
+            Texture icon = ServiceLocatorBadges.StateIcon(entry.State);
 
             if (icon == null)
             {
@@ -694,7 +617,7 @@ namespace Base.ServicesPackage.Editor
                 func: () => EditorGUIUtility.systemCopyBuffer = entry.RegisteredType.FullName);
 
             menu.AddItem(new GUIContent(CopyRowItem), false,
-                func: () => EditorGUIUtility.systemCopyBuffer = ReportRow(entry));
+                func: () => EditorGUIUtility.systemCopyBuffer = ServiceLocatorReport.Row(entry));
 
             menu.ShowAsContext();
         }
@@ -741,18 +664,6 @@ namespace Base.ServicesPackage.Editor
                 area.yMax - title.yMax);
 
             GUI.Label(hintArea, hint, _styles.EmptyHint);
-        }
-
-        private void CopyReport()
-        {
-            StringBuilder builder = new();
-
-            builder.AppendLine(ReportHeader);
-
-            foreach (ServiceRegistrationEntry entry in _filtered)
-                builder.AppendLine(ReportRow(entry));
-
-            EditorGUIUtility.systemCopyBuffer = builder.ToString();
         }
 
         // Registrations come and go while the game runs and nothing in the editor raises an event for
@@ -811,34 +722,11 @@ namespace Base.ServicesPackage.Editor
                     _filtered.Add(entry);
             }
 
-            _filtered.Sort(Compare);
+            _filtered.Sort(_sorting.Compare);
 
             // The list the selection indexes into just changed under it, and a stale index would
             // either highlight the wrong row or point past the end.
             _selectedIndex = Mathf.Min(_selectedIndex, _filtered.Count - 1);
-        }
-
-        private int Compare(ServiceRegistrationEntry first, ServiceRegistrationEntry second)
-        {
-            if (_sortOrder == ESortOrder.Default)
-                return Ordinal(first.TypeName, second.TypeName);
-
-            int result = _sortColumn switch
-            {
-                EServiceColumn.Instance => Ordinal(first.InstanceTypeName, second.InstanceTypeName),
-                EServiceColumn.Location => Ordinal(first.Location, second.Location),
-                EServiceColumn.State => first.State.CompareTo(second.State),
-                _ => Ordinal(first.TypeName, second.TypeName)
-            };
-
-            // Rows that tie fall back to the name, so a column with few distinct values does not let
-            // its rows swap places between two reads a quarter of a second apart.
-            if (result == 0)
-                result = Ordinal(first.TypeName, second.TypeName);
-
-            return _sortOrder == ESortOrder.Descending
-                ? -result
-                : result;
         }
     }
 }

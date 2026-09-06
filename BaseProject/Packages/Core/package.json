@@ -2,7 +2,7 @@
   "name": "com.baseprojectpackages.core",
   "displayName": "Base Core",
   "description": "A collection of reusable core systems that any Unity project can build on. It provides an event bus, a state machine, scene loading, input, object pooling, noise, raycasting, screenshots and priority based cursor and timescale control, plus a menu framework and tooltips. Audio and the in-game debug menu live in Base Audio and Base Core Debug, so a project that wants neither does not install them. Everything lives under the Base.CorePackage namespace and ships with matching editor tooling.",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "unity": "6000.3",
   "documentationUrl": "https://github.com/Kirschkernweitwurf/BaseProjectPackages/blob/main/BaseProject/Packages/Core/README.md",
   "changelogUrl": "https://github.com/Kirschkernweitwurf/BaseProjectPackages/blob/main/BaseProject/Packages/Core/CHANGELOG.md",

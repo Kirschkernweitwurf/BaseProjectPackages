@@ -1,6 +1,6 @@
 using System;
 
-namespace Base.ToolsPackage.Editor.Tests.Fixtures
+namespace Base.ToolsPackage.Editor.Tests.CodebaseGraph.Fixtures
 {
     /// <summary>
     /// Carries an indexer and a pair of operators. Both are named something else in metadata, Item and

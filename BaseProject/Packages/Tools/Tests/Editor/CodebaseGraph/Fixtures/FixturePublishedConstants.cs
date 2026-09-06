@@ -1,4 +1,4 @@
-namespace Base.ToolsPackage.Editor.Tests.Fixtures
+namespace Base.ToolsPackage.Editor.Tests.CodebaseGraph.Fixtures
 {
     /// <summary>
     /// A const nothing reads, published rather than internal. It exists to pin down a rule that is

@@ -2,7 +2,7 @@
   "name": "com.baseprojectpackages.audio",
   "displayName": "Base Audio",
   "description": "The audio system of the Base packages: an audio manager service, audio containers that pick and randomize clips, a pooled audio source so one-shots do not allocate, fading between tracks, and the click and hover components that play a container from a UI event. It reads nothing from Base Core, so a project can take it on its own or leave it out entirely.",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "unity": "6000.3",
   "documentationUrl": "https://github.com/Kirschkernweitwurf/BaseProjectPackages/blob/main/BaseProject/Packages/Audio/README.md",
   "changelogUrl": "https://github.com/Kirschkernweitwurf/BaseProjectPackages/blob/main/BaseProject/Packages/Audio/CHANGELOG.md",

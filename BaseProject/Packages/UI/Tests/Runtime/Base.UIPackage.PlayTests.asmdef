@@ -3,7 +3,7 @@
   "rootNamespace": "Base.UIPackage.PlayTests",
   "references": [
     "Base.UIPackage",
-    "Base.CorePackage",
+    "Base.CorePackage.CameraUtility",
     "Base.ServicesPackage",
     "UnityEngine.TestRunner",
     "UnityEditor.TestRunner"

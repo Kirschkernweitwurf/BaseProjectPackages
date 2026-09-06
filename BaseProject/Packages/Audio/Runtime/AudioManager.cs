@@ -21,7 +21,19 @@ namespace Base.AudioPackage
     /// </summary>
     public class AudioManager : GameServiceBehaviour
     {
+        /// <summary>The serialized name of the pool manager reference, for tests that configure it.</summary>
+        internal const string AudioPoolManagerField = nameof(audioPoolManager);
+
+        /// <summary>The serialized name of the highest randomized pitch, for tests that configure it.</summary>
+        internal const string MaxPitchInclusiveField = nameof(maxPitchInclusive);
+
+        /// <summary>The serialized name of the release delay, for tests that configure it.</summary>
+        internal const string MinimumDelayField = nameof(minimumDelay);
+
         private const float MinimumPitch = 0.01f;
+
+        /// <summary>The serialized name of the lowest randomized pitch, for tests that configure it.</summary>
+        internal const string MinPitchInclusiveField = nameof(minPitchInclusive);
 
         [Title("Settings")]
         [Tooltip("Extra seconds added on top of the clip length before a source is released again.")]

@@ -21,41 +21,19 @@ namespace Base.ToolsPackage.Editor.TodoOverview
     /// </summary>
     internal sealed class TodoOverviewWindow : EditorWindow
     {
-        private const string AllOwnersLabel = "All";
         private const string CountFormat = "{0} of {1}";
-        private const float DropdownWidth = 104f;
         private const string EmptyFiltered = "Nothing matches the current filter.";
         private const string EmptyProject = "No open items found.";
         private const string EmptyScanning = "Scanning the project...";
         private const float FilterStripHeight = 26f;
-        private const string GroupFormat = "Group: {0}";
-        private const string GroupTooltip = "Split the list into sections";
         private const string KeywordFormat = "{0}  {1}";
         private const string KeywordTooltip = "Show or hide every {0} item";
         private const string MenuPath = "Tools/Base Packages/Code/Health/Todo Overview";
         private const float MinimumHeight = 340f;
         private const float MinimumWidth = 760f;
         private const string MultiLineSuffix = "  ...";
-        private const string OwnerFormat = "Owner: {0}";
-        private const string OwnerTooltip = "Show only the items of one person";
-        private const string PackagesLabel = "Packages";
-        private const string PackagesTooltip = "Scan the files under Packages as well";
-        private const float PackagesWidth = 72f;
         private const float PillPadding = 14f;
-        private const string RefreshLabel = "Refresh";
-        private const string RefreshTooltip = "Scan the project again";
-        private const string SearchControl = "TodoOverviewSearch";
-        private const string SearchHint = "Search";
-        private const string SettingsLabel = "Settings";
-        private const string SettingsTooltip = "Keywords, colors, patterns and ignored paths";
-        private const string SortFormat = "Sort: {0}";
-        private const string SortTooltip = "Order the items inside a section";
-        private const float ToolbarButtonWidth = 64f;
         private const string WindowTitle = "Todos";
-
-        private static readonly GUIContent PackagesContent = new(PackagesLabel, PackagesTooltip);
-        private static readonly GUIContent RefreshContent = new(RefreshLabel, RefreshTooltip);
-        private static readonly GUIContent SettingsContent = new(SettingsLabel, SettingsTooltip);
 
         // None of these are created where they are declared. A window Unity restores after a
         // domain reload can reach its first GUI pass without any field initializer having run, and
@@ -124,7 +102,9 @@ namespace Base.ToolsPackage.Editor.TodoOverview
             HandleFocusRelease();
             HandleKeyboard();
 
-            DrawToolbar();
+            _searchRect = TodoToolbar.Draw(_filter, _owners, onFilterChanged: () => _needsQuery = true,
+                onRescan: () => _needsScan = true);
+
             DrawFilterStrip();
 
             if (_rows.Count > 0)
@@ -285,192 +265,6 @@ namespace Base.ToolsPackage.Editor.TodoOverview
                 return;
 
             EditorGUI.DrawRect(new Rect(0f, 0f, position.width, position.height), EditorPalette.Background);
-        }
-
-        private void DrawToolbar()
-        {
-            Rect bar = GUILayoutUtility.GetRect(0f, TodoStyles.ToolbarHeight, GUILayout.ExpandWidth(true));
-
-            TodoChrome.DrawBand(bar, TodoStyles.PanelColor());
-
-            float y = bar.y + (bar.height - TodoStyles.ButtonHeight) * 0.5f;
-            float x = bar.x + TodoStyles.RowInset;
-
-            DrawSearch(new Rect(x, y, TodoStyles.SearchWidth, TodoStyles.ButtonHeight));
-
-            x += TodoStyles.SearchWidth + TodoStyles.Gap;
-            x = DrawOwnerDropdown(x, y);
-            x = DrawSortDropdown(x, y);
-
-            DrawGroupDropdown(x, y);
-
-            float right = bar.xMax - TodoStyles.RowInset;
-
-            right = DrawRefreshButton(right, y);
-            right = DrawSettingsButton(right, y);
-
-            DrawPackagesToggle(right, y);
-
-            TodoChrome.DrawSeparator(new Rect(bar.x, bar.yMax - TodoStyles.SeparatorThickness, bar.width,
-                TodoStyles.SeparatorThickness));
-        }
-
-        // Drawn as a plain IMGUI text field on a fill of our own rather than with the editor's
-        // search field, which drags a pile of editor only state into every pass of the toolbar.
-        private void DrawSearch(Rect rect)
-        {
-            _searchRect = rect;
-
-            TodoChrome.DrawFill(rect, TodoStyles.FieldColor(), TodoStyles.ButtonRadius);
-
-            GUI.SetNextControlName(SearchControl);
-
-            string typed = GUI.TextField(rect, _filter.Search, TodoStyles.Search);
-
-            if (typed.Length == 0
-                && GUI.GetNameOfFocusedControl() != SearchControl)
-                GUI.Label(rect, SearchHint, TodoStyles.SearchHint);
-
-            if (typed == _filter.Search)
-                return;
-
-            _filter.Search = typed;
-            _needsQuery = true;
-        }
-
-        private float DrawOwnerDropdown(float x, float y)
-        {
-            string current = _filter.Owner == TodoFilter.AnyOwner
-                ? AllOwnersLabel
-                : _filter.Owner;
-
-            Rect rect = new(x, y, DropdownWidth, TodoStyles.ButtonHeight);
-            GUIContent content = new(string.Format(OwnerFormat, current), OwnerTooltip);
-
-            if (TodoChrome.DrawDropdown(rect, content))
-                ShowOwnerMenu(rect);
-
-            return rect.xMax + TodoStyles.Gap;
-        }
-
-        private void ShowOwnerMenu(Rect rect)
-        {
-            GenericMenu menu = new();
-
-            menu.AddItem(new GUIContent(AllOwnersLabel), _filter.Owner == TodoFilter.AnyOwner,
-                func: () => SetOwner(TodoFilter.AnyOwner));
-
-            foreach (string owner in _owners)
-            {
-                string captured = owner;
-                menu.AddItem(new GUIContent(captured), _filter.Owner == captured, func: () => SetOwner(captured));
-            }
-
-            menu.DropDown(rect);
-        }
-
-        private float DrawSortDropdown(float x, float y)
-        {
-            Rect rect = new(x, y, DropdownWidth, TodoStyles.ButtonHeight);
-            GUIContent content = new(string.Format(SortFormat, _filter.Sort), SortTooltip);
-
-            if (!TodoChrome.DrawDropdown(rect, content))
-                return rect.xMax + TodoStyles.Gap;
-
-            GenericMenu menu = new();
-
-            foreach (ETodoSort value in (ETodoSort[])Enum.GetValues(typeof(ETodoSort)))
-            {
-                ETodoSort captured = value;
-                menu.AddItem(new GUIContent(captured.ToString()), _filter.Sort == captured,
-                    func: () => SetSort(captured));
-            }
-
-            menu.DropDown(rect);
-
-            return rect.xMax + TodoStyles.Gap;
-        }
-
-        private float DrawGroupDropdown(float x, float y)
-        {
-            Rect rect = new(x, y, DropdownWidth, TodoStyles.ButtonHeight);
-            GUIContent content = new(string.Format(GroupFormat, _filter.Grouping), GroupTooltip);
-
-            if (!TodoChrome.DrawDropdown(rect, content))
-                return rect.xMax + TodoStyles.Gap;
-
-            GenericMenu menu = new();
-
-            foreach (ETodoGrouping value in (ETodoGrouping[])Enum.GetValues(typeof(ETodoGrouping)))
-            {
-                ETodoGrouping captured = value;
-                menu.AddItem(new GUIContent(captured.ToString()), _filter.Grouping == captured,
-                    func: () => SetGrouping(captured));
-            }
-
-            menu.DropDown(rect);
-
-            return rect.xMax + TodoStyles.Gap;
-        }
-
-        private float DrawRefreshButton(float right, float y)
-        {
-            Rect rect = new(right - ToolbarButtonWidth, y, ToolbarButtonWidth, TodoStyles.ButtonHeight);
-
-            if (TodoChrome.DrawButton(rect, RefreshContent, TodoStyles.ControlColor(), TodoStyles.Button,
-                    TodoStyles.ButtonRadius))
-                _needsScan = true;
-
-            return rect.x - TodoStyles.TightGap;
-        }
-
-        private float DrawSettingsButton(float right, float y)
-        {
-            Rect rect = new(right - ToolbarButtonWidth, y, ToolbarButtonWidth, TodoStyles.ButtonHeight);
-
-            if (TodoChrome.DrawButton(rect, SettingsContent, TodoStyles.ControlColor(), TodoStyles.Button,
-                    TodoStyles.ButtonRadius))
-                SettingsService.OpenProjectSettings(TodoSettingsProvider.Path);
-
-            return rect.x - TodoStyles.TightGap;
-        }
-
-        private void DrawPackagesToggle(float right, float y)
-        {
-            TodoSettings settings = TodoSettings.instance;
-            Rect rect = new(right - PackagesWidth, y, PackagesWidth, TodoStyles.ButtonHeight);
-
-            Color fill = settings.IncludePackages
-                ? TodoStyles.AccentColor()
-                : TodoStyles.ControlColor();
-
-            GUIStyle style = settings.IncludePackages
-                ? TodoStyles.AccentLabel
-                : TodoStyles.Button;
-
-            if (!TodoChrome.DrawButton(rect, PackagesContent, fill, style, TodoStyles.ButtonRadius))
-                return;
-
-            settings.SetIncludePackages(!settings.IncludePackages);
-            _needsScan = true;
-        }
-
-        private void SetOwner(string owner)
-        {
-            _filter.Owner = owner;
-            _needsQuery = true;
-        }
-
-        private void SetSort(ETodoSort sort)
-        {
-            _filter.SetSort(sort);
-            _needsQuery = true;
-        }
-
-        private void SetGrouping(ETodoGrouping grouping)
-        {
-            _filter.Grouping = grouping;
-            _needsQuery = true;
         }
 
         // One pill per keyword with its count, plus the overdue pill. Clicking a pill takes that
@@ -748,7 +542,7 @@ namespace Base.ToolsPackage.Editor.TodoOverview
 
             // Every key below moves through the list, which is not what a typed key should do
             // while the field has the caret.
-            if (GUI.GetNameOfFocusedControl() == SearchControl)
+            if (GUI.GetNameOfFocusedControl() == TodoToolbar.SearchControl)
                 return;
 
             switch (current.keyCode)

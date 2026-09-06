@@ -130,7 +130,10 @@ namespace Base.TweeningPackage.Core
             _isRunning = false;
             _isCompleted = true;
 
-            if (ServiceLocator.TryGet(out TweenRunner runner))
+            // Optional here, unlike in Play. A tween without a runner never ticks, which Play reports.
+            // Stopping one runs on shutdown as well, where the runner is already gone, so a second
+            // error would say nothing new and would arrive once per tween.
+            if (ServiceLocator.TryGetOptional(out TweenRunner runner))
                 runner.UnregisterTween(this);
 
             if (complete && _setter != null)

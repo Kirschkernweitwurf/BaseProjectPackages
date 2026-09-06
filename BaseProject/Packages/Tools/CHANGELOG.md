@@ -8,8 +8,19 @@ Changes made before 2.0.10 were not recorded.
 
 ## [Unreleased]
 
+## [3.1.0] - 2026-09-06
+
 ### Added
 
+- `MenuItemConventionTests`, which pins the three places in this package that use Unity's
+  `[MenuItem]` instead of the Menu Manager, and checks that both manager windows keep an entry
+  that does not depend on the registration they exist to repair.
+- The Namespace Convention Validator, a window that checks the scripts below a configurable root
+  against the folders they sit in. It replaces the test that did the same thing only for the base
+  packages: with the root and the root namespace on a config asset, the same tool runs on a game's
+  own scripts, where no assembly definition names anything.
+- `NamespaceConventionScannerTests`, covering the scanner against layouts written for each case
+  rather than against whatever is in the Assets folder that day.
 - The Todo Overview asks what a date on an item means. A date can be a deadline or a note of
   when something was written, and nothing about the date itself says which. Until now only the
   first reading existed, so a project that writes down when it wrote a note had every item in
@@ -24,12 +35,40 @@ Changes made before 2.0.10 were not recorded.
 
 ### Changed
 
+- `TodoOverviewWindow` is 634 lines instead of 842. The search field, the owner, sort and group
+  dropdowns and the three buttons across the top moved into `TodoToolbar`, together with the twenty
+  labels and tooltips only they used. The window is told whether a control changed the filter or
+  asked for a rescan, since a dropdown reports its choice when the menu closes rather than while the
+  toolbar is drawn.
+- `StaticResetScanner` is 446 lines instead of 1169. The text handling underneath it moved into
+  `SourceCleaner`, `SourceNavigator`, `DeclarationReader` and `SourceLines`, which between them knew
+  nothing about static fields, resets or findings and were only sitting in that file because that is
+  where they were first needed. No behavior changed and no method was dropped; `CleanSource` is the
+  one rename, to `SourceCleaner.Clean`.
+- `IAssetIndex` can read the text of a file. A scanner that reads source rather than only the
+  layout was not expressible behind it before, which is what kept the namespace check in a test.
+- The three `[MenuItem]` uses now record why they cannot move. The Play Mode Applier entries need
+  the `MenuCommand` that the Menu Manager's registration cannot pass, and the two manager
+  windows are how a broken registration gets repaired, so neither can be registered by it.
+- `Base.ToolsPackage.Editor.MenuManagerWindows` and `Base.ToolsPackage.Editor.PlayModeApplier`
+  are reachable from the test assembly. Neither had any coverage before, because nothing
+  referenced them.
+- The Codebase Graph liveness fixtures moved from `Base.ToolsPackage.Editor.Tests.Fixtures` to
+  `Base.ToolsPackage.Editor.Tests.CodebaseGraph.Fixtures`, so their namespace matches the folder
+  they have always been in. They were the only eight files in the ecosystem that did not.
+- `LivenessTests` names the fixtures through one shared prefix constant rather than repeating the
+  namespace eight times. They stay plain string literals, because a `typeof` here would mark the
+  dead fixtures as used and defeat the tests that assert they are dead.
 - The date column, the filter pill and the pill tooltips follow what the dates mean. The column
   reads `Due` or `Written`, the pill reads `Overdue` or `Stale`, and hovering a date says how
   far past it is in words next to the text the comment was written with.
 - Existing projects are upgraded once on load: the two thresholds are filled in and the two
   patterns for a marked date are added, unless the project already reads one. Nothing that was
   configured by hand is written over, and the step never runs twice.
+
+### Fixed
+
+- A stray blank line run in `AssetNamingWindow`.
 
 ## [3.0.0] - 2026-09-06
 

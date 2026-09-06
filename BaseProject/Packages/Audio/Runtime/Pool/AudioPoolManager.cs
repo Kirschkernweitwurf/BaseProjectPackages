@@ -16,6 +16,27 @@ namespace Base.AudioPackage.Pool
     /// </summary>
     public class AudioPoolManager : MonoBehaviour
     {
+        /// <summary>The serialized name of the 2D sound effect prefab, for tests that configure it.</summary>
+        internal const string AudioSource2DPrefabField = nameof(audioSource2DPrefab);
+
+        /// <summary>The serialized name of the 3D sound effect prefab, for tests that configure it.</summary>
+        internal const string AudioSource3DPrefabField = nameof(audioSource3DPrefab);
+
+        /// <summary>The serialized name of the music prefab, for tests that configure it.</summary>
+        internal const string AudioSourceMusicPrefabField = nameof(audioSourceMusicPrefab);
+
+        /// <summary>The serialized name of the interface prefab, for tests that configure it.</summary>
+        internal const string AudioSourceUiPrefabField = nameof(audioSourceUiPrefab);
+
+        /// <summary>The serialized name of the scene load clearing flag, for tests that configure it.</summary>
+        internal const string ClearingPoolAfterSceneLoadField = nameof(isClearingPoolAfterSceneLoad);
+
+        /// <summary>The serialized name of the pool parent, for tests that configure it.</summary>
+        internal const string PoolParentField = nameof(poolParent);
+
+        /// <summary>The serialized name of the prewarm count, for tests that configure it.</summary>
+        internal const string PrewarmCountField = nameof(prewarmCount);
+
         /// <summary>
         /// Raised after pools were cleared, so listeners can drop their references to the released sources.
         /// </summary>

@@ -23,9 +23,11 @@ MonoBehaviour:
   - rid: 4171306542554939473
   - rid: 5339058645413658751
   - rid: 5279886866741199050
+  - rid: 5279886871787208704
   createAssetRoot:
   - rid: 5339058662016286883
   - rid: 5279886866741199051
+  - rid: 5279886871787208705
   menuItemGroups: []
   createAssetGroups: []
   groups: []
@@ -534,6 +536,30 @@ MonoBehaviour:
           enabled: 1
           kind: 1
           createFileName: AUC_AudioContainer
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 5279886871787208704
+      type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
+      data:
+        separator: 0
+        entry:
+          id: MI:Base.ToolsPackage.Editor.NamespaceConventionValidator.NamespaceConventionValidatorWindow.Open
+          path: Tools/Base Packages/Unity Editor/Project Health/Namespace Conventions
+          enabled: 1
+          kind: 0
+          createFileName: 
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 5279886871787208705
+      type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
+      data:
+        separator: 0
+        entry:
+          id: CA:Base.ToolsPackage.Editor.NamespaceConventionValidator.NamespaceConventionConfig
+          path: Scriptable Objects/Base/Namespace Convention/New Config
+          enabled: 1
+          kind: 1
+          createFileName: NCC_NamespaceConventions
           overridePriority: 0
           overrideValue: 0
     - rid: 5339058645413658751

@@ -8,6 +8,12 @@ Changes made before 1.6.5 were not recorded.
 
 ## [Unreleased]
 
+## [1.7.2] - 2026-09-06
+
+### Fixed
+
+- A stray blank line run in `RumbleServiceTests`.
+
 ## [1.7.1] - 2026-09-06
 
 ### Changed

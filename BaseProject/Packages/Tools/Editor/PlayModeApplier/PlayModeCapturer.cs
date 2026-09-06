@@ -56,6 +56,15 @@ namespace Base.ToolsPackage.Editor.PlayModeApplier
         /// <summary>Removes the flag from a component.</summary>
         private static void Forget(Object target) => PlayModeMarks.Remove(target as Component);
 
+        // These three entries and their validators stay on Unity's MenuItem and cannot move to a
+        // DynamicMenuItem. The Menu Manager registers through Menu.AddMenuItem, whose execute and
+        // validate delegates take no arguments, and its scanner rejects any method that declares a
+        // parameter. A CONTEXT entry has nothing to act on without the MenuCommand that names the
+        // component which was right clicked.
+        // The GameObject entry takes no parameter and could make the trip alone, but it is the same
+        // feature reached from the object rather than from one component, so it stays with the two it
+        // belongs to instead of leaving half the feature in a menu the window can move and half in one
+        // it cannot.
         [MenuItem(ComponentMarkPath, false)]
         private static void MarkComponent(MenuCommand command) => Mark(command.context);
 

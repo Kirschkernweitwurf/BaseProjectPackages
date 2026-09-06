@@ -8,6 +8,14 @@ Changes made before 1.7.5 were not recorded.
 
 ## [Unreleased]
 
+## [1.8.1] - 2026-09-06
+
+### Fixed
+
+- Three stray blank line runs and a comment that had come loose from the string it describes.
+  `RequireComponentAuditWindow` carried an explanation of why `Description` is declared after the
+  two labels it reads, sitting below that field with seven blank lines under it.
+
 ## [1.8.0] - 2026-09-05
 
 ### Added

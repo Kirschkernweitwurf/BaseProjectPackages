@@ -69,7 +69,9 @@ namespace Base.CorePackage.MenuManaging
 
             _menuPriorityTracker.OnCurrentActiveItemChanged -= OnCurrentActiveItemChanged;
 
-            if (ServiceLocator.TryGet(out InputManager inputManager))
+            // Optional on the way out. Shutting down runs on a scene unload, where the input service
+            // may already be gone, and reporting that would turn every scene change into an error.
+            if (ServiceLocator.TryGetOptional(out InputManager inputManager))
                 inputManager.BaseInputActions.Permanent.Back.performed -= OnBackActionPerformed;
         }
 

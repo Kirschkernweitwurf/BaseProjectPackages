@@ -23,7 +23,6 @@ namespace Base.ControllerSupportPackage.Tests
         private const float CurveStart = 0f;
         private const float Tolerance = 0.0001f;
 
-
         private GameObject _serviceObject;
         private RumbleService _service;
         private object _firstCaller;

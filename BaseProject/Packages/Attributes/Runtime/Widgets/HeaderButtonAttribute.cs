@@ -35,7 +35,6 @@ namespace Base.AttributesPackage
         /// <summary>Width of the button in pixels.</summary>
         public float Width { get; set; } = DefaultWidth;
 
-
         /// <summary>Creates the attribute with an optional custom label.</summary>
         /// <param name="label">Label shown on the button.</param>
         public HeaderButtonAttribute(string label = null) => Label = label;

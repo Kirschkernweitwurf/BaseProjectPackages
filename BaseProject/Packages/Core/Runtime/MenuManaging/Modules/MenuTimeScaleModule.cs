@@ -24,7 +24,10 @@ namespace Base.CorePackage.MenuManaging.Modules
 
         protected override void Release()
         {
-            if (ServiceLocator.TryGet(out TimeScaleManager timeScaleManager))
+            // Optional on the way out. Releasing runs when a menu closes or is destroyed, and on a
+            // scene unload the service can already be gone. Reporting that would spam the console
+            // with an error about a teardown that went exactly right.
+            if (ServiceLocator.TryGetOptional(out TimeScaleManager timeScaleManager))
                 timeScaleManager.TimeScaleTracker.Remove(this);
         }
     }

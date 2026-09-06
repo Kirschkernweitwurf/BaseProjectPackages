@@ -66,7 +66,6 @@ namespace Base.AttributesPackage.Editor.Drawers
             return labels;
         }
 
-
         private static List<object> ResolveOptions(SerializedProperty property, string member)
         {
             Object target = property.serializedObject.targetObject;

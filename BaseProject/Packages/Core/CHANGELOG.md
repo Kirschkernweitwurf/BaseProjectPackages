@@ -8,6 +8,26 @@ Changes made before 2.1.4 were not recorded.
 
 ## [Unreleased]
 
+## [4.0.0] - 2026-09-06
+
+### Changed
+
+- `EventBusWindow` is 1010 lines instead of 1157. The state badges and their tooltips moved into
+  `EventBusBadges`, the tab separated export into `EventBusReport`, and the sort column, its
+  direction and both comparisons into `EventBusSorting`. A comment that had come loose from the
+  array it describes is back on it, along with three runs of stray blank lines.
+- `CameraProvider` moved into its own assembly, `Base.CorePackage.CameraUtility`. It was the only
+  thing outside this package that ever reached into `Base.CorePackage`, and reaching it meant taking
+  the activation helpers, the noise generator, the object pools, the raycast helpers and the whole
+  tooltip system along with it. `Base.CorePackage` is now a leaf that nothing outside Core references.
+
+### Fixed
+
+- Releasing a service on the way out no longer reports it as missing. `MenuManager.Shutdown`,
+  `MenuCursorModule`, `MenuTimeScaleModule` and `MenuInputMapModule` all used the reporting lookup, so
+  a scene unload that took the service down first turned a clean teardown into one error per object.
+  They use the optional lookup now, which is what it is for. Acquiring is unchanged and still reports.
+
 ## [3.0.0] - 2026-09-06
 
 ### Changed

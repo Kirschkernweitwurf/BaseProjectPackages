@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using UnityEditor;
+using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Base.ToolsPackage.Editor.Shared
 {
@@ -43,6 +45,24 @@ namespace Base.ToolsPackage.Editor.Shared
                 paths[index] = AssetDatabase.GUIDToAssetPath(guids[index]);
 
             return paths;
+        }
+
+        /// <summary>
+        /// The text of a text based asset, read through the asset system rather than off disk, because
+        /// an asset path only resolves to a real file for an embedded package.
+        /// </summary>
+        /// <param name="path">Asset path of the file to read.</param>
+        /// <returns>The file contents, or an empty string when the asset holds no text.</returns>
+        public string ReadText(string path)
+        {
+            Object asset = AssetDatabase.LoadAssetAtPath<Object>(path);
+
+            return asset switch
+            {
+                MonoScript script => script.text,
+                TextAsset text => text.text,
+                _ => string.Empty
+            };
         }
     }
 }

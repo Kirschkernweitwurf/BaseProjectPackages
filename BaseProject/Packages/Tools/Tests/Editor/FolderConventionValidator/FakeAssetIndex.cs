@@ -14,6 +14,7 @@ namespace Base.ToolsPackage.Editor.Tests
         private const char PathSeparator = '/';
 
         private readonly HashSet<string> _folders = new(StringComparer.Ordinal);
+        private readonly Dictionary<string, string> _textByPath = new(StringComparer.Ordinal);
         private readonly List<string> _assets = new();
 
         /// <summary>Adds a folder and every folder above it, the way a real path implies its parents.</summary>
@@ -42,6 +43,18 @@ namespace Base.ToolsPackage.Editor.Tests
         internal FakeAssetIndex WithAsset(string path)
         {
             _assets.Add(path);
+
+            return this;
+        }
+
+        /// <summary>Adds a file together with the text a scanner reads out of it.</summary>
+        /// <param name="path">Asset path of the file, for example <c>Assets/Scripts/Player.cs</c>.</param>
+        /// <param name="text">The contents the scanner sees.</param>
+        /// <returns>The same index, so a layout reads as one statement.</returns>
+        internal FakeAssetIndex WithFile(string path, string text)
+        {
+            _assets.Add(path);
+            _textByPath[path] = text;
 
             return this;
         }
@@ -101,6 +114,9 @@ namespace Base.ToolsPackage.Editor.Tests
 
             return found;
         }
+
+        /// <inheritdoc/>
+        public string ReadText(string path) => _textByPath.GetValueOrDefault(path, string.Empty);
 
         /// <summary>Whether a path sits directly under the prefix rather than deeper below it.</summary>
         private static bool IsDirectChild(string path, string prefix)

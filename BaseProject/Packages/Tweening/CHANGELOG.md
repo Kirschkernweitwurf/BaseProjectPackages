@@ -8,6 +8,15 @@ Changes made before 1.0.11 were not recorded.
 
 ## [Unreleased]
 
+## [1.0.13] - 2026-09-06
+
+### Fixed
+
+- Stopping a tween no longer reports a missing runner. `Tween.Stop` runs on shutdown as well, where
+  the runner is already gone, and it used the reporting lookup to unregister from it, so every tween
+  reported the same thing at once. It uses the optional lookup now. `Play` is unchanged and still
+  reports, since a tween without a runner never ticks.
+
 ## [1.0.12] - 2026-09-05
 
 ### Fixed

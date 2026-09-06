@@ -25,6 +25,10 @@ namespace Base.ToolsPackage.Editor.MenuManagerWindows
         /// <summary>Opens the window and highlights the entry with the given id.</summary>
         internal static void OpenAt(string entryId) => OpenWindow().FocusEntry(entryId);
 
+        // The window that fixes a broken menu registration cannot be registered by the thing it fixes.
+        // The Menu Manager reaches Unity's dynamic menu API by reflection, and if that binding ever
+        // fails, every DynamicMenuItem in the project disappears at once. An entry for this window
+        // would disappear with them, so it stays on Unity's MenuItem.
         [MenuItem("Tools/Base Packages/Menu Management/Menu Item Manager", false, MenuPriority)]
         private static void Open() => OpenWindow();
     }

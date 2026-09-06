@@ -2,7 +2,7 @@
   "name": "com.baseprojectpackages.coredebug",
   "displayName": "Base Core Debug",
   "description": "The in-game debug tooling of the Base packages: a debug menu with a cheat console that discovers commands by attribute and a log console that mirrors the Unity console, plus runtime debug drawing with its own cheat commands. Everything here is meant to be absent from a shipping build, which is why it is a package a project can leave out rather than code it has to strip.",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "unity": "6000.3",
   "documentationUrl": "https://github.com/Kirschkernweitwurf/BaseProjectPackages/blob/main/BaseProject/Packages/CoreDebug/README.md",
   "changelogUrl": "https://github.com/Kirschkernweitwurf/BaseProjectPackages/blob/main/BaseProject/Packages/CoreDebug/CHANGELOG.md",

@@ -17,7 +17,6 @@ namespace Base.ServicesPackage.Tests
         private const string FirstItem = "First";
         private const string SecondItem = "Second";
 
-
         private PriorityTracker<string> _tracker;
         private object _firstCaller;
         private object _secondCaller;

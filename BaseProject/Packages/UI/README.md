@@ -8,13 +8,15 @@ Code only. The ready-made button prefabs and UI sprites live in `Base.ContentPac
 
 - Unity `6000.3` or newer
 - `com.unity.ugui` `2.0.0` and TextMeshPro
-- `Base.CorePackage` for the `MenuManager`, menu identifiers and the `SceneLoadingManager`
+- `Base.CorePackage.MenuManaging` for the `MenuManager` and menu identifiers,
+  `Base.CorePackage.SceneManagement` for the `SceneLoadingManager` and
+  `Base.CorePackage.CameraUtility` for the `CameraProvider` the billboards resolve through
 - `Base.ServicesPackage` for `ServiceLocator` and `GameServiceBehaviour`
 - `Base.AttributesPackage` for `[Required]`, `[GetComponent]`, `[NotNullOrEmpty]` and `[SceneName]`
 - `Base.UtilityPackage` for `CustomLogger` and `Platform`
 - Assemblies: `Base.UIPackage` and `Base.UIPackage.Editor`
 
-Installing `Base.CorePackage` brings the Service and Tweening packages with it, so the Git Package Manager selects those automatically.
+Installing `Base Core` brings the Service and Tweening packages with it, so the Git Package Manager selects those automatically.
 
 ## Buttons
 
@@ -53,6 +55,7 @@ bool confirmed = await confirmation.ShowConfirmationAsync(new ConfirmationReques
 | `WorldCanvasWrapper` | Assigns the main camera as the world camera of a world-space `Canvas` |
 | `FpsCounter` | Shows the current frames per second in a `TMP_Text`, hidden in release builds unless explicitly enabled |
 | `BuildVersion` | Displays the version and build number read from `version.txt` in StreamingAssets |
+| `BuildVersionFile` | Reads, counts and formats that file, apart from the component that shows it |
 | `BuildVersionProcessor` | Build step that writes the date-version and increments the build number into that file before every build |
 
 `SceneLoader` sits behind `LoadSceneButton` and `ConfirmedLoadSceneButton` as the shared resolving, awaiting and error-logging path, so both behave identically.

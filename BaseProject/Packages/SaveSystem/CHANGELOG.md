@@ -8,6 +8,12 @@ Changes made before 1.3.10 were not recorded.
 
 ## [Unreleased]
 
+## [1.4.1] - 2026-09-06
+
+### Fixed
+
+- Stray blank line runs in `SavableRegistryTests` and `SaveMigrationChainTests`.
+
 ## [1.4.0] - 2026-09-05
 
 ### Fixed

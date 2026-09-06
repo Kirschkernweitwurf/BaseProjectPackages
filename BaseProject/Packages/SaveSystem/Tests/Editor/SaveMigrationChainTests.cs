@@ -17,7 +17,6 @@ namespace Base.SaveSystemPackage.Tests
         private const string SlotId = "slot_0";
         private const int TargetVersion = 3;
 
-
         private List<int> _log;
         private Dictionary<string, string> _states;
 

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 namespace Base.ToolsPackage.Editor.Shared
 {
     /// <summary>
-    /// The questions a scanning tool asks about what is in the project. Three members rather than a
-    /// mirror of <c>AssetDatabase</c>, because a tool that only reads the layout only needs to read
-    /// the layout.
+    /// The questions a scanning tool asks about what is in the project. A short list rather than a
+    /// mirror of <c>AssetDatabase</c>, because a tool that reads the layout and the files in it only
+    /// needs to read the layout and the files in it.
     /// </summary>
     /// <remarks>
     /// A scanner calling <c>AssetDatabase</c> directly can only ever be run against the project it is
@@ -36,5 +36,10 @@ namespace Base.ToolsPackage.Editor.Shared
         /// <param name="root">Asset path of the folder to search below.</param>
         /// <returns>The asset paths that matched, empty when none did.</returns>
         IReadOnlyList<string> FindAssetPaths(string filter, string root);
+
+        /// <summary>The text of a script, an assembly definition or any other text based asset.</summary>
+        /// <param name="path">Asset path of the file to read.</param>
+        /// <returns>The file contents, or an empty string when the asset holds no text.</returns>
+        string ReadText(string path);
     }
 }

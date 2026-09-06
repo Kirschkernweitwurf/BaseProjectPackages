@@ -85,7 +85,6 @@ namespace Base.AttributesPackage.Editor.Collections
             list.draggable = canResize;
         }
 
-
         // The header row carries the column names, laid out with the same widths the cells use, so the
         // two stay aligned however the inspector is resized.
         private static void DrawHeader(Rect rect, ReorderableList list)

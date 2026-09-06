@@ -1,4 +1,4 @@
-namespace Base.ToolsPackage.Editor.Tests.Fixtures
+namespace Base.ToolsPackage.Editor.Tests.CodebaseGraph.Fixtures
 {
     /// <summary>
     /// A type whose only job is holding nested types. Every use is written against the nested type, and

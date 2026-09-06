@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-namespace Base.ToolsPackage.Editor.Tests.Fixtures
+namespace Base.ToolsPackage.Editor.Tests.CodebaseGraph.Fixtures
 {
     /// <summary>
     /// The shapes that a scanner reading compiled metadata gets wrong unless it goes out of its way.
