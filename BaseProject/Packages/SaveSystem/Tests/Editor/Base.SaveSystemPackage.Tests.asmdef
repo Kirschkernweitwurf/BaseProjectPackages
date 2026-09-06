@@ -2,15 +2,14 @@
   "name": "Base.SaveSystemPackage.Tests",
   "rootNamespace": "Base.SaveSystemPackage.Tests",
   "references": [
-    "Base.SaveSystemPackage.Settings",
-    "Base.SaveSystemPackage",
-    "Base.ServicesPackage",
-    "Base.UtilityPackage",
-    "UnityEngine.TestRunner",
-    "UnityEditor.TestRunner",
-    "GUID:1bb27541c4d98c341871129f271f8263",
-    "GUID:c3837597513e91f44a47d8cd91c34f68"
-  ],
+        "Base.SaveSystemPackage.Settings",
+        "Base.SaveSystemPackage",
+        "Base.ServicesPackage",
+        "Base.UtilityPackage",
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner",
+        "GUID:1bb27541c4d98c341871129f271f8263"
+    ],
   "includePlatforms": [
     "Editor"
   ],
