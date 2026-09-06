@@ -9,7 +9,9 @@ namespace Base.ToolsPackage.Editor.AssemblyGraph
     /// <summary>Renders assemblies as draggable nodes with reference edges.</summary>
     internal sealed class AssemblyGraphView : GraphView
     {
-        private static readonly Color UnusedEdgeColor = new(0.90f, 0.32f, 0.32f);
+        private const string CandidateEdgeClass = "candidate-edge";
+
+        private static readonly Color CandidateEdgeColor = new(0.90f, 0.32f, 0.32f);
 
         private readonly Action<AssemblyNodeInfo> _onFocusRequested;
         private readonly Action<AssemblyNodeInfo> _onCleanupRequested;
@@ -65,22 +67,22 @@ namespace Base.ToolsPackage.Editor.AssemblyGraph
                     if (!byName.TryGetValue(reference.TargetName, out AssemblyGraphNode target))
                         continue;
 
-                    AddEdge(source, target, reference.IsUnused);
+                    AddEdge(source, target, reference.IsCandidate);
                 }
             }
 
             schedule.Execute(() => FrameAll()).ExecuteLater(50);
         }
 
-        private void AddEdge(AssemblyGraphNode source, AssemblyGraphNode target, bool unused)
+        private void AddEdge(AssemblyGraphNode source, AssemblyGraphNode target, bool isCandidate)
         {
             Edge edge = source.OutputPort.ConnectTo(target.InputPort);
 
-            if (unused)
+            if (isCandidate)
             {
-                edge.AddToClassList("unused-edge");
-                edge.edgeControl.inputColor = UnusedEdgeColor;
-                edge.edgeControl.outputColor = UnusedEdgeColor;
+                edge.AddToClassList(CandidateEdgeClass);
+                edge.edgeControl.inputColor = CandidateEdgeColor;
+                edge.edgeControl.outputColor = CandidateEdgeColor;
             }
 
             AddElement(edge);

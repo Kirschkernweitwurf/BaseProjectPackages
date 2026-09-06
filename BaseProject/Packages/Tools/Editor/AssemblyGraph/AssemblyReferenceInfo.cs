@@ -1,21 +1,24 @@
 namespace Base.ToolsPackage.Editor.AssemblyGraph
 {
     /// <summary>A single declared reference from one assembly to another.</summary>
-    internal sealed class AssemblyReferenceInfo
+    public sealed class AssemblyReferenceInfo
     {
         /// <summary>Name of the referenced assembly.</summary>
-        internal string TargetName { get; }
+        public string TargetName { get; }
 
-        /// <summary>True when the reference can safely be removed.</summary>
-        internal bool IsUnused => Status == EReferenceStatus.Unused;
+        /// <summary>
+        /// True when nothing was found that needs the reference. That is a reason to look, not a
+        /// verdict: the checks behind it can all miss, so removing one still has to be compiled.
+        /// </summary>
+        internal bool IsCandidate => Status == EReferenceStatus.Candidate;
 
-        /// <summary>Whether the reference is used, unused or undetermined.</summary>
+        /// <summary>Whether the reference is used, a removal candidate or undetermined.</summary>
         private EReferenceStatus Status { get; }
 
         /// <summary>Creates a reference description.</summary>
         /// <param name="targetName">Name of the referenced assembly.</param>
         /// <param name="status">Result of the usage check.</param>
-        public AssemblyReferenceInfo(string targetName, EReferenceStatus status)
+        internal AssemblyReferenceInfo(string targetName, EReferenceStatus status)
         {
             TargetName = targetName;
             Status = status;

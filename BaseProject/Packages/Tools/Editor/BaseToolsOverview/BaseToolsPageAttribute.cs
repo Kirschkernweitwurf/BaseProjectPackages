@@ -12,7 +12,7 @@ namespace Base.ToolsPackage.Editor.BaseToolsOverview
     /// sentence a settings provider itself has no place for.
     /// </remarks>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = false)]
-    internal sealed class BaseToolsPageAttribute : Attribute
+    public sealed class BaseToolsPageAttribute : Attribute
     {
         /// <summary>The sentence shown under the page name in the overview.</summary>
         public string Description { get; }

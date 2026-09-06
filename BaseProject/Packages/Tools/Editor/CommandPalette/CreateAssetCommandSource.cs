@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Base.ToolsPackage.Editor.MenuManagerWindows;
+using Base.ToolsPackage.Editor.MenuManagerModel;
 using UnityEditor;
 using UnityEngine;
 

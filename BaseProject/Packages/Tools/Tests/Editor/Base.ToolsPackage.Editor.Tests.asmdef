@@ -4,6 +4,14 @@
   "references": [
     "Base.ToolsPackage",
     "Base.ToolsPackage.Editor",
+    "Base.ToolsPackage.Editor.AssemblyGraph",
+    "Base.ToolsPackage.Editor.CodebaseGraph",
+    "Base.ToolsPackage.Editor.CommandPalette",
+    "Base.ToolsPackage.Editor.FolderConventionValidator",
+    "Base.ToolsPackage.Editor.NamingConventions",
+    "Base.ToolsPackage.Editor.Shared",
+    "Base.ToolsPackage.Editor.StaticResetChecker",
+    "Base.ToolsPackage.Editor.TodoOverview",
     "UnityEngine.TestRunner",
     "UnityEditor.TestRunner"
   ],

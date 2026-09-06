@@ -8,6 +8,14 @@ Changes made before 1.0.5 were not recorded.
 
 ## [Unreleased]
 
+## [1.0.7] - 2026-09-06
+
+### Changed
+
+- The README lists `Base Audio` and `Base Core Debug` as requirements. The audio containers
+  and the cheat and log console prefabs in this package reference components that moved out of
+  Core, so installing without them leaves those prefabs with missing scripts.
+
 ## [1.0.6] - 2026-09-05
 
 ### Added

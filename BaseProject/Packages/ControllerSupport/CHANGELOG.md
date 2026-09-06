@@ -8,6 +8,14 @@ Changes made before 1.6.5 were not recorded.
 
 ## [Unreleased]
 
+## [1.7.1] - 2026-09-06
+
+### Changed
+
+- References `Base.CorePackage.MenuManaging` rather than `Base.CorePackage`, which is where the
+  menu framework lives after the Core split. The package turned out never to have used anything
+  else in Core, so the old reference is gone rather than kept alongside.
+
 ## [1.7.0] - 2026-09-05
 
 ### Added

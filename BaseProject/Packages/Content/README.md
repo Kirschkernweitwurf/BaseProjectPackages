@@ -7,7 +7,9 @@ It exists because composition and code pull in opposite directions: a prefab car
 ## Requirements
 
 - Unity `6000.3` or newer
-- `Base.ControllerSupportPackage`, `Base.SaveSystemPackage`, `Base.SettingsPackage` and `Base.UiPackage`
+- `Base.ControllerSupportPackage`, `Base.SaveSystemPackage`, `Base.SettingsPackage` and
+  `Base.UiPackage`, plus `Base Audio` and `Base Core Debug` for the audio containers
+  and the console prefabs
 
 Those pull in Core, Services, Tweening, Attributes and Utility in turn. Install through the Git Package Manager rather than by pasting the Git URL: the prefabs here reference components from the other Base packages, so installing this one on its own leaves them with missing scripts.
 

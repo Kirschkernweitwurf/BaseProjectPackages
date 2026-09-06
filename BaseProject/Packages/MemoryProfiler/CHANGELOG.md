@@ -8,6 +8,14 @@ Changes made before 1.3.2 were not recorded.
 
 ## [Unreleased]
 
+## [1.3.4] - 2026-09-06
+
+### Changed
+
+- References `Base.CorePackage.SceneManagement` rather than `Base.CorePackage`, which is where
+  scene loading lives after the Core split. The package turned out never to have used anything
+  else in Core, so the old reference is gone rather than kept alongside.
+
 ## [1.3.3] - 2026-09-05
 
 ### Added

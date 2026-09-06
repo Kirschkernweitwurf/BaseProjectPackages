@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Base.ToolsPackage.Editor.MenuManagerWindows;
+using Base.ToolsPackage.Editor.MenuManagerModel;
 
 namespace Base.ToolsPackage.Editor.CommandPalette
 {

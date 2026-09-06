@@ -1,0 +1,26 @@
+{
+  "name": "Base.CorePackage.Debug.Tests",
+  "rootNamespace": "Base.CorePackage.Debug.Tests",
+  "references": [
+    "Base.CorePackage.DebugMenu",
+    "Base.ServicesPackage",
+    "Base.UtilityPackage",
+    "UnityEngine.TestRunner",
+    "UnityEditor.TestRunner"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": true,
+  "precompiledReferences": [
+    "nunit.framework.dll"
+  ],
+  "autoReferenced": false,
+  "defineConstraints": [
+    "UNITY_INCLUDE_TESTS"
+  ],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

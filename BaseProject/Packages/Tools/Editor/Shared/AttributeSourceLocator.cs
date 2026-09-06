@@ -14,7 +14,7 @@ namespace Base.ToolsPackage.Editor.Shared
     /// a cursor. The first line carrying the attribute wins; when there is none, the declaration the
     /// caller describes is used instead, which still lands the user in the right place.
     /// </remarks>
-    internal static class AttributeSourceLocator
+    public static class AttributeSourceLocator
     {
         /// <summary>The capture group an argument pattern has to put the value in.</summary>
         private const int ArgumentGroup = 1;
@@ -39,7 +39,7 @@ namespace Base.ToolsPackage.Editor.Shared
         /// The type name. A generic arity suffix is stripped, so <c>Pool`1</c> matches <c>Pool</c>.
         /// </param>
         /// <returns>The declaration pattern, or null when there is no name to match on.</returns>
-        internal static Regex ClassDeclaration(string typeName)
+        public static Regex ClassDeclaration(string typeName)
         {
             string name = TypeNameUtility.TrimArity(typeName);
 
@@ -61,7 +61,7 @@ namespace Base.ToolsPackage.Editor.Shared
         /// </remarks>
         /// <param name="memberName">The method name.</param>
         /// <returns>The declaration pattern, or null when there is no name to match on.</returns>
-        internal static Regex MemberDeclaration(string memberName)
+        public static Regex MemberDeclaration(string memberName)
         {
             if (string.IsNullOrEmpty(memberName))
                 return null;
@@ -91,7 +91,7 @@ namespace Base.ToolsPackage.Editor.Shared
         /// <returns>
         /// A one-based line and a zero-based column, or zeros when nothing could be located.
         /// </returns>
-        internal static (int Line, int Column) Find(MonoScript script, string attributeToken,
+        public static (int Line, int Column) Find(MonoScript script, string attributeToken,
             Regex declaration, Regex argument = null, string requiredOnLine = null)
         {
             if (script == null || string.IsNullOrEmpty(attributeToken))

@@ -8,6 +8,59 @@ Changes made before 2.0.10 were not recorded.
 
 ## [Unreleased]
 
+### Fixed
+
+- The Assembly Graph no longer offers a reference the compiler needs. It read the compiled
+  assembly reference table, which lists what the runtime has to load rather than what the
+  compilation was given, so anything the compiler folds away left no trace and was reported as
+  removable. Acting on that broke thirteen assemblies at once. Two more sources now carry a
+  reference: the ancestry of every assembly the metadata does name, which covers a base class,
+  an interface or a generic constraint reached through a third assembly, and the using
+  directives in the source, which cover a `const`, a `nameof` and everything else that becomes
+  a literal.
+
+### Changed
+
+- `Unused` is now `Possibly unused`, and the node explains that the listing is a reason to look
+  rather than proof. The three checks can still all miss, and a wrong removal is only visible
+  after a recompile.
+- `Clean Up All` is gone. One wrong entry stops its dependents from compiling, which hides the
+  rest of the damage until the first is fixed, so removals go one assembly per recompile now.
+- The toolbar has a `Restore Last` button. The asmdef this window rewrites is stored untouched
+  in session state first, so the edit survives the domain reload it triggers and can be put back
+  once the console says whether it was right.
+
+## [3.0.0] - 2026-09-06
+
+### Changed
+
+- The one editor assembly everything referenced became twenty, so an assembly definition
+  pointing at `Base.ToolsPackage.Editor` now reaches only the eight smallest tools. Reference
+  the tool you actually use instead. Two namespaces moved with their code, the assembly edge
+  analysis to `Base.ToolsPackage.Editor.CodebaseGraph.Architecture` and the menu model to
+  `Base.ToolsPackage.Editor.MenuManagerModel`, which is the only source change an upgrade
+  needs.
+- One assembly per tool instead of one for all twenty-five. Editing a one-file tool recompiled
+  the other four hundred and thirty-two files; the root assembly is twenty-three now. The cut
+  is at six files, below which an assembly costs more than the recompiles it saves, so the eight
+  smallest tools stay together in `Base.ToolsPackage.Editor`.
+- `Shared` and `BaseToolsOverview` are their own assemblies, since everything else sits on top
+  of them. Both keep their folder and namespace, so no consumer had to change.
+- The menu model splits out of `MenuManagerWindows` into `MenuManagerModel`. The Command Palette
+  and the naming convention scanner read twelve types out of it, which meant either a window
+  tool carrying a public API the size of a package or those two tools staying welded to it. The
+  model stays internal and names its three consumers instead.
+- `MenuNode`, `MenuEntryNode` and `MenuGroupNode` carry `[MovedFrom]`. The shipped registry
+  stores its nodes as `[SerializeReference]` records naming the namespace and the assembly, so
+  without it the split would have loaded every one as null and written the emptied asset back
+  out on the next save.
+- The assembly edge analysis moved from `AssemblyGraph/Architecture` to `CodebaseGraph`, where
+  its own documentation already said it belonged. That was the package's only cycle.
+- `OverviewGui`, `EOverviewAccent` and the `Shared` types are public now, because ten assemblies
+  read them and that list grows with every tool added.
+- The README no longer lists the assemblies by name. That was maintainable at three and is not
+  at twenty, so it points at the Assembly Graph window instead.
+
 ## [2.1.0] - 2026-09-05
 
 ### Added

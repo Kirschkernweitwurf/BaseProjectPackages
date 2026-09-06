@@ -8,6 +8,14 @@ Changes made before 1.4.2 were not recorded.
 
 ## [Unreleased]
 
+## [1.4.4] - 2026-09-06
+
+### Changed
+
+- References `Base.CorePackage.MenuManaging` and `Base.CorePackage.SceneManagement` alongside
+  `Base.CorePackage`, which it still needs for `CameraProvider`. Those two systems moved into
+  assemblies of their own in the Core split.
+
 ## [1.4.3] - 2026-09-05
 
 ### Added

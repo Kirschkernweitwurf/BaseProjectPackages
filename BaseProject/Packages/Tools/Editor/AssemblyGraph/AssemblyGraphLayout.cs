@@ -12,6 +12,8 @@ namespace Base.ToolsPackage.Editor.AssemblyGraph
     internal static class AssemblyGraphLayout
     {
         private const float BaseNodeHeight = 108f;
+        private const float CandidateHeaderHeight = 46f;
+        private const float CandidateLineHeight = 15f;
         private const float ClusterGap = 140f;
         private const float ColumnGap = 110f;
         private const float HomelessBlockGap = 200f;
@@ -20,8 +22,6 @@ namespace Base.ToolsPackage.Editor.AssemblyGraph
         private const int OrderingSweeps = 6;
         private const float OrphanColumnGap = 70f;
         private const float RowGap = 34f;
-        private const float UnusedHeaderHeight = 46f;
-        private const float UnusedLineHeight = 15f;
 
         /// <summary>Returns a placement rect for every given node.</summary>
         internal static Dictionary<string, Rect> Calculate(IReadOnlyList<AssemblyNodeInfo> nodes)
@@ -501,17 +501,17 @@ namespace Base.ToolsPackage.Editor.AssemblyGraph
         /// <summary>Approximate node height, used only for spacing.</summary>
         private static float EstimateHeight(AssemblyNodeInfo info)
         {
-            int unused = 0;
+            int candidates = 0;
             foreach (AssemblyReferenceInfo reference in info.References)
             {
-                if (reference.IsUnused)
-                    unused++;
+                if (reference.IsCandidate)
+                    candidates++;
             }
 
-            if (unused == 0)
+            if (candidates == 0)
                 return BaseNodeHeight;
 
-            return BaseNodeHeight + UnusedHeaderHeight + unused * UnusedLineHeight;
+            return BaseNodeHeight + CandidateHeaderHeight + candidates * CandidateLineHeight;
         }
 
         /// <summary>Longest path depth from the cluster's dependency roots.</summary>

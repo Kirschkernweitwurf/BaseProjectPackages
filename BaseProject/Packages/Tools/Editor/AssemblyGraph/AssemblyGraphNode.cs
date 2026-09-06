@@ -13,8 +13,13 @@ namespace Base.ToolsPackage.Editor.AssemblyGraph
     internal sealed class AssemblyGraphNode : Node
     {
         private const string ActionRowClass = "action-row";
+        private const string CandidateHeaderClass = "candidate-header";
+        private const string CandidateHeaderFormat = "Possibly unused ({0})";
+        private const string CandidateLineClass = "candidate-line";
+        private const string CandidateTooltip = "Nothing was found that needs these, which is not "
+            + "proof that nothing does. Remove them, let Unity recompile, then read the console.";
         private const string CleanButtonClass = "clean-button";
-        private const string CleanLabel = "Remove unused";
+        private const string CleanLabel = "Remove listed";
         private const string ClearFocusLabel = "Clear focus";
         private const string FocusButtonClass = "focus-button";
         private const string FocusedClass = "is-focused";
@@ -26,9 +31,6 @@ namespace Base.ToolsPackage.Editor.AssemblyGraph
         private const string IssuesClass = "has-issues";
         private const string KindLabelClass = "kind-label";
         private const string NodeClass = "assembly-node";
-        private const string UnusedHeaderClass = "unused-header";
-        private const string UnusedHeaderFormat = "Unused references ({0})";
-        private const string UnusedLineClass = "unused-line";
 
         /// <summary>The port incoming references connect to, meaning assemblies that reference this one.</summary>
         internal Port InputPort { get; }
@@ -56,7 +58,7 @@ namespace Base.ToolsPackage.Editor.AssemblyGraph
             title = info.Name;
             AddToClassList(NodeClass);
 
-            if (info.HasUnusedReferences)
+            if (info.HasCandidateReferences)
                 AddToClassList(IssuesClass);
 
             if (isFocused)
@@ -103,7 +105,7 @@ namespace Base.ToolsPackage.Editor.AssemblyGraph
         // a focused node is the one the user just asked to look at.
         private void ApplyBorderColor()
         {
-            if (!_isFocused && !Info.HasUnusedReferences)
+            if (!_isFocused && !Info.HasCandidateReferences)
                 return;
 
             Color border = _isFocused
@@ -126,21 +128,24 @@ namespace Base.ToolsPackage.Editor.AssemblyGraph
 
             extensionContainer.Add(BuildActionRow());
 
-            List<string> unused = CollectUnusedNames();
-            if (unused.Count == 0)
+            List<string> candidates = CollectCandidateNames();
+            if (candidates.Count == 0)
                 return;
 
-            Label header = new(string.Format(UnusedHeaderFormat, unused.Count));
+            Label header = new(string.Format(CandidateHeaderFormat, candidates.Count))
+            {
+                tooltip = CandidateTooltip
+            };
 
-            header.AddToClassList(UnusedHeaderClass);
+            header.AddToClassList(CandidateHeaderClass);
             header.AddToClassList(EditorUIClass.Danger);
             extensionContainer.Add(header);
 
-            foreach (string name in unused)
+            foreach (string name in candidates)
             {
                 Label line = new(name);
 
-                line.AddToClassList(UnusedLineClass);
+                line.AddToClassList(CandidateLineClass);
                 line.AddToClassList(EditorUIClass.Danger);
                 extensionContainer.Add(line);
             }
@@ -150,7 +155,8 @@ namespace Base.ToolsPackage.Editor.AssemblyGraph
 
             Button cleanButton = new(() => _onCleanupRequested?.Invoke(Info))
             {
-                text = CleanLabel
+                text = CleanLabel,
+                tooltip = CandidateTooltip
             };
 
             cleanButton.AddToClassList(CleanButtonClass);
@@ -208,12 +214,12 @@ namespace Base.ToolsPackage.Editor.AssemblyGraph
             return row;
         }
 
-        private List<string> CollectUnusedNames()
+        private List<string> CollectCandidateNames()
         {
             List<string> result = new();
             foreach (AssemblyReferenceInfo reference in Info.References)
             {
-                if (reference.IsUnused)
+                if (reference.IsCandidate)
                     result.Add(reference.TargetName);
             }
 

@@ -1,17 +1,19 @@
 # Base Core
 
-Reusable core systems that any Unity project can build on: menus, audio, scene loading, input, timers, state machines, object pooling, randomization and debug tooling. Service location and tweening live one layer down, in the Base Service and Base Tweening packages.
+Reusable core systems that any Unity project can build on: menus, scene loading, input, timers, state machines, object pooling and randomization. Audio and the in-game debug menu are their own packages, Base Audio and Base Core Debug. Service location and tweening live one layer down, in the Base Service and Base Tweening packages.
 
 ## Requirements
 
 - Unity `6000.3` or newer
 - `com.unity.inputsystem` `1.19.0` and `com.unity.ugui` `2.0.0`
 - `Base.ServicesPackage` for `ServiceLocator`, `GameServiceBehaviour`, the shutdown pipeline and the priority trackers every system here builds on
-- `Base.TweeningPackage` for the menu open and close animations, the debug menu and `TweenGroupObjectPool`
+- `Base.TweeningPackage` for the menu open and close animations and `TweenGroupObjectPool`
 - `Base.UtilityPackage` for logging and shared helpers
 - `Base.AttributesPackage` for inspector attributes such as `[Required]` and `[GetComponent]`
 - `Base.EditorUIPackage.Editor` for the shared look of its editor windows
-- Assemblies: `Base.CorePackage`, `Base.CorePackage.Editor` and `Base.CorePackage.Tests`
+- Assemblies: one per system, `Base.CorePackage` for the small ones nothing depends on, plus
+  `Base.CorePackage.Editor` and `Base.CorePackage.Tests`. Run the Assembly Graph window for the
+  current shape rather than keeping a list here in step by hand.
 
 The manager prefabs, canvases and menu identifier assets these systems expect ship in `Base.ContentPackage`.
 
@@ -50,13 +52,6 @@ A finite state machine over an arbitrary context object. The machine does not ti
 - `SceneLoadingManager` loads and unloads scenes with a persistent scene that stays loaded, using `Awaitable` for play-mode-safe async work.
 - `SceneLoadEvents` broadcasts progress and activity, and `LoadingScreen` reacts to those to show a loading UI.
 
-### Audio
-
-- `AudioManager` owns the play, stop and fade API.
-- `AudioContainer` is a ScriptableObject holding clips and their playback settings.
-- Pooled audio sources per `EAudioType` keep playback allocation-light, and `AudioFader` tweens source volume.
-- `PlayAudioOnClick`, `PlayAudioOnHover`, `PlayAudioOnSelect` and `PlayAudioOnSubmit` play a container from UI events.
-
 ### Input
 
 - `InputManager` registers action maps with a priority and enables the highest-priority one while disabling the rest.
@@ -90,18 +85,6 @@ A finite state machine over an arbitrary context object. The machine does not ti
 - `ENoiseType` picks the character: `Perlin` for rolling hills, `Ridged` for mountain crests, `Turbulence` for smoke and marble. All three stay inside the same output range, so switching changes the character and not the scale.
 - `NoiseUtility.CreateMap` fills a whole grid at once for height maps and spawn masks. `Perlin3D` builds three dimensional noise out of Unity's two dimensional generator, at the cost of some contrast.
 
-### Debug Draw
-
-`DebugDraw` draws lines, rays, arrows, boxes, wire spheres and world space text labels that also show up in a player, unlike gizmos and `Debug.DrawLine`. Lines render through GL after every game and scene view camera, so the built-in pipeline as well as URP and HDRP are covered; labels are drawn as screen space IMGUI text.
-
-Every call is compiled out of a release build, arguments included. Define `BASE_DEBUG_DRAW` to keep them. A duration of zero draws for one frame, anything longer counts in unscaled seconds, and `debugdraw_clear` and `debugdraw_enabled` control it from the cheat console.
-
-### Debug Menu
-
-- `DebugMenuController` hosts a cheat console and a log console, toggled by input, remembering which one was open last.
-- The cheat console discovers `[CheatCommand]` methods through `CheatCommandRegistry`, from assemblies and from scene objects. `BuiltinCheatCommands` ships a default set.
-- `LogConsoleView` mirrors Unity's log stream, `CustomLogger` output included. Capturing starts before the first scene loads, so every log is buffered even while the menu is closed.
-
 ### Screenshots and activation
 
 `ScreenshotManager` takes and stores screenshots on input. `ActivateAfterFrames` and `ActivateAfterTime` enable a target GameObject after a frame count or a delay.
@@ -120,9 +103,8 @@ A live view of an event bus: every event type it currently holds handlers for an
 
 ### Other
 
-- **Find Unused Audio Clips** lists AudioClips not referenced by any scene, prefab or `AudioContainer`, and reports empty clip slots inside containers.
 - **Menu identifier generation** keeps the accessor class and the runtime registry in sync as identifier assets are added, moved or deleted. Deletion is handled separately from the other two, because by the time an `AssetPostprocessor` runs the asset is gone and its type can no longer be resolved.
 
 ## Tests
 
-`Base.CorePackage.Tests` covers noise, state machine lifecycle and transitions, and the randomization and weighted table helpers that now live in the Utility package. See `Tests/README.md` for how to make them appear in the Test Runner.
+`Base.CorePackage.Tests` covers noise, the menu identifier registry, state machine lifecycle and transitions and the state machine layout solver. The cheat console tests moved to `Base Core Debug` with the console itself. See `Tests/README.md` for how to make them appear in the Test Runner.

@@ -7,11 +7,12 @@ using UnityEngine;
 
 namespace Base.ToolsPackage.Editor.AssemblyGraph
 {
-    /// <summary>Removes unused references from asmdef files while keeping every other field intact.</summary>
+    /// <summary>Removes references from asmdef files while keeping every other field intact.</summary>
     internal static class AsmdefReferenceCleaner
     {
         /// <summary>
-        /// Removes the given reference names from the asmdef at the given asset path.
+        /// Removes the given reference names from the asmdef at the given asset path, storing the
+        /// original text first so the edit can be undone after the recompile it triggers.
         /// Returns how many references were removed.
         /// </summary>
         internal static int RemoveReferences(string asmdefPath, HashSet<string> referenceNamesToRemove)
@@ -21,7 +22,7 @@ namespace Base.ToolsPackage.Editor.AssemblyGraph
                 || referenceNamesToRemove.Count == 0)
                 return 0;
 
-            string fullPath = ToAbsolutePath(asmdefPath);
+            string fullPath = ProjectPaths.ToAbsolute(asmdefPath);
             if (!File.Exists(fullPath))
                 return 0;
 
@@ -49,6 +50,8 @@ namespace Base.ToolsPackage.Editor.AssemblyGraph
                 return 0;
 
             string updated = ReplaceReferencesArray(text, kept);
+
+            AsmdefBackupStore.Store(asmdefPath, text);
             File.WriteAllText(fullPath, updated);
             AssetDatabase.ImportAsset(asmdefPath, ImportAssetOptions.ForceUpdate);
             return removed;
@@ -71,7 +74,9 @@ namespace Base.ToolsPackage.Editor.AssemblyGraph
 
             try
             {
-                MinimalAsmdef target = JsonUtility.FromJson<MinimalAsmdef>(File.ReadAllText(ToAbsolutePath(path)));
+                MinimalAsmdef target = JsonUtility.FromJson<MinimalAsmdef>(
+                    File.ReadAllText(ProjectPaths.ToAbsolute(path)));
+
                 return string.IsNullOrEmpty(target?.name)
                     ? rawToken
                     : target.name;
@@ -115,12 +120,6 @@ namespace Base.ToolsPackage.Editor.AssemblyGraph
             builder.Append(']');
 
             return text.Substring(0, open) + builder + text.Substring(close + 1);
-        }
-
-        private static string ToAbsolutePath(string assetPath)
-        {
-            string projectRoot = Directory.GetParent(Application.dataPath).FullName;
-            return Path.Combine(projectRoot, assetPath);
         }
 
         [Serializable]

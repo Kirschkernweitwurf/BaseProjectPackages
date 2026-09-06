@@ -12,11 +12,17 @@ namespace Base.ToolsPackage.Editor.AssemblyGraph
     /// <summary>Editor window that visualizes project assemblies and their references.</summary>
     internal sealed class AssemblyGraphWindow : EditorWindow
     {
+        private const string ConfirmCancel = "Cancel";
+        private const string ConfirmOk = "Remove";
+        private const string ConfirmTitle = "Remove references";
         private const string MenuPath = "Tools/Base Packages/Unity Editor/Project Health/Assembly Graph";
         private const float MinWindowHeight = 420f;
         private const float MinWindowWidth = 720f;
         private const string MissingSheetMessage = "The assembly graph style sheet is missing, so the "
             + "nodes are drawn unstyled.";
+        private const string RestoreLabel = "Restore Last";
+        private const string RestoreTooltip = "Put back the asmdef this window last rewrote, in case "
+            + "the removal broke the compile.";
 
         /// <summary>The GUID of this window's own sheet, from its meta file.</summary>
         private const string SheetGuid = "eaf1ce2966367bf458751be0e860234d";
@@ -28,6 +34,7 @@ namespace Base.ToolsPackage.Editor.AssemblyGraph
         private AssemblyGraphView _graphView;
         private ToolbarSearchField _searchField;
         private ToolbarButton _clearFocusButton;
+        private ToolbarButton _restoreButton;
         private Label _statusLabel;
 
         private List<AssemblyNodeInfo> _allNodes = new();
@@ -82,24 +89,29 @@ namespace Base.ToolsPackage.Editor.AssemblyGraph
             return toggle;
         }
 
-        private static HashSet<string> CollectUnused(AssemblyNodeInfo node)
+        private static HashSet<string> CollectCandidates(AssemblyNodeInfo node)
         {
             HashSet<string> set = new();
             foreach (AssemblyReferenceInfo reference in node.References)
             {
-                if (reference.IsUnused)
+                if (reference.IsCandidate)
                     set.Add(reference.TargetName);
             }
 
             return set;
         }
 
-        private static string BuildConfirmMessage(int assemblyCount, int referenceCount)
-            => $"This removes {referenceCount} reference(s) from {assemblyCount} assembly file(s).\n\n"
-                + "Only your own assemblies are touched. Unity packages and libraries are never modified.\n\n"
-                + "Detection reads compiled metadata. A reference that only supplies a constant value can look unused "
-                + "but still be needed. Commit your work first, then let Unity recompile "
-                + "and check the console for errors.";
+        /// <summary>
+        /// Says what the check saw and what it cannot see, because the listing is evidence rather
+        /// than a verdict and acting on it without a recompile is how a build gets broken.
+        /// </summary>
+        private static string BuildConfirmMessage(AssemblyNodeInfo node, int referenceCount)
+            => $"This removes {referenceCount} reference(s) from {node.Name}.\n\n"
+                + "A reference is kept when the compiled metadata names it, when it declares an "
+                + "ancestor of something the metadata names, or when a using directive names one of "
+                + "its namespaces. Anything needed through a path none of those three see is listed "
+                + "here anyway.\n\n"
+                + "Let Unity recompile and read the console. Restore Last puts the file back.";
 
         private Toolbar BuildToolbar()
         {
@@ -110,10 +122,13 @@ namespace Base.ToolsPackage.Editor.AssemblyGraph
                 text = "Refresh"
             });
 
-            toolbar.Add(new ToolbarButton(CleanUpAll)
+            _restoreButton = new ToolbarButton(RestoreLastCleanup)
             {
-                text = "Clean Up All"
-            });
+                text = RestoreLabel,
+                tooltip = RestoreTooltip
+            };
+
+            toolbar.Add(_restoreButton);
 
             _clearFocusButton = new ToolbarButton(ClearFocus)
             {
@@ -230,7 +245,7 @@ namespace Base.ToolsPackage.Editor.AssemblyGraph
                 if (!IsKindVisible(node))
                     continue;
 
-                if (_onlyIssues && !node.HasUnusedReferences)
+                if (_onlyIssues && !node.HasCandidateReferences)
                     continue;
 
                 if (!MatchesSearch(node))
@@ -324,6 +339,9 @@ namespace Base.ToolsPackage.Editor.AssemblyGraph
             if (_clearFocusButton != null)
                 _clearFocusButton.SetEnabled(HasFocus);
 
+            if (_restoreButton != null)
+                _restoreButton.SetEnabled(AsmdefBackupStore.HasBackup);
+
             if (_statusLabel == null)
                 return;
 
@@ -332,71 +350,54 @@ namespace Base.ToolsPackage.Editor.AssemblyGraph
                 : $"{visibleCount} shown / {_allNodes.Count} total";
         }
 
+        /// <summary>
+        /// Removals go one assembly at a time on purpose. Every listing here can be wrong, and a
+        /// single wrong one stops its dependents from compiling, which hides the rest of the damage
+        /// until the first is fixed. One file per recompile keeps the cause and the error together.
+        /// </summary>
         private void OnNodeCleanupRequested(AssemblyNodeInfo node)
         {
             if (!node.IsCleanable)
                 return;
 
-            HashSet<string> unused = CollectUnused(node);
-            if (unused.Count == 0)
+            HashSet<string> candidates = CollectCandidates(node);
+            if (candidates.Count == 0)
                 return;
 
-            bool confirmed = EditorUtility.DisplayDialog("Remove unused references",
-                BuildConfirmMessage(1, unused.Count),
-                "Remove",
-                "Cancel");
+            bool confirmed = EditorUtility.DisplayDialog(ConfirmTitle,
+                BuildConfirmMessage(node, candidates.Count),
+                ConfirmOk,
+                ConfirmCancel);
 
             if (!confirmed)
                 return;
 
-            FinishCleanup(AsmdefReferenceCleaner.RemoveReferences(node.AsmdefPath, unused));
-        }
-
-        private void CleanUpAll()
-        {
-            Dictionary<string, HashSet<string>> plan = new();
-            int totalReferences = 0;
-
-            foreach (AssemblyNodeInfo node in _allNodes)
-            {
-                if (!node.IsCleanable || !node.HasUnusedReferences)
-                    continue;
-
-                HashSet<string> unused = CollectUnused(node);
-                if (unused.Count == 0)
-                    continue;
-
-                plan[node.AsmdefPath] = unused;
-                totalReferences += unused.Count;
-            }
-
-            if (plan.Count == 0)
-            {
-                EditorUtility.DisplayDialog("Assembly Graph", "No unused references found.", "OK");
-                return;
-            }
-
-            bool confirmed = EditorUtility.DisplayDialog("Remove unused references",
-                BuildConfirmMessage(plan.Count, totalReferences),
-                "Remove",
-                "Cancel");
-
-            if (!confirmed)
-                return;
-
-            int removed = 0;
-            foreach (KeyValuePair<string, HashSet<string>> entry in plan)
-                removed += AsmdefReferenceCleaner.RemoveReferences(entry.Key, entry.Value);
-
-            FinishCleanup(removed);
-        }
-
-        private void FinishCleanup(int removed)
-        {
+            int removed = AsmdefReferenceCleaner.RemoveReferences(node.AsmdefPath, candidates);
             AssetDatabase.Refresh();
 
-            if (_statusLabel != null)
-                _statusLabel.text = $"Removed {removed} reference(s). Recompiling, press Refresh when done.";
+            SetStatus($"Removed {removed} reference(s) from {node.Name}. Recompiling, then press Refresh.");
+        }
+
+        private void RestoreLastCleanup()
+        {
+            string restored = AsmdefBackupStore.Restore();
+            if (string.IsNullOrEmpty(restored))
+                return;
+
+            AssetDatabase.Refresh();
+
+            SetStatus($"Restored {restored}. Recompiling, then press Refresh.");
+        }
+
+        private void SetStatus(string message)
+        {
+            if (_restoreButton != null)
+                _restoreButton.SetEnabled(AsmdefBackupStore.HasBackup);
+
+            if (_statusLabel == null)
+                return;
+
+            _statusLabel.text = message;
         }
 
         // By GUID rather than by name search, which answered with whatever file in the project

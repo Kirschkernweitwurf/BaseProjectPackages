@@ -20,13 +20,13 @@ namespace Base.ToolsPackage.Editor.Shared
     /// hand edit or by pulling a branch, is therefore not picked up until the next domain reload.
     /// </para>
     /// </remarks>
-    internal sealed class GuidDismissStore
+    public sealed class GuidDismissStore
     {
         private const string LoadFailedFormat = "Could not read {0}: {1}. Starting with no dismissals.";
         private const string NullRangeFormat = "{0} was given no collection. Nothing was dismissed.";
 
         /// <summary>How many entries are currently dismissed.</summary>
-        internal int Count => Guids.Count;
+        public int Count => Guids.Count;
 
         private HashSet<string> Guids => _guids ??= Load();
 
@@ -39,16 +39,16 @@ namespace Base.ToolsPackage.Editor.Shared
         /// Project relative path the dismissals live at, for example
         /// <c>ProjectSettings/UnusedAssetsDismissed.json</c>.
         /// </param>
-        internal GuidDismissStore(string filePath) => _filePath = filePath;
+        public GuidDismissStore(string filePath) => _filePath = filePath;
 
         /// <summary>True when the entry was dismissed.</summary>
         /// <param name="guid">GUID of the asset to test.</param>
         /// <returns>True when future scans should skip it.</returns>
-        internal bool IsDismissed(string guid) => !string.IsNullOrEmpty(guid) && Guids.Contains(guid);
+        public bool IsDismissed(string guid) => !string.IsNullOrEmpty(guid) && Guids.Contains(guid);
 
         /// <summary>Excludes the entry from future scans.</summary>
         /// <param name="guid">GUID of the asset to dismiss.</param>
-        internal void Dismiss(string guid)
+        public void Dismiss(string guid)
         {
             if (string.IsNullOrEmpty(guid))
                 return;
@@ -59,7 +59,7 @@ namespace Base.ToolsPackage.Editor.Shared
 
         /// <summary>Excludes every given entry from future scans in one write.</summary>
         /// <param name="guids">GUIDs of the assets to dismiss. Empty entries are skipped.</param>
-        internal void DismissRange(IEnumerable<string> guids)
+        public void DismissRange(IEnumerable<string> guids)
         {
             if (guids == null)
             {
@@ -81,7 +81,7 @@ namespace Base.ToolsPackage.Editor.Shared
 
         /// <summary>Brings the entry back into future scans.</summary>
         /// <param name="guid">GUID of the asset to restore.</param>
-        internal void Restore(string guid)
+        public void Restore(string guid)
         {
             if (string.IsNullOrEmpty(guid))
                 return;
@@ -91,7 +91,7 @@ namespace Base.ToolsPackage.Editor.Shared
         }
 
         /// <summary>Drops every dismissal.</summary>
-        internal void Clear()
+        public void Clear()
         {
             if (Guids.Count == 0)
                 return;
@@ -102,7 +102,7 @@ namespace Base.ToolsPackage.Editor.Shared
 
         /// <summary>Snapshot of the dismissed GUIDs, safe to iterate while dismissing or restoring.</summary>
         /// <returns>A copy of the dismissed GUIDs.</returns>
-        internal IReadOnlyList<string> GetAll() => Guids.ToList();
+        public IReadOnlyList<string> GetAll() => Guids.ToList();
 
         private HashSet<string> Load()
         {

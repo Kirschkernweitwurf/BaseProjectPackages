@@ -3,10 +3,10 @@ using System.Collections.Generic;
 namespace Base.ToolsPackage.Editor.AssemblyGraph
 {
     /// <summary>One assembly node in the graph, with its declared references.</summary>
-    internal sealed class AssemblyNodeInfo
+    public sealed class AssemblyNodeInfo
     {
         /// <summary>Name of the assembly.</summary>
-        internal string Name { get; }
+        public string Name { get; }
 
         /// <summary>Asset path of the asmdef file. Null for predefined or precompiled assemblies.</summary>
         internal string AsmdefPath { get; }
@@ -15,7 +15,7 @@ namespace Base.ToolsPackage.Editor.AssemblyGraph
         internal EAssemblyKind Kind { get; }
 
         /// <summary>Every reference this assembly declares.</summary>
-        internal List<AssemblyReferenceInfo> References { get; }
+        public List<AssemblyReferenceInfo> References { get; }
 
         /// <summary>True when the assembly is defined by an asmdef file.</summary>
         internal bool HasAsmdef => !string.IsNullOrEmpty(AsmdefPath);
@@ -35,14 +35,14 @@ namespace Base.ToolsPackage.Editor.AssemblyGraph
         /// <summary>Only owned code may be edited. Unity packages and libraries are always off limits.</summary>
         internal bool IsCleanable => HasAsmdef && (Kind == EAssemblyKind.Project || Kind == EAssemblyKind.Package);
 
-        /// <summary>True when at least one declared reference is unused.</summary>
-        internal bool HasUnusedReferences
+        /// <summary>True when at least one declared reference has nothing found that needs it.</summary>
+        internal bool HasCandidateReferences
         {
             get
             {
                 foreach (AssemblyReferenceInfo reference in References)
                 {
-                    if (reference.IsUnused)
+                    if (reference.IsCandidate)
                         return true;
                 }
 
@@ -54,7 +54,7 @@ namespace Base.ToolsPackage.Editor.AssemblyGraph
         /// <param name="name">Name of the assembly.</param>
         /// <param name="asmdefPath">Asset path of the asmdef file, or null when there is none.</param>
         /// <param name="kind">Category the assembly falls into.</param>
-        public AssemblyNodeInfo(string name, string asmdefPath, EAssemblyKind kind)
+        internal AssemblyNodeInfo(string name, string asmdefPath, EAssemblyKind kind)
         {
             Name = name;
             AsmdefPath = asmdefPath;

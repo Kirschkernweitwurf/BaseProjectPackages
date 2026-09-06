@@ -8,10 +8,10 @@ namespace Base.ToolsPackage.Editor.Shared
     /// The live project, read through <see cref="AssetDatabase"/>. This is what every tool runs
     /// against outside a test.
     /// </summary>
-    internal sealed class AssetDatabaseIndex : IAssetIndex
+    public sealed class AssetDatabaseIndex : IAssetIndex
     {
         /// <summary>The one instance tools use, since it holds nothing and answers for the whole project.</summary>
-        internal static readonly AssetDatabaseIndex Default = new();
+        public static readonly AssetDatabaseIndex Default = new();
 
         private static readonly string[] NoPaths = Array.Empty<string>();
 

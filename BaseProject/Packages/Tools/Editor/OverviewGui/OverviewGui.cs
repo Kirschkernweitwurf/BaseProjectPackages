@@ -14,7 +14,7 @@ namespace Base.ToolsPackage.Editor.OverviewGui
     /// section header that is this window family's own signature.
     /// </para>
     /// </summary>
-    internal static class OverviewGui
+    public static class OverviewGui
     {
         private const float ActiveHandleAlpha = 0.35f;
         private const float BadgeTrailing = 36f;

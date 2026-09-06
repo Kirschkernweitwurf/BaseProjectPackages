@@ -1,6 +1,6 @@
 using System.Collections.Generic;
-using Base.ToolsPackage.Editor.AssemblyGraph.Architecture;
 using Base.ToolsPackage.Editor.CodebaseGraph.Analysis;
+using Base.ToolsPackage.Editor.CodebaseGraph.Architecture;
 using Base.ToolsPackage.Editor.CodebaseGraph.Editing;
 using Base.ToolsPackage.Editor.CodebaseGraph.Model;
 using Base.UtilityPackage.Logging;

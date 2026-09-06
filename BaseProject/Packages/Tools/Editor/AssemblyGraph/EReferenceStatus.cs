@@ -1,15 +1,15 @@
 namespace Base.ToolsPackage.Editor.AssemblyGraph
 {
-    /// <summary>Whether a declared reference appears to be used by the compiled assembly.</summary>
+    /// <summary>How much is known about whether a declared reference is needed.</summary>
     internal enum EReferenceStatus : byte
     {
-        /// <summary>The reference is resolved and used.</summary>
-        Used = 0,
-
-        /// <summary>The reference is declared but nothing in the assembly needs it.</summary>
-        Unused = 1,
+        /// <summary>Nothing was found that needs the reference, so it is worth checking by hand.</summary>
+        Candidate = 0,
 
         /// <summary>Usage could not be determined, so the reference is left alone.</summary>
-        Unknown = 2
+        Unknown = 1,
+
+        /// <summary>Something in the assembly needs the reference.</summary>
+        Used = 2
     }
 }

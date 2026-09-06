@@ -1,4 +1,4 @@
-using Base.ToolsPackage.Editor.MenuManagerWindows;
+using Base.ToolsPackage.Editor.MenuManagerModel;
 using UnityEditor;
 
 namespace Base.ToolsPackage.Editor.CommandPalette

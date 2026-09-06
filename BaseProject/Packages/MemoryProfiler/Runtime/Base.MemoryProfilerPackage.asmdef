@@ -2,7 +2,7 @@
   "name": "Base.MemoryProfilerPackage",
   "rootNamespace": "Base.MemoryProfilerPackage",
   "references": [
-    "GUID:f2d8f8c295391d141aef02e29987cd86",
+    "Base.CorePackage.SceneManagement",
     "GUID:922d81cfb9ff6984da4cb2213b66a375"
   ],
   "includePlatforms": [],

@@ -3,8 +3,12 @@
   "rootNamespace": "Base.CorePackage.Tests",
   "references": [
     "Base.CorePackage",
-    "Base.CorePackage.Editor",
+    "Base.CorePackage.Editor.StateMachine",
+    "Base.CorePackage.EventBus",
+    "Base.CorePackage.MenuManaging",
+    "Base.CorePackage.StateMachine",
     "Base.ServicesPackage",
+    "Base.TweeningPackage",
     "Base.UtilityPackage",
     "UnityEngine.TestRunner",
     "UnityEditor.TestRunner"

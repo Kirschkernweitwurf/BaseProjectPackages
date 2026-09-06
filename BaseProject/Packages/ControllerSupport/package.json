@@ -2,7 +2,7 @@
   "name": "com.baseprojectpackages.controllersupport",
   "displayName": "Base Controller Support",
   "description": "A package that helps with adding support for controllers in the Base Project.",
-  "version": "1.7.0",
+  "version": "1.7.1",
   "unity": "6000.3",
   "documentationUrl": "https://github.com/Kirschkernweitwurf/BaseProjectPackages/blob/main/BaseProject/Packages/ControllerSupport/README.md",
   "changelogUrl": "https://github.com/Kirschkernweitwurf/BaseProjectPackages/blob/main/BaseProject/Packages/ControllerSupport/CHANGELOG.md",

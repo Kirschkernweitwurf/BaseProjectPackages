@@ -10,7 +10,10 @@ This package is a leaf. Nothing in the Base set references it, so it can be inst
 - `Base.UtilityPackage` for `CustomLogger`, `PersistentKey` and the dynamic menu attributes
 - `Base.AttributesPackage` for the inspector attributes on its config assets
 - `Base.EditorUIPackage.Editor` for the shared look of its windows
-- Assemblies: `Base.ToolsPackage`, `Base.ToolsPackage.Editor` and `Base.ToolsPackage.Editor.Tests`
+- Assemblies: one per tool, with `Base.ToolsPackage.Editor` holding the small ones nothing
+  depends on, plus `Base.ToolsPackage` for the runtime halves and
+  `Base.ToolsPackage.Editor.Tests`. Run the Assembly Graph window for the current shape
+  rather than keeping a list here in step by hand.
 
 The dynamic menu attributes the Menu Manager reads live in the Utility package rather than here, so a package can be tagged with `[DynamicMenuItem]` without depending on this one.
 

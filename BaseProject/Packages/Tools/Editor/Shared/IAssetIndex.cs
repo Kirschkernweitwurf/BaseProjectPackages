@@ -13,7 +13,7 @@ namespace Base.ToolsPackage.Editor.Shared
     /// happens to be in the Assets folder that day. Behind this, the same scanner can be handed a
     /// project layout that was written for one case.
     /// </remarks>
-    internal interface IAssetIndex
+    public interface IAssetIndex
     {
         /// <summary>Whether a path points at a folder that exists.</summary>
         /// <param name="path">Asset path, for example <c>Assets/Art</c>.</param>
