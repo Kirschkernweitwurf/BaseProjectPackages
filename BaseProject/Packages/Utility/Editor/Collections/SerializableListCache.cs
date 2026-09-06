@@ -42,6 +42,7 @@ namespace Base.UtilityPackage.Editor.Collections
         /// <summary>Returns the list for the given array, building it on first use.</summary>
         /// <param name="entries">The serialized entry array.</param>
         /// <param name="drawRow">Draws one entry into the rect it is given.</param>
+        /// <param name="rowHeight">Measures one entry, or null to give every row the same height.</param>
         /// <returns>The cached list, ready to draw.</returns>
         internal static ReorderableList Get(SerializedProperty entries,
             Action<Rect, SerializedProperty> drawRow, Func<SerializedProperty, float> rowHeight = null)

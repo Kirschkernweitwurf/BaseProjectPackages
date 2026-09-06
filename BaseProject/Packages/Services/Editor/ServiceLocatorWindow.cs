@@ -159,8 +159,7 @@ namespace Base.ServicesPackage.Editor
 
             // A window torn down before it ever drew has no styles to release, and a plain C# field
             // is a real null here rather than a destroyed Unity object.
-            if (_styles != null)
-                _styles.Dispose();
+            _styles?.Dispose();
         }
 #endregion
 
@@ -198,9 +197,9 @@ namespace Base.ServicesPackage.Editor
         // the card when the list is long enough to scroll.
         private static Rect TableArea(Rect card, int rowCount)
         {
-            float content = ServiceLocatorStyles.CardPadding * 2f
-                + ServiceLocatorStyles.HeaderHeight
-                + rowCount * ServiceLocatorStyles.RowHeight;
+            float content = EditorTableStyles.CardPadding * 2f
+                + EditorTableStyles.HeaderHeight
+                + rowCount * EditorTableStyles.RowHeight;
 
             return new Rect(card.x, card.y, card.width, Mathf.Min(card.height, content));
         }
@@ -317,7 +316,7 @@ namespace Base.ServicesPackage.Editor
 
                 GUI.SetNextControlName(SearchControlName);
                 _search = GUILayout.TextField(_search, EditorStyles.toolbarSearchField,
-                    GUILayout.Width(ServiceLocatorStyles.SearchWidth));
+                    GUILayout.Width(EditorTableStyles.SearchWidth));
 
                 _problemsOnly = GUILayout.Toggle(_problemsOnly, ProblemsContent, EditorStyles.toolbarButton);
 
@@ -327,11 +326,11 @@ namespace Base.ServicesPackage.Editor
                 GUILayout.FlexibleSpace();
 
                 if (GUILayout.Button(CopyContent, EditorStyles.toolbarButton,
-                        GUILayout.Width(ServiceLocatorStyles.ToolbarButtonWidth)))
+                        GUILayout.Width(EditorTableStyles.ToolbarButtonWidth)))
                     EditorGUIUtility.systemCopyBuffer = ServiceLocatorReport.Build(_filtered);
 
                 if (GUILayout.Button(RefreshLabel, EditorStyles.toolbarButton,
-                        GUILayout.Width(ServiceLocatorStyles.ToolbarButtonWidth)))
+                        GUILayout.Width(EditorTableStyles.ToolbarButtonWidth)))
                     _needsRebuild = true;
             }
         }
@@ -340,9 +339,9 @@ namespace Base.ServicesPackage.Editor
         // readable without scanning every row.
         private void DrawSummaryBar()
         {
-            Rect bar = GUILayoutUtility.GetRect(0f, ServiceLocatorStyles.SummaryHeight, GUILayout.ExpandWidth(true));
-            Rect line = new(bar.x + ServiceLocatorStyles.OuterMargin, bar.y,
-                bar.width - ServiceLocatorStyles.OuterMargin * 2f, bar.height);
+            Rect bar = GUILayoutUtility.GetRect(0f, EditorTableStyles.SummaryHeight, GUILayout.ExpandWidth(true));
+            Rect line = new(bar.x + EditorTableStyles.OuterMargin, bar.y,
+                bar.width - EditorTableStyles.OuterMargin * 2f, bar.height);
 
             GUI.Label(line, string.Format(SummaryFormat, _filtered.Count, _entries.Count), _styles.Summary);
 
@@ -357,12 +356,12 @@ namespace Base.ServicesPackage.Editor
                     : SummaryProblemsFormat, _problemCount)
                 : SummaryOkText;
 
-            float width = EditorRows.MeasureBadge(text, _styles.Badge, ServiceLocatorStyles.MinBadgeWidth);
+            float width = EditorRows.MeasureBadge(text, _styles.Badge, EditorTableStyles.MinBadgeWidth);
             Rect pill = new(line.xMax - width, line.y, width, line.height);
 
             DrawPill(pill, text, hasProblems
-                ? ServiceLocatorStyles.SummaryProblemColor
-                : ServiceLocatorStyles.SummaryOkColor);
+                ? EditorTableStyles.SummaryProblemColor
+                : EditorTableStyles.SummaryOkColor);
         }
 
         // One texture tinted through GUI.color rather than one per fill, so every pill in the window
@@ -398,15 +397,15 @@ namespace Base.ServicesPackage.Editor
         }
 
         private float MeasureBadge(string text)
-            => EditorRows.MeasureBadge(text, _styles.Badge, ServiceLocatorStyles.MinBadgeWidth);
+            => EditorRows.MeasureBadge(text, _styles.Badge, EditorTableStyles.MinBadgeWidth);
 
         private void DrawTable()
         {
-            GUILayout.Space(ServiceLocatorStyles.OuterMargin);
+            GUILayout.Space(EditorTableStyles.OuterMargin);
 
             using (new EditorGUILayout.HorizontalScope())
             {
-                GUILayout.Space(ServiceLocatorStyles.OuterMargin);
+                GUILayout.Space(EditorTableStyles.OuterMargin);
 
                 using (EditorGUILayout.VerticalScope card = new(_styles.Card))
                 {
@@ -420,20 +419,20 @@ namespace Base.ServicesPackage.Editor
                         _columns.DrawAndProcessDividers(TableArea(card.rect, _filtered.Count));
                 }
 
-                GUILayout.Space(ServiceLocatorStyles.OuterMargin);
+                GUILayout.Space(EditorTableStyles.OuterMargin);
             }
 
-            GUILayout.Space(ServiceLocatorStyles.OuterMargin);
+            GUILayout.Space(EditorTableStyles.OuterMargin);
         }
 
         private void DrawHeader()
         {
-            Rect header = GUILayoutUtility.GetRect(0f, ServiceLocatorStyles.HeaderHeight, GUILayout.ExpandWidth(true));
+            Rect header = GUILayoutUtility.GetRect(0f, EditorTableStyles.HeaderHeight, GUILayout.ExpandWidth(true));
 
             _columns.Recalculate(header, _stateColumnWidth);
 
             if (Event.current.type == EventType.Repaint)
-                EditorGUI.DrawRect(header, ServiceLocatorStyles.HeaderColor);
+                EditorGUI.DrawRect(header, EditorTableStyles.HeaderColor);
 
             DrawSortableTitle(_columns.Service(header), ServiceHeader, EServiceColumn.Service, header);
             DrawSortableTitle(_columns.Instance(header), InstanceHeader, EServiceColumn.Instance, header);
@@ -452,7 +451,7 @@ namespace Base.ServicesPackage.Editor
             if (_sorting.Column == column)
             {
                 float titleWidth = _styles.Header.CalcSize(new GUIContent(title)).x;
-                Rect arrow = new(cell.x + titleWidth + ServiceLocatorStyles.HeaderArrowGap, cell.y,
+                Rect arrow = new(cell.x + titleWidth + EditorTableStyles.HeaderArrowGap, cell.y,
                     EditorMetrics.SortArrowWidth, cell.height);
 
                 EditorRows.DrawSortArrow(arrow, _sorting.Order, EditorPalette.Text);
@@ -507,7 +506,7 @@ namespace Base.ServicesPackage.Editor
 
         private bool DrawRow(int index, ServiceRegistrationEntry entry)
         {
-            Rect row = GUILayoutUtility.GetRect(0f, ServiceLocatorStyles.RowHeight, GUILayout.ExpandWidth(true));
+            Rect row = GUILayoutUtility.GetRect(0f, EditorTableStyles.RowHeight, GUILayout.ExpandWidth(true));
             bool isHovered = row.Contains(Event.current.mousePosition);
 
             EditorRows.DrawRowBackground(row, index, isHovered, index == _selectedIndex);
@@ -549,12 +548,12 @@ namespace Base.ServicesPackage.Editor
                 return;
             }
 
-            float size = ServiceLocatorStyles.IconSize;
+            float size = EditorTableStyles.IconSize;
             Rect iconRect = new(cell.x, cell.y + (cell.height - size) * 0.5f, size, size);
 
             GUI.DrawTexture(iconRect, icon, ScaleMode.ScaleToFit);
 
-            float offset = size + ServiceLocatorStyles.IconGap;
+            float offset = size + EditorTableStyles.IconGap;
             Rect label = new(cell.x + offset, cell.y, Mathf.Max(0f, cell.width - offset), cell.height);
 
             GUI.Label(label, new GUIContent(entry.TypeName, entry.NamespaceName), _styles.NameBold);
@@ -633,8 +632,8 @@ namespace Base.ServicesPackage.Editor
             bool isHovered = button.Contains(Event.current.mousePosition);
 
             DrawPillBackground(button, isHovered
-                ? ServiceLocatorStyles.PingHoverColor
-                : ServiceLocatorStyles.PingRestColor);
+                ? EditorTableStyles.PingHoverColor
+                : EditorTableStyles.PingRestColor);
 
             if (GUI.Button(button, PingContent, isHovered
                     ? _styles.PingHot
@@ -651,11 +650,11 @@ namespace Base.ServicesPackage.Editor
             if (Event.current.type != EventType.Repaint)
                 return;
 
-            Rect icon = ServiceLocatorStyles.EmptyIconRect(area);
+            Rect icon = EditorTableStyles.EmptyIconRect(area);
 
             GUI.DrawTexture(icon, EditorIcons.Script, ScaleMode.ScaleToFit, true, 0f, EditorPalette.DimText, 0f, 0f);
 
-            Rect title = new(area.x, icon.yMax + ServiceLocatorStyles.EmptyLineGap, area.width,
+            Rect title = new(area.x, icon.yMax + EditorTableStyles.EmptyLineGap, area.width,
                 EditorMetrics.RowHeight);
 
             GUI.Label(title, message, _styles.EmptyTitle);

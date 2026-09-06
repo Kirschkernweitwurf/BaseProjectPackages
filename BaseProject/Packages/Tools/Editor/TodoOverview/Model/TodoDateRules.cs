@@ -21,7 +21,7 @@ namespace Base.ToolsPackage.Editor.TodoOverview.Model
         internal ETodoDateMeaning DefaultMeaning { get; }
 
         /// <summary>Days a written date may age before the item is worth a look.</summary>
-        internal int AgingAfterDays { get; }
+        private int AgingAfterDays { get; }
 
         /// <summary>Days a written date may age before the item counts as stale.</summary>
         internal int StaleAfterDays { get; }

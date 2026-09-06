@@ -8,7 +8,7 @@ Changes made before 1.4.2 were not recorded.
 
 ## [Unreleased]
 
-## [1.5.1] - 2026-09-06
+## [1.5.2] - 2026-09-06
 
 ### Added
 
@@ -20,6 +20,9 @@ Changes made before 1.4.2 were not recorded.
 
 ### Changed
 
+- Assembly references are GUIDs rather than names, matching the ones already written that way.
+  A GUID reference survives an assembly being renamed; a name reference silently stops
+  resolving. Unity's own assemblies stay named, since they have no GUID to point at.
 - The frame rate smoothing and the update throttle moved out of `FpsCounter` into
   `FpsSampler`. Both sat inside `Update` reading `Time.unscaledDeltaTime`, so neither could be
   driven by a test. `FpsCounter` keeps the component and the label.

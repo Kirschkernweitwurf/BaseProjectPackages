@@ -4,7 +4,7 @@ using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.ToolsPackage.Editor.Tests
+namespace Base.ToolsPackage.Editor.Tests.ComponentClipboard
 {
     /// <summary>
     /// What a paste is going to do, worked out before anything is changed.

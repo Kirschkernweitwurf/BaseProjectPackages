@@ -2,7 +2,7 @@ using Base.ToolsPackage.Editor.CodebaseGraph;
 using Base.ToolsPackage.Editor.CodebaseGraph.Model;
 using NUnit.Framework;
 
-namespace Base.ToolsPackage.Editor.Tests
+namespace Base.ToolsPackage.Editor.Tests.CodebaseGraph
 {
     /// <summary>
     /// Checks that the scanner is right about what is alive. Everything this tool says rests on that

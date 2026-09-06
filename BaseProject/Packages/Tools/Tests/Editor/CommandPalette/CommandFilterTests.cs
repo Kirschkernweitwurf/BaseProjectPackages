@@ -1,7 +1,7 @@
 using Base.ToolsPackage.Editor.CommandPalette;
 using NUnit.Framework;
 
-namespace Base.ToolsPackage.Editor.Tests
+namespace Base.ToolsPackage.Editor.Tests.CommandPalette
 {
     /// <summary>
     /// Covers how the search box is read. Every keystroke goes through here, so a marker that is not
@@ -44,15 +44,15 @@ namespace Base.ToolsPackage.Editor.Tests
 
         /// <summary>The plus narrows to asset creation.</summary>
         [Test]
-        public void TheCreateAssetMarkerNarrowsTheKind() => Assert.That(
-            CommandFilter.Parse($"{CommandFilter.CreateAssetMarker}{GivenTerm}").Kind,
-            Is.EqualTo(ECommandKind.CreateAsset));
+        public void TheCreateAssetMarkerNarrowsTheKind()
+            => Assert.That(CommandFilter.Parse($"{CommandFilter.CreateAssetMarker}{GivenTerm}").Kind,
+                Is.EqualTo(ECommandKind.CreateAsset));
 
         /// <summary>The at sign narrows to settings pages.</summary>
         [Test]
-        public void TheSettingsMarkerNarrowsTheKind() => Assert.That(
-            CommandFilter.Parse($"{CommandFilter.SettingsMarker}{GivenTerm}").Kind,
-            Is.EqualTo(ECommandKind.Settings));
+        public void TheSettingsMarkerNarrowsTheKind()
+            => Assert.That(CommandFilter.Parse($"{CommandFilter.SettingsMarker}{GivenTerm}").Kind,
+                Is.EqualTo(ECommandKind.Settings));
 
         /// <summary>A tag narrows the result without being searched for in any path.</summary>
         [Test]
@@ -102,6 +102,7 @@ namespace Base.ToolsPackage.Editor.Tests
 
         /// <summary>Nothing in means nothing out, not a crash.</summary>
         [Test]
-        public void AMissingBoxIsHandled() => Assert.That(CommandFilter.Parse(null).Term, Is.Empty);
+        public void AMissingBoxIsHandled()
+            => Assert.That(CommandFilter.Parse(null).Term, Is.Empty);
     }
 }

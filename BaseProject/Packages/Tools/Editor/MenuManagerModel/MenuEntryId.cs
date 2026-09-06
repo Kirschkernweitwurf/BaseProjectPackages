@@ -13,10 +13,10 @@ namespace Base.ToolsPackage.Editor.MenuManagerModel
         internal const string CreateAssetPrefix = "CA:";
 
         /// <summary>Prefix of every menu item id.</summary>
-        internal const string MenuItemPrefix = "MI:";
+        private const string MenuItemPrefix = "MI:";
 
         /// <summary>Prefix of every settings page id.</summary>
-        internal const string SettingsPrefix = "SP:";
+        private const string SettingsPrefix = "SP:";
 
         private const char MemberSeparator = '.';
 

@@ -245,9 +245,7 @@ namespace Base.EditorUIPackage.Editor
             GUI.Label(rect, EmptyLabel, _styles.EmptyHint);
         }
 
-        private float HeightOf(int index) => ElementHeight == null
-            ? _list.elementHeight
-            : ElementHeight(index);
+        private float HeightOf(int index) => ElementHeight?.Invoke(index) ?? _list.elementHeight;
 
         private void AddCallback(ReorderableList list) => OnAdd();
 

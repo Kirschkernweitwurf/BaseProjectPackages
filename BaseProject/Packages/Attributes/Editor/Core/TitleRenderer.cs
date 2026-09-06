@@ -68,6 +68,8 @@ namespace Base.AttributesPackage.Editor.Core
         /// Draws a collapsible bold title with an underline and returns its expanded state. The state is
         /// stored per owner type and title in <see cref="EditorPrefs"/>.
         /// </summary>
+        /// <param name="ownerType">The type the state is filed under, so two owners can differ.</param>
+        /// <param name="attribute">The title as it was declared, for its color and its spacing.</param>
         /// <param name="title">The resolved title text.</param>
         internal static bool DrawCollapsible(Type ownerType, TitleAttribute attribute, string title)
         {

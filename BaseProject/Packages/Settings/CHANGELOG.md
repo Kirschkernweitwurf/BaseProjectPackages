@@ -8,7 +8,14 @@ Changes made before 2.3.3 were not recorded.
 
 ## [Unreleased]
 
-## [2.3.6] - 2026-09-06
+## [2.3.7]
+### Changed
+
+- Assembly references are GUIDs rather than names, matching the ones already written that way.
+  A GUID reference survives an assembly being renamed; a name reference silently stops
+  resolving. Unity's own assemblies stay named, since they have no GUID to point at.
+
+ - 2026-09-06
 
 ### Fixed
 

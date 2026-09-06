@@ -2,14 +2,12 @@
   "name": "Base.ToolsPackage.Editor.FolderConventionValidator",
   "rootNamespace": "Base.ToolsPackage.Editor.FolderConventionValidator",
   "references": [
-    "Base.ToolsPackage.Editor.OverviewGui",
-    "Base.ToolsPackage.Editor.Shared",
+    "GUID:a7d06d3330554a438c100a0f0a67e968",
+    "GUID:9b86a32456684fa68fffc3e72a35e9a4",
     "GUID:922d81cfb9ff6984da4cb2213b66a375",
     "GUID:c3837597513e91f44a47d8cd91c34f68"
   ],
-  "includePlatforms": [
-    "Editor"
-  ],
+  "includePlatforms": ["Editor"],
   "excludePlatforms": [],
   "allowUnsafeCode": false,
   "overrideReferences": false,

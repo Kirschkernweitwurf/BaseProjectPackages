@@ -2,7 +2,7 @@ using Base.ToolsPackage.Editor.NamingConventions.Data;
 using Base.ToolsPackage.Editor.NamingConventions.Scanning;
 using NUnit.Framework;
 
-namespace Base.ToolsPackage.Editor.Tests
+namespace Base.ToolsPackage.Editor.Tests.NamingConventions
 {
     /// <summary>
     /// Covers the shared name check behind every rule: prefixes, suffixes, stripped text, the ignore

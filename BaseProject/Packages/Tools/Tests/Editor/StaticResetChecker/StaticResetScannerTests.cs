@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Base.ToolsPackage.Editor.StaticResetChecker;
 using NUnit.Framework;
 
-namespace Base.ToolsPackage.Editor.Tests
+namespace Base.ToolsPackage.Editor.Tests.StaticResetChecker
 {
     /// <summary>
     /// Covers what the checker reports on. With Enter Play Mode options on, a static that nothing
@@ -112,7 +112,8 @@ namespace Base.ToolsPackage.Editor.Tests
         /// class in the project into the report.
         /// </summary>
         [Test]
-        public void AStaticMethodIsNotAField() => Assert.That(Scan("static void DoWork() { }"), Is.Empty);
+        public void AStaticMethodIsNotAField()
+            => Assert.That(Scan("static void DoWork() { }"), Is.Empty);
 
         /// <summary>
         /// The word appearing inside a string is not a declaration. The scanner blanks strings before

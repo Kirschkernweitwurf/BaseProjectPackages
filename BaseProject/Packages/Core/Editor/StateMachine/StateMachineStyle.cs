@@ -17,7 +17,7 @@ namespace Base.CorePackage.Editor.StateMachine
         /// <summary>The surface the state nodes and their edges are laid out on.</summary>
         internal const string CanvasClass = "sm-canvas";
         /// <summary>A small inline pill carrying one value, such as a transition count.</summary>
-        internal const string ChipClass = "sm-chip";
+        private const string ChipClass = "sm-chip";
         /// <summary>A chip reporting a healthy value. Modifier on the chip.</summary>
         internal const string ChipGoodClass = "sm-chip--good";
         /// <summary>The label of the transition that last fired. Modifier on the edge label.</summary>
@@ -46,7 +46,7 @@ namespace Base.CorePackage.Editor.StateMachine
         /// Set on the root while the light theme is active, which is how the sheet switches its palette
         /// without a second sheet.
         /// </summary>
-        internal const string LightClass = "sm-light";
+        private const string LightClass = "sm-light";
         /// <summary>One machine in the list on the left.</summary>
         internal const string MachineRowClass = "sm-machine";
         /// <summary>The machine whose graph is being shown. Modifier on the machine row.</summary>
@@ -70,7 +70,7 @@ namespace Base.CorePackage.Editor.StateMachine
         /// <summary>The title text in a pane header.</summary>
         internal const string PaneTitleClass = "sm-pane__title";
         /// <summary>The window root. Everything the sheet styles sits under it.</summary>
-        internal const string RootClass = "sm-root";
+        private const string RootClass = "sm-root";
         /// <summary>A generic row inside a pane body.</summary>
         internal const string RowClass = "sm-row";
         /// <summary>A titled block grouping related rows inside a pane.</summary>

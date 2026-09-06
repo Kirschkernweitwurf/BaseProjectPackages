@@ -81,8 +81,10 @@ namespace Base.ToolsPackage.Editor.CommandPalette
             }
             catch (Exception exception)
             {
+                // A method with no declaring type would throw here and swallow the failure this
+                // handler exists to report.
                 CustomLogger.LogWarning("Could not read the settings page created by "
-                    + $"{method.DeclaringType.Name}.{method.Name}: {exception.Message}", null);
+                    + $"{method.DeclaringType?.Name}.{method.Name}: {exception.Message}", null);
 
                 return null;
             }

@@ -1,5 +1,4 @@
 using System;
-using Base.AttributesPackage.Editor.Drawers;
 using UnityEditor;
 using UnityEngine;
 
@@ -15,6 +14,9 @@ namespace Base.AttributesPackage.Editor.Core
     {
         private const float ButtonPadding = 12f;
         private const float MinimumWidth = 40f;
+
+        private bool _measured;
+        private float _minButtonWidth;
 
         /// <summary>Display label per button.</summary>
         internal string[] Labels { get; private set; }
@@ -41,9 +43,6 @@ namespace Base.AttributesPackage.Editor.Core
                 return _minButtonWidth;
             }
         }
-
-        private bool _measured;
-        private float _minButtonWidth;
 
         private EnumButtonLayout() { }
 

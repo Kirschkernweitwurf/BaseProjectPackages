@@ -6,7 +6,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.TestTools;
 
-namespace Base.ToolsPackage.Editor.Tests
+namespace Base.ToolsPackage.Editor.Tests.FolderConventionValidator
 {
     /// <summary>
     /// Covers the rules the validator reports on. Every one of them used to be unreachable, because
@@ -177,9 +177,6 @@ namespace Base.ToolsPackage.Editor.Tests
             return types;
         }
 
-        /// <summary>The serialized name an auto property's backing field is compiled into.</summary>
-        private static string BackingFieldFor(string propertyName) => string.Format(BackingFieldFormat, propertyName);
-
         /// <summary>Runs the scanner against the given layout.</summary>
         private List<FolderViolation> Scan(FakeAssetIndex index) => FolderConventionScanner.Scan(_config, index);
 
@@ -211,5 +208,8 @@ namespace Base.ToolsPackage.Editor.Tests
             serialized.ApplyModifiedProperties();
             serialized.Dispose();
         }
+
+        /// <summary>The serialized name an auto property's backing field is compiled into.</summary>
+        private static string BackingFieldFor(string propertyName) => string.Format(BackingFieldFormat, propertyName);
     }
 }

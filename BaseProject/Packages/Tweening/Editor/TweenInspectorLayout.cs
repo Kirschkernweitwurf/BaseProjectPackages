@@ -2,7 +2,7 @@ using System;
 using System.Reflection;
 using Base.AttributesPackage;
 using Base.AttributesPackage.Editor;
-using Base.AttributesPackage.Editor.Drawers;
+using Base.AttributesPackage.Editor.Core;
 using Base.AttributesPackage.Editor.Inspectors;
 using Base.TweeningPackage.Core.Data;
 using Base.TweeningPackage.Core.Data.Profiles;

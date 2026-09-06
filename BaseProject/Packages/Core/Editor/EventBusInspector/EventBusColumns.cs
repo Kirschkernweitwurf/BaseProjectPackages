@@ -63,7 +63,10 @@ namespace Base.CorePackage.Editor.EventBusInspector
             float deficit = MinTextColumnWidth - _targetWidth;
 
             deficit -= Reclaim(ref _handlerWidth, deficit);
-            deficit -= Reclaim(ref _subscriberWidth, deficit);
+
+            // Whatever the second reclaim gives back is not counted, because the width below is
+            // recomputed from what the two columns ended up at rather than from what is left.
+            Reclaim(ref _subscriberWidth, deficit);
 
             _targetWidth = Mathf.Max(MinTextColumnWidth, flexible - _subscriberWidth - _handlerWidth);
         }
@@ -72,7 +75,7 @@ namespace Base.CorePackage.Editor.EventBusInspector
         /// <param name="row">The row the columns are laid out in.</param>
         /// <returns>The content cell.</returns>
         internal Rect Content(Rect row) => Cell(row, Left(row, 0f),
-            Mathf.Max(0f, Badge(row).x - EventBusStyles.BadgeGap - Left(row, 0f)));
+            Mathf.Max(0f, Badge(row).x - EditorTableStyles.BadgeGap - Left(row, 0f)));
 
         /// <summary>The cell holding the event type, or the subscribing type one level in.</summary>
         /// <param name="row">The row the columns are laid out in.</param>
@@ -95,14 +98,14 @@ namespace Base.CorePackage.Editor.EventBusInspector
         /// <summary>The cell holding the state pill or the handler count.</summary>
         /// <param name="row">The row the columns are laid out in.</param>
         /// <returns>The badge cell.</returns>
-        internal Rect Badge(Rect row) => new(Ping(row).x - EventBusStyles.BadgeGap - _badgeWidth, row.y,
+        internal Rect Badge(Rect row) => new(Ping(row).x - EditorTableStyles.BadgeGap - _badgeWidth, row.y,
             _badgeWidth, row.height);
 
         /// <summary>The cell holding the ping button.</summary>
         /// <param name="row">The row the columns are laid out in.</param>
         /// <returns>The ping cell.</returns>
-        internal Rect Ping(Rect row) => new(row.xMax - EventBusStyles.RowInset - EventBusStyles.PingButtonWidth,
-            row.y, EventBusStyles.PingButtonWidth, row.height);
+        internal Rect Ping(Rect row) => new(row.xMax - EditorTableStyles.RowInset - EditorTableStyles.PingButtonWidth,
+            row.y, EditorTableStyles.PingButtonWidth, row.height);
 
         /// <summary>
         /// Whether a point is close enough to a divider to grab it. The header uses this to leave
@@ -127,7 +130,7 @@ namespace Base.CorePackage.Editor.EventBusInspector
         private static bool IsNear(float x, float dividerX)
             => Mathf.Abs(x - dividerX) <= EditorMetrics.DividerHitWidth * 0.5f;
 
-        private static float Left(Rect row, float indent) => row.x + EventBusStyles.RowInset + indent;
+        private static float Left(Rect row, float indent) => row.x + EditorTableStyles.RowInset + indent;
 
         // Text starts a few pixels after the boundary rather than against it, so a column never
         // looks like it is touching the divider line in front of it.
@@ -155,11 +158,11 @@ namespace Base.CorePackage.Editor.EventBusInspector
         private float MethodEdge(Rect row) => SubscriberEdge(row) + _handlerWidth;
 
         private float FlexibleWidth(Rect row) => row.xMax
-            - EventBusStyles.RowInset
-            - EventBusStyles.PingButtonWidth
-            - EventBusStyles.BadgeGap
+            - EditorTableStyles.RowInset
+            - EditorTableStyles.PingButtonWidth
+            - EditorTableStyles.BadgeGap
             - _badgeWidth
-            - EventBusStyles.BadgeGap
+            - EditorTableStyles.BadgeGap
             - Left(row, 0f);
 
         private void HandleDivider(EEventDivider divider, float x, Rect area)

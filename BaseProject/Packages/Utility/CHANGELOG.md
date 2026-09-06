@@ -8,6 +8,23 @@ Changes made before 1.6.10 were not recorded.
 
 ## [Unreleased]
 
+## [1.6.13]
+### Changed
+
+- Assembly references are GUIDs rather than names, matching the ones already written that way.
+  A GUID reference survives an assembly being renamed; a name reference silently stops
+  resolving. Unity's own assemblies stay named, since they have no GUID to point at.
+
+ - 2026-09-06
+
+### Fixed
+
+- A missing `param` tag on `SerializableListCache`.
+- A coroutine that never yields no longer leaks its handle. Unity runs a coroutine up to its first
+  yield inside `StartCoroutine`, so one that finishes straight away ran its tracker before the handle
+  existed. The tracker removed a handle that was still null, the real one was added afterwards and
+  nothing ever took it out, so the set grew for the lifetime of the runner.
+
 ## [1.6.11] - 2026-09-05
 
 ### Fixed

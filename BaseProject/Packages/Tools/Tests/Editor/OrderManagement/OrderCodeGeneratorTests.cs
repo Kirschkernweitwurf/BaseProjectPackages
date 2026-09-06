@@ -6,7 +6,7 @@ using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 
-namespace Base.ToolsPackage.Editor.Tests
+namespace Base.ToolsPackage.Editor.Tests.OrderManagement
 {
     /// <summary>
     /// Covers the text the Order Manager writes into the project. Whatever comes out of here is
@@ -31,8 +31,9 @@ namespace Base.ToolsPackage.Editor.Tests
 
         /// <summary>A constant is emitted as a public int with its value.</summary>
         [Test]
-        public void AConstantIsEmittedWithItsValue() => Assert.That(Build(out int _, new OrderConstant("First", 42)),
-            Does.Contain("public const int First = 42;"));
+        public void AConstantIsEmittedWithItsValue()
+            => Assert.That(Build(out int _, new OrderConstant("First", 42)),
+                Does.Contain("public const int First = 42;"));
 
         /// <summary>
         /// Constants are ordered by value, because the generated file is read by a person deciding
@@ -59,9 +60,9 @@ namespace Base.ToolsPackage.Editor.Tests
 
         /// <summary>A comment becomes the constant's summary, since that is the only place it can go.</summary>
         [Test]
-        public void ACommentBecomesAnXmlSummary() => Assert.That(
-            Build(out int _, new OrderConstant("First", 0, "Runs before everything else")),
-            Does.Contain("/// <summary>Runs before everything else</summary>"));
+        public void ACommentBecomesAnXmlSummary()
+            => Assert.That(Build(out int _, new OrderConstant("First", 0, "Runs before everything else")),
+                Does.Contain("/// <summary>Runs before everything else</summary>"));
 
         /// <summary>No comment means no empty summary left hanging above the constant.</summary>
         [Test]
@@ -97,15 +98,15 @@ namespace Base.ToolsPackage.Editor.Tests
         /// rather than emitted into an identifier that cannot compile.
         /// </summary>
         [Test]
-        public void AnInvalidCharacterIsStrippedFromTheName() => Assert.That(
-            Build(out int _, new OrderConstant("My Order!", 0)),
-            Does.Contain("public const int MyOrder = 0;"));
+        public void AnInvalidCharacterIsStrippedFromTheName()
+            => Assert.That(Build(out int _, new OrderConstant("My Order!", 0)),
+                Does.Contain("public const int MyOrder = 0;"));
 
         /// <summary>An identifier cannot start with a digit, so one gets an underscore in front.</summary>
         [Test]
-        public void ANameStartingWithADigitGetsAnUnderscore() => Assert.That(
-            Build(out int _, new OrderConstant("1st", 0)),
-            Does.Contain("public const int _1st = 0;"));
+        public void ANameStartingWithADigitGetsAnUnderscore()
+            => Assert.That(Build(out int _, new OrderConstant("1st", 0)),
+                Does.Contain("public const int _1st = 0;"));
 
         /// <summary>A name with nothing usable left in it is skipped rather than emitted empty.</summary>
         [Test]

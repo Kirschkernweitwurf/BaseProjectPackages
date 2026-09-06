@@ -8,10 +8,20 @@ Changes made before 2.1.4 were not recorded.
 
 ## [Unreleased]
 
-## [4.0.1] - 2026-09-06
+## [4.0.2] - 2026-09-06
 
 ### Changed
 
+- The three state machine style classes that only their own type used are private.
+- Assembly references are GUIDs rather than names, matching the ones already written that way.
+  A GUID reference survives an assembly being renamed; a name reference silently stops
+  resolving. Unity's own assemblies stay named, since they have no GUID to point at.
+- The event bus inspector and the menu manager editor no longer declare a reference to the service
+  locator. Neither has used a single type from it since they were split out.
+- Every inherited style value in the event bus window now names `EditorTableStyles`, the type that
+  declares it, rather than reaching it through `EventBusStyles`. Reading a base member through a
+  derived name hides which type owns it and breaks silently the day the base changes.
+- Disposing the styles reads as one line. `EditorStyleSet` is an ordinary C# object.
 - `EventBusWindow` is 919 lines instead of 1010. What it lists moved into `EventBusModel`: the buses
   in the loaded scenes, the events the chosen one holds, the filtered set and the rows. The window
   keeps what was asked for, which is the search text, the leak filter, the expansion set and the
@@ -34,6 +44,9 @@ Changes made before 2.1.4 were not recorded.
 
 ### Fixed
 
+- The event bus column layout no longer computes a remainder nothing reads, and the neutral badge
+  color is read from the type that declares it rather than through the one that inherits it.
+- `StateMachinePane` builds its title as a local. Only the constructor ever touched it.
 - Edit mode tests build their objects outside any scene. They used to be created in whatever scene
   happened to be open, so every run put them in it and a run that never reached its teardown left
   them there to be saved with it. They go through `EditorUtility.CreateGameObjectWithHideFlags` now,

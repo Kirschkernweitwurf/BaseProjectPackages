@@ -5,7 +5,7 @@ using NUnit.Framework;
 using UnityEditor;
 using PackageInfo = UnityEditor.PackageManager.PackageInfo;
 
-namespace Base.ToolsPackage.Editor.Tests
+namespace Base.ToolsPackage.Editor.Tests.CodebaseGraph
 {
     /// <summary>
     /// Checks that no base package source holds a <c>GUIStyle</c> in a static without a way to drop it

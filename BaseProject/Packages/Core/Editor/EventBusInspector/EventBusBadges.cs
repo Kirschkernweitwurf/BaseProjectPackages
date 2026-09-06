@@ -1,3 +1,4 @@
+using Base.EditorUIPackage.Editor;
 using UnityEngine;
 
 namespace Base.CorePackage.Editor.EventBusInspector
@@ -56,7 +57,7 @@ namespace Base.CorePackage.Editor.EventBusInspector
         {
             EHandlerState.Destroyed => EventBusStyles.DestroyedBadgeColor,
             EHandlerState.Live => EventBusStyles.LiveBadgeColor,
-            _ => EventBusStyles.NeutralBadgeColor
+            _ => EditorTableStyles.NeutralBadgeColor
         };
 
         /// <summary>

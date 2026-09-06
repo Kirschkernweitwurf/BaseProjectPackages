@@ -2,12 +2,10 @@
   "name": "Base.CorePackage.Editor",
   "rootNamespace": "Base.CorePackage.Editor",
   "references": [
-    "Base.CorePackage.Input",
+    "GUID:6c6a4f1d4c6b4bf999e880bcdbeb701d",
     "GUID:75469ad4d38634e559750d17036d5f7c"
   ],
-  "includePlatforms": [
-    "Editor"
-  ],
+  "includePlatforms": ["Editor"],
   "excludePlatforms": [],
   "allowUnsafeCode": false,
   "overrideReferences": false,

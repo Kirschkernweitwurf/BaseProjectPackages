@@ -2,17 +2,15 @@
   "name": "Base.ToolsPackage.Editor",
   "rootNamespace": "Base.ToolsPackage.Editor",
   "references": [
-    "Base.ToolsPackage.Editor.BaseToolsOverview",
-    "Base.ToolsPackage.Editor.OverviewGui",
+    "GUID:e342cbc6fea3445f81122bff1d55bb77",
+    "GUID:a7d06d3330554a438c100a0f0a67e968",
     "GUID:23e24c01ae3d7b347a00cb4924eb02c5",
     "GUID:8f82a2d294e14cc5930979a4e0d686ec",
     "GUID:922d81cfb9ff6984da4cb2213b66a375",
     "GUID:94639facfcc1e284b907f050384eaaf0",
     "GUID:ef1475c04daed1943a99d3d610d12e02"
   ],
-  "includePlatforms": [
-    "Editor"
-  ],
+  "includePlatforms": ["Editor"],
   "excludePlatforms": [],
   "allowUnsafeCode": false,
   "overrideReferences": false,

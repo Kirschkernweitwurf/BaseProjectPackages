@@ -1,11 +1,10 @@
-using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Base.AttributesPackage.Editor.Core;
+using System;
 using UnityEditor;
 using UnityEngine;
 
-namespace Base.AttributesPackage.Editor.Drawers
+namespace Base.AttributesPackage.Editor.Core
 {
     /// <summary>
     /// Reads the header controls a type declares, and the two things about a control that do not

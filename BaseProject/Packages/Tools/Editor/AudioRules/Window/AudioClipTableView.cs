@@ -74,8 +74,10 @@ namespace Base.ToolsPackage.Editor.AudioRules.Window
             _items.Clear();
             _items.AddRange(plans);
 
+            // Copied from the list rather than from the argument, which a caller is free to hand
+            // over as a query that would then run a second time.
             _scanOrder.Clear();
-            _scanOrder.AddRange(plans);
+            _scanOrder.AddRange(_items);
 
             _selection.Clear();
 

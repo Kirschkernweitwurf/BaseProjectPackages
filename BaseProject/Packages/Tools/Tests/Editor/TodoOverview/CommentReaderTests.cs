@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Base.ToolsPackage.Editor.TodoOverview.Scanning;
 using NUnit.Framework;
 
-namespace Base.ToolsPackage.Editor.Tests
+namespace Base.ToolsPackage.Editor.Tests.TodoOverview
 {
     /// <summary>
     /// Covers what separates a task from text that only looks like one. The reader walks characters

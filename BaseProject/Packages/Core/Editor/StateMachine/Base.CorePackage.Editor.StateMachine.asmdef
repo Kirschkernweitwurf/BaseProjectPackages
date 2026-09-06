@@ -2,13 +2,11 @@
   "name": "Base.CorePackage.Editor.StateMachine",
   "rootNamespace": "Base.CorePackage.Editor.StateMachine",
   "references": [
-    "Base.CorePackage.StateMachine",
+    "GUID:55007018b60942cfb91a1bf4c9dd72c2",
     "GUID:8f82a2d294e14cc5930979a4e0d686ec",
     "GUID:922d81cfb9ff6984da4cb2213b66a375"
   ],
-  "includePlatforms": [
-    "Editor"
-  ],
+  "includePlatforms": ["Editor"],
   "excludePlatforms": [],
   "allowUnsafeCode": false,
   "overrideReferences": false,

@@ -48,6 +48,13 @@ namespace Base.AttributesPackage.Editor
         private readonly bool _showLabel;
 
         /// <summary>Creates a context for a single member.</summary>
+        /// <param name="property">The serialized member being drawn.</param>
+        /// <param name="field">The field behind it, for reading attributes off.</param>
+        /// <param name="target">The object the member belongs to.</param>
+        /// <param name="declaringType">The type that declares the member.</param>
+        /// <param name="declaringObject">The instance the member is read from.</param>
+        /// <param name="editor">The inspector drawing it.</param>
+        /// <param name="objectReferenceBefore">The reference value from before this frame drew.</param>
         /// <param name="showLabel">False while the member is drawn without its label.</param>
         internal MemberContext(SerializedProperty property,
             FieldInfo field,

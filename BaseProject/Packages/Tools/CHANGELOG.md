@@ -8,10 +8,14 @@ Changes made before 2.0.10 were not recorded.
 
 ## [Unreleased]
 
-## [3.1.1] - 2026-09-06
+## [3.1.2] - 2026-09-06
 
 ### Added
 
+- `AudioRuleConditionTests`, the first coverage the audio rules have had. A condition is the
+  whole of what decides which rule touches which clip, so a wrong answer reimports the wrong
+  files and says nothing about it. Twenty nine cases over the boundaries, the float tolerance,
+  the case handling, the wildcard and the operators a field cannot use.
 - `ComponentPastePlanTests`, covering what a component paste is going to do before it does it. The
   plan is what the window previews and what the paste then carries out, so a wrong one either
   overwrites something that should have been left alone or adds a duplicate beside the component it
@@ -39,6 +43,22 @@ Changes made before 2.0.10 were not recorded.
 
 ### Changed
 
+- `Base.ToolsPackage.Editor.AudioRules` is reachable from the test assembly, through an
+  `AssemblyInfo` rather than by widening anything.
+- Ten members that only their own type used are private, across the assembly graph backup store,
+  the command palette styles and ids, the namespace scanner and the todo model.
+- The audio rule model and its data no longer use each other in a circle. `EAudioSetting` is the
+  vocabulary both sides speak, so it sits in the namespace above them where both already see it
+  without a using.
+- Assembly references are GUIDs rather than names, matching the ones already written that way.
+  A GUID reference survives an assembly being renamed; a name reference silently stops
+  resolving. Unity's own assemblies stay named, since they have no GUID to point at.
+- Every file in the test assembly is in the namespace its folder names. Twenty seven of them sat
+  in the flat one, which reads fine until a second folder wants the same type name. It is also
+  the rule the packages follow everywhere else. Only one type is used across folders, so this
+  cost a single using.
+- The assembly graph toolbar buttons read as one line each. A `ToolbarButton` is a visual element
+  and an ordinary C# object, so the null-conditional operator is the real one.
 - `Base.ToolsPackage.Editor.ComponentClipboard` is reachable from the test assembly, through an
   `AssemblyInfo` rather than by widening anything. It had no coverage before, because nothing
   referenced it.
@@ -81,8 +101,22 @@ Changes made before 2.0.10 were not recorded.
   patterns for a marked date are added, unless the project already reads one. Nothing that was
   configured by hand is written over, and the step never runs twice.
 
+### Removed
+
+- `TodoSwatches`. Every one of its colors and its whole spectrum moved to `EditorSwatches` in the
+  Editor UI package, and both callers went with them. The file stayed behind with nothing
+  outside it reading a single member.
+
 ### Fixed
 
+- Missing `param` tags on `GraphEntryFactory`, and the marked component list follows the naming
+  the rest of the ecosystem uses for a private static readonly.
+- A project with no parent folder no longer throws when a path is resolved against it.
+- A failed settings page read no longer throws inside the handler that exists to report it,
+  which is what a method with no declaring type used to do.
+- The audio clip table walks the sequence it is handed once. A caller passing a query rather
+  than a list had it run twice.
+- `TodoToolbar.DrawGroupDropdown` no longer hands back a width nothing reads.
 - A stray blank line run in `AssetNamingWindow`.
 
 ## [3.0.0] - 2026-09-06

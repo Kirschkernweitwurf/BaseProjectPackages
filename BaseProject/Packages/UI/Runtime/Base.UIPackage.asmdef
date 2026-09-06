@@ -2,9 +2,9 @@
   "name": "Base.UIPackage",
   "rootNamespace": "Base.UIPackage",
   "references": [
-    "Base.CorePackage.CameraUtility",
-    "Base.CorePackage.MenuManaging",
-    "Base.CorePackage.SceneManagement",
+    "GUID:32606d983e1f4baea85ddeb05ed9e10f",
+    "GUID:b83899730c1042cb9ceebcf1de24f93b",
+    "GUID:832b6a0eaa794dbe863252ea38cf9631",
     "GUID:6055be8ebefd69e48b49212b09b47b2f",
     "GUID:c3837597513e91f44a47d8cd91c34f68",
     "GUID:922d81cfb9ff6984da4cb2213b66a375",

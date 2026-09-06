@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Base.ToolsPackage.Editor.Shared;
 
-namespace Base.ToolsPackage.Editor.Tests
+namespace Base.ToolsPackage.Editor.Tests.FolderConventionValidator
 {
     /// <summary>
     /// A project layout that exists only for the test that wrote it. Folders and assets are handed in

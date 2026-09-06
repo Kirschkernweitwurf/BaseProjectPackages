@@ -8,7 +8,7 @@ Changes made before 1.7.5 were not recorded.
 
 ## [Unreleased]
 
-## [1.8.2] - 2026-09-06
+## [1.8.3] - 2026-09-06
 
 ### Added
 
@@ -18,6 +18,15 @@ Changes made before 1.7.5 were not recorded.
 
 ### Changed
 
+- Four members that only their own type used are private: the two collection confirm labels, the
+  inspector switch preference key and the gutter width.
+- The drawers and the editor core no longer use each other in a circle. `CompactHelpBox`,
+  `MemberRenderer`, `HeaderItemRenderer` and `HeaderItemCollector` moved into the core. None of
+  the four draws a property, none of them used anything that stayed behind, and the header
+  feature now sits in one place instead of two.
+- Assembly references are GUIDs rather than names, matching the ones already written that way.
+  A GUID reference survives an assembly being renamed; a name reference silently stops
+  resolving. Unity's own assemblies stay named, since they have no GUID to point at.
 - Reading which header controls a type declares moved out of `HeaderItemRenderer` into
   `HeaderItemCollector`, together with the tooltip text and the play mode check. None of the three
   draws anything, and behind the renderer none of them could be reached without a live header.
@@ -30,6 +39,13 @@ Changes made before 1.7.5 were not recorded.
 
 ### Fixed
 
+- Missing `param` tags on `MemberContext` and `TitleRenderer`, and a doc comment left behind on
+  nothing after whatever it described was removed.
+- The reflected header item field follows the naming the rest of the ecosystem uses for a
+  private static readonly.
+- A field on the nested sort block no longer hides a method of the same name on the type around it.
+  It is `SortOrder` now.
+- `AttributeSamplePreview` no longer carries a using nothing in it needs.
 - Edit mode tests build their objects outside any scene. They used to be created in whatever scene
   happened to be open, so every run put them in it and a run that never reached its teardown left
   them there to be saved with it. They go through `EditorUtility.CreateGameObjectWithHideFlags` now,

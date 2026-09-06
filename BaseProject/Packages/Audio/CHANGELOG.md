@@ -6,7 +6,14 @@ All notable changes to this package are recorded here. The format follows
 
 ## [Unreleased]
 
-## [1.1.1] - 2026-09-06
+## [1.1.2]
+### Changed
+
+- Assembly references are GUIDs rather than names, matching the ones already written that way.
+  A GUID reference survives an assembly being renamed; a name reference silently stops
+  resolving. Unity's own assemblies stay named, since they have no GUID to point at.
+
+ - 2026-09-06
 
 ### Added
 

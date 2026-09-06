@@ -2,7 +2,7 @@
   "name": "Base.ControllerSupportPackage",
   "rootNamespace": "Base.ControllerSupportPackage",
   "references": [
-    "Base.CorePackage.MenuManaging",
+    "GUID:b83899730c1042cb9ceebcf1de24f93b",
     "GUID:75469ad4d38634e559750d17036d5f7c",
     "GUID:922d81cfb9ff6984da4cb2213b66a375",
     "GUID:c3837597513e91f44a47d8cd91c34f68",

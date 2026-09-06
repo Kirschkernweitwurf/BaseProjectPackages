@@ -66,7 +66,7 @@ namespace Base.AttributesPackage.Editor.Core
                 Block block = new(index, end, Order(type, properties, index, end),
                     ReflectionCache.GetAttribute<TitleAttribute>(field) != null);
 
-                ordered |= block.Order != 0;
+                ordered |= block.SortOrder != 0;
 
                 Blocks.Add(block);
                 index = end;
@@ -150,7 +150,7 @@ namespace Base.AttributesPackage.Editor.Core
                 Block block = Blocks[i];
                 int j = i - 1;
 
-                while (j >= start && Blocks[j].Order > block.Order)
+                while (j >= start && Blocks[j].SortOrder > block.SortOrder)
                 {
                     Blocks[j + 1] = Blocks[j];
                     j--;
@@ -183,7 +183,7 @@ namespace Base.AttributesPackage.Editor.Core
             internal readonly int End;
 
             /// <summary>The order the block sorts by. Lower comes first.</summary>
-            internal readonly int Order;
+            internal readonly int SortOrder;
 
             /// <summary>
             /// True when a title starts this block, which is what keeps a section's fields together
@@ -200,7 +200,7 @@ namespace Base.AttributesPackage.Editor.Core
             {
                 Start = start;
                 End = end;
-                Order = order;
+                SortOrder = order;
                 OpensSection = opensSection;
             }
         }

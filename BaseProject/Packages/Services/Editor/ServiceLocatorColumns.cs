@@ -67,7 +67,10 @@ namespace Base.ServicesPackage.Editor
             float deficit = MinTextColumnWidth - _locationWidth;
 
             deficit -= Reclaim(ref _instanceWidth, deficit);
-            deficit -= Reclaim(ref _serviceWidth, deficit);
+
+            // Whatever the second reclaim gives back is not counted, because the width below is
+            // recomputed from what the two columns ended up at rather than from what is left.
+            Reclaim(ref _serviceWidth, deficit);
 
             _locationWidth = Mathf.Max(MinTextColumnWidth,
                 flexible - _serviceWidth - _instanceWidth);
@@ -91,15 +94,15 @@ namespace Base.ServicesPackage.Editor
         /// <summary>The cell holding the state pill.</summary>
         /// <param name="row">The row the columns are laid out in.</param>
         /// <returns>The state cell.</returns>
-        internal Rect State(Rect row) => new(Ping(row).x - ServiceLocatorStyles.BadgeGap - _badgeWidth, row.y,
+        internal Rect State(Rect row) => new(Ping(row).x - EditorTableStyles.BadgeGap - _badgeWidth, row.y,
             _badgeWidth, row.height);
 
         /// <summary>The cell holding the ping button.</summary>
         /// <param name="row">The row the columns are laid out in.</param>
         /// <returns>The ping cell.</returns>
         internal Rect Ping(Rect row) => new(row.xMax
-            - ServiceLocatorStyles.RowInset
-            - ServiceLocatorStyles.PingButtonWidth, row.y, ServiceLocatorStyles.PingButtonWidth, row.height);
+            - EditorTableStyles.RowInset
+            - EditorTableStyles.PingButtonWidth, row.y, EditorTableStyles.PingButtonWidth, row.height);
 
         /// <summary>
         /// Whether a point is close enough to a divider to grab it. The header uses this to leave
@@ -124,7 +127,7 @@ namespace Base.ServicesPackage.Editor
         private static bool IsNear(float x, float dividerX)
             => Mathf.Abs(x - dividerX) <= EditorMetrics.DividerHitWidth * 0.5f;
 
-        private static float Left(Rect row) => row.x + ServiceLocatorStyles.RowInset;
+        private static float Left(Rect row) => row.x + EditorTableStyles.RowInset;
 
         // Text starts a few pixels after the boundary rather than against it, so a column never
         // looks like it is touching the divider line in front of it.
@@ -152,11 +155,11 @@ namespace Base.ServicesPackage.Editor
         private float InstanceEdge(Rect row) => ServiceEdge(row) + _instanceWidth;
 
         private float FlexibleWidth(Rect row) => row.xMax
-            - ServiceLocatorStyles.RowInset
-            - ServiceLocatorStyles.PingButtonWidth
-            - ServiceLocatorStyles.BadgeGap
+            - EditorTableStyles.RowInset
+            - EditorTableStyles.PingButtonWidth
+            - EditorTableStyles.BadgeGap
             - _badgeWidth
-            - ServiceLocatorStyles.BadgeGap
+            - EditorTableStyles.BadgeGap
             - Left(row);
 
         private void HandleDivider(EServiceDivider divider, float x, Rect area)

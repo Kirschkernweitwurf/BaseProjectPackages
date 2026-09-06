@@ -13,7 +13,7 @@ namespace Base.ToolsPackage.Editor.TodoOverview.Model
         internal const string AnyOwner = "";
 
         /// <summary>The order the list falls back to, which is the order the files are read in.</summary>
-        internal const ETodoSort DefaultSort = ETodoSort.Location;
+        private const ETodoSort DefaultSort = ETodoSort.Location;
 
         /// <summary>The text typed into the search field. Every word in it has to match.</summary>
         internal string Search { get; set; } = string.Empty;
