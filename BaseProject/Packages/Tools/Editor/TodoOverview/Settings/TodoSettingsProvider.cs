@@ -16,6 +16,12 @@ namespace Base.ToolsPackage.Editor.TodoOverview.Settings
             + "digit years resolve into the current century. Whichever one matched, every date is shown "
             + "in a single notation: either the first format above or this machine's region.";
         private const string KeywordsHeader = "Keywords";
+        private const string MeaningHeader = "What A Date Means";
+        private const string MeaningHelp = "A bare date can be a deadline or a note of when something "
+            + "was written, and the date itself cannot say which. Pick what this project means by one. "
+            + "Due colors anything past its date red. Written leaves recent notes calm and flags them "
+            + "once they have been sitting there for the number of days below. An individual item can "
+            + "override this by writing \"(due 01.10.26)\" or \"(written 20.08.26)\".";
         private const string MetadataHeader = "Owner And Date";
 
         private const string MetadataHelp = "Patterns that read the responsible person and the date out of "
@@ -49,7 +55,9 @@ namespace Base.ToolsPackage.Editor.TodoOverview.Settings
                 "bug",
                 "hack",
                 "comment",
-                "task"
+                "task",
+                "due",
+                "stale"
             },
 
             // Created lazily so the singleton is not loaded and seeded on every domain reload, only once
@@ -82,6 +90,9 @@ namespace Base.ToolsPackage.Editor.TodoOverview.Settings
                 TodoSettings.CaseSensitivePropertyName, TodoSettings.ContinuationPropertyName);
 
             DrawSection(MetadataHeader, MetadataHelp, TodoSettings.MetadataPropertyName);
+            DrawSection(MeaningHeader, MeaningHelp, TodoSettings.DateMeaningPropertyName,
+                TodoSettings.AgingPropertyName, TodoSettings.StalePropertyName);
+
             DrawSection(DatesHeader, DatesHelp, TodoSettings.DateFormatsPropertyName,
                 TodoSettings.DateDisplayPropertyName);
 

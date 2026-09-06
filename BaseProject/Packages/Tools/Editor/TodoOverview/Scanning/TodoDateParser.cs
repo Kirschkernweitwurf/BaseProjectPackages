@@ -1,14 +1,18 @@
 using System;
 using System.Globalization;
-using Base.ToolsPackage.Editor.TodoOverview.Model;
 
 namespace Base.ToolsPackage.Editor.TodoOverview.Scanning
 {
     /// <summary>
-    /// Turns the date written into a comment into a real date, and says whether it has passed.
-    /// The configured formats are tried first and in order, because 08.09.26 means different days in
-    /// different notations and only the project can say which one it writes.
+    /// Turns the date written into a comment into a real date. The configured formats are tried first
+    /// and in order, because 08.09.26 means different days in different notations and only the project
+    /// can say which one it writes.
     /// </summary>
+    /// <remarks>
+    /// Reading a date and judging it are two jobs. What a date means and whether it has run out is
+    /// decided by <see cref="Model.TodoDateRules"/>, which needs the project's reading of a date and
+    /// nothing about notations.
+    /// </remarks>
     internal static class TodoDateParser
     {
         /// <summary>Tries to read a date the way the project writes them.</summary>
@@ -31,24 +35,6 @@ namespace Base.ToolsPackage.Editor.TodoOverview.Scanning
                 return true;
 
             return DateTime.TryParse(trimmed, CultureInfo.InvariantCulture, DateTimeStyles.None, out date);
-        }
-
-        /// <summary>Where a date sits relative to today.</summary>
-        /// <param name="date">The date to judge, or null when the item carries none.</param>
-        /// <returns>The state its pill is colored by.</returns>
-        internal static ETodoDateState Resolve(DateTime? date)
-        {
-            if (!date.HasValue)
-                return ETodoDateState.None;
-
-            int difference = date.Value.Date.CompareTo(DateTime.Today);
-
-            if (difference < 0)
-                return ETodoDateState.Overdue;
-
-            return difference == 0
-                ? ETodoDateState.Today
-                : ETodoDateState.Future;
         }
     }
 }

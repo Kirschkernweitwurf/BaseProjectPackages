@@ -17,12 +17,6 @@ namespace Base.ToolsPackage.Editor.TodoOverview.Scanning
     /// </summary>
     internal sealed class TodoPatterns
     {
-        /// <summary>The name of the group a metadata pattern reports the date in.</summary>
-        internal const string DateGroup = "date";
-
-        /// <summary>The name of the group a metadata pattern reports the responsible person in.</summary>
-        internal const string OwnerGroup = "owner";
-
         private const string KeywordPrefix = @"(?<![\w])(";
         private const string KeywordSeparator = "|";
         private const string KeywordSuffix = @")(?![\w])";

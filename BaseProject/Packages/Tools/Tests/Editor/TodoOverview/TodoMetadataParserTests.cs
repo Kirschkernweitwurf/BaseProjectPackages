@@ -17,7 +17,10 @@ namespace Base.ToolsPackage.Editor.Tests
         private const string BracketNotation = @"\((?<owner>[^,()]+),\s*(?<date>[0-9.]+)\)";
         private const string DateOnlyNotation = @"(?<date>[0-9]{2}\.[0-9]{2}\.[0-9]{2})";
         private const string DueNotation = @"due (?<date>\S+)";
+        private const string GivenDate = "20.08.26";
         private const string GivenOwner = "Jonny";
+        private const string MarkedDueNotation = @"\(due (?<due>[0-9.]+)\)";
+        private const string MarkedWrittenNotation = @"\(written (?<written>[0-9.]+)\)";
         private const string OwnerOnlyNotation = @"@(?<owner>\w+)";
 
         private static readonly string[] DateFormats =
@@ -57,9 +60,9 @@ namespace Base.ToolsPackage.Editor.Tests
         /// the message, or every row would read with a hole in it.
         /// </summary>
         [Test]
-        public void TheMessageIsLeftReadableAfterTheCut()
-            => Assert.That(Parse("fix @jonny by 20.08.26", OwnerOnlyNotation, DateOnlyNotation).Message,
-                Is.EqualTo("fix by"));
+        public void TheMessageIsLeftReadableAfterTheCut() => Assert.That(
+            Parse("fix @jonny by 20.08.26", OwnerOnlyNotation, DateOnlyNotation).Message,
+            Is.EqualTo("fix by"));
 
         /// <summary>
         /// A date that matches no configured format is still shown as it was written, because the
@@ -86,6 +89,38 @@ namespace Base.ToolsPackage.Editor.Tests
             Assert.That(metadata.Date, Is.Null);
         }
 
+        /// <summary>
+        /// A pattern says what its date means by which group it puts it in, so an item can carry a
+        /// deadline in a project whose bare dates are the day the note was written. Without this the
+        /// two readings could not share a codebase.
+        /// </summary>
+        [Test]
+        public void ADueGroupMarksTheDateAsADeadline()
+        {
+            TodoMetadata metadata = Parse("fix this (due 20.08.26)", MarkedDueNotation);
+
+            Assert.That(metadata.RawDate, Is.EqualTo(GivenDate));
+            Assert.That(metadata.Meaning, Is.EqualTo(ETodoDateMeaning.Due));
+        }
+
+        /// <summary>And the other way around, in a project whose bare dates are deadlines.</summary>
+        [Test]
+        public void AWrittenGroupMarksTheDateAsANote()
+        {
+            TodoMetadata metadata = Parse("fix this (written 20.08.26)", MarkedWrittenNotation);
+
+            Assert.That(metadata.RawDate, Is.EqualTo(GivenDate));
+            Assert.That(metadata.Meaning, Is.EqualTo(ETodoDateMeaning.Written));
+        }
+
+        /// <summary>
+        /// A plain date says nothing about what it means, so the project decides rather than the
+        /// parser guessing one of the two readings on its behalf.
+        /// </summary>
+        [Test]
+        public void APlainDateLeavesTheMeaningToTheProject()
+            => Assert.That(Parse("fix this 20.08.26", DateOnlyNotation).Meaning, Is.Null);
+
         /// <summary>With nothing configured the text is left alone rather than mangled.</summary>
         [Test]
         public void AProjectWithoutNotationsKeepsTheWholeText()
@@ -96,8 +131,8 @@ namespace Base.ToolsPackage.Editor.Tests
             => TodoMetadataParser.Parse(message, Patterns(notations));
 
         /// <summary>Patterns carrying only the notations and the date format a test needs.</summary>
-        private static TodoPatterns Patterns(IReadOnlyList<string> notations)
-            => TodoPatterns.Create(new TodoPatternInput(NoTags, notations, DateFormats,
+        private static TodoPatterns Patterns(IReadOnlyList<string> notations) => TodoPatterns.Create(
+            new TodoPatternInput(NoTags, notations, DateFormats,
                 ETodoContinuation.SingleLine, false));
     }
 }

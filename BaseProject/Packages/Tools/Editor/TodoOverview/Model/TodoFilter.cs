@@ -30,8 +30,11 @@ namespace Base.ToolsPackage.Editor.TodoOverview.Model
         /// <summary>What the list is split into sections by.</summary>
         internal ETodoGrouping Grouping { get; set; }
 
-        /// <summary>Whether only items whose date has passed are shown.</summary>
-        internal bool OverdueOnly { get; set; }
+        /// <summary>
+        /// Whether only the items whose date is asking for attention are shown, meaning overdue ones
+        /// in a project that writes deadlines and stale ones in a project that writes dates down.
+        /// </summary>
+        internal bool AlertsOnly { get; set; }
 
         private readonly HashSet<string> _hiddenKeywords = new(StringComparer.OrdinalIgnoreCase);
 

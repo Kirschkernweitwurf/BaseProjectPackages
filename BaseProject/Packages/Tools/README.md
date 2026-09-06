@@ -61,7 +61,7 @@ The Unused Assets, Unused Scripts and Asset Naming windows all remember what you
 
 ## Todo Overview
 
-Lists every TODO, BUG, FIXME and whatever else the project marks its open work with. Items are searched, filtered by keyword, owner and due date, grouped, and opened at the exact line with a double click. Only the rows the scroll view shows are drawn, so a project with thousands of open items stays as responsive as one with ten.
+Lists every TODO, BUG, FIXME and whatever else the project marks its open work with. Items are searched, filtered by keyword, owner and date, grouped, and opened at the exact line with a double click. A project says whether its dates are deadlines or a note of when something was written, and an individual item can say so for itself, so overdue and stale never get mistaken for each other. Only the rows the scroll view shows are drawn, so a project with thousands of open items stays as responsive as one with ten.
 
 The keywords, the notation for owner and date, and the paths that are out of scope live in `ProjectSettings`, so they are version controlled and the whole project searches for the same things in the same notation.
 

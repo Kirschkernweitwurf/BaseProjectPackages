@@ -12,8 +12,8 @@ namespace Base.ToolsPackage.Editor.TodoOverview
 {
     /// <summary>
     /// Lists every TODO, BUG, FIXME and whatever else the project marks its open work with. The items
-    /// are searched, filtered by keyword, owner and due date, grouped, and opened at the exact line
-    /// with a double click.
+    /// are searched, filtered by keyword, owner and date, grouped, and opened at the exact line with a
+    /// double click.
     /// <para>
     /// Only the rows the scroll view actually shows are drawn, so a project with thousands of open
     /// items stays as responsive as one with ten.
@@ -36,8 +36,6 @@ namespace Base.ToolsPackage.Editor.TodoOverview
         private const float MinimumHeight = 340f;
         private const float MinimumWidth = 760f;
         private const string MultiLineSuffix = "  ...";
-        private const string OverdueLabel = "Overdue";
-        private const string OverdueTooltip = "Show only items whose date has passed";
         private const string OwnerFormat = "Owner: {0}";
         private const string OwnerTooltip = "Show only the items of one person";
         private const string PackagesLabel = "Packages";
@@ -74,9 +72,15 @@ namespace Base.ToolsPackage.Editor.TodoOverview
         private TodoPalette _palette;
         private Rect _searchRect;
         private Vector2 _scroll;
+
+        // Read on every scan rather than created once, so changing what a date means on the settings
+        // page reaches the list. Its default reading is the same one a fresh project starts on, which
+        // is what a restored window draws with until the first scan replaces it.
+        private TodoDateRules _dateRules;
+
         private float _listWidth;
         private float _viewHeight;
-        private int _overdueCount;
+        private int _alertCount;
         private int _selectedRow = -1;
         private int _visibleCount;
         private bool _needsQuery;
@@ -192,9 +196,12 @@ namespace Base.ToolsPackage.Editor.TodoOverview
             _entries.Clear();
             _entries.AddRange(TodoScanner.Scan(settings));
 
+            _dateRules = new TodoDateRules(settings.DateMeaning, settings.AgingAfterDays,
+                settings.StaleAfterDays);
+
             _counts = TodoQuery.CountKeywords(_entries);
             _owners = TodoQuery.CollectOwners(_entries);
-            _overdueCount = TodoQuery.CountOverdue(_entries);
+            _alertCount = TodoQuery.CountAlerts(_entries, _dateRules);
 
             // The person a filter points at can be gone after a rescan, which would leave the list
             // empty with no visible reason.
@@ -212,7 +219,7 @@ namespace Base.ToolsPackage.Editor.TodoOverview
 
         private void RunQuery()
         {
-            _groups = TodoQuery.Build(_entries, _filter, _palette);
+            _groups = TodoQuery.Build(_entries, _filter, _palette, _dateRules);
             _needsQuery = false;
 
             RebuildRows();
@@ -491,26 +498,32 @@ namespace Base.ToolsPackage.Editor.TodoOverview
                 _needsQuery = true;
             }
 
-            DrawOverduePill(x, y);
+            DrawAlertPill(x, y);
             DrawCount(strip);
 
             TodoChrome.DrawSeparator(new Rect(strip.x, strip.yMax - TodoStyles.SeparatorThickness, strip.width,
                 TodoStyles.SeparatorThickness));
         }
 
-        private void DrawOverduePill(float x, float y)
+        // Labelled from what the project's dates mean, because a pill reading Overdue over notes that
+        // record when they were written would be red on every item in the project and mean nothing.
+        private void DrawAlertPill(float x, float y)
         {
-            if (_overdueCount == 0)
+            if (_alertCount == 0)
                 return;
 
-            GUIContent content = new(string.Format(KeywordFormat, OverdueLabel, _overdueCount), OverdueTooltip);
+            ETodoDateMeaning meaning = _dateRules.DefaultMeaning;
+
+            GUIContent content = new(string.Format(KeywordFormat, TodoDateWords.Filter(meaning), _alertCount),
+                TodoDateWords.FilterTooltip(meaning));
+
             Rect pill = new(x, y, PillWidth(content), TodoStyles.ChipHeight);
 
-            if (!TodoChrome.DrawFilterPill(pill, content, TodoStyles.DateColor(ETodoDateState.Overdue),
-                    _filter.OverdueOnly))
+            if (!TodoChrome.DrawFilterPill(pill, content, TodoStyles.DateColor(ETodoDateState.Alert),
+                    _filter.AlertsOnly))
                 return;
 
-            _filter.OverdueOnly = !_filter.OverdueOnly;
+            _filter.AlertsOnly = !_filter.AlertsOnly;
             _needsQuery = true;
         }
 
@@ -537,7 +550,7 @@ namespace Base.ToolsPackage.Editor.TodoOverview
             _columns.Recalculate(width);
             _columns.ProcessDividers(area);
 
-            if (_columns.TryDrawTitles(area, _filter, out ETodoSort sort))
+            if (_columns.TryDrawTitles(area, _filter, _dateRules.DefaultMeaning, out ETodoSort sort))
             {
                 _filter.ApplySortClick(sort);
                 _needsQuery = true;
@@ -636,11 +649,12 @@ namespace Base.ToolsPackage.Editor.TodoOverview
             if (entry.RawDate.Length == 0)
                 return;
 
-            ETodoDateState state = TodoDateParser.Resolve(entry.Date);
+            ETodoDateState state = _dateRules.Resolve(entry);
 
             // The raw text moves to the tooltip rather than being dropped, so the notation the comment
             // was written in is still there to check when a date looks wrong.
-            TodoChrome.DrawPill(rect, new GUIContent(TodoDateLabel.Of(entry), entry.RawDate),
+            TodoChrome.DrawPill(rect, new GUIContent(TodoDateLabel.Of(entry),
+                    TodoDateLabel.TooltipOf(entry, _dateRules)),
                 TodoStyles.DateColor(state), TodoStyles.DateStyle(state));
         }
 

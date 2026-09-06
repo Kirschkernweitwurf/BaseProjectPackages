@@ -16,7 +16,6 @@ namespace Base.ToolsPackage.Editor.TodoOverview
     internal sealed class TodoColumns
     {
         private const string DateKey = "Base.ToolsPackage.TodoOverview.Column.Date";
-        private const string DateLabel = "Due";
         private const string KeywordKey = "Base.ToolsPackage.TodoOverview.Column.Keyword";
         private const string KeywordLabel = "Type";
         private const string LocationKey = "Base.ToolsPackage.TodoOverview.Column.Location";
@@ -115,9 +114,11 @@ namespace Base.ToolsPackage.Editor.TodoOverview
         /// </summary>
         /// <param name="row">The title row.</param>
         /// <param name="filter">What the list is currently sorted by, and in which direction.</param>
+        /// <param name="dateMeaning">What the project's dates mean, which titles the date column.</param>
         /// <param name="clicked">The order the clicked title stands for.</param>
         /// <returns><c>true</c> when a title was clicked.</returns>
-        internal bool TryDrawTitles(Rect row, TodoFilter filter, out ETodoSort clicked)
+        internal bool TryDrawTitles(Rect row, TodoFilter filter, ETodoDateMeaning dateMeaning,
+            out ETodoSort clicked)
         {
             clicked = filter.Sort;
 
@@ -127,7 +128,8 @@ namespace Base.ToolsPackage.Editor.TodoOverview
 
             hit |= TryDrawTitle(Cell(row, MessageRect(row)), MessageLabel, ETodoSort.Message, filter, ref clicked);
             hit |= TryDrawTitle(Cell(row, OwnerRect(row)), OwnerLabel, ETodoSort.Owner, filter, ref clicked);
-            hit |= TryDrawTitle(Cell(row, DateRect(row)), DateLabel, ETodoSort.Date, filter, ref clicked);
+            hit |= TryDrawTitle(Cell(row, DateRect(row)), TodoDateWords.Column(dateMeaning), ETodoSort.Date,
+                filter, ref clicked);
             hit |= TryDrawTitle(Cell(row, LocationRect(row)), LocationLabel, ETodoSort.Location, filter,
                 ref clicked);
 

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Base.EditorUIPackage.Editor;
 using Base.ToolsPackage.Editor.TodoOverview.Model;
-using Base.ToolsPackage.Editor.TodoOverview.Scanning;
 using UnityEngine;
 
 namespace Base.ToolsPackage.Editor.TodoOverview
@@ -25,16 +24,17 @@ namespace Base.ToolsPackage.Editor.TodoOverview
         /// <param name="entries">Everything the last scan found.</param>
         /// <param name="filter">What the user narrowed the list down to.</param>
         /// <param name="palette">The keyword colors and their configured order.</param>
+        /// <param name="rules">How this project reads a date.</param>
         /// <returns>The sections to draw, already sorted.</returns>
         internal static List<TodoGroup> Build(IReadOnlyList<TodoEntry> entries, TodoFilter filter,
-            TodoPalette palette)
+            TodoPalette palette, TodoDateRules rules)
         {
             Dictionary<string, List<TodoEntry>> buckets = new(StringComparer.Ordinal);
             List<string> labels = new();
 
             foreach (TodoEntry entry in entries)
             {
-                if (!Matches(entry, filter))
+                if (!Matches(entry, filter, rules))
                     continue;
 
                 string label = GroupLabel(entry, filter.Grouping);
@@ -107,16 +107,17 @@ namespace Base.ToolsPackage.Editor.TodoOverview
             return counts;
         }
 
-        /// <summary>Counts the items whose date has passed.</summary>
+        /// <summary>Counts the items whose date is asking for attention.</summary>
         /// <param name="entries">Everything the last scan found.</param>
-        /// <returns>The number of overdue items.</returns>
-        internal static int CountOverdue(IReadOnlyList<TodoEntry> entries)
+        /// <param name="rules">How this project reads a date.</param>
+        /// <returns>The number of overdue or stale items, depending on what the dates mean.</returns>
+        internal static int CountAlerts(IReadOnlyList<TodoEntry> entries, TodoDateRules rules)
         {
             int count = 0;
 
             foreach (TodoEntry entry in entries)
             {
-                if (TodoDateParser.Resolve(entry.Date) == ETodoDateState.Overdue)
+                if (rules.Resolve(entry) == ETodoDateState.Alert)
                     count++;
             }
 
@@ -140,13 +141,13 @@ namespace Base.ToolsPackage.Editor.TodoOverview
             ? Unassigned
             : entry.Owner;
 
-        private static bool Matches(TodoEntry entry, TodoFilter filter)
+        private static bool Matches(TodoEntry entry, TodoFilter filter, TodoDateRules rules)
         {
             if (!filter.IsKeywordVisible(entry.Keyword))
                 return false;
 
-            if (filter.OverdueOnly
-                && TodoDateParser.Resolve(entry.Date) != ETodoDateState.Overdue)
+            if (filter.AlertsOnly
+                && rules.Resolve(entry) != ETodoDateState.Alert)
                 return false;
 
             if (filter.Owner != TodoFilter.AnyOwner
@@ -222,8 +223,9 @@ namespace Base.ToolsPackage.Editor.TodoOverview
             return string.Compare(left.Owner, right.Owner, StringComparison.OrdinalIgnoreCase);
         }
 
-        // An item without a date says nothing about when it is due, so it sorts behind every item
-        // that does, rather than in front of the oldest one.
+        // Oldest first, which is the most overdue first for a deadline and the longest sitting there
+        // first for a written date. An item without a date says nothing either way, so it sorts behind
+        // every item that does rather than in front of the oldest one.
         private static int CompareDates(TodoEntry left, TodoEntry right)
         {
             if (left.Date.HasValue && right.Date.HasValue)

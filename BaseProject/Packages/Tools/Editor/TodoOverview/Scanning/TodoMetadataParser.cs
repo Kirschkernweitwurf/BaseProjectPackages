@@ -8,6 +8,10 @@ namespace Base.ToolsPackage.Editor.TodoOverview.Scanning
     /// Reads the responsible person and the date out of an item's text and hands back the message that
     /// is left. Each configured pattern is tried in turn and only counts when it fills something that
     /// is still missing, so a general pattern can complete what a more specific one did not carry.
+    /// <para>
+    /// A pattern says what its date means by which group it puts it in, so an item can override the
+    /// project's reading of a bare date without any new syntax being baked in here.
+    /// </para>
     /// </summary>
     internal static class TodoMetadataParser
     {
@@ -33,6 +37,7 @@ namespace Base.ToolsPackage.Editor.TodoOverview.Scanning
             string remaining = message;
             string owner = string.Empty;
             string rawDate = string.Empty;
+            ETodoDateMeaning? meaning = null;
 
             foreach (Regex pattern in patterns.Metadata)
             {
@@ -45,8 +50,8 @@ namespace Base.ToolsPackage.Editor.TodoOverview.Scanning
                 if (match == null || !match.Success)
                     continue;
 
-                string matchedOwner = Read(match, TodoPatterns.OwnerGroup);
-                string matchedDate = Read(match, TodoPatterns.DateGroup);
+                string matchedOwner = Read(match, TodoGroupNames.Owner);
+                string matchedDate = ReadDate(match, out ETodoDateMeaning? matchedMeaning);
 
                 bool addsOwner = owner.Length == 0 && matchedOwner.Length > 0;
                 bool addsDate = rawDate.Length == 0 && matchedDate.Length > 0;
@@ -58,7 +63,10 @@ namespace Base.ToolsPackage.Editor.TodoOverview.Scanning
                     owner = matchedOwner;
 
                 if (addsDate)
+                {
                     rawDate = matchedDate;
+                    meaning = matchedMeaning;
+                }
 
                 remaining = remaining.Remove(match.Index, match.Length);
             }
@@ -67,7 +75,7 @@ namespace Base.ToolsPackage.Editor.TodoOverview.Scanning
                 ? parsed
                 : null;
 
-            return new TodoMetadata(Clean(remaining), owner, rawDate, date);
+            return new TodoMetadata(Clean(remaining), owner, rawDate, date, meaning);
         }
 
         private static Match TryMatch(Regex pattern, string text)
@@ -80,6 +88,30 @@ namespace Base.ToolsPackage.Editor.TodoOverview.Scanning
             {
                 return null;
             }
+        }
+
+        // A marked group is read before the plain one, so a pattern that carries both by accident
+        // still says something definite rather than depending on which group name sorts first.
+        private static string ReadDate(Match match, out ETodoDateMeaning? meaning)
+        {
+            string due = Read(match, TodoGroupNames.Due);
+
+            if (due.Length > 0)
+            {
+                meaning = ETodoDateMeaning.Due;
+                return due;
+            }
+
+            string written = Read(match, TodoGroupNames.Written);
+
+            if (written.Length > 0)
+            {
+                meaning = ETodoDateMeaning.Written;
+                return written;
+            }
+
+            meaning = null;
+            return Read(match, TodoGroupNames.Date);
         }
 
         private static string Read(Match match, string group)

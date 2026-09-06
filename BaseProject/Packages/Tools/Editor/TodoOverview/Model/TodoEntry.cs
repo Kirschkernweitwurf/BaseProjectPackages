@@ -26,6 +26,9 @@ namespace Base.ToolsPackage.Editor.TodoOverview.Model
         /// <summary>The parsed date, or null when the item carries none.</summary>
         internal DateTime? Date { get; }
 
+        /// <summary>What the date means, or null when the item did not say and the project decides.</summary>
+        internal ETodoDateMeaning? DateMeaning { get; }
+
         /// <summary>The date exactly as it was written, shown when it could not be parsed.</summary>
         internal string RawDate { get; }
 
@@ -65,6 +68,7 @@ namespace Base.ToolsPackage.Editor.TodoOverview.Model
             Details = details;
             Owner = metadata.Owner;
             Date = metadata.Date;
+            DateMeaning = metadata.Meaning;
             RawDate = metadata.RawDate;
             AssetPath = assetPath;
             Line = line;

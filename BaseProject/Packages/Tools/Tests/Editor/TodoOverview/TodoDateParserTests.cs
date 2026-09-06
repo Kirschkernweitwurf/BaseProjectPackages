@@ -1,14 +1,13 @@
 using System;
-using Base.ToolsPackage.Editor.TodoOverview.Model;
 using Base.ToolsPackage.Editor.TodoOverview.Scanning;
 using NUnit.Framework;
 
 namespace Base.ToolsPackage.Editor.Tests
 {
     /// <summary>
-    /// Covers how a date in a comment is read and where it lands relative to today. The whole point of
-    /// configured formats is that 08.09.26 means different days in different notations, so a parser
-    /// that guesses instead of following the project's order colors the wrong items overdue.
+    /// Covers how a date in a comment is read. The whole point of configured formats is that 08.09.26
+    /// means different days in different notations, so a parser that guesses instead of following the
+    /// project's order dates half the list wrong.
     /// </summary>
     public sealed class TodoDateParserTests
     {
@@ -39,25 +38,25 @@ namespace Base.ToolsPackage.Editor.Tests
             Assert.That(monthFirst, Is.EqualTo(new DateTime(2026, 8, 9)));
         }
 
-        /// <summary>Surrounding space is punctuation, not part of the date.</summary>
+        /// <summary>Whitespace around a date is the comment's, not the date's.</summary>
         [Test]
-        public void SurroundingSpaceIsIgnored()
+        public void SurroundingWhitespaceIsIgnored()
         {
             Assert.That(TodoDateParser.TryParse("  08.09.26  ", DayFirstFormats, out DateTime date), Is.True);
             Assert.That(date, Is.EqualTo(new DateTime(2026, 9, 8)));
         }
 
         /// <summary>
-        /// With no formats configured the parser still reads what it can, so a project that never set
-        /// any is not left with every date unread.
+        /// A project that configured no formats still gets the unambiguous notations, so the tool is
+        /// useful before anyone opens its settings page.
         /// </summary>
         [Test]
         public void AnUnconfiguredProjectStillReadsAnUnambiguousDate()
             => Assert.That(TodoDateParser.TryParse("2026-09-08", NoFormats, out DateTime _), Is.True);
 
         /// <summary>
-        /// Text that is not a date has to be refused rather than turned into one, because the raw text
-        /// is kept and shown and a wrong date would silently replace it.
+        /// Words are left to the raw text rather than turned into a date, because a date invented here
+        /// would color an item by a day nobody wrote.
         /// </summary>
         [Test]
         public void TextThatIsNotADateIsRefused()
@@ -66,43 +65,12 @@ namespace Base.ToolsPackage.Editor.Tests
             Assert.That(date, Is.EqualTo(default(DateTime)));
         }
 
-        /// <summary>Nothing in means nothing out, not a crash.</summary>
+        /// <summary>Nothing at all is not a date either.</summary>
         [Test]
         public void AMissingDateIsRefused()
         {
             Assert.That(TodoDateParser.TryParse(null, DayFirstFormats, out DateTime _), Is.False);
             Assert.That(TodoDateParser.TryParse("   ", DayFirstFormats, out DateTime _), Is.False);
         }
-
-        /// <summary>An item with no date is not overdue, it is simply undated.</summary>
-        [Test]
-        public void AnItemWithoutADateHasNoState()
-            => Assert.That(TodoDateParser.Resolve(null), Is.EqualTo(ETodoDateState.None));
-
-        /// <summary>Yesterday is past due, which is the state the whole date column exists for.</summary>
-        [Test]
-        public void ADateInThePastIsOverdue()
-            => Assert.That(TodoDateParser.Resolve(DateTime.Today.AddDays(-1)), Is.EqualTo(ETodoDateState.Overdue));
-
-        /// <summary>
-        /// Today is its own state rather than overdue, so an item due today does not read as already
-        /// missed.
-        /// </summary>
-        [Test]
-        public void ADateOfTodayIsNotYetOverdue()
-            => Assert.That(TodoDateParser.Resolve(DateTime.Today), Is.EqualTo(ETodoDateState.Today));
-
-        /// <summary>Tomorrow is still ahead, whatever time of day it is compared at.</summary>
-        [Test]
-        public void ADateInTheFutureIsFuture()
-            => Assert.That(TodoDateParser.Resolve(DateTime.Today.AddDays(1)), Is.EqualTo(ETodoDateState.Future));
-
-        /// <summary>
-        /// The comparison is on the day, not the moment, so an item due later today is still due today
-        /// rather than in the future.
-        /// </summary>
-        [Test]
-        public void TheTimeOfDayDoesNotChangeTheState()
-            => Assert.That(TodoDateParser.Resolve(DateTime.Today.AddHours(23)), Is.EqualTo(ETodoDateState.Today));
     }
 }

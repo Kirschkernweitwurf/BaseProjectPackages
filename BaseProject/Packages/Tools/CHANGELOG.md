@@ -8,27 +8,28 @@ Changes made before 2.0.10 were not recorded.
 
 ## [Unreleased]
 
-### Fixed
+### Added
 
-- The Assembly Graph no longer offers a reference the compiler needs. It read the compiled
-  assembly reference table, which lists what the runtime has to load rather than what the
-  compilation was given, so anything the compiler folds away left no trace and was reported as
-  removable. Acting on that broke thirteen assemblies at once. Two more sources now carry a
-  reference: the ancestry of every assembly the metadata does name, which covers a base class,
-  an interface or a generic constraint reached through a third assembly, and the using
-  directives in the source, which cover a `const`, a `nameof` and everything else that becomes
-  a literal.
+- The Todo Overview asks what a date on an item means. A date can be a deadline or a note of
+  when something was written, and nothing about the date itself says which. Until now only the
+  first reading existed, so a project that writes down when it wrote a note had every item in
+  it red the day after it was written, which is the same as having no date column at all.
+  `What A Date Means` on the settings page picks the reading. `Due` behaves exactly as before.
+  `Written` leaves recent notes calm and flags them once they have been sitting there for the
+  configured number of days.
+- An item can say what its own date means, by putting it in a `due` or a `written` group
+  instead of the plain `date` group. Two default patterns come with it, so `TODO (due 01.10.26)`
+  and `TODO (Jonny, written 20.08.26)` are read without anyone touching the settings. That is
+  what lets one codebase carry both readings rather than having to choose.
 
 ### Changed
 
-- `Unused` is now `Possibly unused`, and the node explains that the listing is a reason to look
-  rather than proof. The three checks can still all miss, and a wrong removal is only visible
-  after a recompile.
-- `Clean Up All` is gone. One wrong entry stops its dependents from compiling, which hides the
-  rest of the damage until the first is fixed, so removals go one assembly per recompile now.
-- The toolbar has a `Restore Last` button. The asmdef this window rewrites is stored untouched
-  in session state first, so the edit survives the domain reload it triggers and can be put back
-  once the console says whether it was right.
+- The date column, the filter pill and the pill tooltips follow what the dates mean. The column
+  reads `Due` or `Written`, the pill reads `Overdue` or `Stale`, and hovering a date says how
+  far past it is in words next to the text the comment was written with.
+- Existing projects are upgraded once on load: the two thresholds are filled in and the two
+  patterns for a marked date are added, unless the project already reads one. Nothing that was
+  configured by hand is written over, and the step never runs twice.
 
 ## [3.0.0] - 2026-09-06
 

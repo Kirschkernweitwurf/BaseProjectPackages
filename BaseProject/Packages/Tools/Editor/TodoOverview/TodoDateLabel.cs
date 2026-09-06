@@ -20,6 +20,8 @@ namespace Base.ToolsPackage.Editor.TodoOverview
     /// </remarks>
     internal static class TodoDateLabel
     {
+        private const string TooltipFormat = "{0}  ({1})";
+
         /// <summary>The text shown on an item's date pill.</summary>
         /// <param name="entry">The item whose date is being drawn.</param>
         /// <returns>The date in the chosen notation, or the raw text when it could not be read.</returns>
@@ -37,6 +39,24 @@ namespace Base.ToolsPackage.Editor.TodoOverview
                     CultureInfo.CurrentCulture);
 
             return entry.Date.Value.ToString(ProjectFormat(settings), CultureInfo.InvariantCulture);
+        }
+
+        /// <summary>
+        /// What the pill says when it is hovered: where the date sits relative to today, and the text
+        /// it was written as, so a date that looks wrong can be checked against the comment itself.
+        /// </summary>
+        /// <param name="entry">The item whose date is being drawn.</param>
+        /// <param name="rules">How this project reads a date.</param>
+        /// <returns>The tooltip text.</returns>
+        internal static string TooltipOf(TodoEntry entry, TodoDateRules rules)
+        {
+            if (!entry.Date.HasValue)
+                return entry.RawDate;
+
+            string relative = TodoDateWords.Relative(TodoDateRules.DaysPast(entry.Date.Value),
+                rules.MeaningOf(entry));
+
+            return string.Format(TooltipFormat, relative, entry.RawDate);
         }
 
         // The same culture the formats are parsed with, so a project format round trips instead of

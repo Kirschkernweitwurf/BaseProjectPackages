@@ -222,22 +222,22 @@ namespace Base.ToolsPackage.Editor.TodoOverview
             : Chip;
 
         /// <summary>Color a date pill is drawn in.</summary>
-        /// <param name="state">Where the date sits relative to today.</param>
+        /// <param name="state">How loudly the date is asking to be looked at.</param>
         /// <returns>The fill color of the pill.</returns>
         internal static Color DateColor(ETodoDateState state) => state switch
         {
-            ETodoDateState.Overdue => EditorPalette.Danger,
-            ETodoDateState.Today => EditorPalette.Focus,
+            ETodoDateState.Alert => EditorPalette.Danger,
+            ETodoDateState.Warning => EditorPalette.Focus,
             _ => MutedChipColor()
         };
 
         /// <summary>Label style of a date pill, which has to stay readable on its fill.</summary>
-        /// <param name="state">Where the date sits relative to today.</param>
+        /// <param name="state">How loudly the date is asking to be looked at.</param>
         /// <returns>The style the date is drawn with.</returns>
         internal static GUIStyle DateStyle(ETodoDateState state) => state switch
         {
-            ETodoDateState.Overdue => ChipStyle(DateColor(state)),
-            ETodoDateState.Today => ChipStyle(DateColor(state)),
+            ETodoDateState.Alert => ChipStyle(DateColor(state)),
+            ETodoDateState.Warning => ChipStyle(DateColor(state)),
             _ => MutedChip
         };
 
