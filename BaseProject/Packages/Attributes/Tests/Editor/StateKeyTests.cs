@@ -1,4 +1,4 @@
-using Base.AttributesPackage.Editor.Core;
+using Base.AttributesPackage.Editor;
 using NUnit.Framework;
 
 namespace Base.AttributesPackage.Tests

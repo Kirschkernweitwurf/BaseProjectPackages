@@ -8,6 +8,23 @@ Changes made before 1.7.5 were not recorded.
 
 ## [Unreleased]
 
+## [1.8.5] - 2026-09-07
+
+### Changed
+
+- `StateKey` and `FirstDraw` sit in the namespace above the editor core. They were the only two things
+  the collections reached into it for, while the core reaches into the collections to draw a list, so
+  the two used each other in a circle. Every namespace under the editor already sees the one they are
+  in now, so nothing needed a using for it.
+
+### Fixed
+
+- Two drawers named their cast attribute `attribute`, which hides the one every drawer inherits and
+  forced them to write `this.attribute` to reach it. They call it `settings` like the rest.
+- `InfoBoxHandler.Order` names which of its two interfaces it inherits its documentation from.
+- Six handlers no longer name the drawers namespace they stopped using when the compact help box moved
+  out of it, and eight using blocks are back in order. Both were left behind by that move.
+
 ## [1.8.3] - 2026-09-06
 
 ### Added

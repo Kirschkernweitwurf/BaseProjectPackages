@@ -1,7 +1,6 @@
 using System;
-using Base.AttributesPackage.Editor.Core.Interfaces;
 using Base.AttributesPackage.Editor.Core;
-using Base.AttributesPackage.Editor.Drawers;
+using Base.AttributesPackage.Editor.Core.Interfaces;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;

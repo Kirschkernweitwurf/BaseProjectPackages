@@ -23,8 +23,8 @@ namespace Base.AttributesPackage.Editor.Drawers
                 return;
             }
 
-            AudioMixerGroupAttribute attribute = (AudioMixerGroupAttribute)this.attribute;
-            AudioMixer mixer = ResolveMixer(property, attribute.MixerField);
+            AudioMixerGroupAttribute settings = (AudioMixerGroupAttribute)attribute;
+            AudioMixer mixer = ResolveMixer(property, settings.MixerField);
             AudioMixerGroup[] groups = mixer == null
                 ? null
                 : mixer.FindMatchingGroups(string.Empty);

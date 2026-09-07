@@ -140,8 +140,7 @@ namespace Base.ToolsPackage.Editor.CodebaseGraph.Analysis
         /// caller is walking, so the loop breaks on its second step.
         /// </summary>
         /// <param name="ids">Stable ids of the entries.</param>
-        /// <returns>How many came back.</returns>
-        internal static int RestoreMany(IEnumerable<string> ids)
+        internal static void RestoreMany(IEnumerable<string> ids)
         {
             Refresh();
             Load();
@@ -156,8 +155,6 @@ namespace Base.ToolsPackage.Editor.CodebaseGraph.Analysis
 
             if (removed > 0)
                 Save();
-
-            return removed;
         }
 
         /// <summary>

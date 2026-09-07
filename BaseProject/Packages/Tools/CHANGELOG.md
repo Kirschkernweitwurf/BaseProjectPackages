@@ -8,6 +8,37 @@ Changes made before 2.0.10 were not recorded.
 
 ## [Unreleased]
 
+## [3.1.4]
+
+### Added
+
+- `ZooLayoutTests`, nineteen cases over where the asset zoo puts things. Both the arrangements
+  and the alignments are arithmetic over a count and a size, so neither needs a prefab or a
+  scene to answer, and a wrong one is not an exception but a zoo that looks nearly right.
+- `AssemblyEdgeRollUpTests`, five cases over which references the roll-up says are needed. The
+  report built on it tells you a declared reference can go, and acting on that is what stops a
+  build, so the quiet case is the one worth pinning.
+ - 2026-09-07
+
+### Changed
+
+- `Base.ToolsPackage.Editor.AssetZoo` is reachable from the test assembly, through an
+  `AssemblyInfo` rather than by widening anything.
+- `DismissalStore.RestoreMany` returns nothing. Its count could never differ from the list it was
+  handed, since the caller builds that list from entries it just read, and nobody used it.
+
+### Fixed
+
+- `FindingBaselineData.Ids` records that JsonUtility uses a field's own name as the key, so the
+  one serialized field that does not follow the naming rule cannot be renamed without breaking
+  every baseline written before it.
+- The assembly edge roll-up counts base types. Naming a class makes the compiler load everything
+  it derives from, so an assembly needs a reference to whatever declares the base even though
+  it writes that name nowhere. Nine such references were listed as removable, and removing one
+  of them did stop the build.
+- Five locals and parameters across the assembly graph, the naming window, the static reset
+  checker and the two audio rule views no longer hide members of the types they sit in.
+
 ## [3.1.2] - 2026-09-06
 
 ### Added

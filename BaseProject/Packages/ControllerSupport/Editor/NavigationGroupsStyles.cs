@@ -26,7 +26,7 @@ namespace Base.ControllerSupportPackage.Editor
         internal const float FixButtonWidth = 40f;
 
         /// <summary>Smallest width any badge column takes.</summary>
-        internal const float MinBadgeWidth = 64f;
+        private const float MinBadgeWidth = 64f;
 
         /// <summary>Smallest height of the window.</summary>
         internal const float MinWindowHeight = 200f;

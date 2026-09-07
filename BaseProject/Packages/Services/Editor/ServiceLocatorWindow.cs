@@ -444,13 +444,13 @@ namespace Base.ServicesPackage.Editor
 
         // The arrow sits directly after the title rather than at the far edge of the cell, so it
         // reads as belonging to that word and does not drift away when a column is widened.
-        private void DrawSortableTitle(Rect cell, string title, EServiceColumn column, Rect header)
+        private void DrawSortableTitle(Rect cell, string text, EServiceColumn column, Rect header)
         {
-            GUI.Label(cell, title, _styles.Header);
+            GUI.Label(cell, text, _styles.Header);
 
             if (_sorting.Column == column)
             {
-                float titleWidth = _styles.Header.CalcSize(new GUIContent(title)).x;
+                float titleWidth = _styles.Header.CalcSize(new GUIContent(text)).x;
                 Rect arrow = new(cell.x + titleWidth + EditorTableStyles.HeaderArrowGap, cell.y,
                     EditorMetrics.SortArrowWidth, cell.height);
 
@@ -654,13 +654,13 @@ namespace Base.ServicesPackage.Editor
 
             GUI.DrawTexture(icon, EditorIcons.Script, ScaleMode.ScaleToFit, true, 0f, EditorPalette.DimText, 0f, 0f);
 
-            Rect title = new(area.x, icon.yMax + EditorTableStyles.EmptyLineGap, area.width,
+            Rect titleArea = new(area.x, icon.yMax + EditorTableStyles.EmptyLineGap, area.width,
                 EditorMetrics.RowHeight);
 
-            GUI.Label(title, message, _styles.EmptyTitle);
+            GUI.Label(titleArea, message, _styles.EmptyTitle);
 
-            Rect hintArea = new(area.center.x - area.width * 0.25f, title.yMax, area.width * 0.5f,
-                area.yMax - title.yMax);
+            Rect hintArea = new(area.center.x - area.width * 0.25f, titleArea.yMax, area.width * 0.5f,
+                area.yMax - titleArea.yMax);
 
             GUI.Label(hintArea, hint, _styles.EmptyHint);
         }

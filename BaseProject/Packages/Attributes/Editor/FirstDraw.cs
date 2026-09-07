@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEditor;
 
-namespace Base.AttributesPackage.Editor.Core
+namespace Base.AttributesPackage.Editor
 {
     /// <summary>
     /// Tracks which properties have been drawn at least once this editor session, so a default expanded

@@ -593,10 +593,10 @@ namespace Base.ToolsPackage.Editor.AudioRules.Window
             _message.style.display = DisplayStyle.None;
         }
 
-        private void ShowMessage(string glyph, string title, string body, string variant, string buttonText,
+        private void ShowMessage(string glyph, string heading, string body, string variant, string buttonText,
             Action onClick)
         {
-            _message.Show(glyph, title, body, variant, buttonText, onClick);
+            _message.Show(glyph, heading, body, variant, buttonText, onClick);
             _message.style.display = DisplayStyle.Flex;
             _table.style.display = DisplayStyle.None;
         }

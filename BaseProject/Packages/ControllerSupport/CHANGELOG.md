@@ -8,6 +8,12 @@ Changes made before 1.6.5 were not recorded.
 
 ## [Unreleased]
 
+## [1.7.6] - 2026-09-07
+
+### Changed
+
+- The minimum badge width is private. Only the style class it sits in ever read it.
+
 ## [1.7.4]
 ### Changed
 

@@ -16,7 +16,12 @@ namespace Base.ToolsPackage.Editor.CodebaseGraph.Architecture
     /// once per distinct target type, however many call sites there are, because the question a rule
     /// asks is how much of the other assembly this one actually needs.
     /// <br/><br/>
-    /// The third decision is what an inherited interface counts as. The scan records the relation from
+    /// The third decision is that a base type counts. Using a type means loading its base chain, so
+    /// the compiler needs a reference to whatever declares it even when this assembly never writes the
+    /// name. Those hops are added as edges of their own, or the report would say a reference nothing
+    /// names can go, and removing it would stop the build.
+    /// <br/><br/>
+    /// The fourth decision is what an inherited interface counts as. The scan records the relation from
     /// <c>Type.GetInterfaces</c>, which returns everything a base type carries as well as what the type
     /// declares itself, so a subclass looks like it reaches an interface it never names. The compiler
     /// needs no reference for that, which is why an edge built from it lands in the report's
@@ -25,6 +30,9 @@ namespace Base.ToolsPackage.Editor.CodebaseGraph.Architecture
     /// </summary>
     internal static class AssemblyEdgeRollUp
     {
+        /// <summary>What one base type hop is worth: the single relation the compiler needs it for.</summary>
+        private const int BaseTypeRelationCount = 1;
+
         /// <summary>How many relations a purely inherited interface leaves behind: the inheritance one.</summary>
         private const int InheritedInterfaceRelationCount = 1;
 
@@ -85,6 +93,55 @@ namespace Base.ToolsPackage.Editor.CodebaseGraph.Architecture
 
                 builder.Add(ResolveOutermost(graph, target, outermost).FullName,
                     usage.Value,
+                    source.IsExcludedFromFindings);
+
+                CollectBaseChain(graph, source, target, outermost, builders);
+            }
+        }
+
+        /// <summary>
+        /// Records the assemblies behind a used type's base chain. Naming a type is enough to make the
+        /// compiler load everything it derives from, so an assembly that uses one class needs a
+        /// reference to whatever declares its base even though it writes that name nowhere.
+        /// </summary>
+        /// <param name="graph">The scan result the chain is walked in.</param>
+        /// <param name="source">The type doing the using.</param>
+        /// <param name="target">The type being used, whose bases are walked.</param>
+        /// <param name="outermost">Cache of nested type owners.</param>
+        /// <param name="builders">The edges gathered so far.</param>
+        private static void CollectBaseChain(CodebaseGraphData graph,
+            TypeNodeInfo source,
+            TypeNodeInfo target,
+            Dictionary<TypeKey, TypeNodeInfo> outermost,
+            Dictionary<AssemblyEdgeKey, EdgeBuilder> builders)
+        {
+            TypeNodeInfo current = target;
+            HashSet<TypeKey> seen = new();
+
+            while (current.BaseTypeKey.IsValid && seen.Add(current.Key))
+            {
+                // A base outside the scan ends the walk. Unity's own types land here, which is correct:
+                // an engine reference is not something an assembly definition declares.
+                TypeNodeInfo baseType = graph.FindType(current.BaseTypeKey);
+
+                if (baseType == null)
+                    return;
+
+                current = baseType;
+
+                if (string.Equals(source.AssemblyName, current.AssemblyName, StringComparison.Ordinal))
+                    continue;
+
+                AssemblyEdgeKey key = new(source.AssemblyName, current.AssemblyName);
+
+                if (!builders.TryGetValue(key, out EdgeBuilder builder))
+                {
+                    builder = new EdgeBuilder(key);
+                    builders[key] = builder;
+                }
+
+                builder.Add(ResolveOutermost(graph, current, outermost).FullName,
+                    BaseTypeRelationCount,
                     source.IsExcludedFromFindings);
             }
         }

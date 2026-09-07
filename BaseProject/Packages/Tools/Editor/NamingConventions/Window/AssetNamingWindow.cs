@@ -361,9 +361,10 @@ namespace Base.ToolsPackage.Editor.NamingConventions.Window
             Rect goToRect = ButtonRect(row, pathRect.xMax + AssetNamingGui.Padding, GoToWidth);
             Rect restoreRect = ButtonRect(row, goToRect.xMax + AssetNamingGui.Padding, RestoreWidth);
 
-            GUIContent name = new(Path.GetFileNameWithoutExtension(path), AssetDatabase.GetCachedIcon(path), path);
+            GUIContent asset = new(Path.GetFileNameWithoutExtension(path), AssetDatabase.GetCachedIcon(path),
+                path);
 
-            GUI.Label(Columns.Cell(row, 0), name, AssetNamingGui.NameStyle);
+            GUI.Label(Columns.Cell(row, 0), asset, AssetNamingGui.NameStyle);
             GUI.Label(pathRect, path, AssetNamingGui.DetailStyle);
 
             if (GUI.Button(goToRect, GoToContent, EditorStyles.miniButton))
