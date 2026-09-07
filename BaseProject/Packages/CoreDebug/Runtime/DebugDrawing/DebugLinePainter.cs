@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Base.CorePackage.DebugDrawing
+namespace Base.CoreDebugPackage.DebugDrawing
 {
     /// <summary>
     /// Draws queued line segments with GL, one pass per depth mode. Owns the two materials the

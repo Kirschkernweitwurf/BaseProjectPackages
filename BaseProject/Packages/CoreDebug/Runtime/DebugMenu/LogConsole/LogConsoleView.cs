@@ -8,7 +8,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Base.CorePackage.DebugMenu.LogConsole
+namespace Base.CoreDebugPackage.DebugMenu.LogConsole
 {
     /// <summary>
     /// Menu that mirrors Unity's log stream, including <see cref="CustomLogger"/> output. Capturing

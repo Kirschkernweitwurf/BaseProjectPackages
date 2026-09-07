@@ -1,7 +1,7 @@
 using System;
 using System.Reflection;
 
-namespace Base.CorePackage.DebugMenu.CheatConsole
+namespace Base.CoreDebugPackage.DebugMenu.CheatConsole
 {
     /// <summary>
     /// Immutable data describing a cheat command and how to invoke it.

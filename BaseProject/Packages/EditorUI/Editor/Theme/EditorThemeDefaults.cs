@@ -46,7 +46,7 @@ namespace Base.EditorUIPackage.Editor
             6f,
             12f,
             1f,
-            8f,
+            7f,
             4f,
             15);
 

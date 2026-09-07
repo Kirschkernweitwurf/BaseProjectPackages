@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Base.CorePackage.DebugDrawing
+namespace Base.CoreDebugPackage.DebugDrawing
 {
     /// <summary>
     /// Draws queued labels as screen space text. Owns the style and the content it reuses, so a

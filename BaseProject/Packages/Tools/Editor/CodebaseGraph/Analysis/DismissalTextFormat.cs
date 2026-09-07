@@ -40,31 +40,33 @@ namespace Base.ToolsPackage.Editor.CodebaseGraph.Analysis
             return builder.ToString();
         }
 
-        /// <summary>Reads instruction lines and applies them.</summary>
+        /// <summary>
+        /// Reads instruction lines and applies them, reporting on each one.
+        /// </summary>
         /// <param name="text">The lines to read.</param>
-        /// <param name="applied">Receives how many lines changed something.</param>
-        /// <param name="ignored">Receives how many lines could not be understood or changed nothing.</param>
-        internal static void Apply(string text, out int applied, out int ignored)
+        /// <returns>One result per instruction line, in the order they were written.</returns>
+        internal static IReadOnlyList<DismissalLineResult> Apply(string text)
         {
-            applied = 0;
-            ignored = 0;
+            List<DismissalLineResult> results = new();
 
             if (string.IsNullOrEmpty(text))
-                return;
+                return results;
 
-            foreach (string raw in text.Split(LineBreak))
+            string[] lines = text.Split(LineBreak);
+
+            for (int i = 0; i < lines.Length; i++)
             {
-                string line = raw.Trim();
+                string line = lines[i].Trim();
 
                 // Blank lines and comments keep the format readable, so they are simply passed over.
+                // They are not reported either, or a commented block would read as dozens of failures.
                 if (line.Length == 0 || line[0] == CommentMarker)
                     continue;
 
-                if (ApplyLine(line))
-                    applied++;
-                else
-                    ignored++;
+                results.Add(new DismissalLineResult(i + 1, line, ApplyLine(line)));
             }
+
+            return results;
         }
 
         private static void AppendAll(StringBuilder builder, string verb, IReadOnlyCollection<string> ids)
@@ -81,37 +83,45 @@ namespace Base.ToolsPackage.Editor.CodebaseGraph.Analysis
             }
         }
 
-        private static bool ApplyLine(string line)
+        private static EDismissalOutcome ApplyLine(string line)
         {
             int split = line.IndexOf(VerbSeparator);
+
             if (split <= 0)
-                return false;
+                return EDismissalOutcome.UnknownVerb;
 
             string verb = line[..split];
             string id = line[(split + 1)..].Trim();
 
+            // The verb is read first, so a line with both a bad verb and a bad id is reported as the
+            // bad verb. Fixing that one is what makes the rest of the line worth looking at.
+            if (verb != DismissVerb
+                && verb != DismissWithContentsVerb
+                && verb != RestoreVerb
+                && verb != RestoreWithContentsVerb)
+                return EDismissalOutcome.UnknownVerb;
+
             if (!GraphIdentity.IsValid(id))
-                return false;
+                return EDismissalOutcome.UnreadableId;
 
             switch (verb)
             {
                 case DismissVerb:
-                    DismissalStore.Dismiss(id, false);
-                    return true;
+                    return Outcome(DismissalStore.Dismiss(id, false), EDismissalOutcome.AlreadyDismissed);
 
                 case DismissWithContentsVerb:
-                    DismissalStore.Dismiss(id, true);
-                    return true;
+                    return Outcome(DismissalStore.Dismiss(id, true), EDismissalOutcome.AlreadyDismissed);
 
                 case RestoreVerb:
-                    return DismissalStore.Restore(id);
-
-                case RestoreWithContentsVerb:
-                    return DismissalStore.RestoreWithContents(id) > 0;
+                    return Outcome(DismissalStore.Restore(id), EDismissalOutcome.NotDismissed);
 
                 default:
-                    return false;
+                    return Outcome(DismissalStore.RestoreWithContents(id) > 0, EDismissalOutcome.NotDismissed);
             }
         }
+
+        private static EDismissalOutcome Outcome(bool changed, EDismissalOutcome unchanged) => changed
+            ? EDismissalOutcome.Applied
+            : unchanged;
     }
 }

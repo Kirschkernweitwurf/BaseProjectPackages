@@ -1,6 +1,6 @@
-using Base.CorePackage.DebugMenu.CheatConsole;
+using Base.CoreDebugPackage.DebugDrawing;
 
-namespace Base.CorePackage.DebugDrawing
+namespace Base.CoreDebugPackage.DebugMenu.CheatConsole
 {
     /// <summary>
     /// Exposes <see cref="DebugDraw"/> to the cheat console, so drawing can be silenced or cleared

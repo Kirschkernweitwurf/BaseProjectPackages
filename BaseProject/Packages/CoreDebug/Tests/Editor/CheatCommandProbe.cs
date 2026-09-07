@@ -1,6 +1,6 @@
 using System;
 
-namespace Base.CorePackage.Debug.Tests
+namespace Base.CoreDebugPackage.Tests
 {
     /// <summary>
     /// The object the cheat console tests point their commands at. One method per case the console has

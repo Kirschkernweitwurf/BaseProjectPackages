@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
-namespace Base.CorePackage.DebugMenu
+namespace Base.CoreDebugPackage.DebugMenu
 {
     /// <summary>
     /// Debug menu that hosts the cheat console and the log console. It is toggled by input and

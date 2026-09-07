@@ -105,17 +105,21 @@ namespace Base.ToolsPackage.Editor.CodebaseGraph.Analysis
         /// <summary>Sets an entry aside.</summary>
         /// <param name="id">Stable id of the entry.</param>
         /// <param name="includeContents">True to hide everything inside it as well.</param>
-        internal static void Dismiss(string id, bool includeContents)
+        /// <returns>True when this was not already dismissed that way.</returns>
+        internal static bool Dismiss(string id, bool includeContents)
         {
             Refresh();
             Load();
 
-            if (includeContents)
-                Tree.Add(id);
-            else
-                Own.Add(id);
+            // Whether the set changed, so a caller can tell a new decision from one already recorded.
+            bool added = includeContents
+                ? Tree.Add(id)
+                : Own.Add(id);
 
-            Save();
+            if (added)
+                Save();
+
+            return added;
         }
 
         /// <summary>Brings one dismissed entry back, whichever way it was dismissed.</summary>

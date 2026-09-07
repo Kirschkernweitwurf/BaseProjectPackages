@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.CorePackage.DebugDrawing
+namespace Base.CoreDebugPackage.DebugDrawing
 {
     /// <summary>
     /// One world space line segment waiting to be drawn, together with the lifetime it was queued with.

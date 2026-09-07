@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Base.UtilityPackage.Logging;
 using UnityEngine;
 
-namespace Base.CorePackage.DebugDrawing
+namespace Base.CoreDebugPackage.DebugDrawing
 {
     /// <summary>
     /// Holds every command queued through <see cref="DebugDraw"/> until its duration is up.

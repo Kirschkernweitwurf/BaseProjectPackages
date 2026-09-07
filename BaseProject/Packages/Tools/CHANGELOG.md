@@ -8,6 +8,22 @@ Changes made before 2.0.10 were not recorded.
 
 ## [Unreleased]
 
+## [3.1.5] - 2026-09-07
+
+### Added
+
+- `DismissalTextFormatTests`, thirteen cases over what the dismissal reader says about each line.
+
+### Changed
+
+- Updating dismissals names every line that changed nothing and why, instead of counting them. A line
+  that did nothing because the entry was already set aside is not a problem; one that did nothing
+  because the id was mistyped is, and a single count could not tell them apart. Four outcomes are
+  reported now: already dismissed, not dismissed so nothing to restore, an unknown verb, and an id
+  with no recognized prefix.
+- `DismissalStore.Dismiss` says whether it changed anything, so pasting the same block twice reads as
+  nothing to do rather than as work done.
+
 ## [3.1.4]
 
 ### Added

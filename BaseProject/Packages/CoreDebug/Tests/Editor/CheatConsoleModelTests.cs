@@ -2,12 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using Base.CorePackage.DebugMenu.CheatConsole;
+using Base.CoreDebugPackage.DebugMenu.CheatConsole;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 
-namespace Base.CorePackage.Debug.Tests
+namespace Base.CoreDebugPackage.Tests
 {
     /// <summary>
     /// Covers the console's job between the text a player types and the method that runs: splitting
