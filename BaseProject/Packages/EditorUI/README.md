@@ -68,6 +68,36 @@ The preview at the top of the page is a real list window drawn from the real sty
 
 Each of the two editor skins carries its own finished colors rather than a shared color plus an opacity, so changing one skin never moves the other. What used to be written as a neutral overlay is simply white or black at a low opacity in the dark and light sets.
 
+### Presets
+
+Eight looks to start from, named after the pigment or stone each one is built on, shown as two rows
+of four under the preview.
+
+| | | |
+|---|---|---|
+| **Slate** | The Base look | Blue-grey stone, near-neutral walls under a blue accent |
+| **Onyx** | Most legible | Black on white, squarer corners and heavier hairlines |
+| **Graphite** | No color at all | Walls and text achromatic, states set apart by lightness |
+| **Verdigris** | Red-green safe | The patina on copper. Teal, gold and violet instead of green, amber and red |
+| **Cobalt** | Blue and orange | The pair that survives every deficiency, including the blue-yellow loss most people acquire with age |
+| **Quartz** | Pink and soft | Rose quartz, low glare, for a long session |
+| **Amber** | Candlelight | The darkest of the eight, warm walls, warm off-white text, soft corners |
+| **Malachite** | Quiet | Green stone, low saturation, calmer than the scene view beside it |
+
+A preset is not just an accent color. Four things vary: how much hue is in the walls, from none at
+all in Graphite to a quarter in Cobalt and Amber; how dark those walls are, with Amber the darkest by
+a clear step; how warm the text is, since a warm theme with grey text does not read as warm; and how
+it is built, with Onyx squaring its corners and thickening its hairlines while Amber softens both.
+
+Every color is fitted to a contrast target rather than picked by eye, measured against both WCAG 2
+and APCA. Every preset reaches Lc 90 on body text and Lc 60 on secondary text and status colors, and
+Onyx reaches Lc 100 and Lc 75.
+
+The three status colors are also staggered in lightness rather than all fitted to one target. Three
+colors at the same contrast level are the same brightness by construction, so the moment hue is lost
+they collapse into one. That is a greyscale screenshot, a projector with the color turned down, or a
+reader who sees no color at all.
+
 ### How a change reaches a window
 
 `EditorThemeProvider` caches the resolved look, because a list window reads several values per row per repaint. Changing anything calls `NotifyChanged`, which drops the cache, raises `Revision` by one and repaints every view.

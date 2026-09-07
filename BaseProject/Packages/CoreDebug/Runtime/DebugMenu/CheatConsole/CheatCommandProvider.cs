@@ -8,7 +8,7 @@ using Base.UtilityPackage.Logging;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Base.CorePackage.DebugMenu.CheatConsole
+namespace Base.CoreDebugPackage.DebugMenu.CheatConsole
 {
     /// <summary>
     /// Provides discovery of cheat commands from assemblies and scene objects.

@@ -13,8 +13,8 @@ stripping it.
 - `Base.TweeningPackage` for the menu open and close animations
 - `Base.UtilityPackage` for logging and the pooling helpers
 - `Base.AttributesPackage` for inspector attributes such as `[Required]`
-- Assemblies: `Base.CorePackage.DebugMenu`, `Base.CorePackage.DebugDrawing` and
-  `Base.CorePackage.Debug.Tests`
+- Assemblies: `Base.CoreDebugPackage.DebugMenu`, `Base.CoreDebugPackage.DebugDrawing` and
+  `Base.CoreDebugPackage.Tests`
 
 The debug menu, cheat console and log console prefabs ship in `Base.ContentPackage`.
 
@@ -42,6 +42,7 @@ and `debugdraw_clear` and `debugdraw_enabled` control it from the cheat console.
 
 ## Namespaces
 
-The types keep the namespaces they had inside `Base Core`, so moving to this package changes
-nothing in code that already uses them. `Base.CorePackage.DebugMenu` and
-`Base.CorePackage.DebugDrawing`.
+`Base.CoreDebugPackage.DebugMenu` and `Base.CoreDebugPackage.DebugDrawing`, matching the package
+they are in. They kept the `Base.CorePackage` names for a while after being carved out of
+`Base Core`, which read as though this were still part of that package rather than one built on
+top of it.

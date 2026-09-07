@@ -2,7 +2,7 @@ using Base.UtilityPackage.Logging;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-namespace Base.CorePackage.DebugDrawing
+namespace Base.CoreDebugPackage.DebugDrawing
 {
     /// <summary>
     /// Builds the vertex colored material the line pass draws with, either depth tested or drawn

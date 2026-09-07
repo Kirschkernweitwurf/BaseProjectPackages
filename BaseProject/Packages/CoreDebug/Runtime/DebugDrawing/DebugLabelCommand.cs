@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.CorePackage.DebugDrawing
+namespace Base.CoreDebugPackage.DebugDrawing
 {
     /// <summary>
     /// One piece of text waiting to be drawn at a world space position, together with the lifetime

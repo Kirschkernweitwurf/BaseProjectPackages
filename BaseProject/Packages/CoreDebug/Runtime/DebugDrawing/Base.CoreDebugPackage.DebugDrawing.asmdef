@@ -1,8 +1,7 @@
 {
-  "name": "Base.CorePackage.DebugDrawing",
-  "rootNamespace": "Base.CorePackage.DebugDrawing",
+  "name": "Base.CoreDebugPackage.DebugDrawing",
+  "rootNamespace": "Base.CoreDebugPackage.DebugDrawing",
   "references": [
-    "GUID:af8faaf5130f448c85d671dfbe632aad",
     "GUID:922d81cfb9ff6984da4cb2213b66a375"
   ],
   "includePlatforms": [],

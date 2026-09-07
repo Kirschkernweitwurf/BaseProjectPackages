@@ -18,6 +18,7 @@ namespace Base.EditorUIPackage.Editor.Tests
     {
         private const float BodyTextContrast = 4.5f;
         private const float LegibleTextContrast = 7f;
+        private const float StatusLightnessGap = 0.06f;
         private const int SwatchCount = 5;
 
         /// <summary>Body text clears the accessibility target against the window fill.</summary>
@@ -64,7 +65,7 @@ namespace Base.EditorUIPackage.Editor.Tests
         [TestCase(false)]
         public void TheMostLegiblePresetReachesTheHigherTarget(bool isDarkMode)
         {
-            EditorThemeColors colors = EditorThemePresets.CreateColors(EEditorThemePreset.Ink, isDarkMode);
+            EditorThemeColors colors = EditorThemePresets.CreateColors(EEditorThemePreset.Onyx, isDarkMode);
 
             Assert.That(ContrastRatio.Between(colors.Text, colors.Background),
                 Is.GreaterThanOrEqualTo(LegibleTextContrast));
@@ -146,8 +147,51 @@ namespace Base.EditorUIPackage.Editor.Tests
         /// <summary>The same preset always produces the same colors.</summary>
         [Test]
         public void ThePresetsAreStable() => Assert.That(
-            EditorThemePresets.CreateColors(EEditorThemePreset.Harbor, true).Text,
-            Is.EqualTo(EditorThemePresets.CreateColors(EEditorThemePreset.Harbor, true).Text));
+            EditorThemePresets.CreateColors(EEditorThemePreset.Verdigris, true).Text,
+            Is.EqualTo(EditorThemePresets.CreateColors(EEditorThemePreset.Verdigris, true).Text));
+
+        /// <summary>
+        /// The three status colors differ in lightness, not only in hue.
+        /// </summary>
+        /// <remarks>
+        /// Three colors fitted to one contrast target are the same brightness by construction, so the
+        /// moment hue is lost they collapse into one. That is a greyscale screenshot, a projector with
+        /// the color turned down, or a reader who sees no color at all. This is the cheapest cue that
+        /// survives all three.
+        /// </remarks>
+        /// <param name="preset">The palette under test.</param>
+        /// <param name="isDarkMode">Which editor skin the palette is sampled for.</param>
+        [TestCaseSource(nameof(EveryPresetAndSkin))]
+        public void TheStatusColorsDifferInLightness(EEditorThemePreset preset, bool isDarkMode)
+        {
+            EditorThemeColors colors = EditorThemePresets.CreateColors(preset, isDarkMode);
+            float[] levels =
+            {
+                Luminance(colors.Success),
+                Luminance(colors.Warning),
+                Luminance(colors.Danger)
+            };
+
+            for (int i = 0; i < levels.Length; i++)
+            {
+                for (int j = i + 1; j < levels.Length; j++)
+                    Assert.That(Mathf.Abs(levels[i] - levels[j]), Is.GreaterThan(StatusLightnessGap));
+            }
+        }
+
+        /// <summary>
+        /// Secondary text is a step below body text rather than the same color, or the hierarchy the
+        /// two exist to draw is not there at all.
+        /// </summary>
+        /// <param name="preset">The palette under test.</param>
+        /// <param name="isDarkMode">Which editor skin the palette is sampled for.</param>
+        [TestCaseSource(nameof(EveryPresetAndSkin))]
+        public void SecondaryTextIsAStepBelowBodyText(EEditorThemePreset preset, bool isDarkMode)
+        {
+            EditorThemeColors colors = EditorThemePresets.CreateColors(preset, isDarkMode);
+
+            Assert.That(colors.SecondaryText, Is.Not.EqualTo(colors.Text));
+        }
 
         /// <summary>Every preset, once for the dark skin and once for the light one.</summary>
         private static IEnumerable<TestCaseData> EveryPresetAndSkin()
@@ -163,5 +207,10 @@ namespace Base.EditorUIPackage.Editor.Tests
         private static IEnumerable<EEditorThemePreset> EveryPreset() => EditorThemePresets.CreateOrder();
 
         private static float Brightness(Color color) => color.r + color.g + color.b;
+
+        // Weighted the way the eye weights it. A plain sum calls a saturated yellow and a mid green
+        // the same brightness, which is the pair this check exists to tell apart.
+        private static float Luminance(Color color)
+            => 0.2126f * color.r + 0.7152f * color.g + 0.0722f * color.b;
     }
 }

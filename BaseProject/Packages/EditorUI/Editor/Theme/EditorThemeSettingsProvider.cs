@@ -176,16 +176,25 @@ namespace Base.EditorUIPackage.Editor
             bool hasMatch = EditorThemePresets.TryIdentify(theme, out EEditorThemePreset current);
             bool isDark = IsPreviewDark();
 
-            EditorGUILayout.BeginHorizontal();
+            EEditorThemePreset[] order = EditorThemePresets.CreateOrder();
 
-            foreach (EEditorThemePreset preset in EditorThemePresets.CreateOrder())
-                DrawPresetButton(theme, preset, hasMatch && preset == current, isDark);
+            // Wrapped into even rows. Ten buttons on one line are narrower than their own swatch
+            // strip, which is the part that says what the preset actually looks like.
+            for (int start = 0; start < order.Length; start += EditorThemePresets.PresetsPerRow)
+            {
+                EditorGUILayout.BeginHorizontal();
 
-            EditorGUILayout.EndHorizontal();
+                int end = Mathf.Min(start + EditorThemePresets.PresetsPerRow, order.Length);
+
+                for (int i = start; i < end; i++)
+                    DrawPresetButton(theme, order[i], hasMatch && order[i] == current, isDark);
+
+                EditorGUILayout.EndHorizontal();
+            }
         }
 
         // The button keeps the same chrome as every other button on the page and shows the preset's
-        // own colors as a swatch strip instead. Painting the button itself would leave five different
+        // own colors as a swatch strip instead. Painting the button itself would leave ten different
         // looks arguing with each other on the one page whose job is judging a look.
         private static void DrawPresetButton(EditorTheme theme, EEditorThemePreset preset, bool isCurrent,
             bool isDark)

@@ -123,7 +123,12 @@ namespace Base.EditorUIPackage.Editor
         {
             GUI.Label(area, GUIContent.none, styles.Card);
 
-            Rect body = new(area.x, area.y + EditorTableStyles.CardPadding, area.width,
+            // Inset on all four sides. Padding only at the top and bottom left the card showing above
+            // and below the rows and nowhere else, which reads as a stray rectangle behind the list
+            // rather than as the card the rows sit on.
+            Rect body = new(area.x + EditorTableStyles.CardPadding,
+                area.y + EditorTableStyles.CardPadding,
+                area.width - EditorTableStyles.CardPadding * 2f,
                 area.height - EditorTableStyles.CardPadding * 2f);
 
             Rect header = new(body.x, body.y, body.width, EditorMetrics.HeaderHeight);

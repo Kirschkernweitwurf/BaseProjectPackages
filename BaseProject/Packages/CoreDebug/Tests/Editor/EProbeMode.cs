@@ -1,4 +1,4 @@
-namespace Base.CorePackage.Debug.Tests
+namespace Base.CoreDebugPackage.Tests
 {
     /// <summary>
     /// The enum a cheat console test passes as an argument, so the conversion from typed text to a

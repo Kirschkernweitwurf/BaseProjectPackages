@@ -4,7 +4,7 @@ using System.Reflection;
 using Base.UtilityPackage;
 using Base.UtilityPackage.Logging;
 
-namespace Base.CorePackage.DebugMenu.CheatConsole
+namespace Base.CoreDebugPackage.DebugMenu.CheatConsole
 {
     /// <summary>
     /// Utility class to discover and create <see cref="CheatCommandInfo"/> instances

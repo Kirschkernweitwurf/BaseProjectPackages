@@ -1,4 +1,4 @@
-namespace Base.CorePackage.DebugDrawing
+namespace Base.CoreDebugPackage.DebugDrawing
 {
     /// <summary>
     /// A queued debug draw command that knows when it has outlived the duration it was queued with.

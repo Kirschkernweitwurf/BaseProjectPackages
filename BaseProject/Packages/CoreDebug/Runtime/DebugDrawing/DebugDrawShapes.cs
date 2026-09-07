@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Base.CorePackage.DebugDrawing
+namespace Base.CoreDebugPackage.DebugDrawing
 {
     /// <summary>
     /// Turns the shapes <see cref="DebugDraw"/> offers into the line segments the renderer draws.
