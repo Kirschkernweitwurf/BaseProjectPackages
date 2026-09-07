@@ -47,8 +47,8 @@ namespace Base.AttributesPackage.Editor.Drawers
                 return;
             }
 
-            ResourcesAssetAttribute attribute = (ResourcesAssetAttribute)this.attribute;
-            Type type = attribute.Type ?? typeof(Object);
+            ResourcesAssetAttribute settings = (ResourcesAssetAttribute)attribute;
+            Type type = settings.Type ?? typeof(Object);
 
             Object current = string.IsNullOrEmpty(property.stringValue)
                 ? null

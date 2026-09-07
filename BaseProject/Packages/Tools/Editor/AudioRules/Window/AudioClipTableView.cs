@@ -148,11 +148,11 @@ namespace Base.ToolsPackage.Editor.AudioRules.Window
             return label;
         }
 
-        private void AddColumn(string name, string title, float width, float minWidth, bool stretchable,
+        private void AddColumn(string key, string heading, float width, float minWidth, bool stretchable,
             Func<VisualElement> make, Action<VisualElement, int> bind) => _list.columns.Add(new Column
         {
-            name = name,
-            title = title,
+            name = key,
+            title = heading,
             width = width,
             minWidth = minWidth,
             stretchable = stretchable,

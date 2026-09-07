@@ -6,6 +6,14 @@ All notable changes to this package are recorded here. The format follows
 
 ## [Unreleased]
 
+## [1.1.4] - 2026-09-07
+
+### Removed
+
+- Three serialized field names nothing reads, not even the tests they were written for: the two
+  randomized pitch bounds on the manager and the scene load clearing flag on the pool. The rest are
+  read by the play tests and stay.
+
 ## [1.1.2]
 ### Changed
 

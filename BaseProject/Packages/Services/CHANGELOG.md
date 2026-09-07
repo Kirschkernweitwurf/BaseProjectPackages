@@ -8,6 +8,13 @@ Changes made before 1.0.11 were not recorded.
 
 ## [Unreleased]
 
+## [1.1.5] - 2026-09-07
+
+### Fixed
+
+- Two locals and a parameter in the service locator window no longer hide members of the window
+  itself.
+
 ## [1.1.3] - 2026-09-06
 
 ### Changed

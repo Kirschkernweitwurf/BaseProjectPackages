@@ -278,9 +278,9 @@ namespace Base.ToolsPackage.Editor.StaticResetChecker
             string file = group.Key;
             bool isOpen = _foldouts.GetValueOrDefault(file, true);
 
-            string title = $"{Path.GetFileName(file)}  ({group.Count()})";
+            string header = $"{Path.GetFileName(file)}  ({group.Count()})";
 
-            isOpen = EditorGUILayout.Foldout(isOpen, title, true);
+            isOpen = EditorGUILayout.Foldout(isOpen, header, true);
             _foldouts[file] = isOpen;
 
             if (!isOpen)

@@ -28,9 +28,6 @@ namespace Base.AudioPackage.Pool
         /// <summary>The serialized name of the interface prefab, for tests that configure it.</summary>
         internal const string AudioSourceUiPrefabField = nameof(audioSourceUiPrefab);
 
-        /// <summary>The serialized name of the scene load clearing flag, for tests that configure it.</summary>
-        internal const string ClearingPoolAfterSceneLoadField = nameof(isClearingPoolAfterSceneLoad);
-
         /// <summary>The serialized name of the pool parent, for tests that configure it.</summary>
         internal const string PoolParentField = nameof(poolParent);
 

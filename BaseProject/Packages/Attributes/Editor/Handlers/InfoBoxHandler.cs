@@ -6,7 +6,7 @@ namespace Base.AttributesPackage.Editor.Handlers
     /// <summary>Draws the box for <see cref="InfoBoxAttribute"/>, above or below, compact or full.</summary>
     internal sealed class InfoBoxHandler : IBeforeFieldHandler, IAfterFieldHandler
     {
-        /// <inheritdoc/>
+        /// <inheritdoc cref="IBeforeFieldHandler.Order"/>
         public int Order => 20;
 
         /// <inheritdoc/>

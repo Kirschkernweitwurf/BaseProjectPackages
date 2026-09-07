@@ -141,9 +141,9 @@ namespace Base.ToolsPackage.Editor.AssemblyGraph
             header.AddToClassList(EditorUIClass.Danger);
             extensionContainer.Add(header);
 
-            foreach (string name in candidates)
+            foreach (string candidate in candidates)
             {
-                Label line = new(name);
+                Label line = new(candidate);
 
                 line.AddToClassList(CandidateLineClass);
                 line.AddToClassList(EditorUIClass.Danger);
