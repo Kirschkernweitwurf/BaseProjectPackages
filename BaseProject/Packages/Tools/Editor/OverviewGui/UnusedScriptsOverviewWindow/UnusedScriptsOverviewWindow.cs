@@ -372,7 +372,7 @@ namespace Base.ToolsPackage.Editor.OverviewGui.UnusedScriptsOverviewWindow
             return rect;
         }
 
-        private void HandleRowClick(Rect labelRect, UnusedScriptEntry entry)
+        private static void HandleRowClick(Rect labelRect, UnusedScriptEntry entry)
         {
             if (Event.current.type != EventType.MouseDown
                 || !labelRect.Contains(Event.current.mousePosition))

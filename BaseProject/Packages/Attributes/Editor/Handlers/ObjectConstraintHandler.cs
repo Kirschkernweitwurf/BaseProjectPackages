@@ -50,6 +50,6 @@ namespace Base.AttributesPackage.Editor.Handlers
 
         private static bool IsSceneObject(Object value) => value != null
             && !EditorUtility.IsPersistent(value)
-            && (value is GameObject || value is Component);
+            && value is GameObject or Component;
     }
 }

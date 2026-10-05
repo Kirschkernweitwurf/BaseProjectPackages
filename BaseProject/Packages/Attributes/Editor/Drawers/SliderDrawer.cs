@@ -23,8 +23,7 @@ namespace Base.AttributesPackage.Editor.Drawers
         private float _max;
 
         protected override bool IsSupported(SerializedProperty property)
-            => property.propertyType == SerializedPropertyType.Float
-                || property.propertyType == SerializedPropertyType.Integer;
+            => property.propertyType is SerializedPropertyType.Float or SerializedPropertyType.Integer;
 
         protected override string Evaluate(SerializedProperty property)
             => Resolve(property, (SliderAttribute)attribute, out _min, out _max)

@@ -195,12 +195,12 @@ namespace Base.ToolsPackage.Editor.EmptyFoldersOverviewWindow
             if (GUI.Button(deleteRect, "Delete"))
                 _pendingDeletes.Add(entry);
 
-            if (Event.current.type == EventType.MouseDown
-                && labelRect.Contains(Event.current.mousePosition))
-            {
-                Navigate(entry);
-                Event.current.Use();
-            }
+            if (Event.current.type != EventType.MouseDown
+                || !labelRect.Contains(Event.current.mousePosition))
+                return;
+
+            Navigate(entry);
+            Event.current.Use();
         }
 
         private void ProcessPendingActions(List<EmptyFolderEntry> filtered)

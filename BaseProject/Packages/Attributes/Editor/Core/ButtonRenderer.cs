@@ -207,15 +207,12 @@ namespace Base.AttributesPackage.Editor.Core
 
         private static bool IsEnabled(EButtonMode mode)
         {
-            switch (mode)
+            return mode switch
             {
-                case EButtonMode.PlayMode:
-                    return Application.isPlaying;
-                case EButtonMode.EditMode:
-                    return !Application.isPlaying;
-                default:
-                    return true;
-            }
+                EButtonMode.PlayMode => Application.isPlaying,
+                EButtonMode.EditMode => !Application.isPlaying,
+                _ => true
+            };
         }
 
         private static bool Confirm(in InspectorButton button)

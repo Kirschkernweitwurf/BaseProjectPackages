@@ -332,17 +332,12 @@ namespace Base.ToolsPackage.Editor.CodebaseGraph
 
         private bool IsVisible(bool isTouched, int selectedCount)
         {
-            switch (_edgeMode)
+            return _edgeMode switch
             {
-                case EEdgeMode.None:
-                    return false;
-
-                case EEdgeMode.SelectedOnly:
-                    return selectedCount > 0 && isTouched;
-
-                default:
-                    return true;
-            }
+                EEdgeMode.None => false,
+                EEdgeMode.SelectedOnly => selectedCount > 0 && isTouched,
+                _ => true
+            };
         }
     }
 }

@@ -28,7 +28,7 @@ namespace Base.CorePackage.Tests
         [OneTimeSetUp]
         public void BuildBus()
         {
-            _busObject = EditorUtility.CreateGameObjectWithHideFlags(typeof(EventBusService).Name,
+            _busObject = EditorUtility.CreateGameObjectWithHideFlags(nameof(EventBusService),
                 HideFlags.HideAndDontSave);
             _bus = _busObject.AddComponent<EventBusService>();
         }

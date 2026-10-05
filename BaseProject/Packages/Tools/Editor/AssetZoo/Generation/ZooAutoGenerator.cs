@@ -118,7 +118,7 @@ namespace Base.ToolsPackage.Editor.AssetZoo.Generation
 
             // The FolderPath attribute can store absolute paths, map those back into the project.
             if (path.StartsWith(dataPath, StringComparison.OrdinalIgnoreCase))
-                path = AssetsRoot + path.Substring(dataPath.Length);
+                path = AssetsRoot + path[dataPath.Length..];
 
             return path.Length == 0
                 ? AssetsRoot
@@ -168,11 +168,11 @@ namespace Base.ToolsPackage.Editor.AssetZoo.Generation
             if (lastSlash < 0)
                 return true;
 
-            string directory = assetPath.Substring(0, lastSlash);
+            string directory = assetPath[..lastSlash];
             if (directory.Length <= rootFolder.Length)
                 return true;
 
-            string relative = directory.Substring(rootFolder.Length + 1);
+            string relative = directory[(rootFolder.Length + 1)..];
             int depth = relative.Count(character => character == '/') + 1;
 
             return depth <= maxDepth;

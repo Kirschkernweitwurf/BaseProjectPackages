@@ -321,7 +321,7 @@ namespace Base.ToolsPackage.Editor.AssemblyGraph
                 if (i % HomelessColumns == 0)
                     rows.Add(new List<string>());
 
-                rows[rows.Count - 1].Add(names[i]);
+                rows[^1].Add(names[i]);
             }
 
             return rows;

@@ -87,19 +87,16 @@ namespace Base.AttributesPackage.Editor.Handlers
 
         private static ValidationResult Interpret(object returned)
         {
-            switch (returned)
+            return returned switch
             {
-                case ValidationResult result:
-                    return result;
-                case bool valid:
-                    return valid
-                        ? ValidationResult.Valid
-                        : ValidationResult.Error(null);
-                default:
-                    // A validator returning neither is a signature mistake. Passing is the safe reading,
-                    // and the troubleshoot window reports the signature separately.
-                    return ValidationResult.Valid;
-            }
+                ValidationResult result => result,
+                bool valid => valid
+                    ? ValidationResult.Valid
+                    : ValidationResult.Error(null),
+                // A validator returning neither is a signature mistake. Passing is the safe reading,
+                // and the troubleshoot window reports the signature separately.
+                _ => ValidationResult.Valid
+            };
         }
     }
 }

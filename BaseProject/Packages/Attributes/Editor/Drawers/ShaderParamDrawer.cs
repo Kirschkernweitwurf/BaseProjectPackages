@@ -24,8 +24,7 @@ namespace Base.AttributesPackage.Editor.Drawers
         private string[] _names;
 
         protected override bool IsSupported(SerializedProperty property)
-            => property.propertyType == SerializedPropertyType.String
-                || property.propertyType == SerializedPropertyType.Integer;
+            => property.propertyType is SerializedPropertyType.String or SerializedPropertyType.Integer;
 
         protected override string Evaluate(SerializedProperty property)
             => Evaluate(property, (ShaderParamAttribute)attribute, out _names);
@@ -95,19 +94,15 @@ namespace Base.AttributesPackage.Editor.Drawers
 
         private static Shader ResolveShader(Object source)
         {
-            switch (source)
+            return source switch
             {
-                case Shader shader:
-                    return shader;
-                case Material material:
-                    return material.shader;
-                case Renderer renderer:
-                    return renderer.sharedMaterial == null
-                        ? null
-                        : renderer.sharedMaterial.shader;
-                default:
-                    return null;
-            }
+                Shader shader => shader,
+                Material material => material.shader,
+                Renderer renderer => renderer.sharedMaterial == null
+                    ? null
+                    : renderer.sharedMaterial.shader,
+                _ => null
+            };
         }
 
         private static string[] CollectNames(Shader shader, EShaderParamType filter)
@@ -126,22 +121,15 @@ namespace Base.AttributesPackage.Editor.Drawers
 
         private static bool Matches(ShaderPropertyType type, EShaderParamType filter)
         {
-            switch (filter)
+            return filter switch
             {
-                case EShaderParamType.Color:
-                    return type == ShaderPropertyType.Color;
-                case EShaderParamType.Vector:
-                    return type == ShaderPropertyType.Vector;
-                case EShaderParamType.Float:
-                    return type == ShaderPropertyType.Float
-                        || type == ShaderPropertyType.Range;
-                case EShaderParamType.Texture:
-                    return type == ShaderPropertyType.Texture;
-                case EShaderParamType.Integer:
-                    return type == ShaderPropertyType.Int;
-                default:
-                    return true;
-            }
+                EShaderParamType.Color => type == ShaderPropertyType.Color,
+                EShaderParamType.Vector => type == ShaderPropertyType.Vector,
+                EShaderParamType.Float => type is ShaderPropertyType.Float or ShaderPropertyType.Range,
+                EShaderParamType.Texture => type == ShaderPropertyType.Texture,
+                EShaderParamType.Integer => type == ShaderPropertyType.Int,
+                _ => true
+            };
         }
 
         private static int CurrentIndex(SerializedProperty property, string[] names, bool isString)

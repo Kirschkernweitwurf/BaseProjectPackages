@@ -295,7 +295,7 @@ namespace Base.ToolsPackage.Editor.StaticResetChecker
             EditorGUILayout.Space(EditorMetrics.TightGap);
         }
 
-        private void DrawFinding(Finding finding, int rowIndex)
+        private static void DrawFinding(Finding finding, int rowIndex)
         {
             Rect row = EditorGUILayout.GetControlRect(GUILayout.Height(RowHeight));
 

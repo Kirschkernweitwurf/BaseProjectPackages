@@ -596,7 +596,7 @@ namespace Base.ServicesPackage.Editor
             Repaint();
         }
 
-        private void ShowRowMenu(ServiceRegistrationEntry entry)
+        private static void ShowRowMenu(ServiceRegistrationEntry entry)
         {
             GenericMenu menu = new();
 

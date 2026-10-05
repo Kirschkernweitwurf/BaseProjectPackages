@@ -241,7 +241,7 @@ namespace Base.ToolsPackage.Editor.MenuManagerWindows.CreateAssetMenuOverview
             }
         }
 
-        private void DrawHeader()
+        private static void DrawHeader()
         {
             Rect row = GUILayoutUtility.GetRect(0f, MenuOverviewGui.RowHeight, GUILayout.ExpandWidth(true));
             MenuOverviewGui.DrawHeader(row);

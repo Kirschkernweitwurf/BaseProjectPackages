@@ -143,7 +143,7 @@ namespace Base.ToolsPackage.Editor.AudioRules.Scanning
         }
 
         private static bool IsLossy(AudioCompressionFormat format)
-            => format == AudioCompressionFormat.Vorbis || format == AudioCompressionFormat.MP3;
+            => format is AudioCompressionFormat.Vorbis or AudioCompressionFormat.MP3;
 
         private static List<EAudioSetting> CollectChanges(AudioSettingValues current, AudioSettingValues target)
         {

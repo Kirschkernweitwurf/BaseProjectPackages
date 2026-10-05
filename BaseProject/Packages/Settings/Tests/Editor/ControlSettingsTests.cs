@@ -24,7 +24,7 @@ namespace Base.SettingsPackage.Tests
         [SetUp]
         public void Build()
         {
-            _object = EditorUtility.CreateGameObjectWithHideFlags(typeof(ControlSettings).Name,
+            _object = EditorUtility.CreateGameObjectWithHideFlags(nameof(ControlSettings),
                 HideFlags.HideAndDontSave);
             _controls = _object.AddComponent<ControlSettings>();
             _changes = 0;

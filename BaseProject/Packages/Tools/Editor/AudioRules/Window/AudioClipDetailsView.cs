@@ -321,7 +321,7 @@ namespace Base.ToolsPackage.Editor.AudioRules.Window
                 _body.Add(Text(Describe(finding, plan)));
         }
 
-        private string Describe(EAudioFinding finding, AudioClipPlan plan) => finding switch
+        private static string Describe(EAudioFinding finding, AudioClipPlan plan) => finding switch
         {
             EAudioFinding.Clipping => $"Clipping: {plan.Analysis.ClippedSamples} samples sit at full scale.",
             EAudioFinding.DcOffset => "DC offset: the waveform is not centered, which wastes headroom.",

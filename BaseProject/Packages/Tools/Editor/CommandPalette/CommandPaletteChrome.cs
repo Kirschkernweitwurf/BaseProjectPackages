@@ -63,7 +63,7 @@ namespace Base.ToolsPackage.Editor.CommandPalette
         }
 
         /// <summary>
-        /// Draws a pill shaped button. Built by hand instead of with <see cref="GUI.Button"/> so
+        /// Draws a pill shaped button. Built by hand instead of with <see cref="GUI.Button(Rect,string)"/> so
         /// the fill can react to the mouse hovering it and holding it down.
         /// </summary>
         /// <param name="rect">The area of the button.</param>

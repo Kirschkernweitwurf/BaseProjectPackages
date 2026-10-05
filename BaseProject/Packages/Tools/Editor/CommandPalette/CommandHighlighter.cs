@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -19,7 +20,7 @@ namespace Base.ToolsPackage.Editor.CommandPalette
         private static readonly List<int> Matches = new();
         private static readonly StringBuilder Builder = new();
 
-        private static bool[] _flags = new bool[0];
+        private static bool[] _flags = Array.Empty<bool>();
 
         /// <summary>Builds the rich text label of an entry.</summary>
         /// <param name="entry">The entry to render.</param>

@@ -76,17 +76,12 @@ namespace Base.ToolsPackage.Editor.MissingScriptsOverviewWindow
 
         private static GUIContent GetSourceIcon(EMissingScriptSource source)
         {
-            switch (source)
+            return source switch
             {
-                case EMissingScriptSource.Scene:
-                    return EditorGUIUtility.IconContent("SceneAsset Icon");
-
-                case EMissingScriptSource.Prefab:
-                    return EditorGUIUtility.IconContent("Prefab Icon");
-
-                default:
-                    return EditorGUIUtility.IconContent("ScriptableObject Icon");
-            }
+                EMissingScriptSource.Scene => EditorGUIUtility.IconContent("SceneAsset Icon"),
+                EMissingScriptSource.Prefab => EditorGUIUtility.IconContent("Prefab Icon"),
+                _ => EditorGUIUtility.IconContent("ScriptableObject Icon")
+            };
         }
 
         private void DrawActionBar()
@@ -224,12 +219,12 @@ namespace Base.ToolsPackage.Editor.MissingScriptsOverviewWindow
                     RemoveEntry(entry);
             }
 
-            if (Event.current.type == EventType.MouseDown
-                && labelRect.Contains(Event.current.mousePosition))
-            {
-                MissingScriptNavigator.Navigate(entry);
-                Event.current.Use();
-            }
+            if (Event.current.type != EventType.MouseDown
+                || !labelRect.Contains(Event.current.mousePosition))
+                return;
+
+            MissingScriptNavigator.Navigate(entry);
+            Event.current.Use();
         }
 
         private void RemoveEntry(MissingScriptEntry entry)

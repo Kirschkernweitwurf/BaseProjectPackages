@@ -26,7 +26,7 @@ namespace Base.AttributesPackage.Editor.Handlers
 
             string value = property.stringValue;
             if (value != null && value.Length > max)
-                property.stringValue = value.Substring(0, max);
+                property.stringValue = value[..max];
         }
     }
 }

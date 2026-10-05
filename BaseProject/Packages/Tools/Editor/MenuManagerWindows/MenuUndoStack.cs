@@ -90,7 +90,7 @@ namespace Base.ToolsPackage.Editor.MenuManagerWindows
         internal void HandleCommands(Event current)
         {
             if (current.type == EventType.ValidateCommand
-                && (current.commandName == UndoCommand || current.commandName == RedoCommand))
+                && (current.commandName is UndoCommand or RedoCommand))
             {
                 current.Use();
                 return;

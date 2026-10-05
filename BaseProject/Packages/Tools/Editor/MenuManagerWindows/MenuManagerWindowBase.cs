@@ -390,13 +390,13 @@ namespace Base.ToolsPackage.Editor.MenuManagerWindows
             if (current.type == EventType.Repaint)
                 EditorGUI.DrawRect(new Rect(x - 0.5f, header.y, 1f, header.height), MenuManagerTheme.GuideColor());
 
-            if (current.type == EventType.MouseDown
-                && current.button == 0
-                && handle.Contains(current.mousePosition))
-            {
-                _activeSplitter = id;
-                current.Use();
-            }
+            if (current.type != EventType.MouseDown
+                || current.button != 0
+                || !handle.Contains(current.mousePosition))
+                return;
+
+            _activeSplitter = id;
+            current.Use();
         }
 
         private void DrawRow(MenuRow row, Event current)
@@ -545,8 +545,8 @@ namespace Base.ToolsPackage.Editor.MenuManagerWindows
             DrawGrip(grip, current, onPress: () => _drag.BeginGroup(current, group, row.ParentList), locked);
             x += GripWidth + Pad;
 
-            float addWidth = 54f;
-            float deleteWidth = 54f;
+            const float addWidth = 54f;
+            const float deleteWidth = 54f;
             Rect deleteRect = new(content.xMax - deleteWidth - 2f, y, deleteWidth, h);
             Rect addRect = new(deleteRect.x - addWidth - Pad, y, addWidth, h);
             Rect nameRect = new(x, y, Mathf.Max(40f, addRect.x - x - Pad), h);
@@ -781,16 +781,16 @@ namespace Base.ToolsPackage.Editor.MenuManagerWindows
 
             EditorGUI.LabelField(valueRect, label, EditorStyles.miniLabel);
 
-            if (GUI.Button(buttonRect, OverrideContent, EditorStyles.miniButton))
-            {
-                _undo.Push();
-                entry.OverridePriority = true;
-                entry.OverrideValue = entry.Priority == int.MinValue
-                    ? 0
-                    : entry.Priority;
+            if (!GUI.Button(buttonRect, OverrideContent, EditorStyles.miniButton))
+                return;
 
-                Persist();
-            }
+            _undo.Push();
+            entry.OverridePriority = true;
+            entry.OverrideValue = entry.Priority == int.MinValue
+                ? 0
+                : entry.Priority;
+
+            Persist();
         }
 
         private void CleanMissing()
@@ -839,7 +839,7 @@ namespace Base.ToolsPackage.Editor.MenuManagerWindows
             EditorGUILayout.LabelField(text, EditorStyles.miniLabel);
         }
 
-        private void DrawGrip(Rect rect, Event current, Action onPress, bool locked)
+        private static void DrawGrip(Rect rect, Event current, Action onPress, bool locked)
         {
             GUI.Label(rect, "\u2261", MenuManagerTheme.Grip);
 
@@ -848,13 +848,13 @@ namespace Base.ToolsPackage.Editor.MenuManagerWindows
 
             EditorGUIUtility.AddCursorRect(rect, MouseCursor.Pan);
 
-            if (current.type == EventType.MouseDown
-                && current.button == 0
-                && rect.Contains(current.mousePosition))
-            {
-                onPress.Invoke();
-                current.Use();
-            }
+            if (current.type != EventType.MouseDown
+                || current.button != 0
+                || !rect.Contains(current.mousePosition))
+                return;
+
+            onPress.Invoke();
+            current.Use();
         }
     }
 }

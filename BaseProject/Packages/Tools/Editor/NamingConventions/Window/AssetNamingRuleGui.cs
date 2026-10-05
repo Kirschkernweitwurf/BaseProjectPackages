@@ -220,7 +220,7 @@ namespace Base.ToolsPackage.Editor.NamingConventions.Window
 
         private static bool DrawFragment(AssetNamingRuleSet ruleSet, Rect row, int index)
         {
-            float padding = AssetNamingGui.Padding;
+            const float padding = AssetNamingGui.Padding;
             float width = Mathf.Max(padding, row.width - RemoveWidth - padding * 3f);
             Rect fieldRect = new(row.x + padding, row.y + 2f, width, row.height - 4f);
             Rect removeRect = new(fieldRect.xMax + padding, row.y + 2f, RemoveWidth, row.height - 4f);

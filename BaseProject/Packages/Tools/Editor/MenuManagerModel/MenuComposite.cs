@@ -63,11 +63,11 @@ namespace Base.ToolsPackage.Editor.MenuManagerModel
 
             Recalculate();
 
-            if (changed)
-            {
-                Registry.Persist();
-                Overlay.Persist();
-            }
+            if (!changed)
+                return;
+
+            Registry.Persist();
+            Overlay.Persist();
         }
 
         /// <summary>Recomputes derived priorities across both stores for both kinds.</summary>

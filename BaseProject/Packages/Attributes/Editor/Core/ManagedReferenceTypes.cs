@@ -80,8 +80,8 @@ namespace Base.AttributesPackage.Editor.Core
             if (separator < 0)
                 return Type.GetType(typeName);
 
-            string assembly = typeName.Substring(0, separator);
-            string fullName = typeName.Substring(separator + 1);
+            string assembly = typeName[..separator];
+            string fullName = typeName[(separator + 1)..];
 
             return Type.GetType($"{fullName}, {assembly}");
         }

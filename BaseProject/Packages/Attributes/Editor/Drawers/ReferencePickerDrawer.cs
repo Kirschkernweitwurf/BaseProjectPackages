@@ -27,10 +27,9 @@ namespace Base.AttributesPackage.Editor.Drawers
         {
             float line = EditorGUIUtility.singleLineHeight;
 
-            if (property.propertyType != SerializedPropertyType.ManagedReference)
-                return line;
-
-            if (!property.isExpanded || property.managedReferenceValue == null)
+            if (property.propertyType != SerializedPropertyType.ManagedReference
+                || !property.isExpanded
+                || property.managedReferenceValue == null)
                 return line;
 
             return line + ChildrenHeight(property);

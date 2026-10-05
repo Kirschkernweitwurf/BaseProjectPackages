@@ -28,9 +28,8 @@ namespace Base.SettingsPackage.Tests
         [Test]
         public void ASettingIsStoredUnderItsKey()
         {
-            IntSetting setting = new(_store, _key, 0);
+            IntSetting setting = new(_store, _key, 0) { Value = 5 };
 
-            setting.Value = 5;
             setting.Save();
 
             Assert.That(_store.Has(Key), Is.True);
@@ -40,9 +39,8 @@ namespace Base.SettingsPackage.Tests
         [Test]
         public void AnIntegerRoundTrips()
         {
-            IntSetting written = new(_store, _key, 0);
+            IntSetting written = new(_store, _key, 0) { Value = 42 };
 
-            written.Value = 42;
             written.Save();
 
             IntSetting read = new(_store, _key, 0);
@@ -55,9 +53,8 @@ namespace Base.SettingsPackage.Tests
         [Test]
         public void AFloatRoundTrips()
         {
-            FloatSetting written = new(_store, _key, 0f);
+            FloatSetting written = new(_store, _key, 0f) { Value = 0.75f };
 
-            written.Value = 0.75f;
             written.Save();
 
             FloatSetting read = new(_store, _key, 0f);
@@ -70,9 +67,8 @@ namespace Base.SettingsPackage.Tests
         [Test]
         public void AStringRoundTrips()
         {
-            StringSetting written = new(_store, _key, string.Empty);
+            StringSetting written = new(_store, _key, string.Empty) { Value = "English" };
 
-            written.Value = "English";
             written.Save();
 
             StringSetting read = new(_store, _key, string.Empty);
@@ -85,9 +81,8 @@ namespace Base.SettingsPackage.Tests
         [Test]
         public void ABooleanIsStoredAsANumber()
         {
-            BoolSetting setting = new(_store, _key, false);
+            BoolSetting setting = new(_store, _key, false) { Value = true };
 
-            setting.Value = true;
             setting.Save();
 
             Assert.That(_store.GetInt(Key, -1), Is.EqualTo(1));
@@ -102,9 +97,8 @@ namespace Base.SettingsPackage.Tests
         [Test]
         public void ABooleanRoundTrips()
         {
-            BoolSetting written = new(_store, _key, false);
+            BoolSetting written = new(_store, _key, false) { Value = true };
 
-            written.Value = true;
             written.Save();
 
             BoolSetting read = new(_store, _key, false);
@@ -140,9 +134,11 @@ namespace Base.SettingsPackage.Tests
         [Test]
         public void AnEnumIsStoredAsItsUnderlyingNumber()
         {
-            EnumSetting<ESettingProbeMode> setting = new(_store, _key, ESettingProbeMode.Off);
+            EnumSetting<ESettingProbeMode> setting = new(_store, _key, ESettingProbeMode.Off)
+            {
+                Value = ESettingProbeMode.High
+            };
 
-            setting.Value = ESettingProbeMode.High;
             setting.Save();
 
             Assert.That(_store.GetInt(Key, -1), Is.EqualTo((int)ESettingProbeMode.High));
@@ -152,9 +148,11 @@ namespace Base.SettingsPackage.Tests
         [Test]
         public void AnEnumRoundTrips()
         {
-            EnumSetting<ESettingProbeMode> written = new(_store, _key, ESettingProbeMode.Off);
+            EnumSetting<ESettingProbeMode> written = new(_store, _key, ESettingProbeMode.Off)
+            {
+                Value = ESettingProbeMode.Low
+            };
 
-            written.Value = ESettingProbeMode.Low;
             written.Save();
 
             EnumSetting<ESettingProbeMode> read = new(_store, _key, ESettingProbeMode.Off);

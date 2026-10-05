@@ -40,7 +40,7 @@ namespace Base.ToolsPackage.Editor.MenuManagerWindows.MenuItemOverview
             const float badgeWidth = 32f;
             const float manageWidth = 66f;
 
-            float padding = MenuOverviewGui.Padding;
+            const float padding = MenuOverviewGui.Padding;
             float height = EditorGUIUtility.singleLineHeight;
             float y = row.y + (row.height - height) * 0.5f;
             float left = row.x + MenuOverviewGui.StripeWidth + padding;

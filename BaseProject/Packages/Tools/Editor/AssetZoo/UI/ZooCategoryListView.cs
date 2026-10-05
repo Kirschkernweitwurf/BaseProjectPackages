@@ -44,12 +44,11 @@ namespace Base.ToolsPackage.Editor.AssetZoo.UI
             _list = new EditorList(categories)
             {
                 EmptyLabel = EmptyLabel,
-                Title = ListTitle
+                Title = ListTitle,
+                DrawElement = (rect, index, isActive) => DrawRow(rect, index),
+                ElementHeight = HeightOf,
+                OnAdd = AddCategory
             };
-
-            _list.DrawElement = (rect, index, isActive) => DrawRow(rect, index);
-            _list.ElementHeight = HeightOf;
-            _list.OnAdd = AddCategory;
         }
 
         /// <summary>Draws the list.</summary>

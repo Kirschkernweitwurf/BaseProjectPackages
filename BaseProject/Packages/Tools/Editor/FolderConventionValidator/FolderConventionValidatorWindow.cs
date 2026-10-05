@@ -318,12 +318,12 @@ namespace Base.ToolsPackage.Editor.FolderConventionValidator
             if (violation.IsFixable)
                 return;
 
-            if (Event.current.type == EventType.MouseDown
-                && pathRect.Contains(Event.current.mousePosition))
-            {
-                Navigate(violation);
-                Event.current.Use();
-            }
+            if (Event.current.type != EventType.MouseDown
+                || !pathRect.Contains(Event.current.mousePosition))
+                return;
+
+            Navigate(violation);
+            Event.current.Use();
         }
 
         private void DrawAction(FolderViolation violation, Rect rect)

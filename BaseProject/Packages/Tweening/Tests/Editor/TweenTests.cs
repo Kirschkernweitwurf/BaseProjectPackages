@@ -36,7 +36,7 @@ namespace Base.TweeningPackage.Tests
         [OneTimeSetUp]
         public void BuildRunner()
         {
-            _runnerObject = EditorUtility.CreateGameObjectWithHideFlags(typeof(TweenRunner).Name,
+            _runnerObject = EditorUtility.CreateGameObjectWithHideFlags(nameof(TweenRunner),
                 HideFlags.HideAndDontSave);
 
             ServiceLocator.Register(_runnerObject.AddComponent<TweenRunner>());
@@ -92,7 +92,7 @@ namespace Base.TweeningPackage.Tests
         [Test]
         public void TheStartValueCanBeReadFromTheTarget()
         {
-            float current = 4f;
+            const float current = 4f;
             Tween<float> tween = new(EndValue, Duration, Set, TweenLerpUtility.LerpFloatUnclamped, null, _target,
                 fromGetter: () => current);
 

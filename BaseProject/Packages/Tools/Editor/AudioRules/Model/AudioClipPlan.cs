@@ -53,7 +53,7 @@ namespace Base.ToolsPackage.Editor.AudioRules.Model
 
         /// <summary>The rule that decided the load type, or an empty string when none did.</summary>
         public string PrimaryRule => MatchedRules.Count > 0
-            ? MatchedRules[MatchedRules.Count - 1]
+            ? MatchedRules[^1]
             : string.Empty;
 
         /// <summary>Creates the plan for one clip.</summary>

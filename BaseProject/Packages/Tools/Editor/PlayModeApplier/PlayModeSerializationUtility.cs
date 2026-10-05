@@ -290,9 +290,9 @@ namespace Base.ToolsPackage.Editor.PlayModeApplier
                     continue;
                 }
 
-                if (current == '{' || current == '[')
+                if (current is '{' or '[')
                     depth++;
-                else if (current == '}' || current == ']')
+                else if (current is '}' or ']')
                     depth--;
 
                 builder.Append(current);
@@ -352,7 +352,7 @@ namespace Base.ToolsPackage.Editor.PlayModeApplier
             if (current == '"')
                 return FindStringEnd(json, cursor) + 1;
 
-            if (current == '{' || current == '[')
+            if (current is '{' or '[')
                 return FindContainerEnd(json, cursor) + 1;
 
             while (cursor < json.Length
@@ -378,11 +378,11 @@ namespace Base.ToolsPackage.Editor.PlayModeApplier
                     continue;
                 }
 
-                if (current == '{' || current == '[')
+                if (current is '{' or '[')
                 {
                     depth++;
                 }
-                else if (current == '}' || current == ']')
+                else if (current is '}' or ']')
                 {
                     depth--;
                     if (depth == 0)

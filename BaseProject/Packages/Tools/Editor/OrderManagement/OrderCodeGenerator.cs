@@ -77,7 +77,7 @@ namespace Base.ToolsPackage.Editor.OrderManagement
             sorted.Sort(CompareConstants);
 
             HashSet<string> usedNames = new();
-            string lineIndent = Indent + Indent;
+            const string lineIndent = Indent + Indent;
             int count = 0;
 
             foreach (OrderConstant constant in sorted)

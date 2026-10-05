@@ -107,7 +107,7 @@ namespace Base.ToolsPackage.Editor.CommandPalette
 
         private ECommandPaletteAction DrawRows(Rect content, string term)
         {
-            float rowHeight = CommandPaletteStyles.RowHeight;
+            const float rowHeight = CommandPaletteStyles.RowHeight;
             int first = Mathf.Max(0, Mathf.FloorToInt(_scroll.y / rowHeight) - 1);
             int last = Mathf.Min(_matches.Count, first + Mathf.CeilToInt(_viewport / rowHeight) + OverscanRows);
 
@@ -133,7 +133,7 @@ namespace Base.ToolsPackage.Editor.CommandPalette
 
         private void EnsureVisible()
         {
-            float rowHeight = CommandPaletteStyles.RowHeight;
+            const float rowHeight = CommandPaletteStyles.RowHeight;
             float top = _selected * rowHeight;
 
             if (top < _scroll.y)

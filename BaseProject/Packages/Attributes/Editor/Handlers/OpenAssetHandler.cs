@@ -27,8 +27,7 @@ namespace Base.AttributesPackage.Editor.Handlers
         protected override bool Applies(in MemberContext context) => context.GetAttribute<OpenAssetAttribute>() != null;
 
         protected override bool IsSupported(SerializedProperty property)
-            => property.propertyType == SerializedPropertyType.ObjectReference
-                || property.propertyType == SerializedPropertyType.String;
+            => property.propertyType is SerializedPropertyType.ObjectReference or SerializedPropertyType.String;
 
         protected override bool IsEnabled(in MemberContext context) => Resolve(context.Property) != null;
 

@@ -62,7 +62,7 @@ namespace Base.UtilityPackage
         /// <param name="value">The string to hash. Null and empty both return the offset basis.</param>
         /// <returns>The hash value.</returns>
         /// <remarks>
-        /// Unlike <see cref="string.GetHashCode"/> this stays identical across sessions, runtimes and Unity
+        /// Unlike <see cref="string.GetHashCode()"/> this stays identical across sessions, runtimes and Unity
         /// versions, so it is safe to derive colors, bucket indices or file names from it and expect the same
         /// result next time.
         /// </remarks>
@@ -84,6 +84,6 @@ namespace Base.UtilityPackage
 
         /// <summary>A word break only means something once a word is there and is not already closed.</summary>
         private static bool IsSeparatorNeeded(StringBuilder result)
-            => result.Length > 0 && result[result.Length - 1] != ' ';
+            => result.Length > 0 && result[^1] != ' ';
     }
 }

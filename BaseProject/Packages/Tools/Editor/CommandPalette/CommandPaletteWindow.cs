@@ -170,7 +170,7 @@ namespace Base.ToolsPackage.Editor.CommandPalette
                 CommandPaletteStyles.CornerRadius, CommandPaletteStyles.BorderWidth);
 
             Rect inner = CommandPaletteChrome.Inset(box, CommandPaletteStyles.RowInset);
-            float iconSize = CommandPaletteStyles.SearchIconSize;
+            const float iconSize = CommandPaletteStyles.SearchIconSize;
             Rect icon = new(inner.x, inner.y + (inner.height - iconSize) * 0.5f, iconSize, iconSize);
 
             if (Event.current.type == EventType.Repaint)
@@ -196,8 +196,8 @@ namespace Base.ToolsPackage.Editor.CommandPalette
 
         private void DrawSearchRow(Rect row)
         {
-            float gap = CommandPaletteStyles.Gap;
-            float pillHeight = CommandPaletteStyles.PillHeight;
+            const float gap = CommandPaletteStyles.Gap;
+            const float pillHeight = CommandPaletteStyles.PillHeight;
             float pillY = row.y + (row.height - pillHeight) * 0.5f;
 
             Rect rescan = new(row.xMax - PillWidth, pillY, PillWidth, pillHeight);

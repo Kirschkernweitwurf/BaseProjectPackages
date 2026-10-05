@@ -67,7 +67,7 @@ namespace Base.ToolsPackage.Editor.AssemblyGraph
             if (!rawToken.StartsWith(guidPrefix, StringComparison.Ordinal))
                 return rawToken;
 
-            string guid = rawToken.Substring(guidPrefix.Length);
+            string guid = rawToken[guidPrefix.Length..];
             string path = AssetDatabase.GUIDToAssetPath(guid);
             if (string.IsNullOrEmpty(path))
                 return rawToken;
@@ -119,7 +119,7 @@ namespace Base.ToolsPackage.Editor.AssemblyGraph
 
             builder.Append(']');
 
-            return text.Substring(0, open) + builder + text.Substring(close + 1);
+            return text[..open] + builder + text[(close + 1)..];
         }
 
         [Serializable]

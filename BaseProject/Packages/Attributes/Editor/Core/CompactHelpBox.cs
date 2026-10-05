@@ -84,32 +84,24 @@ namespace Base.AttributesPackage.Editor.Core
 
         private static Color DefaultColor(EInfoBoxType type)
         {
-            switch (type)
+            return type switch
             {
-                case EInfoBoxType.Warning:
-                    return FromHex(WarningHex);
-                case EInfoBoxType.Error:
-                    return FromHex(ErrorHex);
-                case EInfoBoxType.Info:
-                    return FromHex(InfoHex);
-                default:
-                    return FromHex(NeutralHex);
-            }
+                EInfoBoxType.Warning => FromHex(WarningHex),
+                EInfoBoxType.Error => FromHex(ErrorHex),
+                EInfoBoxType.Info => FromHex(InfoHex),
+                _ => FromHex(NeutralHex)
+            };
         }
 
         private static Texture IconFor(EInfoBoxType type)
         {
-            switch (type)
+            return type switch
             {
-                case EInfoBoxType.Info:
-                    return EditorGUIUtility.IconContent(InfoIcon).image;
-                case EInfoBoxType.Warning:
-                    return EditorGUIUtility.IconContent(WarningIcon).image;
-                case EInfoBoxType.Error:
-                    return EditorGUIUtility.IconContent(ErrorIcon).image;
-                default:
-                    return null;
-            }
+                EInfoBoxType.Info => EditorGUIUtility.IconContent(InfoIcon).image,
+                EInfoBoxType.Warning => EditorGUIUtility.IconContent(WarningIcon).image,
+                EInfoBoxType.Error => EditorGUIUtility.IconContent(ErrorIcon).image,
+                _ => null
+            };
         }
 
         private static Color FromHex(string hex) => ColorUtility.TryParseHtmlString(hex, out Color color)

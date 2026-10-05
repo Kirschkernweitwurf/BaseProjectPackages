@@ -843,9 +843,9 @@ namespace Base.AttributesPackage.Editor.Windows.AttributeExplorer.Showcase
             }
         }
 
-        [ShowNonSerialized] private string lastCallback = "No callback yet";
+        [ShowNonSerialized] private string _lastCallback = "No callback yet";
 
-        [ShowNonSerialized] private Vector3 runtimeVector = Vector3.forward;
+        [ShowNonSerialized] private Vector3 _runtimeVector = Vector3.forward;
 
         /// <summary>Plain button with no label, which falls back to the method name.</summary>
         [Button]
@@ -948,6 +948,6 @@ namespace Base.AttributesPackage.Editor.Windows.AttributeExplorer.Showcase
 
         // The showcase writes to a field rather than to the console, because this asset lives inside an
         // editor window and a tab that logs every time it is poked would be noise, not information.
-        private void Record(string message) => lastCallback = message;
+        private void Record(string message) => _lastCallback = message;
     }
 }

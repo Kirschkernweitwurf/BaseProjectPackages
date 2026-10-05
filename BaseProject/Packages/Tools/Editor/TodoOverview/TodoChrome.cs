@@ -125,7 +125,7 @@ namespace Base.ToolsPackage.Editor.TodoOverview
 
         /// <summary>
         /// Draws a rounded button that lights up under the mouse. Built by hand instead of with
-        /// <see cref="GUI.Button"/> so the fill is a plain color that can carry the accent or the
+        /// <see cref="GUI.Button(Rect,string)"/> so the fill is a plain color that can carry the accent or the
         /// color of a keyword.
         /// </summary>
         /// <param name="rect">The area of the button.</param>

@@ -202,7 +202,7 @@ namespace Base.ToolsPackage.Editor.PlayModeApplier
             EditorWindowChrome.EndCard();
         }
 
-        private void DrawApplyTarget(PlayModeStateStore store, PlayModeSavePayload payload, int index)
+        private static void DrawApplyTarget(PlayModeStateStore store, PlayModeSavePayload payload, int index)
         {
             EPlayModeApplyTarget applyTarget = (EPlayModeApplyTarget)EditorGUILayout.EnumPopup(
                 payload.applyTarget, GUILayout.Width(TargetFieldWidth));
@@ -214,7 +214,7 @@ namespace Base.ToolsPackage.Editor.PlayModeApplier
             store.Persist();
         }
 
-        private void DrawPrefabField(PlayModeStateStore store, PlayModeSavePayload payload, int index)
+        private static void DrawPrefabField(PlayModeStateStore store, PlayModeSavePayload payload, int index)
         {
             if (payload.applyTarget != EPlayModeApplyTarget.PrefabAsset)
                 return;
@@ -238,7 +238,7 @@ namespace Base.ToolsPackage.Editor.PlayModeApplier
             store.Persist();
         }
 
-        private void DrawPayloadWarning(PlayModeSavePayload payload)
+        private static void DrawPayloadWarning(PlayModeSavePayload payload)
         {
             if (payload.applyTarget == EPlayModeApplyTarget.PrefabAsset)
             {
@@ -284,11 +284,11 @@ namespace Base.ToolsPackage.Editor.PlayModeApplier
 
             EditorGUILayout.Space(EditorMetrics.ItemGap);
 
-            if (EditorWindowChrome.SecondaryButton(_styles, ClearHistoryLabel))
-            {
-                store.ClearHistory();
-                store.Persist();
-            }
+            if (!EditorWindowChrome.SecondaryButton(_styles, ClearHistoryLabel))
+                return;
+
+            store.ClearHistory();
+            store.Persist();
         }
 
         private void DrawHistoryRow(PlayModeHistoryEntry entry, int index)
@@ -334,7 +334,7 @@ namespace Base.ToolsPackage.Editor.PlayModeApplier
             AssetDatabase.SaveAssets();
         }
 
-        private void DiscardAll(PlayModeStateStore store)
+        private static void DiscardAll(PlayModeStateStore store)
         {
             foreach (PlayModeSavePayload payload in store.Payloads)
             {
@@ -346,7 +346,7 @@ namespace Base.ToolsPackage.Editor.PlayModeApplier
             store.Persist();
         }
 
-        private bool TryApplyPayload(PlayModeStateStore store, int index)
+        private static bool TryApplyPayload(PlayModeStateStore store, int index)
         {
             PlayModeSavePayload payload = store.Payloads[index];
             string displayName = payload.displayName;

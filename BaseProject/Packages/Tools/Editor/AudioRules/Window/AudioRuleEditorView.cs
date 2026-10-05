@@ -476,10 +476,14 @@ namespace Base.ToolsPackage.Editor.AudioRules.Window
 
         private VisualElement BuildSampleRateRow(AudioSettingOverrides overrides)
         {
-            VisualElement group = new();
-
-            group.style.flexDirection = FlexDirection.Row;
-            group.style.flexGrow = 1f;
+            VisualElement group = new()
+            {
+                style =
+                {
+                    flexDirection = FlexDirection.Row,
+                    flexGrow = 1f
+                }
+            };
 
             EnumField setting = new(overrides.SampleRateSetting)
             {

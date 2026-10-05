@@ -31,8 +31,7 @@ namespace Base.ToolsPackage.Editor.CodebaseGraph.Analysis
             if (declaring.IsSealed)
                 return false;
 
-            return member.Access == EAccessLevel.Protected
-                || member.Access == EAccessLevel.ProtectedInternal;
+            return member.Access is EAccessLevel.Protected or EAccessLevel.ProtectedInternal;
         }
 
         /// <summary>True when the type itself is part of the published surface.</summary>

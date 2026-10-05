@@ -8,7 +8,7 @@ namespace Base.UtilityPackage.Serialization
     /// is what actually persists; the resolved type is cached and rebuilt after every deserialization.
     /// </summary>
     /// <remarks>
-    /// Not sealed on purpose: <see cref="TypeReference{TBase}"/> derives from it to constrain the picker
+    /// Not sealed on purpose: <see cref="TypeReferenceOfBase{TBase}"/> derives from it to constrain the picker
     /// to a base type without needing an attribute.
     /// <para>
     /// A stored type that no longer exists resolves to null rather than throwing. Renaming or moving a

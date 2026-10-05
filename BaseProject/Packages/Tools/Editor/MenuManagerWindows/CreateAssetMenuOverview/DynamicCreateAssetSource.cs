@@ -38,7 +38,7 @@ namespace Base.ToolsPackage.Editor.MenuManagerWindows.CreateAssetMenuOverview
         // both kinds line up in the same column.
         private static string Relative(string path)
         {
-            string root = MenuPath.AssetRoot + "/";
+            const string root = MenuPath.AssetRoot + "/";
 
             return path.StartsWith(root, StringComparison.Ordinal)
                 ? path[root.Length..]
