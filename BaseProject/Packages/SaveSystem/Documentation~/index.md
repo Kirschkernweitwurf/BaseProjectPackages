@@ -1,5 +1,7 @@
 # Save System Package
 
+📦 **Package** · reusable, works in any of our projects
+
 Save and load for Unity, built for designers to wire up in the inspector.
 
 Everything is driven by one component in the scene. You never have to touch files, JSON or encryption yourself.
@@ -8,7 +10,7 @@ Everything is driven by one component in the scene. You never have to touch file
 
 | Section | What is inside |
 | --- | --- |
-| [🗳️ Components](components/index.md) | Everything you drag onto a GameObject: the manager, the UI buttons, the screenshot and play time helpers. |
+| [🗳️ Components](Components.md) | Everything you drag onto a GameObject: the manager, the UI buttons, the screenshot and play time helpers. |
 
 ## The 30 second version
 
@@ -27,7 +29,7 @@ In the editor saves are plain readable JSON by default. In a build they are encr
 
 ## Reading these docs
 
-Every page says near the top who it is for. The emoji in front of a link says the same:
+Every page shows its icon and who it is for right under the title. Links to it carry the same icon:
 
 | Area | Everyone | Programmers only |
 | --- | --- | --- |

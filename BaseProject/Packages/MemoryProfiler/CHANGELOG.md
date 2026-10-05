@@ -8,6 +8,14 @@ Changes made before 1.3.2 were not recorded.
 
 ## [Unreleased]
 
+## [1.3.9] - 2026-10-05
+
+### Changed
+
+- Team docs follow the new layout. Page files are named after their title, each section has an overview
+  page (`Components.md`, `Tools.md`, ...) next to its folder, and every page starts with a badge line
+  saying what it is and who it is for.
+
 ## [1.3.8] - 2026-10-05
 
 ### Added

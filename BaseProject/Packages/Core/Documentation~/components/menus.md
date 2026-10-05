@@ -1,5 +1,7 @@
 # Menus
 
+🔖 **Component** · for everyone
+
 Every screen in the game (pause, settings, inventory, loading) is a **Menu**. The Menu handles opening, closing, and the animation between those states. Anything else it needs (pausing time, showing the cursor, swapping the controls) is a separate **module** you bolt on.
 
 ## Menu

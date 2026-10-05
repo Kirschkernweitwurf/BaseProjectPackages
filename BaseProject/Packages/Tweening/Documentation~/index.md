@@ -1,21 +1,23 @@
 # Tweening Package
 
+📦 **Package** · reusable, works in any of our projects
+
 Animations without code. Put a tween component on an object, set the values, and let a Tween Group play it.
 
 ## Components
 
 | Page | What is in it | Key components |
 | --- | --- | --- |
-| [🔖 Tweening](components/tweening.md) | Every tween component, Tween Group and UI Event Trigger | Tween Group, UI Event Trigger, 20 tween components |
+| [🔖 Tweening](Components/Tweening.md) | Every tween component, Tween Group and UI Event Trigger | Tween Group, UI Event Trigger, 20 tween components |
 
 ## Scriptable Objects
 
 | Page | What it is | Prefix | Create path |
 | --- | --- | --- | --- |
-| [💌 Tween Settings](scriptable-objects/tween-settings.md) | Shared timing: duration, delay, easing, looping | `TS_` | `Base > Tweening > New TweenSettings` |
-| [💌 Float Tween Profile](scriptable-objects/float-tween-profile.md) | Values plus timing for fades, alpha and fill amounts | `TPF_` | `Base > Tweening > Profiles > New FloatTweenProfile` |
-| [💌 Color Tween Profile](scriptable-objects/color-tween-profile.md) | Values plus timing for tints and text colors | `TPC_` | `Base > Tweening > Profiles > New ColorTweenProfile` |
-| [💌 Vector3 Tween Profile](scriptable-objects/vector3-tween-profile.md) | Values plus timing for position, rotation and scale | `TPV_` | `Base > Tweening > Profiles > New Vector3TweenProfile` |
+| [💌 Tween Settings](<Scriptable Objects/Tween Settings.md>) | Shared timing: duration, delay, easing, looping | `TS_` | `Base > Tweening > New TweenSettings` |
+| [💌 Float Tween Profile](<Scriptable Objects/Float Tween Profile.md>) | Values plus timing for fades, alpha and fill amounts | `TPF_` | `Base > Tweening > Profiles > New FloatTweenProfile` |
+| [💌 Color Tween Profile](<Scriptable Objects/Color Tween Profile.md>) | Values plus timing for tints and text colors | `TPC_` | `Base > Tweening > Profiles > New ColorTweenProfile` |
+| [💌 Vector3 Tween Profile](<Scriptable Objects/Vector3 Tween Profile.md>) | Values plus timing for position, rotation and scale | `TPV_` | `Base > Tweening > Profiles > New Vector3TweenProfile` |
 
 All create paths start with `Create > Scriptable Objects >`.
 
@@ -30,13 +32,13 @@ Use a profile when the same animation repeats across objects. Use a settings ass
 
 | You want to | Go to |
 | --- | --- |
-| Animate something | [Tweening](components/tweening.md). A tween does nothing until a Tween Group plays it. |
-| Add hover or click feedback | [UI Event Trigger](components/tweening.md) |
-| Reuse an animation across objects | A [tween profile](scriptable-objects/float-tween-profile.md) or a shared [settings asset](scriptable-objects/tween-settings.md) |
+| Animate something | [Tweening](Components/Tweening.md). A tween does nothing until a Tween Group plays it. |
+| Add hover or click feedback | [UI Event Trigger](Components/Tweening.md) |
+| Reuse an animation across objects | A [tween profile](<Scriptable Objects/Float Tween Profile.md>) or a shared [settings asset](<Scriptable Objects/Tween Settings.md>) |
 
 ## Reading these docs
 
-Every page says near the top who it is for. The emoji in front of a link says the same:
+Every page shows its icon and who it is for right under the title. Links to it carry the same icon:
 
 | Area | Everyone | Programmers only |
 | --- | --- | --- |

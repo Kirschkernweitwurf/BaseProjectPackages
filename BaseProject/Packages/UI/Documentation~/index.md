@@ -1,5 +1,7 @@
 # UI Package
 
+📦 **Package** · reusable, works in any of our projects
+
 Reusable UI building blocks for Unity. Menu buttons, an "Are you sure?" popup and a handful of small helpers, ready to drop into any scene.
 
 The goal is simple: common UI jobs should be a component you add and fill in, not something that gets rebuilt in every project.
@@ -22,7 +24,7 @@ The goal is simple: common UI jobs should be a component you add and fill in, no
 
 ## Reading these docs
 
-Every page says near the top who it is for. The emoji in front of a link says the same:
+Every page shows its icon and who it is for right under the title. Links to it carry the same icon:
 
 | Area | Everyone | Programmers only |
 | --- | --- | --- |

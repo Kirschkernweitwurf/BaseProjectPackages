@@ -1,5 +1,7 @@
 # Core Debug Package
 
+📦 **Package** · reusable, works in any of our projects
+
 The in-game debug tools: a debug menu with a cheat console and a log console, and debug shapes that also show up in a build. Leave this package out of the release project and none of it ships.
 
 ## Debug menu
@@ -27,7 +29,7 @@ For the code side, see the package [README](../README.md).
 
 ## Reading these docs
 
-Every page says near the top who it is for. The emoji in front of a link says the same:
+Every page shows its icon and who it is for right under the title. Links to it carry the same icon:
 
 | Area | Everyone | Programmers only |
 | --- | --- | --- |

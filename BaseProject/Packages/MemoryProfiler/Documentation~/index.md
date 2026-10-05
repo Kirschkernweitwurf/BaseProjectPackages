@@ -1,12 +1,14 @@
 # Memory Profiler Package
 
+📦 **Package** · reusable, works in any of our projects
+
 Takes memory snapshots automatically, on a timer or whenever a scene loads, so you get a timeline of memory use instead of a few snapshots someone remembered to take. Open the snapshots in Unity's own Memory Profiler window to compare them and hunt leaks.
 
 ## Tools
 
 | Page | What it does | Menu path |
 | --- | --- | --- |
-| [🔧 Memory Profiler Automation](tools/memory-profiler-automation.md) | Sets up and runs the automatic captures | `Tools > Base Packages > Unity Editor > Memory Profiler Automation` |
+| [🔧 Memory Profiler Automation](<Tools/Memory Profiler Automation.md>) | Sets up and runs the automatic captures | `Tools > Base Packages > Unity Editor > Memory Profiler Automation` |
 
 ## Scriptable Objects
 
@@ -16,7 +18,7 @@ Takes memory snapshots automatically, on a timer or whenever a scene loads, so y
 
 ## Reading these docs
 
-Every page says near the top who it is for. The emoji in front of a link says the same:
+Every page shows its icon and who it is for right under the title. Links to it carry the same icon:
 
 | Area | Everyone | Programmers only |
 | --- | --- | --- |

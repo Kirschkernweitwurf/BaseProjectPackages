@@ -1,5 +1,7 @@
 # Attributes Package
 
+📦 **Package** · reusable, works in any of our projects
+
 Every attribute in `Base.AttributePackage`, grouped the same way the Attributes window groups them. There are **100**. Each one has a live page in that window with a working sample, the source behind it, what it needs and the other ways it can be written, so this table is an index rather than a manual.
 
 Attributes target serialized fields unless the table says otherwise.
@@ -186,7 +188,7 @@ The types Unity cannot store on its own.
 
 ## Reading these docs
 
-Every page says near the top who it is for. The emoji in front of a link says the same:
+Every page shows its icon and who it is for right under the title. Links to it carry the same icon:
 
 | Area | Everyone | Programmers only |
 | --- | --- | --- |
