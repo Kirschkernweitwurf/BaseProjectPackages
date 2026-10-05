@@ -6,11 +6,11 @@ Four editor windows and one switch ship with the Attributes package.
 
 | Tool | What it is for | For whom |
 | --- | --- | --- |
-| [🪛 Attributes Window](<Tools/Attributes Window.md>) | Every attribute explained, with live samples, plus a scan for ones that cannot work | Everyone |
-| [🪛 Required References Window](<Tools/Required References Window.md>) | Lists every required field that is still empty, in scenes and assets | Everyone |
-| [🪛 Assign GetComponents](<Tools/Assign GetComponents.md>) | Fills all auto-assign fields across prefabs and open scenes in one click | Everyone |
-| [🔧 GetComponent Require Audit](<Tools/GetComponent Require Audit.md>) | Finds classes missing a `[RequireComponent]` | Programmers |
-| [🪛 Disable Attribute Inspector](<Tools/Disable Attribute Inspector.md>) | Emergency switch back to Unity's own inspector | Everyone |
+| [🪛 Attributes Window](Tools/Attributes%20Window.md) | Every attribute explained, with live samples, plus a scan for ones that cannot work | Everyone |
+| [🪛 Required References Window](Tools/Required%20References%20Window.md) | Lists every required field that is still empty, in scenes and assets | Everyone |
+| [🪛 Assign GetComponents](Tools/Assign%20GetComponents.md) | Fills all auto-assign fields across prefabs and open scenes in one click | Everyone |
+| [🔧 GetComponent Require Audit](Tools/GetComponent%20Require%20Audit.md) | Finds classes missing a `[RequireComponent]` | Programmers |
+| [🪛 Disable Attribute Inspector](Tools/Disable%20Attribute%20Inspector.md) | Emergency switch back to Unity's own inspector | Everyone |
 
 The last three live under `Tools > Base Packages > Unity Editor > References`. The Attributes window lives under `Tools > Base Packages > Unity Editor > Project Health`.
 

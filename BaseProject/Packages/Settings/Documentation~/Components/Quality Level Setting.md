@@ -20,11 +20,11 @@ The position in Unity's quality level list. If you reorder levels in Project Set
 
 ## Order matters
 
-Put this **after** [🔖 V Sync Setting](<V-Sync Setting.md>) in the Hierarchy. Changing quality level in Unity can silently overwrite VSync. This component restores VSync afterwards, but it needs VSync to have been loaded first.
+Put this **after** [🔖 V Sync Setting](V-Sync%20Setting.md) in the Hierarchy. Changing quality level in Unity can silently overwrite VSync. This component restores VSync afterwards, but it needs VSync to have been loaded first.
 
 ## Which UI to use
 
-An [🔖 Int Multiple Choice Element](<Int Multiple Choice Element.md>) or a[🔖 Setting Dropdown](<Setting Dropdown.md>) with key `Quality`.
+An [🔖 Int Multiple Choice Element](Int%20Multiple%20Choice%20Element.md) or a[🔖 Setting Dropdown](Setting%20Dropdown.md) with key `Quality`.
 
 Your option labels must be in the **same order** as the levels in Project Settings > Quality. There is no automatic sync, so if a programmer adds a quality level, tell them to update the menu too.
 

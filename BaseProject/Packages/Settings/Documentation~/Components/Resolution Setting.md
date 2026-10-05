@@ -18,11 +18,11 @@ The default is whatever the screen is already showing the first time the game ru
 
 ## Order matters
 
-Put this **after** [🔖 Full Screen Mode Setting](<Full Screen Mode Setting.md>) in the Hierarchy. The resolution is applied using whatever full screen mode is currently active, so the mode has to be set first.
+Put this **after** [🔖 Full Screen Mode Setting](Full%20Screen%20Mode%20Setting.md) in the Hierarchy. The resolution is applied using whatever full screen mode is currently active, so the mode has to be set first.
 
 ## Which UI to use
 
-[🔖 Resolution Choice Element](<Resolution Choice Element.md>). It fills its own option list with the resolutions the player's monitor actually supports, so you never type them by hand.
+[🔖 Resolution Choice Element](Resolution%20Choice%20Element.md). It fills its own option list with the resolutions the player's monitor actually supports, so you never type them by hand.
 
 Set its Setting Key to `Resolution`.
 

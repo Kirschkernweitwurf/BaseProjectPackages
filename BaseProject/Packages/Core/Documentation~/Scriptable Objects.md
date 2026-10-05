@@ -6,7 +6,7 @@ Assets you create in the Project window through `Create > Scriptable Objects > B
 
 | Page | What it is | Prefix |
 | --- | --- | --- |
-| [💌 Menu Identifier](<Scriptable Objects/Menu Identifier.md>) | A name tag for a menu, so nothing has to reference menus by string | `MID_` |
+| [💌 Menu Identifier](Scriptable%20Objects/Menu%20Identifier.md) | A name tag for a menu, so nothing has to reference menus by string | `MID_` |
 
 Audio Container and the tween assets moved with their packages: [Audio](https://github.com/Kirschkernweitwurf/BaseProjectPackages/blob/main/BaseProject/Packages/Audio/Documentation~/index.md), [Tweening](https://github.com/Kirschkernweitwurf/BaseProjectPackages/blob/main/BaseProject/Packages/Tweening/Documentation~/index.md).
 

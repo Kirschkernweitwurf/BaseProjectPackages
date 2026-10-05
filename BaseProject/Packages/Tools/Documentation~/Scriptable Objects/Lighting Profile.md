@@ -13,7 +13,7 @@ Stores the render settings of a scene in an asset, so they can be applied anywhe
 1. Open a scene and set up its lighting the way you want it.
 2. Create a profile asset.
 3. Press **Capture** in the Inspector. Everything is copied into the asset.
-4. Add a [🔖 Lighting Profile Applier](<../Components/Lighting Profile Applier.md>) to any scene that should use it and drop the profile in.
+4. Add a [🔖 Lighting Profile Applier](../Components/Lighting%20Profile%20Applier.md) to any scene that should use it and drop the profile in.
 
 The Inspector also has **Apply** and preview buttons so you can check a profile without entering Play mode.
 

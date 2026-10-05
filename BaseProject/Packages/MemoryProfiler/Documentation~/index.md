@@ -8,7 +8,7 @@ Takes memory snapshots automatically, on a timer or whenever a scene loads, so y
 
 | Page | What it does | Menu path |
 | --- | --- | --- |
-| [🔧 Memory Profiler Automation](<Tools/Memory Profiler Automation.md>) | Sets up and runs the automatic captures | `Tools > Base Packages > Unity Editor > Memory Profiler Automation` |
+| [🔧 Memory Profiler Automation](Tools/Memory%20Profiler%20Automation.md) | Sets up and runs the automatic captures | `Tools > Base Packages > Unity Editor > Memory Profiler Automation` |
 
 ## Scriptable Objects
 

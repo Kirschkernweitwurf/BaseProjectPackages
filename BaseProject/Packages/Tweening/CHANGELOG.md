@@ -8,6 +8,13 @@ Changes made before 1.0.11 were not recorded.
 
 ## [Unreleased]
 
+## [1.0.18] - 2026-10-05
+
+### Fixed
+
+- Docs links work on GitHub. Links write spaces as `%20`, and every docs folder and page is stored with the
+  same case as its name, so nothing breaks on case-sensitive systems.
+
 ## [1.0.17] - 2026-10-05
 
 ### Changed

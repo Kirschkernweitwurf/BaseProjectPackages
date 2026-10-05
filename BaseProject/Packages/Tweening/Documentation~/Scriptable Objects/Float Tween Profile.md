@@ -18,7 +18,7 @@ Use it when several objects should animate exactly the same way.
 | --- | --- |
 | **Start Value** | The number the animation begins at |
 | **Target Value** | The number the animation moves to |
-| **Use Settings Asset** | Take the timing from a shared [Tween Settings](<Tween Settings.md>) asset instead of the fields below |
+| **Use Settings Asset** | Take the timing from a shared [Tween Settings](Tween%20Settings.md) asset instead of the fields below |
 | **Settings Asset** | The shared timing asset, shown when the toggle above is on |
 | **Tween Settings** | Duration, delay, and easing for this profile |
 | **Loop Settings** | Loop count and loop type for this profile |

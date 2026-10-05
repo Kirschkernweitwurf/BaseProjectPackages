@@ -12,7 +12,7 @@ None. It always uses the currently selected slot.
 
 ## Before it works
 
-A slot must be selected first, usually by a [🔖 Select Slot Button](<Select Slot Button.md>). With no selection it logs a warning and does nothing.
+A slot must be selected first, usually by a [🔖 Select Slot Button](Select%20Slot%20Button.md). With no selection it logs a warning and does nothing.
 
 ## Possible outcomes
 

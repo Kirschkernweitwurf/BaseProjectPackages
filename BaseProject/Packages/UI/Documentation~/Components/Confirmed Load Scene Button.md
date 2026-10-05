@@ -6,7 +6,7 @@ Asks the player to confirm, then loads a scene. Use it for "Back to main menu" s
 
 ## Where to put it
 
-On a GameObject that has a **Button** component. The scene also needs a [🗞️ Confirmation Service](<Confirmation Service.md>) and a [🗞️ Confirmation Menu](<Confirmation Menu.md>).
+On a GameObject that has a **Button** component. The scene also needs a [🗞️ Confirmation Service](Confirmation%20Service.md) and a [🗞️ Confirmation Menu](Confirmation%20Menu.md).
 
 ## Fields
 

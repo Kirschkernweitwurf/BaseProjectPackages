@@ -18,4 +18,4 @@ On a GameObject that has a **Button** component.
 
 - The dropdown only lists scenes that are in the Build Settings. If your scene is missing, add it there first.
 - Loading happens in the background, so the game does not freeze.
-- For a scene change that should ask the player first, use[🔖 Confirmed Load Scene Button](<Confirmed Load Scene Button.md>).
+- For a scene change that should ask the player first, use[🔖 Confirmed Load Scene Button](Confirmed%20Load%20Scene%20Button.md).

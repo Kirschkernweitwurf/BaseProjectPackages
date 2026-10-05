@@ -6,18 +6,18 @@
 
 | Tool | Menu path |
 | --- | --- |
-| [🪛 NavigationGroupsWindow](<Tools/Navigation Groups Window.md>) | `Tools > Base Packages > Unity Editor > Controller Navigation Groups` |
+| [🪛 NavigationGroupsWindow](Tools/Navigation%20Groups%20Window.md) | `Tools > Base Packages > Unity Editor > Controller Navigation Groups` |
 
 ## Components
 
 | Component | Purpose |
 | --- | --- |
-| [🔖 NavigableElement](<Components/Navigable Element.md>) | Marks a selectable as a gamepad target |
-| [🔖 NavigableGroup](<Components/Navigable Group.md>) | Wires navigation and owns a focus context |
-| [🗞️ FocusWatchdog](<Components/Focus Watchdog.md>) | Restores focus when the gamepad loses it |
-| [🔖 MenuNavigationModule](<Components/Menu Navigation Module.md>) | Bridges a menu's lifecycle to a group |
-| [🔖 GamepadScrollRect](<Components/Gamepad Scroll Rect.md>) | Stick scrolling for a ScrollRect |
-| [🔖 ScrollIntoView](<Components/Scroll Into View.md>) | Keeps the selection visible in a ScrollRect |
+| [🔖 NavigableElement](Components/Navigable%20Element.md) | Marks a selectable as a gamepad target |
+| [🔖 NavigableGroup](Components/Navigable%20Group.md) | Wires navigation and owns a focus context |
+| [🗞️ FocusWatchdog](Components/Focus%20Watchdog.md) | Restores focus when the gamepad loses it |
+| [🔖 MenuNavigationModule](Components/Menu%20Navigation%20Module.md) | Bridges a menu's lifecycle to a group |
+| [🔖 GamepadScrollRect](Components/Gamepad%20Scroll%20Rect.md) | Stick scrolling for a ScrollRect |
+| [🔖 ScrollIntoView](Components/Scroll%20Into%20View.md) | Keeps the selection visible in a ScrollRect |
 
 Input prompt components (`InputDeviceTracker`, `InputGlyphSet`, `InputGlyphProvider`) are not covered here yet.
 

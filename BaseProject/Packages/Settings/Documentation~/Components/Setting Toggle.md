@@ -15,7 +15,7 @@ Shared by every UI element:
 | Field | What to put in it |
 | --- | --- |
 | **Setting Key** | The key of the setting this controls. Must match exactly. Required. |
-| **Title** | Localized name shown in the [🔖 Setting Flavor Text](<Setting Flavor Text.md>) panel while this element is focused. |
+| **Title** | Localized name shown in the [🔖 Setting Flavor Text](Setting%20Flavor%20Text.md) panel while this element is focused. |
 | **Description** | Localized explanation shown in the same panel. |
 
 Specific to this element:

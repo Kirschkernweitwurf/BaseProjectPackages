@@ -2,13 +2,13 @@
 
 🔖 **Component** · for everyone
 
-The same left arrow / label / right arrow picker as [🔖 Int Multiple Choice Element](<Int Multiple Choice Element.md>), with one difference: it saves the **chosen word itself** instead of its position in the list.
+The same left arrow / label / right arrow picker as [🔖 Int Multiple Choice Element](Int%20Multiple%20Choice%20Element.md), with one difference: it saves the **chosen word itself** instead of its position in the list.
 
 That makes it safe to reorder or add options later without breaking saved values.
 
 ## Inspector fields
 
-Identical to [🔖 Int Multiple Choice Element](<Int Multiple Choice Element.md>). See that page for the full table.
+Identical to [🔖 Int Multiple Choice Element](Int%20Multiple%20Choice%20Element.md). See that page for the full table.
 
 In short: Setting Key, Title, Description, Left Button, Right Button, Value Text, Selection Indicator Prefab, Selection Indicator Parent, Options.
 
@@ -17,7 +17,7 @@ In short: Setting Key, Title, Description, Left Button, Right Button, Value Text
 - Any setting that stores text rather than a number.
 - Anywhere you expect the option list to grow over time.
 
-For resolutions specifically, use [🔖 Resolution Choice Element](<Resolution Choice Element.md>) instead. It is this component with the option list filled in for you.
+For resolutions specifically, use [🔖 Resolution Choice Element](Resolution%20Choice%20Element.md) instead. It is this component with the option list filled in for you.
 
 ## Good to know
 

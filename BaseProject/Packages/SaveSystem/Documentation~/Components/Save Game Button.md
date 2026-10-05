@@ -24,8 +24,8 @@ Requires a Unity `Button` on the same GameObject.
 ## What gets saved with it
 
 - All registered game objects that own save data.
-- A screenshot thumbnail, if a [🗞️ Screen Capturer](<Screen Capturer.md>) is in the scene.
-- Total play time, if a [🗞️ Playtime Tracker](<Playtime Tracker.md>) is in the scene.
+- A screenshot thumbnail, if a [🗞️ Screen Capturer](Screen%20Capturer.md) is in the scene.
+- Total play time, if a [🗞️ Playtime Tracker](Playtime%20Tracker.md) is in the scene.
 - Time stamp and app version, always.
 
 After saving, the slot it wrote to becomes the selected slot.

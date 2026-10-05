@@ -4,9 +4,9 @@
 
 A left arrow, a label, a right arrow, and a row of dots showing which option is selected. The console-style settings control.
 
-Saves the **position** of the chosen option, so use it for [🔖 Full Screen Mode Setting](<Full Screen Mode Setting.md>), [🔖 Quality Level Setting](<Quality Level Setting.md>), [🔖 V Sync Setting](<V-Sync Setting.md>) and 🪛[Language Setting](https://github.com/Kirschkernweitwurf/BaseProjectPackages/blob/main/BaseProject/Packages/Localization/Documentation~/Components/Language%20Setting.md).
+Saves the **position** of the chosen option, so use it for [🔖 Full Screen Mode Setting](Full%20Screen%20Mode%20Setting.md), [🔖 Quality Level Setting](Quality%20Level%20Setting.md), [🔖 V Sync Setting](V-Sync%20Setting.md) and 🪛[Language Setting](https://github.com/Kirschkernweitwurf/BaseProjectPackages/blob/main/BaseProject/Packages/Localization/Documentation~/Components/Language%20Setting.md).
 
-For settings that save a word instead, use [🔖 String Multiple Choice Element](<String Multiple Choice Element.md>).
+For settings that save a word instead, use [🔖 String Multiple Choice Element](String%20Multiple%20Choice%20Element.md).
 
 ## Inspector fields
 
@@ -15,7 +15,7 @@ Shared by every UI element:
 | Field | What to put in it |
 | --- | --- |
 | **Setting Key** | The key of the setting this controls. Must match exactly. Required. |
-| **Title** | Localized name shown in the [🔖 Setting Flavor Text](<Setting Flavor Text.md>) panel. |
+| **Title** | Localized name shown in the [🔖 Setting Flavor Text](Setting%20Flavor%20Text.md) panel. |
 | **Description** | Localized explanation shown in the same panel. |
 
 Shared by every arrow picker:
@@ -25,7 +25,7 @@ Shared by every arrow picker:
 | **Left Button** | The button that goes back one option. Required. |
 | **Right Button** | The button that goes forward one option. Required. |
 | **Value Text** | The text object showing the current option. Required. |
-| **Selection Indicator Prefab** | A prefab with a [🔖 Selection Indicator Button](<Selection Indicator Button.md>) on it. This is one dot. Required. |
+| **Selection Indicator Prefab** | A prefab with a [🔖 Selection Indicator Button](Selection%20Indicator%20Button.md) on it. This is one dot. Required. |
 | **Selection Indicator Parent** | The container the dots are spawned into. Usually put a Horizontal Layout Group on it. Required. |
 | **Options** | The list of labels the player cycles through. |
 

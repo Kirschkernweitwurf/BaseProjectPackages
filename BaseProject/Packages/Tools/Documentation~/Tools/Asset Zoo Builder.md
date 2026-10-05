@@ -8,7 +8,7 @@ Lays out prefabs in the scene in neat rows so you can look at your whole art lib
 
 ## How to use it
 
-1. Create a config: `Assets > Create > Scriptable Objects > Base > Asset Zoo > New Config`. See[💌 ZooConfig](<../Scriptable Objects/Zoo Config.md>).
+1. Create a config: `Assets > Create > Scriptable Objects > Base > Asset Zoo > New Config`. See[💌 ZooConfig](../Scriptable%20Objects/Zoo%20Config.md).
 2. Open the window and drop the config into the **Config** field.
 3. Optional: drop a Transform into **Parent** to build the zoo under a specific object.
 4. Set the search folder under **Generation** in the config.
@@ -34,5 +34,5 @@ Assets are expected to be named `Prefix_Group_Name`. For example `P_Garden_Rock_
 ## Notes
 
 - The last used config is remembered, so the next session is just open and build.
-- The zoo root carries a [🗞️ ZooRootMarker](<../Components/Zoo Root Marker.md>) so the builder can find its own object again. Do not remove it by hand.
+- The zoo root carries a [🗞️ ZooRootMarker](../Components/Zoo%20Root%20Marker.md) so the builder can find its own object again. Do not remove it by hand.
 - Nothing is written to the prefabs. The zoo is a throwaway scene object.

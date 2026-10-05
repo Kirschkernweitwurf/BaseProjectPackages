@@ -33,7 +33,7 @@ If you skip this, the dropdown in the component will be empty.
 
 - The saved value is a plain 0 to 1 number. The component converts it to decibels for you, because volume does not sound linear to human ears.
 - A value of 0 is true silence, not just very quiet.
-- Pair it with a [🔖 Setting Slider](<Setting Slider.md>).
+- Pair it with a [🔖 Setting Slider](Setting%20Slider.md).
 
 ## Setup checklist
 

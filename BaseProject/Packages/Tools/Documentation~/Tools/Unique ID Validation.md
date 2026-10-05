@@ -14,7 +14,7 @@ When on, IDs are checked:
 - when assets are imported
 - before a build
 
-When off, none of that runs. Nothing else about the package changes, and you can still assign IDs by hand with [🔧 Generate Unique Ids](<Generate Unique Ids.md>).
+When off, none of that runs. Nothing else about the package changes, and you can still assign IDs by hand with [🔧 Generate Unique Ids](Generate%20Unique%20Ids.md).
 
 ## Notes
 

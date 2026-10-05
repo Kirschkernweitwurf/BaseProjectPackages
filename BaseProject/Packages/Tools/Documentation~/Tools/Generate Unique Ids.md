@@ -21,4 +21,4 @@ Assets that already have a valid ID are left alone. Running the command twice is
 ## Notes
 
 - IDs are GUIDs and are hidden in the Inspector on purpose. They are not meant to be edited.
-- Run it after creating new assets, or let the automatic validation handle it. See [🔧 Unique ID Validation](<Unique ID Validation.md>).
+- Run it after creating new assets, or let the automatic validation handle it. See [🔧 Unique ID Validation](Unique%20ID%20Validation.md).

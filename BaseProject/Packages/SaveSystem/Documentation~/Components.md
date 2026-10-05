@@ -8,7 +8,7 @@ All components you add to a GameObject through **Add Component**.
 
 | Component | What it does |
 | --- | --- |
-| [SaveManager](<Components/Save Manager.md>) | The brain. One per game, in your first scene. Holds all settings. |
+| [SaveManager](Components/Save%20Manager.md) | The brain. One per game, in your first scene. Holds all settings. |
 
 ## Save menu UI
 
@@ -16,17 +16,17 @@ Each button needs a Unity `Button` on the same GameObject. They all find the Sav
 
 | Component | What it does |
 | --- | --- |
-| [SelectSlotButton](<Components/Select Slot Button.md>) | Marks one slot as the active one. |
-| [SaveGameButton](<Components/Save Game Button.md>) | Writes the game into the active slot, or into a new one. |
-| [LoadGameButton](<Components/Load Game Button.md>) | Loads the active slot. |
-| [DeleteGameButton](<Components/Delete Game Button.md>) | Deletes the active slot. |
+| [SelectSlotButton](Components/Select%20Slot%20Button.md) | Marks one slot as the active one. |
+| [SaveGameButton](Components/Save%20Game%20Button.md) | Writes the game into the active slot, or into a new one. |
+| [LoadGameButton](Components/Load%20Game%20Button.md) | Loads the active slot. |
+| [DeleteGameButton](Components/Delete%20Game%20Button.md) | Deletes the active slot. |
 
 ## Optional extras
 
 | Component | What it does |
 | --- | --- |
-| [ScreenCapturer](<Components/Screen Capturer.md>) | Adds a screenshot thumbnail to every save. |
-| [PlaytimeTracker](<Components/Playtime Tracker.md>) | Counts play time and stores it in the save. |
+| [ScreenCapturer](Components/Screen%20Capturer.md) | Adds a screenshot thumbnail to every save. |
+| [PlaytimeTracker](Components/Playtime%20Tracker.md) | Counts play time and stores it in the save. |
 
 ## Example
 
