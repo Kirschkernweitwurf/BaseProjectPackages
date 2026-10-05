@@ -2,6 +2,8 @@
 
 Every prefab and configured asset the other Base packages are wired together with. This package holds no code at all.
 
+**Team docs:** how to use everything in the editor is in [`Documentation~/index.md`](Documentation~/index.md). In Unity, open `Help > Base Packages Documentation`.
+
 It exists because composition and code pull in opposite directions: a prefab carrying an `AudioManager`, a `MenuManager` and a save button needs three packages installed, while each of those packages on its own should install into an empty project and compile. Keeping the wiring here is what lets that stay true.
 
 ## Requirements

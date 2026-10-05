@@ -8,6 +8,16 @@ Changes made before 1.6.10 were not recorded.
 
 ## [Unreleased]
 
+## [1.7.0] - 2026-10-05
+
+### Added
+
+- `Help > Base Packages Documentation`: a window listing every installed package that ships a
+  `Documentation~/index.md`, plus the project's own `Docs/index.md`, and opening them in the default
+  Markdown app. Plain `MenuItem`, so it works without the Tools package.
+- Team documentation in `Documentation~`, moved over from the old wiki.
+- `documentationUrl` now points at the team docs.
+
 ## [1.6.13]
 ### Changed
 

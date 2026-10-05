@@ -2,6 +2,8 @@
 
 A data driven tween system with runtime factories, ready-made components and authoring assets. Drop a component on a transform, renderer, graphic or text and drive its value from a reusable profile asset, or build tweens in code and never touch a component.
 
+**Team docs:** how to use everything in the editor is in [`Documentation~/index.md`](Documentation~/index.md). In Unity, open `Help > Base Packages Documentation`.
+
 It was split out of the Core package because it was roughly forty percent of it while almost nothing depended on it: a project that wants menus or audio should not have to compile fifty tween files, and a project that only wants tweens should not have to install the rest of Core.
 
 ## Requirements

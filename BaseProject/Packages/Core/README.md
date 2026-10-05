@@ -2,6 +2,8 @@
 
 Reusable core systems that any Unity project can build on: menus, scene loading, input, timers, state machines, object pooling and randomization. Audio and the in-game debug menu are their own packages, Base Audio and Base Core Debug. Service location and tweening live one layer down, in the Base Service and Base Tweening packages.
 
+**Team docs:** how to use everything in the editor is in [`Documentation~/index.md`](Documentation~/index.md). In Unity, open `Help > Base Packages Documentation`.
+
 ## Requirements
 
 - Unity `6000.3` or newer
