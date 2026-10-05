@@ -192,13 +192,12 @@ namespace Base.UtilityPackage.Editor.Serialization
                 alignment = TextAnchor.MiddleCenter,
                 fontStyle = isBold
                     ? FontStyle.Bold
-                    : FontStyle.Normal
+                    : FontStyle.Normal,
+                normal = { textColor = color },
+                hover = { textColor = color },
+                active = { textColor = color },
+                focused = { textColor = color }
             };
-
-            style.normal.textColor = color;
-            style.hover.textColor = color;
-            style.active.textColor = color;
-            style.focused.textColor = color;
 
             return style;
         }
@@ -207,15 +206,14 @@ namespace Base.UtilityPackage.Editor.Serialization
         {
             GUIStyle style = new(EditorStyles.miniLabel)
             {
-                alignment = TextAnchor.MiddleCenter
+                alignment = TextAnchor.MiddleCenter,
+                normal = { textColor = WeekdayText }
             };
-
-            style.normal.textColor = WeekdayText;
 
             return style;
         }
 
-        private static bool IsWeekend(DayOfWeek day) => day == DayOfWeek.Saturday || day == DayOfWeek.Sunday;
+        private static bool IsWeekend(DayOfWeek day) => day is DayOfWeek.Saturday or DayOfWeek.Sunday;
 
         private static Rect Inset(Rect cell) => new(cell.x + CellInset, cell.y + CellInset,
             cell.width - CellInset * 2f, cell.height - CellInset * 2f);
@@ -287,7 +285,7 @@ namespace Base.UtilityPackage.Editor.Serialization
 
         private void DrawHeader(Rect rect)
         {
-            float navigation = NavigationWidth * 2f;
+            const float navigation = NavigationWidth * 2f;
             float cell = TimeUnitField.CellWidth(rect, 2, navigation);
             float x = rect.x;
 
@@ -352,7 +350,7 @@ namespace Base.UtilityPackage.Editor.Serialization
                 Pick(day);
         }
 
-        private void DrawDayBackground(Rect cell, Rect chip, bool isSelected, bool isToday)
+        private static void DrawDayBackground(Rect cell, Rect chip, bool isSelected, bool isToday)
         {
             if (isSelected)
             {

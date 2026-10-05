@@ -83,17 +83,13 @@ namespace Base.AttributesPackage.Editor.Core
         // The small variants look starved next to a wrapped paragraph.
         private static Texture IconFor(EInfoBoxType type)
         {
-            switch (type)
+            return type switch
             {
-                case EInfoBoxType.Info:
-                    return EditorGUIUtility.IconContent("console.infoicon").image;
-                case EInfoBoxType.Warning:
-                    return EditorGUIUtility.IconContent("console.warnicon").image;
-                case EInfoBoxType.Error:
-                    return EditorGUIUtility.IconContent("console.erroricon").image;
-                default:
-                    return null;
-            }
+                EInfoBoxType.Info => EditorGUIUtility.IconContent("console.infoicon").image,
+                EInfoBoxType.Warning => EditorGUIUtility.IconContent("console.warnicon").image,
+                EInfoBoxType.Error => EditorGUIUtility.IconContent("console.erroricon").image,
+                _ => null
+            };
         }
 
         private static void Build()

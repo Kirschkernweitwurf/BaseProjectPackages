@@ -246,8 +246,7 @@ namespace Base.ToolsPackage.Editor.FolderConventionValidator
 
             string root = cleaned.Split(PathSeparator)[0];
 
-            bool hasKnownRoot = root == AssetsRoot
-                || root == PackagesRoot;
+            bool hasKnownRoot = root is AssetsRoot or PackagesRoot;
 
             return hasKnownRoot
                 ? cleaned

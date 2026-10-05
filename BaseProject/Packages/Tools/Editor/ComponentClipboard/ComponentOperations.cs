@@ -20,7 +20,7 @@ namespace Base.ToolsPackage.Editor.ComponentClipboard
 
         /// <summary>Returns true when the component can be captured into the clipboard.</summary>
         /// <param name="component">Component to test. May be null.</param>
-        internal static bool CanCopy(Component component) => component != null && !(component is Transform);
+        internal static bool CanCopy(Component component) => component != null && component is not Transform;
 
         /// <summary>
         /// Works out what a paste would do, one step per entry and in entry order. A single entry of
@@ -328,9 +328,7 @@ namespace Base.ToolsPackage.Editor.ComponentClipboard
 
             foreach (object attribute in attributes)
             {
-                RequireComponent requirement = attribute as RequireComponent;
-
-                if (requirement == null)
+                if (attribute is not RequireComponent requirement)
                     continue;
 
                 if (IsMatch(requirement.m_Type0, requiredType)

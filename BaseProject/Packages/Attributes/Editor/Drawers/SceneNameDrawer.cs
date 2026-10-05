@@ -24,8 +24,7 @@ namespace Base.AttributesPackage.Editor.Drawers
         private static string[] _sceneNames;
 
         protected override bool IsSupported(SerializedProperty property)
-            => property.propertyType == SerializedPropertyType.String
-                || property.propertyType == SerializedPropertyType.Integer;
+            => property.propertyType is SerializedPropertyType.String or SerializedPropertyType.Integer;
 
         protected override string Evaluate(SerializedProperty property)
         {

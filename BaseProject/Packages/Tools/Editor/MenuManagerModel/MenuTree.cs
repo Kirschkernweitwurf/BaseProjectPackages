@@ -280,7 +280,7 @@ namespace Base.ToolsPackage.Editor.MenuManagerModel
 
         /// <summary>
         /// Removes every node that failed to deserialize. Unity writes a null slot when a
-        /// <see cref="UnityEngine.SerializeReferenceAttribute"/> type can no longer be resolved. That happens when a
+        /// <see cref="UnityEngine.SerializeReference"/> type can no longer be resolved. That happens when a
         /// file moves to another assembly or its namespace changes. Returns true when anything was removed.
         /// </summary>
         internal static bool PruneNulls(List<MenuNode> nodes)

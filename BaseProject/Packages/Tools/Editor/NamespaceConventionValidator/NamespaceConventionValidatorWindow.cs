@@ -308,12 +308,12 @@ namespace Base.ToolsPackage.Editor.NamespaceConventionValidator
             if (GUI.Button(actionRect, GoToLabel))
                 Navigate(violation);
 
-            if (Event.current.type == EventType.MouseDown
-                && pathRect.Contains(Event.current.mousePosition))
-            {
-                Navigate(violation);
-                Event.current.Use();
-            }
+            if (Event.current.type != EventType.MouseDown
+                || !pathRect.Contains(Event.current.mousePosition))
+                return;
+
+            Navigate(violation);
+            Event.current.Use();
         }
 
         private List<NamespaceViolation> Filter()

@@ -2,7 +2,7 @@ namespace Base.UtilityPackage.Logging
 {
     /// <summary>
     /// Supported colors for Unity rich text logging.
-    /// Used with <see cref="LogTextFormatter.Colorize"/> to style log text.
+    /// Used with <see cref="LogTextFormatter.Colorize(string,EDebugLogColors)"/> to style log text.
     /// </summary>
     public enum EDebugLogColors : byte
     {

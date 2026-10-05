@@ -196,7 +196,7 @@ namespace Base.ToolsPackage.Editor.ComponentClipboard
             }
         }
 
-        private bool DrawClipboardRow(ComponentClipboard clipboard, ComponentPasteStep step, int index)
+        private static bool DrawClipboardRow(ComponentClipboard clipboard, ComponentPasteStep step, int index)
         {
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.LabelField(step.Entry.DisplayName);

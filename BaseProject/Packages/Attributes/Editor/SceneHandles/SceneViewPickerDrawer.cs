@@ -74,12 +74,14 @@ namespace Base.AttributesPackage.Editor.SceneHandles
                 return;
             }
 
-            if (typeof(Component).IsAssignableFrom(fieldType) || fieldType.IsInterface)
-            {
-                Object component = picked.GetComponent(fieldType);
-                if (component != null)
-                    context.Property.objectReferenceValue = component;
-            }
+            if (!typeof(Component).IsAssignableFrom(fieldType)
+                && !fieldType.IsInterface)
+                return;
+
+            Object component = picked.GetComponent(fieldType);
+
+            if (component != null)
+                context.Property.objectReferenceValue = component;
         }
     }
 }

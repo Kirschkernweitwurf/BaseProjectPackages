@@ -274,17 +274,12 @@ namespace Base.ToolsPackage.Editor.OverviewGui.PrefabOverviewWindow
 
         private bool MatchesFilter(PrefabEntry entry)
         {
-            switch (_filter)
+            return _filter switch
             {
-                case EPrefabViewFilter.Variants:
-                    return entry.Kind == EPrefabKind.Variant;
-
-                case EPrefabViewFilter.Issues:
-                    return entry.Issues != EPrefabIssue.None;
-
-                default:
-                    return true;
-            }
+                EPrefabViewFilter.Variants => entry.Kind == EPrefabKind.Variant,
+                EPrefabViewFilter.Issues => entry.Issues != EPrefabIssue.None,
+                _ => true
+            };
         }
 
         private void DrawTree()
@@ -362,7 +357,7 @@ namespace Base.ToolsPackage.Editor.OverviewGui.PrefabOverviewWindow
             }
         }
 
-        private void DrawBadges(PrefabRowContent content, Rect rect)
+        private static void DrawBadges(PrefabRowContent content, Rect rect)
         {
             float y = rect.y + RowPadding;
             float height = rect.height - RowPadding * 2f;
@@ -386,7 +381,7 @@ namespace Base.ToolsPackage.Editor.OverviewGui.PrefabOverviewWindow
                     OverviewGui.BadgeStyle(EOverviewAccent.Warning));
         }
 
-        private void DrawRowButtons(PrefabEntry entry, Rect rect)
+        private static void DrawRowButtons(PrefabEntry entry, Rect rect)
         {
             float y = rect.y + RowPadding;
             float height = rect.height - RowPadding * 2f;
@@ -395,7 +390,8 @@ namespace Base.ToolsPackage.Editor.OverviewGui.PrefabOverviewWindow
 
             using (new EditorGUI.DisabledScope(entry.BaseEntry == null))
             {
-                if (GUI.Button(baseRect, BaseButtonLabel))
+                if (GUI.Button(baseRect, BaseButtonLabel)
+                    && entry.BaseEntry != null)
                     OverviewGui.Navigate(entry.BaseEntry.AssetPath);
             }
 
@@ -403,7 +399,7 @@ namespace Base.ToolsPackage.Editor.OverviewGui.PrefabOverviewWindow
                 OpenPrefab(entry);
         }
 
-        private void HandleRowClick(PrefabEntry entry, Rect labelRect)
+        private static void HandleRowClick(PrefabEntry entry, Rect labelRect)
         {
             if (Event.current.type != EventType.MouseDown
                 || Event.current.button != 0)

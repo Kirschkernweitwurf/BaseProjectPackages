@@ -136,17 +136,12 @@ namespace Base.ToolsPackage.Editor.CodebaseGraph
 
         private static string ResolveLevelClass(EGraphScope level)
         {
-            switch (level)
+            return level switch
             {
-                case EGraphScope.Namespace:
-                    return CodebaseGraphStyle.LevelNamespaceClass;
-
-                case EGraphScope.Member:
-                    return CodebaseGraphStyle.LevelMemberClass;
-
-                default:
-                    return CodebaseGraphStyle.LevelTypeClass;
-            }
+                EGraphScope.Namespace => CodebaseGraphStyle.LevelNamespaceClass,
+                EGraphScope.Member => CodebaseGraphStyle.LevelMemberClass,
+                _ => CodebaseGraphStyle.LevelTypeClass
+            };
         }
 
         private static VisualElement BuildRow(GraphMemberRow row)

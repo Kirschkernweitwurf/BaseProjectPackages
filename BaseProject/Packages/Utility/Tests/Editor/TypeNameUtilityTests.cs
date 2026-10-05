@@ -66,7 +66,7 @@ namespace Base.UtilityPackage.Tests
 
         // Nesting is the subject of the test, so the pair has to be declared here rather than in
         // files of their own.
-        private sealed class Outer
+        private static class Outer
         {
             internal sealed class Inner { }
         }

@@ -9,7 +9,7 @@ namespace Base.EditorUIPackage.Editor
     /// a window and comparing from memory.
     /// </summary>
     /// <remarks>
-    /// Every piece here is drawn with <see cref="GUI.Label"/> rather than a control, because a
+    /// Every piece here is drawn with <see cref="GUI.Label(Rect,string)"/> rather than a control, because a
     /// preview that reacts to clicks invites the user to try to use it.
     /// </remarks>
     public static class EditorThemePreview

@@ -1,5 +1,4 @@
 using System;
-using Base.AttributesPackage.Editor.Core;
 
 namespace Base.AttributesPackage.Editor.Windows.AttributeExplorer.Reference
 {

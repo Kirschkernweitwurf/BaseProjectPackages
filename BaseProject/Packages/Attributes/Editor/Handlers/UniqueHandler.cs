@@ -50,11 +50,11 @@ namespace Base.AttributesPackage.Editor.Handlers
             if (context.Editor.serializedObject.isEditingMultipleObjects)
                 return;
 
-            if (DrawButton())
-            {
-                DuplicateFinder.CollectRepeats(list, Repeats);
-                RemoveRepeats(context.Property, Repeats);
-            }
+            if (!DrawButton())
+                return;
+
+            DuplicateFinder.CollectRepeats(list, Repeats);
+            RemoveRepeats(context.Property, Repeats);
         }
 
         private static void DrawMessages(in MemberContext context, UniqueAttribute attribute)

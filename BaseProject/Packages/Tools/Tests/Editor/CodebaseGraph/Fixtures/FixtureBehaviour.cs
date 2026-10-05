@@ -19,7 +19,7 @@ namespace Base.ToolsPackage.Editor.Tests.CodebaseGraph.Fixtures
         /// <summary>Written by Unity through the generated backing field, never assigned in code.</summary>
         [field: SerializeField] public GameObject Prefab { get; private set; }
 
-        [SerializeField] private int _neverRead;
+        [SerializeField] private int neverRead;
 
         /// <summary>Runs a lambda from inside a getter, which is where the owner name is an accessor.</summary>
         public int LambdaInAccessor

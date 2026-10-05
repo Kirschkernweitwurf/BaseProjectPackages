@@ -27,8 +27,8 @@ namespace Base.ToolsPackage.Editor.CommandPalette
         /// <param name="window">The window rectangle, starting at zero.</param>
         public CommandPaletteLayout(Rect window)
         {
-            float padding = CommandPaletteStyles.WindowPadding;
-            float gap = CommandPaletteStyles.SeparatorGap;
+            const float padding = CommandPaletteStyles.WindowPadding;
+            const float gap = CommandPaletteStyles.SeparatorGap;
             float thickness = CommandPaletteStyles.SeparatorThickness;
             float width = window.width - padding * 2f;
 

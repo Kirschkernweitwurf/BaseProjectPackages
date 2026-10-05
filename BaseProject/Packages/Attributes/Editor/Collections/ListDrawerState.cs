@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Base.AttributesPackage.Editor.Core;
 using UnityEditor;
 
 namespace Base.AttributesPackage.Editor.Collections

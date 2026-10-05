@@ -139,7 +139,7 @@ namespace Base.ToolsPackage.Editor.AudioRules.Window
             AddColumn(ColumnFindings, "Findings", 190f, 90f, true, MakePills, BindFindings);
         }
 
-        private Label MakeNumber()
+        private static Label MakeNumber()
         {
             Label label = MakeLabel();
 
@@ -188,7 +188,7 @@ namespace Base.ToolsPackage.Editor.AudioRules.Window
             return cell;
         }
 
-        private void Play(Button button)
+        private static void Play(Button button)
         {
             if (button.userData is AudioClipPlan plan)
                 AudioPreviewPlayer.Play(plan.Info.AssetPath);
@@ -377,7 +377,7 @@ namespace Base.ToolsPackage.Editor.AudioRules.Window
             return 0;
         }
 
-        private int CompareColumn(AudioClipPlan first, AudioClipPlan second, string column) => column switch
+        private static int CompareColumn(AudioClipPlan first, AudioClipPlan second, string column) => column switch
         {
             ColumnBuild => first.BuildDelta.CompareTo(second.BuildDelta),
             ColumnChannels => first.Info.Channels.CompareTo(second.Info.Channels),

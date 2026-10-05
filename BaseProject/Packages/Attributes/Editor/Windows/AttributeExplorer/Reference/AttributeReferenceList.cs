@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Base.AttributesPackage.Editor.Core;
 using Base.AttributesPackage.Samples;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
@@ -198,7 +197,7 @@ namespace Base.AttributesPackage.Editor.Windows.AttributeExplorer.Reference
                         AttributeExplorerStyles.SelectionBarWidth, header.height), styles.Selection);
             }
 
-            float inset = AttributeExplorerStyles.SelectionBarWidth + AttributeExplorerStyles.SelectionBarGap;
+            const float inset = AttributeExplorerStyles.SelectionBarWidth + AttributeExplorerStyles.SelectionBarGap;
 
             Rect count = new(header.xMax - CountWidth, header.y, CountWidth, header.height);
             Rect label = new(header.x + inset, header.y, header.width - CountWidth - inset, header.height);

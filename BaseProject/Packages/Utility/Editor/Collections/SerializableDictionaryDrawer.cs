@@ -33,10 +33,8 @@ namespace Base.UtilityPackage.Editor.Collections
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
             SerializedProperty entries = FindEntries(property);
-            if (entries == null)
-                return SerializableCollectionGui.Line;
-
-            if (!property.isExpanded)
+            if (entries == null
+                || !property.isExpanded)
                 return SerializableCollectionGui.Line;
 
             CollectKeys(entries);

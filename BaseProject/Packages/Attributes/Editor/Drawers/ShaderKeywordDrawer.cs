@@ -84,19 +84,15 @@ namespace Base.AttributesPackage.Editor.Drawers
 
         private static Shader ResolveShader(Object source)
         {
-            switch (source)
+            return source switch
             {
-                case Shader shader:
-                    return shader;
-                case Material material:
-                    return material.shader;
-                case Renderer renderer:
-                    return renderer.sharedMaterial == null
-                        ? null
-                        : renderer.sharedMaterial.shader;
-                default:
-                    return null;
-            }
+                Shader shader => shader,
+                Material material => material.shader,
+                Renderer renderer => renderer.sharedMaterial == null
+                    ? null
+                    : renderer.sharedMaterial.shader,
+                _ => null
+            };
         }
     }
 }

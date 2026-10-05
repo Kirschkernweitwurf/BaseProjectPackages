@@ -24,7 +24,7 @@ namespace Base.AttributesPackage.Samples
         private const int Limit = 42;
         [ShowNonSerialized]
         [Tooltip("Runtime state. Not serialized, so it is shown rather than edited.")]
-        private string lastEvent = "Nothing yet";
+        private string _lastEvent = "Nothing yet";
 
         [NonSerialized] private int _count;
 
@@ -33,7 +33,7 @@ namespace Base.AttributesPackage.Samples
         internal void Record()
         {
             _count++;
-            lastEvent = $"event {_count} of at most {Limit}";
+            _lastEvent = $"event {_count} of at most {Limit}";
         }
     }
 }

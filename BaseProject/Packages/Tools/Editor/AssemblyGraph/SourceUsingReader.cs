@@ -50,7 +50,7 @@ namespace Base.ToolsPackage.Editor.AssemblyGraph
 
             if (directive.StartsWith(StaticPrefix, StringComparison.Ordinal))
             {
-                AddParentNamespace(directive.Substring(StaticPrefix.Length).Trim(), namespaces);
+                AddParentNamespace(directive[StaticPrefix.Length..].Trim(), namespaces);
                 return;
             }
 
@@ -90,7 +90,7 @@ namespace Base.ToolsPackage.Editor.AssemblyGraph
             string trimmed = StripComment(line).Trim();
 
             if (trimmed.StartsWith(GlobalPrefix, StringComparison.Ordinal))
-                trimmed = trimmed.Substring(GlobalPrefix.Length).TrimStart();
+                trimmed = trimmed[GlobalPrefix.Length..].TrimStart();
 
             if (!trimmed.StartsWith(UsingPrefix, StringComparison.Ordinal))
                 return null;
@@ -99,7 +99,7 @@ namespace Base.ToolsPackage.Editor.AssemblyGraph
             if (trimmed.IndexOf(OpenParenthesis) >= 0)
                 return null;
 
-            if (trimmed[trimmed.Length - 1] != StatementEnd)
+            if (trimmed[^1] != StatementEnd)
                 return null;
 
             return trimmed.Substring(UsingPrefix.Length, trimmed.Length - UsingPrefix.Length - 1).Trim();
@@ -111,21 +111,21 @@ namespace Base.ToolsPackage.Editor.AssemblyGraph
 
             return marker < 0
                 ? line
-                : line.Substring(0, marker);
+                : line[..marker];
         }
 
         private static void AddFromAlias(string directive, int aliasIndex, HashSet<string> namespaces)
         {
             // "using StreamReader reader = ..." is a declaration rather than an alias, and an alias
             // name is a single identifier, so a space on the left is what tells the two apart.
-            string alias = directive.Substring(0, aliasIndex).Trim();
+            string alias = directive[..aliasIndex].Trim();
             if (alias.IndexOf(' ') >= 0)
                 return;
 
-            string target = directive.Substring(aliasIndex + 1).Trim();
+            string target = directive[(aliasIndex + 1)..].Trim();
             int generic = target.IndexOf(GenericMarker);
             if (generic >= 0)
-                target = target.Substring(0, generic).Trim();
+                target = target[..generic].Trim();
 
             // An alias may name a namespace or a type and the text does not say which, so both
             // readings are credited. Crediting too much costs a candidate, too little costs a build.
@@ -139,7 +139,7 @@ namespace Base.ToolsPackage.Editor.AssemblyGraph
             if (lastSeparator <= 0)
                 return;
 
-            Add(typeName.Substring(0, lastSeparator), namespaces);
+            Add(typeName[..lastSeparator], namespaces);
         }
 
         private static void Add(string namespaceName, HashSet<string> namespaces)

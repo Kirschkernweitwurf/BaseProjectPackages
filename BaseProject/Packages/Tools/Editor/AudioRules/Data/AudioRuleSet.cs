@@ -209,10 +209,11 @@ namespace Base.ToolsPackage.Editor.AudioRules.Data
         // type. Everything after them is an exception that only touches what makes it special.
         private static AudioRule[] CreateDefaultRules()
         {
-            AudioRule everything = new("Everything");
-
-            everything.Notes = "The baseline every clip starts from. Keeps the source sample rate and loads on "
-                + "the main thread, unless a later rule decides otherwise.";
+            AudioRule everything = new("Everything")
+            {
+                Notes = "The baseline every clip starts from. Keeps the source sample rate and loads on "
+                    + "the main thread, unless a later rule decides otherwise."
+            };
 
             everything.Overrides.SetsSampleRate = true;
             everything.Overrides.SampleRateSetting = AudioSampleRateSetting.PreserveSampleRate;
@@ -221,10 +222,11 @@ namespace Base.ToolsPackage.Editor.AudioRules.Data
             everything.Overrides.SetsPreloadAudioData = true;
             everything.Overrides.PreloadAudioData = true;
 
-            AudioRule tiny = new($"Under {BandShortSeconds:0.0} s");
-
-            tiny.Notes = "Very short one shots are cheapest uncompressed. Decoding them would cost more CPU "
-                + "per play than the few kilobytes it would save.";
+            AudioRule tiny = new($"Under {BandShortSeconds:0.0} s")
+            {
+                Notes = "Very short one shots are cheapest uncompressed. Decoding them would cost more CPU "
+                    + "per play than the few kilobytes it would save."
+            };
 
             tiny.Conditions.Add(new AudioRuleCondition(EConditionField.DurationSeconds,
                 EConditionOperator.LessThan, BandShortSeconds));
@@ -234,10 +236,11 @@ namespace Base.ToolsPackage.Editor.AudioRules.Data
             tiny.Overrides.SetsCompressionFormat = true;
             tiny.Overrides.CompressionFormat = AudioCompressionFormat.PCM;
 
-            AudioRule shortClip = new($"{BandShortSeconds:0.0} s to {BandMediumSeconds:0} s");
-
-            shortClip.Notes = "Short effects fire constantly, so they are decompressed once and stored as "
-                + "ADPCM, which costs almost nothing to decode and is a third of the size of raw audio.";
+            AudioRule shortClip = new($"{BandShortSeconds:0.0} s to {BandMediumSeconds:0} s")
+            {
+                Notes = "Short effects fire constantly, so they are decompressed once and stored as "
+                    + "ADPCM, which costs almost nothing to decode and is a third of the size of raw audio."
+            };
 
             shortClip.Conditions.Add(new AudioRuleCondition(EConditionField.DurationSeconds,
                 EConditionOperator.GreaterOrEqual, BandShortSeconds));
@@ -250,10 +253,11 @@ namespace Base.ToolsPackage.Editor.AudioRules.Data
             shortClip.Overrides.SetsCompressionFormat = true;
             shortClip.Overrides.CompressionFormat = AudioCompressionFormat.ADPCM;
 
-            AudioRule mediumClip = new($"{BandMediumSeconds:0} s to {BandLongSeconds:0} s");
-
-            mediumClip.Notes = "Long enough that raw audio hurts, short enough to keep in memory. Stored "
-                + "compressed and decoded per play.";
+            AudioRule mediumClip = new($"{BandMediumSeconds:0} s to {BandLongSeconds:0} s")
+            {
+                Notes = "Long enough that raw audio hurts, short enough to keep in memory. Stored "
+                    + "compressed and decoded per play."
+            };
 
             mediumClip.Conditions.Add(new AudioRuleCondition(EConditionField.DurationSeconds,
                 EConditionOperator.GreaterOrEqual, BandMediumSeconds));
@@ -268,10 +272,11 @@ namespace Base.ToolsPackage.Editor.AudioRules.Data
             mediumClip.Overrides.SetsQuality = true;
             mediumClip.Overrides.Quality = QualityHigh;
 
-            AudioRule longClip = new($"Over {BandLongSeconds:0} s");
-
-            longClip.Notes = "Music and long ambience stream from disk, so they cost a small buffer instead "
-                + "of their full size, and load off the main thread so the scene does not stall.";
+            AudioRule longClip = new($"Over {BandLongSeconds:0} s")
+            {
+                Notes = "Music and long ambience stream from disk, so they cost a small buffer instead "
+                    + "of their full size, and load off the main thread so the scene does not stall."
+            };
 
             longClip.Conditions.Add(new AudioRuleCondition(EConditionField.DurationSeconds,
                 EConditionOperator.GreaterOrEqual, BandLongSeconds));
@@ -287,10 +292,11 @@ namespace Base.ToolsPackage.Editor.AudioRules.Data
             longClip.Overrides.SetsPreloadAudioData = true;
             longClip.Overrides.PreloadAudioData = false;
 
-            AudioRule spatial = new("Spatial sound effects");
-
-            spatial.Notes = "A stereo clip cannot be spatialized. It plays flat and ignores where it is in "
-                + "the world, so anything positional is forced to mono, which also halves its size.";
+            AudioRule spatial = new("Spatial sound effects")
+            {
+                Notes = "A stereo clip cannot be spatialized. It plays flat and ignores where it is in "
+                    + "the world, so anything positional is forced to mono, which also halves its size."
+            };
 
             spatial.Conditions.Add(new AudioRuleCondition(EConditionField.Category,
                 EConditionOperator.Equals, SpatialCategory));
@@ -298,10 +304,11 @@ namespace Base.ToolsPackage.Editor.AudioRules.Data
             spatial.Overrides.SetsForceToMono = true;
             spatial.Overrides.ForceToMono = true;
 
-            AudioRule voice = new("Voice over");
-
-            voice.Notes = "Speech carries no detail worth 44 kHz, and a voice line is never stereo, so both "
-                + "halvings are free in quality terms.";
+            AudioRule voice = new("Voice over")
+            {
+                Notes = "Speech carries no detail worth 44 kHz, and a voice line is never stereo, so both "
+                    + "halvings are free in quality terms."
+            };
 
             voice.Conditions.Add(new AudioRuleCondition(EConditionField.Path,
                 EConditionOperator.Contains, "/VO/"));

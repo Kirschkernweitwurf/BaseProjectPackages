@@ -126,7 +126,7 @@ namespace Base.CoreDebugPackage.DebugDrawing
         private static void AddCircle(Vector3 center, Vector3 firstAxis, Vector3 secondAxis, Color color,
             float duration, bool depthTest)
         {
-            float step = Mathf.PI * 2f / SphereSegments;
+            const float step = Mathf.PI * 2f / SphereSegments;
             Vector3 previous = center + firstAxis;
 
             for (int i = 1; i <= SphereSegments; i++)

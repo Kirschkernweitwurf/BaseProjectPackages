@@ -199,20 +199,13 @@ namespace Base.ToolsPackage.Editor.CodebaseGraph
 
         private int Compare(GraphEntry left, GraphEntry right)
         {
-            switch (_sortMode)
+            return _sortMode switch
             {
-                case ESortMode.FanIn:
-                    return right.FanIn.CompareTo(left.FanIn);
-
-                case ESortMode.FanOut:
-                    return right.FanOut.CompareTo(left.FanOut);
-
-                case ESortMode.Findings:
-                    return CountFindings(right).CompareTo(CountFindings(left));
-
-                default:
-                    return string.Compare(left.Title, right.Title, StringComparison.OrdinalIgnoreCase);
-            }
+                ESortMode.FanIn => right.FanIn.CompareTo(left.FanIn),
+                ESortMode.FanOut => right.FanOut.CompareTo(left.FanOut),
+                ESortMode.Findings => CountFindings(right).CompareTo(CountFindings(left)),
+                _ => string.Compare(left.Title, right.Title, StringComparison.OrdinalIgnoreCase)
+            };
         }
 
         private void BindRow(VisualElement element, int index)

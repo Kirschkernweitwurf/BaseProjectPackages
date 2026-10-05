@@ -473,7 +473,7 @@ namespace Base.ToolsPackage.Editor.AudioRules.Window
 
             for (int step = 0; step < budget; step++)
             {
-                AudioScanService.AnalyzeOne(_pending[_pending.Count - 1], ruleSet.Analysis);
+                AudioScanService.AnalyzeOne(_pending[^1], ruleSet.Analysis);
                 _pending.RemoveAt(_pending.Count - 1);
             }
 

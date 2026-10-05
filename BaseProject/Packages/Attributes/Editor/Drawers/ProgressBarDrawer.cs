@@ -27,10 +27,10 @@ namespace Base.AttributesPackage.Editor.Drawers
 
                 _valueStyle = new GUIStyle(EditorStyles.miniLabel)
                 {
-                    alignment = TextAnchor.MiddleCenter
+                    alignment = TextAnchor.MiddleCenter,
+                    normal = { textColor = Color.white }
                 };
 
-                _valueStyle.normal.textColor = Color.white;
                 return _valueStyle;
             }
         }
@@ -87,7 +87,7 @@ namespace Base.AttributesPackage.Editor.Drawers
                 && rect.Contains(current.mousePosition);
 
             bool dragging = GUIUtility.hotControl == controlId
-                && (current.type == EventType.MouseDrag || current.type == EventType.MouseMove);
+                && (current.type is EventType.MouseDrag or EventType.MouseMove);
 
             if (grab || dragging)
             {
@@ -125,8 +125,7 @@ namespace Base.AttributesPackage.Editor.Drawers
         }
 
         private static bool IsNumber(SerializedProperty property)
-            => property.propertyType == SerializedPropertyType.Integer
-                || property.propertyType == SerializedPropertyType.Float;
+            => property.propertyType is SerializedPropertyType.Integer or SerializedPropertyType.Float;
 
         private static float ReadValue(SerializedProperty property)
             => property.propertyType == SerializedPropertyType.Integer

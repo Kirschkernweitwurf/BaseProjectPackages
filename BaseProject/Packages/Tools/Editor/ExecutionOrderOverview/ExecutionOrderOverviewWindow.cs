@@ -137,7 +137,7 @@ namespace Base.ToolsPackage.Editor.ExecutionOrderOverview
             }
         }
 
-        private void DrawHeader()
+        private static void DrawHeader()
         {
             Rect row = GUILayoutUtility.GetRect(0f, RowHeight, GUILayout.ExpandWidth(true));
             EditorGUI.DrawRect(row, EditorTableStyles.HeaderColor);

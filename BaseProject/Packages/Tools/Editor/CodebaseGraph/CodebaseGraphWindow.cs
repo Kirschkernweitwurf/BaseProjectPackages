@@ -428,22 +428,17 @@ namespace Base.ToolsPackage.Editor.CodebaseGraph
                 return found;
             }
 
-            switch (_navigation.Scope)
+            return _navigation.Scope switch
             {
-                case EGraphScope.Type:
-                    return GraphEntryFactory.BuildTypes(_graph,
-                        _filter,
-                        _navigation.CurrentNamespace,
-                        _navigation.FocusedType,
-                        out _typeTotal);
-
-                case EGraphScope.Member:
-                    return GraphEntryFactory.BuildMembers(_graph, _filter, _navigation.CurrentType,
-                        _navigation.FocusedMember);
-
-                default:
-                    return GraphEntryFactory.BuildNamespaces(_graph, _filter, _navigation.FocusedNamespace);
-            }
+                EGraphScope.Type => GraphEntryFactory.BuildTypes(_graph,
+                    _filter,
+                    _navigation.CurrentNamespace,
+                    _navigation.FocusedType,
+                    out _typeTotal),
+                EGraphScope.Member => GraphEntryFactory.BuildMembers(_graph, _filter, _navigation.CurrentType,
+                    _navigation.FocusedMember),
+                _ => GraphEntryFactory.BuildNamespaces(_graph, _filter, _navigation.FocusedNamespace)
+            };
         }
 
         private void UpdateStatus(int shownCount) => _statusLabel.text =

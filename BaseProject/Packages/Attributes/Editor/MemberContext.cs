@@ -118,7 +118,7 @@ namespace Base.AttributesPackage.Editor
             int separator = path.LastIndexOf('.');
             string siblingPath = separator < 0
                 ? member
-                : path.Substring(0, separator + 1) + member;
+                : path[..(separator + 1)] + member;
 
             return Editor.serializedObject.FindProperty(siblingPath);
         }

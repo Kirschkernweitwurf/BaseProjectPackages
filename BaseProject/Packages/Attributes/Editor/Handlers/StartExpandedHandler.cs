@@ -1,4 +1,3 @@
-using Base.AttributesPackage.Editor.Core;
 using Base.AttributesPackage.Editor.Core.Interfaces;
 
 namespace Base.AttributesPackage.Editor.Handlers

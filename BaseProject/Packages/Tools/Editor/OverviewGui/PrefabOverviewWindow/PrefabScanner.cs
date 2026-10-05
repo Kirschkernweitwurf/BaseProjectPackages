@@ -170,20 +170,13 @@ namespace Base.ToolsPackage.Editor.OverviewGui.PrefabOverviewWindow
 
         private static EPrefabKind ResolveKind(GameObject prefab)
         {
-            switch (PrefabUtility.GetPrefabAssetType(prefab))
+            return PrefabUtility.GetPrefabAssetType(prefab) switch
             {
-                case PrefabAssetType.Regular:
-                    return EPrefabKind.Regular;
-
-                case PrefabAssetType.Variant:
-                    return EPrefabKind.Variant;
-
-                case PrefabAssetType.Model:
-                    return EPrefabKind.Model;
-
-                default:
-                    return EPrefabKind.Broken;
-            }
+                PrefabAssetType.Regular => EPrefabKind.Regular,
+                PrefabAssetType.Variant => EPrefabKind.Variant,
+                PrefabAssetType.Model => EPrefabKind.Model,
+                _ => EPrefabKind.Broken
+            };
         }
 
         private static string ResolveBaseGuid(GameObject prefab)

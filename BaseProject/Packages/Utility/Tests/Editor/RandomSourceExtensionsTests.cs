@@ -244,7 +244,7 @@ namespace Base.UtilityPackage.Tests
             Assert.That(_random.Pick(new List<string>()), Is.Null);
         }
 
-        private static bool IsUpOrDown(int sign) => sign == 1 || sign == -1;
+        private static bool IsUpOrDown(int sign) => sign is 1 or -1;
 
         // Collects a sweep of draws so a test can state one property of the whole sample.
         private static float[] Draw(Func<float> draw)

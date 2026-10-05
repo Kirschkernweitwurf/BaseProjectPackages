@@ -113,24 +113,19 @@ namespace Base.ToolsPackage.Editor.CodebaseGraph
                     ? string.Format(SearchCappedHeadingFormat, shownCount, searchTotal, search)
                     : string.Format(SearchHeadingFormat, shownCount, search);
 
-            switch (Scope)
+            return Scope switch
             {
-                case EGraphScope.Type:
-                    return shownCount < typeTotal
-                        ? string.Format(TypesCappedHeadingFormat,
-                            CurrentNamespace ?? AllTypesSegment,
-                            shownCount,
-                            typeTotal)
-                        : string.Format(TypesHeadingFormat, CurrentNamespace ?? AllTypesSegment);
-
-                case EGraphScope.Member:
-                    return CurrentType == null
-                        ? string.Empty
-                        : string.Format(MembersHeadingFormat, CurrentType.ShortName);
-
-                default:
-                    return string.Format(NamespacesHeadingFormat, shownCount);
-            }
+                EGraphScope.Type => shownCount < typeTotal
+                    ? string.Format(TypesCappedHeadingFormat,
+                        CurrentNamespace ?? AllTypesSegment,
+                        shownCount,
+                        typeTotal)
+                    : string.Format(TypesHeadingFormat, CurrentNamespace ?? AllTypesSegment),
+                EGraphScope.Member => CurrentType == null
+                    ? string.Empty
+                    : string.Format(MembersHeadingFormat, CurrentType.ShortName),
+                _ => string.Format(NamespacesHeadingFormat, shownCount)
+            };
         }
 
         /// <summary>The breadcrumb, one segment per level between all namespaces and here.</summary>

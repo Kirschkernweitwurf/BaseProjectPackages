@@ -103,7 +103,7 @@ namespace Base.ToolsPackage.Editor.OverviewGui.UnusedAssetsOverviewWindow
         {
             try
             {
-                string projectPath = Application.dataPath.Substring(0, Application.dataPath.Length - "Assets".Length);
+                string projectPath = Application.dataPath[..(Application.dataPath.Length - "Assets".Length)];
                 return new FileInfo(projectPath + assetPath).Length;
             }
             catch
@@ -398,7 +398,7 @@ namespace Base.ToolsPackage.Editor.OverviewGui.UnusedAssetsOverviewWindow
             return rect;
         }
 
-        private void HandleRowClick(Rect labelRect, UnusedAssetEntry entry)
+        private static void HandleRowClick(Rect labelRect, UnusedAssetEntry entry)
         {
             if (Event.current.type != EventType.MouseDown
                 || !labelRect.Contains(Event.current.mousePosition))

@@ -157,10 +157,10 @@ namespace Base.ToolsPackage.Editor.CodebaseGraph.Scanning
             if (package == null)
                 return false;
 
-            return package.source == PackageSource.Embedded
-                || package.source == PackageSource.Local
-                || package.source == PackageSource.LocalTarball
-                || package.source == PackageSource.Git;
+            return package.source is PackageSource.Embedded
+                or PackageSource.Local
+                or PackageSource.LocalTarball
+                or PackageSource.Git;
         }
 
         private static bool HasUnityNamePrefix(string assemblyName)

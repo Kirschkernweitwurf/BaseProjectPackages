@@ -112,7 +112,7 @@ namespace Base.ToolsPackage.Editor.CodebaseGraph.Analysis
                 return false;
 
             char boundary = inner[outer.Length];
-            return boundary == NamespaceBoundary || boundary == MemberBoundary;
+            return boundary is NamespaceBoundary or MemberBoundary;
         }
 
         /// <summary>Builds the stable id of a namespace.</summary>

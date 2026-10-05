@@ -361,9 +361,7 @@ namespace Base.AttributesPackage.Editor.Windows.AttributeExplorer.Reference
             if (count == 0)
                 return false;
 
-            if (current.keyCode == KeyCode.Return
-                || current.keyCode == KeyCode.KeypadEnter
-                || current.keyCode == KeyCode.RightArrow)
+            if (current.keyCode is KeyCode.Return or KeyCode.KeypadEnter or KeyCode.RightArrow)
             {
                 OpenFocusedCard();
                 return true;

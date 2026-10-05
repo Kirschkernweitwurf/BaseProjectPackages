@@ -95,7 +95,7 @@ namespace Base.SaveSystemPackage.Tests
         {
             SavableProbe low = Probe("Low", EPriority.Low);
             SavableProbe critical = Probe("Critical", EPriority.Critical);
-            SavableProbe medium = Probe("Medium", EPriority.Medium);
+            SavableProbe medium = Probe("Medium");
 
             _registry.Register(low);
             _registry.Register(critical);

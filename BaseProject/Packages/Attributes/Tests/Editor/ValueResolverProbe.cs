@@ -32,10 +32,13 @@ namespace Base.AttributesPackage.Tests
         /// <summary>A public field the resolver can read.</summary>
         public string PublicText = PublicValue;
 
-        /// <summary>A field nobody assigned, so reading it yields nothing rather than text.</summary>
+        /// <summary>A field nobody assigned, so reading it yields nothing rather than text.</summary>s
+        // ReSharper disable once UnassignedField.Global
         public string MissingText;
 
+#pragma warning disable CS0414
         private string _privateText = PrivateValue;
+#pragma warning restore CS0414
 
         /// <summary>A method the resolver can call.</summary>
         /// <returns>A fixed piece of text.</returns>

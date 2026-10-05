@@ -25,13 +25,13 @@ namespace Base.ToolsPackage.Editor.CodebaseGraph.Analysis
         internal MemberNodeInfo Member { get; set; }
 
         /// <summary>Asset path and line, ready to read, or an empty string when there is none.</summary>
-        internal string Location => location;
+        internal string Location => _location;
 
         /// <summary>Asset path and line, or an empty string when the script could not be resolved.</summary>
-        private readonly string location;
+        private readonly string _location;
 
         /// <summary>Extra detail such as the other members of a cycle.</summary>
-        private readonly string detail;
+        private readonly string _detail;
 
         /// <summary>Creates a report entry.</summary>
         /// <param name="finding">Which finding this line reports.</param>
@@ -44,12 +44,12 @@ namespace Base.ToolsPackage.Editor.CodebaseGraph.Analysis
             Finding = finding;
             Severity = severity;
             Id = id;
-            this.location = location;
-            this.detail = detail;
+            _location = location;
+            _detail = detail;
         }
 
         /// <summary>Formats the entry as a Markdown list item.</summary>
         /// <returns>The line to write.</returns>
-        internal string Format() => $"- `{Id}`{location}{detail}";
+        internal string Format() => $"- `{Id}`{_location}{_detail}";
     }
 }

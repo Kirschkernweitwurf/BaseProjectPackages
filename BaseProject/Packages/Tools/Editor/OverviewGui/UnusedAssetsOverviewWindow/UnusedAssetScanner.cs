@@ -41,7 +41,7 @@ namespace Base.ToolsPackage.Editor.OverviewGui.UnusedAssetsOverviewWindow
         internal static List<UnusedAssetEntry> Scan(bool ignoreEditorFolders)
         {
             string[] allPaths = AssetDatabase.GetAllAssetPaths();
-            string projectPath = Application.dataPath.Substring(0, Application.dataPath.Length - "Assets".Length);
+            string projectPath = Application.dataPath[..(Application.dataPath.Length - "Assets".Length)];
 
             HashSet<string> roots = CollectRoots(allPaths, projectPath);
             HashSet<string> used = new(AssetDatabase.GetDependencies(roots.ToArray(), true));
@@ -158,12 +158,12 @@ namespace Base.ToolsPackage.Editor.OverviewGui.UnusedAssetsOverviewWindow
             if (settings == null)
                 return;
 
-            if (!(settings.GetType().GetProperty("groups")?.GetValue(settings) is IEnumerable groups))
+            if (settings.GetType().GetProperty("groups")?.GetValue(settings) is not IEnumerable groups)
                 return;
 
             foreach (object group in groups)
             {
-                if (!(group?.GetType().GetProperty("entries")?.GetValue(group) is IEnumerable entries))
+                if (group?.GetType().GetProperty("entries")?.GetValue(group) is not IEnumerable entries)
                     continue;
 
                 foreach (object entry in entries)

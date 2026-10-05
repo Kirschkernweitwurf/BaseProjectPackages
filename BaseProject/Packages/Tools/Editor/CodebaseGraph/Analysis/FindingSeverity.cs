@@ -29,10 +29,10 @@ namespace Base.ToolsPackage.Editor.CodebaseGraph.Analysis
                     ? ESeverity.High
                     : ESeverity.Medium;
 
-            if (member.Kind == EMemberKind.SerializedField || member.Kind == EMemberKind.EnumMember)
+            if (member.Kind is EMemberKind.SerializedField or EMemberKind.EnumMember)
                 return ESeverity.Low;
 
-            if (member.Access == EAccessLevel.Private || member.Access == EAccessLevel.Internal)
+            if (member.Access is EAccessLevel.Private or EAccessLevel.Internal)
                 return ESeverity.High;
 
             return ESeverity.Medium;
@@ -44,10 +44,8 @@ namespace Base.ToolsPackage.Editor.CodebaseGraph.Analysis
         /// <returns>How much attention it deserves.</returns>
         internal static ESeverity Resolve(EFinding finding, TypeNodeInfo type)
         {
-            if (IsAlwaysLow(finding))
-                return ESeverity.Low;
-
-            if (PackageApi.IsSurface(type))
+            if (IsAlwaysLow(finding)
+                || PackageApi.IsSurface(type))
                 return ESeverity.Low;
 
             if (finding == EFinding.DeadType)
@@ -56,9 +54,9 @@ namespace Base.ToolsPackage.Editor.CodebaseGraph.Analysis
             return ESeverity.Medium;
         }
 
-        private static bool IsAlwaysLow(EFinding finding) => finding == EFinding.UnusedPublicApi
-            || finding == EFinding.UnusedInterfaceMember
-            || finding == EFinding.HighInstability
-            || finding == EFinding.GodClass;
+        private static bool IsAlwaysLow(EFinding finding) => finding is EFinding.UnusedPublicApi
+            or EFinding.UnusedInterfaceMember
+            or EFinding.HighInstability
+            or EFinding.GodClass;
     }
 }

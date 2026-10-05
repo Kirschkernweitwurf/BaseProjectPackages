@@ -238,7 +238,7 @@ namespace Base.CorePackage.Editor.StateMachine
             ? node.Area
             : Rect.zero;
 
-        private StateMachineCanvasEdge BuildCurve(StateMachineEdge edge, Rect source, Rect target)
+        private static StateMachineCanvasEdge BuildCurve(StateMachineEdge edge, Rect source, Rect target)
         {
             bool goesForward = target.center.x >= source.center.x;
 
@@ -268,7 +268,7 @@ namespace Base.CorePackage.Editor.StateMachine
                 end);
         }
 
-        private StateMachineCanvasEdge BuildSelfLoop(StateMachineEdge edge, Rect area)
+        private static StateMachineCanvasEdge BuildSelfLoop(StateMachineEdge edge, Rect area)
         {
             Vector2 start = new(area.xMax - PortInset, area.yMin);
             Vector2 end = new(area.xMin + PortInset, area.yMin);

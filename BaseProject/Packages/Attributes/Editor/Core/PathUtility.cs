@@ -24,7 +24,7 @@ namespace Base.AttributesPackage.Editor.Core
                 return "Assets";
 
             if (normalized != null && normalized.StartsWith(dataPath + "/"))
-                return "Assets" + normalized.Substring(dataPath.Length);
+                return "Assets" + normalized[dataPath.Length..];
 
             return normalized;
         }
@@ -44,10 +44,10 @@ namespace Base.AttributesPackage.Editor.Core
             if (index < 0)
                 return null;
 
-            string relative = normalized.Substring(index + marker.Length);
+            string relative = normalized[(index + marker.Length)..];
             int dot = relative.LastIndexOf('.');
             if (dot >= 0)
-                relative = relative.Substring(0, dot);
+                relative = relative[..dot];
 
             return relative;
         }

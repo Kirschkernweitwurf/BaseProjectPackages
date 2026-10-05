@@ -105,10 +105,10 @@ namespace Base.ToolsPackage.Editor.CodebaseGraph.Model
         internal bool HasIssues => Issues != EMemberIssue.None;
 
         /// <summary>True when the member holds data instead of behavior.</summary>
-        internal bool IsDataMember => Kind == EMemberKind.Field
-            || Kind == EMemberKind.SerializedField
-            || Kind == EMemberKind.Const
-            || Kind == EMemberKind.EnumMember;
+        internal bool IsDataMember => Kind is EMemberKind.Field
+            or EMemberKind.SerializedField
+            or EMemberKind.Const
+            or EMemberKind.EnumMember;
 
         /// <summary>Creates a member node without any usages yet.</summary>
         /// <param name="key">Identity of the member.</param>

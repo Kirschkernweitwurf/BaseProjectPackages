@@ -195,10 +195,9 @@ namespace Base.EditorUIPackage.Editor
             Card = new GUIStyle
             {
                 border = EditorStyleUtility.UniformPadding(EditorMetrics.CardCornerRadius),
-                padding = new RectOffset(0, 0, CardPadding, CardPadding)
+                padding = new RectOffset(0, 0, CardPadding, CardPadding),
+                normal = { background = Textures.Rounded(EditorPalette.Card, EditorMetrics.CardCornerRadius) }
             };
-
-            Card.normal.background = Textures.Rounded(EditorPalette.Card, EditorMetrics.CardCornerRadius);
 
             Detail = EditorStyleUtility.PinTextColor(new GUIStyle(EditorStyles.miniLabel)
             {
@@ -236,10 +235,9 @@ namespace Base.EditorUIPackage.Editor
 
             PillBackground = new GUIStyle
             {
-                border = EditorStyleUtility.UniformPadding(EditorMetrics.PillCornerRadius)
+                border = EditorStyleUtility.UniformPadding(EditorMetrics.PillCornerRadius),
+                normal = { background = Textures.Rounded(Color.white, EditorMetrics.PillCornerRadius) }
             };
-
-            PillBackground.normal.background = Textures.Rounded(Color.white, EditorMetrics.PillCornerRadius);
 
             // Text only, with the fill behind it drawn by hand. A GUIStyle resolves its own hover
             // state through a background it does not have at rest, so the fill never appeared.
@@ -260,11 +258,9 @@ namespace Base.EditorUIPackage.Editor
 
             SearchField = new GUIStyle
             {
-                border = EditorStyleUtility.UniformPadding(EditorMetrics.PillCornerRadius)
+                border = EditorStyleUtility.UniformPadding(EditorMetrics.PillCornerRadius),
+                normal = { background = Textures.Rounded(EditorPalette.Field, EditorMetrics.PillCornerRadius) }
             };
-
-            SearchField.normal.background = Textures.Rounded(EditorPalette.Field,
-                EditorMetrics.PillCornerRadius);
 
             // Clipped rather than ellipsized, because a caret sitting past the right edge of an
             // ellipsis has nowhere sensible to be drawn.

@@ -70,7 +70,7 @@ namespace Base.AttributesPackage.Editor.Drawers
             if (tokenIndex < 0)
                 return null;
 
-            string parentPath = property.propertyPath.Substring(0, tokenIndex);
+            string parentPath = property.propertyPath[..tokenIndex];
             return property.serializedObject.FindProperty(parentPath);
         }
 

@@ -22,8 +22,7 @@ namespace Base.AttributesPackage.Editor.Handlers
             => context.GetAttribute<ClearButtonAttribute>() != null;
 
         protected override bool IsSupported(SerializedProperty property)
-            => property.propertyType == SerializedPropertyType.ObjectReference
-                || property.propertyType == SerializedPropertyType.String;
+            => property.propertyType is SerializedPropertyType.ObjectReference or SerializedPropertyType.String;
 
         protected override bool IsEnabled(in MemberContext context) => HasValue(context.Property);
 

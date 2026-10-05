@@ -27,7 +27,7 @@ namespace Base.TweeningPackage.Tests
         [SetUp]
         public void Build()
         {
-            _runnerObject = EditorUtility.CreateGameObjectWithHideFlags(typeof(TweenRunner).Name,
+            _runnerObject = EditorUtility.CreateGameObjectWithHideFlags(nameof(TweenRunner),
                 HideFlags.HideAndDontSave);
             _runner = _runnerObject.AddComponent<TweenRunner>();
             _registered = new List<ITween>();

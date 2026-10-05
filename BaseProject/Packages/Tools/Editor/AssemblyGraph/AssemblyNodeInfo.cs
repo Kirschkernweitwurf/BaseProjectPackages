@@ -33,7 +33,7 @@ namespace Base.ToolsPackage.Editor.AssemblyGraph
         }
 
         /// <summary>Only owned code may be edited. Unity packages and libraries are always off limits.</summary>
-        internal bool IsCleanable => HasAsmdef && (Kind == EAssemblyKind.Project || Kind == EAssemblyKind.Package);
+        internal bool IsCleanable => HasAsmdef && (Kind is EAssemblyKind.Project or EAssemblyKind.Package);
 
         /// <summary>True when at least one declared reference has nothing found that needs it.</summary>
         internal bool HasCandidateReferences

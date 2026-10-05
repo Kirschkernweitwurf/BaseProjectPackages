@@ -104,10 +104,10 @@ namespace Base.ToolsPackage.Editor.CodebaseGraph.Scanning
         /// <summary>True when the operand of this opcode is a metadata token.</summary>
         /// <param name="code">The opcode that was just read.</param>
         /// <returns>True for token carrying opcodes.</returns>
-        internal static bool HasMetadataToken(OpCode code) => code.OperandType == OperandType.InlineField
-            || code.OperandType == OperandType.InlineMethod
-            || code.OperandType == OperandType.InlineTok
-            || code.OperandType == OperandType.InlineType;
+        internal static bool HasMetadataToken(OpCode code) => code.OperandType is OperandType.InlineField
+            or OperandType.InlineMethod
+            or OperandType.InlineTok
+            or OperandType.InlineType;
 
         /// <summary>Reads the four byte metadata token at the given position.</summary>
         /// <param name="il">Raw method body bytes.</param>

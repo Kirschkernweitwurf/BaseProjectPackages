@@ -46,17 +46,12 @@ namespace Base.ToolsPackage.Editor.AudioRules.Scanning
         {
             long raw = DecompressedBytes(info, settings);
 
-            switch (settings.CompressionFormat)
+            return settings.CompressionFormat switch
             {
-                case AudioCompressionFormat.PCM:
-                    return raw;
-
-                case AudioCompressionFormat.ADPCM:
-                    return (long)(raw / AdpcmRatio);
-
-                default:
-                    return LossyBytes(info, settings);
-            }
+                AudioCompressionFormat.PCM => raw,
+                AudioCompressionFormat.ADPCM => (long)(raw / AdpcmRatio),
+                _ => LossyBytes(info, settings)
+            };
         }
 
         private static int TargetChannels(AudioClipInfo info, AudioSettingValues settings) => settings.ForceToMono

@@ -10,34 +10,34 @@ namespace Base.ToolsPackage.Editor.CodebaseGraph.Model
     internal readonly struct MemberKey : IEquatable<MemberKey>
     {
         /// <summary>Name of the module the member is declared in.</summary>
-        private readonly string moduleName;
+        private readonly string _moduleName;
 
         /// <summary>Metadata token of the member definition.</summary>
         public int Token { get; }
 
         /// <summary>True when the key points at an actual member instead of being the default value.</summary>
-        public bool IsValid => !string.IsNullOrEmpty(moduleName);
+        public bool IsValid => !string.IsNullOrEmpty(_moduleName);
 
         /// <summary>Creates a member key.</summary>
         /// <param name="moduleName">Name of the declaring module.</param>
         /// <param name="token">Metadata token of the member definition.</param>
         public MemberKey(string moduleName, int token)
         {
-            this.moduleName = moduleName;
+            _moduleName = moduleName;
             Token = token;
         }
 
         /// <inheritdoc/>
         public bool Equals(MemberKey other) => Token == other.Token
-            && string.Equals(moduleName, other.moduleName, StringComparison.Ordinal);
+            && string.Equals(_moduleName, other._moduleName, StringComparison.Ordinal);
 
         /// <inheritdoc/>
         public override bool Equals(object obj) => obj is MemberKey other && Equals(other);
 
         /// <inheritdoc/>
-        public override int GetHashCode() => HashCode.Combine(moduleName, Token);
+        public override int GetHashCode() => HashCode.Combine(_moduleName, Token);
 
         /// <inheritdoc/>
-        public override string ToString() => $"{moduleName}:{Token}";
+        public override string ToString() => $"{_moduleName}:{Token}";
     }
 }

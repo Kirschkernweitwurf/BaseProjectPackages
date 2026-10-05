@@ -33,7 +33,7 @@ namespace Base.ControllerSupportPackage.Tests
         [SetUp]
         public void Build()
         {
-            _serviceObject = EditorUtility.CreateGameObjectWithHideFlags(typeof(RumbleService).Name,
+            _serviceObject = EditorUtility.CreateGameObjectWithHideFlags(nameof(RumbleService),
                 HideFlags.HideAndDontSave);
             _service = _serviceObject.AddComponent<RumbleService>();
             _firstCaller = new object();

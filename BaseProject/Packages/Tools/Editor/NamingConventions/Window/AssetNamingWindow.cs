@@ -352,7 +352,7 @@ namespace Base.ToolsPackage.Editor.NamingConventions.Window
         {
             AssetNamingGui.DrawRowBackground(row, index);
 
-            float reserved = GoToWidth + RestoreWidth + AssetNamingGui.Padding * 2f;
+            const float reserved = GoToWidth + RestoreWidth + AssetNamingGui.Padding * 2f;
             Rect pathCell = Columns.Cell(row, 1);
             float pathStart = pathCell.x;
             Rect pathRect = new(pathStart, row.y, Mathf.Max(AssetNamingGui.Padding,
@@ -531,7 +531,7 @@ namespace Base.ToolsPackage.Editor.NamingConventions.Window
         {
             AssetNamingGui.DrawRowBackground(row, index);
 
-            float padding = AssetNamingGui.Padding;
+            const float padding = AssetNamingGui.Padding;
             float reserved = TimeWidth + GoToWidth + UndoWidth + padding * 3f;
             float width = Mathf.Max(padding, row.xMax - row.x - padding - reserved);
             Rect textRect = new(row.x + padding, row.y, width, row.height);
@@ -557,7 +557,7 @@ namespace Base.ToolsPackage.Editor.NamingConventions.Window
         /// </summary>
         private void GetVisibleRange(Rect area, int count, out int first, out int last)
         {
-            float rowHeight = AssetNamingGui.RowHeight;
+            const float rowHeight = AssetNamingGui.RowHeight;
             int above = Mathf.FloorToInt((_scroll.y - area.y) / rowHeight) - 1;
 
             first = Mathf.Clamp(above, 0, Mathf.Max(0, count - 1));
@@ -591,7 +591,7 @@ namespace Base.ToolsPackage.Editor.NamingConventions.Window
             _needsScan = true;
         }
 
-        private bool ConfirmDetection(AssetRuleMergeResult preview)
+        private static bool ConfirmDetection(AssetRuleMergeResult preview)
         {
             string message = $"Add {preview.Added} rule(s), refresh {preview.Updated} and remove "
                 + $"{preview.Removed}. Rules and fields you changed by hand are kept as they are.";

@@ -166,13 +166,12 @@ namespace Base.EditorUIPackage.Editor
             int size = Mathf.Max(MinSortArrowFontSize,
                 Mathf.RoundToInt(EditorMetrics.SortArrowWidth * ArrowFontScale));
 
-            if (_sortArrow == null)
-                _sortArrow = new GUIStyle(EditorStyles.label)
-                {
-                    alignment = TextAnchor.MiddleCenter,
-                    padding = new RectOffset(),
-                    margin = new RectOffset()
-                };
+            _sortArrow ??= new GUIStyle(EditorStyles.label)
+            {
+                alignment = TextAnchor.MiddleCenter,
+                padding = new RectOffset(),
+                margin = new RectOffset()
+            };
 
             _sortArrow.fontSize = size;
 

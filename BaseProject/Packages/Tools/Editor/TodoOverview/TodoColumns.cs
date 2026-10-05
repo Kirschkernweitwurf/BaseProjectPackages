@@ -56,7 +56,7 @@ namespace Base.ToolsPackage.Editor.TodoOverview
             _location = Mathf.Max(_savedLocation, TodoStyles.MinLocationWidth);
             _owner = Mathf.Max(_savedOwner, TodoStyles.MinOwnerWidth);
 
-            float taken = TodoStyles.RowInset * 2f + TodoStyles.Gap * 4f;
+            const float taken = TodoStyles.RowInset * 2f + TodoStyles.Gap * 4f;
             float message = width - taken - _keyword - _owner - _date - _location;
 
             if (message >= TodoStyles.MinMessageWidth)
@@ -249,7 +249,7 @@ namespace Base.ToolsPackage.Editor.TodoOverview
         // divider is dragged to the left.
         private void Resize(ETodoDivider divider, float mouseX, Rect row)
         {
-            float half = TodoStyles.Gap * 0.5f;
+            const float half = TodoStyles.Gap * 0.5f;
 
             switch (divider)
             {

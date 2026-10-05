@@ -321,17 +321,13 @@ namespace Base.ToolsPackage.Editor.AssemblyGraph
 
         private bool IsKindVisible(AssemblyNodeInfo node)
         {
-            switch (node.Kind)
+            return node.Kind switch
             {
-                case EAssemblyKind.Project:
-                    return true;
-                case EAssemblyKind.Package:
-                    return _showPackages;
-                case EAssemblyKind.UnityPackage:
-                    return _showUnityPackages;
-                default:
-                    return _showLibrary;
-            }
+                EAssemblyKind.Project => true,
+                EAssemblyKind.Package => _showPackages,
+                EAssemblyKind.UnityPackage => _showUnityPackages,
+                _ => _showLibrary
+            };
         }
 
         private void UpdateToolbarState(int visibleCount)

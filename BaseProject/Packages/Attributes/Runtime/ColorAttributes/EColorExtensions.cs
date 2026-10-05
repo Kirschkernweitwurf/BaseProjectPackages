@@ -36,41 +36,25 @@ namespace Base.AttributesPackage
         /// <returns>The color to draw with.</returns>
         public static Color ToColor(this EColor color)
         {
-            switch (color)
+            return color switch
             {
-                case EColor.White:
-                    return White;
-                case EColor.Black:
-                    return Black;
-                case EColor.Gray:
-                    return Gray;
-                case EColor.Red:
-                    return Red;
-                case EColor.Orange:
-                    return Orange;
-                case EColor.Yellow:
-                    return Yellow;
-                case EColor.Green:
-                    return Green;
-                case EColor.Teal:
-                    return Teal;
-                case EColor.Cyan:
-                    return Cyan;
-                case EColor.Blue:
-                    return Blue;
-                case EColor.Purple:
-                    return Purple;
-                case EColor.Pink:
-                    return Pink;
-                case EColor.Magenta:
-                    return Magenta;
-                case EColor.Brown:
-                    return Brown;
-                case EColor.Lime:
-                    return Lime;
-                default:
-                    return White;
-            }
+                EColor.White => White,
+                EColor.Black => Black,
+                EColor.Gray => Gray,
+                EColor.Red => Red,
+                EColor.Orange => Orange,
+                EColor.Yellow => Yellow,
+                EColor.Green => Green,
+                EColor.Teal => Teal,
+                EColor.Cyan => Cyan,
+                EColor.Blue => Blue,
+                EColor.Purple => Purple,
+                EColor.Pink => Pink,
+                EColor.Magenta => Magenta,
+                EColor.Brown => Brown,
+                EColor.Lime => Lime,
+                _ => White
+            };
         }
     }
 }

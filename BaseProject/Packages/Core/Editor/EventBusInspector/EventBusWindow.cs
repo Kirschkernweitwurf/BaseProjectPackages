@@ -67,7 +67,7 @@ namespace Base.CorePackage.Editor.EventBusInspector
         private static readonly GUIContent PingContent = new(PingLabel,
             "Select this subscriber and highlight it in the hierarchy.");
 
-        private static readonly string NoBusMessage = $"No {typeof(EventBusBehaviour).Name} in the loaded scenes";
+        private static readonly string NoBusMessage = $"No {nameof(EventBusBehaviour)} in the loaded scenes";
 
         // None of these are created where they are declared. A window Unity restores after a domain
         // reload can reach its first GUI pass without any field initializer having run, and then
@@ -815,7 +815,7 @@ namespace Base.CorePackage.Editor.EventBusInspector
             Repaint();
         }
 
-        private void ShowRowMenu(EventBusRow row)
+        private static void ShowRowMenu(EventBusRow row)
         {
             GenericMenu menu = new();
             HandlerEntry handler = row.Handler;

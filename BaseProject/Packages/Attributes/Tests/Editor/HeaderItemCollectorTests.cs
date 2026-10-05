@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using System.Reflection;
 using Base.AttributesPackage.Editor.Core;
-using Base.AttributesPackage.Editor.Drawers;
 using NUnit.Framework;
 
 namespace Base.AttributesPackage.Tests

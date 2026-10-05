@@ -40,6 +40,6 @@ namespace Base.CorePackage.Tests
         /// <returns>The name of the state entered last.</returns>
         internal string LastEntered() => _entered.Count == 0
             ? string.Empty
-            : _entered[_entered.Count - 1];
+            : _entered[^1];
     }
 }

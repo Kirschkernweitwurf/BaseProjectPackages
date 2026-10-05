@@ -46,47 +46,32 @@ namespace Base.ToolsPackage.Editor.CodebaseGraph.Editing
 
         private static bool Rewrite(TypeNodeInfo type, MemberNodeInfo member, EFinding finding)
         {
-            switch (finding)
+            return finding switch
             {
-                case EFinding.PrivateCandidate:
-                    return MemberSourceEditor.DemoteToPrivate(type, member);
-
-                case EFinding.PublicButInternalOnly:
-                    return MemberSourceEditor.DemoteToInternal(type, member);
-
-                default:
-                    return MemberSourceEditor.AddReadOnly(type, member);
-            }
+                EFinding.PrivateCandidate => MemberSourceEditor.DemoteToPrivate(type, member),
+                EFinding.PublicButInternalOnly => MemberSourceEditor.DemoteToInternal(type, member),
+                _ => MemberSourceEditor.AddReadOnly(type, member)
+            };
         }
 
         private static string ReadTitle(EFinding finding)
         {
-            switch (finding)
+            return finding switch
             {
-                case EFinding.PrivateCandidate:
-                    return PrivateTitle;
-
-                case EFinding.PublicButInternalOnly:
-                    return DemoteTitle;
-
-                default:
-                    return ReadOnlyTitle;
-            }
+                EFinding.PrivateCandidate => PrivateTitle,
+                EFinding.PublicButInternalOnly => DemoteTitle,
+                _ => ReadOnlyTitle
+            };
         }
 
         private static string ReadChange(EFinding finding)
         {
-            switch (finding)
+            return finding switch
             {
-                case EFinding.PrivateCandidate:
-                    return PrivateChange;
-
-                case EFinding.PublicButInternalOnly:
-                    return InternalChange;
-
-                default:
-                    return ReadOnlyChange;
-            }
+                EFinding.PrivateCandidate => PrivateChange,
+                EFinding.PublicButInternalOnly => InternalChange,
+                _ => ReadOnlyChange
+            };
         }
     }
 }

@@ -75,8 +75,8 @@ namespace Base.ToolsPackage.Editor.MenuManagerModel
         {
             get
             {
-                readOnly ??= ComputeReadOnly();
-                return readOnly.Value;
+                _readOnly ??= ComputeReadOnly();
+                return _readOnly.Value;
             }
         }
 
@@ -102,7 +102,7 @@ namespace Base.ToolsPackage.Editor.MenuManagerModel
         }
 
         [NonSerialized]
-        private bool? readOnly;
+        private bool? _readOnly;
 
         /// <summary>Returns the top level node list for the given kind.</summary>
         internal List<MenuNode> RootFor(EMenuEntryKind kind) => kind == EMenuEntryKind.CreateAsset

@@ -34,7 +34,7 @@ namespace Base.ToolsPackage.Editor.OverviewGui.UnusedScriptsOverviewWindow
         internal static List<UnusedScriptEntry> Scan(bool ignoreEditorScripts)
         {
             string[] allPaths = AssetDatabase.GetAllAssetPaths();
-            string projectPath = Application.dataPath.Substring(0, Application.dataPath.Length - "Assets".Length);
+            string projectPath = Application.dataPath[..(Application.dataPath.Length - "Assets".Length)];
 
             List<string> scripts = allPaths
                 .Where(path => path.StartsWith("Assets/") && path.EndsWith(".cs", StringComparison.OrdinalIgnoreCase))
@@ -178,7 +178,7 @@ namespace Base.ToolsPackage.Editor.OverviewGui.UnusedScriptsOverviewWindow
                 // Attributes are used without the suffix, for example [Foo] for class FooAttribute.
                 if (name.EndsWith(AttributeSuffix, StringComparison.Ordinal)
                     && name.Length > AttributeSuffix.Length)
-                    names.Add(name.Substring(0, name.Length - AttributeSuffix.Length));
+                    names.Add(name[..(name.Length - AttributeSuffix.Length)]);
             }
 
             return names.Distinct().ToList();

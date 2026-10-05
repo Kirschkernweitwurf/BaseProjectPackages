@@ -47,7 +47,7 @@ namespace Base.ToolsPackage.Editor.CodebaseGraph.Analysis
         }
 
         private static bool IsStructural(UsageEdgeInfo edge)
-            => edge.Kind == EUsageKind.Override || edge.Kind == EUsageKind.InterfaceImplementation;
+            => edge.Kind is EUsageKind.Override or EUsageKind.InterfaceImplementation;
 
         private static void AnalyzeMember(MemberNodeInfo member, TypeNodeInfo declaring, CodebaseGraphData graph)
         {

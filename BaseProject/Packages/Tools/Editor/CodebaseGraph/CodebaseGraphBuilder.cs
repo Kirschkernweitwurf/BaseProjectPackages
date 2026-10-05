@@ -313,7 +313,7 @@ namespace Base.ToolsPackage.Editor.CodebaseGraph
 
         private static bool IsDataMember(MemberNodeInfo member)
         {
-            if (member.Kind == EMemberKind.Const || member.Kind == EMemberKind.EnumMember)
+            if (member.Kind is EMemberKind.Const or EMemberKind.EnumMember)
                 return true;
 
             return member.IsStatic && member.IsReadOnly;

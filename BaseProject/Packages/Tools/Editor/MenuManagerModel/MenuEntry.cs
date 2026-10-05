@@ -83,15 +83,15 @@ namespace Base.ToolsPackage.Editor.MenuManagerModel
         /// <summary>Derived priority. Set to int.MinValue when the entry is not registered.</summary>
         public int Priority
         {
-            get => priority;
-            set => priority = value;
+            get => _priority;
+            set => _priority = value;
         }
 
         /// <summary>True when no matching code was found during the last scan.</summary>
         public bool Missing
         {
-            get => missing;
-            set => missing = value;
+            get => _missing;
+            set => _missing = value;
         }
 
         /// <summary>
@@ -100,13 +100,13 @@ namespace Base.ToolsPackage.Editor.MenuManagerModel
         /// </summary>
         internal int EffectivePriority => overridePriority
             ? overrideValue
-            : priority;
+            : _priority;
 
         [NonSerialized]
-        private int priority = int.MinValue;
+        private int _priority = int.MinValue;
 
         [NonSerialized]
-        private bool missing;
+        private bool _missing;
 
         /// <summary>Required by serialization.</summary>
         public MenuEntry() { }

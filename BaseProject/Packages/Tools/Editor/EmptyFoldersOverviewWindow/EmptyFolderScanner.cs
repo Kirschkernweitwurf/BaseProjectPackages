@@ -98,7 +98,7 @@ namespace Base.ToolsPackage.Editor.EmptyFoldersOverviewWindow
             int slash = folder.LastIndexOf('/');
             return slash <= 0
                 ? null
-                : folder.Substring(0, slash);
+                : folder[..slash];
         }
 
         private static int CountSubtree(string folder, List<string> allFolders)

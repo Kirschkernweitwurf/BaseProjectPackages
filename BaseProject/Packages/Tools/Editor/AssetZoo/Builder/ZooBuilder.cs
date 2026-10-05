@@ -91,11 +91,11 @@ namespace Base.ToolsPackage.Editor.AssetZoo.Builder
                     ref categoryOffsetZ);
             }
 
-            if (useUndo)
-            {
-                Undo.SetCurrentGroupName(BuildUndoLabel);
-                Undo.CollapseUndoOperations(undoGroup);
-            }
+            if (!useUndo)
+                return;
+
+            Undo.SetCurrentGroupName(BuildUndoLabel);
+            Undo.CollapseUndoOperations(undoGroup);
         }
 
         /// <summary>
@@ -113,11 +113,11 @@ namespace Base.ToolsPackage.Editor.AssetZoo.Builder
 
             ClearExisting();
 
-            if (useUndo)
-            {
-                Undo.SetCurrentGroupName(ClearUndoLabel);
-                Undo.CollapseUndoOperations(undoGroup);
-            }
+            if (!useUndo)
+                return;
+
+            Undo.SetCurrentGroupName(ClearUndoLabel);
+            Undo.CollapseUndoOperations(undoGroup);
         }
 
         private static void RegisterTracked(GameObject go, string undoLabel)

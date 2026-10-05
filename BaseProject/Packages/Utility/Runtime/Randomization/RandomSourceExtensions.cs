@@ -61,10 +61,8 @@ namespace Base.UtilityPackage.Randomization
         /// <returns>The drawn value, or the lower bound when the range is empty.</returns>
         public static int Range(this IRandomSource source, int minInclusive, int maxExclusive)
         {
-            if (!IsValid(source, nameof(Range)))
-                return minInclusive;
-
-            if (maxExclusive <= minInclusive)
+            if (!IsValid(source, nameof(Range))
+                || maxExclusive <= minInclusive)
                 return minInclusive;
 
             unchecked

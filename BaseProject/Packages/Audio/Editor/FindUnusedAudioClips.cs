@@ -347,7 +347,7 @@ namespace Base.AudioPackage.Editor
             /// <summary>The container the empty slot was found in.</summary>
             internal readonly AudioContainer Container;
 
-            private readonly int index;
+            private readonly int _index;
 
             /// <summary>Records one empty clip slot.</summary>
             /// <param name="container">The container the slot belongs to.</param>
@@ -357,15 +357,15 @@ namespace Base.AudioPackage.Editor
             internal NullClipReference(AudioContainer container, int index)
             {
                 Container = container;
-                this.index = index;
+                _index = index;
             }
 
             /// <summary>
             /// Returns a readable description of the empty slot.
             /// </summary>
-            internal string Describe() => index == NoClipsIndex
+            internal string Describe() => _index == NoClipsIndex
                 ? $"{nameof(AudioContainer.Clips)} is empty"
-                : $"{nameof(AudioContainer.Clips)}[{index}] is not assigned";
+                : $"{nameof(AudioContainer.Clips)}[{_index}] is not assigned";
         }
     }
 }

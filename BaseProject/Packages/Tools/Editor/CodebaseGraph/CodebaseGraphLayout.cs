@@ -78,17 +78,12 @@ namespace Base.ToolsPackage.Editor.CodebaseGraph
         /// <returns>The node width.</returns>
         internal static float MeasureWidth(GraphEntry entry)
         {
-            switch (entry.Level)
+            return entry.Level switch
             {
-                case EGraphScope.Namespace:
-                    return NamespaceWidth;
-
-                case EGraphScope.Member:
-                    return MemberWidth;
-
-                default:
-                    return TypeWidth;
-            }
+                EGraphScope.Namespace => NamespaceWidth,
+                EGraphScope.Member => MemberWidth,
+                _ => TypeWidth
+            };
         }
 
         /// <summary>
