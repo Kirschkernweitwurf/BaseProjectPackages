@@ -2,6 +2,8 @@
 
 🔖 **Component** · for everyone
 
+**Tags:** #designer #ui #scenes
+
 Small helpers that solve one problem each.
 
 ## Activate After Time

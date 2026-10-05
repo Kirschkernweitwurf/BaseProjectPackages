@@ -2,6 +2,8 @@
 
 🪛 **Tool** · for everyone
 
+**Tags:** #artist #assets
+
 **Menu:** `Tools > Base Packages > Assets > Asset Zoo > Open Zoo Builder`
 
 Lays out prefabs in the scene in neat rows so you can look at your whole art library at once. Good for reviews, scale checks and screenshots.

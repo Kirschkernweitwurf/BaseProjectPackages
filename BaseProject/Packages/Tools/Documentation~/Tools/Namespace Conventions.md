@@ -2,6 +2,8 @@
 
 🔧 **Tool** · programmers only
 
+**Tags:** #programmer #project-health
+
 **Menu:** `Tools > Base Packages > Unity Editor > Project Health > Namespace Conventions`
 
 **Create:** `Create > Scriptable Objects > Base > Namespace Convention > New Config` (default file name `NCC_NamespaceConventions`)

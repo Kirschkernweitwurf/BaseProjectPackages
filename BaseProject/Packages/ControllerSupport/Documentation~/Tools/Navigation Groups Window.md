@@ -2,6 +2,8 @@
 
 🪛 **Tool** · for everyone
 
+**Tags:** #designer #gamepad #ui
+
 **Menu:** `Tools > Base Packages > Unity Editor > Controller Navigation Groups`
 
 ## What it does

@@ -2,6 +2,8 @@
 
 🗞️ **Component** · programmers only
 
+**Tags:** #programmer #ui
+
 The "Are you sure?" popup. It shows a message plus a confirm and a cancel button. You build the layout, the component fills in the text.
 
 ## Where to put it

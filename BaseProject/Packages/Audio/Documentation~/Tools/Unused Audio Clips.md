@@ -2,6 +2,8 @@
 
 🪛 **Tool** · for everyone
 
+**Tags:** #sound #audio #project-health
+
 **Menu path:** `Tools > Base Packages > Assets > Audio > Unused Audio Clips`
 
 ## What it does

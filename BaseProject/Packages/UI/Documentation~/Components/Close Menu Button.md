@@ -2,6 +2,8 @@
 
 🔖 **Component** · for everyone
 
+**Tags:** #designer #ui #menus
+
 Closes a menu when the button is clicked. Your typical "Back" or "X" button.
 
 ## Where to put it

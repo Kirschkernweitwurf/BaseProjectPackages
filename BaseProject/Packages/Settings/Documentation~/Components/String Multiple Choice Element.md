@@ -2,6 +2,8 @@
 
 🔖 **Component** · for everyone
 
+**Tags:** #designer #settings #ui
+
 The same left arrow / label / right arrow picker as [🔖 Int Multiple Choice Element](Int%20Multiple%20Choice%20Element.md), with one difference: it saves the **chosen word itself** instead of its position in the list.
 
 That makes it safe to reorder or add options later without breaking saved values.

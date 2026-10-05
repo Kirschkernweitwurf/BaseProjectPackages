@@ -2,6 +2,8 @@
 
 📦 **Package** · reusable, works in any of our projects
 
+**Tags:** #settings #ui
+
 Everything you need to build a settings menu: volume, resolution, full screen mode, quality, VSync and language, all saved between sessions.
 
 You do not need to write code. You drag components onto GameObjects, fill in a few fields, and the package handles saving, loading and applying.
@@ -36,6 +38,8 @@ Every page shows its icon and who it is for right under the title. Links to it c
 | Components 🗳️ | 🔖 | 🗞️ |
 | Scriptable Objects 📬 | 💌 | ✉️ |
 | Tools 🧰 | 🪛 | 🔧 |
+
+The **Tags** line under the badge says who needs a page (`#artist`, `#designer`, `#sound`, `#programmer`) and what it is about (`#ui`, `#animation`, `#audio`, ...). In Obsidian, click a tag to list every page with it. In any other app, search the folder for the tag, for example `#artist`. [All tags](Tags.md) lists every page of this package by tag.
 
 Menu paths are defaults. They can be moved with the Menu Item Manager in the Tools package, so your project may differ.
 

@@ -2,6 +2,8 @@
 
 💌 **Scriptable Object** · for everyone
 
+**Tags:** #sound #designer #audio
+
 **Menu path:** `Create > Scriptable Objects > Base > Audio > New Audio Container`
 
 **Default file name:** `AUC_AudioContainer`

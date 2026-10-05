@@ -2,6 +2,8 @@
 
 🪛 **Tool** · for everyone
 
+**Tags:** #artist #designer #sound #workflow #scenes
+
 **Menu:** `Edit > Project Settings > Base Tools > Auto Start Scene`
 
 Always enters Play mode from the same scene, no matter which scene you have open. Useful when the game needs a bootstrap or loading scene to start correctly.

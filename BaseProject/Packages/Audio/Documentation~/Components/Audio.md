@@ -2,6 +2,8 @@
 
 🔖 **Component** · for everyone
 
+**Tags:** #sound #designer #audio
+
 Everything here plays an Audio Container, never a raw clip. If you find yourself wanting to drag an `.wav` somewhere, make a container for it first.
 
 ## Play Audio On Click

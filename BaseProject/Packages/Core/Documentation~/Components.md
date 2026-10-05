@@ -2,6 +2,8 @@
 
 🗳️ **Components** · things you add to a GameObject
 
+**Tags:** #menus
+
 Components you add to GameObjects in a scene or prefab. Grouped by area.
 
 | Page | What is in it |

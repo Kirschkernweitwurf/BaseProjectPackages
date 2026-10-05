@@ -2,6 +2,8 @@
 
 🔖 **Component** · for everyone
 
+**Tags:** #artist #designer #animation
+
 Components that animate a single property over time. You add them to a GameObject, set a start and target value, and something else triggers them.
 
 ## The naming rule

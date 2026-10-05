@@ -2,6 +2,8 @@
 
 📬 **Scriptable Objects** · assets you create in the Project window
 
+**Tags:** #workflow
+
 Asset files you create through `Assets > Create > Scriptable Objects > Base`.
 
 | Asset | What it is for |

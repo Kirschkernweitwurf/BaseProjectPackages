@@ -2,6 +2,8 @@
 
 🗳️ **Components** · things you add to a GameObject
 
+**Tags:** #settings #ui
+
 Everything in this section is a component you drag onto a GameObject.
 
 There are three kinds. You almost always need all three.

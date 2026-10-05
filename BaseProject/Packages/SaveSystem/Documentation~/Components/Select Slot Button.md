@@ -2,6 +2,8 @@
 
 🔖 **Component** · for everyone
 
+**Tags:** #designer #saving #ui
+
 Marks one slot as the active slot. The Save, Load and Delete buttons all act on whatever this button last selected.
 
 Requires a Unity `Button` on the same GameObject.

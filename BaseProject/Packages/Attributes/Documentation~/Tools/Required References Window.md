@@ -2,6 +2,8 @@
 
 🪛 **Tool** · for everyone
 
+**Tags:** #designer #artist #inspector #project-health
+
 **Menu:** `Tools > Base Packages > Unity Editor > References > Required References`
 
 ## What it does

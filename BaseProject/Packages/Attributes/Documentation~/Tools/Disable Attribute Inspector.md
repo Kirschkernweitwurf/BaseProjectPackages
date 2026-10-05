@@ -2,6 +2,8 @@
 
 🪛 **Tool** · for everyone
 
+**Tags:** #designer #artist #sound #inspector
+
 **Menu:** `Tools > Base Packages > Attributes > Disable Attribute Inspector`
 
 **For:** Everyone, as an emergency switch

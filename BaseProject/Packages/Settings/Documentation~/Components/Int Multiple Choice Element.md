@@ -2,6 +2,8 @@
 
 🔖 **Component** · for everyone
 
+**Tags:** #designer #settings #ui
+
 A left arrow, a label, a right arrow, and a row of dots showing which option is selected. The console-style settings control.
 
 Saves the **position** of the chosen option, so use it for [🔖 Full Screen Mode Setting](Full%20Screen%20Mode%20Setting.md), [🔖 Quality Level Setting](Quality%20Level%20Setting.md), [🔖 V Sync Setting](V-Sync%20Setting.md) and 🪛[Language Setting](https://github.com/Kirschkernweitwurf/BaseProjectPackages/blob/main/BaseProject/Packages/Localization/Documentation~/Components/Language%20Setting.md).

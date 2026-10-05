@@ -2,6 +2,8 @@
 
 📦 **Package** · reusable, works in any of our projects
 
+**Tags:** #workflow
+
 The shared look of every Base editor window. You never add anything from it to a scene. The one thing worth knowing: the look is adjustable.
 
 ## Changing the look
@@ -23,6 +25,8 @@ Every page shows its icon and who it is for right under the title. Links to it c
 | Components 🗳️ | 🔖 | 🗞️ |
 | Scriptable Objects 📬 | 💌 | ✉️ |
 | Tools 🧰 | 🪛 | 🔧 |
+
+The **Tags** line under the badge says who needs a page (`#artist`, `#designer`, `#sound`, `#programmer`) and what it is about (`#ui`, `#animation`, `#audio`, ...). In Obsidian, click a tag to list every page with it. In any other app, search the folder for the tag, for example `#artist`. [All tags](Tags.md) lists every page of this package by tag.
 
 Menu paths are defaults. They can be moved with the Menu Item Manager in the Tools package, so your project may differ.
 

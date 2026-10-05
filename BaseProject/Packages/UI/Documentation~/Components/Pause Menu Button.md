@@ -2,6 +2,8 @@
 
 🔖 **Component** · for everyone
 
+**Tags:** #designer #ui #menus
+
 Opens and closes the pause menu with one button, and swaps the button icon so it always shows the right symbol.
 
 ## Where to put it

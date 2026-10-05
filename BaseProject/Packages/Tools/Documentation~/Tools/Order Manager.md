@@ -2,6 +2,8 @@
 
 🔧 **Tool** · programmers only
 
+**Tags:** #programmer #code-generation
+
 **Menu:** `Tools > Base Packages > Code > Generation > Order Manager`
 
 A small editor for named number constants, plus a generator that writes them into a C# file. It is mostly used for menu priorities, so all the magic numbers live in one place instead of being scattered across scripts.

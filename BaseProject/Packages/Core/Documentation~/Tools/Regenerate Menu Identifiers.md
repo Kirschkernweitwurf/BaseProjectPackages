@@ -2,6 +2,8 @@
 
 🪛 **Tool** · for everyone
 
+**Tags:** #designer #menus
+
 **Menu path:** `Tools > Base Packages > Assets > Menu > Regenerate Menu Identifiers`
 
 ## What it does

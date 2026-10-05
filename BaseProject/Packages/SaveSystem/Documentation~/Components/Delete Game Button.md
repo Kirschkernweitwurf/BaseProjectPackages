@@ -2,6 +2,8 @@
 
 🔖 **Component** · for everyone
 
+**Tags:** #designer #saving #ui
+
 Deletes the selected slot, including its data, its screenshot and its metadata.
 
 Requires a Unity `Button` on the same GameObject.

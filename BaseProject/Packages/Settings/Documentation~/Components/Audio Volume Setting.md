@@ -2,6 +2,8 @@
 
 🔖 **Component** · for everyone
 
+**Tags:** #designer #sound #settings #audio
+
 Saves the volume of one audio channel and pushes it into your AudioMixer.
 
 **Use one per channel.** Master, Music, SFX, Voice and so on each get their own GameObject with their own AudioVolumeSetting.

@@ -2,6 +2,8 @@
 
 🗞️ **Component** · programmers only
 
+**Tags:** #programmer #ui #debugging
+
 Shows the current framerate on screen. A debug tool, not a player-facing feature.
 
 ## Where to put it

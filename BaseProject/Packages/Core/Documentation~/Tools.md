@@ -2,6 +2,8 @@
 
 🧰 **Tools** · menu items and editor windows
 
+**Tags:** #menus
+
 Editor windows in the Core package.
 
 | Page | What it does |

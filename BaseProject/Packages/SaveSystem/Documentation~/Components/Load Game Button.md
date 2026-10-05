@@ -2,6 +2,8 @@
 
 🔖 **Component** · for everyone
 
+**Tags:** #designer #saving #ui
+
 Loads the selected slot and hands the data back to every object that owns save data.
 
 Requires a Unity `Button` on the same GameObject.

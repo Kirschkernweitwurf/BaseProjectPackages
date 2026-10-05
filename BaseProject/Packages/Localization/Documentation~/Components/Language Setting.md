@@ -2,6 +2,8 @@
 
 🔖 **Component** · for everyone
 
+**Tags:** #designer #localization #settings
+
 Saves the game language and switches it through Unity's Localization package.
 
 Key: `Language`

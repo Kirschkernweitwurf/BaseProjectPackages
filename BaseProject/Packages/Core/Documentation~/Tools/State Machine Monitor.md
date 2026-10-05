@@ -2,6 +2,8 @@
 
 🔧 **Tool** · programmers only
 
+**Tags:** #programmer #debugging
+
 **Menu:** `Tools > Base Packages > Gameplay > State Machine Monitor`
 
 Shows the state machines running in Play mode and what each one is doing right now.

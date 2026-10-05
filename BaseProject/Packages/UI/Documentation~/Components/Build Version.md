@@ -2,6 +2,8 @@
 
 🗞️ **Component** · programmers only
 
+**Tags:** #programmer #ui
+
 Shows the version and build number, for example `1.2.3 [47]`. Put it in a corner of the main menu so bug reports say which build they came from.
 
 ## Where to put it

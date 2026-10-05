@@ -2,6 +2,8 @@
 
 🔖 **Component** · for everyone
 
+**Tags:** #artist #lighting #scenes
+
 **Add Component:** Lighting Profile Applier
 
 Applies a saved lighting setup as soon as the scene that holds this component is loaded.

@@ -2,6 +2,8 @@
 
 🔖 **Component** · for everyone
 
+**Tags:** #designer #settings #ui
+
 One dot in the row underneath an arrow picker. It shows whether its option is the selected one, and clicking it jumps straight to that option.
 
 You never place these in a scene. You build **one prefab**, and the arrow pickers spawn as many copies as they need.

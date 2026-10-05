@@ -2,6 +2,8 @@
 
 🔧 **Tool** · programmers only
 
+**Tags:** #programmer #workflow
+
 **Menu:** `Tools > Base Packages > Code > Health > Create Asset Menu Overview`
 
 Lists every asset creation entry (everything that shows up under **Assets > Create**) in the project, its packages and Unity itself, sorted by menu order.

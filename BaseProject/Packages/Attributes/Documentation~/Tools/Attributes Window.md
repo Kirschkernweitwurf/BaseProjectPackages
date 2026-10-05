@@ -2,6 +2,8 @@
 
 🪛 **Tool** · for everyone
 
+**Tags:** #designer #inspector
+
 **Menu:** `Tools > Base Packages > Unity Editor > Project Health > Attributes`
 
 ## What it does

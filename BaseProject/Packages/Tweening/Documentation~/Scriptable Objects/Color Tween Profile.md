@@ -2,6 +2,8 @@
 
 💌 **Scriptable Object** · for everyone
 
+**Tags:** #artist #designer #animation
+
 **Menu path:** `Create > Scriptable Objects > Base > Tweening > Profiles > New ColorTweenProfile`
 
 **Default file name:** `TPC_ColorTweenProfile`

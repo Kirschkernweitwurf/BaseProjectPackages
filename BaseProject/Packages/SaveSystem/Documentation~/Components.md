@@ -2,6 +2,8 @@
 
 🗳️ **Components** · things you add to a GameObject
 
+**Tags:** #saving #ui
+
 All components you add to a GameObject through **Add Component**.
 
 ## Required

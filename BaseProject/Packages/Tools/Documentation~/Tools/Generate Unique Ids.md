@@ -2,6 +2,8 @@
 
 🔧 **Tool** · programmers only
 
+**Tags:** #programmer #code-generation #assets
+
 **Menu:** `Tools > Base Packages > Assets > Identifier > Generate Unique IDs`
 
 Gives every scriptable object that needs one a stable ID. Save files and other persisted data point at these IDs, so they must never change once assigned.

@@ -2,6 +2,8 @@
 
 🔖 **Component** · for everyone
 
+**Tags:** #designer #settings #ui
+
 Saves the screen resolution.
 
 Key: `Resolution`

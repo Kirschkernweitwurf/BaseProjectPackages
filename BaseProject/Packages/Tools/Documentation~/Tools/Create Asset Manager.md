@@ -2,6 +2,8 @@
 
 🔧 **Tool** · programmers only
 
+**Tags:** #programmer #workflow
+
 **Menu:** `Tools > Base Packages > Menu Management > Create Asset Manager`
 
 The same window as the [🔧 Menu Item Manager](Menu%20Item%20Manager.md), but for the **Assets > Create** menu.

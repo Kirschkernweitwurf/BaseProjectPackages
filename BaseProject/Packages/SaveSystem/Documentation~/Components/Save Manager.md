@@ -2,6 +2,8 @@
 
 🗞️ **Component** · programmers only
 
+**Tags:** #programmer #saving #ui
+
 The main component of the save system. Add exactly one to a GameObject in your first scene.
 
 On start it builds the whole save system from the settings below and registers itself so every button and savable object can find it. On quit it waits for any running save to finish before shutting down.

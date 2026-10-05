@@ -2,6 +2,8 @@
 
 📦 **Package** · reusable, works in any of our projects
 
+**Tags:** #inspector
+
 Every attribute in `Base.AttributePackage`, grouped the same way the Attributes window groups them. There are **100**. Each one has a live page in that window with a working sample, the source behind it, what it needs and the other ways it can be written, so this table is an index rather than a manual.
 
 Attributes target serialized fields unless the table says otherwise.
@@ -195,6 +197,8 @@ Every page shows its icon and who it is for right under the title. Links to it c
 | Components 🗳️ | 🔖 | 🗞️ |
 | Scriptable Objects 📬 | 💌 | ✉️ |
 | Tools 🧰 | 🪛 | 🔧 |
+
+The **Tags** line under the badge says who needs a page (`#artist`, `#designer`, `#sound`, `#programmer`) and what it is about (`#ui`, `#animation`, `#audio`, ...). In Obsidian, click a tag to list every page with it. In any other app, search the folder for the tag, for example `#artist`. [All tags](Tags.md) lists every page of this package by tag.
 
 Menu paths are defaults. They can be moved with the Menu Item Manager in the Tools package, so your project may differ.
 

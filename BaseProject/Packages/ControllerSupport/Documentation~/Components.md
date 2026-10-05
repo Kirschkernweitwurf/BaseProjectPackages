@@ -2,6 +2,8 @@
 
 🗳️ **Components** · things you add to a GameObject
 
+**Tags:** #gamepad #ui
+
 The runtime pieces of the Controller Support package, grouped by the job they do.
 
 ## Navigation

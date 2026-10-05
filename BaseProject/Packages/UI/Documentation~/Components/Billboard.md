@@ -2,6 +2,8 @@
 
 🔖 **Component** · for everyone
 
+**Tags:** #artist #designer #ui
+
 Turns an object so it always faces the camera. Use it for world-space health bars, name tags, speech bubbles or sprites that should never look flat.
 
 ## Where to put it

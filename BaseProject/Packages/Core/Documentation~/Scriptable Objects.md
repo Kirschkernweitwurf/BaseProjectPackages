@@ -2,6 +2,8 @@
 
 📬 **Scriptable Objects** · assets you create in the Project window
 
+**Tags:** #menus
+
 Assets you create in the Project window through `Create > Scriptable Objects > Base > ...`. They hold data, not behavior.
 
 | Page | What it is | Prefix |

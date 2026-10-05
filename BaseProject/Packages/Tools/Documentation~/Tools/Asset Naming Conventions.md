@@ -2,6 +2,8 @@
 
 🪛 **Tool** · for everyone
 
+**Tags:** #artist #designer #sound #assets #project-health
+
 **Menu:** `Tools > Base Packages > Assets > Asset Naming Conventions`
 
 Checks the file names of your assets against your own rules and renames the ones that break them, right in the window. The rules live in an `AssetNamingRuleSet` asset, so every project can have its own conventions. Renaming an asset keeps its GUID, so all references survive.

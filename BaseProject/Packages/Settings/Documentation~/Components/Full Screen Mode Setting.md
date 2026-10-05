@@ -2,6 +2,8 @@
 
 🔖 **Component** · for everyone
 
+**Tags:** #designer #settings #ui
+
 Saves whether the game runs windowed, borderless or exclusive fullscreen.
 
 Key: `FullScreen`

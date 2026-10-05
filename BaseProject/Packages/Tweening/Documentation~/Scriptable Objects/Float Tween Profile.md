@@ -2,6 +2,8 @@
 
 💌 **Scriptable Object** · for everyone
 
+**Tags:** #artist #designer #animation
+
 **Menu path:** `Create > Scriptable Objects > Base > Tweening > Profiles > New FloatTweenProfile`
 
 **Default file name:** `TPF_FloatTweenProfile`
