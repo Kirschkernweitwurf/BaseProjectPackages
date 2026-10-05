@@ -61,10 +61,6 @@ namespace Base.ControllerSupportPackage.Controller.Navigation
         private GameObject _lastSelected;
 
 #region Unity Callbacks
-        // The watchdog is optional: without it the group still wires and remembers, it just loses the
-        // focus safety net. Resolved once here so activation does not retry the lookup every time.
-        private void Awake() => ServiceLocator.TryGet(out _focusWatchdog);
-
         private void OnEnable()
         {
             if (autoActivate)
@@ -100,7 +96,11 @@ namespace Base.ControllerSupportPackage.Controller.Navigation
             _isActive = true;
             _hasWarnedNoTarget = false;
 
-            if (_focusWatchdog == null)
+            // Looked up on activation, not once in Awake. The watchdog is a scene service: it does not exist yet
+            // when a persistent group wakes, and every scene load replaces it. It is also optional. Without it
+            // the group still wires and remembers, it just loses the focus safety net.
+            if (_focusWatchdog == null
+                && !ServiceLocator.TryGetOptional(out _focusWatchdog))
                 return;
 
             _focusWatchdog.RegisterGroup(this);

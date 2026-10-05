@@ -8,6 +8,16 @@ Changes made before 1.6.5 were not recorded.
 
 ## [Unreleased]
 
+## [1.7.8] - 2026-10-05
+
+### Fixed
+
+- Persistent menus (pause, confirmation, debug) now get focus recovery. A navigable group looks up the
+  focus watchdog when it activates instead of once in Awake, so it finds the watchdog of the current scene
+  even when it woke up before that scene existed.
+- No more "FocusWatchdog is not registered" error at startup. The focus watchdog and the input device
+  tracker are optional, so a missing one is no longer logged as an error.
+
 ## [1.7.7] - 2026-10-05
 
 ### Added

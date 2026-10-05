@@ -31,7 +31,9 @@ namespace Base.ControllerSupportPackage.Controller.Focus
         protected override void Awake()
         {
             base.Awake();
-            ServiceLocator.TryGet(out _deviceTracker);
+
+            // Optional. Without a tracker the watchdog guards focus for every device.
+            ServiceLocator.TryGetOptional(out _deviceTracker);
         }
 
         private void LateUpdate()
