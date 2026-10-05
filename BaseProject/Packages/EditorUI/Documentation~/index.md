@@ -1,5 +1,7 @@
 # Editor UI Package
 
+📦 **Package** · reusable, works in any of our projects
+
 The shared look of every Base editor window. You never add anything from it to a scene. The one thing worth knowing: the look is adjustable.
 
 ## Changing the look
@@ -14,7 +16,7 @@ For programmers building their own windows on top of it, see the package [README
 
 ## Reading these docs
 
-Every page says near the top who it is for. The emoji in front of a link says the same:
+Every page shows its icon and who it is for right under the title. Links to it carry the same icon:
 
 | Area | Everyone | Programmers only |
 | --- | --- | --- |

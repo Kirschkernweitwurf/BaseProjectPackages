@@ -1,5 +1,7 @@
 # Content Package
 
+📦 **Package** · reusable, works in any of our projects
+
 The ready-made prefabs and assets the other Base packages are wired together with. No code. Start here when you need a working manager setup, a button or a canvas.
 
 ## What is inside
@@ -28,7 +30,7 @@ The ready-made prefabs and assets the other Base packages are wired together wit
 
 ## Reading these docs
 
-Every page says near the top who it is for. The emoji in front of a link says the same:
+Every page shows its icon and who it is for right under the title. Links to it carry the same icon:
 
 | Area | Everyone | Programmers only |
 | --- | --- | --- |

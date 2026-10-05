@@ -1,5 +1,7 @@
 # Core Package
 
+📦 **Package** · reusable, works in any of our projects
+
 Menus, scenes, timers, state machines, input and pooling: the runtime pieces most screens are built from.
 
 > [!NOTE]
@@ -9,14 +11,14 @@ Menus, scenes, timers, state machines, input and pooling: the runtime pieces mos
 
 | Page | What is in it | Key components |
 | --- | --- | --- |
-| [🔖 Menus](components/menus.md) | Screens and their behavior | Menu, Menu Modules, Pause Menu, Loading Screen |
-| [🔖 Utility](components/utility.md) | Small single purpose helpers | Activate After Time, Activate After Frames, Tooltip Trigger |
+| [🔖 Menus](Components/Menus.md) | Screens and their behavior | Menu, Menu Modules, Pause Menu, Loading Screen |
+| [🔖 Utility](Components/Utility.md) | Small single purpose helpers | Activate After Time, Activate After Frames, Tooltip Trigger |
 
 ## Scriptable Objects
 
 | Page | What it is | Prefix | Create path |
 | --- | --- | --- | --- |
-| [💌 Menu Identifier](scriptable-objects/menu-identifier.md) | A name tag for a menu, so nothing references menus by string | `MID_` | `Base > Menus > New Menu Identifier` |
+| [💌 Menu Identifier](<Scriptable Objects/Menu Identifier.md>) | A name tag for a menu, so nothing references menus by string | `MID_` | `Base > Menus > New Menu Identifier` |
 
 All create paths start with `Create > Scriptable Objects >`.
 
@@ -24,21 +26,21 @@ All create paths start with `Create > Scriptable Objects >`.
 
 | Page | What it does | Menu path |
 | --- | --- | --- |
-| [🪛 Regenerate Menu Identifiers](tools/regenerate-menu-identifiers.md) | Rebuilds the menu identifier registry and its generated code | `Tools > Base Packages > Assets > Menu > Regenerate Menu Identifiers` |
-| [🔧 Event Bus Window](tools/event-bus-window.md) | Live list of every event and who listens to it | `Tools > Base Packages > Runtime > Event Bus` |
-| [🔧 State Machine Monitor](tools/state-machine-monitor.md) | Draws the running state machines and their current state | `Tools > Base Packages > Gameplay > State Machine Monitor` |
+| [🪛 Regenerate Menu Identifiers](<Tools/Regenerate Menu Identifiers.md>) | Rebuilds the menu identifier registry and its generated code | `Tools > Base Packages > Assets > Menu > Regenerate Menu Identifiers` |
+| [🔧 Event Bus Window](<Tools/Event Bus Window.md>) | Live list of every event and who listens to it | `Tools > Base Packages > Runtime > Event Bus` |
+| [🔧 State Machine Monitor](<Tools/State Machine Monitor.md>) | Draws the running state machines and their current state | `Tools > Base Packages > Gameplay > State Machine Monitor` |
 
 ## Where to start
 
 | You want to | Go to |
 | --- | --- |
-| Build a new screen | [Menus](components/menus.md), then a Tween Group from the [Tweening package](https://github.com/Kirschkernweitwurf/BaseProjectPackages/blob/main/BaseProject/Packages/Tweening/Documentation~/components/tweening.md) as its Content Root |
-| Show something after a delay | [Activate After Time](components/utility.md) |
-| Show a tooltip | [Tooltip Trigger](components/utility.md) |
+| Build a new screen | [Menus](Components/Menus.md), then a Tween Group from the [Tweening package](https://github.com/Kirschkernweitwurf/BaseProjectPackages/blob/main/BaseProject/Packages/Tweening/Documentation~/Components/Tweening.md) as its Content Root |
+| Show something after a delay | [Activate After Time](Components/Utility.md) |
+| Show a tooltip | [Tooltip Trigger](Components/Utility.md) |
 
 ## Reading these docs
 
-Every page says near the top who it is for. The emoji in front of a link says the same:
+Every page shows its icon and who it is for right under the title. Links to it carry the same icon:
 
 | Area | Everyone | Programmers only |
 | --- | --- | --- |

@@ -1,5 +1,7 @@
 # Utility
 
+🔖 **Component** · for everyone
+
 Small helpers that solve one problem each.
 
 ## Activate After Time
@@ -51,4 +53,4 @@ Shows a tooltip when the pointer hovers this object, and hides it when the point
 
 ---
 
-The Bootstrapper that used to be listed here is now part of the Services package: [🔖 Bootstrapper](https://github.com/Kirschkernweitwurf/BaseProjectPackages/blob/main/BaseProject/Packages/Services/Documentation~/components/bootstrapper.md).
+The Bootstrapper that used to be listed here is now part of the Services package: [🔖 Bootstrapper](https://github.com/Kirschkernweitwurf/BaseProjectPackages/blob/main/BaseProject/Packages/Services/Documentation~/Components/Bootstrapper.md).

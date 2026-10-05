@@ -1,5 +1,7 @@
 # Settings Package
 
+📦 **Package** · reusable, works in any of our projects
+
 Everything you need to build a settings menu: volume, resolution, full screen mode, quality, VSync and language, all saved between sessions.
 
 You do not need to write code. You drag components onto GameObjects, fill in a few fields, and the package handles saving, loading and applying.
@@ -8,7 +10,7 @@ You do not need to write code. You drag components onto GameObjects, fill in a f
 
 | Section | What is in it |
 | --- | --- |
-| [🗳️ Components](components/index.md) | Everything you add to a GameObject in a scene. This is the section you want. |
+| [🗳️ Components](Components.md) | Everything you add to a GameObject in a scene. This is the section you want. |
 
 ## The 30 second version
 
@@ -27,7 +29,7 @@ That is it. The value the player picks is saved automatically when the scene is 
 
 ## Reading these docs
 
-Every page says near the top who it is for. The emoji in front of a link says the same:
+Every page shows its icon and who it is for right under the title. Links to it carry the same icon:
 
 | Area | Everyone | Programmers only |
 | --- | --- | --- |

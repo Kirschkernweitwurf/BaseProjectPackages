@@ -1,5 +1,7 @@
 # Localization Package
 
+📦 **Package** · reusable, works in any of our projects
+
 Keeps Unity's String Tables and a Google Sheet in sync, so text can be edited in Unity or in the sheet. Both end up in the same place. Pick whichever is easier for you.
 
 > [!NOTE]
@@ -9,7 +11,7 @@ Keeps Unity's String Tables and a Google Sheet in sync, so text can be edited in
 
 | Page | What it does | For whom |
 | --- | --- | --- |
-| [🪛 Language Setting](components/language-setting.md) | Saves the game language and switches it | Everyone |
+| [🔖 Language Setting](<Components/Language Setting.md>) | Saves the game language and switches it | Everyone |
 
 ## Tools
 
@@ -76,7 +78,7 @@ Google Sheets can do a rough first pass so you do not translate everything by ha
 
 ## Reading these docs
 
-Every page says near the top who it is for. The emoji in front of a link says the same:
+Every page shows its icon and who it is for right under the title. Links to it carry the same icon:
 
 | Area | Everyone | Programmers only |
 | --- | --- | --- |

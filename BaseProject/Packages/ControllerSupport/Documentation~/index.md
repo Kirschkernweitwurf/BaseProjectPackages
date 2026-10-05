@@ -1,21 +1,23 @@
 # Controller Support Package
 
+📦 **Package** · reusable, works in any of our projects
+
 ## Tools
 
 | Tool | Menu path |
 | --- | --- |
-| [🪛 NavigationGroupsWindow](tools/navigation-groups-window.md) | `Tools > Base Packages > Unity Editor > Controller Navigation Groups` |
+| [🪛 NavigationGroupsWindow](<Tools/Navigation Groups Window.md>) | `Tools > Base Packages > Unity Editor > Controller Navigation Groups` |
 
 ## Components
 
 | Component | Purpose |
 | --- | --- |
-| [🔖 NavigableElement](components/navigable-element.md) | Marks a selectable as a gamepad target |
-| [🔖 NavigableGroup](components/navigable-group.md) | Wires navigation and owns a focus context |
-| [🔖 FocusWatchdog](components/focus-watchdog.md) | Restores focus when the gamepad loses it |
-| [🔖 MenuNavigationModule](components/menu-navigation-module.md) | Bridges a menu's lifecycle to a group |
-| [🔖 GamepadScrollRect](components/gamepad-scroll-rect.md) | Stick scrolling for a ScrollRect |
-| [🔖 ScrollIntoView](components/scroll-into-view.md) | Keeps the selection visible in a ScrollRect |
+| [🔖 NavigableElement](<Components/Navigable Element.md>) | Marks a selectable as a gamepad target |
+| [🔖 NavigableGroup](<Components/Navigable Group.md>) | Wires navigation and owns a focus context |
+| [🗞️ FocusWatchdog](<Components/Focus Watchdog.md>) | Restores focus when the gamepad loses it |
+| [🔖 MenuNavigationModule](<Components/Menu Navigation Module.md>) | Bridges a menu's lifecycle to a group |
+| [🔖 GamepadScrollRect](<Components/Gamepad Scroll Rect.md>) | Stick scrolling for a ScrollRect |
+| [🔖 ScrollIntoView](<Components/Scroll Into View.md>) | Keeps the selection visible in a ScrollRect |
 
 Input prompt components (`InputDeviceTracker`, `InputGlyphSet`, `InputGlyphProvider`) are not covered here yet.
 
@@ -29,7 +31,7 @@ Input prompt components (`InputDeviceTracker`, `InputGlyphSet`, `InputGlyphProvi
 
 ## Reading these docs
 
-Every page says near the top who it is for. The emoji in front of a link says the same:
+Every page shows its icon and who it is for right under the title. Links to it carry the same icon:
 
 | Area | Everyone | Programmers only |
 | --- | --- | --- |
