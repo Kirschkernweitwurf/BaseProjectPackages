@@ -2,6 +2,8 @@
 
 🪛 **Tool** · for everyone
 
+**Tags:** #artist #designer #sound #workflow
+
 **Menu:** `Tools > Base Packages > Command Palette`
 
 **Shortcut:** `Ctrl + Shift + K` (`Cmd + Shift + K` on Mac), or the palette button in the main toolbar

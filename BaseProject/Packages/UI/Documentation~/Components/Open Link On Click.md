@@ -2,6 +2,8 @@
 
 🔖 **Component** · for everyone
 
+**Tags:** #designer #artist #ui
+
 Opens a website in the player's browser when the button is clicked. Good for credits, socials or a support page.
 
 ## Where to put it

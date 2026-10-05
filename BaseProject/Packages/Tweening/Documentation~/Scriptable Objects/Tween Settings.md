@@ -2,6 +2,8 @@
 
 💌 **Scriptable Object** · for everyone
 
+**Tags:** #artist #designer #animation
+
 **Menu path:** `Create > Scriptable Objects > Base > Tweening > New TweenSettings`
 
 **Default file name:** `TS_TweenSettings`

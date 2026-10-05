@@ -2,6 +2,8 @@
 
 🪛 **Tool** · for everyone
 
+**Tags:** #sound #audio #assets
+
 **Menu:** `Tools > Base Packages > Assets > Audio Rules`
 
 **Create:** `Create > Scriptable Objects > Base > Audio Rules > New Rule Set` (default file name `ARS_AudioRuleSet`)

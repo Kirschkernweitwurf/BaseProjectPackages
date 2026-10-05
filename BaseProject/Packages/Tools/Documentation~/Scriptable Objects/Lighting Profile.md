@@ -2,6 +2,8 @@
 
 💌 **Scriptable Object** · for everyone
 
+**Tags:** #artist #lighting #scenes
+
 **Create:** `Assets > Create > Scriptable Objects > Base > Lighting Profile > New Profile`
 
 **Default file name:** `LP_LightingProfile`

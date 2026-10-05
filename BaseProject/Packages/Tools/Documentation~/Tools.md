@@ -2,6 +2,8 @@
 
 🧰 **Tools** · menu items and editor windows
 
+**Tags:** #workflow
+
 Editor windows and menu commands. Almost everything lives under **Tools > Base Packages**.
 
 ## Project Health

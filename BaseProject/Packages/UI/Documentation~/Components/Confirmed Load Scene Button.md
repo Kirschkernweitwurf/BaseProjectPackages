@@ -2,6 +2,8 @@
 
 🔖 **Component** · for everyone
 
+**Tags:** #designer #ui #scenes
+
 Asks the player to confirm, then loads a scene. Use it for "Back to main menu" so nobody loses progress by accident.
 
 ## Where to put it

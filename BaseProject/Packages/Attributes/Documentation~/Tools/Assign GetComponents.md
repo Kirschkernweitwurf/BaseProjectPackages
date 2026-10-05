@@ -2,6 +2,8 @@
 
 🪛 **Tool** · for everyone
 
+**Tags:** #designer #artist #inspector
+
 **Menu:** `Tools > Base Packages > Unity Editor > References > Assign GetComponents`
 
 ## What it does

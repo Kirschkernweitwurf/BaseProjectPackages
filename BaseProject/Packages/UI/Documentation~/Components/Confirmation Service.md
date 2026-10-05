@@ -2,6 +2,8 @@
 
 🗞️ **Component** · programmers only
 
+**Tags:** #programmer #ui
+
 The connection between the confirm buttons and the popup. It is scene setup, not something you interact with directly.
 
 ## Where to put it

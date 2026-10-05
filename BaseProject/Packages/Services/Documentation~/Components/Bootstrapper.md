@@ -2,6 +2,8 @@
 
 🔖 **Component** · for everyone
 
+**Tags:** #designer #setup #scenes
+
 Spawns the manager prefabs the game needs. It goes on one object per scene and is normally already part of your scene template.
 
 | Field | What it does |

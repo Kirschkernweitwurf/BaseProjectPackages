@@ -2,6 +2,8 @@
 
 🔖 **Component** · for everyone
 
+**Tags:** #designer #settings #ui
+
 Saves the VSync setting. VSync locks the frame rate to the monitor refresh rate to remove screen tearing, at the cost of some input latency.
 
 Key: `VSync`

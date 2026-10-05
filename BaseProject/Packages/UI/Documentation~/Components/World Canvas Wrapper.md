@@ -2,6 +2,8 @@
 
 🗞️ **Component** · programmers only
 
+**Tags:** #programmer #ui
+
 Hooks a world-space canvas up to the main camera. Without it, clicks and hovers on that canvas often do not register.
 
 ## Where to put it

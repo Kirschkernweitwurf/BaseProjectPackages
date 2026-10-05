@@ -2,6 +2,8 @@
 
 🔖 **Component** · for everyone
 
+**Tags:** #designer #artist #ui
+
 Asks the player to confirm, then closes the game.
 
 ## Where to put it

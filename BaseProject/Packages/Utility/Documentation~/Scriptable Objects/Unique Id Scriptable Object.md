@@ -2,6 +2,8 @@
 
 ✉️ **Scriptable Object** · programmers only
 
+**Tags:** #programmer #workflow
+
 **Create:** `Assets > Create > Scriptable Objects > Base > UniqueId > New ScriptableObject`
 
 **Default file name:** `UID_UniqueIdScriptableObject`

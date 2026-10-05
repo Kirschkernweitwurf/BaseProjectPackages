@@ -2,6 +2,8 @@
 
 🗞️ **Component** · programmers only
 
+**Tags:** #programmer #assets
+
 An empty marker component that the Asset Zoo Builder puts on the root object of a built zoo.
 
 ## Why it exists

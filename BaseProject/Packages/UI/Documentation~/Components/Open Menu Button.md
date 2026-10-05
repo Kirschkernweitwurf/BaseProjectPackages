@@ -2,6 +2,8 @@
 
 🔖 **Component** · for everyone
 
+**Tags:** #designer #ui #menus
+
 Opens a menu when the button is clicked.
 
 ## Where to put it

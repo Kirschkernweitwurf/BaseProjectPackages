@@ -2,6 +2,8 @@
 
 🔧 **Tool** · programmers only
 
+**Tags:** #programmer #debugging
+
 **Menu:** `Tools > Base Packages > Unity Editor > Memory Profiler Automation`
 
 **For:** Programmers, and anyone chasing a memory problem

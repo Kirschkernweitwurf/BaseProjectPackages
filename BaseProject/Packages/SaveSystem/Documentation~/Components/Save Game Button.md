@@ -2,6 +2,8 @@
 
 🔖 **Component** · for everyone
 
+**Tags:** #designer #saving #ui
+
 Writes the current game state into a save slot.
 
 Requires a Unity `Button` on the same GameObject.

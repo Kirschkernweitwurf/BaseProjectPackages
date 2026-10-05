@@ -2,6 +2,8 @@
 
 🔖 **Component** · for everyone
 
+**Tags:** #designer #settings #ui
+
 The panel that shows the name and explanation of whatever setting the player is currently hovering or has selected.
 
 Put **one** somewhere in your settings menu. It listens to every setting element on its own, with no wiring needed.

@@ -2,6 +2,8 @@
 
 🗞️ **Component** · programmers only
 
+**Tags:** #programmer #gamepad #ui
+
 **Namespace:** `Base.ControllerSupport.Controller.Focus`
 
 **Base class:** `GameServiceBehaviour` (registered in the `ServiceLocator`)

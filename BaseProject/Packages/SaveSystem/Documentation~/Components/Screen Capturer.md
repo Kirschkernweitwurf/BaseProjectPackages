@@ -2,6 +2,8 @@
 
 🗞️ **Component** · programmers only
 
+**Tags:** #programmer #saving
+
 Optional. Takes a screenshot when the game is saved and stores it in the slot as a thumbnail.
 
 Put it on any GameObject that lives for the whole game, for example next to the [🗞️ Save Manager](Save%20Manager.md).

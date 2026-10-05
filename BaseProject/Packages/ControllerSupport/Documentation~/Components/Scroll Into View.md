@@ -2,6 +2,8 @@
 
 🔖 **Component** · for everyone
 
+**Tags:** #designer #gamepad #ui
+
 **Namespace:** `Base.ControllerSupport.Controller.Scrolling`
 
 **Requires:** `ScrollRect` on the same GameObject

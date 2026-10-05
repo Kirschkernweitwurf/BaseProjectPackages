@@ -2,6 +2,8 @@
 
 🔖 **Component** · for everyone
 
+**Tags:** #designer #gamepad #ui
+
 **Namespace:** `Base.ControllerSupport.Controller.Navigation`
 
 **Requires:** `Selectable` on the same GameObject

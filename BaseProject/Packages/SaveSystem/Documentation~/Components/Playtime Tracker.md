@@ -2,6 +2,8 @@
 
 🗞️ **Component** · programmers only
 
+**Tags:** #programmer #saving #ui
+
 Optional. Counts how long the player has been playing and stores the total in every save, so a load menu can show "12h 40m".
 
 Put it on any GameObject that lives for the whole game, for example next to the [🗞️ Save Manager](Save%20Manager.md).

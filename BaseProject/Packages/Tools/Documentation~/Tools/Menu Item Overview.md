@@ -2,6 +2,8 @@
 
 🔧 **Tool** · programmers only
 
+**Tags:** #programmer #workflow
+
 **Menu:** `Tools > Base Packages > Code > Health > Menu Item Overview`
 
 Lists every menu item in the project, its packages and Unity itself, sorted by menu priority. Use it when you want to place a new menu item and need to know which numbers are already taken.

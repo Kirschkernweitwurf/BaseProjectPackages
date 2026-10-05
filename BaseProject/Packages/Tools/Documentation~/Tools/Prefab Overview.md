@@ -2,6 +2,8 @@
 
 🪛 **Tool** · for everyone
 
+**Tags:** #artist #designer #assets #project-health
+
 **Menu:** `Tools > Base Packages > Unity Editor > Project Health > Prefab Overview`
 
 **For:** Everyone working with prefabs

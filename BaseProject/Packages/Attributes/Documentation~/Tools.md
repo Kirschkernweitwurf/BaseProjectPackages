@@ -2,6 +2,8 @@
 
 🧰 **Tools** · menu items and editor windows
 
+**Tags:** #inspector
+
 Four editor windows and one switch ship with the Attributes package.
 
 | Tool | What it is for | For whom |

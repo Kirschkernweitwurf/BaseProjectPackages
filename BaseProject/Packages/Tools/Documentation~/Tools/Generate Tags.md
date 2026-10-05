@@ -2,6 +2,8 @@
 
 🔧 **Tool** · programmers only
 
+**Tags:** #programmer #code-generation
+
 **Menu:** `Tools > Base Packages > Code > Generation > Generate Tags`
 
 Writes a `Tags` class that contains every tag in the project as a const string. This means no more typing tag names by hand and no more typos that only show up at runtime.

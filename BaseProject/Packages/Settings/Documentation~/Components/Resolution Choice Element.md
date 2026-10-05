@@ -2,6 +2,8 @@
 
 🔖 **Component** · for everyone
 
+**Tags:** #designer #settings #ui
+
 The arrow picker for screen resolution. It fills its own option list with the resolutions the player's monitor actually supports, so you never type them in.
 
 Pairs with [🔖 Resolution Setting](Resolution%20Setting.md). Set the Setting Key to `Resolution`.

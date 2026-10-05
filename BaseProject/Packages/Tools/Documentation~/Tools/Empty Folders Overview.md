@@ -2,6 +2,8 @@
 
 🪛 **Tool** · for everyone
 
+**Tags:** #artist #designer #sound #assets #project-health
+
 **Menu:** `Tools > Base Packages > Unity Editor > Project Health > Unused > Empty Folders Overview`
 
 Finds folders with nothing in them and cleans them up. Empty folders are a common source of noise in version control.

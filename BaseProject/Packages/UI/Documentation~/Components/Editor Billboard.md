@@ -2,6 +2,8 @@
 
 🔖 **Component** · for everyone
 
+**Tags:** #artist #designer #ui
+
 Same idea as [🔖 Billboard](Billboard.md), but it also turns while you are working in the Scene view. Handy for placing signs or labels and seeing right away how they read.
 
 ## Where to put it

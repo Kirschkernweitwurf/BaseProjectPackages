@@ -2,6 +2,8 @@
 
 🗳️ **Components** · things you add to a GameObject
 
+**Tags:** #ui
+
 Ready-made components from the **Base UI Package**. Drop them on a GameObject, fill in the fields in the Inspector, done. No code needed.
 
 ## How to use

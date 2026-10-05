@@ -8,6 +8,13 @@ Changes made before 1.0.11 were not recorded.
 
 ## [Unreleased]
 
+## [1.0.19] - 2026-10-05
+
+### Added
+
+- Tags in the docs. Every page has a **Tags** line saying who needs it and what it is about, and
+  `Tags.md` lists every page of the package by tag.
+
 ## [1.0.18] - 2026-10-05
 
 ### Fixed

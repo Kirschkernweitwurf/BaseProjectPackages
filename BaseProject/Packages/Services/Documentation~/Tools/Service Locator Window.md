@@ -2,6 +2,8 @@
 
 🔧 **Tool** · programmers only
 
+**Tags:** #programmer #debugging
+
 **Menu:** `Tools > Base Packages > Runtime > Service Locator`
 
 **For:** Programmers, and anyone debugging a scene that "does nothing"

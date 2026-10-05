@@ -2,6 +2,8 @@
 
 💌 **Scriptable Object** · for everyone
 
+**Tags:** #designer #menus
+
 **Menu path:** `Create > Scriptable Objects > Base > Menus > New Menu Identifier`
 
 **Default file name:** `MID_MenuIdentifier`

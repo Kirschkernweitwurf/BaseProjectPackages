@@ -2,6 +2,8 @@
 
 🔧 **Tool** · programmers only
 
+**Tags:** #programmer #project-health
+
 **Menu:** `Tools > Base Packages > Code > Health > Codebase Graph`
 
 Reads the compiled code of every assembly in the project and shows what uses what, as a node graph. It answers one question: is this code still reachable.

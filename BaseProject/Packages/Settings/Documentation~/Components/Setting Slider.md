@@ -2,6 +2,8 @@
 
 🔖 **Component** · for everyone
 
+**Tags:** #designer #settings #ui
+
 A slider, with optional minus and plus buttons and a number readout.
 
 Needs a Unity **Slider** on the same GameObject.

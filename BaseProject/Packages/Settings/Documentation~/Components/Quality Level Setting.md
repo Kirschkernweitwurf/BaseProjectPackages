@@ -2,6 +2,8 @@
 
 🔖 **Component** · for everyone
 
+**Tags:** #designer #settings #ui
+
 Saves the graphics quality level (Low, Medium, High, and so on).
 
 Key: `Quality`

@@ -2,6 +2,8 @@
 
 🔖 **Component** · for everyone
 
+**Tags:** #designer #settings #ui
+
 A classic dropdown list.
 
 Needs a **TMP_Dropdown** on the same GameObject.

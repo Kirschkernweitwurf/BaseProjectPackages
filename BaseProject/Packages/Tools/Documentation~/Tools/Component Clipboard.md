@@ -2,6 +2,8 @@
 
 🪛 **Tool** · for everyone
 
+**Tags:** #artist #designer #workflow
+
 **Menu:** `Tools > Base Packages > Unity Editor > Component Clipboard`
 
 Unity's own component clipboard only holds one component at a time. This window holds as many as you want.

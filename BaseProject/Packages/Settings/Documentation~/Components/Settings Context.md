@@ -2,6 +2,8 @@
 
 🔖 **Component** · for everyone
 
+**Tags:** #designer #settings #ui
+
 The brain of the settings system. Everything else finds it automatically.
 
 Put **one** on a GameObject in your settings scene. Without it, no setting saves and no UI element binds.

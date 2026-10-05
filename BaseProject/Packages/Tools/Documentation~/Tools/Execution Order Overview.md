@@ -2,6 +2,8 @@
 
 🔧 **Tool** · programmers only
 
+**Tags:** #programmer #project-health
+
 **Menu:** `Tools > Base Packages > Code > Health > Execution Order Overview`
 
 Lists every script with a custom execution order, sorted by the order that actually wins at runtime. Handy when script order matters and you need to see the whole picture instead of one entry at a time.

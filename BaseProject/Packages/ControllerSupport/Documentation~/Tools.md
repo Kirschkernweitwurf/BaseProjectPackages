@@ -2,6 +2,8 @@
 
 🧰 **Tools** · menu items and editor windows
 
+**Tags:** #gamepad #ui
+
 Editor tooling shipped with the Controller Support package. Everything here is opt-in: a rebuild only runs when you click it, so navigation wiring never changes on its own.
 
 | Tool | Menu path | What it is for |

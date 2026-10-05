@@ -2,6 +2,8 @@
 
 🔧 **Tool** · programmers only
 
+**Tags:** #programmer #inspector
+
 **Menu:** `Tools > Base Packages > Unity Editor > References > GetComponent Require Audit`
 
 ## What it does

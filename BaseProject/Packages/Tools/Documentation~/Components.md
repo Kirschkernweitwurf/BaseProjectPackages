@@ -2,6 +2,8 @@
 
 🗳️ **Components** · things you add to a GameObject
 
+**Tags:** #workflow
+
 Scripts you drop onto a GameObject in a scene.
 
 | Component | What it does |

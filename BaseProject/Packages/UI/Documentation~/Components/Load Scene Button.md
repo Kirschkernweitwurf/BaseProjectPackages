@@ -2,6 +2,8 @@
 
 🔖 **Component** · for everyone
 
+**Tags:** #designer #ui #scenes
+
 Loads a scene when the button is clicked. Everything currently loaded is unloaded first.
 
 ## Where to put it

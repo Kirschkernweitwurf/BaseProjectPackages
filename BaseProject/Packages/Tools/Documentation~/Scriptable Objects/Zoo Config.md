@@ -2,6 +2,8 @@
 
 💌 **Scriptable Object** · for everyone
 
+**Tags:** #artist #assets
+
 **Create:** `Assets > Create > Scriptable Objects > Base > Asset Zoo > New Config`
 
 **Default file name:** `ZC_ZooConfig`

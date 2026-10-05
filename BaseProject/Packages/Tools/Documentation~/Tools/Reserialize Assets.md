@@ -2,6 +2,8 @@
 
 🔧 **Tool** · programmers only
 
+**Tags:** #programmer #assets
+
 **Menu:** `Tools > Base Packages > Assets > Reserialize Assets`
 
 Makes a renamed field actually stick. When you rename a serialized field and add `[FormerlySerializedAs]`, Unity quietly moves the old value into the new field every time it loads the asset. It never writes the file back, so the prefab on disk still holds the old name and the day you drop the attribute the value disappears. This tool rewrites the files so the new name is really there.

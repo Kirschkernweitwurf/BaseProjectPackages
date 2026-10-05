@@ -2,6 +2,8 @@
 
 🔖 **Component** · for everyone
 
+**Tags:** #designer #settings #ui
+
 An on / off switch with a label that reads "On" or "Off".
 
 Needs a Unity **Toggle** on the same GameObject. Unity adds one automatically when you add this component.

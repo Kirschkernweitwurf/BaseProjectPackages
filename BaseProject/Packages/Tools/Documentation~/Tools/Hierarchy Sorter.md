@@ -2,6 +2,8 @@
 
 🪛 **Tool** · for everyone
 
+**Tags:** #artist #designer #workflow #scenes
+
 **Menu:**
 
 - `GameObject > Base > Sort Children Alphabetically`
