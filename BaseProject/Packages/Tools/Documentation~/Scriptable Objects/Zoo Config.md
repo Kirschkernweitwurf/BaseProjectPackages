@@ -6,7 +6,7 @@
 
 **Default file name:** `ZC_ZooConfig`
 
-Describes what the [🪛 Asset Zoo Builder](<../Tools/Asset Zoo Builder.md>) should lay out and how it should look. Make one config per library or per review, for example one for props and one for characters.
+Describes what the [🪛 Asset Zoo Builder](../Tools/Asset%20Zoo%20Builder.md) should lay out and how it should look. Make one config per library or per review, for example one for props and one for characters.
 
 ## Layout
 

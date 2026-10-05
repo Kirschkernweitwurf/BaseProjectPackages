@@ -6,18 +6,18 @@ Asset files you create through `Assets > Create > Scriptable Objects > Base`.
 
 | Asset | What it is for |
 | --- | --- |
-| [💌 LightingProfile](<Scriptable Objects/Lighting Profile.md>) | Stores a scene's lighting settings so you can reuse them anywhere. |
-| [💌 ZooConfig](<Scriptable Objects/Zoo Config.md>) | Describes what the Asset Zoo Builder should lay out, and how. |
-| Audio Rule Set (`ARS_`) | The rules for [Audio Rules](<Tools/Audio Rules.md>). |
-| Asset Naming Rule Set (`ANRS_`) | The rules for [Asset Naming Conventions](<Tools/Asset Naming Conventions.md>). |
-| Folder Convention Config (`FCC_`) | The rules for [Folder Conventions](<Tools/Folder Conventions.md>). |
-| Namespace Convention Config (`NCC_`) | The rules for [Namespace Conventions](<Tools/Namespace Conventions.md>). |
+| [💌 LightingProfile](Scriptable%20Objects/Lighting%20Profile.md) | Stores a scene's lighting settings so you can reuse them anywhere. |
+| [💌 ZooConfig](Scriptable%20Objects/Zoo%20Config.md) | Describes what the Asset Zoo Builder should lay out, and how. |
+| Audio Rule Set (`ARS_`) | The rules for [Audio Rules](Tools/Audio%20Rules.md). |
+| Asset Naming Rule Set (`ANRS_`) | The rules for [Asset Naming Conventions](Tools/Asset%20Naming%20Conventions.md). |
+| Folder Convention Config (`FCC_`) | The rules for [Folder Conventions](Tools/Folder%20Conventions.md). |
+| Namespace Convention Config (`NCC_`) | The rules for [Namespace Conventions](Tools/Namespace%20Conventions.md). |
 
 The Unique Id Scriptable Object now lives in the [Utility package](https://github.com/Kirschkernweitwurf/BaseProjectPackages/blob/main/BaseProject/Packages/Utility/Documentation~/Scriptable%20Objects/Unique%20Id%20Scriptable%20Object.md).
 
 ## Where the menu paths come from
 
-These assets use `[DynamicCreateAssetMenu]`, which means their place in the Create menu is data, not code. You can move them around in the [Create Asset Manager](<Tools/Create Asset Manager.md>).
+These assets use `[DynamicCreateAssetMenu]`, which means their place in the Create menu is data, not code. You can move them around in the [Create Asset Manager](Tools/Create%20Asset%20Manager.md).
 
 ## Internal stores
 

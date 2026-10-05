@@ -4,7 +4,7 @@
 
 **Menu:** `Tools > Base Packages > Menu Management > Create Asset Manager`
 
-The same window as the [🔧 Menu Item Manager](<Menu Item Manager.md>), but for the **Assets > Create** menu.
+The same window as the [🔧 Menu Item Manager](Menu%20Item%20Manager.md), but for the **Assets > Create** menu.
 
 It manages every scriptable object marked with `[DynamicCreateAssetMenu]`. Use it to keep the Create menu tidy as the project grows.
 

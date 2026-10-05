@@ -6,7 +6,7 @@ A slider, with optional minus and plus buttons and a number readout.
 
 Needs a Unity **Slider** on the same GameObject.
 
-Works with settings that store a **number between 0 and 1**, which in practice means [🔖 Audio Volume Setting](<Audio Volume Setting.md>).
+Works with settings that store a **number between 0 and 1**, which in practice means [🔖 Audio Volume Setting](Audio%20Volume%20Setting.md).
 
 ## Inspector fields
 
@@ -15,7 +15,7 @@ Shared by every UI element:
 | Field | What to put in it |
 | --- | --- |
 | **Setting Key** | The key of the setting this controls. Must match exactly. Required. |
-| **Title** | Localized name shown in the [🔖 Setting Flavor Text](<Setting Flavor Text.md>) panel. |
+| **Title** | Localized name shown in the [🔖 Setting Flavor Text](Setting%20Flavor%20Text.md) panel. |
 | **Description** | Localized explanation shown in the same panel. |
 
 Specific to this element:

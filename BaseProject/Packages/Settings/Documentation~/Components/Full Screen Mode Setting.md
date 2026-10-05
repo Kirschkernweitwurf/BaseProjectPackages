@@ -29,11 +29,11 @@ The **position in your list**, not the mode itself. If you reorder the list afte
 
 ## Order matters
 
-Put this **before** [🔖 Resolution Setting](<Resolution Setting.md>) in the Hierarchy. The mode has to be set before the resolution is applied or the resolution can come out wrong on startup.
+Put this **before** [🔖 Resolution Setting](Resolution%20Setting.md) in the Hierarchy. The mode has to be set before the resolution is applied or the resolution can come out wrong on startup.
 
 ## Which UI to use
 
-An [🔖 Int Multiple Choice Element](<Int Multiple Choice Element.md>) or a [🔖 Setting Dropdown](<Setting Dropdown.md>), with Setting Key set to `FullScreen`.
+An [🔖 Int Multiple Choice Element](Int%20Multiple%20Choice%20Element.md) or a [🔖 Setting Dropdown](Setting%20Dropdown.md), with Setting Key set to `FullScreen`.
 
 Type the option labels yourself and make sure they are in the **same order** as the Available Modes list.
 

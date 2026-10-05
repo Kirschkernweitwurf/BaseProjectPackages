@@ -26,4 +26,4 @@ Use it before you add a new one, so your entry lands where you expect.
 
 ## Related
 
-Entries marked with `[DynamicCreateAssetMenu]` can be moved around freely in the [🔧 Create Asset Manager](<Create Asset Manager.md>).
+Entries marked with `[DynamicCreateAssetMenu]` can be moved around freely in the [🔧 Create Asset Manager](Create%20Asset%20Manager.md).

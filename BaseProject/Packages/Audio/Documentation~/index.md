@@ -14,7 +14,7 @@ Sounds as assets. An Audio Container describes one sound, the Play Audio compone
 
 | Page | What it is | Prefix | Create path |
 | --- | --- | --- | --- |
-| [💌 Audio Container](<Scriptable Objects/Audio Container.md>) | One sound as the game sees it: clips, volume, pitch, looping | `AUC_` | `Base > Audio > New Audio Container` |
+| [💌 Audio Container](Scriptable%20Objects/Audio%20Container.md) | One sound as the game sees it: clips, volume, pitch, looping | `AUC_` | `Base > Audio > New Audio Container` |
 
 All create paths start with `Create > Scriptable Objects >`.
 
@@ -22,13 +22,13 @@ All create paths start with `Create > Scriptable Objects >`.
 
 | Page | What it does | Menu path |
 | --- | --- | --- |
-| [🪛 Unused Audio Clips](<Tools/Unused Audio Clips.md>) | Finds audio clips nothing references and lets you select or delete them | `Tools > Base Packages > Assets > Audio > Unused Audio Clips` |
+| [🪛 Unused Audio Clips](Tools/Unused%20Audio%20Clips.md) | Finds audio clips nothing references and lets you select or delete them | `Tools > Base Packages > Assets > Audio > Unused Audio Clips` |
 
 For import settings across all audio files, see [Audio Rules](https://github.com/Kirschkernweitwurf/BaseProjectPackages/blob/main/BaseProject/Packages/Tools/Documentation~/Tools/Audio%20Rules.md) in the Tools package.
 
 ## Where to start
 
-1. Create an [Audio Container](<Scriptable Objects/Audio Container.md>) and drop your clips in.
+1. Create an [Audio Container](Scriptable%20Objects/Audio%20Container.md) and drop your clips in.
 2. Add a Play Audio On... component from [Audio](Components/Audio.md) to the button or object.
 3. Assign the container. Done.
 

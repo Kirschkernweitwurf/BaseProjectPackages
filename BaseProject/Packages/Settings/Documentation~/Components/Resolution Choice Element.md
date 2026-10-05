@@ -4,11 +4,11 @@
 
 The arrow picker for screen resolution. It fills its own option list with the resolutions the player's monitor actually supports, so you never type them in.
 
-Pairs with [🔖 Resolution Setting](<Resolution Setting.md>). Set the Setting Key to `Resolution`.
+Pairs with [🔖 Resolution Setting](Resolution%20Setting.md). Set the Setting Key to `Resolution`.
 
 ## Inspector fields
 
-The same as [🔖 String Multiple Choice Element](<String Multiple Choice Element.md>), which it is built on:
+The same as [🔖 String Multiple Choice Element](String%20Multiple%20Choice%20Element.md), which it is built on:
 
 | Field | What to put in it |
 | --- | --- |

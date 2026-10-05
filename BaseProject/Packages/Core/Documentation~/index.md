@@ -18,7 +18,7 @@ Menus, scenes, timers, state machines, input and pooling: the runtime pieces mos
 
 | Page | What it is | Prefix | Create path |
 | --- | --- | --- | --- |
-| [💌 Menu Identifier](<Scriptable Objects/Menu Identifier.md>) | A name tag for a menu, so nothing references menus by string | `MID_` | `Base > Menus > New Menu Identifier` |
+| [💌 Menu Identifier](Scriptable%20Objects/Menu%20Identifier.md) | A name tag for a menu, so nothing references menus by string | `MID_` | `Base > Menus > New Menu Identifier` |
 
 All create paths start with `Create > Scriptable Objects >`.
 
@@ -26,9 +26,9 @@ All create paths start with `Create > Scriptable Objects >`.
 
 | Page | What it does | Menu path |
 | --- | --- | --- |
-| [🪛 Regenerate Menu Identifiers](<Tools/Regenerate Menu Identifiers.md>) | Rebuilds the menu identifier registry and its generated code | `Tools > Base Packages > Assets > Menu > Regenerate Menu Identifiers` |
-| [🔧 Event Bus Window](<Tools/Event Bus Window.md>) | Live list of every event and who listens to it | `Tools > Base Packages > Runtime > Event Bus` |
-| [🔧 State Machine Monitor](<Tools/State Machine Monitor.md>) | Draws the running state machines and their current state | `Tools > Base Packages > Gameplay > State Machine Monitor` |
+| [🪛 Regenerate Menu Identifiers](Tools/Regenerate%20Menu%20Identifiers.md) | Rebuilds the menu identifier registry and its generated code | `Tools > Base Packages > Assets > Menu > Regenerate Menu Identifiers` |
+| [🔧 Event Bus Window](Tools/Event%20Bus%20Window.md) | Live list of every event and who listens to it | `Tools > Base Packages > Runtime > Event Bus` |
+| [🔧 State Machine Monitor](Tools/State%20Machine%20Monitor.md) | Draws the running state machines and their current state | `Tools > Base Packages > Gameplay > State Machine Monitor` |
 
 ## Where to start
 

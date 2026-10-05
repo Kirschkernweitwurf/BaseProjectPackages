@@ -6,7 +6,7 @@ Editor tooling shipped with the Controller Support package. Everything here is o
 
 | Tool | Menu path | What it is for |
 | --- | --- | --- |
-| [🪛 NavigationGroupsWindow](<Tools/Navigation Groups Window.md>) | `Tools > Base Packages > Unity Editor > Controller Navigation Groups` | Overview of every navigable group in the loaded scenes, with per group rebuild, jump-to and one-click fixes |
+| [🪛 NavigationGroupsWindow](Tools/Navigation%20Groups%20Window.md) | `Tools > Base Packages > Unity Editor > Controller Navigation Groups` | Overview of every navigable group in the loaded scenes, with per group rebuild, jump-to and one-click fixes |
 
 There are no `CreateAssetMenu` entries outside the input prompt system.
 

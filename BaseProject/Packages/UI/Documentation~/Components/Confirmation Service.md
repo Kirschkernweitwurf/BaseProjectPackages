@@ -12,7 +12,7 @@ Once per scene, on a GameObject that lives for the whole scene, for example your
 
 | Field | Required | What it does |
 | --- | --- | --- |
-| Confirmation Menu Identifier | Yes | The menu identifier asset of your [🗞️ Confirmation Menu](<Confirmation Menu.md>). |
+| Confirmation Menu Identifier | Yes | The menu identifier asset of your [🗞️ Confirmation Menu](Confirmation%20Menu.md). |
 
 ## Good to know
 

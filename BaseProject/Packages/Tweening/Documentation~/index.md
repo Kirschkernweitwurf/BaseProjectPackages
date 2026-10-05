@@ -14,10 +14,10 @@ Animations without code. Put a tween component on an object, set the values, and
 
 | Page | What it is | Prefix | Create path |
 | --- | --- | --- | --- |
-| [💌 Tween Settings](<Scriptable Objects/Tween Settings.md>) | Shared timing: duration, delay, easing, looping | `TS_` | `Base > Tweening > New TweenSettings` |
-| [💌 Float Tween Profile](<Scriptable Objects/Float Tween Profile.md>) | Values plus timing for fades, alpha and fill amounts | `TPF_` | `Base > Tweening > Profiles > New FloatTweenProfile` |
-| [💌 Color Tween Profile](<Scriptable Objects/Color Tween Profile.md>) | Values plus timing for tints and text colors | `TPC_` | `Base > Tweening > Profiles > New ColorTweenProfile` |
-| [💌 Vector3 Tween Profile](<Scriptable Objects/Vector3 Tween Profile.md>) | Values plus timing for position, rotation and scale | `TPV_` | `Base > Tweening > Profiles > New Vector3TweenProfile` |
+| [💌 Tween Settings](Scriptable%20Objects/Tween%20Settings.md) | Shared timing: duration, delay, easing, looping | `TS_` | `Base > Tweening > New TweenSettings` |
+| [💌 Float Tween Profile](Scriptable%20Objects/Float%20Tween%20Profile.md) | Values plus timing for fades, alpha and fill amounts | `TPF_` | `Base > Tweening > Profiles > New FloatTweenProfile` |
+| [💌 Color Tween Profile](Scriptable%20Objects/Color%20Tween%20Profile.md) | Values plus timing for tints and text colors | `TPC_` | `Base > Tweening > Profiles > New ColorTweenProfile` |
+| [💌 Vector3 Tween Profile](Scriptable%20Objects/Vector3%20Tween%20Profile.md) | Values plus timing for position, rotation and scale | `TPV_` | `Base > Tweening > Profiles > New Vector3TweenProfile` |
 
 All create paths start with `Create > Scriptable Objects >`.
 
@@ -34,7 +34,7 @@ Use a profile when the same animation repeats across objects. Use a settings ass
 | --- | --- |
 | Animate something | [Tweening](Components/Tweening.md). A tween does nothing until a Tween Group plays it. |
 | Add hover or click feedback | [UI Event Trigger](Components/Tweening.md) |
-| Reuse an animation across objects | A [tween profile](<Scriptable Objects/Float Tween Profile.md>) or a shared [settings asset](<Scriptable Objects/Tween Settings.md>) |
+| Reuse an animation across objects | A [tween profile](Scriptable%20Objects/Float%20Tween%20Profile.md) or a shared [settings asset](Scriptable%20Objects/Tween%20Settings.md) |
 
 ## Reading these docs
 

@@ -6,7 +6,7 @@ Asks the player to confirm, then closes the game.
 
 ## Where to put it
 
-On a GameObject that has a **Button** component. The scene also needs a[🗞️ Confirmation Service](<Confirmation Service.md>) and a [🗞️ Confirmation Menu](<Confirmation Menu.md>).
+On a GameObject that has a **Button** component. The scene also needs a[🗞️ Confirmation Service](Confirmation%20Service.md) and a [🗞️ Confirmation Menu](Confirmation%20Menu.md).
 
 ## Fields
 

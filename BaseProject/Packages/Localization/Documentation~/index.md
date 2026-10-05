@@ -11,7 +11,7 @@ Keeps Unity's String Tables and a Google Sheet in sync, so text can be edited in
 
 | Page | What it does | For whom |
 | --- | --- | --- |
-| [🔖 Language Setting](<Components/Language Setting.md>) | Saves the game language and switches it | Everyone |
+| [🔖 Language Setting](Components/Language%20Setting.md) | Saves the game language and switches it | Everyone |
 
 ## Tools
 

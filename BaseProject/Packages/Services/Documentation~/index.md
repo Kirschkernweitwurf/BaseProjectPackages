@@ -14,12 +14,12 @@ The foundation the other packages run on: how managers find each other, start up
 
 | Page | What it does | Menu path |
 | --- | --- | --- |
-| [🔧 Service Locator Window](<Tools/Service Locator Window.md>) | Lists every registered service while the game runs | `Tools > Base Packages > Runtime > Service Locator` |
+| [🔧 Service Locator Window](Tools/Service%20Locator%20Window.md) | Lists every registered service while the game runs | `Tools > Base Packages > Runtime > Service Locator` |
 
 ## When something does nothing
 
 1. Check the scene has a [Bootstrapper](Components/Bootstrapper.md).
-2. Enter Play mode and open the [Service Locator Window](<Tools/Service Locator Window.md>). If the service you need is missing or marked as destroyed, that is your problem.
+2. Enter Play mode and open the [Service Locator Window](Tools/Service%20Locator%20Window.md). If the service you need is missing or marked as destroyed, that is your problem.
 
 ## Reading these docs
 

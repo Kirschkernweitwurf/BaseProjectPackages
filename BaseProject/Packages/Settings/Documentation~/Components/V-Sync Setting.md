@@ -25,12 +25,12 @@ Most games only expose 0 and 1.
 
 ## Order matters
 
-Put this **above** [🔖 Quality Level Setting](<Quality Level Setting.md>) in the Hierarchy.
+Put this **above** [🔖 Quality Level Setting](Quality%20Level%20Setting.md) in the Hierarchy.
 
 ## Which UI to use
 
-- **On / off only:** a [🔖 Setting Toggle](<Setting Toggle.md>) will not work directly, because this setting stores a number, not a true/false. Use an [🔖 Int Multiple Choice Element](<Int Multiple Choice Element.md>) with two options, Off and On.
-- **More than two options:** an IntMultipleChoiceElement or a [🔖 Setting Dropdown](<Setting Dropdown.md>).
+- **On / off only:** a [🔖 Setting Toggle](Setting%20Toggle.md) will not work directly, because this setting stores a number, not a true/false. Use an [🔖 Int Multiple Choice Element](Int%20Multiple%20Choice%20Element.md) with two options, Off and On.
+- **More than two options:** an IntMultipleChoiceElement or a [🔖 Setting Dropdown](Setting%20Dropdown.md).
 
 Set the key to `VSync`.
 

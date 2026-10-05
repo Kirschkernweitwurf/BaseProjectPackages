@@ -8,7 +8,7 @@ Small building blocks every other package uses: serializable collections, loggin
 
 | Page | What it is | Prefix | Create path |
 | --- | --- | --- | --- |
-| [✉️ Unique Id Scriptable Object](<Scriptable Objects/Unique Id Scriptable Object.md>) | An asset carrying a stable ID | `UID_` | `Base > UniqueId > New ScriptableObject` |
+| [✉️ Unique Id Scriptable Object](Scriptable%20Objects/Unique%20Id%20Scriptable%20Object.md) | An asset carrying a stable ID | `UID_` | `Base > UniqueId > New ScriptableObject` |
 
 All create paths start with `Create > Scriptable Objects >`. IDs are generated and checked by the [Generate Unique Ids](https://github.com/Kirschkernweitwurf/BaseProjectPackages/blob/main/BaseProject/Packages/Tools/Documentation~/Tools/Generate%20Unique%20Ids.md) tool in the Tools package.
 
@@ -16,7 +16,7 @@ All create paths start with `Create > Scriptable Objects >`. IDs are generated a
 
 | Page | What it does | Menu path |
 | --- | --- | --- |
-| [🔧 Custom Log Handler](<Tools/Custom Log Handler.md>) | Adds the class name to every `Debug.Log` in the console | `Tools > Base Packages > Unity Editor > Logging > Enable Custom Log Handler` |
+| [🔧 Custom Log Handler](Tools/Custom%20Log%20Handler.md) | Adds the class name to every `Debug.Log` in the console | `Tools > Base Packages > Unity Editor > Logging > Enable Custom Log Handler` |
 
 For the code side (collections, logging API, helpers), see the package [README](../README.md).
 

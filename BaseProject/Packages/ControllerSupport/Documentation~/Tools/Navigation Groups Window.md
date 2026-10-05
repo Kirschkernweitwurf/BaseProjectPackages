@@ -6,7 +6,7 @@
 
 ## What it does
 
-Lists every [🔖 Navigable Group](<../Components/Navigable Group.md>) in the loaded scenes in one table. From here you can jump to a group, rebuild its navigation, and see at a glance which groups are set up wrong.
+Lists every [🔖 Navigable Group](../Components/Navigable%20Group.md) in the loaded scenes in one table. From here you can jump to a group, rebuild its navigation, and see at a glance which groups are set up wrong.
 
 Nothing is ever changed automatically. Every rebuild and every fix needs a click, so your navigation wiring never changes behind your back.
 
@@ -17,8 +17,8 @@ Nothing is ever changed automatically. Every rebuild and every fix needs a click
 | Group | Name of the GameObject the group sits on |
 | Menu | Menu component on the same object, or `None` if the group manages itself |
 | Scene | Scene the group lives in |
-| Priority | Focus priority used by the [🗞️ Focus Watchdog](<../Components/Focus Watchdog.md>) |
-| Elements | How many [🔖 Navigable Element](<../Components/Navigable Element.md>)s are below the group |
+| Priority | Focus priority used by the [🗞️ Focus Watchdog](../Components/Focus%20Watchdog.md) |
+| Elements | How many [🔖 Navigable Element](../Components/Navigable%20Element.md)s are below the group |
 
 Rows are striped and highlight on hover. Every badge has a tooltip explaining it.
 
@@ -43,7 +43,7 @@ An orange **Elements** badge means the group has no navigable elements at all.
 - **Rebuild Scene**: Rebuilds every group in the currently loaded scenes, inactive ones included.
 - **Rebuild Project**: Asks for confirmation, then opens every scene in the project, rebuilds all groups and saves the scenes. Prefabs that contain groups are rebuilt and saved too. Your original scene setup is restored afterwards.
 
-Rebuilding also adds a missing [🔖 Navigable Element](<../Components/Navigable Element.md>) to any selectable that lacks one, and logs each fix.
+Rebuilding also adds a missing [🔖 Navigable Element](../Components/Navigable%20Element.md) to any selectable that lacks one, and logs each fix.
 
 ## When to use it
 

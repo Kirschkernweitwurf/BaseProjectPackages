@@ -17,7 +17,7 @@ Both are optional, so you can show only a description if that is your design.
 
 ## Where the text comes from
 
-From the **Title** and **Description** fields on each UI element ([🔖 Setting Toggle](<Setting Toggle.md>), [🔖 Setting Slider](<Setting Slider.md>),[🔖 Setting Dropdown](<Setting Dropdown.md>) and the pickers).
+From the **Title** and **Description** fields on each UI element ([🔖 Setting Toggle](Setting%20Toggle.md), [🔖 Setting Slider](Setting%20Slider.md),[🔖 Setting Dropdown](Setting%20Dropdown.md) and the pickers).
 
 Those are localized, so the panel is translated automatically.
 
