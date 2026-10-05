@@ -2,6 +2,8 @@
 
 Full gamepad support for uGUI menus: navigation wiring built from on-screen positions, focus that never gets lost, stick scrolling, device-aware button prompts and priority-stacked rumble.
 
+**Team docs:** how to use everything in the editor is in [`Documentation~/index.md`](Documentation~/index.md). In Unity, open `Help > Base Packages Documentation`.
+
 ## Requirements
 
 - Unity `6000.3` or newer

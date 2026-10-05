@@ -2,6 +2,8 @@
 
 Automated memory snapshot capture for the Unity editor and development builds. It takes `.snap` files on a timer or on scene load, so memory usage builds up as a timeline instead of a handful of captures somebody remembered to take.
 
+**Team docs:** how to use everything in the editor is in [`Documentation~/index.md`](Documentation~/index.md). In Unity, open `Help > Base Packages Documentation`.
+
 Snapshots open in Unity's own Memory Profiler window, where a single capture can be inspected or two compared to hunt leaks and track growth over a play session.
 
 ## Requirements

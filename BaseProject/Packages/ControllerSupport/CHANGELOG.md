@@ -8,6 +8,13 @@ Changes made before 1.6.5 were not recorded.
 
 ## [Unreleased]
 
+## [1.7.7] - 2026-10-05
+
+### Added
+
+- Team documentation in `Documentation~`, moved over from the old wiki and checked against the code.
+  `documentationUrl` now points at it.
+
 ## [1.7.6] - 2026-09-07
 
 ### Changed

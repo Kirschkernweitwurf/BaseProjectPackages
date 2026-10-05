@@ -2,6 +2,8 @@
 
 The shared look of the Base editor windows. Editor only, no dependencies, so any tool assembly can reference it without dragging anything else in.
 
+**Team docs:** how to use everything in the editor is in [`Documentation~/index.md`](Documentation~/index.md). In Unity, open `Help > Base Packages Documentation`.
+
 Every color, corner radius, row height and gap comes from a **theme** the project owns. Assign one under `Project Settings > Base Tools > Editor UI Theme`, drag a slider, and every open Base window redraws with it. With no theme assigned the package draws with its built-in look, which is exactly what it drew with before themes existed.
 
 What does **not** live here is anything one window alone understands. A badge color for "group has no menu", a chip color for "creates an asset", the width of one particular button: those stay in the window's own style class. This package is the shared floor, not a replacement for per-window styling.

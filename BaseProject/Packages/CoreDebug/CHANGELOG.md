@@ -6,6 +6,13 @@ All notable changes to this package are recorded here. The format follows
 
 ## [Unreleased]
 
+## [1.1.1] - 2026-10-05
+
+### Added
+
+- Team documentation in `Documentation~`, moved over from the old wiki and checked against the code.
+  `documentationUrl` now points at it.
+
 ## [1.1.0] - 2026-09-07
 
 ### Added

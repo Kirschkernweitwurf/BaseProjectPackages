@@ -2,6 +2,8 @@
 
 A reusable, store-agnostic settings framework: typed persistable settings, a registry that drives load, save, revert and reset across all of them, drop-in components for the common display, audio and control settings, and a set of ready-made UI elements. Backed by `PlayerPrefs` out of the box, with the store behind an interface so it can be swapped for a file, cloud or in-memory backend without touching anything else.
 
+**Team docs:** how to use everything in the editor is in [`Documentation~/index.md`](Documentation~/index.md). In Unity, open `Help > Base Packages Documentation`.
+
 The package carries no game-specific keys. The consuming project decides which settings exist by placing components in a scene or by registering settings directly.
 
 ## Requirements

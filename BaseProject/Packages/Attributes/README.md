@@ -2,6 +2,8 @@
 
 100 inspector attributes for Unity. Section headers, validation, conditional fields, auto-assignment, pickers, buttons, widgets, scene handles.
 
+**Team docs:** how to use everything in the editor is in [`Documentation~/index.md`](Documentation~/index.md). In Unity, open `Help > Base Packages Documentation`.
+
 The whole thing works by taking over the default inspector for every `MonoBehaviour` and `ScriptableObject`. You do not inherit from a base class and you do not write a `[CustomEditor]` per type. You tag your fields and they draw.
 
 ```csharp

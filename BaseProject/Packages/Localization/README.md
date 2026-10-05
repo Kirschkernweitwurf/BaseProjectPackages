@@ -2,6 +2,8 @@
 
 Editor tooling for syncing Unity String Table Collections with Google Sheets.
 
+**Team docs:** how to use everything in the editor is in [`Documentation~/index.md`](Documentation~/index.md). In Unity, open `Help > Base Packages Documentation`.
+
 It wraps Unity's built-in Google Sheets integration and adds one-click Pull and Push for a single collection or all of them at once, from menu items or a dedicated window. Every sync validates its settings up front, so a misconfigured collection cannot leave the set half synced.
 
 ## Requirements

@@ -8,6 +8,13 @@ Changes made before 1.1.3 were not recorded.
 
 ## [Unreleased]
 
+## [1.2.1] - 2026-10-05
+
+### Added
+
+- Team documentation in `Documentation~`, moved over from the old wiki and checked against the code.
+  `documentationUrl` now points at it.
+
 ## [1.2.0] - 2026-09-07
 
 ### Added

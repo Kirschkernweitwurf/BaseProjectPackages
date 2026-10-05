@@ -2,6 +2,8 @@
 
 Editor tooling for everyday project work: static analysis, project health windows, code generators, a data driven menu manager, asset identification and a set of scene and workflow utilities.
 
+**Team docs:** how to use everything in the editor is in [`Documentation~/index.md`](Documentation~/index.md). In Unity, open `Help > Base Packages Documentation`.
+
 This package is a leaf. Nothing in the Base set references it, so it can be installed or removed on its own.
 
 ## Requirements

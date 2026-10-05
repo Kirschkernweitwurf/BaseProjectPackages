@@ -85,6 +85,15 @@ Gamepad navigation that wires explicit navigation between elements by proximity,
 
 Serializable dictionaries, sets and a flattened 2D array, `SceneReference`, `TypeReference`, `InterfaceReference`, `SerializableDateTime`, `SerializableTimeSpan` and a validated `PersistentKey`, `Awaitable` composition helpers, a tracked coroutine runner, class-tagged rich-text logging with an optional global log handler, safe assembly reflection, platform and build flags, and helpers for audio math, percentages, strings, components, rotation and time formatting.
 
+## Documentation
+
+Every package has two kinds of docs:
+
+- `README.md` for programmers: requirements, assemblies, the API.
+- `Documentation~/index.md` for the whole team: how to use the components, assets and tools in the editor.
+
+In Unity, `Help > Base Packages Documentation` lists the docs of every installed package and opens them in your Markdown app. Start pages: [Attributes](BaseProject/Packages/Attributes/Documentation~/index.md), [Audio](BaseProject/Packages/Audio/Documentation~/index.md), [Content](BaseProject/Packages/Content/Documentation~/index.md), [ControllerSupport](BaseProject/Packages/ControllerSupport/Documentation~/index.md), [Core](BaseProject/Packages/Core/Documentation~/index.md), [CoreDebug](BaseProject/Packages/CoreDebug/Documentation~/index.md), [EditorUI](BaseProject/Packages/EditorUI/Documentation~/index.md), [Localization](BaseProject/Packages/Localization/Documentation~/index.md), [MemoryProfiler](BaseProject/Packages/MemoryProfiler/Documentation~/index.md), [SaveSystem](BaseProject/Packages/SaveSystem/Documentation~/index.md), [Services](BaseProject/Packages/Services/Documentation~/index.md), [Settings](BaseProject/Packages/Settings/Documentation~/index.md), [Tools](BaseProject/Packages/Tools/Documentation~/index.md), [Tweening](BaseProject/Packages/Tweening/Documentation~/index.md), [UI](BaseProject/Packages/UI/Documentation~/index.md), [Utility](BaseProject/Packages/Utility/Documentation~/index.md).
+
 ## Installation
 
 **Use the [BasePackageInstaller](https://github.com/Kirschkernweitwurf/BasePackageInstaller).** It is the only thing that knows how these packages fit together.

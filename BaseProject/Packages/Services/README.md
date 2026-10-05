@@ -2,6 +2,8 @@
 
 The runtime kernel the other Base packages build on. Service location, service lifetime, an ordered shutdown pipeline and priority trackers, and nothing else.
 
+**Team docs:** how to use everything in the editor is in [`Documentation~/index.md`](Documentation~/index.md). In Unity, open `Help > Base Packages Documentation`.
+
 It was split out of the Core package so that a project can use the save system, the settings framework or the controller support without dragging in tweening, audio, menus and the debug menu.
 
 ## Requirements

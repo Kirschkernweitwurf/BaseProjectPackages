@@ -3,6 +3,8 @@
 The audio system of the Base packages. Split out of `Base Core` because it reads nothing from it:
 this package installs on its own, without Core.
 
+**Team docs:** how to use everything in the editor is in [`Documentation~/index.md`](Documentation~/index.md). In Unity, open `Help > Base Packages Documentation`.
+
 ## Requirements
 
 - Unity `6000.3` or newer

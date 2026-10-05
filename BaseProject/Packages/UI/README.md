@@ -2,6 +2,8 @@
 
 Reusable UI building blocks: click-driven button components, an awaitable confirmation dialog and a set of small utility components, so the same UI systems drop into any project without rewriting them.
 
+**Team docs:** how to use everything in the editor is in [`Documentation~/index.md`](Documentation~/index.md). In Unity, open `Help > Base Packages Documentation`.
+
 Code only. The ready-made button prefabs and UI sprites live in `Base.ContentPackage`, together with the rest of the prefabs that wire the Base packages together.
 
 ## Requirements
