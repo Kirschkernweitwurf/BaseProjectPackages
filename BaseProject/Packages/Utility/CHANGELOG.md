@@ -8,6 +8,17 @@ Changes made before 1.6.10 were not recorded.
 
 ## [Unreleased]
 
+## [1.8.0] - 2026-10-13
+
+### Added
+
+- Documentation Sync. In a project with a `Docs/index.md`, the docs of every installed Base package are
+  copied to `Docs/Packages`, so one Markdown vault on `Docs` (for example in Obsidian) shows the project
+  docs and the package docs together. Runs on editor start, whenever packages change and from the new
+  **Sync** button in `Help > Base Packages Documentation`. GitHub links between installed packages become
+  local links, removed packages disappear, `Docs/Packages/index.md` lists every package, and
+  `Docs/Packages` is added to the project's Plastic `ignore.conf`.
+
 ## [1.7.3] - 2026-10-05
 
 ### Added

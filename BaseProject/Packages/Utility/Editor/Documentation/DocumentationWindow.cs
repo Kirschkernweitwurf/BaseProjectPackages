@@ -30,6 +30,12 @@ namespace Base.UtilityPackage.Editor.Documentation
         private const string OpenLabel = "Open";
         private const string ProjectName = "This project";
         private const string RefreshLabel = "Refresh";
+        private const string SyncedMessage = "Docs/Packages is up to date.";
+        private const string SyncLabel = "Sync";
+        private const string SyncTooltip =
+            "Copies the docs of every installed Base package into Docs/Packages, so one Markdown vault on "
+            + "the Docs folder shows everything. Needs a Docs/index.md. Also runs on its own.";
+        private const string SyncSkippedMessage = "Nothing synced: this project has no Docs/index.md.";
         private const string WindowTitle = "Documentation";
 
         private static readonly Vector2 MinWindowSize = new(420f, 240f);
@@ -46,6 +52,9 @@ namespace Base.UtilityPackage.Editor.Documentation
             using (new EditorGUILayout.HorizontalScope(EditorStyles.toolbar))
             {
                 GUILayout.FlexibleSpace();
+
+                if (GUILayout.Button(new GUIContent(SyncLabel, SyncTooltip), EditorStyles.toolbarButton))
+                    Sync();
 
                 if (GUILayout.Button(RefreshLabel, EditorStyles.toolbarButton))
                     Refresh();
@@ -94,6 +103,13 @@ namespace Base.UtilityPackage.Editor.Documentation
                         Application.OpenURL(source.OnlineUrl);
                 }
             }
+        }
+
+        private void Sync()
+        {
+            int changes = DocumentationSync.Sync();
+            ShowNotification(new GUIContent(changes < 0 ? SyncSkippedMessage : SyncedMessage));
+            Refresh();
         }
 
         private void Refresh()
