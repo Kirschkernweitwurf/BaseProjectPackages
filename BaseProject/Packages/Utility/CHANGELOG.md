@@ -8,6 +8,14 @@ Changes made before 1.6.10 were not recorded.
 
 ## [Unreleased]
 
+## [1.8.2] - 2026-10-14
+
+### Fixed
+
+- Documentation Sync writes `/Docs/Packages` to `ignore.conf`. Without the leading slash Plastic listed the
+  folder as private instead of ignoring it, so it could get checked in and cause merge conflicts. An existing
+  line without the slash is fixed on the next sync.
+
 ## [1.8.1] - 2026-10-14
 
 ### Changed

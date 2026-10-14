@@ -165,7 +165,7 @@ namespace Base.UtilityPackage.Tests
             string second = DocumentationSyncRules.EnsureIgnoreLine(first, out bool addedAgain);
 
             Assert.That(added, Is.True);
-            Assert.That(first, Is.EqualTo("Library\r\nTemp\r\nDocs/Packages\r\n"));
+            Assert.That(first, Is.EqualTo("Library\r\nTemp\r\n/Docs/Packages\r\n"));
             Assert.That(addedAgain, Is.False);
             Assert.That(second, Is.EqualTo(first));
         }
@@ -178,6 +178,17 @@ namespace Base.UtilityPackage.Tests
 
             Assert.That(DocumentationSyncRules.EnsureIgnoreLine(content, out bool added), Is.EqualTo(content));
             Assert.That(added, Is.False);
+        }
+
+        /// <summary>Without the leading slash Plastic does not ignore the folder, so an old line is fixed.</summary>
+        [Test]
+        public void AnOldLineWithoutLeadingSlashIsFixed()
+        {
+            string fixedContent = DocumentationSyncRules.EnsureIgnoreLine("Library\r\nDocs/Packages\r\nTemp",
+                out bool changed);
+
+            Assert.That(changed, Is.True);
+            Assert.That(fixedContent, Is.EqualTo("Library\r\n/Docs/Packages\r\nTemp"));
         }
     }
 }

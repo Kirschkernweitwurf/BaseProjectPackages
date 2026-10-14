@@ -16,8 +16,11 @@ namespace Base.UtilityPackage.Editor.Documentation
         /// <summary>Folder below the project's <c>Docs</c> folder that holds the mirrored package docs.</summary>
         internal const string PackagesFolder = "Packages";
 
-        /// <summary>Line in Plastic's <c>ignore.conf</c> that keeps the mirrored docs out of version control.</summary>
-        internal const string IgnoreLine = "Docs/Packages";
+        /// <summary>
+        /// Line in Plastic's <c>ignore.conf</c> that keeps the mirrored docs out of version control. The leading slash
+        /// anchors it to the workspace root; without it Plastic shows the folder as private instead of ignoring it.
+        /// </summary>
+        internal const string IgnoreLine = "/Docs/Packages";
 
         /// <summary>Name of the Plastic ignore file in the project root.</summary>
         internal const string IgnoreFile = "ignore.conf";
@@ -188,7 +191,8 @@ namespace Base.UtilityPackage.Editor.Documentation
         }
 
         /// <summary>
-        /// Adds <see cref="IgnoreLine"/> to the content of an <c>ignore.conf</c> unless it is already there.
+        /// Adds <see cref="IgnoreLine"/> to the content of an <c>ignore.conf</c> unless it is already there. An older
+        /// line without the leading slash is replaced, since Plastic does not ignore the folder with it.
         /// </summary>
         /// <param name="content">The current content of the file.</param>
         /// <param name="changed"><c>true</c> when the line had to be added.</param>
@@ -197,16 +201,28 @@ namespace Base.UtilityPackage.Editor.Documentation
         {
             content ??= string.Empty;
 
-            foreach (string line in content.Split('\n'))
-            {
-                string trimmed = line.Trim().TrimStart('/').TrimEnd('/');
+            string[] lines = content.Split('\n');
 
-                if (string.Equals(trimmed, IgnoreLine, StringComparison.OrdinalIgnoreCase))
+            for (int i = 0; i < lines.Length; i++)
+            {
+                string trimmed = lines[i].Trim();
+
+                if (!string.Equals(trimmed.TrimStart('/').TrimEnd('/'), IgnoreLine.TrimStart('/'),
+                        StringComparison.OrdinalIgnoreCase))
+                    continue;
+
+                if (trimmed.StartsWith("/", StringComparison.Ordinal))
                 {
                     changed = false;
 
                     return content;
                 }
+
+                string ending = lines[i].EndsWith("\r", StringComparison.Ordinal) ? "\r" : string.Empty;
+                lines[i] = IgnoreLine + ending;
+                changed = true;
+
+                return string.Join("\n", lines);
             }
 
             changed = true;
