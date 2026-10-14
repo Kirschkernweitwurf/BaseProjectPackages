@@ -6,6 +6,15 @@ All notable changes to this package are recorded here. The format follows
 
 ## [Unreleased]
 
+## [1.1.5] - 2026-10-14
+
+### Fixed
+
+- The tests compile again. The draw buffer tests reach `DebugDrawBuffer` and `DebugLineCommand`, which
+  are internal, and the DebugDrawing assembly never opened its internals to the test assembly. It
+  does now. The cheat registry tests named `Object` with both `System` and `UnityEngine` in scope,
+  which is ambiguous, and now alias it to `UnityEngine.Object`.
+
 ## [1.1.4] - 2026-10-14
 
 ### Changed

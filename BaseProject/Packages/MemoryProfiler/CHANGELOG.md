@@ -8,6 +8,13 @@ Changes made before 1.3.2 were not recorded.
 
 ## [Unreleased]
 
+## [1.3.13] - 2026-10-14
+
+### Fixed
+
+- The tests compile again. The baked path test read `BakedStoragePath`, which only exists in builds,
+  so the editor test assembly could not compile. It reads the serialized field instead.
+
 ## [1.3.12] - 2026-10-14
 
 ### Changed

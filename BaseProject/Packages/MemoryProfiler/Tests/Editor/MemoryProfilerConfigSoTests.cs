@@ -110,11 +110,16 @@ namespace Base.MemoryProfilerPackage.Tests
 
         /// <summary>
         /// The baked path is filled in by the build hook and cleared again afterwards, so an asset that
-        /// was never built with carries none. A committed one holding a path is one machine's.
+        /// was never built with carries none. A committed one holding a path is one machine's. Read
+        /// through the serialized field, because the property only exists in builds.
         /// </summary>
         [Test]
         public void AFreshConfigCarriesNoBakedPath()
-            => Assert.That(_config.BakedStoragePath, Is.Empty);
+        {
+            SerializedObject serialized = new(_config);
+
+            Assert.That(serialized.FindProperty(MemoryProfilerConfigSo.BakedStoragePathField).stringValue, Is.Empty);
+        }
 
         /// <summary>
         /// The runner loads the asset by this path, so the folder it is filed under and the name the

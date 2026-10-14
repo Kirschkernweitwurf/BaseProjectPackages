@@ -6,6 +6,7 @@ using Base.CoreDebugPackage.DebugMenu.CheatConsole;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
+using Object = UnityEngine.Object;
 
 namespace Base.CoreDebugPackage.Tests
 {
