@@ -8,6 +8,14 @@ Changes made before 2.0.10 were not recorded.
 
 ## [Unreleased]
 
+## [3.1.10] - 2026-10-14
+
+### Fixed
+
+- The liveness test for a serialized field that is never read looks up `neverRead`. The fixture
+  field was renamed to match the naming rule for serialized fields, and the test still looked up
+  the old `_neverRead`, so it failed although the analyzer reported the field correctly.
+
 ## [3.1.9] - 2026-10-05
 
 ### Added

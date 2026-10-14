@@ -8,6 +8,17 @@ Changes made before 1.1.3 were not recorded.
 
 ## [Unreleased]
 
+## [1.2.4] - 2026-10-14
+
+### Fixed
+
+- White text on the accent is legible on the light skin of Verdigris, Amber and Malachite. Their
+  light accents reached only 4.19 to 4.41 against the 4.5 contrast target and are darker now,
+  at about 4.6, with the selection colors built from them following. The dark skins are unchanged.
+- The sort arrow follows a theme switch. Its style was cached in a static with no way to drop it,
+  so it kept the previous theme's colors. It now rebuilds through an EditorStyleWatch, like the
+  other style caches.
+
 ## [1.2.3] - 2026-10-05
 
 ### Added
