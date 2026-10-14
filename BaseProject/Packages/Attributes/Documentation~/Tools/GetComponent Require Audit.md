@@ -1,3 +1,13 @@
+---
+type: tool
+package: Attributes
+audience: programmer
+tags:
+  - programmer
+  - inspector
+summary: Finds every field marked with [GetComponent] whose class is missing a matching [RequireComponent].
+menu: Tools > Base Packages > Unity Editor > References > GetComponent Require Audit
+---
 # GetComponent Require Audit
 
 🔧 **Tool** · programmers only

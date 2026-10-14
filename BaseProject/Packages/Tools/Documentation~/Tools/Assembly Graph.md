@@ -1,3 +1,13 @@
+---
+type: tool
+package: Tools
+audience: programmer
+tags:
+  - programmer
+  - project-health
+summary: Shows every assembly definition in the project as a node graph, with arrows for the references between them.
+menu: Tools > Base Packages > Unity Editor > Project Health > Assembly Graph
+---
 # Assembly Graph
 
 🔧 **Tool** · programmers only

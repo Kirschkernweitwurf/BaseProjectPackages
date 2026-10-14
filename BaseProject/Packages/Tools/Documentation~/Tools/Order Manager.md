@@ -1,3 +1,13 @@
+---
+type: tool
+package: Tools
+audience: programmer
+tags:
+  - programmer
+  - code-generation
+summary: "A small editor for named number constants, plus a generator that writes them into a C# file."
+menu: Tools > Base Packages > Code > Generation > Order Manager
+---
 # Order Manager
 
 🔧 **Tool** · programmers only

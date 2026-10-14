@@ -1,3 +1,10 @@
+---
+type: start
+package: Core Debug
+tags:
+  - debugging
+summary: "The in-game debug tools: a debug menu with a cheat console and a log console, and debug shapes that also show up in a build."
+---
 # Core Debug Package
 
 📦 **Package** · reusable, works in any of our projects
@@ -28,6 +35,19 @@ From the cheat console, `debugdraw_enabled` switches it on and off and `debugdra
 All `DebugDraw` calls are removed from release builds automatically. Programmers can keep them by defining `BASE_DEBUG_DRAW`.
 
 For the code side, see the package [README](../README.md).
+
+## Components
+
+Every component has its own page. [🗳️ Components](Components.md) lists them all.
+
+### Debug menu
+
+| Component | What it does | For |
+| --- | --- | --- |
+| [🗞️ Debug Menu Controller](Components/Debug%20Menu%20Controller.md) | The debug menu that holds the cheat console and the log console. Toggle with F1. | Programmers |
+| [🗞️ Cheat Console View](Components/Cheat%20Console%20View.md) | The cheat console window: input field, log and suggestions. | Programmers |
+| [🗞️ Cheat Console Controller](Components/Cheat%20Console%20Controller.md) | Runs cheat commands: Enter runs, Tab completes, arrow keys walk the history. | Programmers |
+| [🗞️ Log Console View](Components/Log%20Console%20View.md) | Shows the Unity console inside the game, also in builds. | Programmers |
 
 ## Reading these docs
 

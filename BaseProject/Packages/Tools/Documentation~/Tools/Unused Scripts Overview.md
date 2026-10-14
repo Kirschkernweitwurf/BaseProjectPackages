@@ -1,3 +1,13 @@
+---
+type: tool
+package: Tools
+audience: programmer
+tags:
+  - programmer
+  - project-health
+summary: Lists script files that nothing in the project seems to reference.
+menu: Tools > Base Packages > Unity Editor > Project Health > Unused > Unused Scripts Overview
+---
 # Unused Scripts Overview
 
 🔧 **Tool** · programmers only

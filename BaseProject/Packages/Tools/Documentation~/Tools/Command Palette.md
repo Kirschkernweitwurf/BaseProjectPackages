@@ -1,3 +1,15 @@
+---
+type: tool
+package: Tools
+audience: everyone
+tags:
+  - artist
+  - designer
+  - sound
+  - workflow
+summary: "One search box for every menu item, every \"Create\" entry and every settings page, Unity's own included."
+menu: Tools > Base Packages > Command Palette
+---
 # Command Palette
 
 🪛 **Tool** · for everyone

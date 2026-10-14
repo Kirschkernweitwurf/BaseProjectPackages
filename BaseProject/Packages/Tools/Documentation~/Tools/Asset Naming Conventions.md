@@ -1,3 +1,16 @@
+---
+type: tool
+package: Tools
+audience: everyone
+tags:
+  - artist
+  - designer
+  - sound
+  - assets
+  - project-health
+summary: Checks the file names of your assets against your own rules and renames the ones that break them, right in the window.
+menu: Tools > Base Packages > Assets > Asset Naming Conventions
+---
 # Asset Naming Conventions
 
 🪛 **Tool** · for everyone

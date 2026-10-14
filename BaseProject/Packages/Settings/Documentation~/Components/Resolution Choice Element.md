@@ -1,3 +1,13 @@
+---
+type: component
+package: Settings
+audience: everyone
+tags:
+  - designer
+  - settings
+  - ui
+summary: The arrow picker for screen resolution.
+---
 # Resolution Choice Element
 
 🔖 **Component** · for everyone

@@ -1,3 +1,13 @@
+---
+type: tool
+package: Utility
+audience: programmer
+tags:
+  - programmer
+  - workflow
+summary: A toggle.
+menu: Tools > Base Packages > Unity Editor > Logging > Enable Custom Log Handler
+---
 # Custom Log Handler
 
 🔧 **Tool** · programmers only

@@ -1,3 +1,10 @@
+---
+type: start
+package: Services
+tags:
+  - setup
+summary: "The foundation the other packages run on: how managers find each other, start up and shut down."
+---
 # Services Package
 
 📦 **Package** · reusable, works in any of our projects
@@ -8,9 +15,19 @@ The foundation the other packages run on: how managers find each other, start up
 
 ## Components
 
-| Page | What it is for | For whom |
+Every component has its own page. [🗳️ Components](Components.md) lists them all.
+
+### Startup
+
+| Component | What it does | For |
 | --- | --- | --- |
-| [🔖 Bootstrapper](Components/Bootstrapper.md) | Spawns the manager prefabs every scene needs | Everyone |
+| [🔖 Bootstrapper](Components/Bootstrapper.md) | Spawns the manager prefabs the game needs. | Everyone |
+
+### Services and managers
+
+| Component | What it does | For |
+| --- | --- | --- |
+| [🗞️ Shutdown Manager](Components/Shutdown%20Manager.md) | Lets systems clean up in a fixed order when the game quits. | Programmers |
 
 ## Tools
 

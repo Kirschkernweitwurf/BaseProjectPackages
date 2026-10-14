@@ -1,3 +1,13 @@
+---
+type: component
+package: Settings
+audience: everyone
+tags:
+  - designer
+  - settings
+  - ui
+summary: The brain of the settings system.
+---
 # Settings Context
 
 🔖 **Component** · for everyone

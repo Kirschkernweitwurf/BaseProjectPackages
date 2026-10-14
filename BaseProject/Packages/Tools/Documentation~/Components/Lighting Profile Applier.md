@@ -1,3 +1,13 @@
+---
+type: component
+package: Tools
+audience: everyone
+tags:
+  - artist
+  - lighting
+  - scenes
+summary: Applies a saved lighting setup as soon as the scene that holds this component is loaded.
+---
 # Lighting Profile Applier
 
 🔖 **Component** · for everyone

@@ -1,3 +1,16 @@
+---
+type: tool
+package: Tools
+audience: everyone
+tags:
+  - artist
+  - designer
+  - sound
+  - assets
+  - project-health
+summary: Lists assets that nothing in the project seems to reference.
+menu: Tools > Base Packages > Unity Editor > Project Health > Unused > Unused Assets Overview
+---
 # Unused Assets Overview
 
 🪛 **Tool** · for everyone

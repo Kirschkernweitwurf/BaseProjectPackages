@@ -1,3 +1,13 @@
+---
+type: tool
+package: Core
+audience: programmer
+tags:
+  - programmer
+  - debugging
+summary: Shows the state machines running in Play mode and what each one is doing right now.
+menu: Tools > Base Packages > Gameplay > State Machine Monitor
+---
 # State Machine Monitor
 
 🔧 **Tool** · programmers only

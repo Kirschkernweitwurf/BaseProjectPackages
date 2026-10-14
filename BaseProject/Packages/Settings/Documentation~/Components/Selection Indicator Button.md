@@ -1,3 +1,15 @@
+---
+type: component
+package: Settings
+audience: everyone
+tags:
+  - designer
+  - settings
+  - ui
+summary: One dot in the row underneath an arrow picker.
+requires:
+  - Button
+---
 # Selection Indicator Button
 
 🔖 **Component** · for everyone

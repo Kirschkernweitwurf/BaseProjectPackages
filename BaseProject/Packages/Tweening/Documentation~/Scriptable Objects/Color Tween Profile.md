@@ -1,3 +1,13 @@
+---
+type: scriptable-object
+package: Tweening
+audience: everyone
+tags:
+  - artist
+  - designer
+  - animation
+summary: "A complete, reusable animation recipe for color changes: image tints, text colors, and sprite renderer tints."
+---
 # Color Tween Profile
 
 💌 **Scriptable Object** · for everyone

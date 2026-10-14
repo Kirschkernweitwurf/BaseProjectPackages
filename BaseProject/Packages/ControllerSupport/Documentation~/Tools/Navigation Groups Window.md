@@ -1,3 +1,14 @@
+---
+type: tool
+package: Controller Support
+audience: everyone
+tags:
+  - designer
+  - gamepad
+  - ui
+summary: Lists every 🔖 Navigable Group in the loaded scenes in one table.
+menu: Tools > Base Packages > Unity Editor > Controller Navigation Groups
+---
 # Navigation Groups Window
 
 🪛 **Tool** · for everyone

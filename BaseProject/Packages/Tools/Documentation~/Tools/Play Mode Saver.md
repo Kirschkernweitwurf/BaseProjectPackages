@@ -1,3 +1,14 @@
+---
+type: tool
+package: Tools
+audience: everyone
+tags:
+  - artist
+  - designer
+  - workflow
+summary: Keeps the tweaks you made while the game was running.
+menu: Tools > Base Packages > Unity Editor > Play Mode Saver
+---
 # Play Mode Saver
 
 🪛 **Tool** · for everyone

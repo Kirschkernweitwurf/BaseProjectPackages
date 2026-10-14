@@ -1,3 +1,13 @@
+---
+type: component
+package: Controller Support
+audience: everyone
+tags:
+  - designer
+  - gamepad
+  - ui
+summary: "Connects a menu's lifecycle to a NavigableGroup:"
+---
 # Menu Navigation Module
 
 🔖 **Component** · for everyone

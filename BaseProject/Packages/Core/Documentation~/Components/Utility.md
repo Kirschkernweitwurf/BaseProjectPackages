@@ -1,58 +1,53 @@
+---
+type: guide
+package: Core
+tags:
+  - designer
+  - ui
+  - scenes
+summary: Small single-purpose helpers in Core and the services behind them.
+---
 # Utility
 
-🔖 **Component** · for everyone
+📖 **Guide** · for everyone
 
 **Tags:** #designer #ui #scenes
 
-Small helpers that solve one problem each.
+Small helpers that solve one problem each, plus the services in Core that most of the game relies on. Every component has its own page with all fields.
 
-## Activate After Time
+## Helpers you add to scenes
 
-Turns a GameObject on after a delay. The target is switched **off** immediately when the scene starts, then switched on when the timer runs out.
-
-| Field | What it does |
+| You want | Add |
 | --- | --- |
-| **Delay** | Seconds to wait |
-| **Use Unscaled Time** | Ignore the game speed, so the timer still runs while the game is paused |
-| **Target** | The GameObject to turn on |
+| Show something after a few seconds | [🔖 Activate After Time](Activate%20After%20Time.md) |
+| Hide a one-frame layout glitch | [🔖 Activate After Frames](Activate%20After%20Frames.md) |
+| A tooltip on hover | [🔖 Tooltip Trigger](Tooltip%20Trigger.md), plus one [🔖 Tooltip View](Tooltip%20View.md) in the UI |
 
-Typical use: a tutorial hint that appears a few seconds into a scene, or staggering when parts of a UI show up.
+## Services on the manager prefabs
 
-Turn on **Use Unscaled Time** for anything inside a menu that pauses the game, otherwise the timer never finishes.
+These sit on the manager prefabs the Bootstrapper spawns. You rarely add them yourself, but it helps to know they exist.
 
-## Activate After Frames
-
-Same idea, but waits a number of frames instead of seconds.
-
-| Field | What it does |
+| Service | Job |
 | --- | --- |
-| **Frames** | Number of frames to wait |
-| **Target** | The GameObject to turn on |
+| [🗞️ Menu Manager](Menu%20Manager.md) | Opens and closes menus, routes the Back key |
+| [🗞️ Input Manager](Input%20Manager.md) | Decides which input action map is active |
+| [🗞️ Cursor Manager](Cursor%20Manager.md) | Decides how the mouse cursor looks |
+| [🗞️ Time Scale Manager](Time%20Scale%20Manager.md) | Decides the game speed |
+| [🗞️ Scene Loading Manager](Scene%20Loading%20Manager.md) | Loads and unloads scenes |
+| [🗞️ Tooltip Service](Tooltip%20Service.md) | Shows the most important tooltip |
+| [🗞️ Event Bus](Event%20Bus.md) | Lets systems send each other events |
+| [🗞️ Camera Provider](Camera%20Provider.md) | Fast access to the main camera |
+| [🗞️ Screenshot Manager](Screenshot%20Manager.md) | Saves screenshots on F6 and F7 |
 
-Typical use: working around a first-frame layout problem. If a UI element appears in the wrong place for one frame before Unity's layout system catches up, delaying it by one or two frames hides the pop.
+## Handy keys
 
-Both components put the target on a **separate GameObject** from themselves. Putting the component on the object it disables would stop the component too.
-
----
-
-## Tooltip Trigger
-
-Shows a tooltip when the pointer hovers this object, and hides it when the pointer leaves.
-
-| Field | What it does |
+| Key | Does |
 | --- | --- |
-| **Tooltip Text** | The text to show. Multi-line is supported. |
-| **Priority** | `Low`, `Medium`, `High`, or `Critical`. When several tooltips overlap, the highest one wins. |
+| **Escape** / gamepad **B** | Back |
+| **F1** | Debug menu with the cheat console (Core Debug package) |
+| **F6** | Screenshot at screen size |
+| **F7** | Screenshot at four times screen size |
 
-### Requirements and notes
+These keys are in the Permanent input map, so they work in every menu.
 
-- Needs a Graphic with **Raycast Target** on, and an Event System in the scene.
-- Needs a **Tooltip View** somewhere in the UI. Without one, nothing appears.
-- Only one Tooltip Trigger is allowed per GameObject.
-- An empty **Tooltip Text** logs a warning and shows nothing.
-- The tooltip hides itself if the object gets disabled while hovered, so it will not get stuck on screen.
-- Text can also be changed from code, for example to show a live value.
-
----
-
-The Bootstrapper that used to be listed here is now part of the Services package: [🔖 Bootstrapper](https://github.com/Kirschkernweitwurf/BaseProjectPackages/blob/main/BaseProject/Packages/Services/Documentation~/Components/Bootstrapper.md).
+The Bootstrapper that spawns the manager prefabs lives in the Services package: [🔖 Bootstrapper](https://github.com/Kirschkernweitwurf/BaseProjectPackages/blob/main/BaseProject/Packages/Services/Documentation~/Components/Bootstrapper.md).

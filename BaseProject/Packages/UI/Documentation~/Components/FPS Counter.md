@@ -1,3 +1,13 @@
+---
+type: component
+package: UI
+audience: programmer
+tags:
+  - programmer
+  - ui
+  - debugging
+summary: Shows the current framerate on screen.
+---
 # FPS Counter
 
 🗞️ **Component** · programmers only

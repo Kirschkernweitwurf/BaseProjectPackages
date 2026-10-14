@@ -1,3 +1,13 @@
+---
+type: component
+package: Save System
+audience: everyone
+tags:
+  - designer
+  - saving
+  - ui
+summary: Marks one slot as the active slot.
+---
 # Select Slot Button
 
 🔖 **Component** · for everyone

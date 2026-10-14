@@ -1,3 +1,13 @@
+---
+type: tool
+package: Audio
+audience: everyone
+tags:
+  - sound
+  - audio
+  - project-health
+summary: Finds audio clips in the project that nothing uses, so you can clean them up.
+---
 # Unused Audio Clips
 
 🪛 **Tool** · for everyone

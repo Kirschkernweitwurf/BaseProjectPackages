@@ -1,3 +1,12 @@
+---
+type: scriptable-object
+package: Core
+audience: everyone
+tags:
+  - designer
+  - menus
+summary: A name tag for a menu.
+---
 # Menu Identifier
 
 💌 **Scriptable Object** · for everyone

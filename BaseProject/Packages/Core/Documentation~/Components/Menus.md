@@ -1,130 +1,68 @@
+---
+type: guide
+package: Core
+tags:
+  - designer
+  - menus
+summary: How a screen is built from a Menu, a Tween Group and menu modules, and which modules a screen needs.
+---
 # Menus
 
-🔖 **Component** · for everyone
+📖 **Guide** · for everyone
 
 **Tags:** #designer #menus
 
-Every screen in the game (pause, settings, inventory, loading) is a **Menu**. The Menu handles opening, closing, and the animation between those states. Anything else it needs (pausing time, showing the cursor, swapping the controls) is a separate **module** you bolt on.
+Every screen in the game (pause, settings, inventory, loading) is a **Menu**. The Menu opens and closes the screen and plays its animation. Anything else the screen needs is a separate **module** on the same GameObject. Every component has its own page with all fields.
 
-## Menu
+## Build a screen in five steps
 
-The base component. Put it on the root of your screen.
-
-### Fields
-
-| Field | What it does |
-| --- | --- |
-| **Menu Identifier** | The Menu Identifier asset that names this menu. Required. |
-| **Content Root** | The Tween Group that plays the open and close animation. Required. |
-| **Priority** | `Low`, `Medium`, `High`, or `Critical`. Decides which menu wins when several are open. |
-| **Open On Start** | Open this menu automatically when the scene starts |
-| **Listen To On Back Action** | Let this menu close itself when the player presses Back or Escape |
-| **Blocking Menus** | Menus that prevent this one from opening while they are open |
-
-### How to set one up
-
-1. Create a Menu Identifier asset for the screen, for example `MID_Settings`.
-2. On your screen's root object, add a **Canvas Group**, a fade tween, and a **Tween Group**. Put the fade tween in the group's show list.
-3. Add the **Menu** component. Drop in the identifier and the Tween Group.
+1. Create a [Menu Identifier](../Scriptable%20Objects/Menu%20Identifier.md) asset, for example `MID_Settings`.
+2. On the screen's root, add a **Canvas Group**, a Fade To Tween and a **Tween Group** with the fade in its Show list.
+3. Add [🔖 Menu](Menu.md). Drop in the identifier and the Tween Group (as **Content Root**).
 4. Pick a **Priority**.
-5. Add whichever modules you need (below).
+5. Add the modules the screen needs (below), then open it with an **Open Menu Button**.
 
-### Good to know
+## The menus
 
-- Opening and closing are **always animated**. If the Content Root has no tweens, the menu still works, it just snaps.
-- A menu can open another menu as a child. Closing the parent closes its children automatically.
-- **Priority** matters most for Back input. The open menu with the highest priority is the one that receives the Back press. Use `Critical` sparingly, for things like a confirm-quit dialog.
-
----
-
-## Menu Modules
-
-Each module is one job. Add only what the menu needs. All of them must sit on the **same GameObject** as the Menu, and they find the Menu themselves.
-
-### Menu Cursor Module
-
-Shows, hides, or locks the mouse cursor while the menu is open, and puts it back on close.
-
-| Field | What it does |
+| Component | Use it for |
 | --- | --- |
-| **Cursor Settings > Is Cursor Visible** | Whether the cursor is visible |
-| **Cursor Settings > Lock Mode** | `None`, `Locked`, or `Confined` |
+| [🔖 Menu](Menu.md) | Any screen |
+| [🔖 Pause Menu](Pause%20Menu.md) | The pause screen. Also tracks whether the game is paused. |
+| [🔖 Loading Screen](Loading%20Screen.md) | The screen shown while scenes load. Opens and closes itself. |
 
-Typical use: a pause menu sets visible and `None`, so the player gets their cursor back.
+## The modules
 
-### Menu Time Scale Module
+Each module does one job. Put them on the **same GameObject** as the Menu; they find it themselves.
 
-Changes the game speed while the menu is open, and restores it on close.
-
-| Field | What it does |
+| Module | While the menu is open, it |
 | --- | --- |
-| **Time Scale** | The time scale applied while open. `0` freezes the game, `1` is normal. |
+| [🔖 Menu Cursor Module](Menu%20Cursor%20Module.md) | shows, hides or locks the mouse cursor |
+| [🔖 Menu Time Scale Module](Menu%20Time%20Scale%20Module.md) | slows down or freezes the game |
+| [🔖 Menu Input Map Module](Menu%20Input%20Map%20Module.md) | switches the controls, for example to the UI map |
+| [🔖 Menu Reset Module](Menu%20Reset%20Module.md) | (on close) resets the contents, so it opens fresh |
 
-Typical use: a pause menu sets `0`. An inventory that should slow the game rather than stop it might set `0.2`.
+If several open menus want different things, the menu with the highest **Priority** wins.
 
-### Menu Input Map Module
+### Which modules a screen needs
 
-Switches the active input action map while the menu is open, and switches back on close. This is how the player's controls change when a menu is up.
-
-| Field | What it does |
+| Screen | Usual modules |
 | --- | --- |
-| **Action Map** | The action map activated while the menu is open |
-
-### Menu Reset Module
-
-Resets the menu's contents when it closes, so it opens fresh next time instead of showing whatever state you left it in.
-
-No fields. Add it and it works.
-
-It resets every child that supports resetting, which mainly means nested Tween Groups. The menu's own Content Root is skipped, since the menu drives that animation itself.
-
-Typical use: any menu with sub-panels, tabs, or expanded sections that should not be remembered.
-
-### Picking modules
-
-| Menu | Usual modules |
-| --- | --- |
-| Pause menu | Cursor, Time Scale, Input Map, Reset |
+| Pause menu | Cursor, Time Scale (`0`), Input Map, Reset |
 | Settings screen | Cursor, Input Map, Reset |
-| HUD popup | Reset, or none at all |
+| HUD popup | Reset, or none |
 | Loading screen | none |
 
----
+## Opening and closing
 
-## Pause Menu
-
-A Menu that also tracks whether the game is paused, so other systems can react to it.
-
-It has the same fields as Menu. Pair it with a **Menu Time Scale Module** set to `0`, since the Pause Menu itself does not stop time.
-
-## Loading Screen
-
-A Menu that shows itself automatically during scene loads. It listens for load events, so nothing needs to open or close it.
-
-### Fields
-
-| Field | What it does |
+| From | Use |
 | --- | --- |
-| **Progress Image** | An Image whose fill amount shows load progress. Optional. |
-| **Spinner** | A RectTransform that rotates while loading. Optional. |
-| **Spinner Rotation Speed** | Spin speed in degrees per second |
-| **Fill Smooth Speed** | How smoothly the progress bar catches up. Lower is smoother and laggier. |
-| **Has Minimum Show Time** | Keep the screen up for a minimum time even if loading finishes early |
-| **Minimum Show Time** | That minimum, in seconds. Shown when the toggle above is on. |
-| **Scenes To Show For** | Only show for these scenes. Leave empty to show for all of them. |
+| A button | Open Menu Button, Close Menu Button, Pause Menu Button (UI package) |
+| The Back key | Turn on **Listen To On Back Action** on the Menu. The [🗞️ Menu Manager](Menu%20Manager.md) sends Back to the open menu with the highest priority. |
+| Code | The Menu Manager, by identifier |
 
-### Tips
+## Good to know
 
-- **Minimum Show Time** stops the screen from flashing on and off for fast loads. One second is a reasonable default.
-- The **Progress Image** needs its Image Type set to **Filled**, otherwise the fill amount does nothing.
-- The spinner uses unscaled time, so it keeps moving even if something froze the game speed.
-
----
-
-## Menu Manager
-
-The service that keeps track of every menu and routes the Back button. It lives on a manager prefab, not in your scene.
-
-| Field | What it does |
-| --- | --- |
-| **Default Back Menu** | The menu opened when Back is pressed and nothing else is listening. Usually the pause menu. Leave empty to disable this. |
+- Opening and closing are always animated. Without tweens in the Content Root the menu just snaps.
+- A menu can open another menu as a child. Closing the parent closes its children.
+- Use `Critical` priority sparingly, for example for a quit confirmation.
+- Gamepad navigation inside a menu comes from the Controller Support package: add a Menu Navigation Module.

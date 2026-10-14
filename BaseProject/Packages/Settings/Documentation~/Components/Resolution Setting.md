@@ -1,3 +1,13 @@
+---
+type: component
+package: Settings
+audience: everyone
+tags:
+  - designer
+  - settings
+  - ui
+summary: Saves the screen resolution.
+---
 # Resolution Setting
 
 🔖 **Component** · for everyone

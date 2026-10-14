@@ -1,3 +1,10 @@
+---
+type: start
+package: Audio
+tags:
+  - audio
+summary: Sounds as assets.
+---
 # Audio Package
 
 📦 **Package** · reusable, works in any of our projects
@@ -8,9 +15,23 @@ Sounds as assets. An Audio Container describes one sound, the Play Audio compone
 
 ## Components
 
-| Page | What is in it | Key components |
+Every component has its own page. [🗳️ Components](Components.md) lists them all, the [📖 guide](Components/Audio.md) explains how they fit together.
+
+### UI sounds
+
+| Component | What it does | For |
 | --- | --- | --- |
-| [🔖 Audio](Components/Audio.md) | Playing sounds from UI events, and the manager behind it | Play Audio On Click, Hover, Select, Submit, Audio Manager |
+| [🔖 Play Audio On Hover](Components/Play%20Audio%20On%20Hover.md) | Plays an Audio Container when the mouse pointer enters the object. | Everyone |
+| [🔖 Play Audio On Select](Components/Play%20Audio%20On%20Select.md) | Plays an Audio Container when the object becomes the selected UI element. | Everyone |
+| [🔖 Play Audio On Submit](Components/Play%20Audio%20On%20Submit.md) | Plays an Audio Container when the object is submitted. | Everyone |
+| [🔖 Play Audio On Click](Components/Play%20Audio%20On%20Click.md) | Plays an Audio Container when the object is clicked with the mouse. | Everyone |
+
+### Services and managers
+
+| Component | What it does | For |
+| --- | --- | --- |
+| [🗞️ Audio Manager](Components/Audio%20Manager.md) | The service that plays every sound and piece of music. | Programmers |
+| [🗞️ Audio Pool Manager](Components/Audio%20Pool%20Manager.md) | Keeps reusable Audio Sources ready, one pool per audio type. | Programmers |
 
 ## Scriptable Objects
 
@@ -31,7 +52,7 @@ For import settings across all audio files, see [Audio Rules](https://github.com
 ## Where to start
 
 1. Create an [Audio Container](Scriptable%20Objects/Audio%20Container.md) and drop your clips in.
-2. Add a Play Audio On... component from [Audio](Components/Audio.md) to the button or object.
+2. Add a Play Audio On... component, see the [📖 Audio guide](Components/Audio.md), to the button or object.
 3. Assign the container. Done.
 
 ## Reading these docs

@@ -1,3 +1,10 @@
+---
+type: overview
+package: Core
+tags:
+  - menus
+summary: Editor windows in the Core package.
+---
 # Tools
 
 🧰 **Tools** · menu items and editor windows

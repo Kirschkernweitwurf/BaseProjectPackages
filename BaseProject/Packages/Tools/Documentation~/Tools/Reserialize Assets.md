@@ -1,3 +1,13 @@
+---
+type: tool
+package: Tools
+audience: programmer
+tags:
+  - programmer
+  - assets
+summary: Makes a renamed field actually stick.
+menu: Tools > Base Packages > Assets > Reserialize Assets
+---
 # Reserialize Assets
 
 🔧 **Tool** · programmers only

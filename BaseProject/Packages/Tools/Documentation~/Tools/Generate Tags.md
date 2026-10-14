@@ -1,3 +1,13 @@
+---
+type: tool
+package: Tools
+audience: programmer
+tags:
+  - programmer
+  - code-generation
+summary: Writes a Tags class that contains every tag in the project as a const string.
+menu: Tools > Base Packages > Code > Generation > Generate Tags
+---
 # Generate Tags
 
 🔧 **Tool** · programmers only

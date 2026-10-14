@@ -1,3 +1,13 @@
+---
+type: scriptable-object
+package: Tweening
+audience: everyone
+tags:
+  - artist
+  - designer
+  - animation
+summary: "A complete, reusable animation recipe for anything with three axes: position, rotation, and scale."
+---
 # Vector3 Tween Profile
 
 💌 **Scriptable Object** · for everyone

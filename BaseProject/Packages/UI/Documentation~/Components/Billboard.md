@@ -1,3 +1,13 @@
+---
+type: component
+package: UI
+audience: everyone
+tags:
+  - artist
+  - designer
+  - ui
+summary: Turns an object so it always faces the camera.
+---
 # Billboard
 
 🔖 **Component** · for everyone

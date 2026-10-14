@@ -1,3 +1,15 @@
+---
+type: tool
+package: Tools
+audience: everyone
+tags:
+  - artist
+  - designer
+  - assets
+  - project-health
+summary: Shows every prefab in the project as a tree of base prefabs and their variants, and flags variants that look like a problem.
+menu: Tools > Base Packages > Unity Editor > Project Health > Prefab Overview
+---
 # Prefab Overview
 
 🪛 **Tool** · for everyone

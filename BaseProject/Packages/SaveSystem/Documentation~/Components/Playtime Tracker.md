@@ -1,3 +1,13 @@
+---
+type: component
+package: Save System
+audience: programmer
+tags:
+  - programmer
+  - saving
+  - ui
+summary: Optional.
+---
 # Playtime Tracker
 
 🗞️ **Component** · programmers only

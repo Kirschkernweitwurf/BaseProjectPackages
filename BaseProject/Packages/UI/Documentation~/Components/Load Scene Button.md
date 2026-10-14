@@ -1,3 +1,13 @@
+---
+type: component
+package: UI
+audience: everyone
+tags:
+  - designer
+  - ui
+  - scenes
+summary: Loads a scene when the button is clicked.
+---
 # Load Scene Button
 
 🔖 **Component** · for everyone

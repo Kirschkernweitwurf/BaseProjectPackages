@@ -1,3 +1,13 @@
+---
+type: component
+package: Settings
+audience: everyone
+tags:
+  - designer
+  - settings
+  - ui
+summary: The panel that shows the name and explanation of whatever setting the player is currently hovering or has selected.
+---
 # Setting Flavor Text
 
 🔖 **Component** · for everyone

@@ -1,3 +1,13 @@
+---
+type: component
+package: UI
+audience: everyone
+tags:
+  - designer
+  - artist
+  - ui
+summary: Asks the player to confirm, then closes the game.
+---
 # Confirmed Quit Button
 
 🔖 **Component** · for everyone

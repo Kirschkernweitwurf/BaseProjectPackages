@@ -1,3 +1,13 @@
+---
+type: tool
+package: Tools
+audience: programmer
+tags:
+  - programmer
+  - assets
+summary: A single on and off switch for the automatic ID checks.
+menu: Tools > Base Packages > Assets > Identifier > Enable Unique ID Validation
+---
 # Unique ID Validation
 
 🔧 **Tool** · programmers only

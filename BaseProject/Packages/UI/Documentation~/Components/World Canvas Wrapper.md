@@ -1,3 +1,14 @@
+---
+type: component
+package: UI
+audience: programmer
+tags:
+  - programmer
+  - ui
+summary: Hooks a world-space canvas up to the main camera.
+requires:
+  - Canvas
+---
 # World Canvas Wrapper
 
 🗞️ **Component** · programmers only

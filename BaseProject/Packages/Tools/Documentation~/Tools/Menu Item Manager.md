@@ -1,3 +1,13 @@
+---
+type: tool
+package: Tools
+audience: programmer
+tags:
+  - programmer
+  - workflow
+summary: Rearranges editor menu items by drag and drop, without touching any code.
+menu: Tools > Base Packages > Menu Management > Menu Item Manager
+---
 # Menu Item Manager
 
 🔧 **Tool** · programmers only

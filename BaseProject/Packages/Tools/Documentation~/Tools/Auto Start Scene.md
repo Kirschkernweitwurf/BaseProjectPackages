@@ -1,3 +1,16 @@
+---
+type: tool
+package: Tools
+audience: everyone
+tags:
+  - artist
+  - designer
+  - sound
+  - workflow
+  - scenes
+summary: Always enters Play mode from the same scene, no matter which scene you have open.
+menu: Edit > Project Settings > Base Tools > Auto Start Scene
+---
 # Auto Start Scene
 
 🪛 **Tool** · for everyone

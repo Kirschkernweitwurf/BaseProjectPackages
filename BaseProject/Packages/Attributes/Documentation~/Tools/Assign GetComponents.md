@@ -1,3 +1,14 @@
+---
+type: tool
+package: Attributes
+audience: everyone
+tags:
+  - designer
+  - artist
+  - inspector
+summary: Fills in every empty [GetComponent] and [GetComponentInParent] field across the project in one go.
+menu: Tools > Base Packages > Unity Editor > References > Assign GetComponents
+---
 # Assign GetComponents
 
 🪛 **Tool** · for everyone

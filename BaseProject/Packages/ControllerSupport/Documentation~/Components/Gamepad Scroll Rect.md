@@ -1,3 +1,15 @@
+---
+type: component
+package: Controller Support
+audience: everyone
+tags:
+  - designer
+  - gamepad
+  - ui
+summary: Lets a stick scroll a ScrollRect directly, usually the right stick.
+requires:
+  - Scroll Rect
+---
 # Gamepad Scroll Rect
 
 🔖 **Component** · for everyone

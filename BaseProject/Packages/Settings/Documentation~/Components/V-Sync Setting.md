@@ -1,3 +1,13 @@
+---
+type: component
+package: Settings
+audience: everyone
+tags:
+  - designer
+  - settings
+  - ui
+summary: Saves the VSync setting.
+---
 # V-Sync Setting
 
 🔖 **Component** · for everyone

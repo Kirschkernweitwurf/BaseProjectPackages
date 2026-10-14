@@ -1,3 +1,13 @@
+---
+type: component
+package: UI
+audience: everyone
+tags:
+  - designer
+  - ui
+  - scenes
+summary: Asks the player to confirm, then loads a scene.
+---
 # Confirmed Load Scene Button
 
 🔖 **Component** · for everyone

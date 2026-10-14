@@ -1,3 +1,13 @@
+---
+type: tool
+package: Attributes
+audience: everyone
+tags:
+  - designer
+  - inspector
+summary: One window for everything about the attribute package.
+menu: Tools > Base Packages > Unity Editor > Project Health > Attributes
+---
 # Attributes Window
 
 🪛 **Tool** · for everyone

@@ -1,3 +1,10 @@
+---
+type: start
+package: UI
+tags:
+  - ui
+summary: Reusable UI building blocks for Unity.
+---
 # UI Package
 
 📦 **Package** · reusable, works in any of our projects

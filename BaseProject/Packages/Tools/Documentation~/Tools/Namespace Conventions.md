@@ -1,3 +1,13 @@
+---
+type: tool
+package: Tools
+audience: programmer
+tags:
+  - programmer
+  - project-health
+summary: "Checks that every script's namespace matches the folder it sits in, and lists the ones that do not."
+menu: Tools > Base Packages > Unity Editor > Project Health > Namespace Conventions
+---
 # Namespace Conventions
 
 🔧 **Tool** · programmers only

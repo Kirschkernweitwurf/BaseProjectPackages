@@ -1,3 +1,14 @@
+---
+type: tool
+package: Tools
+audience: programmer
+tags:
+  - programmer
+  - code-generation
+  - assets
+summary: Gives every scriptable object that needs one a stable ID.
+menu: Tools > Base Packages > Assets > Identifier > Generate Unique IDs
+---
 # Generate Unique Ids
 
 🔧 **Tool** · programmers only

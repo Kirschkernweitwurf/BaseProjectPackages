@@ -1,3 +1,13 @@
+---
+type: scriptable-object
+package: Tweening
+audience: everyone
+tags:
+  - artist
+  - designer
+  - animation
+summary: A shared timing asset.
+---
 # Tween Settings
 
 💌 **Scriptable Object** · for everyone

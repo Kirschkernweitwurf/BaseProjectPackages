@@ -1,3 +1,16 @@
+---
+type: tool
+package: Tools
+audience: everyone
+tags:
+  - artist
+  - designer
+  - sound
+  - assets
+  - project-health
+summary: Finds folders with nothing in them and cleans them up.
+menu: Tools > Base Packages > Unity Editor > Project Health > Unused > Empty Folders Overview
+---
 # Empty Folders Overview
 
 🪛 **Tool** · for everyone

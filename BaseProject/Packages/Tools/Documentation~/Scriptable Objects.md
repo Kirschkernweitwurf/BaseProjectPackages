@@ -1,3 +1,10 @@
+---
+type: overview
+package: Tools
+tags:
+  - workflow
+summary: Asset files you create through Assets > Create > Scriptable Objects > Base.
+---
 # Scriptable Objects
 
 📬 **Scriptable Objects** · assets you create in the Project window

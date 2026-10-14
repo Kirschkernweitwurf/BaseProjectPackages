@@ -1,3 +1,12 @@
+---
+type: component
+package: Save System
+audience: programmer
+tags:
+  - programmer
+  - saving
+summary: Optional.
+---
 # Screen Capturer
 
 🗞️ **Component** · programmers only

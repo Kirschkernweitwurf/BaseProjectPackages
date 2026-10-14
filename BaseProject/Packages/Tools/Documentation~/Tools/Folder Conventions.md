@@ -1,3 +1,16 @@
+---
+type: tool
+package: Tools
+audience: everyone
+tags:
+  - artist
+  - designer
+  - sound
+  - assets
+  - project-health
+summary: Checks the folder layout of the project against your own rules and lists everything that breaks them.
+menu: Tools > Base Packages > Unity Editor > Project Health > Folder Conventions
+---
 # Folder Conventions
 
 🪛 **Tool** · for everyone

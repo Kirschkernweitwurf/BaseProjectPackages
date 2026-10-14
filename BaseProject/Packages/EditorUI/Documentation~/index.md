@@ -1,3 +1,10 @@
+---
+type: start
+package: Editor UI
+tags:
+  - workflow
+summary: The shared look of every Base editor window.
+---
 # Editor UI Package
 
 📦 **Package** · reusable, works in any of our projects

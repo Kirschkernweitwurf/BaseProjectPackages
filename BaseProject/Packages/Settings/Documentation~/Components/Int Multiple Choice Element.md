@@ -1,3 +1,13 @@
+---
+type: component
+package: Settings
+audience: everyone
+tags:
+  - designer
+  - settings
+  - ui
+summary: A left arrow, a label, a right arrow, and a row of dots showing which option is selected.
+---
 # Int Multiple Choice Element
 
 🔖 **Component** · for everyone

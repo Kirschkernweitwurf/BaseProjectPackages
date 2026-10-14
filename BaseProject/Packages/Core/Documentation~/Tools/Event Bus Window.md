@@ -1,3 +1,13 @@
+---
+type: tool
+package: Core
+audience: programmer
+tags:
+  - programmer
+  - debugging
+summary: "A live view of the event bus while the game runs: every event type that has listeners, and who is listening, in the order the bus calls them."
+menu: Tools > Base Packages > Runtime > Event Bus
+---
 # Event Bus Window
 
 🔧 **Tool** · programmers only

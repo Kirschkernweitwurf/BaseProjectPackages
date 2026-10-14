@@ -1,3 +1,10 @@
+---
+type: overview
+package: Tools
+tags:
+  - workflow
+summary: Editor windows and menu commands.
+---
 # Tools
 
 🧰 **Tools** · menu items and editor windows

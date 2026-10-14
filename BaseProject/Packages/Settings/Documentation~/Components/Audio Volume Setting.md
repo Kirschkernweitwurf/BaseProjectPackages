@@ -1,3 +1,14 @@
+---
+type: component
+package: Settings
+audience: everyone
+tags:
+  - designer
+  - sound
+  - settings
+  - audio
+summary: Saves the volume of one audio channel and pushes it into your AudioMixer.
+---
 # Audio Volume Setting
 
 🔖 **Component** · for everyone

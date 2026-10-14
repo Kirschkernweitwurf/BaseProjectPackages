@@ -1,3 +1,13 @@
+---
+type: tool
+package: Tools
+audience: everyone
+tags:
+  - artist
+  - assets
+summary: Lays out prefabs in the scene in neat rows so you can look at your whole art library at once.
+menu: Tools > Base Packages > Assets > Asset Zoo > Open Zoo Builder
+---
 # Asset Zoo Builder
 
 🪛 **Tool** · for everyone

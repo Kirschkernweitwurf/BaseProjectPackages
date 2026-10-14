@@ -1,3 +1,15 @@
+---
+type: component
+package: Settings
+audience: everyone
+tags:
+  - designer
+  - settings
+  - ui
+summary: "An on / off switch with a label that reads \"On\" or \"Off\"."
+requires:
+  - Toggle
+---
 # Setting Toggle
 
 🔖 **Component** · for everyone

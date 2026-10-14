@@ -1,3 +1,13 @@
+---
+type: component
+package: Localization
+audience: everyone
+tags:
+  - designer
+  - localization
+  - settings
+summary: "Saves the game language and switches it through Unity's Localization package."
+---
 # Language Setting
 
 🔖 **Component** · for everyone

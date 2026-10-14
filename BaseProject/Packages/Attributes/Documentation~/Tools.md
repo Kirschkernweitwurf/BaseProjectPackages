@@ -1,3 +1,10 @@
+---
+type: overview
+package: Attributes
+tags:
+  - inspector
+summary: Four editor windows and one switch ship with the Attributes package.
+---
 # Tools
 
 🧰 **Tools** · menu items and editor windows

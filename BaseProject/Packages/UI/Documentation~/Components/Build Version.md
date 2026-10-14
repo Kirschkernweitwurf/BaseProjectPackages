@@ -1,3 +1,12 @@
+---
+type: component
+package: UI
+audience: programmer
+tags:
+  - programmer
+  - ui
+summary: Shows the version and build number, for example 1.2.3 [47].
+---
 # Build Version
 
 🗞️ **Component** · programmers only

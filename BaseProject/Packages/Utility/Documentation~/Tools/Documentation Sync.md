@@ -1,3 +1,15 @@
+---
+type: tool
+package: Utility
+audience: everyone
+tags:
+  - artist
+  - designer
+  - sound
+  - workflow
+summary: "Copies the docs of every installed Base package into the project's Docs/Packages folder."
+menu: Help > Base Packages Documentation
+---
 # Documentation Sync
 
 🪛 **Tool** · for everyone

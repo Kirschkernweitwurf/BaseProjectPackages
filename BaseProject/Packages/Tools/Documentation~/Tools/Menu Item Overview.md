@@ -1,3 +1,13 @@
+---
+type: tool
+package: Tools
+audience: programmer
+tags:
+  - programmer
+  - workflow
+summary: Lists every menu item in the project, its packages and Unity itself, sorted by menu priority.
+menu: Tools > Base Packages > Code > Health > Menu Item Overview
+---
 # Menu Item Overview
 
 🔧 **Tool** · programmers only

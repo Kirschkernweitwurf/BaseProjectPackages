@@ -1,3 +1,15 @@
+---
+type: tool
+package: Attributes
+audience: everyone
+tags:
+  - designer
+  - artist
+  - inspector
+  - project-health
+summary: Lists every field in the project that is marked as required but is still empty.
+menu: Tools > Base Packages > Unity Editor > References > Required References
+---
 # Required References Window
 
 🪛 **Tool** · for everyone

@@ -1,3 +1,13 @@
+---
+type: component
+package: Settings
+audience: everyone
+tags:
+  - designer
+  - settings
+  - ui
+summary: "The same left arrow / label / right arrow picker as Int Multiple Choice Element, with one difference: it saves the chosen word itself instead of its position in the list."
+---
 # String Multiple Choice Element
 
 🔖 **Component** · for everyone
@@ -20,6 +30,27 @@ In short: Setting Key, Title, Description, Left Button, Right Button, Value Text
 - Anywhere you expect the option list to grow over time.
 
 For resolutions specifically, use [🔖 Resolution Choice Element](Resolution%20Choice%20Element.md) instead. It is this component with the option list filled in for you.
+
+## Fields
+
+### Setting Element
+
+| Field | Type | Default | What it does |
+| --- | --- | --- | --- |
+| **Setting Key** | Text |  | **Required.** Key of the String setting this picker stores its choice in. |
+| **Title** | Localized text |  | Shown in the Setting Flavor Text while this row is focused. |
+| **Description** | Localized text |  | Shown in the Setting Flavor Text while this row is focused. |
+
+### Multiple Choice
+
+| Field | Type | Default | What it does |
+| --- | --- | --- | --- |
+| **Left Button** | Button |  | **Required.** Button that picks the previous option. |
+| **Right Button** | Button |  | **Required.** Button that picks the next option. |
+| **Value Text** | Text (TMP) |  | **Required.** Shows the chosen option. |
+| **Selection Indicator Prefab** | [Selection Indicator Button](Selection%20Indicator%20Button.md) |  | **Required.** Prefab for one dot in the row under the picker. |
+| **Selection Indicator Parent** | Transform |  | **Required.** Where the dots are spawned. |
+| **Options** | List of Text |  | The words the player can pick from, in order. The chosen word is what gets saved. |
 
 ## Good to know
 

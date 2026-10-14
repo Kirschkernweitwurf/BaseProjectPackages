@@ -1,3 +1,13 @@
+---
+type: tool
+package: Tools
+audience: programmer
+tags:
+  - programmer
+  - project-health
+summary: Finds static fields that are never reset when Play mode starts.
+menu: Tools > Base Packages > Code > Health > Static Reset Checker
+---
 # Static Reset Checker
 
 🔧 **Tool** · programmers only

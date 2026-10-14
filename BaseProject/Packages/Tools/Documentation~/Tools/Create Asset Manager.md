@@ -1,3 +1,13 @@
+---
+type: tool
+package: Tools
+audience: programmer
+tags:
+  - programmer
+  - workflow
+summary: The same window as the 🔧 Menu Item Manager, but for the Assets > Create menu.
+menu: Tools > Base Packages > Menu Management > Create Asset Manager
+---
 # Create Asset Manager
 
 🔧 **Tool** · programmers only

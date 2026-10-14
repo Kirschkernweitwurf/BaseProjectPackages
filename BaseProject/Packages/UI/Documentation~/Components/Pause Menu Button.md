@@ -1,3 +1,13 @@
+---
+type: component
+package: UI
+audience: everyone
+tags:
+  - designer
+  - ui
+  - menus
+summary: Opens and closes the pause menu with one button, and swaps the button icon so it always shows the right symbol.
+---
 # Pause Menu Button
 
 🔖 **Component** · for everyone

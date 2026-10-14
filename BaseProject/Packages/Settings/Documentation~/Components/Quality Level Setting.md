@@ -1,3 +1,13 @@
+---
+type: component
+package: Settings
+audience: everyone
+tags:
+  - designer
+  - settings
+  - ui
+summary: Saves the graphics quality level (Low, Medium, High, and so on).
+---
 # Quality Level Setting
 
 🔖 **Component** · for everyone

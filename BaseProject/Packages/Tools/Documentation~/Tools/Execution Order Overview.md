@@ -1,3 +1,13 @@
+---
+type: tool
+package: Tools
+audience: programmer
+tags:
+  - programmer
+  - project-health
+summary: Lists every script with a custom execution order, sorted by the order that actually wins at runtime.
+menu: Tools > Base Packages > Code > Health > Execution Order Overview
+---
 # Execution Order Overview
 
 🔧 **Tool** · programmers only

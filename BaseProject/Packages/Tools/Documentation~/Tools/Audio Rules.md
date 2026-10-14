@@ -1,3 +1,14 @@
+---
+type: tool
+package: Tools
+audience: everyone
+tags:
+  - sound
+  - audio
+  - assets
+summary: Sets the import settings of all audio files from rules, instead of clicking through every clip by hand.
+menu: Tools > Base Packages > Assets > Audio Rules
+---
 # Audio Rules
 
 🪛 **Tool** · for everyone

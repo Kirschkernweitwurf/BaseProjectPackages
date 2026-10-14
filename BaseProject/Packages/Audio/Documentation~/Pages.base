@@ -1,0 +1,34 @@
+filters:
+  and:
+    - 'package == "Audio"'
+properties:
+  file.name:
+    displayName: Page
+  note.type:
+    displayName: Type
+  note.audience:
+    displayName: For
+  note.summary:
+    displayName: What it does
+  note.tags:
+    displayName: Tags
+views:
+  - type: table
+    name: Components
+    filters:
+      and:
+        - 'type == "component"'
+    order:
+      - file.name
+      - audience
+      - summary
+  - type: table
+    name: Everything
+    groupBy:
+      property: note.type
+      direction: ASC
+    order:
+      - file.name
+      - audience
+      - summary
+      - tags

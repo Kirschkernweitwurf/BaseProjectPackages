@@ -1,3 +1,14 @@
+---
+type: tool
+package: Tools
+audience: everyone
+tags:
+  - artist
+  - designer
+  - workflow
+  - scenes
+summary: Sorts the hierarchy by name, recursively.
+---
 # Hierarchy Sorter
 
 🪛 **Tool** · for everyone

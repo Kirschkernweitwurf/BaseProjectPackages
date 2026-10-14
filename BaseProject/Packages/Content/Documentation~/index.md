@@ -1,3 +1,12 @@
+---
+type: start
+package: Content
+tags:
+  - setup
+  - ui
+  - audio
+summary: The ready-made prefabs and assets the other Base packages are wired together with.
+---
 # Content Package
 
 📦 **Package** · reusable, works in any of our projects

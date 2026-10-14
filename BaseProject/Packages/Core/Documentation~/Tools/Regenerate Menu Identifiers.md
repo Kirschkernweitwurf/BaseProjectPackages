@@ -1,3 +1,12 @@
+---
+type: tool
+package: Core
+audience: everyone
+tags:
+  - designer
+  - menus
+summary: "Scans the project for every Menu Identifier asset and rebuilds two things from them:"
+---
 # Regenerate Menu Identifiers
 
 🪛 **Tool** · for everyone

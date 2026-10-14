@@ -1,3 +1,13 @@
+---
+type: component
+package: Save System
+audience: everyone
+tags:
+  - designer
+  - saving
+  - ui
+summary: Loads the selected slot and hands the data back to every object that owns save data.
+---
 # Load Game Button
 
 🔖 **Component** · for everyone
@@ -28,6 +38,12 @@ The result is written to the console:
 | **VersionTooNew** | The save comes from a newer build of the game. |
 
 If you want the UI to react to these (an error popup, for example), ask a programmer to hook it up.
+
+## Fields
+
+| Field | Type | Default | What it does |
+| --- | --- | --- | --- |
+| **Button** | Button |  | Filled in automatically. The button on this GameObject. |
 
 ## Notes
 

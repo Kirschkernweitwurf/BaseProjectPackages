@@ -1,3 +1,13 @@
+---
+type: scriptable-object
+package: Tools
+audience: everyone
+tags:
+  - artist
+  - lighting
+  - scenes
+summary: Stores the render settings of a scene in an asset, so they can be applied anywhere without making that scene the active one.
+---
 # Lighting Profile
 
 💌 **Scriptable Object** · for everyone

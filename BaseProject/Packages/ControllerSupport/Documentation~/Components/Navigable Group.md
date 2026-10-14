@@ -1,3 +1,13 @@
+---
+type: component
+package: Controller Support
+audience: everyone
+tags:
+  - designer
+  - gamepad
+  - ui
+summary: A self-contained navigation context.
+---
 # Navigable Group
 
 🔖 **Component** · for everyone

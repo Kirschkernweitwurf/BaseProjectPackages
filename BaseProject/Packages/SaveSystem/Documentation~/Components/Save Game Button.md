@@ -1,3 +1,13 @@
+---
+type: component
+package: Save System
+audience: everyone
+tags:
+  - designer
+  - saving
+  - ui
+summary: Writes the current game state into a save slot.
+---
 # Save Game Button
 
 🔖 **Component** · for everyone

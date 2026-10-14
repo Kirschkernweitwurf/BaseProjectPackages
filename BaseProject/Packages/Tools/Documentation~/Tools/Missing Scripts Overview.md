@@ -1,3 +1,13 @@
+---
+type: tool
+package: Tools
+audience: programmer
+tags:
+  - programmer
+  - project-health
+summary: "Finds every \"Missing (Mono Script)\" in the project and lets you jump straight to it."
+menu: Tools > Base Packages > Unity Editor > Project Health > Unused > Missing Scripts Overview
+---
 # Missing Scripts Overview
 
 🔧 **Tool** · programmers only

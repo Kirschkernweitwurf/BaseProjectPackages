@@ -1,3 +1,14 @@
+---
+type: tool
+package: Tools
+audience: everyone
+tags:
+  - artist
+  - designer
+  - workflow
+summary: "Unity's own component clipboard only holds one component at a time."
+menu: Tools > Base Packages > Unity Editor > Component Clipboard
+---
 # Component Clipboard
 
 🪛 **Tool** · for everyone

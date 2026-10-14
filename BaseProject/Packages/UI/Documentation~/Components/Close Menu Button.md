@@ -1,3 +1,13 @@
+---
+type: component
+package: UI
+audience: everyone
+tags:
+  - designer
+  - ui
+  - menus
+summary: Closes a menu when the button is clicked.
+---
 # Close Menu Button
 
 🔖 **Component** · for everyone

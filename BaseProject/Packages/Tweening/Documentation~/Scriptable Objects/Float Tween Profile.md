@@ -1,3 +1,13 @@
+---
+type: scriptable-object
+package: Tweening
+audience: everyone
+tags:
+  - artist
+  - designer
+  - animation
+summary: "A complete, reusable animation recipe for anything driven by a single number: fades, alpha values, and image fill amounts."
+---
 # Float Tween Profile
 
 💌 **Scriptable Object** · for everyone

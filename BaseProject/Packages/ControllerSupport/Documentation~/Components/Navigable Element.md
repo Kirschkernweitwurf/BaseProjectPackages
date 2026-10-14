@@ -1,3 +1,15 @@
+---
+type: component
+package: Controller Support
+audience: everyone
+tags:
+  - designer
+  - gamepad
+  - ui
+summary: Marks a button, slider, toggle or any other Selectable as a real gamepad target.
+requires:
+  - Selectable
+---
 # Navigable Element
 
 🔖 **Component** · for everyone
@@ -33,3 +45,9 @@ Two options:
 | `IsNavigable()` | True when the selectable exists, is interactable, and its GameObject is active in the hierarchy. |
 
 Non-navigable elements are skipped during wiring, so a disabled button never becomes a dead end.
+
+## Fields
+
+| Field | Type | Default | What it does |
+| --- | --- | --- | --- |
+| **Selectable** | Selectable |  | Filled in automatically. The selectable this element makes navigable. Auto-assigned from the same GameObject. |

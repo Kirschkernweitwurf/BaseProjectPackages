@@ -1,3 +1,15 @@
+---
+type: tool
+package: Attributes
+audience: everyone
+tags:
+  - designer
+  - artist
+  - sound
+  - inspector
+summary: A toggle that stops the Attributes package from drawing inspectors, without uninstalling it.
+menu: Tools > Base Packages > Attributes > Disable Attribute Inspector
+---
 # Disable Attribute Inspector
 
 🪛 **Tool** · for everyone

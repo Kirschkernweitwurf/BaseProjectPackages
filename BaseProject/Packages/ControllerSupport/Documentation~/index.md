@@ -1,3 +1,11 @@
+---
+type: start
+package: Controller Support
+tags:
+  - gamepad
+  - ui
+summary: Input prompt components (InputDeviceTracker, InputGlyphSet, InputGlyphProvider) are not covered here yet.
+---
 # Controller Support Package
 
 📦 **Package** · reusable, works in any of our projects
@@ -12,16 +20,38 @@
 
 ## Components
 
-| Component | Purpose |
-| --- | --- |
-| [🔖 NavigableElement](Components/Navigable%20Element.md) | Marks a selectable as a gamepad target |
-| [🔖 NavigableGroup](Components/Navigable%20Group.md) | Wires navigation and owns a focus context |
-| [🗞️ FocusWatchdog](Components/Focus%20Watchdog.md) | Restores focus when the gamepad loses it |
-| [🔖 MenuNavigationModule](Components/Menu%20Navigation%20Module.md) | Bridges a menu's lifecycle to a group |
-| [🔖 GamepadScrollRect](Components/Gamepad%20Scroll%20Rect.md) | Stick scrolling for a ScrollRect |
-| [🔖 ScrollIntoView](Components/Scroll%20Into%20View.md) | Keeps the selection visible in a ScrollRect |
+Every component has its own page. [🗳️ Components](Components.md) lists them all.
 
-Input prompt components (`InputDeviceTracker`, `InputGlyphSet`, `InputGlyphProvider`) are not covered here yet.
+### Navigation
+
+| Component | What it does | For |
+| --- | --- | --- |
+| [🔖 Navigable Element](Components/Navigable%20Element.md) | Marks a button, slider, toggle or any other Selectable as a real gamepad target. | Everyone |
+| [🔖 Navigable Group](Components/Navigable%20Group.md) | A self-contained navigation context. | Everyone |
+| [🔖 Menu Navigation Module](Components/Menu%20Navigation%20Module.md) | Connects a menu's lifecycle to a NavigableGroup: | Everyone |
+
+### Scrolling
+
+| Component | What it does | For |
+| --- | --- | --- |
+| [🔖 Gamepad Scroll Rect](Components/Gamepad%20Scroll%20Rect.md) | Lets a stick scroll a ScrollRect directly, usually the right stick. | Everyone |
+| [🔖 Scroll Into View](Components/Scroll%20Into%20View.md) | Keeps the selected element inside the visible part of a ScrollRect. | Everyone |
+
+### Rumble settings
+
+| Component | What it does | For |
+| --- | --- | --- |
+| [🔖 Rumble Enabled Setting](Components/Rumble%20Enabled%20Setting.md) | Stores whether gamepad rumble is on and passes it to the Rumble Service.. | Everyone |
+| [🔖 Rumble Intensity Setting](Components/Rumble%20Intensity%20Setting.md) | Stores how strong gamepad rumble is and passes it to the Rumble Service, where it scales every rumble.. | Everyone |
+
+### Services and managers
+
+| Component | What it does | For |
+| --- | --- | --- |
+| [🗞️ Focus Watchdog](Components/Focus%20Watchdog.md) | Global safety net that keeps a valid selection while a gamepad is in use. | Programmers |
+| [🗞️ Input Device Tracker](Components/Input%20Device%20Tracker.md) | Knows whether the player is using mouse and keyboard or a gamepad right now. | Programmers |
+| [🗞️ Input Glyph Provider](Components/Input%20Glyph%20Provider.md) | Picks the right button icon (keyboard, Xbox, PlayStation, ...) for an action. | Programmers |
+| [🗞️ Rumble Service](Components/Rumble%20Service.md) | Plays gamepad rumble patterns, with priorities so important rumble wins. | Programmers |
 
 ## Typical setup
 

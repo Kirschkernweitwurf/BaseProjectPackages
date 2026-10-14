@@ -1,3 +1,12 @@
+---
+type: scriptable-object
+package: Utility
+audience: programmer
+tags:
+  - programmer
+  - workflow
+summary: A minimal asset whose only job is to carry a stable, unique ID.
+---
 # Unique Id Scriptable Object
 
 ✉️ **Scriptable Object** · programmers only

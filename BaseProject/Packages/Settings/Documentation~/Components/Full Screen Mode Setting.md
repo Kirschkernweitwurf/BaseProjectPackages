@@ -1,3 +1,13 @@
+---
+type: component
+package: Settings
+audience: everyone
+tags:
+  - designer
+  - settings
+  - ui
+summary: Saves whether the game runs windowed, borderless or exclusive fullscreen.
+---
 # Full Screen Mode Setting
 
 🔖 **Component** · for everyone

@@ -1,3 +1,10 @@
+---
+type: start
+package: Localization
+tags:
+  - localization
+summary: "Keeps Unity's String Tables and a Google Sheet in sync, so text can be edited in Unity or in the sheet."
+---
 # Localization Package
 
 📦 **Package** · reusable, works in any of our projects
@@ -11,9 +18,13 @@ Keeps Unity's String Tables and a Google Sheet in sync, so text can be edited in
 
 ## Components
 
-| Page | What it does | For whom |
+Every component has its own page. [🗳️ Components](Components.md) lists them all.
+
+### Settings
+
+| Component | What it does | For |
 | --- | --- | --- |
-| [🔖 Language Setting](Components/Language%20Setting.md) | Saves the game language and switches it | Everyone |
+| [🔖 Language Setting](Components/Language%20Setting.md) | Saves the game language and switches it through Unity's Localization package. | Everyone |
 
 ## Tools
 

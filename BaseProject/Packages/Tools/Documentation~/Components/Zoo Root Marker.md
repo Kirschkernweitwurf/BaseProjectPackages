@@ -1,3 +1,12 @@
+---
+type: component
+package: Tools
+audience: programmer
+tags:
+  - programmer
+  - assets
+summary: An empty marker component that the Asset Zoo Builder puts on the root object of a built zoo.
+---
 # Zoo Root Marker
 
 🗞️ **Component** · programmers only

@@ -1,3 +1,12 @@
+---
+type: component
+package: UI
+audience: programmer
+tags:
+  - programmer
+  - ui
+summary: The connection between the confirm buttons and the popup.
+---
 # Confirmation Service
 
 🗞️ **Component** · programmers only

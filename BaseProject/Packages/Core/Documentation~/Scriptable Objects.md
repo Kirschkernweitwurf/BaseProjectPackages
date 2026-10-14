@@ -1,3 +1,10 @@
+---
+type: overview
+package: Core
+tags:
+  - menus
+summary: Assets you create in the Project window through Create > Scriptable Objects > Base > ....
+---
 # Scriptable Objects
 
 📬 **Scriptable Objects** · assets you create in the Project window

@@ -1,3 +1,12 @@
+---
+type: scriptable-object
+package: Tools
+audience: everyone
+tags:
+  - artist
+  - assets
+summary: Describes what the 🪛 Asset Zoo Builder should lay out and how it should look.
+---
 # Zoo Config
 
 💌 **Scriptable Object** · for everyone

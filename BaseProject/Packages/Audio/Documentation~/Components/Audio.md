@@ -1,84 +1,51 @@
+---
+type: guide
+package: Audio
+tags:
+  - sound
+  - designer
+  - audio
+summary: How sounds are played in our projects, and which Play Audio component to pick.
+---
 # Audio
 
-🔖 **Component** · for everyone
+📖 **Guide** · for everyone
 
 **Tags:** #sound #designer #audio
 
-Everything here plays an Audio Container, never a raw clip. If you find yourself wanting to drag an `.wav` somewhere, make a container for it first.
+How sounds get from a clip to the speakers, and which component to use. Every component has its own page with all fields.
 
-## Play Audio On Click
+## The rule
 
-Plays a sound when the object is clicked with the mouse.
+Everything plays an [Audio Container](../Scriptable%20Objects/Audio%20Container.md), never a raw clip. If you want to drag a `.wav` somewhere, make a container for it first. The container holds the clips, the volume, the random pitch and the **Audio Type**, which decides the volume slider it listens to.
 
-| Field | What it does |
-| --- | --- |
-| **Click Sound** | The Audio Container to play |
-
-## Play Audio On Hover
-
-Plays a sound when the pointer enters the object.
-
-| Field | What it does |
-| --- | --- |
-| **Hover Sound** | The Audio Container to play |
-
-## Play Audio On Select
-
-Plays a sound when the object becomes the selected UI element. This is the gamepad and keyboard version of hover.
-
-| Field | What it does |
-| --- | --- |
-| **Select Sound** | The Audio Container to play |
-
-## Play Audio On Submit
-
-Plays a sound when the object is submitted, which covers a mouse click, the Enter key, and the gamepad confirm button.
-
-| Field | What it does |
-| --- | --- |
-| **Submit Sound** | The Audio Container to play |
-
-### Which one to use
+## Sounds on UI
 
 | You want | Add |
 | --- | --- |
-| Mouse hover feedback | Play Audio On Hover |
-| Gamepad and keyboard navigation feedback | Play Audio On Select |
-| Confirm sound that works with every input device | Play Audio On Submit |
-| Mouse click only | Play Audio On Click |
+| Mouse hover feedback | [🔖 Play Audio On Hover](Play%20Audio%20On%20Hover.md) |
+| Keyboard and gamepad navigation feedback | [🔖 Play Audio On Select](Play%20Audio%20On%20Select.md) |
+| A confirm sound for every input device | [🔖 Play Audio On Submit](Play%20Audio%20On%20Submit.md) |
+| A mouse click only | [🔖 Play Audio On Click](Play%20Audio%20On%20Click.md) |
 
-For a button that supports mouse and gamepad, the usual setup is **Play Audio On Hover** plus **Play Audio On Select** for the highlight, and **Play Audio On Submit** for the confirm. Adding both On Click and On Submit will double up the sound on a mouse click.
+The usual button: **On Hover** plus **On Select** for the highlight, **On Submit** for the confirm. Do not add On Click and On Submit together, or a mouse click plays twice.
 
-### Requirements
+All of them need an Event System in the scene and a Graphic with **Raycast Target** on.
 
-- An Event System in the scene.
-- A Graphic on the object with **Raycast Target** turned on, for the pointer events.
-- If the container field is left empty, the object logs a warning at runtime and stays silent.
+## Behind the scenes
 
----
-
-## Audio Manager
-
-The service that actually plays sounds. It lives on a manager prefab and is set up once per project. You should not need to add it to a scene yourself.
-
-| Field | What it does |
+| Component | Job |
 | --- | --- |
-| **Minimum Delay** | Shortest gap allowed between two plays of the same container, in seconds. Stops rapid retriggers from stacking. |
-| **Min Pitch Inclusive** | Lower bound used when a container has Randomize Pitch on |
-| **Max Pitch Inclusive** | Upper bound used when a container has Randomize Pitch on |
-| **Audio Pool Manager** | The pool that supplies audio sources. Required. |
+| [🗞️ Audio Manager](Audio%20Manager.md) | Plays every sound. Code and components ask it. |
+| [🗞️ Audio Pool Manager](Audio%20Pool%20Manager.md) | Keeps reusable Audio Sources, one pool per Audio Type. Each pool's prefab sets the mixer group. |
 
-## Audio Pool Manager
+Both sit on the persistent manager prefab. You do not add them to a scene.
 
-Keeps a pool of reusable audio sources per audio type, so playing a sound never creates a new GameObject at runtime. Also part of the manager prefab.
+## When a sound is wrong
 
-| Field | What it does |
+| Problem | Check |
 | --- | --- |
-| **Pool Parent** | Transform the pooled sources are parented to |
-| **Is Clearing Pool After Scene Load** | Return all sources to the pool when a new scene loads |
-| **Audio Source 2D Prefab** | Prefab used for `Sfx2D` |
-| **Audio Source 3D Prefab** | Prefab used for `Sfx3D` |
-| **Audio Source Music Prefab** | Prefab used for `Music` |
-| **Audio Source UI Prefab** | Prefab used for `UI` |
-
-Each prefab is where the mixer group is assigned, so these four prefabs are what actually connect an Audio Container's **Audio Type** to the player's volume sliders. If a category of sound ignores its slider, check the prefab for that type first.
+| Silent | Is the container field filled in? The Console warns when it is empty. |
+| Ignores its volume slider | The mixer group on the Audio Source prefab for that Audio Type, in the Audio Pool Manager. |
+| Plays twice on click | On Click and On Submit on the same button. Remove On Click. |
+| Clips nobody uses | Run the [Unused Audio Clips](../Tools/Unused%20Audio%20Clips.md) tool. |

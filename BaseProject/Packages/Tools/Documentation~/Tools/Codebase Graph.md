@@ -1,3 +1,13 @@
+---
+type: tool
+package: Tools
+audience: programmer
+tags:
+  - programmer
+  - project-health
+summary: Reads the compiled code of every assembly in the project and shows what uses what, as a node graph.
+menu: Tools > Base Packages > Code > Health > Codebase Graph
+---
 # Codebase Graph
 
 🔧 **Tool** · programmers only

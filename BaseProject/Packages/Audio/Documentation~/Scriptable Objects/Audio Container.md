@@ -1,3 +1,13 @@
+---
+type: scriptable-object
+package: Audio
+audience: everyone
+tags:
+  - sound
+  - designer
+  - audio
+summary: "A single \"sound\" as far as the game is concerned."
+---
 # Audio Container
 
 💌 **Scriptable Object** · for everyone

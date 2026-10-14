@@ -1,3 +1,10 @@
+---
+type: start
+package: Memory Profiler
+tags:
+  - debugging
+summary: Takes memory snapshots automatically, on a timer or whenever a scene loads, so you get a timeline of memory use instead of a few snapshots someone remembered to take.
+---
 # Memory Profiler Package
 
 📦 **Package** · reusable, works in any of our projects

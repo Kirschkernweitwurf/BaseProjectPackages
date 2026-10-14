@@ -1,3 +1,13 @@
+---
+type: tool
+package: Services
+audience: programmer
+tags:
+  - programmer
+  - debugging
+summary: "A live list of every service registered while the game runs: its type, the object behind it, where that object lives, and whether it is still usable."
+menu: Tools > Base Packages > Runtime > Service Locator
+---
 # Service Locator Window
 
 🔧 **Tool** · programmers only

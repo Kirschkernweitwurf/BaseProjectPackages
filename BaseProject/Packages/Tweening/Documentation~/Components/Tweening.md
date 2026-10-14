@@ -1,132 +1,92 @@
+---
+type: guide
+package: Tweening
+tags:
+  - artist
+  - designer
+  - animation
+summary: How tweens, Tween Groups and UI Event Triggers fit together, and which tween to pick.
+---
 # Tweening
 
-🔖 **Component** · for everyone
+📖 **Guide** · for everyone
 
 **Tags:** #artist #designer #animation
 
-Components that animate a single property over time. You add them to a GameObject, set a start and target value, and something else triggers them.
+How the tweening components fit together. Every component has its own page with all fields; this page helps you pick the right one.
+
+## The three parts
+
+| Part | Job | Page |
+| --- | --- | --- |
+| **A tween** | Animates one value, for example alpha or scale | One page per tween, see the table below |
+| **A Tween Group** | Plays several tweens as one Show or Hide animation | [🔖 Tween Group](Tween%20Group.md) |
+| **Something that plays the group** | A Menu, a UI Event Trigger, or Play On Start | [🔖 UI Event Trigger](UI%20Event%20Trigger.md) |
+
+A tween on its own does nothing. **Always put it in a Tween Group.**
 
 ## The naming rule
 
-Every tween comes in two or three flavors. The suffix tells you where the animation starts.
+Every tween comes in two flavors. The suffix tells you where the animation starts.
 
-| Suffix | Behavior | Use it when |
+| Suffix | Starts from | Use it when |
 | --- | --- | --- |
-| **Tween** | Fixed start to fixed target. Both values are authored by you. | You want the exact same animation every time |
-| **ToTween** | Starts from whatever the object had at scene load, moves to your target. | You want to animate from wherever the object currently sits |
-| **ByTween** | Applies your value as an _offset_ from the current value. | You want a relative nudge, like "rotate 90 degrees more" |
+| **Tween** | A start value you set | The animation should look the same every time |
+| **ToTween** | The value the object has when the scene loads | The start depends on how the object was placed |
+| **ByTween** | The current value, plus your offset | You want a relative nudge, like "turn 90 degrees more" |
 
-Example: `FadeTween` always goes from `0` to `1`. `FadeToTween` goes from the Canvas Group's current alpha to `1`.
+Example: [Fade Tween](Fade%20Tween.md) always goes from `0` to `1`. [Fade To Tween](Fade%20To%20Tween.md) goes from the Canvas Group's alpha in the scene to `1`.
 
-## Shared fields
-
-Every tween component has these.
-
-| Field | What it does |
-| --- | --- |
-| **Use Profile** | Take values _and_ timing from a profile asset |
-| **Profile** | The profile asset, shown when the toggle above is on |
-| **Use Settings Asset** | Take only the timing from a shared Tween Settings asset |
-| **Settings Asset** | The shared timing asset, shown when the toggle above is on |
-| **Tween Settings** | Duration, delay, and easing, when no asset drives them |
-| **Loop Settings** | Loop count and loop type, when no asset drives them |
-
-The inspector only shows fields that are actually in use. Ticking **Use Profile** hides the value and timing fields, because the profile now owns them.
-
-**Priority order:** profile beats settings asset beats the fields on the component.
-
-## The component list
+## Which tween animates what
 
 ### Transform
 
-| Component | Animates | Extra fields |
+| Animates | Fixed start | From current |
 | --- | --- | --- |
-| **Position Tween** | Position, fixed start to fixed target | Initial Position, Target Position, Use Local Position |
-| **Position To Tween** | Position, current to target | Target Position, Use Local Position |
-| **Rotation Tween** | Rotation in Euler degrees, fixed to fixed | Start Euler Angles, Target Euler Angles, Use Local Rotation |
-| **Rotation By Tween** | Rotation by an offset from wherever it is now | Delta Euler Angles, Use Local Rotation |
-| **Scale Tween** | Local scale, fixed to fixed | Start Scale, Target Scale |
-| **Scale To Tween** | Local scale, current to target | Target Scale |
+| Position | [🔖 Position Tween](Position%20Tween.md) | [🔖 Position To Tween](Position%20To%20Tween.md) |
+| Rotation | [🔖 Rotation Tween](Rotation%20Tween.md) | [🔖 Rotation By Tween](Rotation%20By%20Tween.md) (offset) |
+| Scale | [🔖 Scale Tween](Scale%20Tween.md) | [🔖 Scale To Tween](Scale%20To%20Tween.md) |
 
 ### UI
 
-| Component | Animates | Requires | Extra fields |
+| Animates | Needs | Fixed start | From current |
 | --- | --- | --- | --- |
-| **Fade Tween** | Canvas Group alpha, fixed to fixed | Canvas Group | Start Alpha, Target Alpha |
-| **Fade To Tween** | Canvas Group alpha, current to target | Canvas Group | Target Alpha |
-| **Image Color Tween** | Image tint, fixed to fixed | Image | Start Color, Target Color |
-| **Image Color To Tween** | Image tint, current to target | Image | Target Color |
-| **Image Fill Amount Tween** | Image fill, fixed to fixed | Image | Start Fill Amount, Target Fill Amount |
-| **Image Fill Amount To Tween** | Image fill, current to target | Image | Target Fill Amount |
-| **Graphic Color Tween** | Any UI Graphic tint, fixed to fixed | Graphic | Start Color, Target Color |
-| **Graphic Color To Tween** | Any UI Graphic tint, current to target | Graphic | Target Color |
-| **TMP Color Tween** | TextMeshPro color, fixed to fixed | TMP Text | Start Color, Target Color |
-| **TMP Color To Tween** | TextMeshPro color, current to target | TMP Text | Target Color |
-| **TMP Alpha Tween** | TextMeshPro alpha, fixed to fixed | TMP Text | Start Alpha, Target Alpha |
-| **TMP Alpha To Tween** | TextMeshPro alpha, current to target | TMP Text | Target Alpha |
+| Fade a whole UI branch | Canvas Group | [🔖 Fade Tween](Fade%20Tween.md) | [🔖 Fade To Tween](Fade%20To%20Tween.md) |
+| Image tint | Image | [🔖 Image Color Tween](Image%20Color%20Tween.md) | [🔖 Image Color To Tween](Image%20Color%20To%20Tween.md) |
+| Image fill (bars, timers) | Image | [🔖 Image Fill Amount Tween](Image%20Fill%20Amount%20Tween.md) | [🔖 Image Fill Amount To Tween](Image%20Fill%20Amount%20To%20Tween.md) |
+| Any UI Graphic tint | Graphic | [🔖 Graphic Color Tween](Graphic%20Color%20Tween.md) | [🔖 Graphic Color To Tween](Graphic%20Color%20To%20Tween.md) |
+| TextMeshPro color | Text (TMP) | [🔖 TMP Color Tween](TMP%20Color%20Tween.md) | [🔖 TMP Color To Tween](TMP%20Color%20To%20Tween.md) |
+| TextMeshPro alpha | Text (TMP) | [🔖 TMP Alpha Tween](TMP%20Alpha%20Tween.md) | [🔖 TMP Alpha To Tween](TMP%20Alpha%20To%20Tween.md) |
 
 ### Renderer
 
-| Component | Animates | Requires | Extra fields |
+| Animates | Needs | Fixed start | From current |
 | --- | --- | --- | --- |
-| **Sprite Renderer Color Tween** | Sprite tint, fixed to fixed | Sprite Renderer | Start Color, Target Color |
-| **Sprite Renderer Color To Tween** | Sprite tint, current to target | Sprite Renderer | Target Color |
+| Sprite tint | Sprite Renderer | [🔖 Sprite Renderer Color Tween](Sprite%20Renderer%20Color%20Tween.md) | [🔖 Sprite Renderer Color To Tween](Sprite%20Renderer%20Color%20To%20Tween.md) |
 
-The required component and its reference field are filled in for you when you add the tween.
+The needed component and its reference are filled in for you when you add the tween.
 
----
-
-## Tween Group
-
-**This is the component you will use most.** A tween on its own does nothing until something plays it. The Tween Group is what plays it.
-
-It bundles several tweens together and gives you a **Show** and a **Hide**.
-
-### Fields
+## Fields every tween shares
 
 | Field | What it does |
 | --- | --- |
-| **Show Tween Behaviours** | The tweens played when the object shows |
-| **Hide Tween Behaviours** | The tweens played when the object hides |
-| **Play On Start** | Automatically play the show tweens when the object starts |
-| **Sequence Mode** | `Parallel` plays everything at once, `Sequential` plays them one after another |
+| **Use Profile** | Take values **and** timing from a profile asset |
+| **Use Settings Asset** | Take only the timing from a shared [Tween Settings](../Scriptable%20Objects/Tween%20Settings.md) asset |
+| **Tween Settings** | Duration, delay and easing when no asset drives them |
+| **Loop Settings** | Loop count and loop type when no asset drives them |
 
-### How to use it
+**Priority:** profile beats settings asset beats the fields on the component. The Inspector hides whatever is not in use.
 
-1. Add your tween components to the GameObject, for example a Fade To Tween and a Scale To Tween.
-2. Add a Tween Group.
-3. Drag both tweens into **Show Tween Behaviours**.
-4. Something calls **Show()** or **Hide()**, usually a Menu or a UI Event Trigger.
+## Recipes
 
-### Good to know
-
-- If **Hide Tween Behaviours** is empty, hiding plays the show tweens **backwards**. This is usually what you want, and it saves you setting up a second list. Only fill in the hide list when the exit animation is genuinely different.
-- The group sets the GameObject active before it plays, so you can leave objects disabled in the scene and let the group turn them on.
-- `Parallel` is right for most UI. `Sequential` is right for staggered reveals.
-
----
-
-## UI Event Trigger
-
-Plays a Tween Group in response to a UI event. This is the quickest way to add hover and click feedback without writing any code.
-
-### Fields
-
-| Field | What it does |
+| You want | Do this |
 | --- | --- |
-| **Event Type** | `OnHover`, `OnClick`, `OnSelect`, or `OnSubmit` |
-| **Tween Group** | The group to play |
+| A menu that fades in | Canvas Group + [Fade To Tween](Fade%20To%20Tween.md) + [Tween Group](Tween%20Group.md), the group as the Menu's Content Root |
+| A button that grows on hover | [Scale To Tween](Scale%20To%20Tween.md) + Tween Group + two [UI Event Triggers](UI%20Event%20Trigger.md) (`OnHover` and `OnSelect`) |
+| A pulsing icon | [Scale Tween](Scale%20Tween.md) with Loop Count `-1` and Loop Type `Yoyo`, group on Play On Start |
+| The same animation on many objects | A [Vector3](../Scriptable%20Objects/Vector3%20Tween%20Profile.md), [Float](../Scriptable%20Objects/Float%20Tween%20Profile.md) or [Color](../Scriptable%20Objects/Color%20Tween%20Profile.md) tween profile |
+| A staggered reveal | Tween Group with Sequence Mode `Sequential` |
 
-### Behavior per event type
+## Also in this package
 
-| Event Type | Show is called on | Hide is called on |
-| --- | --- | --- |
-| **OnHover** | Pointer enters | Pointer exits |
-| **OnClick** | Pointer clicks | never |
-| **OnSelect** | Element gets selected | Element gets deselected |
-| **OnSubmit** | Element is submitted (Enter or gamepad A) | never |
-
-### Tips
-
-- `OnHover` is for mouse. `OnSelect` is for keyboard and gamepad navigation. Add **both** if your game supports both, each pointing at the same group.
-- Needs an Event System in the scene and a Graphic with **Raycast Target** on to receive events.
+- [🗞️ Tween Runner](Tween%20Runner.md): the service that moves every tween. It sits on the manager prefab.

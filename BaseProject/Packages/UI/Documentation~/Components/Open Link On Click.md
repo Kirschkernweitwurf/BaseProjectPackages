@@ -1,3 +1,13 @@
+---
+type: component
+package: UI
+audience: everyone
+tags:
+  - designer
+  - artist
+  - ui
+summary: "Opens a website in the player's browser when the button is clicked."
+---
 # Open Link On Click
 
 🔖 **Component** · for everyone

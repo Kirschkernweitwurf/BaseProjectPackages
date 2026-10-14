@@ -1,3 +1,13 @@
+---
+type: component
+package: UI
+audience: everyone
+tags:
+  - artist
+  - designer
+  - ui
+summary: Same idea as Billboard, but it also turns while you are working in the Scene view.
+---
 # Editor Billboard
 
 🔖 **Component** · for everyone

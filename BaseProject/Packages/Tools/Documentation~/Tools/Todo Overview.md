@@ -1,3 +1,13 @@
+---
+type: tool
+package: Tools
+audience: programmer
+tags:
+  - programmer
+  - project-health
+summary: "Lists every TODO, FIXME, BUG, HACK and similar note in the project's code, with owner and date if the note has them."
+menu: Tools > Base Packages > Code > Health > Todo Overview
+---
 # Todo Overview
 
 🔧 **Tool** · programmers only

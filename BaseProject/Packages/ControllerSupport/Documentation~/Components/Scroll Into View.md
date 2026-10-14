@@ -1,3 +1,15 @@
+---
+type: component
+package: Controller Support
+audience: everyone
+tags:
+  - designer
+  - gamepad
+  - ui
+summary: Keeps the selected element inside the visible part of a ScrollRect.
+requires:
+  - Scroll Rect
+---
 # Scroll Into View
 
 🔖 **Component** · for everyone

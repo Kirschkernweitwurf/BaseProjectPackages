@@ -1,3 +1,13 @@
+---
+type: component
+package: Save System
+audience: everyone
+tags:
+  - designer
+  - saving
+  - ui
+summary: Deletes the selected slot, including its data, its screenshot and its metadata.
+---
 # Delete Game Button
 
 🔖 **Component** · for everyone
@@ -17,6 +27,12 @@ None. It always uses the currently selected slot.
 - With no slot selected it logs a warning and does nothing.
 - After deleting, the selection is cleared, so nothing is targeted until the player picks another slot.
 - Deletion is immediate and permanent.
+
+## Fields
+
+| Field | Type | Default | What it does |
+| --- | --- | --- | --- |
+| **Button** | Button |  | Filled in automatically. The button on this GameObject. |
 
 ## Notes
 

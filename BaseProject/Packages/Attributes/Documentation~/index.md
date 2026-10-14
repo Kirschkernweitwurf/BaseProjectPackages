@@ -1,3 +1,10 @@
+---
+type: start
+package: Attributes
+tags:
+  - inspector
+summary: Every attribute in Base.AttributePackage, grouped the same way the Attributes window groups them.
+---
 # Attributes Package
 
 📦 **Package** · reusable, works in any of our projects

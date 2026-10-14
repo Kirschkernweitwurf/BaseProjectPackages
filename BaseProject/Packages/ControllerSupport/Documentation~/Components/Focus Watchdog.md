@@ -1,3 +1,13 @@
+---
+type: component
+package: Controller Support
+audience: programmer
+tags:
+  - programmer
+  - gamepad
+  - ui
+summary: Global safety net that keeps a valid selection while a gamepad is in use.
+---
 # Focus Watchdog
 
 🗞️ **Component** · programmers only

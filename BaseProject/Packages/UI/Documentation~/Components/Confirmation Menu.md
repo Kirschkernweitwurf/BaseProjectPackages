@@ -1,3 +1,12 @@
+---
+type: component
+package: UI
+audience: programmer
+tags:
+  - programmer
+  - ui
+summary: "The \"Are you sure?\" popup."
+---
 # Confirmation Menu
 
 🗞️ **Component** · programmers only

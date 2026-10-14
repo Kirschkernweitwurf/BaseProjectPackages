@@ -1,3 +1,11 @@
+---
+type: overview
+package: Controller Support
+tags:
+  - gamepad
+  - ui
+summary: Editor tooling shipped with the Controller Support package.
+---
 # Tools
 
 🧰 **Tools** · menu items and editor windows

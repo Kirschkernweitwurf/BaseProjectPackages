@@ -1,3 +1,15 @@
+---
+type: component
+package: Settings
+audience: everyone
+tags:
+  - designer
+  - settings
+  - ui
+summary: A classic dropdown list.
+requires:
+  - Dropdown (TMP)
+---
 # Setting Dropdown
 
 🔖 **Component** · for everyone

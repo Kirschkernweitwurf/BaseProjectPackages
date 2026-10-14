@@ -1,3 +1,15 @@
+---
+type: component
+package: Settings
+audience: everyone
+tags:
+  - designer
+  - settings
+  - ui
+summary: A slider, with optional minus and plus buttons and a number readout.
+requires:
+  - Slider
+---
 # Setting Slider
 
 🔖 **Component** · for everyone

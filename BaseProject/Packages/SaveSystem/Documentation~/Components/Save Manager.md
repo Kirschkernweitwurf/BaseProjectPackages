@@ -1,3 +1,13 @@
+---
+type: component
+package: Save System
+audience: programmer
+tags:
+  - programmer
+  - saving
+  - ui
+summary: The main component of the save system.
+---
 # Save Manager
 
 🗞️ **Component** · programmers only

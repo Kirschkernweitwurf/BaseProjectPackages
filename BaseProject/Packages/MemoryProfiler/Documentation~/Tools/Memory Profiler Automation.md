@@ -1,3 +1,13 @@
+---
+type: tool
+package: Memory Profiler
+audience: programmer
+tags:
+  - programmer
+  - debugging
+summary: Captures memory snapshots (.snap files) on a timer or whenever a scene finishes loading.
+menu: Tools > Base Packages > Unity Editor > Memory Profiler Automation
+---
 # Memory Profiler Automation
 
 🔧 **Tool** · programmers only

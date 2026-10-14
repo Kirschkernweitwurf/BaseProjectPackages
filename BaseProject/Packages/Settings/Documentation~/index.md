@@ -1,3 +1,11 @@
+---
+type: start
+package: Settings
+tags:
+  - settings
+  - ui
+summary: "Everything you need to build a settings menu: volume, resolution, full screen mode, quality, VSync and language, all saved between sessions."
+---
 # Settings Package
 
 📦 **Package** · reusable, works in any of our projects
