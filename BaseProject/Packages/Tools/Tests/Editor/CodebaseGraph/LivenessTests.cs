@@ -175,9 +175,9 @@ namespace Base.ToolsPackage.Editor.Tests.CodebaseGraph
         /// <summary>A serialized field Unity writes and no code reads.</summary>
         [Test]
         public void SerializedFieldNeverReadIsReported() => Assert.That(
-            _probe.HasIssue(Behaviour, "_neverRead", EMemberIssue.SerializedNeverRead),
+            _probe.HasIssue(Behaviour, "neverRead", EMemberIssue.SerializedNeverRead),
             Is.True,
-            $"_neverRead is serialized and never read: {_probe.DescribeType(Behaviour)}");
+            $"neverRead is serialized and never read: {_probe.DescribeType(Behaviour)}");
 
         /// <summary>A const nothing reads, which the text pass has to fail to find.</summary>
         [Test]

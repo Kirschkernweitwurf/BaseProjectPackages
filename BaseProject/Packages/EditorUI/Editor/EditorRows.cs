@@ -16,6 +16,7 @@ namespace Base.EditorUIPackage.Editor
 
         private static readonly GUIContent AscendingArrow = new("\u25B2");
         private static readonly GUIContent DescendingArrow = new("\u25BC");
+        private static readonly EditorStyleWatch SortArrowWatch = new();
 
         private static GUIStyle _sortArrow;
 
@@ -166,6 +167,8 @@ namespace Base.EditorUIPackage.Editor
             int size = Mathf.Max(MinSortArrowFontSize,
                 Mathf.RoundToInt(EditorMetrics.SortArrowWidth * ArrowFontScale));
 
+            DropStaleSortArrow();
+
             _sortArrow ??= new GUIStyle(EditorStyles.label)
             {
                 alignment = TextAnchor.MiddleCenter,
@@ -176,6 +179,19 @@ namespace Base.EditorUIPackage.Editor
             _sortArrow.fontSize = size;
 
             return _sortArrow;
+        }
+
+        // A GUIStyle copies its colors out of EditorStyles when it is built and does not stay
+        // linked to them, so a cached one keeps the previous theme's colors after a switch.
+        // Dropping it here has the next access rebuild it against the theme actually in use.
+        private static void DropStaleSortArrow()
+        {
+            if (!SortArrowWatch.IsStale)
+                return;
+
+            _sortArrow = null;
+
+            SortArrowWatch.MarkFresh();
         }
 
         /// <summary>

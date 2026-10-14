@@ -436,7 +436,7 @@ namespace Base.EditorUIPackage.Editor
 
         /// <summary>The light editor colors of the Verdigris preset.</summary>
         /// <returns>A fresh set, safe for the caller to keep.</returns>
-        private static EditorThemeColors CreateVerdigrisLight() => new(new Color(0.000f, 0.529f, 0.494f),
+        private static EditorThemeColors CreateVerdigrisLight() => new(new Color(0.000f, 0.516f, 0.482f),
             new Color(1.000f, 1.000f, 1.000f),
             new Color(0.925f, 1.000f, 0.990f),
             new Color(0.000f, 0.000f, 0.000f, 0.20f),
@@ -450,8 +450,8 @@ namespace Base.EditorUIPackage.Editor
             new Color(0.000f, 0.000f, 0.000f, 0.080f),
             new Color(0.811f, 0.876f, 0.868f),
             new Color(0.255f, 0.327f, 0.325f),
-            new Color(0.000f, 0.529f, 0.494f, 0.90f),
-            new Color(0.000f, 0.529f, 0.494f, 0.22f),
+            new Color(0.000f, 0.516f, 0.482f, 0.90f),
+            new Color(0.000f, 0.516f, 0.482f, 0.22f),
             new Color(0.000f, 0.000f, 0.000f, 0.12f),
             new Color(0.000f, 0.000f, 0.000f, 0.035f),
             new Color(0.000f, 0.032f, 0.017f),
@@ -580,7 +580,7 @@ namespace Base.EditorUIPackage.Editor
 
         /// <summary>The light editor colors of the Amber preset.</summary>
         /// <returns>A fresh set, safe for the caller to keep.</returns>
-        private static EditorThemeColors CreateAmberLight() => new(new Color(0.804f, 0.348f, 0.000f),
+        private static EditorThemeColors CreateAmberLight() => new(new Color(0.761f, 0.329f, 0.000f),
             new Color(1.000f, 1.000f, 1.000f),
             new Color(1.000f, 0.958f, 0.910f),
             new Color(0.000f, 0.000f, 0.000f, 0.20f),
@@ -594,8 +594,8 @@ namespace Base.EditorUIPackage.Editor
             new Color(0.000f, 0.000f, 0.000f, 0.080f),
             new Color(0.908f, 0.870f, 0.826f),
             new Color(0.376f, 0.324f, 0.271f),
-            new Color(0.804f, 0.348f, 0.000f, 0.90f),
-            new Color(0.804f, 0.348f, 0.000f, 0.22f),
+            new Color(0.761f, 0.329f, 0.000f, 0.90f),
+            new Color(0.761f, 0.329f, 0.000f, 0.22f),
             new Color(0.000f, 0.000f, 0.000f, 0.12f),
             new Color(0.000f, 0.000f, 0.000f, 0.035f),
             new Color(0.076f, 0.120f, 0.018f),
@@ -628,7 +628,7 @@ namespace Base.EditorUIPackage.Editor
 
         /// <summary>The light editor colors of the Malachite preset.</summary>
         /// <returns>A fresh set, safe for the caller to keep.</returns>
-        private static EditorThemeColors CreateMalachiteLight() => new(new Color(0.000f, 0.548f, 0.183f),
+        private static EditorThemeColors CreateMalachiteLight() => new(new Color(0.000f, 0.533f, 0.178f),
             new Color(1.000f, 1.000f, 1.000f),
             new Color(0.935f, 1.000f, 0.942f),
             new Color(0.000f, 0.000f, 0.000f, 0.20f),
@@ -642,8 +642,8 @@ namespace Base.EditorUIPackage.Editor
             new Color(0.000f, 0.000f, 0.000f, 0.080f),
             new Color(0.820f, 0.877f, 0.826f),
             new Color(0.271f, 0.331f, 0.275f),
-            new Color(0.000f, 0.548f, 0.183f, 0.90f),
-            new Color(0.000f, 0.548f, 0.183f, 0.22f),
+            new Color(0.000f, 0.533f, 0.178f, 0.90f),
+            new Color(0.000f, 0.533f, 0.178f, 0.22f),
             new Color(0.000f, 0.000f, 0.000f, 0.12f),
             new Color(0.000f, 0.000f, 0.000f, 0.035f),
             new Color(0.008f, 0.054f, 0.016f),
