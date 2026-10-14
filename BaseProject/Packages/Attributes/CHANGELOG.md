@@ -8,6 +8,13 @@ Changes made before 1.7.5 were not recorded.
 
 ## [Unreleased]
 
+## [1.8.10] - 2026-10-14
+
+### Changed
+
+- Every docs page has properties (type, package, audience, tags, summary) for Obsidian, and `Pages.base` shows
+  them as a sortable table. `Tags.md` is regenerated from them.
+
 ## [1.8.9] - 2026-10-05
 
 ### Added

@@ -8,6 +8,16 @@ Changes made before 1.2.1 were not recorded.
 
 ## [Unreleased]
 
+## [1.3.8] - 2026-10-14
+
+### Changed
+
+- Every component has its own docs page: what it does, how to set it up, every Inspector field with type and
+  default, and related pages.
+- `Components.md` and the start page list every component, grouped by what it is for.
+- Every docs page has properties (type, package, audience, tags, summary) for Obsidian, and `Pages.base` shows
+  them as a sortable table. `Tags.md` is regenerated from them.
+
 ## [1.3.7] - 2026-10-05
 
 ### Added
