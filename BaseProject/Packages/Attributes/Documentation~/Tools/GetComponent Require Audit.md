@@ -1,7 +1,7 @@
 ---
-type: tool
+type: Tool
 package: Attributes
-audience: programmer
+audience: Programmers
 tags:
   - programmer
   - inspector

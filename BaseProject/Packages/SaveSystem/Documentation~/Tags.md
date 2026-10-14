@@ -1,5 +1,5 @@
 ---
-type: tag-list
+type: Tag List
 package: Save System
 summary: Every page of this package sorted by who needs it and what it is about.
 ---

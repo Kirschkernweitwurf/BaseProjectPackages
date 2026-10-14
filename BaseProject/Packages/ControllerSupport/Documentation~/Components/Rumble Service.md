@@ -1,7 +1,7 @@
 ---
-type: component
+type: Component
 package: Controller Support
-audience: programmer
+audience: Programmers
 tags:
   - programmer
   - gamepad

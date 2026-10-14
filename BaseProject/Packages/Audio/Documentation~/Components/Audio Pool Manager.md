@@ -1,7 +1,7 @@
 ---
-type: component
+type: Component
 package: Audio
-audience: programmer
+audience: Programmers
 tags:
   - programmer
   - sound

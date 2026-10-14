@@ -1,7 +1,7 @@
 ---
-type: component
+type: Component
 package: UI
-audience: programmer
+audience: Programmers
 tags:
   - programmer
   - ui

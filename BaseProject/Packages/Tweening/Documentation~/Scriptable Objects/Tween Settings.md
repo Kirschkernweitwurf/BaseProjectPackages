@@ -1,7 +1,7 @@
 ---
-type: scriptable-object
+type: Scriptable Object
 package: Tweening
-audience: everyone
+audience: Everyone
 tags:
   - artist
   - designer

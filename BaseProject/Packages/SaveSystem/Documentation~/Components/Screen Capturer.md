@@ -1,7 +1,7 @@
 ---
-type: component
+type: Component
 package: Save System
-audience: programmer
+audience: Programmers
 tags:
   - programmer
   - saving

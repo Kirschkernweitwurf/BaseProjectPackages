@@ -1,7 +1,7 @@
 ---
-type: tool
+type: Tool
 package: Utility
-audience: programmer
+audience: Programmers
 tags:
   - programmer
   - workflow

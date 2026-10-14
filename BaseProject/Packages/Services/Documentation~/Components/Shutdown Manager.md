@@ -1,7 +1,7 @@
 ---
-type: component
+type: Component
 package: Services
-audience: programmer
+audience: Programmers
 tags:
   - programmer
 summary: Lets systems clean up in a fixed order when the game quits.

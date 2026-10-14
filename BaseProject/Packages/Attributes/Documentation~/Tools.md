@@ -1,5 +1,5 @@
 ---
-type: overview
+type: Overview
 package: Attributes
 tags:
   - inspector

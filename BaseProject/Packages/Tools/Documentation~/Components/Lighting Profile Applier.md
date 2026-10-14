@@ -1,7 +1,7 @@
 ---
-type: component
+type: Component
 package: Tools
-audience: everyone
+audience: Everyone
 tags:
   - artist
   - lighting

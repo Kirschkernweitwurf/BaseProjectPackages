@@ -1,7 +1,7 @@
 ---
-type: tool
+type: Tool
 package: Audio
-audience: everyone
+audience: Everyone
 tags:
   - sound
   - audio

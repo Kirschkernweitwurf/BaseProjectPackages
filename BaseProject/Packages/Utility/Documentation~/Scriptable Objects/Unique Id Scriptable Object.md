@@ -1,7 +1,7 @@
 ---
-type: scriptable-object
+type: Scriptable Object
 package: Utility
-audience: programmer
+audience: Programmers
 tags:
   - programmer
   - workflow

@@ -1,7 +1,7 @@
 ---
-type: component
+type: Component
 package: Controller Support
-audience: everyone
+audience: Everyone
 tags:
   - designer
   - settings

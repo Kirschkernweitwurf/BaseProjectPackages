@@ -1,7 +1,7 @@
 ---
-type: component
+type: Component
 package: Core Debug
-audience: programmer
+audience: Programmers
 tags:
   - programmer
   - debugging

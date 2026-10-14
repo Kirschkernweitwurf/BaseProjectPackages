@@ -1,7 +1,7 @@
 ---
-type: tool
+type: Tool
 package: Tools
-audience: programmer
+audience: Programmers
 tags:
   - programmer
   - code-generation

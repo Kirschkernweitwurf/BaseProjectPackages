@@ -1,7 +1,7 @@
 ---
-type: component
+type: Component
 package: Localization
-audience: everyone
+audience: Everyone
 tags:
   - designer
   - localization

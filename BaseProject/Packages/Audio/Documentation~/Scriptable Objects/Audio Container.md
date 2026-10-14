@@ -1,7 +1,7 @@
 ---
-type: scriptable-object
+type: Scriptable Object
 package: Audio
-audience: everyone
+audience: Everyone
 tags:
   - sound
   - designer

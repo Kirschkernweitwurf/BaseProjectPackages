@@ -1,5 +1,5 @@
 ---
-type: overview
+type: Overview
 package: Core Debug
 tags:
   - debugging

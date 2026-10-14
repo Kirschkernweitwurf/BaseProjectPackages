@@ -1,7 +1,7 @@
 ---
-type: tool
+type: Tool
 package: Memory Profiler
-audience: programmer
+audience: Programmers
 tags:
   - programmer
   - debugging

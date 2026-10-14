@@ -1,5 +1,5 @@
 ---
-type: start
+type: Start Page
 package: UI
 tags:
   - ui

@@ -1,7 +1,7 @@
 ---
-type: tool
+type: Tool
 package: Core
-audience: programmer
+audience: Programmers
 tags:
   - programmer
   - debugging

@@ -1,7 +1,7 @@
 ---
-type: component
+type: Component
 package: Audio
-audience: everyone
+audience: Everyone
 tags:
   - sound
   - designer

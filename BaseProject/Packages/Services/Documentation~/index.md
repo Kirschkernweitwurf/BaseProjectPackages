@@ -1,5 +1,5 @@
 ---
-type: start
+type: Start Page
 package: Services
 tags:
   - setup

@@ -1,5 +1,5 @@
 ---
-type: guide
+type: Guide
 package: Core
 tags:
   - designer

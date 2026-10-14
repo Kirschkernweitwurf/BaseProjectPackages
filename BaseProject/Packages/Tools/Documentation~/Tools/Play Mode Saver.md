@@ -1,7 +1,7 @@
 ---
-type: tool
+type: Tool
 package: Tools
-audience: everyone
+audience: Everyone
 tags:
   - artist
   - designer

@@ -1,7 +1,7 @@
 ---
-type: tool
+type: Tool
 package: Controller Support
-audience: everyone
+audience: Everyone
 tags:
   - designer
   - gamepad

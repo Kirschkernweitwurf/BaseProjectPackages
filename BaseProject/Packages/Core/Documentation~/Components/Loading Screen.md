@@ -1,7 +1,7 @@
 ---
-type: component
+type: Component
 package: Core
-audience: everyone
+audience: Everyone
 tags:
   - designer
   - menus

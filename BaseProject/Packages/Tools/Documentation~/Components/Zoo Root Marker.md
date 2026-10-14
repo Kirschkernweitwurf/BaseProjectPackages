@@ -1,7 +1,7 @@
 ---
-type: component
+type: Component
 package: Tools
-audience: programmer
+audience: Programmers
 tags:
   - programmer
   - assets

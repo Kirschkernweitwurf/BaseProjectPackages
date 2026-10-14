@@ -1,7 +1,7 @@
 ---
-type: component
+type: Component
 package: Settings
-audience: programmer
+audience: Programmers
 tags:
   - programmer
   - settings

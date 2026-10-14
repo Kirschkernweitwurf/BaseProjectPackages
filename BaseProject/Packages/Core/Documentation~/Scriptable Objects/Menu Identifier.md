@@ -1,7 +1,7 @@
 ---
-type: scriptable-object
+type: Scriptable Object
 package: Core
-audience: everyone
+audience: Everyone
 tags:
   - designer
   - menus

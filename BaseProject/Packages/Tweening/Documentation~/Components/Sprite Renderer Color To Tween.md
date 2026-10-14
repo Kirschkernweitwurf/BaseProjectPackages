@@ -1,7 +1,7 @@
 ---
-type: component
+type: Component
 package: Tweening
-audience: everyone
+audience: Everyone
 tags:
   - artist
   - designer

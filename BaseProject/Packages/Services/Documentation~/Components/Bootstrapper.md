@@ -1,7 +1,7 @@
 ---
-type: component
+type: Component
 package: Services
-audience: everyone
+audience: Everyone
 tags:
   - designer
   - setup
@@ -27,6 +27,7 @@ If a scene is missing its Bootstrapper, the game will run but services like audi
 
 ## Good to know
 
+- Persistent managers spawn once per session, scene managers in every scene, and gameplay managers only while one of the gameplay scenes is loaded.
 - Persistent managers spawn once per session, scene managers in every scene, and gameplay managers only while one of the gameplay scenes is loaded.
 - Persistent managers spawn once per session, scene managers in every scene, and gameplay managers only while one of the gameplay scenes is loaded.
 - Persistent managers spawn once per session, scene managers in every scene, and gameplay managers only while one of the gameplay scenes is loaded.

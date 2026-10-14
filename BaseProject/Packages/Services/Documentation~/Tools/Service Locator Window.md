@@ -1,7 +1,7 @@
 ---
-type: tool
+type: Tool
 package: Services
-audience: programmer
+audience: Programmers
 tags:
   - programmer
   - debugging

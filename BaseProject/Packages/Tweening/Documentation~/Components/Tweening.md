@@ -1,5 +1,5 @@
 ---
-type: guide
+type: Guide
 package: Tweening
 tags:
   - artist

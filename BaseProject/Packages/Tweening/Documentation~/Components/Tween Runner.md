@@ -1,7 +1,7 @@
 ---
-type: component
+type: Component
 package: Tweening
-audience: programmer
+audience: Programmers
 tags:
   - programmer
   - animation
