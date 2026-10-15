@@ -8,6 +8,15 @@ Changes made before 2.1.4 were not recorded.
 
 ## [Unreleased]
 
+## [4.0.10] - 2026-10-15
+
+### Changed
+
+- Docs pages have descriptive file names that are unique across a vault with every package. The start page is
+  `Core Package.md`, the other root pages are `Core Components.md`, `Core Pages.base`, `Core Scriptable Objects.md`,
+  `Core Tags.md` and `Core Tools.md`, so Ctrl+O in Obsidian shows what a page is about. Every renamed page has a
+  matching title, and links, the README and the documentation URL point to the new names.
+
 ## [4.0.9] - 2026-10-14
 
 ### Changed

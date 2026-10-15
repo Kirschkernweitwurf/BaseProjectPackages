@@ -8,6 +8,20 @@ Changes made before 1.6.10 were not recorded.
 
 ## [Unreleased]
 
+## [1.9.0] - 2026-10-15
+
+### Changed
+
+- Docs pages have descriptive file names that are unique across a vault with every package. The start page is
+  `Utility Package.md`, the other root pages are `Utility Pages.base` and `Utility Tags.md`, so Ctrl+O in Obsidian
+  shows what a page is about. Every renamed page has a matching title, and links, the README and the
+  documentation URL point to the new names.
+- The Documentation window and Documentation Sync find the start page by `type: Start Page` in its properties
+  instead of expecting an `index.md`. Older packages and projects with an `index.md` keep working.
+- The generated mirror start page is `Docs/Packages/Base Packages.md` and links the real start page of each
+  package. An old `Docs/Packages/index.md` is deleted on the next sync. Links to a docs folder or an old
+  `index.md` open the renamed start page.
+
 ## [1.8.2] - 2026-10-14
 
 ### Fixed

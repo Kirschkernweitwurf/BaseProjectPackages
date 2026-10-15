@@ -8,6 +8,15 @@ Changes made before 2.0.10 were not recorded.
 
 ## [Unreleased]
 
+## [3.1.12] - 2026-10-15
+
+### Changed
+
+- Docs pages have descriptive file names that are unique across a vault with every package. The start page is
+  `Tools Package.md`, the other root pages are `Tools Components.md`, `Tools Pages.base`, `Tools Scriptable
+  Objects.md`, `Tools Tags.md` and `Tools Tools.md`, so Ctrl+O in Obsidian shows what a page is about. Every
+  renamed page has a matching title, and links, the README and the documentation URL point to the new names.
+
 ## [3.1.11] - 2026-10-14
 
 ### Changed

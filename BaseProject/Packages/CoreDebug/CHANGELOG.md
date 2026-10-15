@@ -6,6 +6,15 @@ All notable changes to this package are recorded here. The format follows
 
 ## [Unreleased]
 
+## [1.1.6] - 2026-10-15
+
+### Changed
+
+- Docs pages have descriptive file names that are unique across a vault with every package. The start page is
+  `Core Debug Package.md`, the other root pages are `Core Debug Components.md`, `Core Debug Pages.base` and `Core Debug
+  Tags.md`, so Ctrl+O in Obsidian shows what a page is about. Every renamed page has a matching title, and
+  links, the README and the documentation URL point to the new names.
+
 ## [1.1.5] - 2026-10-14
 
 ### Fixed

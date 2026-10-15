@@ -6,6 +6,15 @@ All notable changes to this package are recorded here. The format follows
 
 ## [Unreleased]
 
+## [1.1.10] - 2026-10-15
+
+### Changed
+
+- Docs pages have descriptive file names that are unique across a vault with every package. The start page is
+  `Audio Package.md`, the other root pages are `Audio Components.md`, `Audio Pages.base` and `Audio Tags.md`, so Ctrl+O
+  in Obsidian shows what a page is about. Every renamed page has a matching title, and links, the README and the
+  documentation URL point to the new names.
+
 ## [1.1.9] - 2026-10-14
 
 ### Changed

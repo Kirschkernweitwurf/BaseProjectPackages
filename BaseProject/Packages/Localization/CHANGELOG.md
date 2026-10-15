@@ -8,6 +8,15 @@ Changes made before 1.2.1 were not recorded.
 
 ## [Unreleased]
 
+## [1.3.9] - 2026-10-15
+
+### Changed
+
+- Docs pages have descriptive file names that are unique across a vault with every package. The start page is
+  `Localization Package.md`, the other root pages are `Localization Components.md`, `Localization Pages.base` and
+  `Localization Tags.md`, so Ctrl+O in Obsidian shows what a page is about. Every renamed page has a matching
+  title, and links, the README and the documentation URL point to the new names.
+
 ## [1.3.8] - 2026-10-14
 
 ### Changed

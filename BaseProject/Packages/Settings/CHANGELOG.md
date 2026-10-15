@@ -8,6 +8,15 @@ Changes made before 2.3.3 were not recorded.
 
 ## [Unreleased]
 
+## [2.3.13] - 2026-10-15
+
+### Changed
+
+- Docs pages have descriptive file names that are unique across a vault with every package. The start page is
+  `Settings Package.md`, the other root pages are `Settings Components.md`, `Settings Pages.base` and `Settings
+  Tags.md`, so Ctrl+O in Obsidian shows what a page is about. Every renamed page has a matching title, and
+  links, the README and the documentation URL point to the new names.
+
 ## [2.3.12] - 2026-10-14
 
 ### Changed

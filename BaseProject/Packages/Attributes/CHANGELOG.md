@@ -8,6 +8,15 @@ Changes made before 1.7.5 were not recorded.
 
 ## [Unreleased]
 
+## [1.8.11] - 2026-10-15
+
+### Changed
+
+- Docs pages have descriptive file names that are unique across a vault with every package. The start page is
+  `Attributes Package.md`, the other root pages are `Attributes Pages.base`, `Attributes Tags.md` and `Attributes
+  Tools.md`, so Ctrl+O in Obsidian shows what a page is about. Every renamed page has a matching title, and
+  links, the README and the documentation URL point to the new names.
+
 ## [1.8.10] - 2026-10-14
 
 ### Changed

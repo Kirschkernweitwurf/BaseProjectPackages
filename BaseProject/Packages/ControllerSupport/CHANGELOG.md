@@ -8,6 +8,16 @@ Changes made before 1.6.5 were not recorded.
 
 ## [Unreleased]
 
+## [1.7.13] - 2026-10-15
+
+### Changed
+
+- Docs pages have descriptive file names that are unique across a vault with every package. The start page is
+  `Controller Support Package.md`, the other root pages are `Controller Support Components.md`, `Controller Support
+  Pages.base`, `Controller Support Tags.md` and `Controller Support Tools.md`, so Ctrl+O in Obsidian shows what
+  a page is about. Every renamed page has a matching title, and links, the README and the documentation URL
+  point to the new names.
+
 ## [1.7.12] - 2026-10-14
 
 ### Changed

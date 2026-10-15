@@ -8,6 +8,15 @@ Changes made before 1.0.11 were not recorded.
 
 ## [Unreleased]
 
+## [1.0.21] - 2026-10-15
+
+### Changed
+
+- Docs pages have descriptive file names that are unique across a vault with every package. The start page is
+  `Tweening Package.md`, the other root pages are `Tweening Components.md`, `Tweening Pages.base` and `Tweening
+  Tags.md`, so Ctrl+O in Obsidian shows what a page is about. Every renamed page has a matching title, and
+  links, the README and the documentation URL point to the new names.
+
 ## [1.0.20] - 2026-10-14
 
 ### Changed

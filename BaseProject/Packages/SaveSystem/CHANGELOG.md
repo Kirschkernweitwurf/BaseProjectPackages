@@ -8,6 +8,15 @@ Changes made before 1.3.10 were not recorded.
 
 ## [Unreleased]
 
+## [1.4.9] - 2026-10-15
+
+### Changed
+
+- Docs pages have descriptive file names that are unique across a vault with every package. The start page is
+  `Save System Package.md`, the other root pages are `Save System Components.md`, `Save System Pages.base` and `Save
+  System Tags.md`, so Ctrl+O in Obsidian shows what a page is about. Every renamed page has a matching title,
+  and links, the README and the documentation URL point to the new names.
+
 ## [1.4.8] - 2026-10-14
 
 ### Changed
