@@ -2,7 +2,7 @@
 
 My personal collection of base Unity packages, the stack I use myself for every project. Built up over years of past projects (especially [Laskards](https://github.com/Kirschkernweitwurf/Laskards), source also on my GitHub) and continuously updated.
 
-Sixteen packages, Unity 6. Everything below is in here and in use.
+Seventeen packages, Unity 6. Everything below is in here and in use.
 
 ## What's inside
 
@@ -14,6 +14,7 @@ Sixteen packages, Unity 6. Everything below is in here and in use.
 | Controller Support | `ControllerSupport` | Gamepad navigation, input glyphs, haptics | Core |
 | Core | `Core` | Menus, scenes, timers, state machines, input, pooling | Tweening |
 | Core Debug | `CoreDebug` | The in-game debug menu, cheat console and debug drawing | Core, Tweening |
+| Data Hub | `DataHub` | One editor window for every data asset: tables, inline editing, checks | Attributes, Editor UI, Tools, Utility |
 | Editor UI | `EditorUI` | The shared skin every Base editor window is built from | nothing |
 | Localization | `Localization` | Google Sheets sync for Unity String Tables | Utility |
 | Memory Profiler | `MemoryProfiler` | Automated `.snap` capture on a timer or on scene load | Core |
