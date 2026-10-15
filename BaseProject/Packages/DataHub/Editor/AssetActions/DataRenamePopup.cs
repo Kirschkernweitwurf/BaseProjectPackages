@@ -1,0 +1,116 @@
+using System;
+using UnityEditor;
+using UnityEngine;
+using Object = UnityEngine.Object;
+
+namespace Base.DataHubPackage.Editor.AssetActions
+{
+    /// <summary>
+    /// The small box Rename opens: a name field and the name the asset will really get once the naming
+    /// conventions are applied, so a prefix added automatically is never a surprise.
+    /// </summary>
+    internal sealed class DataRenamePopup : PopupWindowContent
+    {
+        private const string ApplyLabel = "Rename";
+        private const string FieldControlName = "DataHubRenameField";
+        private const float Height = 86f;
+        private const float Padding = 8f;
+        private const string PreviewFormat = "Saved as: {0}";
+        private const string Title = "Rename";
+        private const float Width = 320f;
+
+        private readonly Object _asset;
+        private readonly Action<string> _onApply;
+
+        private bool _isFocused;
+        private string _name;
+        private string _preview;
+
+        /// <summary>Creates the popup for one asset.</summary>
+        /// <param name="asset">The asset to rename.</param>
+        /// <param name="onApply">Called with the typed name when the user confirms.</param>
+        internal DataRenamePopup(Object asset, Action<string> onApply)
+        {
+            _asset = asset;
+            _onApply = onApply;
+            _name = asset.name;
+            _preview = asset.name;
+        }
+
+        /// <inheritdoc/>
+        public override Vector2 GetWindowSize() => new(Width, Height);
+
+        /// <inheritdoc/>
+        public override void OnGUI(Rect rect)
+        {
+            // The asset can be deleted from outside while the popup is open.
+            if (_asset == null)
+            {
+                editorWindow.Close();
+                return;
+            }
+
+            if (HandleKeys())
+                return;
+
+            GUILayout.BeginArea(new Rect(rect.x + Padding, rect.y + Padding, rect.width - Padding * 2f,
+                rect.height - Padding * 2f));
+
+            GUILayout.Label(Title, EditorStyles.boldLabel);
+
+            EditorGUI.BeginChangeCheck();
+            GUI.SetNextControlName(FieldControlName);
+            _name = EditorGUILayout.TextField(_name);
+
+            if (EditorGUI.EndChangeCheck())
+                _preview = DataAssetActions.PreviewName(_asset, _name);
+
+            GUILayout.Label(string.Format(PreviewFormat, _preview), EditorStyles.miniLabel);
+
+            if (GUILayout.Button(ApplyLabel))
+                Apply();
+
+            GUILayout.EndArea();
+
+            if (_isFocused)
+                return;
+
+            _isFocused = true;
+            EditorGUI.FocusTextInControl(FieldControlName);
+        }
+
+        // Enter confirms and Escape cancels, the same as renaming in the Project window.
+        private bool HandleKeys()
+        {
+            Event current = Event.current;
+
+            if (current.type != EventType.KeyDown)
+                return false;
+
+            switch (current.keyCode)
+            {
+                case KeyCode.Return:
+                case KeyCode.KeypadEnter:
+                    current.Use();
+                    Apply();
+
+                    return true;
+
+                case KeyCode.Escape:
+                    current.Use();
+                    editorWindow.Close();
+
+                    return true;
+
+                default:
+                    return false;
+            }
+        }
+
+        private void Apply()
+        {
+            _onApply?.Invoke(_name);
+            editorWindow.Close();
+        }
+    }
+}

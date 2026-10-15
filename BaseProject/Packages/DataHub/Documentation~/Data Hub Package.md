@@ -1,0 +1,35 @@
+---
+type: Start Page
+package: Data Hub
+tags:
+  - data
+  - setup
+summary: "One window to see, create, edit and check every data asset of the project, grouped by type."
+---
+# Data Hub Package
+
+📦 **Package** · reusable, works in any of our projects
+
+**Tags:** #data #setup
+
+One window to see, create, edit and check every data asset of the project, grouped by type. No more hunting through folders, and broken assets show up in the table before they show up in play mode.
+
+## Tools
+
+| Page | What it does | Menu path |
+| --- | --- | --- |
+| [🔧 Data Hub Window](Tools/Data%20Hub%20Window.md) | Tables of all data assets with inline editing, checks and create, rename and delete | `Tools > Base Packages > Assets > Data Hub` |
+
+## For programmers
+
+What shows up in the window is declared by the project, one class per entry. The interfaces live in `Base.DataHubPackage.Editor.Extensions`:
+
+| Interface | Adds |
+| --- | --- |
+| `IDataTable` | A type as a table in the tree |
+| `IDataColumn` | A computed column |
+| `IDataValidator` | A check that turns the badge red |
+| `IDataCreateRule` | Folder, start name and collection for new assets |
+| `IDataHubPage` | A whole custom page, like a balancing overview |
+
+The README of the package has an example and the details of every action.
