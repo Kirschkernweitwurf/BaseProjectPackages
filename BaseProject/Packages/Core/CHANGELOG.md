@@ -8,6 +8,13 @@ Changes made before 2.1.4 were not recorded.
 
 ## [Unreleased]
 
+## [4.0.11] - 2026-10-15
+
+### Changed
+
+- Regenerate Menu Identifiers always logs its result, also when nothing had to change, so a manual run
+  gives visible feedback.
+
 ## [4.0.10] - 2026-10-15
 
 ### Changed
