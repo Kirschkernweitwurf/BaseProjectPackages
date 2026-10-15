@@ -32,7 +32,8 @@ Run it manually if something looks out of sync, for example after a merge, after
 
 | Message | Meaning |
 | --- | --- |
-| `Generated MenuIdentifiers.cs with N entries` | Everything worked |
+| `Regenerated MenuIdentifiers and the registry with N entries` | Something changed and was written |
+| `MenuIdentifiers and the registry are already up to date with N entries` | Nothing had to change |
 | `Duplicate MenuIdentifier name '...'` | Two identifier assets share a name. Rename one and run again. Nothing is generated until this is fixed. |
 | `Created MenuIdentifierRegistry at '...'` | No registry existed, so a new one was made |
 | `Deleting duplicate MenuIdentifierRegistry at '...'` | More than one registry existed. Only one is kept. |

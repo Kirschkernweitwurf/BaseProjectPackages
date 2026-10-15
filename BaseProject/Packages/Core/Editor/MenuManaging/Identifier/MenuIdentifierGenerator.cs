@@ -28,6 +28,7 @@ namespace Base.CorePackage.Editor.MenuManaging.Identifier
 
         /// <summary>
         /// Rebuilds the registry asset and the generated accessor class from the identifiers in the project.
+        /// Always logs the result, so a manual run gives visible feedback even when nothing had to change.
         /// </summary>
         [DynamicMenuItem(RegenerateMenuPath)]
         internal static void Regenerate()
@@ -37,8 +38,10 @@ namespace Base.CorePackage.Editor.MenuManaging.Identifier
             if (HasDuplicateNames(identifiers))
                 return;
 
-            UpdateRegistry(identifiers);
-            WriteAccessorClass(identifiers);
+            bool isRegistryChanged = TryUpdateRegistry(identifiers);
+            bool isClassChanged = TryWriteAccessorClass(identifiers);
+
+            LogResult(identifiers.Length, isRegistryChanged || isClassChanged);
         }
 
         private static MenuIdentifier[] LoadAllIdentifiers() => AssetDatabase
@@ -72,17 +75,19 @@ namespace Base.CorePackage.Editor.MenuManaging.Identifier
             return hasDuplicates;
         }
 
-        private static void UpdateRegistry(MenuIdentifier[] identifiers)
+        /// <summary>Returns true when the registry entries had to change.</summary>
+        private static bool TryUpdateRegistry(MenuIdentifier[] identifiers)
         {
             MenuIdentifierRegistry registry = ResolveRegistry();
 
             // Only write when the set actually changed, otherwise the asset gets rewritten on every
             // run and shows up as modified in version control for no reason.
             if (registry.EntriesEqual(identifiers))
-                return;
+                return false;
 
             registry.SetEntries(identifiers);
             EditorUtility.SetDirty(registry);
+            return true;
         }
 
         /// <summary>
@@ -144,23 +149,33 @@ namespace Base.CorePackage.Editor.MenuManaging.Identifier
                 + "Resources folder and will not be found in a build. Move it into one.", null);
         }
 
-        private static void WriteAccessorClass(MenuIdentifier[] identifiers)
+        /// <summary>Returns true when the accessor class had to be rewritten.</summary>
+        private static bool TryWriteAccessorClass(MenuIdentifier[] identifiers)
         {
             string contents = BuildAccessorSource(identifiers);
             Directory.CreateDirectory(OutputDirectory);
 
             // Skip writing if nothing changed, avoids triggering pointless recompiles.
-            if (File.Exists(OutputPath) && File.ReadAllText(OutputPath) == contents)
+            if (File.Exists(OutputPath)
+                && File.ReadAllText(OutputPath) == contents)
             {
                 AssetDatabase.SaveAssets();
-                return;
+                return false;
             }
 
             File.WriteAllText(OutputPath, contents);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
+            return true;
+        }
 
-            CustomLogger.Log($"Generated {GeneratedClassName} with {identifiers.Length} entries.", null);
+        private static void LogResult(int count, bool hasChanged)
+        {
+            string message = hasChanged
+                ? $"Regenerated {GeneratedClassName} and the registry with {count} entries."
+                : $"{GeneratedClassName} and the registry are already up to date with {count} entries.";
+
+            CustomLogger.Log(message, null);
         }
 
         private static string BuildAccessorSource(MenuIdentifier[] identifiers)
