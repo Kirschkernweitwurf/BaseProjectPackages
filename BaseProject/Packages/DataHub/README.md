@@ -28,7 +28,8 @@ The package knows nothing about any game. A project declares what shows up throu
   - **Used In:** every list in the project that can hold the selected rows, with how often they are in it. Plus, minus or a typed count changes it for every selected row at once.
 - **Actions** above the table and on right click: the parameterless `[Button]` methods the selected assets share, run on each of them in one undo step.
 - **Drag** a row by its name to drop the selected assets on a list, any object field or the Project window.
-- **Check column**: a quiet check mark for a fine row, a red count for a broken one with the problems in its tooltip.
+- **Check column**: a quiet check mark for a fine row, a red count for a broken one and an amber count for warnings, with the messages in its tooltip.
+- **Tooltips** are one short line each. A column title shows the field's own `[Tooltip]` when it has one, otherwise what kind of value it holds, plus a hint only where clicking the cell is not enough.
 - **New, Duplicate, Rename, Delete** above the table and on right click, also as Ctrl+D, Delete and F2. Ctrl+A selects every row, Ctrl+F jumps to the search.
 
 ## Extension points

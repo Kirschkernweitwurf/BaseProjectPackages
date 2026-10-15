@@ -18,7 +18,7 @@ One window to see, create, edit and check every data asset of the project, group
 
 | Page | What it does | Menu path |
 | --- | --- | --- |
-| [🔧 Data Hub Window](Tools/Data%20Hub%20Window.md) | Tables of all data assets with inline editing, checks and create, rename and delete | `Tools > Base Packages > Assets > Data Hub` |
+| [🔧 Data Hub Window](Tools/Data%20Hub%20Window.md) | Tables of all data assets with inline editing, checks, bulk changes and spreadsheet sync | `Tools > Base Packages > Assets > Data Hub` |
 
 ## For programmers
 
@@ -29,7 +29,11 @@ What shows up in the window is declared by the project, one class per entry. The
 | `IDataTable` | A type as a table in the tree |
 | `IDataColumn` | A computed column |
 | `IDataValidator` | A check that turns the badge red |
+| `IDataUsageCheck` | An amber warning for assets nothing uses yet |
 | `IDataCreateRule` | Folder, start name and collection for new assets |
 | `IDataHubPage` | A whole custom page, like a balancing overview |
+| `IDataSummary` | A live summary at the top of the Contents tab, like the balance of a deck |
+
+Keep every text a designer reads short: one plain sentence per tooltip or message, no repeated titles.
 
 The README of the package has an example and the details of every action.
