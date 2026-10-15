@@ -8,6 +8,13 @@ Changes made before 1.7.5 were not recorded.
 
 ## [Unreleased]
 
+## [1.8.12] - 2026-10-15
+
+### Added
+
+- `ReferenceValidation.Collect` runs the validation attributes of an object from code and returns one line per
+  problem, so editor tools like the Data Hub show the same problems as the inspector.
+
 ## [1.8.11] - 2026-10-15
 
 ### Changed

@@ -8,6 +8,13 @@ Changes made before 2.0.10 were not recorded.
 
 ## [Unreleased]
 
+## [3.1.13] - 2026-10-15
+
+### Added
+
+- `AssetNamingConventions.SuggestName` and `SuggestNewName` ask the naming rules what an asset should be
+  called, free of collisions, so tools that create or rename assets follow the conventions.
+
 ## [3.1.12] - 2026-10-15
 
 ### Changed
