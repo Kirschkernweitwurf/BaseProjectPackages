@@ -18,6 +18,14 @@ namespace Base.ToolsPackage.Editor.NamingConventions.Scanning
 
         /// <summary>Returns the suggestion, bumped until no other asset in the folder uses it.</summary>
         public static string MakeUnique(string assetPath, string suggestion, int digits)
+            => MakeUnique(assetPath, suggestion, digits, true);
+
+        /// <summary>
+        /// Returns the suggestion, bumped until no other asset in the folder uses it. With
+        /// <paramref name="isOwnPathFree"/> false, <paramref name="assetPath"/> is the planned path of an
+        /// asset that does not exist yet, so whatever already sits there counts as a collision.
+        /// </summary>
+        public static string MakeUnique(string assetPath, string suggestion, int digits, bool isOwnPathFree)
         {
             if (string.IsNullOrEmpty(suggestion))
                 return suggestion;
@@ -28,7 +36,7 @@ namespace Base.ToolsPackage.Editor.NamingConventions.Scanning
 
             for (int attempt = 0; attempt < MaxAttempts; attempt++)
             {
-                if (IsFree(folder, candidate, extension, assetPath))
+                if (IsFree(folder, candidate, extension, assetPath, isOwnPathFree))
                     return candidate;
 
                 candidate = Bump(candidate, digits);
@@ -46,7 +54,8 @@ namespace Base.ToolsPackage.Editor.NamingConventions.Scanning
                 : folder.Replace('\\', '/');
         }
 
-        private static bool IsFree(string folder, string candidate, string extension, string assetPath)
+        private static bool IsFree(string folder, string candidate, string extension, string assetPath,
+            bool isOwnPathFree)
         {
             string path = folder.Length > 0
                 ? folder + "/" + candidate + extension
@@ -54,7 +63,8 @@ namespace Base.ToolsPackage.Editor.NamingConventions.Scanning
 
             // The asset itself is not a collision, otherwise a name that only changes its casing
             // could never be suggested.
-            if (path == assetPath)
+            if (isOwnPathFree
+                && path == assetPath)
                 return true;
 
             return AssetDatabase.LoadMainAssetAtPath(path) == null;
