@@ -6,6 +6,35 @@ All notable changes to this package are recorded here. The format follows
 
 ## [Unreleased]
 
+## [1.0.2] - 2026-10-16
+
+### Added
+
+- Bulk edit: right click a number cell, or a column title for all shown rows, to add to, multiply or set the
+  value of many rows at once. A preview shows the first rows before and after; whole numbers are rounded and
+  `[Min]` and `[Range]` are respected, and both are said in the box. One undo step.
+- `IDataSummary`: a live summary of an asset at the top of its Contents tab, drawn by the project, like the
+  mood balance of a deck.
+- Replace Everywhere on right click: swaps an asset for another in every list and field of the data assets,
+  with a preview of every spot. A collection that already holds the new asset only loses the old one, and a
+  list that cannot hold it keeps the old one. Left empty, the asset is removed everywhere instead.
+- `IDataUsageCheck`: an amber warning on assets nothing uses yet, for the types the project names. Being in
+  its own collection does not count, other data assets and saved scenes do. The filter next to the search
+  has a Warnings segment, and the status line counts them.
+- Sheet menu: copy the shown rows as tab separated text for any spreadsheet, paste edited rows back, or
+  export and import a CSV file. Rows are matched by name and columns by title, every change and every line
+  that could not be used is shown before anything is applied. Numbers keep their full precision, "0,5" and
+  "0.5" both read, and semicolon files from a German Excel are recognized.
+- Ctrl+C copies the selected rows, or every shown row, for a spreadsheet; Ctrl+V pastes edited rows back
+  through the import preview.
+- Show in Data Hub in the Project window's context menu: opens the table of the selected asset with its row
+  selected.
+
+### Changed
+
+- A new or revealed asset hidden by the search or the filter clears them, so it is never selected unseen.
+- Counts in the Check column sit on an opaque pill, so they stay readable on a selected row.
+
 ## [1.0.1] - 2026-10-15
 
 ### Added
