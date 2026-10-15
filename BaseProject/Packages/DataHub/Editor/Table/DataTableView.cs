@@ -17,7 +17,7 @@ namespace Base.DataHubPackage.Editor.Table
     /// </summary>
     internal sealed class DataTableView
     {
-        private const string AlsoWarningsFormat = "\n\nAlso worth a look:\n{0}";
+        private const string AlsoWarningsFormat = "\n\nWorth a look:\n{0}";
         private const string ClearFilterLabel = "Clear filters";
         private const string CreateFirstFormat = "New {0}";
         private const string DragManyFormat = "{0} assets";
@@ -27,19 +27,13 @@ namespace Base.DataHubPackage.Editor.Table
         private const string EmptyMessage = "No assets of this type yet";
         private const float FrozenShadowAlpha = 0.18f;
         private const float FrozenShadowWidth = 4f;
-        private const string NameTooltipFormat = "{0}\n\nDouble-click or press F2 to rename. Drag to drop the "
-            + "asset on a list or a field.";
-        private const string NoMatchHint = "No row matches the search or the problem filter.";
+        private const string NoMatchHint = "No row matches the search or filter.";
         private const string NoMatchMessage = "Nothing matches";
         private const int NoRow = -1;
         private const float OkIconAlpha = 0.55f;
-        private const string OkTooltip = "No problems: every required field is set, every project check passes and "
-            + "the asset is in its collection.";
+        private const string OkTooltip = "All good.";
         private const string PingTooltip = "Show the asset in the Project window.";
-        private const string ProblemsTooltipFormat = "{0}\n\nThe Problems switch next to the search shows only rows "
-            + "like this one.";
-        private const string WarningsTooltipFormat = "Worth a look, nothing is broken:\n{0}\n\nThe Warnings "
-            + "switch next to the search shows only rows like this one.";
+        private const string WarningsTooltipFormat = "Worth a look:\n{0}";
         private const float WheelStep = 20f;
 
         private readonly DataTableColumns _columns;
@@ -367,7 +361,7 @@ namespace Base.DataHubPackage.Editor.Table
                 return new GUIContent(row.Warnings.Count.ToString(),
                     string.Format(WarningsTooltipFormat, row.WarningText));
 
-            string tooltip = string.Format(ProblemsTooltipFormat, row.ProblemText);
+            string tooltip = row.ProblemText;
 
             if (row.HasWarnings)
                 tooltip += string.Format(AlsoWarningsFormat, row.WarningText);
@@ -640,7 +634,7 @@ namespace Base.DataHubPackage.Editor.Table
                         ? styles.NameBold
                         : styles.Name;
 
-                    string tooltip = string.Format(NameTooltipFormat, AssetDatabase.GetAssetPath(row.Asset));
+                    string tooltip = AssetDatabase.GetAssetPath(row.Asset);
                     Rect icon = DataCell.DrawAssetName(cell, row.Asset, style, tooltip);
                     GUI.Label(icon, new GUIContent(string.Empty, PingTooltip));
 

@@ -14,22 +14,17 @@ namespace Base.DataHubPackage.Editor
     internal sealed class DataSidePanel
     {
         private const string ContentsTabLabel = "Contents";
-        private const string ContentsTabTooltip = "The asset lists of the selected asset, like the cards of a deck, "
-            + "one line per entry with its count. Change the counts, add entries, or drag rows from the table onto a "
-            + "list.";
+        private const string ContentsTabTooltip = "What the selected asset holds, like the cards of a deck.";
         private const string InspectorTabLabel = "Inspector";
-        private const string InspectorTabTooltip = "The normal inspector of the selected rows, for the fields a cell "
-            + "cannot edit, like effect lists, and for the buttons of the asset. With several rows selected, a change "
-            + "goes to all of them.";
+        private const string InspectorTabTooltip = "The full inspector, for things the table can't edit.";
         private const string ManyFormat = "{0} assets";
-        private const string ManyTooltip = "Edits in the table and in the Inspector tab go to every selected asset.";
+        private const string ManyTooltip = "Edits go to all of them.";
         private const string MixedTypesText = "Different types";
         private const string NothingSelectedHint = "Pick a row in the table";
         private const string NothingSelectedTitle = "Nothing selected";
-        private const string PingTooltip = "Show the selected asset in the Project window.";
+        private const string PingTooltip = "Show it in the Project window.";
         private const string UsedInTabLabel = "Used In";
-        private const string UsedInTabTooltip = "Every deck, collection or other list in the project that can hold "
-            + "the selected rows, with how often they are in it. Plus and minus change it for every selected row.";
+        private const string UsedInTabTooltip = "Where the selected assets are used, and where they could be.";
 
         private static readonly GUIContent[] TabContents =
         {

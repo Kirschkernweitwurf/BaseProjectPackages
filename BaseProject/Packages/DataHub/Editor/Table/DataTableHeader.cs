@@ -12,10 +12,6 @@ namespace Base.DataHubPackage.Editor.Table
     internal static class DataTableHeader
     {
         private const float GroupLineInset = 6f;
-        private const string GroupTooltipFormat = "The fields of {0}, one column each.";
-        private const string SortHint = "Click to sort by this column, again to reverse, a third time to go back to "
-            + "the order by name.";
-        private const string TooltipSeparator = "\n\n";
 
         /// <summary>The height of the strip, taller when a struct name sits over some of the columns.</summary>
         /// <param name="columns">The columns of the table.</param>
@@ -110,7 +106,7 @@ namespace Base.DataHubPackage.Editor.Table
                     Rect area = new(columns.ScreenLeft(start, scrollX) + shift, 0f, width,
                         EditorTableStyles.HeaderHeight);
 
-                    GUI.Label(area, new GUIContent(group, string.Format(GroupTooltipFormat, group)),
+                    GUI.Label(area, new GUIContent(group),
                         styles.GroupHeader);
                     EditorRows.DrawSeparator(new Rect(area.x + GroupLineInset,
                         area.yMax - EditorMetrics.SeparatorThickness, area.width - GroupLineInset * 2f,
@@ -138,9 +134,7 @@ namespace Base.DataHubPackage.Editor.Table
             Rect cell = new(columns.ScreenLeft(index, scrollX) + shift + DataHubStyles.CellPadding, top,
                 Mathf.Max(0f, column.Width - DataHubStyles.CellPadding * 2f), height);
 
-            string tooltip = column.FullTitle + TooltipSeparator + column.Tooltip + TooltipSeparator + SortHint;
-
-            GUIContent content = new(column.Header, tooltip);
+            GUIContent content = new(column.Header, column.Tooltip);
             GUIStyle style = StyleFor(column.Alignment, styles);
 
             GUI.Label(cell, content, style);

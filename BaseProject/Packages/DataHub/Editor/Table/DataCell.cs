@@ -22,8 +22,6 @@ namespace Base.DataHubPackage.Editor.Table
         private const string NoItemsText = "Empty";
         private const string NoneText = "None";
         private const string OneItemText = "1 item";
-        private const string ReferenceTooltipFormat = "{0}\n\nSelect the row to pick another asset, or drop one on "
-            + "the cell.";
         private const float ToggleSize = 14f;
 
         /// <summary>The cell as text, for display, search and sorting.</summary>
@@ -253,8 +251,7 @@ namespace Base.DataHubPackage.Editor.Table
             if (value == null)
                 GUI.Label(cell, NoneText, styles.Detail);
             else
-                DrawAssetName(cell, value, styles.Name, string.Format(ReferenceTooltipFormat,
-                    AssetDatabase.GetAssetPath(value)));
+                DrawAssetName(cell, value, styles.Name, AssetDatabase.GetAssetPath(value));
 
             // Dropping still works on a row that is not selected, the way it does on any object field.
             if (TryTakeDrop(cell, fieldType, out Object dropped))

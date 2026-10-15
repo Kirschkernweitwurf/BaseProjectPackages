@@ -14,8 +14,8 @@ namespace Base.DataHubPackage.Editor.Validation
     /// </summary>
     internal sealed class DataValidation
     {
-        private const string NotInCollectionFormat = "Not in {0}";
-        private const string UnusedText = "Not used anywhere yet. Only its collection lists it.";
+        private const string NotInCollectionFormat = "Not in {0}.";
+        private const string UnusedText = "Not used anywhere yet.";
         private const string ValidatorFailedFormat = "{0} failed: {1}";
 
         private readonly DataCollections _collections;

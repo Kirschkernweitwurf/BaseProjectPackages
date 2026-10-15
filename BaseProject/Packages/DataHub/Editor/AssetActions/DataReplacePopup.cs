@@ -15,19 +15,19 @@ namespace Base.DataHubPackage.Editor.AssetActions
     {
         private const string ApplyFormat = "{0} in {1}";
         private const string CancelLabel = "Cancel";
-        private const string CantHoldFormat = "can't hold {0}, stays";
-        private const string CollectionKeepsFormat = "already has {0}, only removed";
+        private const string CantHoldFormat = "can't hold {0}, stays as it is";
+        private const string CollectionKeepsFormat = "already has {0}, so it is only taken out";
         private const string CountFormat = "{0}  ×{1}";
         private const float FieldLabelWidth = 40f;
         private const float Height = 300f;
         private const string LineFormat = "{0}  ·  {1}";
         private const float LineHeight = 18f;
         private const string ManyPlacesFormat = "{0} places";
-        private const string NothingFoundText = "Nothing in the project's data assets holds it.";
+        private const string NothingFoundText = "Nothing uses it.";
         private const string OnePlaceText = "1 place";
         private const float Padding = 10f;
         private const string RemovedText = "removed";
-        private const string RemoveHint = "Leave empty to remove it everywhere instead.";
+        private const string RemoveHint = "Leave it empty to take it out everywhere.";
         private const string RemoveLabel = "Remove";
         private const string ReplacedText = "replaced";
         private const string ReplaceLabel = "Replace";

@@ -28,13 +28,12 @@ namespace Base.DataHubPackage.Editor.AssetActions
         private const string DeleteManyFormat = "Delete these {0} assets?";
         private const string DeleteOneText = "Delete this asset?";
         private const string DeleteTitle = "Delete Assets";
-        private const string DeleteWarning = "The files go to the trash. References in scenes and prefabs are not "
-            + "removed.";
+        private const string DeleteWarning = "The files go to the trash. Scenes and prefabs are not changed.";
         private const char FolderSeparator = '/';
         private const string ListIndent = "  ";
         private const int MaxListedNames = 10;
         private const string MoreFormat = "...and {0} more";
-        private const string RemovedFromText = "They are removed from:";
+        private const string RemovedFromText = "They are also taken out of:";
         private const char WindowsSeparator = '\\';
 
         /// <summary>

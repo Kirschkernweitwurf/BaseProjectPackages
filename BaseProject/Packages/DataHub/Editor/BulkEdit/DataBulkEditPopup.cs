@@ -19,7 +19,7 @@ namespace Base.DataHubPackage.Editor.BulkEdit
         private const string ApplyFormat = "Apply to {0}";
         private const float ButtonWidth = 96f;
         private const string CancelLabel = "Cancel";
-        private const string ClampedFormat = "Kept within the field's limit: {0}.";
+        private const string ClampedFormat = "Kept within the limit of {0}.";
         private const string FieldControlName = "DataHubBulkValue";
         private const string FloatFormat = "0.###";
         private const float LineHeight = 18f;
@@ -28,8 +28,8 @@ namespace Base.DataHubPackage.Editor.BulkEdit
         private const string MaxText = "{0} or less";
         private const string MinMaxFormat = "{0} to {1}";
         private const string MinText = "{0} or more";
-        private const string ModeAddTooltip = "Adds the number to every row. A negative number subtracts.";
-        private const string ModeMultiplyTooltip = "Multiplies every row by the number, 1.5 for 50% more.";
+        private const string ModeAddTooltip = "Adds the number to every row. Use a negative number to subtract.";
+        private const string ModeMultiplyTooltip = "Multiplies every row by the number. 1.5 means 50% more.";
         private const string ModeSetTooltip = "Sets every row to the number.";
         private const string MoreFormat = "and {0} more";
         private const float MultiplyDefault = 1.5f;

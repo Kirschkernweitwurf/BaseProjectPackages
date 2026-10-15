@@ -20,8 +20,7 @@ namespace Base.DataHubPackage.Editor.AssetActions
         private const float Padding = 10f;
         private const string PreviewChangedFormat = "Saved as  {0}";
         private const string PreviewSameText = "Saved as typed";
-        private const string PreviewTooltip = "The naming conventions can add a prefix or change the casing, so this "
-            + "is the name the file really gets.";
+        private const string PreviewTooltip = "The name the file will really get. The naming rules may add a prefix.";
         private const string Title = "Rename";
         private const float Width = 340f;
 

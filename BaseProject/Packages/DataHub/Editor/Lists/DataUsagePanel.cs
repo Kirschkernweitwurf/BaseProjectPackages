@@ -16,15 +16,13 @@ namespace Base.DataHubPackage.Editor.Lists
     internal sealed class DataUsagePanel
     {
         private const string InUseFormat = "In use  ({0})";
-        private const string InUseTooltip = "Lists that hold the selected rows at least once. The number is how "
-            + "often, a dash when the selected rows differ.";
-        private const string NoListsHint = "No asset in the project has a list of this type.";
+        private const string InUseTooltip = "Lists that already hold the selected assets.";
+        private const string NoListsHint = "No list in the project can hold this kind of asset.";
         private const string NoListsMessage = "Not usable anywhere";
-        private const string NothingSelectedHint = "Every deck and collection that can hold the rows shows up here.";
+        private const string NothingSelectedHint = "Every deck and list that can hold them shows up here.";
         private const string NothingSelectedMessage = "Select one or more rows";
         private const string NotInUseFormat = "Not in use  ({0})";
-        private const string NotInUseTooltip = "Lists that could hold the selected rows but do not yet. Press plus "
-            + "to add them.";
+        private const string NotInUseTooltip = "Lists that could hold them. Press plus to add.";
 
         private readonly List<DataListUse> _inUse = new();
         private readonly List<DataListUse> _notInUse = new();

@@ -13,10 +13,9 @@ namespace Base.DataHubPackage.Editor
     /// </summary>
     internal sealed class DataInspectorPanel
     {
-        private const string MixedTypesHint = "Select assets of one type to edit them together.";
+        private const string MixedTypesHint = "Select assets of one kind to edit them together.";
         private const string MixedTypesMessage = "Different types selected";
-        private const string NothingSelectedHint = "Its full inspector shows up here, for the fields a cell cannot "
-            + "edit.";
+        private const string NothingSelectedHint = "Its full inspector shows up here.";
         private const string NothingSelectedMessage = "Select a row";
         private const float WideModeWidth = 330f;
 

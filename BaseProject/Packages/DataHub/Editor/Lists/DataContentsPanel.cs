@@ -16,16 +16,15 @@ namespace Base.DataHubPackage.Editor.Lists
     internal sealed class DataContentsPanel
     {
         private const string AddLabel = "Add";
-        private const string AddTooltip = "Add the picked asset to the end of this list, as many times as the number "
-            + "next to it says.";
+        private const string AddTooltip = "Add the picked asset this many times.";
         private const float AmountWidth = 40f;
         private const float CardInset = 8f;
-        private const string CountTooltip = "Entries in the list, every copy counted.";
+        private const string CountTooltip = "Entries in this list, copies included.";
         private const string DropLabel = "Drop to add";
-        private const string EmptyListText = "Empty. Drop rows from the table here or pick one below.";
-        private const string NoListsHint = "Its type has no list of assets to fill.";
+        private const string EmptyListText = "Empty. Drop rows here or pick one below.";
+        private const string NoListsHint = "This kind of asset holds no lists.";
         private const string NoListsMessage = "Nothing to fill";
-        private const string SelectOneHint = "The lists of an asset, like the cards of a deck, show up here.";
+        private const string SelectOneHint = "Lists like the cards of a deck show up here.";
         private const string SelectOneMessage = "Select one asset";
         private const string SummaryFailedFormat = "This summary failed: {0}";
 
