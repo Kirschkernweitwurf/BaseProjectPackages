@@ -38,9 +38,13 @@ namespace Base.DataHubPackage.Editor
             new(UsedInTabLabel, UsedInTabTooltip)
         };
 
-        private readonly DataContentsPanel _contents = new();
+        private readonly DataContentsPanel _contents;
         private readonly DataInspectorPanel _inspector = new();
         private readonly DataUsagePanel _usage = new();
+
+        /// <summary>Creates the panel.</summary>
+        /// <param name="registry">The extensions, for the summaries of the Contents tab.</param>
+        internal DataSidePanel(DataHubRegistry registry) => _contents = new DataContentsPanel(registry);
 
         /// <summary>Forgets every list found for the Used In tab, after the project changed.</summary>
         internal void Invalidate() => _usage.Invalidate();

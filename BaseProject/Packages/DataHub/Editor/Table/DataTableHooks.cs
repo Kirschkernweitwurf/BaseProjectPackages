@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 
 namespace Base.DataHubPackage.Editor.Table
 {
@@ -16,6 +17,9 @@ namespace Base.DataHubPackage.Editor.Table
 
         /// <summary>Renames the selected asset, after a double click on its name or F2.</summary>
         internal Action Rename { get; set; }
+
+        /// <summary>Opens the menu of a column after a right click on its title, given in screen space.</summary>
+        internal Action<DataColumn, Rect> ShowColumnMenu { get; set; }
 
         /// <summary>Opens the row menu, after a right click selected the row.</summary>
         internal Action ShowContextMenu { get; set; }

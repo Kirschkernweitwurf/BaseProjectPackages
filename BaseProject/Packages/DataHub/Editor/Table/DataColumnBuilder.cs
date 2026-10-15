@@ -106,7 +106,9 @@ namespace Base.DataHubPackage.Editor.Table
                     FieldType = fieldType,
                     IsEditable = isEditable,
                     Alignment = AlignmentFor(fieldType),
-                    Tooltip = DataColumnTooltip.Field(field, isEditable)
+                    Tooltip = DataColumnTooltip.Field(field, isEditable),
+                    MinValue = MinOf(field),
+                    MaxValue = MaxOf(field)
                 });
             }
         }
@@ -121,26 +123,35 @@ namespace Base.DataHubPackage.Editor.Table
             && !DataSerializedFields.IsUnityType(type)
             && Attribute.IsDefined(type, typeof(SerializableAttribute));
 
-        private static bool IsEditable(Type type) => IsNumber(type)
+        private static bool IsEditable(Type type) => DataColumn.IsNumberType(type)
             || type == typeof(bool)
             || type == typeof(string)
             || type.IsEnum
             || typeof(Object).IsAssignableFrom(type);
+
+        private static float? MinOf(FieldInfo field)
+        {
+            RangeAttribute range = field.GetCustomAttribute<RangeAttribute>();
+
+            if (range != null)
+                return range.min;
+
+            MinAttribute min = field.GetCustomAttribute<MinAttribute>();
+
+            return min?.min;
+        }
+
+        private static float? MaxOf(FieldInfo field) => field.GetCustomAttribute<RangeAttribute>()?.max;
 
         private static TextAnchor AlignmentFor(Type type)
         {
             if (type == typeof(bool))
                 return TextAnchor.MiddleCenter;
 
-            return IsNumber(type)
+            return DataColumn.IsNumberType(type)
                 ? TextAnchor.MiddleRight
                 : TextAnchor.MiddleLeft;
         }
-
-        private static bool IsNumber(Type type) => type == typeof(int)
-            || type == typeof(long)
-            || type == typeof(float)
-            || type == typeof(double);
 
         private static float WidthFor(Type type, bool isEditable, bool isNested)
         {

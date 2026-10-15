@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using Base.DataHubPackage.Editor.Extensions;
 using Base.EditorUIPackage.Editor;
 using UnityEditor;
 using UnityEngine;
@@ -25,15 +27,22 @@ namespace Base.DataHubPackage.Editor.Lists
         private const string NoListsMessage = "Nothing to fill";
         private const string SelectOneHint = "The lists of an asset, like the cards of a deck, show up here.";
         private const string SelectOneMessage = "Select one asset";
+        private const string SummaryFailedFormat = "This summary failed: {0}";
 
         private readonly Dictionary<string, int> _addAmounts = new();
         private readonly Dictionary<string, Object> _addPicks = new();
         private readonly List<DataListGroup> _groups = new();
+        private readonly DataHubRegistry _registry;
+        private readonly List<IDataSummary> _summaries = new();
 
         private string _dropTarget;
         private Object _owner;
         private Vector2 _scroll;
         private SerializedObject _serialized;
+
+        /// <summary>Creates the tab.</summary>
+        /// <param name="registry">The extensions, for the summaries shown above the lists.</param>
+        internal DataContentsPanel(DataHubRegistry registry) => _registry = registry;
 
         /// <summary>Draws the lists of the selected asset.</summary>
         /// <param name="area">The area to fill.</param>
@@ -64,17 +73,44 @@ namespace Base.DataHubPackage.Editor.Lists
             Rect line = GUILayoutUtility.GetRect(0f, EditorTableStyles.RowHeight, GUILayout.ExpandWidth(true));
 
             GUIContent label = new(field.Label);
-            float labelWidth = styles.SectionHeader.CalcSize(label).x;
-
             GUI.Label(line, label, styles.SectionHeader);
 
             GUIContent total = new(count.ToString(), CountTooltip);
+            float labelWidth = styles.SectionHeader.CalcSize(label).x;
             float pillWidth = DataHubGui.PillWidth(total.text, styles);
 
             Rect pill = new(line.x + labelWidth + EditorMetrics.ItemGap,
                 line.center.y - EditorMetrics.BadgeHeight * 0.5f, pillWidth, EditorMetrics.BadgeHeight);
 
             DataHubGui.Pill(pill, total, EditorTableStyles.NeutralBadgeColor, styles);
+        }
+
+        // The project draws the inside; the title and the card around it come from here, so every summary
+        // looks like the lists under it. A summary that throws shows its message instead of breaking the tab.
+        private static void DrawSummary(IDataSummary summary, Object asset, DataHubStyles styles)
+        {
+            GUILayout.Label(summary.Title, styles.SectionHeader);
+
+            EditorGUILayout.BeginVertical(styles.Card);
+            EditorGUILayout.BeginHorizontal();
+            GUILayout.Space(CardInset);
+            EditorGUILayout.BeginVertical();
+
+            try
+            {
+                summary.Draw(asset);
+            }
+            catch (Exception exception) when (!(exception is ExitGUIException))
+            {
+                GUILayout.Label(string.Format(SummaryFailedFormat, exception.Message), styles.Detail);
+            }
+
+            EditorGUILayout.EndVertical();
+            GUILayout.Space(CardInset);
+            EditorGUILayout.EndHorizontal();
+            EditorGUILayout.EndVertical();
+
+            GUILayout.Space(EditorMetrics.SectionGap);
         }
 
         private static void DrawEmptyLine(DataHubStyles styles)
@@ -95,7 +131,11 @@ namespace Base.DataHubPackage.Editor.Lists
 
             IReadOnlyList<DataListField> fields = DataListField.Of(targets[0].GetType());
 
-            if (fields.Count == 0)
+            _summaries.Clear();
+            _registry.CollectSummaries(targets[0].GetType(), _summaries);
+
+            if (fields.Count == 0
+                && _summaries.Count == 0)
             {
                 EditorWindowChrome.DrawEmptyState(styles, null, NoListsMessage, NoListsHint);
                 return false;
@@ -107,6 +147,9 @@ namespace Base.DataHubPackage.Editor.Lists
             bool isChanged = false;
 
             _scroll = EditorGUILayout.BeginScrollView(_scroll);
+
+            foreach (IDataSummary summary in _summaries)
+                DrawSummary(summary, targets[0], styles);
 
             foreach (DataListField field in fields)
             {

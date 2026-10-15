@@ -143,6 +143,11 @@ namespace Base.DataHubPackage.Editor
             if (Event.current.type == EventType.Repaint)
             {
                 Color previous = GUI.color;
+
+                // An opaque base first, so a see-through badge color keeps its hue on a selected or hovered row.
+                GUI.color = EditorPalette.Background;
+                styles.PillBackground.Draw(area, false, false, false, false);
+
                 GUI.color = fill;
                 styles.PillBackground.Draw(area, false, false, false, false);
                 GUI.color = previous;

@@ -7,7 +7,7 @@ using UnityEditor;
 namespace Base.DataHubPackage.Editor
 {
     /// <summary>
-    /// Every table, column, check, create rule and page the project declares, found through
+    /// Every table, column, check, create rule, summary and page the project declares, found through
     /// <see cref="TypeCache"/> and created once per window. This is what makes a new feature a single
     /// new class: nothing has to be registered by hand.
     /// </summary>
@@ -16,7 +16,9 @@ namespace Base.DataHubPackage.Editor
         private readonly List<IDataColumn> _columns = new();
         private readonly List<IDataCreateRule> _createRules = new();
         private readonly List<IDataHubPage> _pages = new();
+        private readonly List<IDataSummary> _summaries = new();
         private readonly List<IDataTable> _tables = new();
+        private readonly List<IDataUsageCheck> _usageChecks = new();
         private readonly List<IDataValidator> _validators = new();
 
         /// <summary>Every table entry of the tree.</summary>
@@ -34,10 +36,13 @@ namespace Base.DataHubPackage.Editor
             Collect(_columns);
             Collect(_createRules);
             Collect(_pages);
+            Collect(_summaries);
             Collect(_tables);
+            Collect(_usageChecks);
             Collect(_validators);
 
             _columns.Sort((first, second) => first.Order.CompareTo(second.Order));
+            _summaries.Sort((first, second) => first.Order.CompareTo(second.Order));
         }
 
         /// <summary>Appends the computed columns that can read assets of <paramref name="tableType"/>.</summary>
@@ -49,6 +54,18 @@ namespace Base.DataHubPackage.Editor
             {
                 if (IsTarget(column.TargetType, tableType))
                     columns.Add(column);
+            }
+        }
+
+        /// <summary>Appends the summaries that describe assets of <paramref name="assetType"/>.</summary>
+        /// <param name="assetType">The concrete type of the asset.</param>
+        /// <param name="summaries">The list the matching summaries are appended to, in their order.</param>
+        internal void CollectSummaries(Type assetType, List<IDataSummary> summaries)
+        {
+            foreach (IDataSummary summary in _summaries)
+            {
+                if (IsTarget(summary.TargetType, assetType))
+                    summaries.Add(summary);
             }
         }
 
@@ -73,6 +90,76 @@ namespace Base.DataHubPackage.Editor
             }
 
             return best;
+        }
+
+        /// <summary>
+        /// The table that lists <paramref name="assetType"/> most closely, or null when none does. The Dialogue
+        /// table beats All Cards for a dialogue card, so revealing an asset lands where its own columns are.
+        /// </summary>
+        /// <param name="assetType">The concrete type of the asset.</param>
+        /// <returns>The most specific table, or null.</returns>
+        internal IDataTable FindTable(Type assetType)
+        {
+            IDataTable best = null;
+
+            foreach (IDataTable table in _tables)
+            {
+                if (!IsTarget(table.DataType, assetType))
+                    continue;
+
+                if (best == null
+                    || best.DataType.IsAssignableFrom(table.DataType))
+                    best = table;
+            }
+
+            return best;
+        }
+
+        /// <summary>
+        /// The create rule whose collection is the list <paramref name="listPath"/> on assets of
+        /// <paramref name="ownerType"/>, or null when that list is no collection.
+        /// </summary>
+        /// <param name="ownerType">The type of the asset holding the list.</param>
+        /// <param name="listPath">The serialized path of the list.</param>
+        /// <returns>The rule, or null.</returns>
+        internal IDataCreateRule FindCollectionRule(Type ownerType, string listPath)
+        {
+            foreach (IDataCreateRule rule in _createRules)
+            {
+                if (IsTarget(rule.CollectionType, ownerType)
+                    && rule.CollectionListProperty == listPath)
+                    return rule;
+            }
+
+            return null;
+        }
+
+        /// <summary>True when the project wants a warning on unused assets of <paramref name="assetType"/>.</summary>
+        /// <param name="assetType">The concrete type of the asset.</param>
+        /// <returns>True when its usage is checked.</returns>
+        internal bool IsUsageChecked(Type assetType)
+        {
+            foreach (IDataUsageCheck check in _usageChecks)
+            {
+                if (IsTarget(check.TargetType, assetType))
+                    return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>True when assets of <paramref name="assetType"/> are the collection of a create rule.</summary>
+        /// <param name="assetType">The type of an asset.</param>
+        /// <returns>True for a collection type.</returns>
+        internal bool IsCollectionType(Type assetType)
+        {
+            foreach (IDataCreateRule rule in _createRules)
+            {
+                if (IsTarget(rule.CollectionType, assetType))
+                    return true;
+            }
+
+            return false;
         }
 
         private static bool IsTarget(Type targetType, Type candidate) => targetType != null

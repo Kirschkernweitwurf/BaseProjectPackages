@@ -15,7 +15,8 @@ namespace Base.DataHubPackage.Editor.Table
         /// <summary>The tooltip of the check column.</summary>
         internal const string Check = "Problems found in the asset: a required field left empty, a project check "
             + "that failed, or an asset missing from the collection it belongs in.\nA check mark means nothing is "
-            + "wrong. A red number counts the problems, hover it to read them.";
+            + "wrong. A red number counts the problems, an amber one counts warnings, like an asset nothing uses "
+            + "yet. Hover a number to read them.";
 
         /// <summary>The tooltip of a computed column.</summary>
         internal const string Computed = "Worked out from the asset by the project, not stored in it. Read only.";

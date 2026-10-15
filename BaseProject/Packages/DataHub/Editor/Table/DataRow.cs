@@ -31,6 +31,15 @@ namespace Base.DataHubPackage.Editor.Table
         /// <summary>True when at least one check failed.</summary>
         internal bool HasProblems => Problems.Count > 0;
 
+        /// <summary>What is worth a look but not broken, like an asset nothing uses yet.</summary>
+        internal List<string> Warnings { get; } = new();
+
+        /// <summary>True when at least one warning was found.</summary>
+        internal bool HasWarnings => Warnings.Count > 0;
+
+        /// <summary>Every warning on its own line, for the tooltip of the badge.</summary>
+        internal string WarningText => string.Join(ProblemSeparator, Warnings);
+
         /// <summary>Every problem on its own line, for the tooltip of the badge.</summary>
         internal string ProblemText => string.Join(ProblemSeparator, Problems);
 

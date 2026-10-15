@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Base.EditorUIPackage.Editor;
 using UnityEngine;
@@ -11,7 +12,6 @@ namespace Base.DataHubPackage.Editor.Table
     internal static class DataTableHeader
     {
         private const float GroupLineInset = 6f;
-        private const string GroupSeparator = " > ";
         private const string GroupTooltipFormat = "The fields of {0}, one column each.";
         private const string SortHint = "Click to sort by this column, again to reverse, a third time to go back to "
             + "the order by name.";
@@ -30,9 +30,12 @@ namespace Base.DataHubPackage.Editor.Table
         /// <param name="sorting">The sort state, cycled by a click on a title.</param>
         /// <param name="scrollX">How far the table is scrolled sideways.</param>
         /// <param name="styles">The built window styles.</param>
+        /// <param name="showColumnMenu">
+        /// Called on a right click with the column and its title in screen coordinates.
+        /// </param>
         /// <returns>True when the sort changed.</returns>
         internal static bool Draw(Rect area, DataTableColumns columns, DataTableSorting sorting, float scrollX,
-            DataHubStyles styles)
+            DataHubStyles styles, Action<DataColumn, Rect> showColumnMenu)
         {
             DataHubGui.Fill(area, EditorTableStyles.HeaderColor);
 
@@ -43,10 +46,10 @@ namespace Base.DataHubPackage.Editor.Table
 
             // The scrolled titles first, clipped at the frozen ones so they slide under them.
             GUI.BeginClip(new Rect(frozen, 0f, Mathf.Max(0f, local.width - frozen), local.height));
-            bool isSorted = DrawTitles(columns, sorting, scrollX, -frozen, false, styles);
+            bool isSorted = DrawTitles(columns, sorting, scrollX, -frozen, false, styles, showColumnMenu);
             GUI.EndClip();
 
-            if (DrawTitles(columns, sorting, scrollX, 0f, true, styles))
+            if (DrawTitles(columns, sorting, scrollX, 0f, true, styles, showColumnMenu))
                 isSorted = true;
 
             // Last, so the lines sit on top of the titles.
@@ -61,7 +64,7 @@ namespace Base.DataHubPackage.Editor.Table
         }
 
         private static bool DrawTitles(DataTableColumns columns, DataTableSorting sorting, float scrollX, float shift,
-            bool isFrozenPart, DataHubStyles styles)
+            bool isFrozenPart, DataHubStyles styles, Action<DataColumn, Rect> showColumnMenu)
         {
             IReadOnlyList<DataColumn> all = columns.All;
             bool isSorted = false;
@@ -75,7 +78,7 @@ namespace Base.DataHubPackage.Editor.Table
                 if (DataTableColumns.IsFrozen(i) != isFrozenPart)
                     continue;
 
-                if (DrawTitle(columns, i, sorting, scrollX, shift, styles))
+                if (DrawTitle(columns, i, sorting, scrollX, shift, styles, showColumnMenu))
                     isSorted = true;
             }
 
@@ -120,7 +123,7 @@ namespace Base.DataHubPackage.Editor.Table
 
         // A title outside a struct spans the whole strip, so there is no empty band above it.
         private static bool DrawTitle(DataTableColumns columns, int index, DataTableSorting sorting, float scrollX,
-            float shift, DataHubStyles styles)
+            float shift, DataHubStyles styles, Action<DataColumn, Rect> showColumnMenu)
         {
             DataColumn column = columns.All[index];
 
@@ -135,11 +138,7 @@ namespace Base.DataHubPackage.Editor.Table
             Rect cell = new(columns.ScreenLeft(index, scrollX) + shift + DataHubStyles.CellPadding, top,
                 Mathf.Max(0f, column.Width - DataHubStyles.CellPadding * 2f), height);
 
-            string title = column.Group == null
-                ? column.Header
-                : column.Group + GroupSeparator + column.Header;
-
-            string tooltip = title + TooltipSeparator + column.Tooltip + TooltipSeparator + SortHint;
+            string tooltip = column.FullTitle + TooltipSeparator + column.Tooltip + TooltipSeparator + SortHint;
 
             GUIContent content = new(column.Header, tooltip);
             GUIStyle style = StyleFor(column.Alignment, styles);
@@ -148,6 +147,9 @@ namespace Base.DataHubPackage.Editor.Table
 
             if (sorting.ColumnIndex == index)
                 DrawArrow(cell, content, column.Alignment, sorting.Order, style);
+
+            if (HandleContextClick(cell, index, columns, showColumnMenu))
+                return false;
 
             return HandleClick(cell, index, columns, sorting, scrollX);
         }
@@ -178,6 +180,26 @@ namespace Base.DataHubPackage.Editor.Table
             EditorRows.DrawSortArrow(new Rect(x, cell.y, arrowWidth, cell.height), order, EditorPalette.Text);
         }
 
+        private static bool HandleContextClick(Rect cell, int index, DataTableColumns columns,
+            Action<DataColumn, Rect> showColumnMenu)
+        {
+            Event current = Event.current;
+
+            if (current.type != EventType.ContextClick
+                || !cell.Contains(current.mousePosition)
+                || IsHiddenUnderFrozen(index))
+                return false;
+
+            current.Use();
+            showColumnMenu?.Invoke(columns.All[index], GUIUtility.GUIToScreenRect(cell));
+
+            return true;
+        }
+
+        // A scrolled title that slid under the frozen ones is hidden there and cannot be clicked.
+        private static bool IsHiddenUnderFrozen(int index) => !DataTableColumns.IsFrozen(index)
+            && Event.current.mousePosition.x < 0f;
+
         private static bool HandleClick(Rect cell, int index, DataTableColumns columns, DataTableSorting sorting,
             float scrollX)
         {
@@ -188,12 +210,10 @@ namespace Base.DataHubPackage.Editor.Table
                 || !cell.Contains(current.mousePosition))
                 return false;
 
-            bool isFrozen = DataTableColumns.IsFrozen(index);
-
-            // A scrolled title that slid under the frozen ones is hidden there and cannot be clicked.
-            if (!isFrozen
-                && current.mousePosition.x < 0f)
+            if (IsHiddenUnderFrozen(index))
                 return false;
+
+            bool isFrozen = DataTableColumns.IsFrozen(index);
 
             // The few pixels around a divider belong to the drag, not to the title behind them. The
             // dividers are measured from the strip's left edge, which the frozen part shares.

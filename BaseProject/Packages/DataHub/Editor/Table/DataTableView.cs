@@ -17,6 +17,7 @@ namespace Base.DataHubPackage.Editor.Table
     /// </summary>
     internal sealed class DataTableView
     {
+        private const string AlsoWarningsFormat = "\n\nAlso worth a look:\n{0}";
         private const string ClearFilterLabel = "Clear filters";
         private const string CreateFirstFormat = "New {0}";
         private const string DragManyFormat = "{0} assets";
@@ -37,6 +38,8 @@ namespace Base.DataHubPackage.Editor.Table
         private const string PingTooltip = "Show the asset in the Project window.";
         private const string ProblemsTooltipFormat = "{0}\n\nThe Problems switch next to the search shows only rows "
             + "like this one.";
+        private const string WarningsTooltipFormat = "Worth a look, nothing is broken:\n{0}\n\nThe Warnings "
+            + "switch next to the search shows only rows like this one.";
         private const float WheelStep = 20f;
 
         private readonly DataTableColumns _columns;
@@ -52,7 +55,7 @@ namespace Base.DataHubPackage.Editor.Table
         private int _hoveredIndex = NoRow;
         private bool _isFitted;
         private bool _needsFilter;
-        private bool _problemsOnly;
+        private EDataRowFilter _filter;
         private Vector2 _scroll;
         private string _search = string.Empty;
         private Object[] _selectedAssets = Array.Empty<Object>();
@@ -83,8 +86,32 @@ namespace Base.DataHubPackage.Editor.Table
         /// <summary>Number of assets with at least one problem.</summary>
         internal int ProblemCount { get; private set; }
 
+        /// <summary>Number of assets with at least one warning.</summary>
+        internal int WarningCount { get; private set; }
+
         /// <summary>The selected assets in table order. The same array until the selection changes.</summary>
         internal Object[] SelectedAssets => _selectedAssets;
+
+        /// <summary>The columns, in display order.</summary>
+        internal IReadOnlyList<DataColumn> Columns => _columns.All;
+
+        /// <summary>Every row of the table, shown or filtered out.</summary>
+        internal IReadOnlyList<DataRow> Rows => _rows;
+
+        /// <summary>The rows the search and the filter leave, in table order.</summary>
+        internal IReadOnlyList<DataRow> ShownRows => _filtered;
+
+        /// <summary>The selected rows, in table order.</summary>
+        internal IReadOnlyList<DataRow> SelectedRows => _filtered.FindAll(row => _selection.Contains(row));
+
+        /// <summary>The column of the cell the last right click hit, or null for none.</summary>
+        internal DataColumn ContextColumn { get; private set; }
+
+        /// <summary>The cell the last right click hit, in screen coordinates, for a box to open at.</summary>
+        internal Rect ContextRect { get; private set; }
+
+        /// <summary>The assets of every row the search and the filter leave, in table order.</summary>
+        internal Object[] FilteredAssets => _filtered.ConvertAll(row => row.Asset).ToArray();
 
         /// <summary>The asset of the first row, for a fallback folder, or null for an empty table.</summary>
         internal Object FirstAsset => _rows.Count > 0
@@ -131,18 +158,18 @@ namespace Base.DataHubPackage.Editor.Table
 
             CountProblems();
 
-            // The problem filter depends on the result.
-            if (_problemsOnly)
+            // The problem and warning filters depend on the result.
+            if (_filter != EDataRowFilter.All)
                 _needsFilter = true;
         }
 
-        /// <summary>Sets the search text and the problem filter. Applied on the next layout pass.</summary>
+        /// <summary>Sets the search text and the check filter. Applied on the next layout pass.</summary>
         /// <param name="search">Text a row has to contain in its name or any cell.</param>
-        /// <param name="problemsOnly">True to show only rows with problems.</param>
-        internal void SetFilter(string search, bool problemsOnly)
+        /// <param name="filter">Which rows to show by what their checks found.</param>
+        internal void SetFilter(string search, EDataRowFilter filter)
         {
             _search = search ?? string.Empty;
-            _problemsOnly = problemsOnly;
+            _filter = filter;
             _needsFilter = true;
         }
 
@@ -160,16 +187,24 @@ namespace Base.DataHubPackage.Editor.Table
 
         /// <summary>Selects the row of <paramref name="asset"/> alone and scrolls it into view.</summary>
         /// <param name="asset">The asset to select.</param>
-        internal void Select(Object asset)
+        /// <returns>False when no shown row has the asset, because it is filtered out or not in the table.</returns>
+        internal bool Select(Object asset)
         {
             int index = _filtered.FindIndex(row => row.Asset == asset);
 
             if (index < 0)
-                return;
+                return false;
 
             SelectSingle(index);
             ScrollTo(index);
+
+            return true;
         }
+
+        /// <summary>True when the table lists <paramref name="asset"/>, shown or filtered out.</summary>
+        /// <param name="asset">The asset to look for.</param>
+        /// <returns>True when a row has the asset.</returns>
+        internal bool Contains(Object asset) => _rows.Exists(row => row.Asset == asset);
 
         /// <summary>Selects every row the filter shows.</summary>
         internal void SelectAll()
@@ -249,7 +284,7 @@ namespace Base.DataHubPackage.Editor.Table
 
             HandleDragStart();
 
-            if (DataTableHeader.Draw(header, _columns, _sorting, _scroll.x, styles))
+            if (DataTableHeader.Draw(header, _columns, _sorting, _scroll.x, styles, hooks.ShowColumnMenu))
                 _needsFilter = true;
 
             if (_filtered.Count == 0)
@@ -270,10 +305,11 @@ namespace Base.DataHubPackage.Editor.Table
         private static Rect Inset(Rect rect) => new(rect.x + DataHubStyles.CellPadding, rect.y,
             Mathf.Max(0f, rect.width - DataHubStyles.CellPadding * 2f), rect.height);
 
-        // A quiet check when nothing is wrong, so the eye only stops at the red ones.
+        // A quiet check when nothing is wrong, so the eye only stops at the red and amber ones.
         private static void DrawCheck(Rect cell, DataRow row, DataHubStyles styles)
         {
-            if (!row.HasProblems)
+            if (!row.HasProblems
+                && !row.HasWarnings)
             {
                 float size = EditorTableStyles.IconSize;
                 Rect icon = new(cell.center.x - size * 0.5f, cell.center.y - size * 0.5f, size, size);
@@ -288,14 +324,18 @@ namespace Base.DataHubPackage.Editor.Table
                 return;
             }
 
-            GUIContent content = new(row.Problems.Count.ToString(),
-                string.Format(ProblemsTooltipFormat, row.ProblemText));
+            GUIContent content = CheckContent(row);
+
+            Color fill = row.HasProblems
+                ? EditorTableStyles.DangerBadgeColor
+                : EditorTableStyles.WarningBadgeColor;
+
             float width = Mathf.Min(cell.width, DataHubGui.PillWidth(content.text, styles));
 
             Rect pill = new(cell.center.x - width * 0.5f, cell.center.y - EditorMetrics.BadgeHeight * 0.5f, width,
                 EditorMetrics.BadgeHeight);
 
-            DataHubGui.Pill(pill, content, EditorTableStyles.DangerBadgeColor, styles);
+            DataHubGui.Pill(pill, content, fill, styles);
         }
 
         // The size the rows can use inside the scroll view, after the scrollbars that the content needs.
@@ -320,14 +360,54 @@ namespace Base.DataHubPackage.Editor.Table
             return view;
         }
 
+        // The count of the badge is what is broken; warnings are only counted when nothing is.
+        private static GUIContent CheckContent(DataRow row)
+        {
+            if (!row.HasProblems)
+                return new GUIContent(row.Warnings.Count.ToString(),
+                    string.Format(WarningsTooltipFormat, row.WarningText));
+
+            string tooltip = string.Format(ProblemsTooltipFormat, row.ProblemText);
+
+            if (row.HasWarnings)
+                tooltip += string.Format(AlsoWarningsFormat, row.WarningText);
+
+            return new GUIContent(row.Problems.Count.ToString(), tooltip);
+        }
+
+        // A thin colored edge at the start of a row, so a broken or unused asset stands out while scrolling.
+        private static void DrawCheckEdge(Rect rect, DataRow row)
+        {
+            if (!row.HasProblems
+                && !row.HasWarnings)
+                return;
+
+            Color color = row.HasProblems
+                ? EditorPalette.Danger
+                : EditorPalette.Warning;
+
+            DataHubGui.Fill(new Rect(rect.x, rect.y, DataHubStyles.ProblemEdgeWidth, rect.height), color);
+        }
+
+        private static bool PassesFilter(DataRow row, EDataRowFilter filter) => filter switch
+        {
+            EDataRowFilter.Problems => row.HasProblems,
+            EDataRowFilter.Warnings => row.HasWarnings,
+            _ => true
+        };
+
         private void CountProblems()
         {
             ProblemCount = 0;
+            WarningCount = 0;
 
             foreach (DataRow row in _rows)
             {
                 if (row.HasProblems)
                     ProblemCount++;
+
+                if (row.HasWarnings)
+                    WarningCount++;
             }
         }
 
@@ -338,7 +418,7 @@ namespace Base.DataHubPackage.Editor.Table
 
             foreach (DataRow row in _rows)
             {
-                if (_problemsOnly && !row.HasProblems)
+                if (!PassesFilter(row, _filter))
                     continue;
 
                 if (Matches(row))
@@ -519,10 +599,8 @@ namespace Base.DataHubPackage.Editor.Table
 
             EditorRows.DrawRowBackground(rect, index, index == _hoveredIndex, isSelected);
 
-            if (isFrozenPart
-                && row.HasProblems)
-                DataHubGui.Fill(new Rect(rect.x, rect.y, DataHubStyles.ProblemEdgeWidth, rect.height),
-                    EditorPalette.Danger);
+            if (isFrozenPart)
+                DrawCheckEdge(rect, row);
 
             // Before the cells, so a click into a cell control also selects its row.
             bool isChanged = HandleRowInput(rect, index, row, isFrozenPart, visible, hooks);
@@ -679,6 +757,9 @@ namespace Base.DataHubPackage.Editor.Table
                 if (!_selection.Contains(row))
                     SelectSingle(index);
 
+                ContextColumn = ColumnAt(current.mousePosition.x, isFrozenPart, rect, out Rect cell);
+                ContextRect = GUIUtility.GUIToScreenRect(cell);
+
                 current.Use();
                 hooks.ShowContextMenu?.Invoke();
 
@@ -704,6 +785,30 @@ namespace Base.DataHubPackage.Editor.Table
                 return false;
 
             return true;
+        }
+
+        // The column under an x of one part of the table, which lays out its own columns from zero.
+        private DataColumn ColumnAt(float x, bool isFrozenPart, Rect row, out Rect cell)
+        {
+            float shift = isFrozenPart
+                ? 0f
+                : _columns.FrozenWidth;
+
+            for (int i = 0; i < _columns.All.Count; i++)
+            {
+                if (DataTableColumns.IsFrozen(i) != isFrozenPart)
+                    continue;
+
+                DataColumn column = _columns.All[i];
+                cell = new Rect(_columns.Left(i) - shift, row.y, column.Width, row.height);
+
+                if (x >= cell.x
+                    && x < cell.xMax)
+                    return column;
+            }
+
+            cell = row;
+            return null;
         }
 
         private bool HandleNameClick(int index, DataRow row, DataTableHooks hooks)

@@ -1,8 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
+using System.Text;
 using Base.DataHubPackage.Editor.AssetActions;
+using Base.DataHubPackage.Editor.BulkEdit;
 using Base.DataHubPackage.Editor.Extensions;
+using Base.DataHubPackage.Editor.Sheets;
 using Base.DataHubPackage.Editor.Table;
 using Base.DataHubPackage.Editor.Validation;
 using Base.EditorUIPackage.Editor;
@@ -26,11 +30,21 @@ namespace Base.DataHubPackage.Editor
         private const string ActionsTooltip = "Run a [Button] method of the selected assets on every one of them, "
             + "in one undo step. Only the methods all selected assets share are listed. Also on right click.";
         private const string AddToCollectionItem = "Add to Collection";
+        private const string AdjustAllFormat = "Adjust {0} for All {1} Shown Rows...";
+        private const string AdjustOneRowFormat = "Adjust {0}...";
+        private const string AdjustRowsFormat = "Adjust {0} for {1} Rows...";
+        private const string AdjustSelectedFormat = "Adjust {0} for the {1} Selected Rows...";
         private const string AllFilterFormat = "All  {0}";
         private const string AllFilterTooltip = "Show every asset of this type.";
         private const string AssetsFormat = "{0} assets";
         private const string ChecksPassedText = "All checks pass";
         private const string ChecksPassedTooltip = "No asset of this type has a problem in the Check column.";
+        private const string ClipboardEmptyText = "The clipboard is empty. Copy the rows in your spreadsheet first.";
+        private const string ClipboardSource = "From the clipboard";
+        private const string CopiedFormat = "Copied {0} rows. Paste them into a spreadsheet.";
+        private const string CopyCommand = "Copy";
+        private const string CopyItemFormat = "Copy Rows  ({0}+C)";
+        private const string CsvExtension = "csv";
         private const string DeleteCommand = "Delete";
         private const string DeleteLabel = "Delete";
         private const string DeleteTooltip = "Move the selected assets to the trash. Every list in the project that "
@@ -43,8 +57,14 @@ namespace Base.DataHubPackage.Editor
         private const string EmptyHintFormat = "Add a class that implements {0} to list a data type here, or {1} "
             + "for a custom page.";
         private const string EmptyTitle = "No data types registered";
-        private const float FilterWidth = 200f;
+        private const string ExportedFormat = "Saved {0} rows to {1}.";
+        private const string ExportItem = "Export CSV...";
+        private const string ExportTitleFormat = "Export {0}";
+        private const string FileSourceFormat = "From {0}";
+        private const float FilterWidth = 300f;
         private const string FindCommand = "Find";
+        private const string ImportItem = "Import CSV...";
+        private const string ImportTitleFormat = "Import into {0}";
         private const int InspectorDivider = 1;
         private const string InspectorWidthKey = "Base.DataHubPackage.InspectorWidth";
         private const string MacActionKey = "Cmd";
@@ -55,11 +75,14 @@ namespace Base.DataHubPackage.Editor
             + "from the project's create rules, and it is selected right away. Pick the exact type first when the "
             + "table lists several.";
         private const string NoCreatableTypeFormat = "{0} has no concrete type to create.";
+        private const string NotAdjustableItem = "Only Number Columns Can Be Adjusted";
         private const string OneAssetText = "1 asset";
         private const string OtherActionKey = "Ctrl";
         private const string PageSubtitle = "Custom page";
         private const string PageTooltip = "A page the project adds to the hub, like an overview over several "
             + "tables.";
+        private const string PasteCommand = "Paste";
+        private const string PasteItemFormat = "Paste into Table...  ({0}+V)";
         private const string PingItem = "Ping";
         private const string ProblemsFilterFormat = "Problems  {0}";
         private const string ProblemsFilterTooltip = "Show only the assets with at least one problem in the Check "
@@ -72,35 +95,50 @@ namespace Base.DataHubPackage.Editor
         private const string RenameLabel = "Rename";
         private const string RenameTooltip = "Rename the selected asset. The box shows the final name after the "
             + "naming conventions before anything is changed. (F2, or double-click the name)";
+        private const string ReplaceItem = "Replace Everywhere...";
         private const string SearchControlName = "DataHubSearch";
         private const string SearchPrompt = "Search names and values";
         private const string SearchTooltip = "Shows only the rows whose name or any cell contains the text, upper or "
             + "lower case alike. ({0}+F)";
         private const string SelectAllCommand = "SelectAll";
         private const string SelectedFormat = "  ·  {0} selected";
+        private const string SheetDirectoryKey = "Base.DataHubPackage.SheetDirectory";
+        private const string SheetLabel = "Sheet  \u25BE";
+        private const string SheetTooltip = "Copy the shown rows to the clipboard or a CSV file, and bring edits made "
+            + "in a spreadsheet back. Rows are matched by name, every change is shown before it is applied.";
+        private const string ShowMenuPath = "Assets/Show in Data Hub";
         private const string ShownFormat = "{0} of {1} shown";
         private const string ShownTooltip = "How many assets the search and the filter leave, out of all assets of "
             + "this type, and how many of them are selected.";
         private const string SoftDeleteCommand = "SoftDelete";
-        private const string TableSubtitleFormat = "{0}  ·  {1}";
-        private const string TableTooltipFormat = "Every asset of the type {0} in the project, one row each, with "
-            + "one column per field. Hover a column title to see what it holds.";
         private const string TablesFormat = "{0} tables";
         private const string TablesTooltip = "Every data type the project lists in the hub. Pick one in the tree "
             + "below to see its assets.";
+        private const string TableSubtitleFormat = "{0}  ·  {1}";
+        private const string TableTooltipFormat = "Every asset of the type {0} in the project, one row each, with "
+            + "one column per field. Hover a column title to see what it holds.";
         private const int TreeDivider = 0;
         private const string TreeWidthKey = "Base.DataHubPackage.TreeWidth";
+        private const string WarningsFilterFormat = "Warnings  {0}";
+        private const string WarningsFilterTooltip = "Show only the assets with an amber mark in the Check column, "
+            + "like ones nothing uses yet.";
+        private const string WarningsFormat = "{0} with warnings";
+        private const string WarningsStatusTooltip = "Assets of this type worth a look, like ones nothing uses yet. "
+            + "Nothing is broken. Switch to Warnings next to the search to see only those.";
         private const string WindowTitle = "Data Hub";
 
         [SerializeField] private EDataPanelTab panelTab;
 
-        [SerializeField] private bool problemsOnly;
+        [SerializeField] private EDataRowFilter rowFilter;
         [SerializeField] private string search;
         [SerializeField] private string selectedPath;
 
         // None of these survive a domain reload, so EnsureInitialized creates them from the GUI pass too.
         private readonly List<MethodInfo> _actions = new();
         private IDataHubPage _activePage;
+        private Rect _bulkAnchor;
+        private DataColumn _bulkColumn;
+        private Object[] _bulkTargets;
         private DataCollections _collections;
         private EditorColumnDividers _dividers;
         private DataTableHooks _hooks;
@@ -113,13 +151,18 @@ namespace Base.DataHubPackage.Editor
         private bool _needsViewSwap;
         private Object _pendingSelection;
         private DataHubRegistry _registry;
+        private Object _replaceAsset;
         private EDataPanelTab _shownTab;
         private DataSidePanel _sidePanel;
         private DataHubStyles _styles;
         private DataHubTree _tree;
+        private DataUsageIndex _usage;
         private float _treeWidth;
         private DataValidation _validation;
         private DataTableView _view;
+
+        // For the menu check only, which runs whenever a menu opens and needs no window.
+        private static DataHubRegistry _menuRegistry;
 
         private static string ActionKey => Application.platform == RuntimePlatform.OSXEditor
             ? MacActionKey
@@ -168,10 +211,18 @@ namespace Base.DataHubPackage.Editor
             HandleCommands();
             DrawPanes(new Rect(0f, 0f, position.width, position.height));
 
-            // Outside every pane, so the box opens at the window coordinates of the name it renames.
-            if (_isRenameRequested
-                && Event.current.type == EventType.Repaint)
+            // Outside every pane, so the boxes open at the window coordinates of the cell they belong to.
+            if (Event.current.type != EventType.Repaint)
+                return;
+
+            if (_isRenameRequested)
                 ShowRenamePopup();
+
+            if (_bulkColumn != null)
+                ShowBulkEditPopup();
+
+            if (_replaceAsset != null)
+                ShowReplacePopup();
         }
 
         private void OnLostFocus()
@@ -200,6 +251,30 @@ namespace Base.DataHubPackage.Editor
             DataHubWindow window = GetWindow<DataHubWindow>(WindowTitle);
             window._needsRebuild = true;
             window.Show();
+        }
+
+        /// <summary>
+        /// Opens the Data Hub on the table of the selected asset with its row selected, from the Project window.
+        /// </summary>
+        [DynamicMenuItem(ShowMenuPath, nameof(CanShowSelection))]
+        private static void ShowSelection()
+        {
+            DataHubWindow window = GetWindow<DataHubWindow>(WindowTitle);
+            window.Reveal(Selection.activeObject);
+            window.Show();
+        }
+
+        private static bool CanShowSelection()
+        {
+            Object selected = Selection.activeObject;
+
+            if (selected == null
+                || !AssetDatabase.Contains(selected))
+                return false;
+
+            _menuRegistry ??= new DataHubRegistry();
+
+            return _menuRegistry.FindTable(selected.GetType()) != null;
         }
 
         private static float ClampPane(float width, float available)
@@ -245,9 +320,10 @@ namespace Base.DataHubPackage.Editor
             _registry = new DataHubRegistry();
             _index = new DataAssetIndex();
             _collections = new DataCollections(_index);
-            _validation = new DataValidation(_registry, _collections);
+            _usage = new DataUsageIndex(_index, _registry);
+            _validation = new DataValidation(_registry, _collections, _usage);
             _tree = new DataHubTree();
-            _sidePanel = new DataSidePanel();
+            _sidePanel = new DataSidePanel(_registry);
             _styles = new DataHubStyles();
             _dividers = new EditorColumnDividers();
             _inspected = Array.Empty<Object>();
@@ -257,6 +333,7 @@ namespace Base.DataHubPackage.Editor
                 ClearFilter = ClearFilter,
                 Create = ShowNewMenu,
                 Rename = RequestRename,
+                ShowColumnMenu = ShowColumnMenu,
                 ShowContextMenu = ShowRowMenu
             };
 
@@ -276,6 +353,7 @@ namespace Base.DataHubPackage.Editor
             {
                 _index.Rebuild();
                 _collections.Clear();
+                _usage.ClearAll();
                 _sidePanel.Invalidate();
                 _tree.RefreshCounts(_index);
             }
@@ -294,6 +372,7 @@ namespace Base.DataHubPackage.Editor
             _needsRevalidate = false;
 
             _view?.ApplyPending();
+            SelectPending();
 
             // The page and the inspector draw with GUILayout, which needs the same controls in the
             // repaint as in the layout before it. A click that changes the selection mid pass only
@@ -323,7 +402,7 @@ namespace Base.DataHubPackage.Editor
                 return;
 
             _view = new DataTableView(table, _registry);
-            _view.SetFilter(search, problemsOnly);
+            _view.SetFilter(search, rowFilter);
         }
 
         private void RefreshContent()
@@ -334,18 +413,58 @@ namespace Base.DataHubPackage.Editor
                 return;
 
             _view.Rebuild(_index, _validation);
+        }
 
-            if (_pendingSelection == null)
+        // A new or revealed asset hidden by the search or the problem filter would leave the user looking at
+        // nothing, so the filter is cleared and the selection tried again on the next layout.
+        private void SelectPending()
+        {
+            if (_pendingSelection == null
+                || _view == null)
                 return;
 
-            _view.Select(_pendingSelection);
+            if (_view.Select(_pendingSelection))
+            {
+                _pendingSelection = null;
+                return;
+            }
+
+            bool isFiltered = search.Length > 0
+                || rowFilter != EDataRowFilter.All;
+
+            if (isFiltered
+                && _view.Contains(_pendingSelection))
+            {
+                ClearFilter();
+                return;
+            }
+
             _pendingSelection = null;
+        }
+
+        private void Reveal(Object asset)
+        {
+            EnsureInitialized();
+
+            IDataTable table = asset == null
+                ? null
+                : _registry.FindTable(asset.GetType());
+
+            if (table == null)
+                return;
+
+            selectedPath = table.Path;
+            _pendingSelection = asset;
+            _needsViewSwap = true;
+
+            Repaint();
         }
 
         private void Revalidate()
         {
-            // A collection may have been edited by hand, so its cached members are read again.
+            // A collection or a deck may have been edited, so what they hold is read again.
             _collections.Clear();
+            _usage.Clear();
             _view?.Revalidate(_validation);
         }
 
@@ -396,6 +515,19 @@ namespace Base.DataHubPackage.Editor
                 case SelectAllCommand when !isTyping:
                     if (isExecute)
                         _view.SelectAll();
+
+                    break;
+
+                // The same keys as in a spreadsheet: copy rows out, paste edited rows back in.
+                case CopyCommand when !isTyping:
+                    if (isExecute)
+                        CopyTable();
+
+                    break;
+
+                case PasteCommand when !isTyping:
+                    if (isExecute)
+                        EditorApplication.delayCall += PasteTable;
 
                     break;
 
@@ -513,6 +645,9 @@ namespace Base.DataHubPackage.Editor
                     ShowActionsMenu(string.Empty);
             }
 
+            if (HeaderButton(ref right, y, new GUIContent(SheetLabel, SheetTooltip), _styles.HeaderButton))
+                ShowSheetMenu();
+
             right -= EditorMetrics.ItemGap;
 
             // Deferred, so the asset changes and the dialogs they may open never run halfway through a
@@ -572,12 +707,9 @@ namespace Base.DataHubPackage.Editor
             GUIContent[] filters =
             {
                 new(string.Format(AllFilterFormat, _view.RowCount), AllFilterTooltip),
-                new(string.Format(ProblemsFilterFormat, _view.ProblemCount), ProblemsFilterTooltip)
+                new(string.Format(ProblemsFilterFormat, _view.ProblemCount), ProblemsFilterTooltip),
+                new(string.Format(WarningsFilterFormat, _view.WarningCount), WarningsFilterTooltip)
             };
-
-            int filter = problemsOnly
-                ? 1
-                : 0;
 
             EditorGUI.BeginChangeCheck();
 
@@ -586,10 +718,10 @@ namespace Base.DataHubPackage.Editor
 
             // The field has no tooltip of its own, and a label takes no clicks away from it.
             GUI.Label(searchRect, new GUIContent(string.Empty, string.Format(SearchTooltip, ActionKey)));
-            problemsOnly = DataHubGui.Segmented(filterRect, filter, filters, _styles) == 1;
+            rowFilter = (EDataRowFilter)DataHubGui.Segmented(filterRect, (int)rowFilter, filters, _styles);
 
             if (EditorGUI.EndChangeCheck())
-                _view.SetFilter(search, problemsOnly);
+                _view.SetFilter(search, rowFilter);
         }
 
         private void DrawStatusBar(Rect area)
@@ -606,13 +738,36 @@ namespace Base.DataHubPackage.Editor
 
             GUI.Label(line, new GUIContent(shown, ShownTooltip), _styles.Footer);
 
-            GUIContent result = _view.ProblemCount > 0
-                ? new GUIContent(string.Format(ProblemsFormat, _view.ProblemCount), EditorIcons.Error,
-                    ProblemsStatusTooltip)
-                : new GUIContent(ChecksPassedText, EditorIcons.Success, ChecksPassedTooltip);
+            float right = line.xMax;
 
-            float width = _styles.Footer.CalcSize(result).x;
-            GUI.Label(new Rect(line.xMax - width, line.y, width, line.height), result, _styles.Footer);
+            if (_view.ProblemCount == 0
+                && _view.WarningCount == 0)
+            {
+                DrawStatus(ref right, line, new GUIContent(ChecksPassedText, EditorIcons.Success, ChecksPassedTooltip));
+                return;
+            }
+
+            if (_view.WarningCount > 0)
+            {
+                DrawStatus(ref right, line, new GUIContent(string.Format(WarningsFormat, _view.WarningCount),
+                    EditorIcons.Warning, WarningsStatusTooltip));
+            }
+
+            if (_view.ProblemCount > 0)
+            {
+                DrawStatus(ref right, line, new GUIContent(string.Format(ProblemsFormat, _view.ProblemCount),
+                    EditorIcons.Error, ProblemsStatusTooltip));
+            }
+        }
+
+        // Laid out from the right, problems left of warnings, so the more serious one is read first.
+        private void DrawStatus(ref float right, Rect line, GUIContent content)
+        {
+            float width = _styles.Footer.CalcSize(content).x;
+            right -= width;
+
+            GUI.Label(new Rect(right, line.y, width, line.height), content, _styles.Footer);
+            right -= EditorMetrics.ItemGap * 2f;
         }
 
         private void HandlePaneDividers(Rect area, float treeEdge, float sideEdge, bool hasSidePanel)
@@ -648,10 +803,10 @@ namespace Base.DataHubPackage.Editor
         private void ClearFilter()
         {
             search = string.Empty;
-            problemsOnly = false;
+            rowFilter = EDataRowFilter.All;
             GUIUtility.keyboardControl = 0;
 
-            _view?.SetFilter(search, problemsOnly);
+            _view?.SetFilter(search, rowFilter);
             Repaint();
         }
 
@@ -768,6 +923,21 @@ namespace Base.DataHubPackage.Editor
             Object[] selected = _view.SelectedAssets;
             GenericMenu menu = new();
 
+            // The cell that was right-clicked comes first, because that is what the click was about.
+            DataColumn column = _view.ContextColumn;
+
+            if (column != null
+                && column.IsNumber)
+            {
+                string label = selected.Length == 1
+                    ? string.Format(AdjustOneRowFormat, column.Header)
+                    : string.Format(AdjustRowsFormat, column.Header, selected.Length);
+
+                Rect anchor = _view.ContextRect;
+                menu.AddItem(new GUIContent(label), false, func: () => RequestBulkEdit(column, selected, anchor));
+                menu.AddSeparator(string.Empty);
+            }
+
             if (selected.Length == 1)
                 menu.AddItem(new GUIContent(PingItem), false, func: () => EditorGUIUtility.PingObject(selected[0]));
 
@@ -778,12 +948,186 @@ namespace Base.DataHubPackage.Editor
             menu.AddItem(new GUIContent(DuplicateLabel), false, func: DuplicateSelection);
 
             if (selected.Length == 1)
+            {
                 menu.AddItem(new GUIContent(RenameLabel), false, func: RequestRename);
+                menu.AddItem(new GUIContent(ReplaceItem), false, func: () => RequestReplace(selected[0]));
+            }
 
             menu.AddItem(new GUIContent(DeleteLabel), false, func: DeleteSelection);
             AddActions(menu, ActionsMenuPrefix);
             menu.ShowAsContext();
         }
+
+        private void ShowColumnMenu(DataColumn column, Rect anchor)
+        {
+            GenericMenu menu = new();
+
+            if (!column.IsNumber)
+            {
+                menu.AddDisabledItem(new GUIContent(NotAdjustableItem));
+                menu.ShowAsContext();
+
+                return;
+            }
+
+            Object[] selected = _view.SelectedAssets;
+            Object[] shown = _view.FilteredAssets;
+
+            if (selected.Length > 1)
+            {
+                menu.AddItem(new GUIContent(string.Format(AdjustSelectedFormat, column.Header, selected.Length)), false,
+                    func: () => RequestBulkEdit(column, selected, anchor));
+            }
+
+            menu.AddItem(new GUIContent(string.Format(AdjustAllFormat, column.Header, shown.Length)), false,
+                func: () => RequestBulkEdit(column, shown, anchor));
+
+            menu.ShowAsContext();
+        }
+
+        // Like rename, the box can only open from a GUI pass, so the menu only asks for it.
+        private void RequestBulkEdit(DataColumn column, Object[] targets, Rect anchor)
+        {
+            _bulkColumn = column;
+            _bulkTargets = targets;
+            _bulkAnchor = anchor;
+
+            Repaint();
+        }
+
+        private void ShowBulkEditPopup()
+        {
+            DataColumn column = _bulkColumn;
+            Object[] targets = _bulkTargets;
+            _bulkColumn = null;
+            _bulkTargets = null;
+
+            if (targets.Length == 0)
+                return;
+
+            PopupWindow.Show(GUIUtility.ScreenToGUIRect(_bulkAnchor), new DataBulkEditPopup(column, targets, _styles,
+                onApplied: _ =>
+                {
+                    _needsRevalidate = true;
+                    Repaint();
+                }));
+        }
+
+        private void RequestReplace(Object asset)
+        {
+            _replaceAsset = asset;
+            Repaint();
+        }
+
+        // Opens on the row of the asset, which is still the selected one, so the box sits next to its name.
+        private void ShowReplacePopup()
+        {
+            Object asset = _replaceAsset;
+            _replaceAsset = null;
+
+            if (asset == null
+                || !_view.TryGetNameRect(out Rect anchor))
+                return;
+
+            Type pickType = _registry.FindTable(asset.GetType())?.DataType ?? asset.GetType();
+            List<DataReplaceLine> lines = DataReplace.Plan(asset, _index, _registry);
+
+            PopupWindow.Show(anchor, new DataReplacePopup(asset, pickType, lines, _styles, onApplied: () =>
+            {
+                _needsRebuild = true;
+                Repaint();
+            }));
+        }
+
+        private void ShowSheetMenu()
+        {
+            GenericMenu menu = new();
+
+            menu.AddItem(new GUIContent(string.Format(CopyItemFormat, ActionKey)), false, func: CopyTable);
+            menu.AddItem(new GUIContent(string.Format(PasteItemFormat, ActionKey)), false, func: PasteTable);
+            menu.AddSeparator(string.Empty);
+            menu.AddItem(new GUIContent(ExportItem), false, func: ExportCsv);
+            menu.AddItem(new GUIContent(ImportItem), false, func: ImportCsv);
+
+            menu.ShowAsContext();
+        }
+
+        // What is shown is what is copied, so a search or a filter picks the rows for the spreadsheet.
+        private string SheetText(char separator) => DataSheetFormat.Write(
+            DataSheetTable.Export(_view.Columns, _view.ShownRows), separator);
+
+        // The selected rows when there are any, like copying cells in a spreadsheet, every shown row otherwise.
+        private void CopyTable()
+        {
+            IReadOnlyList<DataRow> rows = _view.SelectedAssets.Length > 0
+                ? _view.SelectedRows
+                : _view.ShownRows;
+
+            EditorGUIUtility.systemCopyBuffer = DataSheetFormat.Write(DataSheetTable.Export(_view.Columns, rows),
+                DataSheetFormat.Tab);
+
+            ShowNotification(new GUIContent(string.Format(CopiedFormat, rows.Count)));
+        }
+
+        private void PasteTable()
+        {
+            string text = EditorGUIUtility.systemCopyBuffer;
+
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                ShowNotification(new GUIContent(ClipboardEmptyText));
+                return;
+            }
+
+            ShowImportPreview(text, ClipboardSource);
+        }
+
+        private void ExportCsv()
+        {
+            string label = _tree.Selected.Label;
+            string path = EditorUtility.SaveFilePanel(string.Format(ExportTitleFormat, label), SheetDirectory(),
+                label, CsvExtension);
+
+            if (string.IsNullOrEmpty(path))
+                return;
+
+            // With a byte order mark, or Excel reads umlauts and accents as two odd characters each.
+            File.WriteAllText(path, SheetText(DataSheetFormat.Comma), new UTF8Encoding(true));
+            RememberSheetDirectory(path);
+
+            ShowNotification(new GUIContent(string.Format(ExportedFormat, _view.ShownRows.Count,
+                Path.GetFileName(path))));
+        }
+
+        private void ImportCsv()
+        {
+            string path = EditorUtility.OpenFilePanel(string.Format(ImportTitleFormat, _tree.Selected.Label),
+                SheetDirectory(), CsvExtension);
+
+            if (string.IsNullOrEmpty(path))
+                return;
+
+            RememberSheetDirectory(path);
+            ShowImportPreview(File.ReadAllText(path), string.Format(FileSourceFormat, Path.GetFileName(path)));
+        }
+
+        private void ShowImportPreview(string text, string source)
+        {
+            List<List<string>> sheet = DataSheetFormat.Read(text, DataSheetFormat.Detect(text));
+            DataImportPlan plan = DataSheetTable.Plan(_view.Columns, _view.Rows, sheet);
+
+            DataImportWindow.Show(plan, _tree.Selected.Label, source, onApplied: () =>
+            {
+                _needsRevalidate = true;
+                Repaint();
+            });
+        }
+
+        private static string SheetDirectory() => EditorPrefs.GetString(SheetDirectoryKey,
+            Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
+
+        private static void RememberSheetDirectory(string path)
+            => EditorPrefs.SetString(SheetDirectoryKey, Path.GetDirectoryName(path));
 
         private void ShowActionsMenu(string prefix)
         {

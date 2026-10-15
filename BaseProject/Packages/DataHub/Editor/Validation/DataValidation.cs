@@ -10,23 +10,27 @@ namespace Base.DataHubPackage.Editor.Validation
     /// <summary>
     /// Fills the problem list of a row from three sources: the validation attributes on its fields,
     /// the project's <see cref="IDataValidator"/>s, and whether it sits in the collection its create
-    /// rule names.
+    /// rule names. The warning list says whether anything uses it, for the types the project asks about.
     /// </summary>
     internal sealed class DataValidation
     {
         private const string NotInCollectionFormat = "Not in {0}";
+        private const string UnusedText = "Not used anywhere yet. Only its collection lists it.";
         private const string ValidatorFailedFormat = "{0} failed: {1}";
 
         private readonly DataCollections _collections;
         private readonly DataHubRegistry _registry;
+        private readonly DataUsageIndex _usage;
 
         /// <summary>Creates the validation over the registry and the collections.</summary>
         /// <param name="registry">The project checks and create rules.</param>
         /// <param name="collections">The collection lookup.</param>
-        internal DataValidation(DataHubRegistry registry, DataCollections collections)
+        /// <param name="usage">Which assets other data assets use.</param>
+        internal DataValidation(DataHubRegistry registry, DataCollections collections, DataUsageIndex usage)
         {
             _registry = registry;
             _collections = collections;
+            _usage = usage;
         }
 
         /// <summary>Checks the asset of a row again and replaces its problem list.</summary>
@@ -34,6 +38,7 @@ namespace Base.DataHubPackage.Editor.Validation
         internal void Validate(DataRow row)
         {
             row.Problems.Clear();
+            row.Warnings.Clear();
 
             Object asset = row.Asset;
 
@@ -54,6 +59,10 @@ namespace Base.DataHubPackage.Editor.Validation
 
             if (_collections.IsMissingFrom(rule, asset, out Object collection))
                 row.Problems.Add(string.Format(NotInCollectionFormat, collection.name));
+
+            if (_registry.IsUsageChecked(asset.GetType())
+                && !_usage.IsUsed(asset))
+                row.Warnings.Add(UnusedText);
         }
 
         // A validator is project code. One that throws shows up as a problem on the row instead of

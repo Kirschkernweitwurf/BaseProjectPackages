@@ -42,6 +42,8 @@ All in `Base.DataHubPackage.Editor.Extensions`. Each implementation needs a para
 | `IDataValidator` | A project check. Problems show as a red badge. |
 | `IDataCreateRule` | Folder, start name and collection list for new assets of a type. The most specific rule wins. |
 | `IDataHubPage` | A whole custom page in the tree, drawn with GUILayout. |
+| `IDataSummary` | A live summary of an asset at the top of its Contents tab, drawn with GUILayout inside a card the hub provides. |
+| `IDataUsageCheck` | Assets of a type that nothing uses yet get an amber warning. Collections do not count as use, other data assets and saved scenes do. |
 
 ```csharp
 internal sealed class GiftTable : IDataTable
@@ -53,6 +55,11 @@ internal sealed class GiftTable : IDataTable
 ```
 
 ## Asset actions
+
+- **Show in Data Hub** in the Project window's context menu opens the table of the selected asset with its row selected.
+- **Bulk edit** on right click of a number cell or column title: add, multiply or set for many rows, previewed first, rounded for whole numbers and kept within `[Min]` and `[Range]`.
+- **Replace Everywhere** on right click of a row: swaps the asset for another in every list and field of the data assets, previewed per spot.
+- **Sheet** menu: copy the shown rows to the clipboard or a CSV file and import edits back, matched by name and title, with a preview of every change.
 
 - **New** creates the asset in the folder of its create rule, names it through the naming conventions, runs the same reset as the inspector, and adds it to the collection list of the rule. Without a rule it lands next to the selected asset.
 - **Duplicate** copies next to the source with the next free number and adds the copy to the collection.
