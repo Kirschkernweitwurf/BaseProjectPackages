@@ -2,7 +2,7 @@
 
 General-purpose runtime and editor helpers. It sits at the bottom of the dependency graph: no dependencies at all, so every other Base package can build on it.
 
-**Team docs:** how to use everything in the editor is in [`Documentation~/index.md`](Documentation~/index.md). In Unity, open `Help > Base Packages Documentation`.
+**Team docs:** how to use everything in the editor is in [`Documentation~/Utility Package.md`](Documentation~/Utility%20Package.md). In Unity, open `Help > Base Packages Documentation`.
 
 ## Requirements
 

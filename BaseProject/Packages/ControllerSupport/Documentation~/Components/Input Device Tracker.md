@@ -30,4 +30,4 @@ None. Add it and it works.
 
 - [🗞️ Input Glyph Provider](Input%20Glyph%20Provider.md)
 - [🗞️ Focus Watchdog](Focus%20Watchdog.md)
-- [🗳️ Controller Support components](../Components.md)
+- [🗳️ Controller Support components](../Controller%20Support%20Components.md)

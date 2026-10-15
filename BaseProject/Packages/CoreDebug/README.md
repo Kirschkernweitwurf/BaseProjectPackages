@@ -4,7 +4,7 @@ The in-game debug tooling of the Base packages. Split out of `Base Core` because
 to be absent from a shipping build, which is easier to guarantee by not installing it than by
 stripping it.
 
-**Team docs:** how to use everything in the editor is in [`Documentation~/index.md`](Documentation~/index.md). In Unity, open `Help > Base Packages Documentation`.
+**Team docs:** how to use everything in the editor is in [`Documentation~/Core Debug Package.md`](Documentation~/Core%20Debug%20Package.md). In Unity, open `Help > Base Packages Documentation`.
 
 ## Requirements
 

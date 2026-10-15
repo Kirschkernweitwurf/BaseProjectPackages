@@ -40,4 +40,4 @@ Stores how strong gamepad rumble is and passes it to the Rumble Service, where i
 - [🗞️ Rumble Service](Rumble%20Service.md)
 - [🔖 Rumble Enabled Setting](Rumble%20Enabled%20Setting.md)
 - [🔖 Setting Slider](https://github.com/Kirschkernweitwurf/BaseProjectPackages/blob/main/BaseProject/Packages/Settings/Documentation~/Components/Setting%20Slider.md)
-- [🗳️ Settings components overview](https://github.com/Kirschkernweitwurf/BaseProjectPackages/blob/main/BaseProject/Packages/Settings/Documentation~/Components.md)
+- [🗳️ Settings components overview](https://github.com/Kirschkernweitwurf/BaseProjectPackages/blob/main/BaseProject/Packages/Settings/Documentation~/Settings%20Components.md)

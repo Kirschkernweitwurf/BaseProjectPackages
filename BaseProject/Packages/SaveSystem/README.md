@@ -2,7 +2,7 @@
 
 Async, slot-based save and load for Unity. Each object owns its own save data and registers itself at runtime, so gameplay code never touches files, JSON or encryption. Drop one component into the scene, pick your settings in the inspector and you are done.
 
-**Team docs:** how to use everything in the editor is in [`Documentation~/index.md`](Documentation~/index.md). In Unity, open `Help > Base Packages Documentation`.
+**Team docs:** how to use everything in the editor is in [`Documentation~/Save System Package.md`](Documentation~/Save%20System%20Package.md). In Unity, open `Help > Base Packages Documentation`.
 
 - **Async and non-blocking.** Everything runs on `Awaitable`. Encoding and decoding happen on a background thread so large saves never hitch the frame.
 - **Crash-safe writes.** Metadata is written last as a commit marker. A crash mid-save can never look like a finished save.

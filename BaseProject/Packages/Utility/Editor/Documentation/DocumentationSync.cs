@@ -17,10 +17,11 @@ namespace Base.UtilityPackage.Editor.Documentation
     /// </summary>
     /// <remarks>
     /// Runs once per editor session, whenever packages change, and from the Sync button of the
-    /// <see cref="DocumentationWindow"/>. Does nothing in a project without <c>Docs/index.md</c>, so
-    /// projects that do not keep docs are never touched. Unchanged files are skipped, which keeps a sync
-    /// cheap enough to run on every package change. The decisions live in
-    /// <see cref="DocumentationSyncRules"/> so they can be tested without the Package Manager.
+    /// <see cref="DocumentationWindow"/>. Does nothing in a project whose <c>Docs</c> folder has no start
+    /// page (see <see cref="DocumentationSource.TryFindStartPage"/>), so projects that do not keep docs are
+    /// never touched. Unchanged files are skipped, which keeps a sync cheap enough to run on every package
+    /// change. The decisions live in <see cref="DocumentationSyncRules"/> so they can be tested without the
+    /// Package Manager.
     /// </remarks>
     [InitializeOnLoad]
     internal static class DocumentationSync
@@ -49,15 +50,15 @@ namespace Base.UtilityPackage.Editor.Documentation
         /// Mirrors the docs of every installed Base package into <c>Docs/Packages</c>.
         /// </summary>
         /// <returns>
-        /// The number of files and folders written or deleted, or <c>-1</c> when the project has no
-        /// <c>Docs/index.md</c> and nothing was done.
+        /// The number of files and folders written or deleted, or <c>-1</c> when the project's <c>Docs</c>
+        /// folder has no start page and nothing was done.
         /// </returns>
         internal static int Sync()
         {
             string projectRoot = Path.GetDirectoryName(Application.dataPath);
 
             if (!DocumentationSource.TryFindFolder(projectRoot, DocumentationSource.ProjectDocsFolder,
-                    out string docsRoot))
+                    out string docsRoot, out _))
                 return -1;
 
             try
@@ -78,12 +79,12 @@ namespace Base.UtilityPackage.Editor.Documentation
         {
             string packagesRoot = Path.Combine(docsRoot, DocumentationSyncRules.PackagesFolder);
             List<DocumentationSource> packages = FindPackages();
-            Dictionary<string, string> mirrorByFolder = new(StringComparer.OrdinalIgnoreCase);
+            Dictionary<string, DocumentationSource> packageByFolder = new(StringComparer.OrdinalIgnoreCase);
 
             foreach (DocumentationSource package in packages)
             {
                 if (DocumentationSyncRules.TryGetRepositoryFolder(package.OnlineUrl, out string folder))
-                    mirrorByFolder[folder] = DocumentationSyncRules.MirrorName(package.DisplayName);
+                    packageByFolder[folder] = package;
             }
 
             Directory.CreateDirectory(packagesRoot);
@@ -93,7 +94,7 @@ namespace Base.UtilityPackage.Editor.Documentation
             {
                 DocumentationSyncRules.TryGetRepositoryFolder(package.OnlineUrl, out string ownFolder);
                 string target = Path.Combine(packagesRoot, DocumentationSyncRules.MirrorName(package.DisplayName));
-                changes += MirrorFolder(package.Folder, target, ownFolder, mirrorByFolder);
+                changes += MirrorFolder(package.Folder, target, ownFolder, packageByFolder);
             }
 
             IEnumerable<string> existing = Directory.GetDirectories(packagesRoot).Select(Path.GetFileName);
@@ -106,7 +107,15 @@ namespace Base.UtilityPackage.Editor.Documentation
                 changes++;
             }
 
-            string indexPath = Path.Combine(packagesRoot, DocumentationSource.StartPage);
+            IEnumerable<string> rootFiles = Directory.GetFiles(packagesRoot).Select(Path.GetFileName);
+
+            foreach (string stale in DocumentationSyncRules.RootFilesToDelete(rootFiles))
+            {
+                File.Delete(Path.Combine(packagesRoot, stale));
+                changes++;
+            }
+
+            string indexPath = Path.Combine(packagesRoot, DocumentationSyncRules.IndexPage);
 
             if (WriteIfChanged(indexPath, DocumentationSyncRules.BuildIndex(packages)))
                 changes++;
@@ -129,7 +138,7 @@ namespace Base.UtilityPackage.Editor.Documentation
             {
                 if (!package.name.StartsWith(DocumentationSyncRules.PackageNamePrefix, StringComparison.Ordinal)
                     || !DocumentationSource.TryFindFolder(package.resolvedPath,
-                        DocumentationSource.PackageDocsFolder, out string folder))
+                        DocumentationSource.PackageDocsFolder, out string folder, out string startPage))
                     continue;
 
                 string mirrorName = DocumentationSyncRules.MirrorName(package.displayName);
@@ -141,7 +150,7 @@ namespace Base.UtilityPackage.Editor.Documentation
                     continue;
                 }
 
-                packages.Add(new DocumentationSource(package.displayName, package.version, folder,
+                packages.Add(new DocumentationSource(package.displayName, package.version, folder, startPage,
                     package.documentationUrl));
             }
 
@@ -149,7 +158,7 @@ namespace Base.UtilityPackage.Editor.Documentation
         }
 
         private static int MirrorFolder(string source, string target, string ownFolder,
-            IReadOnlyDictionary<string, string> mirrorByFolder)
+            IReadOnlyDictionary<string, DocumentationSource> packageByFolder)
         {
             int changes = 0;
             HashSet<string> wanted = new(StringComparer.OrdinalIgnoreCase);
@@ -167,7 +176,7 @@ namespace Base.UtilityPackage.Editor.Documentation
                 bool isPage = Path.GetExtension(file).Equals(MarkdownExtension, StringComparison.OrdinalIgnoreCase);
                 bool written = isPage
                     ? WriteIfChanged(destination, DocumentationSyncRules.RewriteLinks(File.ReadAllText(file),
-                        relative, ownFolder, mirrorByFolder))
+                        relative, ownFolder, packageByFolder))
                     : CopyIfChanged(file, destination);
 
                 if (written)

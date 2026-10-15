@@ -7,8 +7,8 @@ using PackageInfo = UnityEditor.PackageManager.PackageInfo;
 namespace Base.UtilityPackage.Editor.Documentation
 {
     /// <summary>
-    /// Lists every installed package that ships a <c>Documentation~/index.md</c>, plus the project's
-    /// own <c>Docs/index.md</c>, and opens them in whatever Markdown app the machine uses.
+    /// Lists every installed package that ships a <c>Documentation~</c> folder with a start page, plus the
+    /// project's own <c>Docs</c> folder, and opens the start page in whatever Markdown app the machine uses.
     /// </summary>
     /// <remarks>
     /// A plain <see cref="MenuItem"/> rather than a dynamic one on purpose: the Menu Manager that
@@ -20,7 +20,8 @@ namespace Base.UtilityPackage.Editor.Documentation
         private const float ButtonWidth = 64f;
         private const string EmptyMessage =
             "No documentation found. Packages ship it in a Documentation~ folder, the project in a Docs "
-            + "folder next to Assets. Each needs an index.md.";
+            + "folder next to Assets. Each needs a start page: a page with \"type: Start Page\" in its "
+            + "properties, or an index.md.";
         private const string FolderLabel = "Folder";
         private const string Hint =
             "Opens in your default Markdown app. If nothing happens, set one for .md files in your "
@@ -34,8 +35,8 @@ namespace Base.UtilityPackage.Editor.Documentation
         private const string SyncLabel = "Sync";
         private const string SyncTooltip =
             "Copies the docs of every installed Base package into Docs/Packages, so one Markdown vault on "
-            + "the Docs folder shows everything. Needs a Docs/index.md. Also runs on its own.";
-        private const string SyncSkippedMessage = "Nothing synced: this project has no Docs/index.md.";
+            + "the Docs folder shows everything. Needs a start page in Docs. Also runs on its own.";
+        private const string SyncSkippedMessage = "Nothing synced: the Docs folder of this project has no start page.";
         private const string WindowTitle = "Documentation";
 
         private static readonly Vector2 MinWindowSize = new(420f, 240f);
@@ -119,16 +120,17 @@ namespace Base.UtilityPackage.Editor.Documentation
             string projectRoot = Path.GetDirectoryName(Application.dataPath);
 
             if (DocumentationSource.TryFindFolder(projectRoot, DocumentationSource.ProjectDocsFolder,
-                    out string projectDocs))
-                _sources.Add(new DocumentationSource(ProjectName, string.Empty, projectDocs, string.Empty));
+                    out string projectDocs, out string projectStartPage))
+                _sources.Add(new DocumentationSource(ProjectName, string.Empty, projectDocs, projectStartPage,
+                    string.Empty));
 
             foreach (PackageInfo package in PackageInfo.GetAllRegisteredPackages())
             {
                 if (!DocumentationSource.TryFindFolder(package.resolvedPath,
-                        DocumentationSource.PackageDocsFolder, out string folder))
+                        DocumentationSource.PackageDocsFolder, out string folder, out string startPage))
                     continue;
 
-                _sources.Add(new DocumentationSource(package.displayName, package.version, folder,
+                _sources.Add(new DocumentationSource(package.displayName, package.version, folder, startPage,
                     package.documentationUrl));
             }
 

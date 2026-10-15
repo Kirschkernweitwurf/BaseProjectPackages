@@ -32,4 +32,4 @@ Plays gamepad rumble from curve-based patterns. Requests have a priority: a scri
 
 - [🔖 Rumble Enabled Setting](Rumble%20Enabled%20Setting.md)
 - [🔖 Rumble Intensity Setting](Rumble%20Intensity%20Setting.md)
-- [🗳️ Controller Support components](../Components.md)
+- [🗳️ Controller Support components](../Controller%20Support%20Components.md)

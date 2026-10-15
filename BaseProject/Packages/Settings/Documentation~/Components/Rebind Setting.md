@@ -40,4 +40,4 @@ Saves every rebinding of one Input Action asset in a single setting. One setting
 - [🗞️ Settings Context](Settings%20Context.md)
 - [🔖 Rebind Button](Rebind%20Button.md)
 - [🗞️ Control Settings](Control%20Settings.md)
-- [🗳️ Settings components overview](../Components.md)
+- [🗳️ Settings components overview](../Settings%20Components.md)

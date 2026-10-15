@@ -40,4 +40,4 @@ Stores how often a timed autosave happens and passes it to the Autosave Service.
 - [🗞️ Autosave Service](Autosave%20Service.md)
 - [🔖 Autosave Enabled Setting](Autosave%20Enabled%20Setting.md)
 - [🔖 Setting Slider](https://github.com/Kirschkernweitwurf/BaseProjectPackages/blob/main/BaseProject/Packages/Settings/Documentation~/Components/Setting%20Slider.md)
-- [🗳️ Settings components overview](https://github.com/Kirschkernweitwurf/BaseProjectPackages/blob/main/BaseProject/Packages/Settings/Documentation~/Components.md)
+- [🗳️ Settings components overview](https://github.com/Kirschkernweitwurf/BaseProjectPackages/blob/main/BaseProject/Packages/Settings/Documentation~/Settings%20Components.md)

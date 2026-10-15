@@ -24,7 +24,7 @@ Copies the docs of every installed Base package into the project's `Docs/Package
 
 1. Open the project's `Docs` folder in your Markdown app. In Obsidian: **Open folder as vault** and pick `Docs`.
 2. Start Unity once. The package docs appear in `Docs/Packages`.
-3. Start at `Docs/Packages/index.md`, or use the **Packages** link on the project's start page.
+3. Start at `Docs/Packages/Base Packages.md`, or use the **Packages** link on the project's start page.
 
 ## When it runs
 
@@ -36,7 +36,9 @@ Only changed files are written, so a sync is quick.
 
 ## Good to know
 
-- It only runs in projects that have a `Docs/index.md`. Projects without their own docs are never touched.
+- It only runs in projects whose `Docs` folder has a start page. Projects without their own docs are never touched.
+- A start page is the page in the root of a docs folder with `type: Start Page` in its properties, for example
+  `Tweening Package.md` or `Hand Over Heels.md`. Older packages and projects with an `index.md` work too.
 - `Docs/Packages` is generated. Do not edit files there: the next sync overwrites them. Fix the docs in the package instead.
 - A package you remove disappears from `Docs/Packages` on the next sync.
 - Links to the docs of another installed package open the local copy. Links to packages the project does not use still go to GitHub.

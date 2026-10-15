@@ -39,4 +39,4 @@ Stores whether gamepad rumble is on and passes it to the Rumble Service.
 - [🗞️ Rumble Service](Rumble%20Service.md)
 - [🔖 Rumble Intensity Setting](Rumble%20Intensity%20Setting.md)
 - [🔖 Setting Toggle](https://github.com/Kirschkernweitwurf/BaseProjectPackages/blob/main/BaseProject/Packages/Settings/Documentation~/Components/Setting%20Toggle.md)
-- [🗳️ Settings components overview](https://github.com/Kirschkernweitwurf/BaseProjectPackages/blob/main/BaseProject/Packages/Settings/Documentation~/Components.md)
+- [🗳️ Settings components overview](https://github.com/Kirschkernweitwurf/BaseProjectPackages/blob/main/BaseProject/Packages/Settings/Documentation~/Settings%20Components.md)

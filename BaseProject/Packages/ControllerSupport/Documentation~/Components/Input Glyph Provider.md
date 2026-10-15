@@ -33,4 +33,4 @@ Picks the right button icon for an action, based on the device in use: a keyboar
 ## Related
 
 - [🗞️ Input Device Tracker](Input%20Device%20Tracker.md)
-- [🗳️ Controller Support components](../Components.md)
+- [🗳️ Controller Support components](../Controller%20Support%20Components.md)

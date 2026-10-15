@@ -40,4 +40,4 @@ Stores whether autosaving is on and passes it to the Autosave Service. The defau
 - [🗞️ Autosave Service](Autosave%20Service.md)
 - [🔖 Autosave Interval Setting](Autosave%20Interval%20Setting.md)
 - [🔖 Setting Toggle](https://github.com/Kirschkernweitwurf/BaseProjectPackages/blob/main/BaseProject/Packages/Settings/Documentation~/Components/Setting%20Toggle.md)
-- [🗳️ Settings components overview](https://github.com/Kirschkernweitwurf/BaseProjectPackages/blob/main/BaseProject/Packages/Settings/Documentation~/Components.md)
+- [🗳️ Settings components overview](https://github.com/Kirschkernweitwurf/BaseProjectPackages/blob/main/BaseProject/Packages/Settings/Documentation~/Settings%20Components.md)

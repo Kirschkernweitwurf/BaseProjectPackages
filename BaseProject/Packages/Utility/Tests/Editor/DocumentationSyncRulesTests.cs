@@ -13,11 +13,16 @@ namespace Base.UtilityPackage.Tests
     {
         private const string Repo = DocumentationSyncRules.RepositoryPackagesUrl;
 
-        private static readonly Dictionary<string, string> Installed = new()
+        private static readonly Dictionary<string, DocumentationSource> Installed = new()
         {
-            { "Tools", "Tools" },
-            { "Utility", "Utility" },
-            { "ControllerSupport", "Controller Support" }
+            { "Tools", new DocumentationSource("Base Tools", "3.1.11", "/t", "Tools Package.md", string.Empty) },
+            { "Utility", new DocumentationSource("Base Utility", "1.9.0", "/u", "Utility Package.md", string.Empty) },
+            {
+                "ControllerSupport",
+                new DocumentationSource("Base Controller Support", "1.7.12", "/c", "Controller Support Package.md",
+                    string.Empty)
+            },
+            { "Legacy", new DocumentationSource("Base Legacy", "1.0.0", "/l", "index.md", string.Empty) }
         };
 
         /// <summary>The Base prefix is the same on every package, so the mirror leaves it out.</summary>
@@ -36,7 +41,7 @@ namespace Base.UtilityPackage.Tests
         public void TheRepositoryFolderComesFromTheDocumentationUrl()
         {
             bool found = DocumentationSyncRules.TryGetRepositoryFolder(
-                Repo + "ControllerSupport/Documentation~/index.md", out string folder);
+                Repo + "ControllerSupport/Documentation~/Controller%20Support%20Package.md", out string folder);
 
             Assert.That(found, Is.True);
             Assert.That(folder, Is.EqualTo("ControllerSupport"));
@@ -74,14 +79,44 @@ namespace Base.UtilityPackage.Tests
             string page = "[tools](" + Repo + "Tools/Documentation~/)";
 
             Assert.That(DocumentationSyncRules.RewriteLinks(page, "index.md", "Utility", Installed),
-                Is.EqualTo("[tools](../Tools/index.md)"));
+                Is.EqualTo("[tools](../Tools/Tools%20Package.md)"));
+        }
+
+        /// <summary>A link to the start page by its new name opens the local copy of it.</summary>
+        [Test]
+        public void ALinkToARenamedStartPageOpensItsLocalCopy()
+        {
+            string page = "[pads](" + Repo + "ControllerSupport/Documentation~/Controller%20Support%20Package.md)";
+
+            Assert.That(DocumentationSyncRules.RewriteLinks(page, "Utility Package.md", "Utility", Installed),
+                Is.EqualTo("[pads](../Controller%20Support/Controller%20Support%20Package.md)"));
+        }
+
+        /// <summary>An old link to an index.md opens the renamed start page, keeping the anchor.</summary>
+        [Test]
+        public void AnOldIndexLinkOpensTheRenamedStartPage()
+        {
+            string page = "[tools](" + Repo + "Tools/Documentation~/index.md#setup)";
+
+            Assert.That(DocumentationSyncRules.RewriteLinks(page, "Utility Package.md", "Utility", Installed),
+                Is.EqualTo("[tools](../Tools/Tools%20Package.md#setup)"));
+        }
+
+        /// <summary>A package that still has an index.md keeps it as its start page.</summary>
+        [Test]
+        public void APackageWithAnIndexKeepsIt()
+        {
+            string page = "[old](" + Repo + "Legacy/Documentation~/)";
+
+            Assert.That(DocumentationSyncRules.RewriteLinks(page, "Utility Package.md", "Utility", Installed),
+                Is.EqualTo("[old](../Legacy/index.md)"));
         }
 
         /// <summary>A package that is not installed has no local copy, so only the GitHub link works.</summary>
         [Test]
         public void ALinkToAMissingPackageStaysOnGitHub()
         {
-            string page = "[audio](" + Repo + "Audio/Documentation~/index.md)";
+            string page = "[audio](" + Repo + "Audio/Documentation~/Audio%20Package.md)";
 
             Assert.That(DocumentationSyncRules.RewriteLinks(page, "index.md", "Utility", Installed),
                 Is.EqualTo(page));
@@ -111,10 +146,11 @@ namespace Base.UtilityPackage.Tests
         [Test]
         public void ARelativeLinkIntoAnotherPackageBecomesTheLocalCopy()
         {
-            const string page = "[tools](../../Tools/Documentation~/index.md)";
+            const string page = "[tools](../../Tools/Documentation~/Tools%20Package.md) "
+                + "[old](../../Tools/Documentation~/index.md)";
 
-            Assert.That(DocumentationSyncRules.RewriteLinks(page, "index.md", "Utility", Installed),
-                Is.EqualTo("[tools](../Tools/index.md)"));
+            Assert.That(DocumentationSyncRules.RewriteLinks(page, "Utility Package.md", "Utility", Installed),
+                Is.EqualTo("[tools](../Tools/Tools%20Package.md) [old](../Tools/Tools%20Package.md)"));
         }
 
         /// <summary>Folders of packages that were removed go away; installed ones stay, whatever their case.</summary>
@@ -135,22 +171,37 @@ namespace Base.UtilityPackage.Tests
             Assert.That(DocumentationSyncRules.FoldersToDelete(null, new[] { "Utility" }), Is.Empty);
         }
 
-        /// <summary>The generated start page links every package, sorted, with spaces encoded.</summary>
+        /// <summary>Old files next to the generated start page go away; the start page and hidden files stay.</summary>
+        [Test]
+        public void OnlyTheOldRootFilesAreDeleted()
+        {
+            List<string> stale = DocumentationSyncRules.RootFilesToDelete(
+                new[] { "index.md", DocumentationSyncRules.IndexPage, ".DS_Store" });
+
+            Assert.That(stale, Is.EqualTo(new[] { "index.md" }));
+            Assert.That(DocumentationSyncRules.RootFilesToDelete(null), Is.Empty);
+        }
+
+        /// <summary>
+        /// The generated start page links the real start page of every package, sorted, with spaces encoded.
+        /// </summary>
         [Test]
         public void TheIndexLinksEveryPackageInOrder()
         {
             List<DocumentationSource> packages = new()
             {
-                new DocumentationSource("Base Utility", "1.8.0", "/u", string.Empty),
-                new DocumentationSource("Base Controller Support", "2.0.1", "/c", string.Empty)
+                new DocumentationSource("Base Utility", "1.8.0", "/u", "Utility Package.md", string.Empty),
+                new DocumentationSource("Base Controller Support", "2.0.1", "/c", "index.md", string.Empty)
             };
 
             string index = DocumentationSyncRules.BuildIndex(packages);
 
             int controller = index.IndexOf("| [Controller Support](Controller%20Support/index.md) | 2.0.1 |",
                 System.StringComparison.Ordinal);
-            int utility = index.IndexOf("| [Utility](Utility/index.md) | 1.8.0 |", System.StringComparison.Ordinal);
+            int utility = index.IndexOf("| [Utility](Utility/Utility%20Package.md) | 1.8.0 |",
+                System.StringComparison.Ordinal);
 
+            Assert.That(index, Does.StartWith("# Base Packages\r\n"));
             Assert.That(controller, Is.GreaterThan(0));
             Assert.That(utility, Is.GreaterThan(controller));
             Assert.That(index, Does.Contain("Do not edit by hand"));

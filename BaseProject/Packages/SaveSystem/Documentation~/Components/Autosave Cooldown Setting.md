@@ -38,4 +38,4 @@ Stores the shortest time allowed between two autosaves and passes it to the Auto
 - [🗞️ Settings Context](https://github.com/Kirschkernweitwurf/BaseProjectPackages/blob/main/BaseProject/Packages/Settings/Documentation~/Components/Settings%20Context.md)
 - [🗞️ Autosave Service](Autosave%20Service.md)
 - [🔖 Autosave Interval Setting](Autosave%20Interval%20Setting.md)
-- [🗳️ Settings components overview](https://github.com/Kirschkernweitwurf/BaseProjectPackages/blob/main/BaseProject/Packages/Settings/Documentation~/Components.md)
+- [🗳️ Settings components overview](https://github.com/Kirschkernweitwurf/BaseProjectPackages/blob/main/BaseProject/Packages/Settings/Documentation~/Settings%20Components.md)

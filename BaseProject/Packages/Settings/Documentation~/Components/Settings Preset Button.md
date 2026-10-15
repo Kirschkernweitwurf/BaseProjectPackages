@@ -40,4 +40,4 @@ Applies a Settings Preset (for example Low, Medium, High graphics) when clicked,
 
 - [🗞️ Settings Context](Settings%20Context.md)
 - [🔖 Quality Level Setting](Quality%20Level%20Setting.md)
-- [🗳️ Settings components overview](../Components.md)
+- [🗳️ Settings components overview](../Settings%20Components.md)

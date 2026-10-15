@@ -59,4 +59,4 @@ One row in a controls menu. The player clicks it, presses a key or button, and t
 - [🔖 Rebind Setting](Rebind%20Setting.md)
 - [🔖 Setting Reset Button](Setting%20Reset%20Button.md)
 - [🔖 Setting Flavor Text](Setting%20Flavor%20Text.md)
-- [🗳️ Settings components overview](../Components.md)
+- [🗳️ Settings components overview](../Settings%20Components.md)

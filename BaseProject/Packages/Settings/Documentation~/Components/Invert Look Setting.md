@@ -40,4 +40,4 @@ Stores whether one look axis is flipped and passes it to Control Settings, where
 - [🗞️ Control Settings](Control%20Settings.md)
 - [🔖 Look Sensitivity Setting](Look%20Sensitivity%20Setting.md)
 - [🔖 Setting Toggle](Setting%20Toggle.md)
-- [🗳️ Settings components overview](../Components.md)
+- [🗳️ Settings components overview](../Settings%20Components.md)

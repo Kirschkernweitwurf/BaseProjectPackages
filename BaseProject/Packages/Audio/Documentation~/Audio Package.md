@@ -1,0 +1,72 @@
+---
+type: Start Page
+package: Audio
+tags:
+  - audio
+summary: Sounds as assets.
+---
+# Audio Package
+
+📦 **Package** · reusable, works in any of our projects
+
+**Tags:** #audio
+
+Sounds as assets. An Audio Container describes one sound, the Play Audio components play it from UI events, and the Audio Manager does the rest.
+
+## Components
+
+Every component has its own page. [🗳️ Components](Audio%20Components.md) lists them all, the [📖 guide](Components/Audio.md) explains how they fit together.
+
+### UI sounds
+
+| Component | What it does | For |
+| --- | --- | --- |
+| [🔖 Play Audio On Hover](Components/Play%20Audio%20On%20Hover.md) | Plays an Audio Container when the mouse pointer enters the object. | Everyone |
+| [🔖 Play Audio On Select](Components/Play%20Audio%20On%20Select.md) | Plays an Audio Container when the object becomes the selected UI element. | Everyone |
+| [🔖 Play Audio On Submit](Components/Play%20Audio%20On%20Submit.md) | Plays an Audio Container when the object is submitted. | Everyone |
+| [🔖 Play Audio On Click](Components/Play%20Audio%20On%20Click.md) | Plays an Audio Container when the object is clicked with the mouse. | Everyone |
+
+### Services and managers
+
+| Component | What it does | For |
+| --- | --- | --- |
+| [🗞️ Audio Manager](Components/Audio%20Manager.md) | The service that plays every sound and piece of music. | Programmers |
+| [🗞️ Audio Pool Manager](Components/Audio%20Pool%20Manager.md) | Keeps reusable Audio Sources ready, one pool per audio type. | Programmers |
+
+## Scriptable Objects
+
+| Page | What it is | Prefix | Create path |
+| --- | --- | --- | --- |
+| [💌 Audio Container](Scriptable%20Objects/Audio%20Container.md) | One sound as the game sees it: clips, volume, pitch, looping | `AUC_` | `Base > Audio > New Audio Container` |
+
+All create paths start with `Create > Scriptable Objects >`.
+
+## Tools
+
+| Page | What it does | Menu path |
+| --- | --- | --- |
+| [🪛 Unused Audio Clips](Tools/Unused%20Audio%20Clips.md) | Finds audio clips nothing references and lets you select or delete them | `Tools > Base Packages > Assets > Audio > Unused Audio Clips` |
+
+For import settings across all audio files, see [Audio Rules](https://github.com/Kirschkernweitwurf/BaseProjectPackages/blob/main/BaseProject/Packages/Tools/Documentation~/Tools/Audio%20Rules.md) in the Tools package.
+
+## Where to start
+
+1. Create an [Audio Container](Scriptable%20Objects/Audio%20Container.md) and drop your clips in.
+2. Add a Play Audio On... component, see the [📖 Audio guide](Components/Audio.md), to the button or object.
+3. Assign the container. Done.
+
+## Reading these docs
+
+Every page shows its icon and who it is for right under the title. Links to it carry the same icon:
+
+| Area | Everyone | Programmers only |
+| --- | --- | --- |
+| Components 🗳️ | 🔖 | 🗞️ |
+| Scriptable Objects 📬 | 💌 | ✉️ |
+| Tools 🧰 | 🪛 | 🔧 |
+
+The **Tags** line under the badge says who needs a page (`#artist`, `#designer`, `#sound`, `#programmer`) and what it is about (`#ui`, `#animation`, `#audio`, ...). In Obsidian, click a tag to list every page with it. In any other app, search the folder for the tag, for example `#artist`. [All tags](Audio%20Tags.md) lists every page of this package by tag.
+
+Menu paths are defaults. They can be moved with the Menu Item Manager in the Tools package, so your project may differ.
+
+Something wrong or missing? [Open an issue](https://github.com/Kirschkernweitwurf/BaseProjectPackages/issues). Half a sentence is enough.

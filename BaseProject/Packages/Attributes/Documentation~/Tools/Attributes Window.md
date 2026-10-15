@@ -117,4 +117,4 @@ They are also the test fixture. If a check stops working, its demo type stops be
 
 ## Related
 
-See the [Attributes Package](../index.md) overview for the full list of attributes this window documents.
+See the [Attributes Package](../Attributes%20Package.md) overview for the full list of attributes this window documents.

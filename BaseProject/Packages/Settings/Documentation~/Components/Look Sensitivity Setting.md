@@ -41,4 +41,4 @@ Stores the look sensitivity as a value from 0 to 1 and passes the matching multi
 - [🗞️ Control Settings](Control%20Settings.md)
 - [🔖 Invert Look Setting](Invert%20Look%20Setting.md)
 - [🔖 Setting Slider](Setting%20Slider.md)
-- [🗳️ Settings components overview](../Components.md)
+- [🗳️ Settings components overview](../Settings%20Components.md)

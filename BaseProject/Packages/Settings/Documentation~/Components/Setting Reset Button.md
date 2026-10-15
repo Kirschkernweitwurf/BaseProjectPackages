@@ -38,4 +38,4 @@ A small button next to a settings row that resets just that row to its default. 
 - [🔖 Setting Slider](Setting%20Slider.md)
 - [🔖 Setting Toggle](Setting%20Toggle.md)
 - [🔖 Setting Dropdown](Setting%20Dropdown.md)
-- [🗳️ Settings components overview](../Components.md)
+- [🗳️ Settings components overview](../Settings%20Components.md)

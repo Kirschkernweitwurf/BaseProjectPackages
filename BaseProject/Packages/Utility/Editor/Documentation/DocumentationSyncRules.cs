@@ -17,6 +17,12 @@ namespace Base.UtilityPackage.Editor.Documentation
         internal const string PackagesFolder = "Packages";
 
         /// <summary>
+        /// Generated start page of <see cref="PackagesFolder"/>. Named after its title so it is easy to find by
+        /// name in a vault full of other start pages.
+        /// </summary>
+        internal const string IndexPage = "Base Packages.md";
+
+        /// <summary>
         /// Line in Plastic's <c>ignore.conf</c> that keeps the mirrored docs out of version control. The leading slash
         /// anchors it to the workspace root; without it Plastic shows the folder as private instead of ignoring it.
         /// </summary>
@@ -34,6 +40,7 @@ namespace Base.UtilityPackage.Editor.Documentation
 
         private const string DisplayNamePrefix = "Base ";
         private const string DocsSegment = DocumentationSource.PackageDocsFolder + "/";
+        private const string IndexTitle = "Base Packages";
         private const string NewLine = "\r\n";
         private const string ParentSegment = "..";
         private const string Space = " ";
@@ -71,7 +78,7 @@ namespace Base.UtilityPackage.Editor.Documentation
 
         /// <summary>
         /// Reads the package's folder in the repository from its documentation URL, which every Base
-        /// package points at <c>.../Packages/&lt;Folder&gt;/Documentation~/index.md</c>.
+        /// package points at its start page, <c>.../Packages/&lt;Folder&gt;/Documentation~/&lt;Start Page&gt;</c>.
         /// </summary>
         /// <param name="documentationUrl">The <c>documentationUrl</c> from the package manifest.</param>
         /// <param name="folder">The repository folder, for example <c>Utility</c>, or <c>null</c>.</param>
@@ -98,18 +105,20 @@ namespace Base.UtilityPackage.Editor.Documentation
         /// <summary>
         /// Rewrites the link targets of one mirrored page. Links to another installed package's docs on
         /// GitHub become relative links to its mirrored copy; links to packages that are not installed
-        /// stay as they are. Relative links that leave the docs folder (a README, a CHANGELOG) cannot
-        /// work in the mirror, so they become GitHub links when the page's own package is known.
+        /// stay as they are. A link to a docs folder, or to an <c>index.md</c> from before the start pages
+        /// were renamed, opens the package's real start page. Relative links that leave the docs folder
+        /// (a README, a CHANGELOG) cannot work in the mirror, so they become GitHub links when the page's
+        /// own package is known.
         /// </summary>
         /// <param name="markdown">The page's content.</param>
         /// <param name="pagePath">The page's path inside its docs folder, separated by <c>/</c>.</param>
         /// <param name="ownRepositoryFolder">The page's own package folder in the repository, or <c>null</c>.</param>
-        /// <param name="mirrorByRepositoryFolder">
-        /// Mirror folder name of every installed package, keyed by its repository folder.
+        /// <param name="packageByRepositoryFolder">
+        /// Every installed package, keyed by its repository folder. Its display name gives the mirror folder.
         /// </param>
         /// <returns>The page with its links rewritten.</returns>
         internal static string RewriteLinks(string markdown, string pagePath, string ownRepositoryFolder,
-            IReadOnlyDictionary<string, string> mirrorByRepositoryFolder)
+            IReadOnlyDictionary<string, DocumentationSource> packageByRepositoryFolder)
         {
             if (string.IsNullOrEmpty(markdown))
                 return markdown ?? string.Empty;
@@ -120,8 +129,8 @@ namespace Base.UtilityPackage.Editor.Documentation
             return LinkTarget.Replace(markdown, match =>
             {
                 string target = match.Groups[1].Value;
-                string rewritten = RewriteAbsolute(target, depth, mirrorByRepositoryFolder)
-                    ?? RewriteEscaping(target, pageFolder, depth, ownRepositoryFolder, mirrorByRepositoryFolder)
+                string rewritten = RewriteAbsolute(target, depth, packageByRepositoryFolder)
+                    ?? RewriteEscaping(target, pageFolder, depth, ownRepositoryFolder, packageByRepositoryFolder)
                     ?? target;
 
                 return "](" + rewritten;
@@ -153,7 +162,31 @@ namespace Base.UtilityPackage.Editor.Documentation
         }
 
         /// <summary>
-        /// Builds the generated <c>Docs/Packages/index.md</c> that links every mirrored package.
+        /// Returns the files directly in <c>Docs/Packages</c> that the sync did not generate and should be
+        /// deleted, for example an <c>index.md</c> left over from before <see cref="IndexPage"/>.
+        /// </summary>
+        /// <param name="existingFiles">Names of the files currently directly in <c>Docs/Packages</c>.</param>
+        /// <returns>The file names to delete, in the order they were given. Hidden files are kept.</returns>
+        internal static List<string> RootFilesToDelete(IEnumerable<string> existingFiles)
+        {
+            List<string> stale = new();
+
+            if (existingFiles == null)
+                return stale;
+
+            foreach (string file in existingFiles)
+            {
+                if (!string.IsNullOrEmpty(file)
+                    && file[0] != '.'
+                    && !string.Equals(file, IndexPage, StringComparison.OrdinalIgnoreCase))
+                    stale.Add(file);
+            }
+
+            return stale;
+        }
+
+        /// <summary>
+        /// Builds the generated <see cref="IndexPage"/> that links the start page of every mirrored package.
         /// </summary>
         /// <param name="packages">The mirrored packages. Display names are turned into mirror names here.</param>
         /// <returns>The page, with CRLF line endings and no final newline like every other docs page.</returns>
@@ -164,9 +197,9 @@ namespace Base.UtilityPackage.Editor.Documentation
                 StringComparison.OrdinalIgnoreCase));
 
             StringBuilder builder = new();
-            builder.Append("# Packages").Append(NewLine).Append(NewLine);
-            builder.Append("📦 **Packages** · docs of every Base package installed in this project")
-                .Append(NewLine).Append(NewLine);
+            builder.Append("# ").Append(IndexTitle).Append(NewLine).Append(NewLine);
+            builder.Append("📦 **").Append(IndexTitle)
+                .Append("** · docs of every Base package installed in this project").Append(NewLine).Append(NewLine);
             builder.Append("Generated by the Documentation Sync in the Utility package. Do not edit by hand, "
                 + "the next sync overwrites it.").Append(NewLine).Append(NewLine);
 
@@ -184,7 +217,7 @@ namespace Base.UtilityPackage.Editor.Documentation
             {
                 string name = MirrorName(package.DisplayName);
                 builder.Append(NewLine).Append("| [").Append(name).Append("](").Append(Encode(name)).Append('/')
-                    .Append(DocumentationSource.StartPage).Append(") | ").Append(package.Version).Append(" |");
+                    .Append(Encode(package.StartPage)).Append(") | ").Append(package.Version).Append(" |");
             }
 
             return builder.ToString();
@@ -233,9 +266,9 @@ namespace Base.UtilityPackage.Editor.Documentation
         }
 
         private static string RewriteAbsolute(string target, int depth,
-            IReadOnlyDictionary<string, string> mirrorByRepositoryFolder)
+            IReadOnlyDictionary<string, DocumentationSource> packageByRepositoryFolder)
         {
-            if (mirrorByRepositoryFolder == null
+            if (packageByRepositoryFolder == null
                 || !target.StartsWith(RepositoryPackagesUrl, StringComparison.OrdinalIgnoreCase))
                 return null;
 
@@ -249,24 +282,36 @@ namespace Base.UtilityPackage.Editor.Documentation
             string inside = rest.Substring(slash + 1);
 
             if (!inside.StartsWith(DocsSegment, StringComparison.Ordinal)
-                || !mirrorByRepositoryFolder.TryGetValue(folder, out string mirror))
+                || !packageByRepositoryFolder.TryGetValue(folder, out DocumentationSource package))
                 return null;
 
-            string path = inside.Substring(DocsSegment.Length);
-
-            if (path.Length == 0 || path[0] == '#')
-                path = DocumentationSource.StartPage + path;
-
+            string path = ToStartPage(inside.Substring(DocsSegment.Length), package.StartPage);
             StringBuilder builder = new();
 
             for (int i = 0; i < depth; i++)
                 builder.Append(ParentSegment).Append('/');
 
-            return builder.Append(Encode(mirror)).Append('/').Append(path).ToString();
+            return builder.Append(Encode(MirrorName(package.DisplayName))).Append('/').Append(path).ToString();
+        }
+
+        private static string ToStartPage(string path, string startPage)
+        {
+            int anchor = path.IndexOf('#');
+            string file = anchor < 0
+                ? path
+                : path.Substring(0, anchor);
+            string rest = path.Substring(file.Length);
+
+            bool isStartPage = file.Length == 0
+                || string.Equals(file, DocumentationSource.FallbackStartPage, StringComparison.OrdinalIgnoreCase);
+
+            return isStartPage
+                ? Encode(startPage) + rest
+                : path;
         }
 
         private static string RewriteEscaping(string target, string pageFolder, int depth,
-            string ownRepositoryFolder, IReadOnlyDictionary<string, string> mirrorByRepositoryFolder)
+            string ownRepositoryFolder, IReadOnlyDictionary<string, DocumentationSource> packageByRepositoryFolder)
         {
             if (string.IsNullOrEmpty(ownRepositoryFolder) || target.Length == 0 || target[0] == '#'
                 || target[0] == '/' || Scheme.IsMatch(target))
@@ -299,7 +344,7 @@ namespace Base.UtilityPackage.Editor.Documentation
 
             string absolute = RepositoryPackagesUrl + string.Join("/", segments);
 
-            return RewriteAbsolute(absolute, depth, mirrorByRepositoryFolder) ?? absolute;
+            return RewriteAbsolute(absolute, depth, packageByRepositoryFolder) ?? absolute;
         }
 
         private static string ParentOf(string path)
