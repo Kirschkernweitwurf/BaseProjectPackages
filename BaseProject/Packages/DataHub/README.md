@@ -19,12 +19,17 @@ The package knows nothing about any game. A project declares what shows up throu
 
 `Tools > Base Packages > Assets > Data Hub`
 
-- **Type tree** on the left: every registered table and page, nested by path, with the asset count of each table.
-- **Table** in the middle: one row per asset, one column per serialized field. Nested serializable structs are flattened into one column per field, with the struct name above them. Auto-properties with `[field: SerializeField]` get clean titles. Sort by clicking a header, resize by dragging its edge, search names and values, filter to problems only.
+- **Type tree** on the left: every registered table and page, nested by path and foldable, with the asset count of each table.
+- **Table** in the middle: one row per asset, one column per serialized field. Nested serializable structs are flattened into one column per field, with the struct name above them. Auto-properties with `[field: SerializeField]` get clean titles. Sort by clicking a header, resize by dragging its edge, search names and values, filter to problems only. The name and check columns stay in place while the rest scrolls sideways.
 - **Inline editing** through `SerializedProperty`, so Undo, dirty marking and saving behave like the inspector. Editing a cell of a selected row writes the same value to every selected row.
-- **Inspector** on the right: the normal inspector of the selected rows, for fields a cell cannot edit, like `[SerializeReference]` lists.
-- **Check column**: a red badge with the problem count, the problems in its tooltip.
-- **New, Duplicate, Rename, Delete** in the toolbar and on right click.
+- **Side panel** on the right, with three tabs:
+  - **Inspector:** the normal inspector of the selected rows, for fields a cell cannot edit, like `[SerializeReference]` lists, and the `[Button]` methods of Base Attributes.
+  - **Contents:** every asset list of the selected asset as one line per entry with its count, like a deck holding a card three times. Change counts with minus, plus or by typing, remove an entry, pick one to add N copies, or drop rows from the table on the list.
+  - **Used In:** every list in the project that can hold the selected rows, with how often they are in it. Plus, minus or a typed count changes it for every selected row at once.
+- **Actions** above the table and on right click: the parameterless `[Button]` methods the selected assets share, run on each of them in one undo step.
+- **Drag** a row by its name to drop the selected assets on a list, any object field or the Project window.
+- **Check column**: a quiet check mark for a fine row, a red count for a broken one with the problems in its tooltip.
+- **New, Duplicate, Rename, Delete** above the table and on right click, also as Ctrl+D, Delete and F2. Ctrl+A selects every row, Ctrl+F jumps to the search.
 
 ## Extension points
 
@@ -66,4 +71,5 @@ Each row is checked against:
 
 - Built on IMGUI and drawn row by row only where visible. Fine for hundreds of assets per type.
 - Creating an asset cannot be undone with Undo, only deleted again. Edits can.
-- Lists, `[SerializeReference]` fields and Unity structs like `Vector3` show as read-only text in the table. Edit them in the inspector panel.
+- Lists, `[SerializeReference]` fields and Unity structs like `Vector3` show as read-only text in the table. Edit asset lists in the Contents tab, the rest in the Inspector tab.
+- Contents and Used In only edit top-level lists of asset references. Lists typed as plain `ScriptableObject` or `Object` are left out, since they hold engine data, not designer data.

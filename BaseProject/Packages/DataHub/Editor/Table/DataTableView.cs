@@ -12,21 +12,32 @@ namespace Base.DataHubPackage.Editor.Table
     /// <summary>
     /// The table in the middle of the Data Hub: one row per asset of a type, one column per serialized
     /// field. Cells edit in place, an edit on a selected row is copied to every other selected row, and
-    /// only the rows in view are drawn, so a few hundred assets stay responsive.
+    /// only the rows in view are drawn, so a few hundred assets stay responsive. The name and the check
+    /// stay put while the other columns scroll sideways.
     /// </summary>
     internal sealed class DataTableView
     {
+        private const string ClearFilterLabel = "Clear filters";
+        private const string CreateFirstFormat = "New {0}";
+        private const string DragManyFormat = "{0} assets";
         private const string EditUndoFormat = "Edit {0}";
-        private const string EmptyHint = "Press New to create the first one.";
+        private const float EmptyButtonGap = 12f;
+        private const string EmptyHint = "Create the first one to start filling the table.";
         private const string EmptyMessage = "No assets of this type yet";
-
-        // The name and the check badge always come first and are the only cells that are not controls.
-        private const int FixedColumnCount = 2;
-        private const string NoMatchHint = "Clear the search box or switch the problem filter off.";
-        private const string NoMatchMessage = "Nothing matches the filter";
+        private const float FrozenShadowAlpha = 0.18f;
+        private const float FrozenShadowWidth = 4f;
+        private const string NameTooltipFormat = "{0}\n\nDouble-click or press F2 to rename. Drag to drop the "
+            + "asset on a list or a field.";
+        private const string NoMatchHint = "No row matches the search or the problem filter.";
+        private const string NoMatchMessage = "Nothing matches";
         private const int NoRow = -1;
-        private const string OkBadgeText = "OK";
-        private const string OkTooltip = "No problems found.";
+        private const float OkIconAlpha = 0.55f;
+        private const string OkTooltip = "No problems: every required field is set, every project check passes and "
+            + "the asset is in its collection.";
+        private const string PingTooltip = "Show the asset in the Project window.";
+        private const string ProblemsTooltipFormat = "{0}\n\nThe Problems switch next to the search shows only rows "
+            + "like this one.";
+        private const float WheelStep = 20f;
 
         private readonly DataTableColumns _columns;
         private readonly List<DataRow> _filtered = new();
@@ -35,6 +46,11 @@ namespace Base.DataHubPackage.Editor.Table
         private readonly DataTableSorting _sorting = new();
 
         private int _anchorIndex = NoRow;
+        private Rect _body;
+        private int _cursorIndex = NoRow;
+        private DataRow _dragRow;
+        private int _hoveredIndex = NoRow;
+        private bool _isFitted;
         private bool _needsFilter;
         private bool _problemsOnly;
         private Vector2 _scroll;
@@ -155,6 +171,46 @@ namespace Base.DataHubPackage.Editor.Table
             ScrollTo(index);
         }
 
+        /// <summary>Selects every row the filter shows.</summary>
+        internal void SelectAll()
+        {
+            if (_filtered.Count == 0)
+                return;
+
+            _selection.Clear();
+            _selection.UnionWith(_filtered);
+            _anchorIndex = 0;
+            _cursorIndex = _filtered.Count - 1;
+
+            UpdateSelectedAssets();
+        }
+
+        /// <summary>
+        /// Where the name of the one selected row is on screen, scrolled into view first, so a rename box
+        /// can open right on it.
+        /// </summary>
+        /// <param name="rect">The name cell, in window coordinates.</param>
+        /// <returns>False when not exactly one row is selected.</returns>
+        internal bool TryGetNameRect(out Rect rect)
+        {
+            rect = default;
+
+            if (_selectedAssets.Length != 1)
+                return false;
+
+            int index = _filtered.FindIndex(row => row.Asset == _selectedAssets[0]);
+
+            if (index < 0)
+                return false;
+
+            ScrollTo(index);
+
+            float rowHeight = EditorTableStyles.RowHeight;
+            rect = new Rect(_body.x, _body.y + index * rowHeight - _scroll.y, _columns.All[0].Width, rowHeight);
+
+            return true;
+        }
+
         /// <summary>Drops a column resize in progress.</summary>
         internal void CancelDrag() => _columns.Cancel();
 
@@ -169,32 +225,42 @@ namespace Base.DataHubPackage.Editor.Table
             _selection.Clear();
         }
 
-        /// <summary>Draws the header and the visible rows, and handles editing and selection.</summary>
-        /// <param name="area">The area to fill.</param>
+        /// <summary>
+        /// Draws the header and the visible rows, and handles editing and selection. Call outside any
+        /// clip or area, so the rename box opens at the right place.
+        /// </summary>
+        /// <param name="area">The area to fill, in window coordinates.</param>
         /// <param name="styles">The built window styles.</param>
         /// <param name="validation">The checks to run after an edit.</param>
-        /// <param name="showContextMenu">Called when a row is right-clicked, after it was selected.</param>
+        /// <param name="hooks">What the table asks the window to do.</param>
         /// <returns>True when the selection changed.</returns>
-        internal bool Draw(Rect area, DataHubStyles styles, DataValidation validation, Action showContextMenu)
+        internal bool Draw(Rect area, DataHubStyles styles, DataValidation validation, DataTableHooks hooks)
         {
-            float headerHeight = _columns.HasGroups
-                ? EditorTableStyles.HeaderHeight * 2f
-                : EditorTableStyles.HeaderHeight;
+            float headerHeight = DataTableHeader.Height(_columns);
 
             Rect header = new(area.x, area.y, area.width, headerHeight);
-            Rect body = new(area.x, header.yMax, area.width, Mathf.Max(0f, area.height - headerHeight));
+            _body = new Rect(area.x, header.yMax, area.width, Mathf.Max(0f, area.height - headerHeight));
 
-            DrawHeader(header, styles);
+            if (!_isFitted)
+            {
+                _isFitted = true;
+                _columns.FitTitles(styles.Header, DataHubStyles.CellPadding);
+            }
+
+            HandleDragStart();
+
+            if (DataTableHeader.Draw(header, _columns, _sorting, _scroll.x, styles))
+                _needsFilter = true;
 
             if (_filtered.Count == 0)
             {
-                DrawEmptyState(body, styles);
+                DrawEmptyState(_body, styles, hooks);
                 return false;
             }
 
-            bool isChanged = DrawBody(body, styles, validation, showContextMenu);
+            bool isChanged = DrawBody(_body, styles, validation, hooks);
 
-            return HandleKeys() || isChanged;
+            return HandleKeys(hooks) || isChanged;
         }
 
         private static Rect LineRect(Rect cell) => new(cell.x,
@@ -204,26 +270,54 @@ namespace Base.DataHubPackage.Editor.Table
         private static Rect Inset(Rect rect) => new(rect.x + DataHubStyles.CellPadding, rect.y,
             Mathf.Max(0f, rect.width - DataHubStyles.CellPadding * 2f), rect.height);
 
+        // A quiet check when nothing is wrong, so the eye only stops at the red ones.
         private static void DrawCheck(Rect cell, DataRow row, DataHubStyles styles)
         {
-            GUIContent content = row.HasProblems
-                ? new GUIContent(row.Problems.Count.ToString(), row.ProblemText)
-                : new GUIContent(OkBadgeText, OkTooltip);
+            if (!row.HasProblems)
+            {
+                float size = EditorTableStyles.IconSize;
+                Rect icon = new(cell.center.x - size * 0.5f, cell.center.y - size * 0.5f, size, size);
 
-            Color fill = row.HasProblems
-                ? EditorTableStyles.DangerBadgeColor
-                : EditorTableStyles.OkBadgeColor;
+                Color previous = GUI.color;
+                GUI.color = EditorPalette.WithAlpha(previous, previous.a * OkIconAlpha);
+                EditorIcons.Draw(icon, EditorIcons.Success);
+                GUI.color = previous;
 
-            float width = Mathf.Min(cell.width,
-                EditorRows.MeasureBadge(content.text, styles.Badge, EditorTableStyles.MinBadgeWidth));
+                GUI.Label(icon, new GUIContent(string.Empty, OkTooltip));
 
-            Rect badge = new(cell.x, cell.y + (cell.height - EditorMetrics.BadgeHeight) * 0.5f, width,
+                return;
+            }
+
+            GUIContent content = new(row.Problems.Count.ToString(),
+                string.Format(ProblemsTooltipFormat, row.ProblemText));
+            float width = Mathf.Min(cell.width, DataHubGui.PillWidth(content.text, styles));
+
+            Rect pill = new(cell.center.x - width * 0.5f, cell.center.y - EditorMetrics.BadgeHeight * 0.5f, width,
                 EditorMetrics.BadgeHeight);
 
-            EditorRows.DrawBadge(badge, content, fill, styles.Badge);
+            DataHubGui.Pill(pill, content, EditorTableStyles.DangerBadgeColor, styles);
+        }
 
-            // A drawn badge carries no tooltip of its own, so an empty label over it does.
-            GUI.Label(badge, new GUIContent(string.Empty, content.tooltip));
+        // The size the rows can use inside the scroll view, after the scrollbars that the content needs.
+        // One bar can make the other necessary, so the check runs twice.
+        private static Vector2 VisibleSize(Vector2 area, Vector2 content)
+        {
+            float barWidth = GUI.skin.verticalScrollbar.fixedWidth;
+            float barHeight = GUI.skin.horizontalScrollbar.fixedHeight;
+            Vector2 view = area;
+
+            for (int pass = 0; pass < 2; pass++)
+            {
+                view.x = content.y > view.y
+                    ? area.x - barWidth
+                    : area.x;
+
+                view.y = content.x > view.x
+                    ? area.y - barHeight
+                    : area.y;
+            }
+
+            return view;
         }
 
         private void CountProblems()
@@ -256,6 +350,7 @@ namespace Base.DataHubPackage.Editor.Table
             // A row the filter hides cannot stay selected, or an edit would reach an asset nobody sees.
             _selection.IntersectWith(_filtered);
             _anchorIndex = Mathf.Min(_anchorIndex, _filtered.Count - 1);
+            _cursorIndex = Mathf.Min(_cursorIndex, _filtered.Count - 1);
 
             UpdateSelectedAssets();
         }
@@ -277,121 +372,14 @@ namespace Base.DataHubPackage.Editor.Table
             return false;
         }
 
-        private void DrawHeader(Rect header, DataHubStyles styles)
+        // An empty table offers to create the first asset, an empty result offers to clear the filter,
+        // so the way out is right where the user is looking.
+        private void DrawEmptyState(Rect body, DataHubStyles styles, DataTableHooks hooks)
         {
-            if (Event.current.type == EventType.Repaint)
-                EditorGUI.DrawRect(header, EditorTableStyles.HeaderColor);
-
-            GUI.BeginClip(header);
-
-            Rect local = new(0f, 0f, header.width, header.height);
-            float offset = -_scroll.x;
-
-            float titleY = _columns.HasGroups
-                ? EditorTableStyles.HeaderHeight
-                : 0f;
-
-            if (_columns.HasGroups)
-                DrawGroups(offset, styles);
-
-            for (int i = 0; i < _columns.All.Count; i++)
-            {
-                Rect cell = new(offset + _columns.Left(i), titleY, _columns.All[i].Width,
-                    EditorTableStyles.HeaderHeight);
-
-                DrawTitle(Inset(cell), i, offset, styles);
-            }
-
-            // Last, so the lines sit on top of the titles.
-            _columns.HandleDividers(local, offset);
-
-            EditorRows.DrawSeparator(new Rect(0f, local.yMax - EditorMetrics.SeparatorThickness, local.width,
-                EditorMetrics.SeparatorThickness));
-
-            GUI.EndClip();
-        }
-
-        // One label over each run of columns that come from the same struct, like the four mood
-        // scores, so the titles below can stay short.
-        private void DrawGroups(float offset, DataHubStyles styles)
-        {
-            IReadOnlyList<DataColumn> columns = _columns.All;
-            int start = 0;
-
-            while (start < columns.Count)
-            {
-                string group = columns[start].Group;
-                int end = start;
-                float width = columns[start].Width;
-
-                while (end + 1 < columns.Count
-                    && columns[end + 1].Group == group)
-                {
-                    end++;
-                    width += columns[end].Width;
-                }
-
-                if (group != null)
-                {
-                    Rect area = new(offset + _columns.Left(start), 0f, width, EditorTableStyles.HeaderHeight);
-
-                    GUI.Label(Inset(area), group, styles.Header);
-                    EditorRows.DrawSeparator(new Rect(area.x, area.yMax - EditorMetrics.SeparatorThickness,
-                        area.width, EditorMetrics.SeparatorThickness));
-                }
-
-                start = end + 1;
-            }
-        }
-
-        // The arrow sits right after the title, so it reads as belonging to that word.
-        private void DrawTitle(Rect cell, int index, float offset, DataHubStyles styles)
-        {
-            DataColumn column = _columns.All[index];
-
-            string tooltip = column.Group == null
-                ? column.Header
-                : column.Group + " " + column.Header;
-
-            GUIContent title = new(column.Header, tooltip);
-            GUI.Label(cell, title, styles.Header);
-
-            if (_sorting.ColumnIndex == index
-                && _sorting.Order != ESortOrder.Default)
-            {
-                float titleWidth = Mathf.Min(cell.width, styles.Header.CalcSize(title).x);
-                Rect arrow = new(cell.x + titleWidth + EditorTableStyles.HeaderArrowGap, cell.y,
-                    EditorMetrics.SortArrowWidth, cell.height);
-
-                EditorRows.DrawSortArrow(arrow, _sorting.Order, EditorPalette.Text);
-            }
-
-            Event current = Event.current;
-
-            if (current.type != EventType.MouseDown
-                || current.button != 0
-                || !cell.Contains(current.mousePosition))
-                return;
-
-            // The few pixels around a divider belong to the drag, not to the title behind them.
-            if (_columns.IsOverDivider(current.mousePosition.x, offset))
-                return;
-
-            _sorting.Cycle(index);
-            _needsFilter = true;
-
-            current.Use();
-        }
-
-        private void DrawEmptyState(Rect body, DataHubStyles styles)
-        {
-            if (Event.current.type != EventType.Repaint)
-                return;
-
             bool isEmpty = _rows.Count == 0;
 
             Rect icon = EditorTableStyles.EmptyIconRect(body);
-            GUI.DrawTexture(icon, EditorIcons.Script, ScaleMode.ScaleToFit, true, 0f, EditorPalette.DimText, 0f, 0f);
+            DataHubGui.Icon(icon, DataHubIcons.Of(Table.DataType));
 
             Rect title = new(body.x, icon.yMax + EditorTableStyles.EmptyLineGap, body.width, EditorMetrics.RowHeight);
 
@@ -404,37 +392,118 @@ namespace Base.DataHubPackage.Editor.Table
             GUI.Label(hint, isEmpty
                 ? EmptyHint
                 : NoMatchHint, styles.EmptyHint);
+
+            GUIContent label = isEmpty
+                ? new GUIContent(string.Format(CreateFirstFormat, ObjectNames.NicifyVariableName(Table.DataType.Name)),
+                    DataHubIcons.New)
+                : new GUIContent(ClearFilterLabel);
+
+            GUIStyle style = isEmpty
+                ? styles.HeaderPrimaryButton
+                : styles.HeaderButton;
+
+            float width = style.CalcSize(label).x;
+            Rect button = new(body.center.x - width * 0.5f, hint.yMax + EmptyButtonGap, width,
+                DataHubStyles.ButtonHeight);
+
+            if (!GUI.Button(button, label, style))
+                return;
+
+            Action action = isEmpty
+                ? hooks.Create
+                : hooks.ClearFilter;
+
+            action?.Invoke();
         }
 
-        private bool DrawBody(Rect body, DataHubStyles styles, DataValidation validation, Action showContextMenu)
+        private bool DrawBody(Rect body, DataHubStyles styles, DataValidation validation, DataTableHooks hooks)
         {
             float rowHeight = EditorTableStyles.RowHeight;
-            float contentWidth = Mathf.Max(_columns.TotalWidth, body.width - GUI.skin.verticalScrollbar.fixedWidth);
-            Rect content = new(0f, 0f, _columns.TotalWidth, _filtered.Count * rowHeight);
+            float frozen = _columns.FrozenWidth;
+            float contentHeight = _filtered.Count * rowHeight;
+            float scrolledWidth = _columns.TotalWidth - frozen;
 
-            _scroll = GUI.BeginScrollView(body, _scroll, content);
-            _viewHeight = body.height;
+            Rect scrollArea = new(body.x + frozen, body.y, Mathf.Max(0f, body.width - frozen), body.height);
+            Vector2 view = VisibleSize(scrollArea.size, new Vector2(scrolledWidth, contentHeight));
+
+            _viewHeight = view.y;
+            _hoveredIndex = HoveredIndex(body, view.y);
+
+            Rect frozenArea = new(body.x, body.y, frozen, view.y);
+            HandleFrozenWheel(frozenArea, contentHeight);
 
             int first = Mathf.Max(0, Mathf.FloorToInt(_scroll.y / rowHeight));
-            int last = Mathf.Min(_filtered.Count, Mathf.CeilToInt((_scroll.y + body.height) / rowHeight) + 1);
-
+            int last = Mathf.Min(_filtered.Count, Mathf.CeilToInt((_scroll.y + view.y) / rowHeight) + 1);
             bool isChanged = false;
+
+            _scroll = GUI.BeginScrollView(scrollArea, _scroll, new Rect(0f, 0f, scrolledWidth, contentHeight));
+
+            Rect scrolledVisible = new(_scroll.x, _scroll.y, view.x, view.y);
 
             for (int i = first; i < last; i++)
             {
-                Rect row = new(0f, i * rowHeight, contentWidth, rowHeight);
+                Rect row = new(0f, i * rowHeight, Mathf.Max(scrolledWidth, view.x), rowHeight);
 
-                if (DrawRow(row, i, body.width, styles, validation, showContextMenu))
+                if (DrawRow(row, i, false, scrolledVisible, styles, validation, hooks))
                     isChanged = true;
             }
 
+            float gridHeight = Mathf.Min(view.y, contentHeight - _scroll.y);
+            DrawGrid(false, _scroll.y, gridHeight);
             GUI.EndScrollView();
+
+            GUI.BeginClip(frozenArea);
+
+            Rect frozenVisible = new(0f, 0f, frozen, view.y);
+
+            for (int i = first; i < last; i++)
+            {
+                Rect row = new(0f, i * rowHeight - _scroll.y, frozen, rowHeight);
+
+                if (DrawRow(row, i, true, frozenVisible, styles, validation, hooks))
+                    isChanged = true;
+            }
+
+            DrawGrid(true, 0f, gridHeight);
+            GUI.EndClip();
+
+            DrawFrozenEdge(frozenArea);
 
             return isChanged;
         }
 
-        private bool DrawRow(Rect rect, int index, float viewWidth, DataHubStyles styles, DataValidation validation,
-            Action showContextMenu)
+        private int HoveredIndex(Rect body, float viewHeight)
+        {
+            Vector2 mouse = Event.current.mousePosition;
+
+            if (!body.Contains(mouse)
+                || mouse.y > body.y + viewHeight)
+                return NoRow;
+
+            int index = Mathf.FloorToInt((mouse.y - body.y + _scroll.y) / EditorTableStyles.RowHeight);
+
+            return index < _filtered.Count
+                ? index
+                : NoRow;
+        }
+
+        // The frozen columns sit outside the scroll view, so a wheel turned over them is passed on by hand.
+        private void HandleFrozenWheel(Rect frozenArea, float contentHeight)
+        {
+            Event current = Event.current;
+
+            if (current.type != EventType.ScrollWheel
+                || !frozenArea.Contains(current.mousePosition))
+                return;
+
+            float maxScroll = Mathf.Max(0f, contentHeight - _viewHeight);
+            _scroll.y = Mathf.Clamp(_scroll.y + current.delta.y * WheelStep, 0f, maxScroll);
+
+            current.Use();
+        }
+
+        private bool DrawRow(Rect rect, int index, bool isFrozenPart, Rect visible, DataHubStyles styles,
+            DataValidation validation, DataTableHooks hooks)
         {
             DataRow row = _filtered[index];
 
@@ -442,24 +511,37 @@ namespace Base.DataHubPackage.Editor.Table
             if (row.Asset == null)
                 return false;
 
-            row.Serialized.UpdateIfRequiredOrScript();
+            // Once per row, and the scrolled part is drawn first.
+            if (!isFrozenPart)
+                row.Serialized.UpdateIfRequiredOrScript();
 
             bool isSelected = _selection.Contains(row);
-            bool isHovered = rect.Contains(Event.current.mousePosition);
 
-            EditorRows.DrawRowBackground(rect, index, isHovered, isSelected);
+            EditorRows.DrawRowBackground(rect, index, index == _hoveredIndex, isSelected);
+
+            if (isFrozenPart
+                && row.HasProblems)
+                DataHubGui.Fill(new Rect(rect.x, rect.y, DataHubStyles.ProblemEdgeWidth, rect.height),
+                    EditorPalette.Danger);
 
             // Before the cells, so a click into a cell control also selects its row.
-            bool isChanged = HandleRowInput(rect, index, row, showContextMenu);
+            bool isChanged = HandleRowInput(rect, index, row, isFrozenPart, visible, hooks);
+
+            float shift = isFrozenPart
+                ? 0f
+                : _columns.FrozenWidth;
 
             for (int i = 0; i < _columns.All.Count; i++)
             {
+                if (DataTableColumns.IsFrozen(i) != isFrozenPart)
+                    continue;
+
                 DataColumn column = _columns.All[i];
-                float left = _columns.Left(i);
+                float left = _columns.Left(i) - shift;
 
                 // Columns scrolled out of view sideways are skipped like rows below the fold.
-                if (left + column.Width < _scroll.x
-                    || left > _scroll.x + viewWidth)
+                if (left + column.Width < visible.x
+                    || left > visible.xMax)
                     continue;
 
                 Rect cell = Inset(new Rect(left, rect.y, column.Width, rect.height));
@@ -476,9 +558,13 @@ namespace Base.DataHubPackage.Editor.Table
             switch (column.Kind)
             {
                 case EDataColumnKind.Name:
-                    GUI.Label(cell, new GUIContent(row.Asset.name, AssetDatabase.GetAssetPath(row.Asset)), isSelected
+                    GUIStyle style = isSelected
                         ? styles.NameBold
-                        : styles.Name);
+                        : styles.Name;
+
+                    string tooltip = string.Format(NameTooltipFormat, AssetDatabase.GetAssetPath(row.Asset));
+                    Rect icon = DataCell.DrawAssetName(cell, row.Asset, style, tooltip);
+                    GUI.Label(icon, new GUIContent(string.Empty, PingTooltip));
 
                     break;
 
@@ -487,7 +573,7 @@ namespace Base.DataHubPackage.Editor.Table
                     break;
 
                 case EDataColumnKind.Field:
-                    DrawField(cell, column, row, styles, validation);
+                    DrawField(cell, column, row, isSelected, styles, validation);
                     break;
 
                 case EDataColumnKind.Computed:
@@ -498,7 +584,7 @@ namespace Base.DataHubPackage.Editor.Table
             }
         }
 
-        private void DrawField(Rect cell, DataColumn column, DataRow row, DataHubStyles styles,
+        private void DrawField(Rect cell, DataColumn column, DataRow row, bool isSelected, DataHubStyles styles,
             DataValidation validation)
         {
             SerializedProperty property = row.Serialized.FindProperty(column.PropertyPath);
@@ -508,10 +594,47 @@ namespace Base.DataHubPackage.Editor.Table
             if (property == null)
                 return;
 
-            if (!DataCell.Draw(LineRect(cell), property, column, styles.Detail))
+            if (!DataCell.Draw(LineRect(cell), property, column, isSelected, styles))
                 return;
 
             ApplyEdit(row, column, property, validation);
+        }
+
+        // One line per column edge over the rows, not per cell, and none below the last row.
+        private void DrawGrid(bool isFrozenPart, float top, float height)
+        {
+            if (Event.current.type != EventType.Repaint)
+                return;
+
+            float shift = isFrozenPart
+                ? 0f
+                : _columns.FrozenWidth;
+
+            for (int i = 0; i < _columns.All.Count; i++)
+            {
+                // The edge after the last frozen column is drawn stronger, by the caller.
+                if (DataTableColumns.IsFrozen(i) != isFrozenPart
+                    || i == DataTableColumns.FrozenCount - 1)
+                    continue;
+
+                float x = _columns.Left(i) + _columns.All[i].Width - shift - EditorMetrics.SeparatorThickness;
+
+                EditorGUI.DrawRect(new Rect(x, top, EditorMetrics.SeparatorThickness, height),
+                    DataHubStyles.GridColor);
+            }
+        }
+
+        // A hairline at the frozen edge, and a soft shadow once columns slide under it.
+        private void DrawFrozenEdge(Rect frozenArea)
+        {
+            DataHubGui.Fill(new Rect(frozenArea.xMax - EditorMetrics.SeparatorThickness, frozenArea.y,
+                EditorMetrics.SeparatorThickness, frozenArea.height), EditorPalette.Separator);
+
+            if (_scroll.x <= 0f)
+                return;
+
+            DataHubGui.Fill(new Rect(frozenArea.xMax, frozenArea.y, FrozenShadowWidth, frozenArea.height),
+                new Color(0f, 0f, 0f, FrozenShadowAlpha));
         }
 
         // One undo step for the whole edit, however many selected rows it reached.
@@ -542,11 +665,13 @@ namespace Base.DataHubPackage.Editor.Table
             CountProblems();
         }
 
-        private bool HandleRowInput(Rect rect, int index, DataRow row, Action showContextMenu)
+        private bool HandleRowInput(Rect rect, int index, DataRow row, bool isFrozenPart, Rect visible,
+            DataTableHooks hooks)
         {
             Event current = Event.current;
 
-            if (!rect.Contains(current.mousePosition))
+            if (!rect.Contains(current.mousePosition)
+                || !visible.Contains(current.mousePosition))
                 return false;
 
             if (current.type == EventType.ContextClick)
@@ -555,7 +680,7 @@ namespace Base.DataHubPackage.Editor.Table
                     SelectSingle(index);
 
                 current.Use();
-                showContextMenu?.Invoke();
+                hooks.ShowContextMenu?.Invoke();
 
                 return true;
             }
@@ -564,32 +689,85 @@ namespace Base.DataHubPackage.Editor.Table
                 || current.button != 0)
                 return false;
 
-            bool isOnName = current.mousePosition.x < _columns.Left(FixedColumnCount);
-
-            // A double click on the name finds the asset in the Project window.
-            if (isOnName
-                && current.clickCount == 2)
-                EditorGUIUtility.PingObject(row.Asset);
+            // Only the frozen name and badge are not controls. A click anywhere else has to reach the cell.
+            if (isFrozenPart)
+                return HandleNameClick(index, row, hooks);
 
             if (current.shift)
                 SelectRange(index);
             else if (EditorGUI.actionKey)
                 Toggle(index, row);
-            else if (isOnName
-                || !_selection.Contains(row)
+            else if (!_selection.Contains(row)
                 || _selection.Count == 1)
                 SelectSingle(index);
             else
                 return false;
 
-            // Only the name and the badge are not controls. A click anywhere else has to reach the cell.
-            if (isOnName)
-                current.Use();
+            return true;
+        }
+
+        private bool HandleNameClick(int index, DataRow row, DataTableHooks hooks)
+        {
+            Event current = Event.current;
+            current.Use();
+
+            // Remembered so a drag that starts here carries the rows out of the table.
+            _dragRow = row;
+
+            float iconRight = DataHubStyles.CellPadding + EditorTableStyles.IconSize;
+
+            if (current.mousePosition.x <= iconRight)
+                EditorGUIUtility.PingObject(row.Asset);
+
+            if (current.shift)
+            {
+                SelectRange(index);
+                return true;
+            }
+
+            if (EditorGUI.actionKey)
+            {
+                Toggle(index, row);
+                return true;
+            }
+
+            SelectSingle(index);
+
+            if (current.clickCount == 2)
+                hooks.Rename?.Invoke();
 
             return true;
         }
 
-        private bool HandleKeys()
+        // Dragging a name drags the selected rows, so they can be dropped on a list in the Contents tab,
+        // on a field in any inspector, or in the Project window.
+        private void HandleDragStart()
+        {
+            Event current = Event.current;
+
+            if (current.type == EventType.MouseUp)
+                _dragRow = null;
+
+            if (current.type != EventType.MouseDrag
+                || _dragRow == null)
+                return;
+
+            Object[] dragged = _selection.Contains(_dragRow)
+                ? _selectedAssets
+                : new[] { _dragRow.Asset };
+
+            _dragRow = null;
+
+            DragAndDrop.PrepareStartDrag();
+            DragAndDrop.objectReferences = dragged;
+            DragAndDrop.StartDrag(dragged.Length == 1
+                ? dragged[0].name
+                : string.Format(DragManyFormat, dragged.Length));
+
+            current.Use();
+        }
+
+        private bool HandleKeys(DataTableHooks hooks)
         {
             Event current = Event.current;
 
@@ -598,21 +776,54 @@ namespace Base.DataHubPackage.Editor.Table
                 || _filtered.Count == 0)
                 return false;
 
-            int step = current.keyCode switch
+            if (current.keyCode == KeyCode.F2)
             {
-                KeyCode.DownArrow => 1,
-                KeyCode.UpArrow => -1,
-                _ => 0
-            };
+                current.Use();
+                hooks.Rename?.Invoke();
 
-            if (step == 0)
+                return false;
+            }
+
+            if (!TryGetKeyTarget(current.keyCode, out int target))
                 return false;
 
-            int index = Mathf.Clamp(_anchorIndex + step, 0, _filtered.Count - 1);
+            if (current.shift)
+                SelectRange(target);
+            else
+                SelectSingle(target);
 
-            SelectSingle(index);
-            ScrollTo(index);
+            ScrollTo(target);
             current.Use();
+
+            return true;
+        }
+
+        private bool TryGetKeyTarget(KeyCode key, out int target)
+        {
+            switch (key)
+            {
+                case KeyCode.DownArrow:
+                    target = _cursorIndex + 1;
+                    break;
+
+                case KeyCode.UpArrow:
+                    target = _cursorIndex - 1;
+                    break;
+
+                case KeyCode.Home:
+                    target = 0;
+                    break;
+
+                case KeyCode.End:
+                    target = _filtered.Count - 1;
+                    break;
+
+                default:
+                    target = NoRow;
+                    return false;
+            }
+
+            target = Mathf.Clamp(target, 0, _filtered.Count - 1);
 
             return true;
         }
@@ -622,6 +833,7 @@ namespace Base.DataHubPackage.Editor.Table
             _selection.Clear();
             _selection.Add(_filtered[index]);
             _anchorIndex = index;
+            _cursorIndex = index;
 
             UpdateSelectedAssets();
         }
@@ -632,10 +844,12 @@ namespace Base.DataHubPackage.Editor.Table
                 _selection.Add(row);
 
             _anchorIndex = index;
+            _cursorIndex = index;
 
             UpdateSelectedAssets();
         }
 
+        // From the anchor, which stays, to the given row, which becomes the cursor that the arrow keys move.
         private void SelectRange(int index)
         {
             if (_anchorIndex < 0)
@@ -651,6 +865,8 @@ namespace Base.DataHubPackage.Editor.Table
 
             for (int i = from; i <= to; i++)
                 _selection.Add(_filtered[i]);
+
+            _cursorIndex = index;
 
             UpdateSelectedAssets();
         }

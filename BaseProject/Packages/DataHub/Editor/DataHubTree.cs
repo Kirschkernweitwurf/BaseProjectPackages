@@ -9,15 +9,25 @@ using UnityEngine;
 namespace Base.DataHubPackage.Editor
 {
     /// <summary>
-    /// The type tree on the left of the Data Hub: every table and page, nested by their paths, with the
-    /// number of assets next to each table.
+    /// The type tree on the left of the Data Hub: every table and page, nested by their paths and
+    /// foldable, with the number of assets next to each table.
     /// </summary>
     internal sealed class DataHubTree
     {
         /// <summary>The character between the levels of a tree path.</summary>
         internal const char PathSeparator = '/';
 
+        private const string CollapsedKeyFormat = "Base.DataHubPackage.Collapsed.{0}";
+        private const float FoldoutWidth = 14f;
+        private const string GroupTooltip = "A group of tables. Click to fold or unfold it.";
+        private const string PageTooltip = "A custom page of the project. Click to open it.";
+        private const float RowGap = 1f;
+        private const string TableTooltipFormat = "{0} assets of the type {1}. Click to show them in the table.";
+        private const float TopPadding = 6f;
+
+        private readonly HashSet<string> _collapsed = new();
         private readonly List<DataHubTreeNode> _nodes = new();
+        private readonly List<DataHubTreeNode> _visible = new();
 
         private Vector2 _scroll;
 
@@ -43,6 +53,17 @@ namespace Base.DataHubPackage.Editor
 
             _nodes.Clear();
             Flatten(byPath, null, 0);
+
+            _collapsed.Clear();
+
+            foreach (DataHubTreeNode node in _nodes)
+            {
+                if (node.HasChildren
+                    && EditorPrefs.GetBool(CollapsedKey(node.Path)))
+                    _collapsed.Add(node.Path);
+            }
+
+            CollectVisible();
         }
 
         /// <summary>Reads the asset counts of every table again.</summary>
@@ -76,9 +97,18 @@ namespace Base.DataHubPackage.Editor
                     continue;
 
                 Selected = node;
-                return;
+                break;
             }
+
+            // A selection hidden in a folded group would leave the user wondering where they are.
+            if (Selected != null)
+                ExpandParents(Selected);
         }
+
+        /// <summary>The path of the selected node's parents, for the title of the page, or null at the top.</summary>
+        /// <returns>The parent path with spaced separators, or null.</returns>
+        internal string SelectedParentPath() => Selected?.ParentPath?.Replace(PathSeparator.ToString(),
+            " " + PathSeparator + " ");
 
         /// <summary>Draws the tree and handles clicks.</summary>
         /// <param name="area">The area to fill.</param>
@@ -87,17 +117,26 @@ namespace Base.DataHubPackage.Editor
         internal bool Draw(Rect area, DataHubStyles styles)
         {
             float rowHeight = EditorTableStyles.RowHeight;
-            Rect view = new(0f, 0f, area.width - GUI.skin.verticalScrollbar.fixedWidth, _nodes.Count * rowHeight);
+            float height = TopPadding + _visible.Count * (rowHeight + RowGap);
+            bool hasScrollbar = height > area.height;
 
+            float width = hasScrollbar
+                ? area.width - GUI.skin.verticalScrollbar.fixedWidth
+                : area.width;
+
+            Rect view = new(0f, 0f, width, height);
             bool isChanged = false;
 
             _scroll = GUI.BeginScrollView(area, _scroll, view, false, false);
 
-            for (int i = 0; i < _nodes.Count; i++)
-            {
-                Rect row = new(0f, i * rowHeight, Mathf.Max(view.width, area.width), rowHeight);
+            // Copied, because a fold changes the visible lines while they are being drawn.
+            DataHubTreeNode[] visible = _visible.ToArray();
 
-                if (DrawNode(row, i, _nodes[i], styles))
+            for (int i = 0; i < visible.Length; i++)
+            {
+                Rect row = new(0f, TopPadding + i * (rowHeight + RowGap), width, rowHeight);
+
+                if (DrawNode(row, visible[i], styles))
                     isChanged = true;
             }
 
@@ -105,6 +144,8 @@ namespace Base.DataHubPackage.Editor
 
             return isChanged;
         }
+
+        private static string CollapsedKey(string path) => string.Format(CollapsedKeyFormat, path);
 
         private static void AddNode(Dictionary<string, DataHubTreeNode> byPath, DataHubTreeNode node)
         {
@@ -157,28 +198,42 @@ namespace Base.DataHubPackage.Editor
                 : string.Compare(first.Label, second.Label, StringComparison.OrdinalIgnoreCase);
         }
 
-        // Returns the width the badge takes, so the label stops before it.
-        private static float DrawCount(Rect row, int count, DataHubStyles styles)
+        private static string TooltipOf(DataHubTreeNode node)
         {
-            string text = count.ToString();
-            float width = EditorRows.MeasureBadge(text, styles.Badge, EditorTableStyles.MinBadgeWidth);
+            if (node.Table != null)
+                return string.Format(TableTooltipFormat, node.Count, node.Table.DataType.Name);
 
-            Rect badge = new(row.xMax - EditorTableStyles.RowInset - width,
-                row.y + (row.height - EditorMetrics.BadgeHeight) * 0.5f, width, EditorMetrics.BadgeHeight);
-
-            EditorRows.DrawBadge(badge, text, EditorTableStyles.NeutralBadgeColor, styles.Badge);
-
-            return width + EditorTableStyles.BadgeGap;
+            return node.Page != null
+                ? PageTooltip
+                : GroupTooltip;
         }
 
-        private static GUIStyle LabelStyle(DataHubTreeNode node, bool isSelected, DataHubStyles styles)
+        private static Texture IconOf(DataHubTreeNode node)
         {
-            if (node.IsGroup)
-                return styles.Header;
+            if (node.Table != null)
+                return DataHubIcons.Of(node.Table.DataType);
 
-            return isSelected
-                ? styles.NameBold
-                : styles.Name;
+            return node.Page != null
+                ? DataHubIcons.Page
+                : DataHubIcons.Folder;
+        }
+
+        // A plain dimmed number at the right edge. A badge per line made the tree read like a list of
+        // warnings. Returns the width it takes, so the label stops before it.
+        private static float DrawCount(Rect row, int count, bool isSelected, DataHubStyles styles)
+        {
+            GUIContent text = new(count.ToString());
+
+            GUIStyle style = isSelected
+                ? styles.CountSelected
+                : styles.Count;
+
+            float width = style.CalcSize(text).x;
+            float right = row.xMax - DataHubStyles.RowHighlightInset - EditorTableStyles.RowInset;
+
+            GUI.Label(new Rect(right - width, row.y, width, row.height), text, style);
+
+            return width + EditorTableStyles.BadgeGap;
         }
 
         private void Flatten(Dictionary<string, DataHubTreeNode> byPath, string parentPath, int depth)
@@ -197,35 +252,123 @@ namespace Base.DataHubPackage.Editor
             {
                 child.Depth = depth;
                 _nodes.Add(child);
+
+                int before = _nodes.Count;
                 Flatten(byPath, child.Path, depth + 1);
+                child.HasChildren = _nodes.Count > before;
             }
         }
 
-        private bool DrawNode(Rect row, int index, DataHubTreeNode node, DataHubStyles styles)
+        private void CollectVisible()
+        {
+            _visible.Clear();
+
+            int hiddenBelow = int.MaxValue;
+
+            foreach (DataHubTreeNode node in _nodes)
+            {
+                if (node.Depth > hiddenBelow)
+                    continue;
+
+                hiddenBelow = _collapsed.Contains(node.Path)
+                    ? node.Depth
+                    : int.MaxValue;
+
+                _visible.Add(node);
+            }
+        }
+
+        private void ExpandParents(DataHubTreeNode node)
+        {
+            bool isChanged = false;
+
+            for (string parent = node.ParentPath; parent != null; parent = DataHubTreeNode.ParentOf(parent))
+            {
+                if (_collapsed.Remove(parent))
+                {
+                    EditorPrefs.DeleteKey(CollapsedKey(parent));
+                    isChanged = true;
+                }
+            }
+
+            if (isChanged)
+                CollectVisible();
+        }
+
+        private void Toggle(DataHubTreeNode node)
+        {
+            if (_collapsed.Remove(node.Path))
+                EditorPrefs.DeleteKey(CollapsedKey(node.Path));
+            else if (_collapsed.Add(node.Path))
+                EditorPrefs.SetBool(CollapsedKey(node.Path), true);
+
+            CollectVisible();
+        }
+
+        private bool DrawNode(Rect row, DataHubTreeNode node, DataHubStyles styles)
         {
             bool isSelected = node == Selected;
-            bool isHovered = !node.IsGroup
-                && row.Contains(Event.current.mousePosition);
+            bool isHovered = row.Contains(Event.current.mousePosition);
 
-            EditorRows.DrawRowBackground(row, index, isHovered, isSelected);
+            Rect highlight = new(row.x + DataHubStyles.RowHighlightInset, row.y,
+                row.width - DataHubStyles.RowHighlightInset * 2f, row.height);
 
-            float indent = EditorTableStyles.RowInset + node.Depth * EditorMetrics.Indent;
-            Rect label = new(row.x + indent, row.y, Mathf.Max(0f, row.width - indent), row.height);
+            if (isSelected)
+                DataHubGui.Highlight(highlight, DataHubStyles.TreeSelectionColor, styles);
+            else if (isHovered)
+                DataHubGui.Highlight(highlight, EditorPalette.Hover, styles);
+
+            float x = highlight.x + EditorTableStyles.RowInset * 0.5f + node.Depth * EditorMetrics.Indent;
+            Rect foldout = new(x, row.y, FoldoutWidth, row.height);
+
+            if (node.HasChildren)
+            {
+                bool isExpanded = !_collapsed.Contains(node.Path);
+
+                if (EditorGUI.Foldout(foldout, isExpanded, GUIContent.none) != isExpanded)
+                {
+                    Toggle(node);
+                    return false;
+                }
+            }
+
+            Rect icon = new(foldout.xMax, row.y + (row.height - EditorTableStyles.IconSize) * 0.5f,
+                EditorTableStyles.IconSize, EditorTableStyles.IconSize);
+
+            DataHubGui.Icon(icon, IconOf(node));
+
+            Rect label = new(icon.xMax + EditorTableStyles.IconGap, row.y, 0f, row.height);
+            label.width = Mathf.Max(0f, highlight.xMax - label.x);
 
             if (node.Table != null)
-                label.width -= DrawCount(row, node.Count, styles);
+                label.width -= DrawCount(row, node.Count, isSelected, styles);
 
-            GUI.Label(label, node.Label, LabelStyle(node, isSelected, styles));
+            GUIStyle labelStyle = isSelected
+                ? styles.NameBold
+                : styles.Name;
 
+            GUI.Label(label, new GUIContent(node.Label, TooltipOf(node)), labelStyle);
+
+            return HandleClick(row, node, isSelected);
+        }
+
+        private bool HandleClick(Rect row, DataHubTreeNode node, bool isSelected)
+        {
             Event current = Event.current;
 
-            if (node.IsGroup
-                || current.type != EventType.MouseDown
+            if (current.type != EventType.MouseDown
                 || current.button != 0
                 || !row.Contains(current.mousePosition))
                 return false;
 
             current.Use();
+
+            // A group has nothing to show, so a click on it folds it instead.
+            if (node.IsGroup)
+            {
+                Toggle(node);
+                return false;
+            }
 
             if (isSelected)
                 return false;

@@ -1,4 +1,5 @@
 using System;
+using Base.EditorUIPackage.Editor;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -12,10 +13,11 @@ namespace Base.DataHubPackage.Editor
     /// </summary>
     internal sealed class DataInspectorPanel
     {
-        private const string ManyTitleFormat = "{0} assets";
-        private const string MixedTypesMessage = "The selected assets have different types. Select assets of one "
-            + "type to edit them together.";
-        private const string NothingSelectedMessage = "Select a row to see its inspector.";
+        private const string MixedTypesHint = "Select assets of one type to edit them together.";
+        private const string MixedTypesMessage = "Different types selected";
+        private const string NothingSelectedHint = "Its full inspector shows up here, for the fields a cell cannot "
+            + "edit.";
+        private const string NothingSelectedMessage = "Select a row";
         private const float WideModeWidth = 330f;
 
         private UnityEditor.Editor _editor;
@@ -65,21 +67,15 @@ namespace Base.DataHubPackage.Editor
 
             if (targets.Length == 0)
             {
-                EditorGUILayout.HelpBox(NothingSelectedMessage, MessageType.Info);
+                EditorWindowChrome.DrawEmptyState(styles, null, NothingSelectedMessage, NothingSelectedHint);
                 return false;
             }
 
             if (HasMixedTypes(targets))
             {
-                EditorGUILayout.HelpBox(MixedTypesMessage, MessageType.Info);
+                EditorWindowChrome.DrawEmptyState(styles, null, MixedTypesMessage, MixedTypesHint);
                 return false;
             }
-
-            string title = targets.Length == 1
-                ? targets[0].name
-                : string.Format(ManyTitleFormat, targets.Length);
-
-            GUILayout.Label(title, styles.SectionHeader);
 
             UnityEditor.Editor.CreateCachedEditor(targets, null, ref _editor);
 

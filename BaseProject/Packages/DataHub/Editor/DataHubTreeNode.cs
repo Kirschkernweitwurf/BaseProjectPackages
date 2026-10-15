@@ -23,9 +23,7 @@ namespace Base.DataHubPackage.Editor
                 ? path
                 : path.Substring(separator + 1);
 
-            ParentPath = separator < 0
-                ? null
-                : path.Substring(0, separator);
+            ParentPath = ParentOf(path);
         }
 
         /// <summary>Full path in the tree.</summary>
@@ -43,6 +41,9 @@ namespace Base.DataHubPackage.Editor
         /// <summary>How deep the node sits, zero at the top level.</summary>
         internal int Depth { get; set; }
 
+        /// <summary>True when other nodes sit under this one, so it can be folded.</summary>
+        internal bool HasChildren { get; set; }
+
         /// <summary>Number of assets the table lists, shown next to the label.</summary>
         internal int Count { get; set; }
 
@@ -55,5 +56,17 @@ namespace Base.DataHubPackage.Editor
         /// <summary>True for a node that only groups others and cannot be selected.</summary>
         internal bool IsGroup => Table == null
             && Page == null;
+
+        /// <summary>The path one level up, or null at the top level.</summary>
+        /// <param name="path">A tree path.</param>
+        /// <returns>The parent path.</returns>
+        internal static string ParentOf(string path)
+        {
+            int separator = path.LastIndexOf(DataHubTree.PathSeparator);
+
+            return separator < 0
+                ? null
+                : path.Substring(0, separator);
+        }
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using Base.DataHubPackage.Editor.Extensions;
+using UnityEngine;
 
 namespace Base.DataHubPackage.Editor.Table
 {
@@ -49,6 +50,15 @@ namespace Base.DataHubPackage.Editor.Table
 
         /// <summary>The extension behind a computed column.</summary>
         internal IDataColumn Computed { get; set; }
+
+        /// <summary>True when the user dragged this column before, so its width is theirs and not measured.</summary>
+        internal bool HasSavedWidth { get; set; }
+
+        /// <summary>What the column holds and how to edit it, shown on its title.</summary>
+        internal string Tooltip { get; set; }
+
+        /// <summary>Where the title and the value sit in the column: numbers right, toggles centered.</summary>
+        internal TextAnchor Alignment { get; set; } = TextAnchor.MiddleLeft;
 
         /// <summary>The width the column is drawn at.</summary>
         internal float Width { get; set; }

@@ -22,14 +22,10 @@ namespace Base.DataHubPackage.Editor.Table
         private const float BoolWidth = 56f;
         private const string CheckHeader = "Check";
         private const string CheckKey = "check";
-        private const float CheckWidth = 64f;
+        private const float CheckWidth = 58f;
         private const string ComputedKeyPrefix = "computed:";
         private const float ComputedWidth = 200f;
         private const float EnumWidth = 110f;
-        private const BindingFlags FieldFlags = BindingFlags.Instance
-            | BindingFlags.Public
-            | BindingFlags.NonPublic
-            | BindingFlags.DeclaredOnly;
         private const int MaxNestingDepth = 3;
         private const string NameHeader = "Name";
         private const string NameKey = "name";
@@ -40,7 +36,6 @@ namespace Base.DataHubPackage.Editor.Table
         private const char PathSeparator = '.';
         private const float StringWidth = 180f;
         private const float SummaryWidth = 90f;
-        private const string UnityAssemblyPrefix = "UnityEngine";
 
         /// <summary>The columns of a table listing <paramref name="dataType"/>.</summary>
         /// <param name="dataType">The type the table lists.</param>
@@ -50,8 +45,15 @@ namespace Base.DataHubPackage.Editor.Table
         {
             List<DataColumn> columns = new()
             {
-                new DataColumn(EDataColumnKind.Name, NameKey, NameHeader, null, NameWidth),
+                new DataColumn(EDataColumnKind.Name, NameKey, NameHeader, null, NameWidth)
+                {
+                    Tooltip = DataColumnTooltip.Name
+                },
                 new DataColumn(EDataColumnKind.Check, CheckKey, CheckHeader, null, CheckWidth)
+                {
+                    Alignment = TextAnchor.MiddleCenter,
+                    Tooltip = DataColumnTooltip.Check
+                }
             };
 
             AddFields(dataType, null, null, 0, columns);
@@ -61,7 +63,8 @@ namespace Base.DataHubPackage.Editor.Table
                 columns.Add(new DataColumn(EDataColumnKind.Computed, ComputedKeyPrefix + column.GetType().FullName,
                     column.Header, null, ComputedWidth)
                 {
-                    Computed = column
+                    Computed = column,
+                    Tooltip = DataColumnTooltip.Computed
                 });
             }
 
@@ -70,7 +73,7 @@ namespace Base.DataHubPackage.Editor.Table
 
         private static void AddFields(Type type, string prefix, string group, int depth, List<DataColumn> columns)
         {
-            foreach (FieldInfo field in SerializedFields(type))
+            foreach (FieldInfo field in DataSerializedFields.Of(type))
             {
                 string path = prefix == null
                     ? field.Name
@@ -101,68 +104,43 @@ namespace Base.DataHubPackage.Editor.Table
                 {
                     PropertyPath = path,
                     FieldType = fieldType,
-                    IsEditable = isEditable
+                    IsEditable = isEditable,
+                    Alignment = AlignmentFor(fieldType),
+                    Tooltip = DataColumnTooltip.Field(field, isEditable)
                 });
             }
         }
 
-        // Base class fields first, the same order the serializer and the inspector use.
-        private static List<FieldInfo> SerializedFields(Type type)
-        {
-            List<Type> chain = new();
-
-            for (Type current = type; current != null && !IsUnityType(current); current = current.BaseType)
-                chain.Add(current);
-
-            List<FieldInfo> fields = new();
-
-            for (int i = chain.Count - 1; i >= 0; i--)
-            {
-                foreach (FieldInfo field in chain[i].GetFields(FieldFlags))
-                {
-                    if (IsSerialized(field))
-                        fields.Add(field);
-                }
-            }
-
-            return fields;
-        }
-
-        private static bool IsSerialized(FieldInfo field)
-        {
-            if (field.IsInitOnly
-                || field.IsLiteral
-                || Attribute.IsDefined(field, typeof(NonSerializedAttribute))
-                || Attribute.IsDefined(field, typeof(HideInInspector)))
-                return false;
-
-            return field.IsPublic
-                || Attribute.IsDefined(field, typeof(SerializeField))
-                || Attribute.IsDefined(field, typeof(SerializeReference));
-        }
-
-        private static bool IsUnityType(Type type) => type == typeof(object)
-            || type.Assembly.GetName().Name.StartsWith(UnityAssemblyPrefix, StringComparison.Ordinal);
-
-        private static bool IsCollection(Type type) => type.IsArray
-            || (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>));
+        private static bool IsCollection(Type type) => DataSerializedFields.ElementType(type) != null;
 
         private static bool IsFlattenable(Type type) => !type.IsPrimitive
             && !type.IsEnum
             && type != typeof(string)
             && !typeof(Object).IsAssignableFrom(type)
             && !IsCollection(type)
-            && !IsUnityType(type)
+            && !DataSerializedFields.IsUnityType(type)
             && Attribute.IsDefined(type, typeof(SerializableAttribute));
 
-        private static bool IsEditable(Type type) => type == typeof(int)
-            || type == typeof(long)
-            || type == typeof(float)
-            || type == typeof(double)
+        private static bool IsEditable(Type type) => IsNumber(type)
             || type == typeof(bool)
             || type == typeof(string)
             || type.IsEnum
             || typeof(Object).IsAssignableFrom(type);
+
+        private static TextAnchor AlignmentFor(Type type)
+        {
+            if (type == typeof(bool))
+                return TextAnchor.MiddleCenter;
+
+            return IsNumber(type)
+                ? TextAnchor.MiddleRight
+                : TextAnchor.MiddleLeft;
+        }
+
+        private static bool IsNumber(Type type) => type == typeof(int)
+            || type == typeof(long)
+            || type == typeof(float)
+            || type == typeof(double);
 
         private static float WidthFor(Type type, bool isEditable, bool isNested)
         {
