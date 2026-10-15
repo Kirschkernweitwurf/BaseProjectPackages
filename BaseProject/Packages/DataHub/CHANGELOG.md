@@ -6,6 +6,17 @@ All notable changes to this package are recorded here. The format follows
 
 ## [Unreleased]
 
+## [1.0.3] - 2026-10-16
+
+### Changed
+
+- Shorten every tooltip to one plain line. Column titles no longer repeat their own name or explain sorting,
+  and only show an edit hint where clicking the cell is not enough.
+- A field's own `[Tooltip]` now replaces the generic column text instead of being stacked on top of it.
+- Reword messages and hints in plain language, for example "Not used anywhere yet" and "All good".
+- Document the window in full: finding rows, the side panel, the check column, bulk changes and spreadsheet
+  sync. Add `IDataUsageCheck` and `IDataSummary` to the start page.
+
 ## [1.0.2] - 2026-10-16
 
 ### Added
