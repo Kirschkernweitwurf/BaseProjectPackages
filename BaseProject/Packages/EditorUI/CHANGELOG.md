@@ -8,6 +8,8 @@ Changes made before 1.1.3 were not recorded.
 
 ## [Unreleased]
 
+## [1.2.7] - 2026-10-17
+
 ### Fixed
 
 - A pill corner radius larger than half the badge or pill height no longer shows a brighter band through

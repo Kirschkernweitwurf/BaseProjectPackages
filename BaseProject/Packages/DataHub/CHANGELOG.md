@@ -6,6 +6,8 @@ All notable changes to this package are recorded here. The format follows
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-10-17
+
 ### Added
 
 - `IDataFieldText`: shows every field of a type as one read-only text column instead of one column per inner
