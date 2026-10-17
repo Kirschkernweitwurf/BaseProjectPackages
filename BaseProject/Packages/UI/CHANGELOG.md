@@ -13,6 +13,11 @@ Changes made before 1.4.2 were not recorded.
 - `MenuTabButton` selects a tab of a `MenuGroupModule` and turns on an optional indicator while its tab is
   selected.
 
+### Fixed
+
+- Closing a confirmation with Back counts as cancel. Before, the open request never finished and every
+  later confirmation was denied as already shown.
+
 ## [1.6.0] - 2026-10-17
 
 ### Added

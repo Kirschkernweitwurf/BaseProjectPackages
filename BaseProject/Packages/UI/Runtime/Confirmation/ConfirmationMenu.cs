@@ -73,7 +73,25 @@ namespace Base.UIPackage.Confirmation
             _onConfirm = null;
             _onCancel = null;
 
+            // Already closed by Back, which answered the request as a cancel.
+            if (!IsOpen)
+                return;
+
             Close();
+        }
+
+        protected override void OnClosed()
+        {
+            base.OnClosed();
+
+            // Closed without a choice, e.g. by Back. Counts as cancel, otherwise the waiting request never
+            // finishes and blocks every later confirmation.
+            Action onCancel = _onCancel;
+
+            _onConfirm = null;
+            _onCancel = null;
+
+            onCancel?.Invoke();
         }
 
         private void HandleConfirm() => _onConfirm?.Invoke();
