@@ -14,12 +14,12 @@ namespace Base.ToolsPackage.Editor.Identification
     /// The value is saved to <c>ProjectSettings/UniqueIdSettings.asset</c>, so it is
     /// shared through source control and applies to the whole team.
     /// <para/>
-    /// Toggle it from: <b>Tools/Base Packages/Identifier/Enable Unique IDs</b>.
+    /// Toggle it from: <b>Tools/Base Packages/Assets/Unique IDs/Unique ID Validation</b>.
     /// </summary>
     [FilePath("ProjectSettings/UniqueIdSettings.asset", FilePathAttribute.Location.ProjectFolder)]
     internal sealed class UniqueIdSettings : ScriptableSingleton<UniqueIdSettings>
     {
-        private const string MenuPath = "Tools/Base Packages/Assets/Identifier/Enable Unique ID Validation";
+        private const string MenuPath = "Tools/Base Packages/Assets/Unique IDs/Unique ID Validation";
 
         [SerializeField] private bool enabled = true;
 
@@ -40,14 +40,10 @@ namespace Base.ToolsPackage.Editor.Identification
             }
         }
 
-        [DynamicMenuItem(MenuPath, nameof(ToggleValidate))]
+        // The Menu Manager draws the check mark at the path the entry actually sits at, so it survives a move.
+        [DynamicMenuItem(MenuPath, checkedMethod: nameof(IsValidationEnabled))]
         private static void Toggle() => Enabled = !Enabled;
 
-        // Puts the checkmark next to the menu item when the package is on.
-        private static bool ToggleValidate()
-        {
-            Menu.SetChecked(MenuPath, Enabled);
-            return true;
-        }
+        private static bool IsValidationEnabled() => Enabled;
     }
 }

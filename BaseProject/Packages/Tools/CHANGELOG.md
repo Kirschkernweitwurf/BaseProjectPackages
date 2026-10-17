@@ -8,6 +8,11 @@ Changes made before 2.0.10 were not recorded.
 
 ## [Unreleased]
 
+### Fixed
+
+- The Unique ID Validation check mark follows the entry when the Menu Manager moves or renames it. It was set
+  on a hardcoded path, so a moved entry never showed it.
+
 ## [3.1.13] - 2026-10-15
 
 ### Added
