@@ -13,7 +13,7 @@ summary: A minimal asset whose only job is to carry a stable, unique ID.
 
 **Tags:** #programmer #workflow
 
-**Create:** `Assets > Create > Scriptable Objects > Base > UniqueId > New ScriptableObject`
+**Create:** `Assets > Create > Scriptable Objects > Base > Unique ID > New Unique ID Asset`
 
 **Default file name:** `UID_UniqueIdScriptableObject`
 

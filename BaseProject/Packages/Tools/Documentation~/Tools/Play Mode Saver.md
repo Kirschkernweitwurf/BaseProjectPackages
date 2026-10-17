@@ -7,7 +7,7 @@ tags:
   - designer
   - workflow
 summary: Keeps the tweaks you made while the game was running.
-menu: Tools > Base Packages > Unity Editor > Play Mode Saver
+menu: Tools > Base Packages > Editor > Play Mode Saver
 ---
 # Play Mode Saver
 
@@ -15,7 +15,7 @@ menu: Tools > Base Packages > Unity Editor > Play Mode Saver
 
 **Tags:** #artist #designer #workflow
 
-**Menu:** `Tools > Base Packages > Unity Editor > Play Mode Saver`
+**Menu:** `Tools > Base Packages > Editor > Play Mode Saver`
 
 Keeps the tweaks you made while the game was running. Normally everything you change in Play mode is thrown away when you stop. This tool snapshots the components you picked and lets you apply them afterwards.
 

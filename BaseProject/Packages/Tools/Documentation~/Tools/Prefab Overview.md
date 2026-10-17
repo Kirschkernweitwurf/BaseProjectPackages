@@ -8,7 +8,7 @@ tags:
   - assets
   - project-health
 summary: Shows every prefab in the project as a tree of base prefabs and their variants, and flags variants that look like a problem.
-menu: Tools > Base Packages > Unity Editor > Project Health > Prefab Overview
+menu: Tools > Base Packages > Project Health > Prefab Overview
 ---
 # Prefab Overview
 
@@ -16,7 +16,7 @@ menu: Tools > Base Packages > Unity Editor > Project Health > Prefab Overview
 
 **Tags:** #artist #designer #assets #project-health
 
-**Menu:** `Tools > Base Packages > Unity Editor > Project Health > Prefab Overview`
+**Menu:** `Tools > Base Packages > Project Health > Prefab Overview`
 
 **For:** Everyone working with prefabs
 

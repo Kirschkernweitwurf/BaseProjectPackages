@@ -20,21 +20,18 @@ MonoBehaviour:
   columnPriorityWidth: 58
   columnStatusWidth: 52
   menuItemRoot:
-  - rid: 4171306542554939473
-  - rid: 5339058645413658751
-  - rid: 5279886866741199050
-  - rid: 5279886871787208704
+  - rid: 1279771911713347561
+  - rid: 2120991140030031120
+  - rid: 8042406977524133957
   createAssetRoot:
-  - rid: 5339058662016286883
-  - rid: 5279886866741199051
-  - rid: 5279886871787208705
+  - rid: 2259329377625450971
   menuItemGroups: []
   createAssetGroups: []
   groups: []
   references:
     version: 2
     RefIds:
-    - rid: 4171306542554939473
+    - rid: 1279771911713347561
       type: {class: MenuGroupNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
       data:
         separator: 1
@@ -42,8 +39,8 @@ MonoBehaviour:
         expanded: 1
         merged: 0
         children:
-        - rid: 4171306542554939474
-    - rid: 4171306542554939474
+        - rid: 2685370234260099678
+    - rid: 2685370234260099678
       type: {class: MenuGroupNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
       data:
         separator: 1
@@ -53,30 +50,54 @@ MonoBehaviour:
         children:
         - rid: 5339058706698469483
         - rid: 5339058706698469484
-    - rid: 4171306542554939475
+    - rid: 5339058706698469483
       type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
       data:
         separator: 0
         entry:
-          id: MI:Base.ToolsPackage.Editor.OverviewGui.PrefabOverviewWindow.PrefabOverviewWindow.Open
-          path: Prefab Overview
+          id: MI:Base.ToolsPackage.Editor.HierarchySorter.HierarchySorter.SortActiveScene
+          path: Sort Active Scene Alphabetically
           enabled: 1
           kind: 0
           createFileName: 
-          overridePriority: 0
-          overrideValue: 0
-    - rid: 4171306542554939516
+          overridePriority: 1
+          overrideValue: 1000
+    - rid: 5339058706698469484
       type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
       data:
         separator: 0
         entry:
-          id: MI:Base.ToolsPackage.Editor.CodebaseGraph.CodebaseGraphWindow.Open
-          path: Codebase Graph
+          id: MI:Base.ToolsPackage.Editor.HierarchySorter.HierarchySorter.SortSelected
+          path: Sort Children Alphabetically
           enabled: 1
           kind: 0
           createFileName: 
-          overridePriority: 0
-          overrideValue: 0
+          overridePriority: 1
+          overrideValue: 1001
+    - rid: 2120991140030031120
+      type: {class: MenuGroupNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
+      data:
+        separator: 1
+        name: Tools
+        expanded: 1
+        merged: 0
+        children:
+        - rid: 5828620786980583842
+    - rid: 5828620786980583842
+      type: {class: MenuGroupNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
+      data:
+        separator: 1
+        name: Base Packages
+        expanded: 1
+        merged: 0
+        children:
+        - rid: 4171306615483138128
+        - rid: 5893160818783876133
+        - rid: 7948991950246992455
+        - rid: 5405240869844860793
+        - rid: 4660418556330465570
+        - rid: 2709017599507159101
+        - rid: 3331747710025129387
     - rid: 4171306615483138128
       type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
       data:
@@ -89,237 +110,40 @@ MonoBehaviour:
           createFileName: 
           overridePriority: 0
           overrideValue: 0
-    - rid: 4171306739388121289
+    - rid: 5893160818783876133
       type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
       data:
         separator: 0
         entry:
-          id: MI:Base.MemoryProfilerPackage.Editor.MemoryProfilerWindow.Open
-          path: Memory Profiler Automation
+          id: MI:Base.DataHubPackage.Editor.DataHubWindow.Open
+          path: Data Hub
           enabled: 1
           kind: 0
           createFileName: 
           overridePriority: 0
           overrideValue: 0
-    - rid: 4171306739388121290
-      type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
-      data:
-        separator: 0
-        entry:
-          id: MI:Base.ControllerSupportPackage.Editor.NavigationGroupsWindow.Open
-          path: Controller Navigation Groups
-          enabled: 1
-          kind: 0
-          createFileName: 
-          overridePriority: 0
-          overrideValue: 0
-    - rid: 4171306739388121291
-      type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
-      data:
-        separator: 0
-        entry:
-          id: CA:Base.UtilityPackage.Identification.UniqueIdScriptableObject
-          path: New ScriptableObject
-          enabled: 1
-          kind: 1
-          createFileName: UID_UniqueIdScriptableObject
-          overridePriority: 0
-          overrideValue: 0
-    - rid: 4171306739388121292
-      type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
-      data:
-        separator: 0
-        entry:
-          id: CA:Base.TweeningPackage.Core.Data.Profiles.Vector3TweenProfileSo
-          path: New Vector3TweenProfile
-          enabled: 1
-          kind: 1
-          createFileName: TPV_Vector3TweenProfile
-          overridePriority: 0
-          overrideValue: 0
-    - rid: 4171306739388121293
-      type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
-      data:
-        separator: 0
-        entry:
-          id: CA:Base.TweeningPackage.Core.Data.Profiles.TweenSettingsSo
-          path: New TweenSettings
-          enabled: 1
-          kind: 1
-          createFileName: TS_TweenSettings
-          overridePriority: 0
-          overrideValue: 0
-    - rid: 4171306739388121294
-      type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
-      data:
-        separator: 0
-        entry:
-          id: CA:Base.TweeningPackage.Core.Data.Profiles.ColorTweenProfileSo
-          path: New ColorTweenProfile
-          enabled: 1
-          kind: 1
-          createFileName: TPC_ColorTweenProfile
-          overridePriority: 0
-          overrideValue: 0
-    - rid: 4171306739388121295
-      type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
-      data:
-        separator: 0
-        entry:
-          id: CA:Base.TweeningPackage.Core.Data.Profiles.FloatTweenProfileSo
-          path: New FloatTweenProfile
-          enabled: 1
-          kind: 1
-          createFileName: TPF_FloatTweenProfile
-          overridePriority: 0
-          overrideValue: 0
-    - rid: 4171306739388121296
-      type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
-      data:
-        separator: 0
-        entry:
-          id: CA:Base.MemoryProfilerPackage.MemoryProfilerConfigSo
-          path: New Memory Profiler Config
-          enabled: 1
-          kind: 1
-          createFileName: MPC_MemoryProfilerConfig
-          overridePriority: 0
-          overrideValue: 0
-    - rid: 4171306739388121297
-      type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
-      data:
-        separator: 0
-        entry:
-          id: CA:Base.ControllerSupportPackage.Haptics.RumblePattern
-          path: New Rumble Pattern
-          enabled: 1
-          kind: 1
-          createFileName: RP_RumblePattern
-          overridePriority: 0
-          overrideValue: 0
-    - rid: 4171306739388121298
-      type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
-      data:
-        separator: 0
-        entry:
-          id: CA:Base.ControllerSupportPackage.Haptics.RumbleConfig
-          path: New Rumble Config
-          enabled: 1
-          kind: 1
-          createFileName: RC_RumbleConfig
-          overridePriority: 0
-          overrideValue: 0
-    - rid: 4171306739388121299
-      type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
-      data:
-        separator: 0
-        entry:
-          id: CA:Base.ControllerSupportPackage.InputPrompts.Glyphs.InputGlyphSet
-          path: New Glyph Set
-          enabled: 1
-          kind: 1
-          createFileName: IGS_GlyphSet
-          overridePriority: 0
-          overrideValue: 0
-    - rid: 4171306790334758914
-      type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
-      data:
-        separator: 0
-        entry:
-          id: MI:Base.UtilityPackage.Editor.Logging.CustomLogHandlerMenu.Toggle
-          path: Enable Custom Log Handler
-          enabled: 1
-          kind: 0
-          createFileName: 
-          overridePriority: 0
-          overrideValue: 0
-    - rid: 4171306838086123521
-      type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
-      data:
-        separator: 0
-        entry:
-          id: MI:Base.AttributesPackage.Editor.Core.AttributeInspectorSwitchMenu.Toggle
-          path: Disable Attribute Inspector
-          enabled: 1
-          kind: 0
-          createFileName: 
-          overridePriority: 0
-          overrideValue: 0
-    - rid: 4171306838118891520
+    - rid: 7948991950246992455
       type: {class: MenuGroupNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
       data:
         separator: 1
-        name: UniqueId
-        expanded: 0
-        merged: 0
-        children:
-        - rid: 4171306739388121291
-    - rid: 4171306838118891521
-      type: {class: MenuGroupNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
-      data:
-        separator: 1
-        name: Tweening
-        expanded: 0
-        merged: 0
-        children:
-        - rid: 4171306739388121293
-        - rid: 4171306838118891524
-    - rid: 4171306838118891522
-      type: {class: MenuGroupNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
-      data:
-        separator: 1
-        name: Memory Profiler
-        expanded: 0
-        merged: 0
-        children:
-        - rid: 4171306739388121296
-    - rid: 4171306838118891523
-      type: {class: MenuGroupNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
-      data:
-        separator: 1
-        name: Input
-        expanded: 0
-        merged: 0
-        children:
-        - rid: 4171306739388121299
-        - rid: 4171306739388121298
-        - rid: 4171306739388121297
-    - rid: 4171306838118891524
-      type: {class: MenuGroupNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
-      data:
-        separator: 1
-        name: Profiles
+        name: Assets
         expanded: 1
         merged: 0
         children:
-        - rid: 4171306739388121294
-        - rid: 4171306739388121295
-        - rid: 4171306739388121292
-    - rid: 4171306838118891525
-      type: {class: MenuGroupNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
-      data:
-        separator: 1
-        name: Attributes
-        expanded: 1
-        merged: 0
-        children:
-        - rid: 4171306838086123521
-    - rid: 4171306838118891526
-      type: {class: MenuGroupNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
-      data:
-        separator: 1
-        name: Logging
-        expanded: 1
-        merged: 0
-        children:
-        - rid: 4171306790334758914
-    - rid: 4171306840272142420
+        - rid: 5339058645413659006
+        - rid: 4171306851004317782
+        - rid: 5279886866741199050
+        - rid: 5339058645413658778
+        - rid: 5339058645413658767
+        - rid: 8891846291010587244
+        - rid: 6415262310592553729
+    - rid: 5339058645413659006
       type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
       data:
         separator: 0
         entry:
-          id: MI:Base.ToolsPackage.Editor.TodoOverview.TodoOverviewWindow.Open
-          path: Todo Overview
+          id: MI:Base.ToolsPackage.Editor.NamingConventions.Window.AssetNamingWindow.Open
+          path: Asset Naming Conventions
           enabled: 1
           kind: 0
           createFileName: 
@@ -337,413 +161,13 @@ MonoBehaviour:
           createFileName: 
           overridePriority: 0
           overrideValue: 0
-    - rid: 4171306851004317783
-      type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
-      data:
-        separator: 0
-        entry:
-          id: CA:Base.ToolsPackage.Editor.AudioRules.Data.AudioRuleSet
-          path: New Rule Set
-          enabled: 1
-          kind: 1
-          createFileName: ARS_AudioRuleSet
-          overridePriority: 0
-          overrideValue: 0
-    - rid: 4171306851246800896
-      type: {class: MenuGroupNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
-      data:
-        separator: 1
-        name: Audio Rules
-        expanded: 0
-        merged: 0
-        children:
-        - rid: 4171306851004317783
-    - rid: 4171306879374590036
-      type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
-      data:
-        separator: 0
-        entry:
-          id: MI:Base.ServicesPackage.Editor.ServiceLocatorWindow.Open
-          path: Service Locator
-          enabled: 1
-          kind: 0
-          createFileName: 
-          overridePriority: 0
-          overrideValue: 0
-    - rid: 4171306879374590037
-      type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
-      data:
-        separator: 0
-        entry:
-          id: MI:Base.CorePackage.Editor.EventBusInspector.EventBusWindow.Open
-          path: Event Bus
-          enabled: 1
-          kind: 0
-          createFileName: 
-          overridePriority: 0
-          overrideValue: 0
-    - rid: 4171306879440126036
-      type: {class: MenuGroupNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
-      data:
-        separator: 1
-        name: Runtime
-        expanded: 1
-        merged: 0
-        children:
-        - rid: 4171306879374590037
-        - rid: 4171306879374590036
-    - rid: 4171306879440126041
-      type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
-      data:
-        separator: 0
-        entry:
-          id: MI:Base.CorePackage.Editor.StateMachine.StateMachineMonitor.Open
-          path: State Machine Monitor
-          enabled: 1
-          kind: 0
-          createFileName: 
-          overridePriority: 0
-          overrideValue: 0
-    - rid: 4171306887588347988
-      type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
-      data:
-        separator: 0
-        entry:
-          id: CA:Base.SettingsPackage.Presets.SettingsPreset
-          path: New Settings Preset
-          enabled: 1
-          kind: 1
-          createFileName: SP_SettingsPreset
-          overridePriority: 0
-          overrideValue: 0
-    - rid: 4171306887588347989
-      type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
-      data:
-        separator: 0
-        entry:
-          id: CA:Base.SaveSystemPackage.Unity.Autosave.AutosaveConfig
-          path: New Autosave Config
-          enabled: 1
-          kind: 1
-          createFileName: AC_AutosaveConfig
-          overridePriority: 0
-          overrideValue: 0
-    - rid: 4171306887588348007
-      type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
-      data:
-        separator: 0
-        entry:
-          id: MI:Base.AttributesPackage.Editor.Windows.AttributeExplorer.AttributeExplorerWindow.OpenWindow
-          path: Attributes
-          enabled: 1
-          kind: 0
-          createFileName: 
-          overridePriority: 0
-          overrideValue: 0
-    - rid: 4171306887588348008
-      type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
-      data:
-        separator: 0
-        entry:
-          id: MI:Base.AttributesPackage.Editor.Windows.RequiredReferenceWindow.RequiredReferenceOverviewWindow.Open
-          path: Required References
-          enabled: 1
-          kind: 0
-          createFileName: 
-          overridePriority: 0
-          overrideValue: 0
-    - rid: 4171306887588348009
-      type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
-      data:
-        separator: 0
-        entry:
-          id: MI:Base.AttributesPackage.Editor.Windows.RequireComponentAudit.RequireComponentAuditWindow.Open
-          path: GetComponent Require Audit
-          enabled: 1
-          kind: 0
-          createFileName: 
-          overridePriority: 0
-          overrideValue: 0
-    - rid: 4171306887588348010
-      type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
-      data:
-        separator: 0
-        entry:
-          id: MI:Base.AttributesPackage.Editor.Windows.GetComponentAssigner.GetComponentAssignerWindow.Open
-          path: Assign GetComponents
-          enabled: 1
-          kind: 0
-          createFileName: 
-          overridePriority: 0
-          overrideValue: 0
-    - rid: 4171307037814161629
-      type: {class: MenuGroupNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
-      data:
-        separator: 1
-        name: Gameplay
-        expanded: 1
-        merged: 0
-        children:
-        - rid: 4171306879440126041
-    - rid: 4171307037814161630
-      type: {class: MenuGroupNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
-      data:
-        separator: 1
-        name: References
-        expanded: 1
-        merged: 0
-        children:
-        - rid: 4171306887588348010
-        - rid: 4171306887588348009
-        - rid: 4171306887588348008
-    - rid: 4171307037814161631
-      type: {class: MenuGroupNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
-      data:
-        separator: 1
-        name: Settings
-        expanded: 1
-        merged: 0
-        children:
-        - rid: 4171306887588347988
-    - rid: 4171307037814161632
-      type: {class: MenuGroupNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
-      data:
-        separator: 1
-        name: Save
-        expanded: 1
-        merged: 0
-        children:
-        - rid: 4171306887588347989
     - rid: 5279886866741199050
       type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
       data:
         separator: 0
         entry:
           id: MI:Base.AudioPackage.Editor.FindUnusedAudioClips.ShowWindow
-          path: Tools/Base Packages/Assets/Audio/Unused Audio Clips
-          enabled: 1
-          kind: 0
-          createFileName: 
-          overridePriority: 0
-          overrideValue: 0
-    - rid: 5279886866741199051
-      type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
-      data:
-        separator: 0
-        entry:
-          id: CA:Base.AudioPackage.AudioContainer
-          path: Scriptable Objects/Base/Audio/New Audio Container
-          enabled: 1
-          kind: 1
-          createFileName: AUC_AudioContainer
-          overridePriority: 0
-          overrideValue: 0
-    - rid: 5279886871787208704
-      type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
-      data:
-        separator: 0
-        entry:
-          id: MI:Base.ToolsPackage.Editor.NamespaceConventionValidator.NamespaceConventionValidatorWindow.Open
-          path: Tools/Base Packages/Unity Editor/Project Health/Namespace Conventions
-          enabled: 1
-          kind: 0
-          createFileName: 
-          overridePriority: 0
-          overrideValue: 0
-    - rid: 5279886871787208705
-      type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
-      data:
-        separator: 0
-        entry:
-          id: CA:Base.ToolsPackage.Editor.NamespaceConventionValidator.NamespaceConventionConfig
-          path: Scriptable Objects/Base/Namespace Convention/New Config
-          enabled: 1
-          kind: 1
-          createFileName: NCC_NamespaceConventions
-          overridePriority: 0
-          overrideValue: 0
-    - rid: 5339058645413658751
-      type: {class: MenuGroupNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
-      data:
-        separator: 1
-        name: Tools
-        expanded: 1
-        merged: 0
-        children:
-        - rid: 5339058645413658752
-    - rid: 5339058645413658752
-      type: {class: MenuGroupNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
-      data:
-        separator: 1
-        name: Base Packages
-        expanded: 1
-        merged: 0
-        children:
-        - rid: 5339058645413658754
-        - rid: 4171306838118891525
-        - rid: 5339058645413658755
-        - rid: 4171306615483138128
-        - rid: 4171307037814161629
-        - rid: 4171306879440126036
-        - rid: 5339058645413658756
-    - rid: 5339058645413658754
-      type: {class: MenuGroupNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
-      data:
-        separator: 1
-        name: Assets
-        expanded: 0
-        merged: 0
-        children:
-        - rid: 5339058645413659006
-        - rid: 5339058645413658762
-        - rid: 5339058645413658763
-        - rid: 4171306851004317782
-        - rid: 5339058645413658764
-        - rid: 5339058645413658765
-        - rid: 5339058645413658766
-        - rid: 5339058645413658767
-    - rid: 5339058645413658755
-      type: {class: MenuGroupNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
-      data:
-        separator: 1
-        name: Code
-        expanded: 0
-        merged: 0
-        children:
-        - rid: 5339058645413658768
-        - rid: 5339058645413658769
-    - rid: 5339058645413658756
-      type: {class: MenuGroupNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
-      data:
-        separator: 1
-        name: Unity Editor
-        expanded: 1
-        merged: 0
-        children:
-        - rid: 5339058645413658772
-        - rid: 4171306739388121290
-        - rid: 4171306838118891526
-        - rid: 4171306739388121289
-        - rid: 5339058645413658775
-        - rid: 5339058645413658770
-        - rid: 4171307037814161630
-    - rid: 5339058645413658762
-      type: {class: MenuGroupNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
-      data:
-        separator: 1
-        name: Asset Zoo
-        expanded: 0
-        merged: 0
-        children:
-        - rid: 5339058645413658778
-    - rid: 5339058645413658763
-      type: {class: MenuGroupNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
-      data:
-        separator: 1
-        name: Audio
-        expanded: 0
-        merged: 0
-        children:
-        - rid: 5339058645413658779
-    - rid: 5339058645413658764
-      type: {class: MenuGroupNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
-      data:
-        separator: 1
-        name: Identifier
-        expanded: 0
-        merged: 0
-        children:
-        - rid: 5339058645413658780
-        - rid: 5339058645413658781
-    - rid: 5339058645413658765
-      type: {class: MenuGroupNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
-      data:
-        separator: 1
-        name: Localization
-        expanded: 0
-        merged: 0
-        children:
-        - rid: 5339058706698469470
-        - rid: 5339058706698469471
-        - rid: 5339058706698469469
-    - rid: 5339058645413658766
-      type: {class: MenuGroupNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
-      data:
-        separator: 1
-        name: Menu
-        expanded: 0
-        merged: 0
-        children:
-        - rid: 5339058706698469472
-    - rid: 5339058645413658767
-      type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
-      data:
-        separator: 1
-        entry:
-          id: MI:Base.ToolsPackage.Editor.AssetReserializer.AssetReserializerWindow.Open
-          path: Reserialize Assets
-          enabled: 1
-          kind: 0
-          createFileName: 
-          overridePriority: 0
-          overrideValue: 0
-    - rid: 5339058645413658768
-      type: {class: MenuGroupNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
-      data:
-        separator: 1
-        name: Generation
-        expanded: 1
-        merged: 0
-        children:
-        - rid: 5339058645413658786
-        - rid: 5339058645413658787
-        - rid: 5339058645413658788
-    - rid: 5339058645413658769
-      type: {class: MenuGroupNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
-      data:
-        separator: 1
-        name: Health
-        expanded: 1
-        merged: 0
-        children:
-        - rid: 4171306542554939516
-        - rid: 5339058645413658789
-        - rid: 5339058645413658790
-        - rid: 5339058645413658791
-        - rid: 5339058645413658792
-        - rid: 4171306840272142420
-    - rid: 5339058645413658770
-      type: {class: MenuGroupNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
-      data:
-        separator: 1
-        name: Project Health
-        expanded: 1
-        merged: 0
-        children:
-        - rid: 5339058645413658794
-        - rid: 4171306887588348007
-        - rid: 5339058645413658802
-        - rid: 4171306542554939475
-        - rid: 5339058645413658793
-    - rid: 5339058645413658772
-      type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
-      data:
-        separator: 1
-        entry:
-          id: MI:Base.ToolsPackage.Editor.ComponentClipboard.ComponentClipboardWindow.Open
-          path: Component Clipboard
-          enabled: 1
-          kind: 0
-          createFileName: 
-          overridePriority: 0
-          overrideValue: 0
-    - rid: 5339058645413658775
-      type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
-      data:
-        separator: 0
-        entry:
-          id: MI:Base.ToolsPackage.Editor.PlayModeApplier.PlayModeSaverWindow.Open
-          path: Play Mode Saver
+          path: Unused Audio Clips
           enabled: 1
           kind: 0
           createFileName: 
@@ -752,39 +176,84 @@ MonoBehaviour:
     - rid: 5339058645413658778
       type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
       data:
-        separator: 0
+        separator: 1
         entry:
           id: MI:Base.ToolsPackage.Editor.AssetZoo.UI.ZooEditorWindow.Open
-          path: Open Zoo Builder
+          path: Asset Zoo Builder
           enabled: 1
           kind: 0
           createFileName: 
           overridePriority: 0
           overrideValue: 0
-    - rid: 5339058645413658779
+    - rid: 5339058645413658767
       type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
       data:
         separator: 0
         entry:
-          id: MI:Base.CorePackage.Editor.Audio.FindUnusedAudioClips.ShowWindow
-          path: Unused Audio Clips
+          id: MI:Base.ToolsPackage.Editor.AssetReserializer.AssetReserializerWindow.Open
+          path: Reserialize Assets
           enabled: 1
           kind: 0
           createFileName: 
           overridePriority: 0
           overrideValue: 0
-    - rid: 5339058645413658780
+    - rid: 8891846291010587244
+      type: {class: MenuGroupNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
+      data:
+        separator: 1
+        name: Localization
+        expanded: 1
+        merged: 0
+        children:
+        - rid: 5339058706698469470
+        - rid: 5339058706698469471
+        - rid: 5339058706698469469
+    - rid: 5339058706698469470
       type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
       data:
         separator: 0
         entry:
-          id: MI:Base.ToolsPackage.Editor.Identification.UniqueIdSettings.Toggle
-          path: Enable Unique ID Validation
+          id: MI:Base.LocalizationPackage.Editor.LocalizationMenu.OpenWindow
+          path: Sync Window
           enabled: 1
           kind: 0
           createFileName: 
           overridePriority: 0
           overrideValue: 0
+    - rid: 5339058706698469471
+      type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
+      data:
+        separator: 1
+        entry:
+          id: MI:Base.LocalizationPackage.Editor.LocalizationMenu.PullAll
+          path: Pull All String Tables
+          enabled: 1
+          kind: 0
+          createFileName: 
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 5339058706698469469
+      type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
+      data:
+        separator: 0
+        entry:
+          id: MI:Base.LocalizationPackage.Editor.LocalizationMenu.PushAll
+          path: Push All String Tables
+          enabled: 1
+          kind: 0
+          createFileName: 
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 6415262310592553729
+      type: {class: MenuGroupNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
+      data:
+        separator: 0
+        name: Unique IDs
+        expanded: 1
+        merged: 0
+        children:
+        - rid: 5339058645413658781
+        - rid: 5339058645413658780
     - rid: 5339058645413658781
       type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
       data:
@@ -797,6 +266,30 @@ MonoBehaviour:
           createFileName: 
           overridePriority: 0
           overrideValue: 0
+    - rid: 5339058645413658780
+      type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
+      data:
+        separator: 1
+        entry:
+          id: MI:Base.ToolsPackage.Editor.Identification.UniqueIdSettings.Toggle
+          path: Unique ID Validation
+          enabled: 1
+          kind: 0
+          createFileName: 
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 5405240869844860793
+      type: {class: MenuGroupNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
+      data:
+        separator: 0
+        name: Code Generation
+        expanded: 1
+        merged: 0
+        children:
+        - rid: 5339058645413658786
+        - rid: 5339058645413658787
+        - rid: 5339058706698469472
+        - rid: 5339058645413658788
     - rid: 5339058645413658786
       type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
       data:
@@ -821,6 +314,18 @@ MonoBehaviour:
           createFileName: 
           overridePriority: 0
           overrideValue: 0
+    - rid: 5339058706698469472
+      type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
+      data:
+        separator: 0
+        entry:
+          id: MI:Base.CorePackage.Editor.MenuManaging.Identifier.MenuIdentifierGenerator.Regenerate
+          path: Regenerate Menu Identifiers
+          enabled: 1
+          kind: 0
+          createFileName: 
+          overridePriority: 0
+          overrideValue: 0
     - rid: 5339058645413658788
       type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
       data:
@@ -833,10 +338,54 @@ MonoBehaviour:
           createFileName: 
           overridePriority: 0
           overrideValue: 0
-    - rid: 5339058645413658789
+    - rid: 4660418556330465570
+      type: {class: MenuGroupNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
+      data:
+        separator: 0
+        name: Project Health
+        expanded: 1
+        merged: 0
+        children:
+        - rid: 5339058645413658794
+        - rid: 4171306542554939516
+        - rid: 5339058645413658789
+        - rid: 5339058645413658790
+        - rid: 5339058645413658791
+        - rid: 4171306542554939475
+        - rid: 5339058645413658792
+        - rid: 4171306840272142420
+        - rid: 5339058645413658802
+        - rid: 5279886871787208704
+        - rid: 6196900947234244028
+        - rid: 2645547897277499974
+    - rid: 5339058645413658794
       type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
       data:
         separator: 0
+        entry:
+          id: MI:Base.ToolsPackage.Editor.AssemblyGraph.AssemblyGraphWindow.Open
+          path: Assembly Graph
+          enabled: 1
+          kind: 0
+          createFileName: 
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 4171306542554939516
+      type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
+      data:
+        separator: 0
+        entry:
+          id: MI:Base.ToolsPackage.Editor.CodebaseGraph.CodebaseGraphWindow.Open
+          path: Codebase Graph
+          enabled: 1
+          kind: 0
+          createFileName: 
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 5339058645413658789
+      type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
+      data:
+        separator: 1
         entry:
           id: MI:Base.ToolsPackage.Editor.MenuManagerWindows.CreateAssetMenuOverview.CreateAssetMenuOverviewWindow.Open
           path: Create Asset Menu Overview
@@ -869,6 +418,18 @@ MonoBehaviour:
           createFileName: 
           overridePriority: 0
           overrideValue: 0
+    - rid: 4171306542554939475
+      type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
+      data:
+        separator: 0
+        entry:
+          id: MI:Base.ToolsPackage.Editor.OverviewGui.PrefabOverviewWindow.PrefabOverviewWindow.Open
+          path: Prefab Overview
+          enabled: 1
+          kind: 0
+          createFileName: 
+          overridePriority: 0
+          overrideValue: 0
     - rid: 5339058645413658792
       type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
       data:
@@ -881,10 +442,106 @@ MonoBehaviour:
           createFileName: 
           overridePriority: 0
           overrideValue: 0
-    - rid: 5339058645413658793
+    - rid: 4171306840272142420
+      type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
+      data:
+        separator: 0
+        entry:
+          id: MI:Base.ToolsPackage.Editor.TodoOverview.TodoOverviewWindow.Open
+          path: Todo Overview
+          enabled: 1
+          kind: 0
+          createFileName: 
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 5339058645413658802
+      type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
+      data:
+        separator: 1
+        entry:
+          id: MI:Base.ToolsPackage.Editor.FolderConventionValidator.FolderConventionValidatorWindow.Open
+          path: Folder Conventions
+          enabled: 1
+          kind: 0
+          createFileName: 
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 5279886871787208704
+      type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
+      data:
+        separator: 0
+        entry:
+          id: MI:Base.ToolsPackage.Editor.NamespaceConventionValidator.NamespaceConventionValidatorWindow.Open
+          path: Namespace Conventions
+          enabled: 1
+          kind: 0
+          createFileName: 
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 6196900947234244028
       type: {class: MenuGroupNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
       data:
         separator: 1
+        name: References
+        expanded: 1
+        merged: 0
+        children:
+        - rid: 4171306887588348007
+        - rid: 4171306887588348010
+        - rid: 4171306887588348009
+        - rid: 4171306887588348008
+    - rid: 4171306887588348007
+      type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
+      data:
+        separator: 0
+        entry:
+          id: MI:Base.AttributesPackage.Editor.Windows.AttributeExplorer.AttributeExplorerWindow.OpenWindow
+          path: Attribute Explorer
+          enabled: 1
+          kind: 0
+          createFileName: 
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 4171306887588348010
+      type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
+      data:
+        separator: 0
+        entry:
+          id: MI:Base.AttributesPackage.Editor.Windows.GetComponentAssigner.GetComponentAssignerWindow.Open
+          path: Assign GetComponents
+          enabled: 1
+          kind: 0
+          createFileName: 
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 4171306887588348009
+      type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
+      data:
+        separator: 0
+        entry:
+          id: MI:Base.AttributesPackage.Editor.Windows.RequireComponentAudit.RequireComponentAuditWindow.Open
+          path: GetComponent Require Audit
+          enabled: 1
+          kind: 0
+          createFileName: 
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 4171306887588348008
+      type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
+      data:
+        separator: 0
+        entry:
+          id: MI:Base.AttributesPackage.Editor.Windows.RequiredReferenceWindow.RequiredReferenceOverviewWindow.Open
+          path: Required References
+          enabled: 1
+          kind: 0
+          createFileName: 
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 2645547897277499974
+      type: {class: MenuGroupNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
+      data:
+        separator: 0
         name: Unused
         expanded: 1
         merged: 0
@@ -893,18 +550,6 @@ MonoBehaviour:
         - rid: 5339058645413658799
         - rid: 5339058645413658800
         - rid: 5339058645413658801
-    - rid: 5339058645413658794
-      type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
-      data:
-        separator: 0
-        entry:
-          id: MI:Base.ToolsPackage.Editor.AssemblyGraph.AssemblyGraphWindow.Open
-          path: Assembly Graph
-          enabled: 1
-          kind: 0
-          createFileName: 
-          overridePriority: 0
-          overrideValue: 0
     - rid: 5339058645413658798
       type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
       data:
@@ -953,31 +598,152 @@ MonoBehaviour:
           createFileName: 
           overridePriority: 0
           overrideValue: 0
-    - rid: 5339058645413658802
+    - rid: 2709017599507159101
+      type: {class: MenuGroupNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
+      data:
+        separator: 1
+        name: Debug
+        expanded: 1
+        merged: 0
+        children:
+        - rid: 4171306879374590037
+        - rid: 4171306879374590036
+        - rid: 4171306879440126041
+        - rid: 4171306739388121289
+    - rid: 4171306879374590037
       type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
       data:
         separator: 0
         entry:
-          id: MI:Base.ToolsPackage.Editor.FolderConventionValidator.FolderConventionValidatorWindow.Open
-          path: Folder Conventions
+          id: MI:Base.CorePackage.Editor.EventBusInspector.EventBusWindow.Open
+          path: Event Bus
           enabled: 1
           kind: 0
           createFileName: 
           overridePriority: 0
           overrideValue: 0
-    - rid: 5339058645413659006
+    - rid: 4171306879374590036
+      type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
+      data:
+        separator: 0
+        entry:
+          id: MI:Base.ServicesPackage.Editor.ServiceLocatorWindow.Open
+          path: Service Locator
+          enabled: 1
+          kind: 0
+          createFileName: 
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 4171306879440126041
+      type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
+      data:
+        separator: 0
+        entry:
+          id: MI:Base.CorePackage.Editor.StateMachine.StateMachineMonitor.Open
+          path: State Machine Monitor
+          enabled: 1
+          kind: 0
+          createFileName: 
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 4171306739388121289
       type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
       data:
         separator: 1
         entry:
-          id: MI:Base.ToolsPackage.Editor.NamingConventions.Window.AssetNamingWindow.Open
-          path: Asset Naming Conventions
+          id: MI:Base.MemoryProfilerPackage.Editor.MemoryProfilerWindow.Open
+          path: Memory Profiler Automation
           enabled: 1
           kind: 0
           createFileName: 
           overridePriority: 0
           overrideValue: 0
-    - rid: 5339058662016286883
+    - rid: 3331747710025129387
+      type: {class: MenuGroupNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
+      data:
+        separator: 0
+        name: Editor
+        expanded: 1
+        merged: 0
+        children:
+        - rid: 5339058645413658772
+        - rid: 4171306739388121290
+        - rid: 5339058645413658775
+        - rid: 4171306838086123521
+        - rid: 4171306790334758914
+    - rid: 5339058645413658772
+      type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
+      data:
+        separator: 0
+        entry:
+          id: MI:Base.ToolsPackage.Editor.ComponentClipboard.ComponentClipboardWindow.Open
+          path: Component Clipboard
+          enabled: 1
+          kind: 0
+          createFileName: 
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 4171306739388121290
+      type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
+      data:
+        separator: 0
+        entry:
+          id: MI:Base.ControllerSupportPackage.Editor.NavigationGroupsWindow.Open
+          path: Controller Navigation Groups
+          enabled: 1
+          kind: 0
+          createFileName: 
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 5339058645413658775
+      type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
+      data:
+        separator: 0
+        entry:
+          id: MI:Base.ToolsPackage.Editor.PlayModeApplier.PlayModeSaverWindow.Open
+          path: Play Mode Saver
+          enabled: 1
+          kind: 0
+          createFileName: 
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 4171306838086123521
+      type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
+      data:
+        separator: 1
+        entry:
+          id: MI:Base.AttributesPackage.Editor.Core.AttributeInspectorSwitchMenu.Toggle
+          path: Attribute Inspector
+          enabled: 1
+          kind: 0
+          createFileName: 
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 4171306790334758914
+      type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
+      data:
+        separator: 0
+        entry:
+          id: MI:Base.UtilityPackage.Editor.Logging.CustomLogHandlerMenu.Toggle
+          path: Custom Log Handler
+          enabled: 1
+          kind: 0
+          createFileName: 
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 8042406977524133957
+      type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
+      data:
+        separator: 0
+        entry:
+          id: MI:Base.DataHubPackage.Editor.DataHubWindow.ShowSelection
+          path: Assets/Show in Data Hub
+          enabled: 1
+          kind: 0
+          createFileName: 
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 2259329377625450971
       type: {class: MenuGroupNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
       data:
         separator: 1
@@ -985,8 +751,8 @@ MonoBehaviour:
         expanded: 1
         merged: 0
         children:
-        - rid: 5339058662016286884
-    - rid: 5339058662016286884
+        - rid: 8834183830290292799
+    - rid: 8834183830290292799
       type: {class: MenuGroupNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
       data:
         separator: 1
@@ -994,85 +760,184 @@ MonoBehaviour:
         expanded: 1
         merged: 0
         children:
-        - rid: 5339058662016286886
-        - rid: 5339058662016286890
-        - rid: 4171306851246800896
-        - rid: 5339058662016286894
-        - rid: 4171306838118891523
-        - rid: 5339058662016286888
-        - rid: 4171306838118891522
-        - rid: 5339058662016286892
-        - rid: 5339058662016286895
-        - rid: 4171307037814161632
-        - rid: 4171307037814161631
-        - rid: 4171306838118891521
-        - rid: 4171306838118891520
-    - rid: 5339058662016286886
+        - rid: 4014864856225172472
+        - rid: 2642939073542674127
+        - rid: 1115285210647542092
+        - rid: 1777520908391233473
+        - rid: 4325288568685095123
+        - rid: 4519597946658473675
+        - rid: 4159115020109556648
+        - rid: 4497278683731903880
+        - rid: 2513874918851291603
+        - rid: 3841814135188610235
+        - rid: 4254038147353743024
+        - rid: 4958553482724367992
+    - rid: 4014864856225172472
       type: {class: MenuGroupNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
       data:
         separator: 1
         name: Asset Zoo
-        expanded: 0
+        expanded: 1
         merged: 0
         children:
         - rid: 5339058662016286896
-    - rid: 5339058662016286888
-      type: {class: MenuGroupNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
-      data:
-        separator: 0
-        name: Lighting Profile
-        expanded: 0
-        merged: 0
-        children:
-        - rid: 5339058662016286898
-    - rid: 5339058662016286890
-      type: {class: MenuGroupNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
-      data:
-        separator: 1
-        name: Audio
-        expanded: 0
-        merged: 0
-        children:
-        - rid: 5339058662016286900
-    - rid: 5339058662016286892
-      type: {class: MenuGroupNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
-      data:
-        separator: 1
-        name: Menus
-        expanded: 0
-        merged: 0
-        children:
-        - rid: 5339058662016286903
-    - rid: 5339058662016286894
-      type: {class: MenuGroupNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
-      data:
-        separator: 1
-        name: Folder Convention
-        expanded: 0
-        merged: 0
-        children:
-        - rid: 5339058662016286905
-    - rid: 5339058662016286895
-      type: {class: MenuGroupNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
-      data:
-        separator: 1
-        name: Naming Conventions
-        expanded: 0
-        merged: 0
-        children:
-        - rid: 5339058662016286906
     - rid: 5339058662016286896
       type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
       data:
         separator: 0
         entry:
           id: CA:Base.ToolsPackage.Editor.AssetZoo.Config.ZooConfig
-          path: New Config
+          path: New Zoo Config
           enabled: 1
           kind: 1
           createFileName: ZC_ZooConfig
           overridePriority: 0
           overrideValue: 0
+    - rid: 2642939073542674127
+      type: {class: MenuGroupNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
+      data:
+        separator: 1
+        name: Audio
+        expanded: 1
+        merged: 0
+        children:
+        - rid: 5279886866741199051
+    - rid: 5279886866741199051
+      type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
+      data:
+        separator: 0
+        entry:
+          id: CA:Base.AudioPackage.AudioContainer
+          path: New Audio Container
+          enabled: 1
+          kind: 1
+          createFileName: AUC_AudioContainer
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 1115285210647542092
+      type: {class: MenuGroupNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
+      data:
+        separator: 1
+        name: Audio Rules
+        expanded: 1
+        merged: 0
+        children:
+        - rid: 4171306851004317783
+    - rid: 4171306851004317783
+      type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
+      data:
+        separator: 0
+        entry:
+          id: CA:Base.ToolsPackage.Editor.AudioRules.Data.AudioRuleSet
+          path: New Rule Set
+          enabled: 1
+          kind: 1
+          createFileName: ARS_AudioRuleSet
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 1777520908391233473
+      type: {class: MenuGroupNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
+      data:
+        separator: 1
+        name: Conventions
+        expanded: 1
+        merged: 0
+        children:
+        - rid: 5339058662016286905
+        - rid: 5279886871787208705
+        - rid: 5339058662016286906
+    - rid: 5339058662016286905
+      type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
+      data:
+        separator: 0
+        entry:
+          id: CA:Base.ToolsPackage.Editor.FolderConventionValidator.FolderConventionConfig
+          path: New Folder Convention Config
+          enabled: 1
+          kind: 1
+          createFileName: FCC_FolderConventions
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 5279886871787208705
+      type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
+      data:
+        separator: 0
+        entry:
+          id: CA:Base.ToolsPackage.Editor.NamespaceConventionValidator.NamespaceConventionConfig
+          path: New Namespace Convention Config
+          enabled: 1
+          kind: 1
+          createFileName: NCC_NamespaceConventions
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 5339058662016286906
+      type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
+      data:
+        separator: 1
+        entry:
+          id: CA:Base.ToolsPackage.Editor.NamingConventions.Data.AssetNamingRuleSet
+          path: New Asset Naming Rule Set
+          enabled: 1
+          kind: 1
+          createFileName: ANRS_AssetNamingRuleSet
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 4325288568685095123
+      type: {class: MenuGroupNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
+      data:
+        separator: 1
+        name: Input
+        expanded: 1
+        merged: 0
+        children:
+        - rid: 4171306739388121299
+        - rid: 4171306739388121298
+        - rid: 4171306739388121297
+    - rid: 4171306739388121299
+      type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
+      data:
+        separator: 0
+        entry:
+          id: CA:Base.ControllerSupportPackage.InputPrompts.Glyphs.InputGlyphSet
+          path: New Glyph Set
+          enabled: 1
+          kind: 1
+          createFileName: IGS_GlyphSet
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 4171306739388121298
+      type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
+      data:
+        separator: 1
+        entry:
+          id: CA:Base.ControllerSupportPackage.Haptics.RumbleConfig
+          path: New Rumble Config
+          enabled: 1
+          kind: 1
+          createFileName: RC_RumbleConfig
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 4171306739388121297
+      type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
+      data:
+        separator: 0
+        entry:
+          id: CA:Base.ControllerSupportPackage.Haptics.RumblePattern
+          path: New Rumble Pattern
+          enabled: 1
+          kind: 1
+          createFileName: RP_RumblePattern
+          overridePriority: 0
+          overrideValue: 0
+    - rid: 4519597946658473675
+      type: {class: MenuGroupNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
+      data:
+        separator: 1
+        name: Lighting Profile
+        expanded: 1
+        merged: 0
+        children:
+        - rid: 5339058662016286898
     - rid: 5339058662016286898
       type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
       data:
@@ -1085,18 +950,36 @@ MonoBehaviour:
           createFileName: LP_LightingProfile
           overridePriority: 0
           overrideValue: 0
-    - rid: 5339058662016286900
+    - rid: 4159115020109556648
+      type: {class: MenuGroupNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
+      data:
+        separator: 1
+        name: Memory Profiler
+        expanded: 1
+        merged: 0
+        children:
+        - rid: 4171306739388121296
+    - rid: 4171306739388121296
       type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
       data:
         separator: 0
         entry:
-          id: CA:Base.CorePackage.Audio.AudioContainer
-          path: New Audio Container
+          id: CA:Base.MemoryProfilerPackage.MemoryProfilerConfigSo
+          path: New Config
           enabled: 1
           kind: 1
-          createFileName: AUC_AudioContainer
+          createFileName: MPC_MemoryProfilerConfig
           overridePriority: 0
           overrideValue: 0
+    - rid: 4497278683731903880
+      type: {class: MenuGroupNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
+      data:
+        separator: 1
+        name: Menus
+        expanded: 1
+        merged: 0
+        children:
+        - rid: 5339058662016286903
     - rid: 5339058662016286903
       type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
       data:
@@ -1109,99 +992,135 @@ MonoBehaviour:
           createFileName: MID_MenuIdentifier
           overridePriority: 0
           overrideValue: 0
-    - rid: 5339058662016286905
+    - rid: 2513874918851291603
+      type: {class: MenuGroupNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
+      data:
+        separator: 1
+        name: Save
+        expanded: 1
+        merged: 0
+        children:
+        - rid: 4171306887588347989
+    - rid: 4171306887588347989
       type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
       data:
         separator: 0
         entry:
-          id: CA:Base.ToolsPackage.Editor.FolderConventionValidator.FolderConventionConfig
-          path: New Config
+          id: CA:Base.SaveSystemPackage.Unity.Autosave.AutosaveConfig
+          path: New Autosave Config
           enabled: 1
           kind: 1
-          createFileName: FCC_FolderConventions
+          createFileName: AC_AutosaveConfig
           overridePriority: 0
           overrideValue: 0
-    - rid: 5339058662016286906
+    - rid: 3841814135188610235
+      type: {class: MenuGroupNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
+      data:
+        separator: 1
+        name: Settings
+        expanded: 1
+        merged: 0
+        children:
+        - rid: 4171306887588347988
+    - rid: 4171306887588347988
       type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
       data:
         separator: 0
         entry:
-          id: CA:Base.ToolsPackage.Editor.NamingConventions.Data.AssetNamingRuleSet
-          path: New Asset Rule Set
+          id: CA:Base.SettingsPackage.Presets.SettingsPreset
+          path: New Settings Preset
           enabled: 1
           kind: 1
-          createFileName: ANRS_AssetNamingRuleSet
+          createFileName: SP_SettingsPreset
           overridePriority: 0
           overrideValue: 0
-    - rid: 5339058706698469469
+    - rid: 4254038147353743024
+      type: {class: MenuGroupNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
+      data:
+        separator: 1
+        name: Tweening
+        expanded: 1
+        merged: 0
+        children:
+        - rid: 4171306739388121293
+        - rid: 8372555276498562384
+    - rid: 4171306739388121293
       type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
       data:
         separator: 0
         entry:
-          id: MI:Base.LocalizationPackage.Editor.LocalizationMenu.PushAll
-          path: Push All String Tables
+          id: CA:Base.TweeningPackage.Core.Data.Profiles.TweenSettingsSo
+          path: New Tween Settings
           enabled: 1
-          kind: 0
-          createFileName: 
+          kind: 1
+          createFileName: TS_TweenSettings
           overridePriority: 0
           overrideValue: 0
-    - rid: 5339058706698469470
+    - rid: 8372555276498562384
+      type: {class: MenuGroupNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
+      data:
+        separator: 1
+        name: Profiles
+        expanded: 1
+        merged: 0
+        children:
+        - rid: 4171306739388121294
+        - rid: 4171306739388121295
+        - rid: 4171306739388121292
+    - rid: 4171306739388121294
       type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
       data:
         separator: 0
         entry:
-          id: MI:Base.LocalizationPackage.Editor.LocalizationMenu.OpenWindow
-          path: Open Sync Window
+          id: CA:Base.TweeningPackage.Core.Data.Profiles.ColorTweenProfileSo
+          path: New Color Profile
           enabled: 1
-          kind: 0
-          createFileName: 
+          kind: 1
+          createFileName: TPC_ColorTweenProfile
           overridePriority: 0
           overrideValue: 0
-    - rid: 5339058706698469471
+    - rid: 4171306739388121295
       type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
       data:
         separator: 0
         entry:
-          id: MI:Base.LocalizationPackage.Editor.LocalizationMenu.PullAll
-          path: Pull All String Tables
+          id: CA:Base.TweeningPackage.Core.Data.Profiles.FloatTweenProfileSo
+          path: New Float Profile
           enabled: 1
-          kind: 0
-          createFileName: 
+          kind: 1
+          createFileName: TPF_FloatTweenProfile
           overridePriority: 0
           overrideValue: 0
-    - rid: 5339058706698469472
+    - rid: 4171306739388121292
       type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
       data:
         separator: 0
         entry:
-          id: MI:Base.CorePackage.Editor.MenuManaging.Identifier.MenuIdentifierGenerator.Regenerate
-          path: Regenerate Menu Identifiers
+          id: CA:Base.TweeningPackage.Core.Data.Profiles.Vector3TweenProfileSo
+          path: New Vector3 Profile
           enabled: 1
-          kind: 0
-          createFileName: 
+          kind: 1
+          createFileName: TPV_Vector3TweenProfile
           overridePriority: 0
           overrideValue: 0
-    - rid: 5339058706698469483
+    - rid: 4958553482724367992
+      type: {class: MenuGroupNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
+      data:
+        separator: 1
+        name: Unique ID
+        expanded: 1
+        merged: 0
+        children:
+        - rid: 4171306739388121291
+    - rid: 4171306739388121291
       type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
       data:
         separator: 0
         entry:
-          id: MI:Base.ToolsPackage.Editor.HierarchySorter.HierarchySorter.SortActiveScene
-          path: Sort Active Scene Alphabetically
+          id: CA:Base.UtilityPackage.Identification.UniqueIdScriptableObject
+          path: New Unique ID Asset
           enabled: 1
-          kind: 0
-          createFileName: 
-          overridePriority: 1
-          overrideValue: 1000
-    - rid: 5339058706698469484
-      type: {class: MenuEntryNode, ns: Base.ToolsPackage.Editor.MenuManagerModel, asm: Base.ToolsPackage.Editor.MenuManagerModel}
-      data:
-        separator: 0
-        entry:
-          id: MI:Base.ToolsPackage.Editor.HierarchySorter.HierarchySorter.SortSelected
-          path: Sort Children Alphabetically
-          enabled: 1
-          kind: 0
-          createFileName: 
-          overridePriority: 1
-          overrideValue: 1001
+          kind: 1
+          createFileName: UID_UniqueIdScriptableObject
+          overridePriority: 0
+          overrideValue: 0

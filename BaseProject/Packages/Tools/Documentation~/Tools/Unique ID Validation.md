@@ -6,7 +6,7 @@ tags:
   - programmer
   - assets
 summary: A single on and off switch for the automatic ID checks.
-menu: Tools > Base Packages > Assets > Identifier > Enable Unique ID Validation
+menu: Tools > Base Packages > Assets > Unique IDs > Unique ID Validation
 ---
 # Unique ID Validation
 
@@ -14,7 +14,7 @@ menu: Tools > Base Packages > Assets > Identifier > Enable Unique ID Validation
 
 **Tags:** #programmer #assets
 
-**Menu:** `Tools > Base Packages > Assets > Identifier > Enable Unique ID Validation`
+**Menu:** `Tools > Base Packages > Assets > Unique IDs > Unique ID Validation`
 
 A single on and off switch for the automatic ID checks. A checkmark next to the menu item means it is on.
 

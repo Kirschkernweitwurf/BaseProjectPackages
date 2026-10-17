@@ -16,7 +16,7 @@ Every attribute in `Base.AttributePackage`, grouped the same way the Attributes 
 Attributes target serialized fields unless the table says otherwise.
 
 > [!NOTE]
-> Open `Tools > Base Packages > Unity Editor > Project Health > Attributes` and search for any name below.
+> Open `Tools > Base Packages > Project Health > References > Attribute Explorer` and search for any name below.
 
 ## Overview
 

@@ -6,7 +6,7 @@ tags:
   - designer
   - inspector
 summary: One window for everything about the attribute package.
-menu: Tools > Base Packages > Unity Editor > Project Health > Attributes
+menu: Tools > Base Packages > Project Health > References > Attribute Explorer
 ---
 # Attributes Window
 
@@ -14,7 +14,7 @@ menu: Tools > Base Packages > Unity Editor > Project Health > Attributes
 
 **Tags:** #designer #inspector
 
-**Menu:** `Tools > Base Packages > Unity Editor > Project Health > Attributes`
+**Menu:** `Tools > Base Packages > Project Health > References > Attribute Explorer`
 
 ## What it does
 

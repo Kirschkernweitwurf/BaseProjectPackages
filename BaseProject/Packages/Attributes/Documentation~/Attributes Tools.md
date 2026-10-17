@@ -21,7 +21,7 @@ Four editor windows and one switch ship with the Attributes package.
 | [🔧 GetComponent Require Audit](Tools/GetComponent%20Require%20Audit.md) | Finds classes missing a `[RequireComponent]` | Programmers |
 | [🪛 Disable Attribute Inspector](Tools/Disable%20Attribute%20Inspector.md) | Emergency switch back to Unity's own inspector | Everyone |
 
-The last three live under `Tools > Base Packages > Unity Editor > References`. The Attributes window lives under `Tools > Base Packages > Unity Editor > Project Health`.
+The last three live under `Tools > Base Packages > Project Health > References`. The Attributes window lives under `Tools > Base Packages > Project Health`.
 
 > [!NOTE]
 > Menu paths listed on the child pages are defaults. They can be moved with the Menu Item Manager in the Tools package.

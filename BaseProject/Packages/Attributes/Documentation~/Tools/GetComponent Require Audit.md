@@ -6,7 +6,7 @@ tags:
   - programmer
   - inspector
 summary: Finds every field marked with [GetComponent] whose class is missing a matching [RequireComponent].
-menu: Tools > Base Packages > Unity Editor > References > GetComponent Require Audit
+menu: Tools > Base Packages > Project Health > References > GetComponent Require Audit
 ---
 # GetComponent Require Audit
 
@@ -14,7 +14,7 @@ menu: Tools > Base Packages > Unity Editor > References > GetComponent Require A
 
 **Tags:** #programmer #inspector
 
-**Menu:** `Tools > Base Packages > Unity Editor > References > GetComponent Require Audit`
+**Menu:** `Tools > Base Packages > Project Health > References > GetComponent Require Audit`
 
 ## What it does
 

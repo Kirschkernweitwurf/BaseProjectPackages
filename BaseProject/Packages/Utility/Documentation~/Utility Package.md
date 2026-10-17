@@ -25,7 +25,7 @@ All create paths start with `Create > Scriptable Objects >`. IDs are generated a
 
 | Page | What it does | Menu path |
 | --- | --- | --- |
-| [🔧 Custom Log Handler](Tools/Custom%20Log%20Handler.md) | Adds the class name to every `Debug.Log` in the console | `Tools > Base Packages > Unity Editor > Logging > Enable Custom Log Handler` |
+| [🔧 Custom Log Handler](Tools/Custom%20Log%20Handler.md) | Adds the class name to every `Debug.Log` in the console | `Tools > Base Packages > Editor > Custom Log Handler` |
 | [🪛 Documentation Sync](Tools/Documentation%20Sync.md) | Puts the docs of every installed package next to the project docs, so one vault shows everything | `Help > Base Packages Documentation`, **Sync** |
 
 For the code side (collections, logging API, helpers), see the package [README](../README.md).

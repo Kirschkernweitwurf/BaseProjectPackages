@@ -33,7 +33,7 @@ Every component has its own page. [🗳️ Components](Services%20Components.md)
 
 | Page | What it does | Menu path |
 | --- | --- | --- |
-| [🔧 Service Locator Window](Tools/Service%20Locator%20Window.md) | Lists every registered service while the game runs | `Tools > Base Packages > Runtime > Service Locator` |
+| [🔧 Service Locator Window](Tools/Service%20Locator%20Window.md) | Lists every registered service while the game runs | `Tools > Base Packages > Debug > Service Locator` |
 
 ## When something does nothing
 

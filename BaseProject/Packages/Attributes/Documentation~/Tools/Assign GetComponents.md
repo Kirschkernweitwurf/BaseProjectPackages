@@ -7,7 +7,7 @@ tags:
   - artist
   - inspector
 summary: Fills in every empty [GetComponent] and [GetComponentInParent] field across the project in one go.
-menu: Tools > Base Packages > Unity Editor > References > Assign GetComponents
+menu: Tools > Base Packages > Project Health > References > Assign GetComponents
 ---
 # Assign GetComponents
 
@@ -15,7 +15,7 @@ menu: Tools > Base Packages > Unity Editor > References > Assign GetComponents
 
 **Tags:** #designer #artist #inspector
 
-**Menu:** `Tools > Base Packages > Unity Editor > References > Assign GetComponents`
+**Menu:** `Tools > Base Packages > Project Health > References > Assign GetComponents`
 
 ## What it does
 

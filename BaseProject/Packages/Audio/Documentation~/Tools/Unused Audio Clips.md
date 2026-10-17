@@ -14,7 +14,7 @@ summary: Finds audio clips in the project that nothing uses, so you can clean th
 
 **Tags:** #sound #audio #project-health
 
-**Menu path:** `Tools > Base Packages > Assets > Audio > Unused Audio Clips`
+**Menu path:** `Tools > Base Packages > Assets > Unused Audio Clips`
 
 ## What it does
 

@@ -6,7 +6,7 @@ tags:
   - programmer
   - debugging
 summary: Shows the state machines running in Play mode and what each one is doing right now.
-menu: Tools > Base Packages > Gameplay > State Machine Monitor
+menu: Tools > Base Packages > Debug > State Machine Monitor
 ---
 # State Machine Monitor
 
@@ -14,7 +14,7 @@ menu: Tools > Base Packages > Gameplay > State Machine Monitor
 
 **Tags:** #programmer #debugging
 
-**Menu:** `Tools > Base Packages > Gameplay > State Machine Monitor`
+**Menu:** `Tools > Base Packages > Debug > State Machine Monitor`
 
 Shows the state machines running in Play mode and what each one is doing right now.
 

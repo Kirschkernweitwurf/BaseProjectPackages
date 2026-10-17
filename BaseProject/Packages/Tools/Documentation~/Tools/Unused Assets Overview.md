@@ -9,7 +9,7 @@ tags:
   - assets
   - project-health
 summary: Lists assets that nothing in the project seems to reference.
-menu: Tools > Base Packages > Unity Editor > Project Health > Unused > Unused Assets Overview
+menu: Tools > Base Packages > Project Health > Unused > Unused Assets Overview
 ---
 # Unused Assets Overview
 
@@ -17,7 +17,7 @@ menu: Tools > Base Packages > Unity Editor > Project Health > Unused > Unused As
 
 **Tags:** #artist #designer #sound #assets #project-health
 
-**Menu:** `Tools > Base Packages > Unity Editor > Project Health > Unused > Unused Assets Overview`
+**Menu:** `Tools > Base Packages > Project Health > Unused > Unused Assets Overview`
 
 Lists assets that nothing in the project seems to reference.
 

@@ -45,7 +45,7 @@ All create paths start with `Create > Scriptable Objects >`.
 
 | Page | What it does | Menu path |
 | --- | --- | --- |
-| [🪛 Unused Audio Clips](Tools/Unused%20Audio%20Clips.md) | Finds audio clips nothing references and lets you select or delete them | `Tools > Base Packages > Assets > Audio > Unused Audio Clips` |
+| [🪛 Unused Audio Clips](Tools/Unused%20Audio%20Clips.md) | Finds audio clips nothing references and lets you select or delete them | `Tools > Base Packages > Assets > Unused Audio Clips` |
 
 For import settings across all audio files, see [Audio Rules](https://github.com/Kirschkernweitwurf/BaseProjectPackages/blob/main/BaseProject/Packages/Tools/Documentation~/Tools/Audio%20Rules.md) in the Tools package.
 

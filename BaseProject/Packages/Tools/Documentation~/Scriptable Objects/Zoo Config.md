@@ -13,7 +13,7 @@ summary: Describes what the 🪛 Asset Zoo Builder should lay out and how it sho
 
 **Tags:** #artist #assets
 
-**Create:** `Assets > Create > Scriptable Objects > Base > Asset Zoo > New Config`
+**Create:** `Assets > Create > Scriptable Objects > Base > Asset Zoo > New Zoo Config`
 
 **Default file name:** `ZC_ZooConfig`
 

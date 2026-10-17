@@ -73,7 +73,7 @@ Rebuilds only run when you ask for them, so wiring never changes silently. In th
 
 - **Inspector:** Rebuild and Rebuild Scene buttons.
 - **Context menu:** Rebuild Navigation.
-- **Window:** `Tools > Base Packages > Unity Editor > Controller Navigation Groups`.
+- **Window:** `Tools > Base Packages > Editor > Controller Navigation Groups`.
 - **Code:** `group.Rebuild()`.
 
 ## Common mistakes

@@ -14,7 +14,7 @@ summary: "A complete, reusable animation recipe for color changes: image tints, 
 
 **Tags:** #artist #designer #animation
 
-**Menu path:** `Create > Scriptable Objects > Base > Tweening > Profiles > New ColorTweenProfile`
+**Menu path:** `Create > Scriptable Objects > Base > Tweening > Profiles > New Color Profile`
 
 **Default file name:** `TPC_ColorTweenProfile`
 

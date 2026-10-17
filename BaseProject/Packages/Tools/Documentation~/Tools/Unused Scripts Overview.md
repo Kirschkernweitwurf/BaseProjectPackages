@@ -6,7 +6,7 @@ tags:
   - programmer
   - project-health
 summary: Lists script files that nothing in the project seems to reference.
-menu: Tools > Base Packages > Unity Editor > Project Health > Unused > Unused Scripts Overview
+menu: Tools > Base Packages > Project Health > Unused > Unused Scripts Overview
 ---
 # Unused Scripts Overview
 
@@ -14,7 +14,7 @@ menu: Tools > Base Packages > Unity Editor > Project Health > Unused > Unused Sc
 
 **Tags:** #programmer #project-health
 
-**Menu:** `Tools > Base Packages > Unity Editor > Project Health > Unused > Unused Scripts Overview`
+**Menu:** `Tools > Base Packages > Project Health > Unused > Unused Scripts Overview`
 
 Lists script files that nothing in the project seems to reference. Same idea as the [🪛 Unused Assets Overview](Unused%20Assets%20Overview.md), but for code.
 

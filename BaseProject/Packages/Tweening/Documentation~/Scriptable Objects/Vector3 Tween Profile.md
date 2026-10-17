@@ -14,7 +14,7 @@ summary: "A complete, reusable animation recipe for anything with three axes: po
 
 **Tags:** #artist #designer #animation
 
-**Menu path:** `Create > Scriptable Objects > Base > Tweening > Profiles > New Vector3TweenProfile`
+**Menu path:** `Create > Scriptable Objects > Base > Tweening > Profiles > New Vector3 Profile`
 
 **Default file name:** `TPV_Vector3TweenProfile`
 

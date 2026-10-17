@@ -8,6 +8,15 @@ Changes made before 2.0.10 were not recorded.
 
 ## [Unreleased]
 
+### Changed
+
+- The Base Packages menus are reorganized. `Tools > Base Packages` holds Command Palette and Data Hub, then
+  the groups Assets, Code Generation, Project Health, Debug and Editor. Project Health gathers what was split
+  over `Code > Health` and `Unity Editor > Project Health`, toggles sit at the end of Editor, and groups with
+  a single entry are gone. Create menu entries have readable names such as `New Tween Settings`, and the
+  convention configs share one Conventions group. Stale entries for the old Core audio types are removed. Docs
+  pages show the new paths.
+
 ### Fixed
 
 - The Unique ID Validation check mark follows the entry when the Menu Manager moves or renames it. It was set

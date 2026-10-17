@@ -8,7 +8,7 @@ tags:
   - inspector
   - project-health
 summary: Lists every field in the project that is marked as required but is still empty.
-menu: Tools > Base Packages > Unity Editor > References > Required References
+menu: Tools > Base Packages > Project Health > References > Required References
 ---
 # Required References Window
 
@@ -16,7 +16,7 @@ menu: Tools > Base Packages > Unity Editor > References > Required References
 
 **Tags:** #designer #artist #inspector #project-health
 
-**Menu:** `Tools > Base Packages > Unity Editor > References > Required References`
+**Menu:** `Tools > Base Packages > Project Health > References > Required References`
 
 ## What it does
 

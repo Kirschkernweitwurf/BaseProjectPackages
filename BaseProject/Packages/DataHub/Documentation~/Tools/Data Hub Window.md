@@ -6,7 +6,7 @@ tags:
   - data
   - designer
 summary: "Tables of every data asset with inline editing, checks and actions that keep names and lists right."
-menu: Tools > Base Packages > Assets > Data Hub
+menu: Tools > Base Packages > Data Hub
 ---
 # Data Hub Window
 
@@ -14,7 +14,7 @@ menu: Tools > Base Packages > Assets > Data Hub
 
 **Tags:** #data #designer
 
-**Menu:** `Tools > Base Packages > Assets > Data Hub`
+**Menu:** `Tools > Base Packages > Data Hub`
 
 **For:** Designers editing data and programmers checking it
 

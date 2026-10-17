@@ -98,7 +98,7 @@ Persisting those values is the Settings package's job, but the two components th
 
 ## Navigation Groups window
 
-`Tools > Base Packages > Unity Editor > Controller Navigation Groups`
+`Tools > Base Packages > Editor > Controller Navigation Groups`
 
 Lists every `NavigableGroup` in the loaded scenes with its menu, scene, priority and element count. Per row you can jump to a group, rebuild it or fix a missing element. The toolbar rebuilds every group in the loaded scenes or across the whole project; the project rebuild opens every scene, rewires all groups, saves the scenes and rebuilds any prefabs containing groups too.
 

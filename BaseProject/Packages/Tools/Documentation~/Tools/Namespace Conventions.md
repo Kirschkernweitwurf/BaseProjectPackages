@@ -6,7 +6,7 @@ tags:
   - programmer
   - project-health
 summary: "Checks that every script's namespace matches the folder it sits in, and lists the ones that do not."
-menu: Tools > Base Packages > Unity Editor > Project Health > Namespace Conventions
+menu: Tools > Base Packages > Project Health > Namespace Conventions
 ---
 # Namespace Conventions
 
@@ -14,9 +14,9 @@ menu: Tools > Base Packages > Unity Editor > Project Health > Namespace Conventi
 
 **Tags:** #programmer #project-health
 
-**Menu:** `Tools > Base Packages > Unity Editor > Project Health > Namespace Conventions`
+**Menu:** `Tools > Base Packages > Project Health > Namespace Conventions`
 
-**Create:** `Create > Scriptable Objects > Base > Namespace Convention > New Config` (default file name `NCC_NamespaceConventions`)
+**Create:** `Create > Scriptable Objects > Base > Conventions > New Namespace Convention Config` (default file name `NCC_NamespaceConventions`)
 
 Checks that every script's namespace matches the folder it sits in, and lists the ones that do not. The rules live in a config asset, so every project can have its own.
 

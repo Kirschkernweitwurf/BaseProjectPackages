@@ -13,7 +13,7 @@ summary: "Scans the project for every Menu Identifier asset and rebuilds two thi
 
 **Tags:** #designer #menus
 
-**Menu path:** `Tools > Base Packages > Assets > Menu > Regenerate Menu Identifiers`
+**Menu path:** `Tools > Base Packages > Code Generation > Regenerate Menu Identifiers`
 
 ## What it does
 

@@ -6,7 +6,7 @@ tags:
   - artist
   - assets
 summary: Lays out prefabs in the scene in neat rows so you can look at your whole art library at once.
-menu: Tools > Base Packages > Assets > Asset Zoo > Open Zoo Builder
+menu: Tools > Base Packages > Assets > Asset Zoo Builder
 ---
 # Asset Zoo Builder
 
@@ -14,13 +14,13 @@ menu: Tools > Base Packages > Assets > Asset Zoo > Open Zoo Builder
 
 **Tags:** #artist #assets
 
-**Menu:** `Tools > Base Packages > Assets > Asset Zoo > Open Zoo Builder`
+**Menu:** `Tools > Base Packages > Assets > Asset Zoo Builder`
 
 Lays out prefabs in the scene in neat rows so you can look at your whole art library at once. Good for reviews, scale checks and screenshots.
 
 ## How to use it
 
-1. Create a config: `Assets > Create > Scriptable Objects > Base > Asset Zoo > New Config`. See[💌 ZooConfig](../Scriptable%20Objects/Zoo%20Config.md).
+1. Create a config: `Assets > Create > Scriptable Objects > Base > Asset Zoo > New Zoo Config`. See[💌 ZooConfig](../Scriptable%20Objects/Zoo%20Config.md).
 2. Open the window and drop the config into the **Config** field.
 3. Optional: drop a Transform into **Parent** to build the zoo under a specific object.
 4. Set the search folder under **Generation** in the config.

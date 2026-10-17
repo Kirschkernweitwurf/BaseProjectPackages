@@ -6,7 +6,7 @@ tags:
   - programmer
   - code-generation
 summary: Writes a Layers class that contains every layer in the project as a const int, plus a nested Masks class with the matching bit mask values.
-menu: Tools > Base Packages > Code > Generation > Generate Layers
+menu: Tools > Base Packages > Code Generation > Generate Layers
 ---
 # Generate Layers
 
@@ -14,7 +14,7 @@ menu: Tools > Base Packages > Code > Generation > Generate Layers
 
 **Tags:** #programmer #code-generation
 
-**Menu:** `Tools > Base Packages > Code > Generation > Generate Layers`
+**Menu:** `Tools > Base Packages > Code Generation > Generate Layers`
 
 Writes a `Layers` class that contains every layer in the project as a const int, plus a nested `Masks` class with the matching bit mask values.
 

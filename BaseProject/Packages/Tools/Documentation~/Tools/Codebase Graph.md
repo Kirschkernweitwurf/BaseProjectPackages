@@ -6,7 +6,7 @@ tags:
   - programmer
   - project-health
 summary: Reads the compiled code of every assembly in the project and shows what uses what, as a node graph.
-menu: Tools > Base Packages > Code > Health > Codebase Graph
+menu: Tools > Base Packages > Project Health > Codebase Graph
 ---
 # Codebase Graph
 
@@ -14,7 +14,7 @@ menu: Tools > Base Packages > Code > Health > Codebase Graph
 
 **Tags:** #programmer #project-health
 
-**Menu:** `Tools > Base Packages > Code > Health > Codebase Graph`
+**Menu:** `Tools > Base Packages > Project Health > Codebase Graph`
 
 Reads the compiled code of every assembly in the project and shows what uses what, as a node graph. It answers one question: is this code still reachable.
 

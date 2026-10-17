@@ -391,7 +391,7 @@ There is deliberately no paging, no drag toggle and no per-list add or remove sw
 
 ## Attribute Explorer
 
-`Tools > Base Packages > Unity Editor > Project Health > Attributes`
+`Tools > Base Packages > Project Health > References > Attribute Explorer`
 
 One window, three tabs. It is both the documentation and the thing that tells you when an attribute is not doing what it reads like.
 
@@ -427,7 +427,7 @@ The scan is manual rather than continuous, because walking every type in the pro
 ## The other three windows
 
 - **Required Reference Overview** lists every validation issue in the open scenes and on ScriptableObject assets, refreshing live. Scene issues rescan often; asset issues are cached and refreshed on demand.
-- **Assign GetComponents** (`Tools > Base Packages > Unity Editor > References`) fills every empty `[GetComponent]` and `[GetComponentInParent]` field on prefab assets and in the open scenes in one pass, so references resolve without opening each object.
+- **Assign GetComponents** (`Tools > Base Packages > Project Health > References`) fills every empty `[GetComponent]` and `[GetComponentInParent]` field on prefab assets and in the open scenes in one pass, so references resolve without opening each object.
 - **GetComponent Require Audit** (same menu) lists `[GetComponent]` fields whose class is missing a matching `[RequireComponent]`. Each row opens the offending script. `[GetComponentInParent]` is ignored, since the component is not expected on the same object.
 
 ## How it works
@@ -462,7 +462,7 @@ public sealed class EnemyEditor : AttributesPackageEditor
 
 ## Turning the inspector off
 
-`Tools > Base Packages > Attributes > Disable Attribute Inspector` stops the package drawing inspectors without uninstalling it.
+Unchecking `Tools > Base Packages > Editor > Attribute Inspector` stops the package drawing inspectors without uninstalling it.
 
 It exists because of the reach the `[CustomEditor]` registration has. Every `MonoBehaviour` and every `ScriptableObject` in the project goes through this package's inspector, including third-party components that never asked for it, so a fault anywhere in the pipeline shows up everywhere at once. This is the way out that is not a git revert.
 

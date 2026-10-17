@@ -6,7 +6,7 @@ tags:
   - programmer
   - debugging
 summary: "A live list of every service registered while the game runs: its type, the object behind it, where that object lives, and whether it is still usable."
-menu: Tools > Base Packages > Runtime > Service Locator
+menu: Tools > Base Packages > Debug > Service Locator
 ---
 # Service Locator Window
 
@@ -14,7 +14,7 @@ menu: Tools > Base Packages > Runtime > Service Locator
 
 **Tags:** #programmer #debugging
 
-**Menu:** `Tools > Base Packages > Runtime > Service Locator`
+**Menu:** `Tools > Base Packages > Debug > Service Locator`
 
 **For:** Programmers, and anyone debugging a scene that "does nothing"
 

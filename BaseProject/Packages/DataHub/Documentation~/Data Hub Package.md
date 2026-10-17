@@ -18,7 +18,7 @@ One window to see, create, edit and check every data asset of the project, group
 
 | Page | What it does | Menu path |
 | --- | --- | --- |
-| [🔧 Data Hub Window](Tools/Data%20Hub%20Window.md) | Tables of all data assets with inline editing, checks, bulk changes and spreadsheet sync | `Tools > Base Packages > Assets > Data Hub` |
+| [🔧 Data Hub Window](Tools/Data%20Hub%20Window.md) | Tables of all data assets with inline editing, checks, bulk changes and spreadsheet sync | `Tools > Base Packages > Data Hub` |
 
 ## For programmers
 

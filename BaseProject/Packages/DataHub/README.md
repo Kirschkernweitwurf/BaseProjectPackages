@@ -17,7 +17,7 @@ The package knows nothing about any game. A project declares what shows up throu
 
 ## The window
 
-`Tools > Base Packages > Assets > Data Hub`
+`Tools > Base Packages > Data Hub`
 
 - **Type tree** on the left: every registered table and page, nested by path and foldable, with the asset count of each table.
 - **Table** in the middle: one row per asset, one column per serialized field. Nested serializable structs are flattened into one column per field, with the struct name above them. Auto-properties with `[field: SerializeField]` get clean titles. Sort by clicking a header, resize by dragging its edge, search names and values, filter to problems only. The name and check columns stay in place while the rest scrolls sideways.

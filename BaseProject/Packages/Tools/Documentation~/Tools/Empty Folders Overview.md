@@ -9,7 +9,7 @@ tags:
   - assets
   - project-health
 summary: Finds folders with nothing in them and cleans them up.
-menu: Tools > Base Packages > Unity Editor > Project Health > Unused > Empty Folders Overview
+menu: Tools > Base Packages > Project Health > Unused > Empty Folders Overview
 ---
 # Empty Folders Overview
 
@@ -17,7 +17,7 @@ menu: Tools > Base Packages > Unity Editor > Project Health > Unused > Empty Fol
 
 **Tags:** #artist #designer #sound #assets #project-health
 
-**Menu:** `Tools > Base Packages > Unity Editor > Project Health > Unused > Empty Folders Overview`
+**Menu:** `Tools > Base Packages > Project Health > Unused > Empty Folders Overview`
 
 Finds folders with nothing in them and cleans them up. Empty folders are a common source of noise in version control.
 

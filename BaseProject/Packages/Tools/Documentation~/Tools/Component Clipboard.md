@@ -7,7 +7,7 @@ tags:
   - designer
   - workflow
 summary: "Unity's own component clipboard only holds one component at a time."
-menu: Tools > Base Packages > Unity Editor > Component Clipboard
+menu: Tools > Base Packages > Editor > Component Clipboard
 ---
 # Component Clipboard
 
@@ -15,7 +15,7 @@ menu: Tools > Base Packages > Unity Editor > Component Clipboard
 
 **Tags:** #artist #designer #workflow
 
-**Menu:** `Tools > Base Packages > Unity Editor > Component Clipboard`
+**Menu:** `Tools > Base Packages > Editor > Component Clipboard`
 
 Unity's own component clipboard only holds one component at a time. This window holds as many as you want.
 

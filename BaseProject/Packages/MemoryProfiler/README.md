@@ -16,7 +16,7 @@ Snapshots open in Unity's own Memory Profiler window, where a single capture can
 
 ## Setup
 
-Open the window at `Tools > Base Packages > Unity Editor > Memory Profiler Automation`. If no config exists yet, press **Create Config Asset**. It writes `MPC_MemoryProfilerConfig` under `Assets/Resources/MemoryProfilerConfig`, in a Resources folder so it loads at runtime and ships in development builds.
+Open the window at `Tools > Base Packages > Debug > Memory Profiler Automation`. If no config exists yet, press **Create Config Asset**. It writes `MPC_MemoryProfilerConfig` under `Assets/Resources/MemoryProfilerConfig`, in a Resources folder so it loads at runtime and ships in development builds.
 
 ## Configuration
 

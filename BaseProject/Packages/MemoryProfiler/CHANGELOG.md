@@ -8,6 +8,10 @@ Changes made before 1.3.2 were not recorded.
 
 ## [Unreleased]
 
+### Changed
+
+- Docs pages show the menu paths of the reorganized Base Packages menus.
+
 ## [1.3.14] - 2026-10-15
 
 ### Changed

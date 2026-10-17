@@ -8,6 +8,12 @@ Changes made before 1.7.5 were not recorded.
 
 ## [Unreleased]
 
+### Changed
+
+- The inspector switch is called `Attribute Inspector` under `Tools > Base Packages > Editor` and is checked
+  while the inspector is on. It was `Disable Attribute Inspector`, checked while off. Docs pages show the new
+  menu paths.
+
 ## [1.8.12] - 2026-10-15
 
 ### Added

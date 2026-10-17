@@ -47,7 +47,7 @@ The Attributes package's `[Date]` and `[Time]` narrow which fields of the two ro
 
 - **`CustomLogger`** prefixes `Log`, `LogWarning` and `LogError` with the calling class name, colored and bolded. The class name comes from `[CallerFilePath]`, so there is no stack walk, and prefixes are cached per call site.
 - **`CustomLogHandler`** wraps Unity's own log handler so plain `Debug` calls get the same class tag. That one does cost a stack trace lookup per message, so it only resolves callers in the editor and in development builds.
-- **`CustomLogHandlerBootstrap`** installs the handler at startup in a build. In the editor a toggle under `Tools > Base Packages > Unity Editor > Logging > Enable Custom Log Handler` decides, off by default.
+- **`CustomLogHandlerBootstrap`** installs the handler at startup in a build. In the editor a toggle under `Tools > Base Packages > Editor > Custom Log Handler` decides, off by default.
 - **`LogTextFormatter`** and **`EDebugLogColors`** are the rich-text helpers: `Bold`, `Italic`, `Underline`, `Colorize`, `Size` and an editor marker tag.
 - **`CustomLoggingUtils`** derives a stable color from a name, builds the styled `[ClassName]` prefix and returns the edit mode marker.
 

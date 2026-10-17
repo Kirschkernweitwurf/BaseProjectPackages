@@ -6,7 +6,7 @@ tags:
   - programmer
   - workflow
 summary: Lists every asset creation entry (everything that shows up under Assets > Create) in the project, its packages and Unity itself, sorted by menu order.
-menu: Tools > Base Packages > Code > Health > Create Asset Menu Overview
+menu: Tools > Base Packages > Project Health > Create Asset Menu Overview
 ---
 # Create Asset Menu Overview
 
@@ -14,7 +14,7 @@ menu: Tools > Base Packages > Code > Health > Create Asset Menu Overview
 
 **Tags:** #programmer #workflow
 
-**Menu:** `Tools > Base Packages > Code > Health > Create Asset Menu Overview`
+**Menu:** `Tools > Base Packages > Project Health > Create Asset Menu Overview`
 
 Lists every asset creation entry (everything that shows up under **Assets > Create**) in the project, its packages and Unity itself, sorted by menu order.
 

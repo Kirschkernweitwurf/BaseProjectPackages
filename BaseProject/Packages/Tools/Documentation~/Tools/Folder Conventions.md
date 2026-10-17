@@ -9,7 +9,7 @@ tags:
   - assets
   - project-health
 summary: Checks the folder layout of the project against your own rules and lists everything that breaks them.
-menu: Tools > Base Packages > Unity Editor > Project Health > Folder Conventions
+menu: Tools > Base Packages > Project Health > Folder Conventions
 ---
 # Folder Conventions
 
@@ -17,7 +17,7 @@ menu: Tools > Base Packages > Unity Editor > Project Health > Folder Conventions
 
 **Tags:** #artist #designer #sound #assets #project-health
 
-**Menu:** `Tools > Base Packages > Unity Editor > Project Health > Folder Conventions`
+**Menu:** `Tools > Base Packages > Project Health > Folder Conventions`
 
 Checks the folder layout of the project against your own rules and lists everything that breaks them. The rules live in a `FolderConventionConfig` asset, so every project can have its own layout.
 

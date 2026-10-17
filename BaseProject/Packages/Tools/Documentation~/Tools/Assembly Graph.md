@@ -6,7 +6,7 @@ tags:
   - programmer
   - project-health
 summary: Shows every assembly definition in the project as a node graph, with arrows for the references between them.
-menu: Tools > Base Packages > Unity Editor > Project Health > Assembly Graph
+menu: Tools > Base Packages > Project Health > Assembly Graph
 ---
 # Assembly Graph
 
@@ -14,7 +14,7 @@ menu: Tools > Base Packages > Unity Editor > Project Health > Assembly Graph
 
 **Tags:** #programmer #project-health
 
-**Menu:** `Tools > Base Packages > Unity Editor > Project Health > Assembly Graph`
+**Menu:** `Tools > Base Packages > Project Health > Assembly Graph`
 
 Shows every assembly definition in the project as a node graph, with arrows for the references between them.
 

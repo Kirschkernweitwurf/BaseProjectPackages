@@ -6,6 +6,10 @@ All notable changes to this package are recorded here. The format follows
 
 ## [Unreleased]
 
+### Changed
+
+- Docs pages show the menu paths of the reorganized Base Packages menus.
+
 ## [1.1.10] - 2026-10-15
 
 ### Changed

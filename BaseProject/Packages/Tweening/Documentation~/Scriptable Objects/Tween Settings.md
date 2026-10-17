@@ -14,7 +14,7 @@ summary: A shared timing asset.
 
 **Tags:** #artist #designer #animation
 
-**Menu path:** `Create > Scriptable Objects > Base > Tweening > New TweenSettings`
+**Menu path:** `Create > Scriptable Objects > Base > Tweening > New Tween Settings`
 
 **Default file name:** `TS_TweenSettings`
 

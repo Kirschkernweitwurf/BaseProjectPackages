@@ -14,7 +14,7 @@ summary: "A complete, reusable animation recipe for anything driven by a single 
 
 **Tags:** #artist #designer #animation
 
-**Menu path:** `Create > Scriptable Objects > Base > Tweening > Profiles > New FloatTweenProfile`
+**Menu path:** `Create > Scriptable Objects > Base > Tweening > Profiles > New Float Profile`
 
 **Default file name:** `TPF_FloatTweenProfile`
 

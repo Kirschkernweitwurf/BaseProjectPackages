@@ -32,7 +32,7 @@ Every component has its own page. [🗳️ Components](Localization%20Components
 | --- | --- |
 | `Tools > Base Packages > Assets > Localization > Pull All String Tables` | Brings the latest text from Google Sheets into Unity, for every table |
 | `Tools > Base Packages > Assets > Localization > Push All String Tables` | Sends your text from Unity to Google Sheets, for every table. Asks first. |
-| `Tools > Base Packages > Assets > Localization > Open Sync Window` | A small window to pull or push one table at a time |
+| `Tools > Base Packages > Assets > Localization > Sync Window` | A small window to pull or push one table at a time |
 
 In the Sync Window you can:
 

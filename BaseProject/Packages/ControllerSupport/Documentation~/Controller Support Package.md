@@ -16,7 +16,7 @@ summary: Input prompt components (InputDeviceTracker, InputGlyphSet, InputGlyphP
 
 | Tool | Menu path |
 | --- | --- |
-| [🪛 NavigationGroupsWindow](Tools/Navigation%20Groups%20Window.md) | `Tools > Base Packages > Unity Editor > Controller Navigation Groups` |
+| [🪛 NavigationGroupsWindow](Tools/Navigation%20Groups%20Window.md) | `Tools > Base Packages > Editor > Controller Navigation Groups` |
 
 ## Components
 

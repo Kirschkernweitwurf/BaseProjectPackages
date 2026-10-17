@@ -6,7 +6,7 @@ tags:
   - programmer
   - workflow
 summary: A toggle.
-menu: Tools > Base Packages > Unity Editor > Logging > Enable Custom Log Handler
+menu: Tools > Base Packages > Editor > Custom Log Handler
 ---
 # Custom Log Handler
 
@@ -14,7 +14,7 @@ menu: Tools > Base Packages > Unity Editor > Logging > Enable Custom Log Handler
 
 **Tags:** #programmer #workflow
 
-**Menu:** `Tools > Base Packages > Unity Editor > Logging > Enable Custom Log Handler`
+**Menu:** `Tools > Base Packages > Editor > Custom Log Handler`
 
 A toggle. When it is on, plain `Debug.Log`, `Debug.LogWarning` and `Debug.LogError` calls get the same colored `[ClassName]` prefix that `CustomLogger` adds. That makes it easy to see where a message came from.
 

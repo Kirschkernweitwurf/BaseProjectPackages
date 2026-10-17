@@ -8,7 +8,7 @@ tags:
   - sound
   - inspector
 summary: A toggle that stops the Attributes package from drawing inspectors, without uninstalling it.
-menu: Tools > Base Packages > Attributes > Disable Attribute Inspector
+menu: Tools > Base Packages > Editor > Attribute Inspector
 ---
 # Disable Attribute Inspector
 
@@ -16,7 +16,7 @@ menu: Tools > Base Packages > Attributes > Disable Attribute Inspector
 
 **Tags:** #designer #artist #sound #inspector
 
-**Menu:** `Tools > Base Packages > Attributes > Disable Attribute Inspector`
+**Menu:** `Tools > Base Packages > Editor > Attribute Inspector`
 
 **For:** Everyone, as an emergency switch
 
@@ -32,4 +32,4 @@ Titles, foldouts, tabs, horizontal rows, show/hide and enable/disable conditions
 
 ## Good to know
 
-A check mark next to the menu entry shows it is active. Click again to turn the attribute inspector back on.
+The menu entry is checked while the attribute inspector is on. Click it to turn the inspector off, and again to turn it back on.

@@ -6,7 +6,7 @@ tags:
   - programmer
   - project-health
 summary: Finds static fields that are never reset when Play mode starts.
-menu: Tools > Base Packages > Code > Health > Static Reset Checker
+menu: Tools > Base Packages > Project Health > Static Reset Checker
 ---
 # Static Reset Checker
 
@@ -14,7 +14,7 @@ menu: Tools > Base Packages > Code > Health > Static Reset Checker
 
 **Tags:** #programmer #project-health
 
-**Menu:** `Tools > Base Packages > Code > Health > Static Reset Checker`
+**Menu:** `Tools > Base Packages > Project Health > Static Reset Checker`
 
 Finds static fields that are never reset when Play mode starts. This matters when **Reset Domain** is turned off in the Editor settings, because static values then survive between play sessions and cause bugs that only appear on the second run.
 

@@ -6,7 +6,7 @@ tags:
   - programmer
   - project-health
 summary: Lists every script with a custom execution order, sorted by the order that actually wins at runtime.
-menu: Tools > Base Packages > Code > Health > Execution Order Overview
+menu: Tools > Base Packages > Project Health > Execution Order Overview
 ---
 # Execution Order Overview
 
@@ -14,7 +14,7 @@ menu: Tools > Base Packages > Code > Health > Execution Order Overview
 
 **Tags:** #programmer #project-health
 
-**Menu:** `Tools > Base Packages > Code > Health > Execution Order Overview`
+**Menu:** `Tools > Base Packages > Project Health > Execution Order Overview`
 
 Lists every script with a custom execution order, sorted by the order that actually wins at runtime. Handy when script order matters and you need to see the whole picture instead of one entry at a time.
 
