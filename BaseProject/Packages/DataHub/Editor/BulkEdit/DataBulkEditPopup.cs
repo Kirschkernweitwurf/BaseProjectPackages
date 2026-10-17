@@ -28,9 +28,9 @@ namespace Base.DataHubPackage.Editor.BulkEdit
         private const string MaxText = "{0} or less";
         private const string MinMaxFormat = "{0} to {1}";
         private const string MinText = "{0} or more";
-        private const string ModeAddTooltip = "Adds the number to every row. Use a negative number to subtract.";
-        private const string ModeMultiplyTooltip = "Multiplies every row by the number. 1.5 means 50% more.";
-        private const string ModeSetTooltip = "Sets every row to the number.";
+        private const string ModeAddTooltip = "Adds the number to every row. Use a minus to subtract.";
+        private const string ModeMultiplyTooltip = "Multiplies every row. 1.5 means 50% more, 0.5 means half.";
+        private const string ModeSetTooltip = "Sets every row to exactly this number.";
         private const string MoreFormat = "and {0} more";
         private const float MultiplyDefault = 1.5f;
         private const string MultiplyLabel = "Multiply";

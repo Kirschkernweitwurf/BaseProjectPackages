@@ -19,7 +19,7 @@ namespace Base.DataHubPackage.Editor.Lists
         private const string AddTooltip = "Add the picked asset this many times.";
         private const float AmountWidth = 40f;
         private const float CardInset = 8f;
-        private const string CountTooltip = "Entries in this list, copies included.";
+        private const string CountTooltip = "How many entries this list has, copies included.";
         private const string DropLabel = "Drop to add";
         private const string EmptyListText = "Empty. Drop rows here or pick one below.";
         private const string NoListsHint = "This kind of asset holds no lists.";

@@ -10,7 +10,7 @@ namespace Base.DataHubPackage.Editor
     /// </summary>
     internal static class DataHubGui
     {
-        private const string MinusTooltip = "Remove one copy of each selected asset.";
+        private const string MinusTooltip = "Take one copy of each selected asset out.";
         private const string ParentSeparator = " / ";
         private const string PlusTooltip = "Add one copy of each selected asset.";
         private const float SegmentInset = 2f;

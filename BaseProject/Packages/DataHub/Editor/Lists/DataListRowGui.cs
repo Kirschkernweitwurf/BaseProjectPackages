@@ -13,8 +13,8 @@ namespace Base.DataHubPackage.Editor.Lists
     internal static class DataListRowGui
     {
         private const string EmptySlotLabel = "Empty slot";
-        private const string NameTooltip = "Show it in the Project window.";
-        private const string RemoveTooltip = "Remove every copy.";
+        private const string NameTooltip = "Click to find it in the Project window.";
+        private const string RemoveTooltip = "Take every copy out of this list.";
         private const float RowGap = 2f;
         private const float RowInset = 8f;
         private const float StepperInset = 1f;

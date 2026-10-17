@@ -21,6 +21,8 @@ All notable changes to this package are recorded here. The format follows
 
 ### Changed
 
+- Rewrite the tooltips in a friendlier voice that also says what a thing is for, not only what it does. Number
+  columns now mention the right click bulk change, read-only columns where to edit instead.
 - The title subtitle shows only the asset count. The C# type moved into the title tooltip.
 - List cells say "3 entries" instead of "3 items", which read wrong on a list of items.
 - A tool or undo that changes the saved table selection now switches the table right away.

@@ -22,7 +22,7 @@ namespace Base.DataHubPackage.Editor.Lists
         private const string NothingSelectedHint = "Every deck and list that can hold them shows up here.";
         private const string NothingSelectedMessage = "Select one or more rows";
         private const string NotInUseFormat = "Not in use  ({0})";
-        private const string NotInUseTooltip = "Lists that could hold them. Press plus to add.";
+        private const string NotInUseTooltip = "Lists that could hold them too. Press + to add one copy.";
 
         private readonly List<DataListUse> _inUse = new();
         private readonly List<DataListUse> _notInUse = new();
