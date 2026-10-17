@@ -28,6 +28,7 @@ In Obsidian you can also click any tag, or open the Tags pane, to list every pag
 - [🔖 Confirmed Quit Button](Components/Confirmed%20Quit%20Button.md)
 - [🔖 Editor Billboard](Components/Editor%20Billboard.md)
 - [🔖 Load Scene Button](Components/Load%20Scene%20Button.md)
+- [🔖 Menu Tab Button](Components/Menu%20Tab%20Button.md)
 - [🔖 Open Link On Click](Components/Open%20Link%20On%20Click.md)
 - [🔖 Open Menu Button](Components/Open%20Menu%20Button.md)
 - [🔖 Pause Menu Button](Components/Pause%20Menu%20Button.md)
@@ -49,6 +50,7 @@ In Obsidian you can also click any tag, or open the Tags pane, to list every pag
 ### menus
 
 - [🔖 Close Menu Button](Components/Close%20Menu%20Button.md)
+- [🔖 Menu Tab Button](Components/Menu%20Tab%20Button.md)
 - [🔖 Open Menu Button](Components/Open%20Menu%20Button.md)
 - [🔖 Pause Menu Button](Components/Pause%20Menu%20Button.md)
 
@@ -70,6 +72,7 @@ In Obsidian you can also click any tag, or open the Tags pane, to list every pag
 - [🔖 Editor Billboard](Components/Editor%20Billboard.md)
 - [🗞️ FPS Counter](Components/FPS%20Counter.md)
 - [🔖 Load Scene Button](Components/Load%20Scene%20Button.md)
+- [🔖 Menu Tab Button](Components/Menu%20Tab%20Button.md)
 - [🔖 Open Link On Click](Components/Open%20Link%20On%20Click.md)
 - [🔖 Open Menu Button](Components/Open%20Menu%20Button.md)
 - [🔖 Pause Menu Button](Components/Pause%20Menu%20Button.md)

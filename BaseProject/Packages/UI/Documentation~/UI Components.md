@@ -30,6 +30,7 @@ All of these go on a GameObject that already has a Unity **Button** component. T
 | --- | --- |
 | [🔖 Open Menu Button](Components/Open%20Menu%20Button.md) | Opens a menu |
 | [🔖 Close Menu Button](Components/Close%20Menu%20Button.md) | Closes a menu |
+| [🔖 Menu Tab Button](Components/Menu%20Tab%20Button.md) | Switches between the tabs of a menu |
 | [🔖 Pause Menu Button](Components/Pause%20Menu%20Button.md) | Toggles pause and swaps its own icon |
 | [🔖 Load Scene Button](Components/Load%20Scene%20Button.md) | Loads a scene |
 | [🔖 Open Link On Click](Components/Open%20Link%20On%20Click.md) | Opens a website |
@@ -68,6 +69,7 @@ Every component has its own page with all fields. Generated from the code; do no
 | --- | --- | --- |
 | [🔖 Open Menu Button](Components/Open%20Menu%20Button.md) | Opens a menu when the button is clicked. | Everyone |
 | [🔖 Close Menu Button](Components/Close%20Menu%20Button.md) | Closes a menu when the button is clicked. | Everyone |
+| [🔖 Menu Tab Button](Components/Menu%20Tab%20Button.md) | Selects a tab of a Menu Group Module and highlights itself while that tab is open. | Everyone |
 | [🔖 Pause Menu Button](Components/Pause%20Menu%20Button.md) | Opens and closes the pause menu with one button, and swaps the button icon so it always shows the right symbol. | Everyone |
 | [🔖 Load Scene Button](Components/Load%20Scene%20Button.md) | Loads a scene when the button is clicked. | Everyone |
 | [🔖 Open Link On Click](Components/Open%20Link%20On%20Click.md) | Opens a website in the player's browser when the button is clicked. | Everyone |
