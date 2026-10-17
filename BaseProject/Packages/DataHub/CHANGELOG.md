@@ -6,6 +6,8 @@ All notable changes to this package are recorded here. The format follows
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-10-17
+
 ### Added
 
 - `IDataCreateRule.NeedsCollection`: a project can exempt assets from the "Not in collection" problem, like a
