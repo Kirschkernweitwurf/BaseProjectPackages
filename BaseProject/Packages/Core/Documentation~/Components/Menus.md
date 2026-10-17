@@ -40,6 +40,7 @@ Each module does one job. Put them on the **same GameObject** as the Menu; they 
 | [🔖 Menu Time Scale Module](Menu%20Time%20Scale%20Module.md) | slows down or freezes the game |
 | [🔖 Menu Input Map Module](Menu%20Input%20Map%20Module.md) | switches the controls, for example to the UI map |
 | [🔖 Menu Reset Module](Menu%20Reset%20Module.md) | (on close) resets the contents, so it opens fresh |
+| [🔖 Menu Group Module](Menu%20Group%20Module.md) | shows other menus inside it as tabs, one at a time |
 
 If several open menus want different things, the menu with the highest **Priority** wins.
 
@@ -48,7 +49,7 @@ If several open menus want different things, the menu with the highest **Priorit
 | Screen | Usual modules |
 | --- | --- |
 | Pause menu | Cursor, Time Scale (`0`), Input Map, Reset |
-| Settings screen | Cursor, Input Map, Reset |
+| Settings screen | Cursor, Input Map, Reset, Group (for tabs) |
 | HUD popup | Reset, or none |
 | Loading screen | none |
 
@@ -64,5 +65,6 @@ If several open menus want different things, the menu with the highest **Priorit
 
 - Opening and closing are always animated. Without tweens in the Content Root the menu just snaps.
 - A menu can open another menu as a child. Closing the parent closes its children.
+- For tabs (phone apps, settings pages) use a [🔖 Menu Group Module](Menu%20Group%20Module.md) instead of opening the menus by hand.
 - Use `Critical` priority sparingly, for example for a quit confirmation.
 - Gamepad navigation inside a menu comes from the Controller Support package: add a Menu Navigation Module.

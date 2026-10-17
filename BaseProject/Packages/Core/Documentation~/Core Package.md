@@ -36,6 +36,7 @@ Every component has its own page. [🗳️ Components](Core%20Components.md) lis
 | [🔖 Menu Time Scale Module](Components/Menu%20Time%20Scale%20Module.md) | Changes the game speed while the menu is open. | Everyone |
 | [🔖 Menu Input Map Module](Components/Menu%20Input%20Map%20Module.md) | Switches the active controls while the menu is open. | Everyone |
 | [🔖 Menu Reset Module](Components/Menu%20Reset%20Module.md) | Resets the menu's contents when it closes, so it opens fresh. | Everyone |
+| [🔖 Menu Group Module](Components/Menu%20Group%20Module.md) | Shows several menus inside this menu as tabs, one at a time. | Everyone |
 
 ### Helpers
 

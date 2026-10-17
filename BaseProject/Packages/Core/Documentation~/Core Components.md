@@ -15,7 +15,7 @@ Components you add to GameObjects in a scene or prefab. Grouped by area.
 
 | Page | What is in it |
 | --- | --- |
-| [🔖 Menus](Components/Menus.md) | The Menu component, its four modules, Pause Menu and Loading Screen |
+| [🔖 Menus](Components/Menus.md) | The Menu component, its five modules, Pause Menu and Loading Screen |
 | [🔖 Utility](Components/Utility.md) | Activate After Time and Frames, and the tooltip components |
 
 Looking for tweens, sounds or the Bootstrapper? See [Tweening](https://github.com/Kirschkernweitwurf/BaseProjectPackages/blob/main/BaseProject/Packages/Tweening/Documentation~/Components/Tweening.md), [Audio](https://github.com/Kirschkernweitwurf/BaseProjectPackages/blob/main/BaseProject/Packages/Audio/Documentation~/Components/Audio.md) and [Bootstrapper](https://github.com/Kirschkernweitwurf/BaseProjectPackages/blob/main/BaseProject/Packages/Services/Documentation~/Components/Bootstrapper.md).
@@ -43,6 +43,7 @@ Every component has its own page with all fields. Generated from the code; do no
 | [🔖 Menu Time Scale Module](Components/Menu%20Time%20Scale%20Module.md) | Changes the game speed while the menu is open. | Everyone |
 | [🔖 Menu Input Map Module](Components/Menu%20Input%20Map%20Module.md) | Switches the active controls while the menu is open. | Everyone |
 | [🔖 Menu Reset Module](Components/Menu%20Reset%20Module.md) | Resets the menu's contents when it closes, so it opens fresh. | Everyone |
+| [🔖 Menu Group Module](Components/Menu%20Group%20Module.md) | Shows several menus inside this menu as tabs, one at a time. | Everyone |
 
 ### Helpers
 

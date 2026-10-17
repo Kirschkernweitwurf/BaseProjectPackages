@@ -51,6 +51,7 @@ Every screen in the game (pause, settings, inventory, a popup) is a **Menu**. Th
 - [🔖 Menu Time Scale Module](Menu%20Time%20Scale%20Module.md)
 - [🔖 Menu Input Map Module](Menu%20Input%20Map%20Module.md)
 - [🔖 Menu Reset Module](Menu%20Reset%20Module.md)
+- [🔖 Menu Group Module](Menu%20Group%20Module.md)
 - [🔖 Open Menu Button](https://github.com/Kirschkernweitwurf/BaseProjectPackages/blob/main/BaseProject/Packages/UI/Documentation~/Components/Open%20Menu%20Button.md)
 - [🔖 Close Menu Button](https://github.com/Kirschkernweitwurf/BaseProjectPackages/blob/main/BaseProject/Packages/UI/Documentation~/Components/Close%20Menu%20Button.md)
 - [Menu Identifier](../Scriptable%20Objects/Menu%20Identifier.md)

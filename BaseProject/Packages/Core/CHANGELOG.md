@@ -8,6 +8,13 @@ Changes made before 2.1.4 were not recorded.
 
 ## [Unreleased]
 
+### Added
+
+- `MenuGroupModule` shows several menus inside its menu as tabs, one at a time. Opening a tab closes the
+  others, the old tab finishes closing before the new one opens, and Back can return to a default tab first.
+  Groups can be nested, and only the innermost open group reacts to the optional next and previous tab actions.
+- `Menu.IsTransitioning` is public, and the new `Menu.IsClosing` tells a closing menu from an opening one.
+
 ## [4.0.12] - 2026-10-17
 
 ### Changed

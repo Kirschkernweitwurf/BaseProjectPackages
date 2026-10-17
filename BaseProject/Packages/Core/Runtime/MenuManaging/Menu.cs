@@ -58,8 +58,16 @@ namespace Base.CorePackage.MenuManaging
         /// <summary>The root tween group driving this menu's open and close animation.</summary>
         public TweenGroup ContentRoot => contentRoot;
 
-        /// <summary><c>true</c> if the menu is currently transitioning between open and closed states.</summary>
-        protected bool IsTransitioning { get; private set; }
+        /// <summary>
+        /// <c>true</c> if the menu is currently transitioning between open and closed states. A menu ignores
+        /// <see cref="Open"/> and <see cref="Close"/> while it transitions.
+        /// </summary>
+        public bool IsTransitioning { get; private set; }
+
+        /// <summary>
+        /// <c>true</c> while the close animation plays. <see cref="IsOpen"/> stays <c>true</c> until it finished.
+        /// </summary>
+        public bool IsClosing { get; private set; }
 
         private readonly List<MenuIdentifier> _childMenuIdentifiers = new();
 
@@ -187,6 +195,7 @@ namespace Base.CorePackage.MenuManaging
                 return;
 
             IsTransitioning = true;
+            IsClosing = true;
 
             contentRoot.OnFinished -= HandleCloseComplete;
             contentRoot.OnFinished += HandleCloseComplete;
@@ -199,6 +208,7 @@ namespace Base.CorePackage.MenuManaging
                 contentRoot.OnFinished -= HandleCloseComplete;
 
                 IsTransitioning = false;
+                IsClosing = false;
                 IsOpen = false;
 
                 contentRoot.SetVisibility(false);
