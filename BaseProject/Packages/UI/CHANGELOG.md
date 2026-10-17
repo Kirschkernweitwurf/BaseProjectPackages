@@ -8,6 +8,11 @@ Changes made before 1.4.2 were not recorded.
 
 ## [Unreleased]
 
+### Added
+
+- `FpsCounter` has an `Is Shown` checkbox that hides the counter, also while playing, without removing it from
+  the scene.
+
 ## [1.5.8] - 2026-10-15
 
 ### Changed
