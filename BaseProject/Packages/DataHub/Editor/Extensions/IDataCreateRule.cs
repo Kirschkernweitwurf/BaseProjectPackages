@@ -1,4 +1,5 @@
 using System;
+using Object = UnityEngine.Object;
 
 namespace Base.DataHubPackage.Editor.Extensions
 {
@@ -29,5 +30,14 @@ namespace Base.DataHubPackage.Editor.Extensions
 
         /// <summary>Serialized name of the list field on the collection, for example "cards".</summary>
         string CollectionListProperty { get; }
+
+        /// <summary>
+        /// True when <paramref name="asset"/> has to be in the collection, which the check column reports as a
+        /// problem otherwise. Override it for assets that legitimately live elsewhere, like a card that belongs
+        /// to one deck and must stay out of a random pool. True for every asset by default.
+        /// </summary>
+        /// <param name="asset">An asset of <see cref="TargetType"/>.</param>
+        /// <returns>True to require the asset in the collection.</returns>
+        bool NeedsCollection(Object asset) => true;
     }
 }

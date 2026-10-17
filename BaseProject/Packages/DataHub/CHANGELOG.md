@@ -6,6 +6,12 @@ All notable changes to this package are recorded here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- `IDataCreateRule.NeedsCollection`: a project can exempt assets from the "Not in collection" problem, like a
+  card that belongs to one deck and must stay out of a random pool. Every asset still needs its collection by
+  default.
+
 ## [1.1.0] - 2026-10-17
 
 ### Added

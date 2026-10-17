@@ -57,7 +57,9 @@ namespace Base.DataHubPackage.Editor.Validation
 
             IDataCreateRule rule = _registry.FindCreateRule(asset.GetType());
 
-            if (_collections.IsMissingFrom(rule, asset, out Object collection))
+            if (rule != null
+                && rule.NeedsCollection(asset)
+                && _collections.IsMissingFrom(rule, asset, out Object collection))
                 row.Problems.Add(string.Format(NotInCollectionFormat, collection.name));
 
             if (_registry.IsUsageChecked(asset.GetType())
