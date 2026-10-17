@@ -8,6 +8,8 @@ Changes made before 2.0.10 were not recorded.
 
 ## [Unreleased]
 
+## [3.2.0] - 2026-10-17
+
 ### Changed
 
 - The Base Packages menus are reorganized. `Tools > Base Packages` holds Command Palette and Data Hub, then

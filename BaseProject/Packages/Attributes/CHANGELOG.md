@@ -8,6 +8,8 @@ Changes made before 1.7.5 were not recorded.
 
 ## [Unreleased]
 
+## [1.9.0] - 2026-10-17
+
 ### Changed
 
 - The inspector switch is called `Attribute Inspector` under `Tools > Base Packages > Editor` and is checked
