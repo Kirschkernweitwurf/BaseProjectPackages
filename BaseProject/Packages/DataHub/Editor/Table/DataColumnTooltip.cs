@@ -14,28 +14,37 @@ namespace Base.DataHubPackage.Editor.Table
     internal static class DataColumnTooltip
     {
         /// <summary>The tooltip of the check column.</summary>
-        internal const string Check = "Red counts problems, amber counts warnings. Hover a number to read them.";
-
-        /// <summary>The tooltip of a computed column.</summary>
-        internal const string Computed = "Worked out by the project. Read only.";
+        internal const string Check = "A quick health check for every asset.\n"
+            + "A green tick means all good. A red badge counts problems to fix, an amber one things worth a look. "
+            + "Hover a badge to read them.";
 
         /// <summary>The tooltip of the name column.</summary>
-        internal const string Name = "The file name. Double click or press F2 to rename.";
+        internal const string Name = "The asset's file name, as it shows in the Project window.\n"
+            + "Double click or press F2 to rename it. Click the icon to find the file.";
 
         private const string BoolText = "Yes or no";
+        private const string ComputedHint = "Worked out from the asset for you, so it is read only.";
         private const string EnumFormat = "One of {0}";
         private const string FieldFormat = "{0}.";
         private const string FloatText = "A number";
         private const string IntText = "A whole number";
         private const string ListFormat = "A list of {0}";
-        private const string ListHint = "Edit it in the Inspector or Contents tab.";
+        private const string ListHint = "Open the Contents tab on the right to fill it.";
         private const string ListSeparator = ", ";
-        private const string ObjectHint = "Drop an asset on a cell to change it.";
-        private const string ReadOnlyHint = "Edit it in the Inspector tab.";
+        private const string NumberHint = "Click a cell to type a new value. Right click to change many rows at once.";
+        private const string ObjectHint = "Drag an asset from the Project window onto a cell to swap it.";
+        private const string ReadOnlyHint = "Read only here. Change it in the Inspector tab on the right.";
         private const string ReferenceFormat = "A {0}";
         private const string Separator = "\n";
         private const string TextText = "Text";
         private const string ValueFormat = "A {0}";
+
+        /// <summary>The tooltip of a computed column: what it means, then that it is read only.</summary>
+        /// <param name="own">The column's own explanation, or null.</param>
+        /// <returns>The tooltip.</returns>
+        internal static string Computed(string own) => string.IsNullOrEmpty(own)
+            ? ComputedHint
+            : own + Separator + ComputedHint;
 
         /// <summary>The tooltip of a field column.</summary>
         /// <param name="field">The field the column shows.</param>
@@ -56,7 +65,7 @@ namespace Base.DataHubPackage.Editor.Table
                 : text + Separator + hint;
         }
 
-        // Only cells that don't simply edit on click need a hint.
+        // A hint where the cell needs more than a click, or where a hidden power is worth knowing about.
         private static string HintFor(Type type, bool isEditable)
         {
             if (!isEditable)
@@ -66,8 +75,11 @@ namespace Base.DataHubPackage.Editor.Table
                     : ReadOnlyHint;
             }
 
-            return typeof(Object).IsAssignableFrom(type)
-                ? ObjectHint
+            if (typeof(Object).IsAssignableFrom(type))
+                return ObjectHint;
+
+            return DataColumn.IsNumberType(type)
+                ? NumberHint
                 : null;
         }
 

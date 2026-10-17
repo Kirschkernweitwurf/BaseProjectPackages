@@ -19,6 +19,15 @@ namespace Base.DataHubPackage.Editor.Extensions
         int Order { get; }
 
         /// <summary>
+        /// What the column means, in a sentence a designer understands, shown on its title. Null shows only
+        /// the note that the column is read only.
+        /// </summary>
+        string Tooltip => null;
+
+        /// <summary>True when the column holds numbers, so they line up on the right like number fields.</summary>
+        bool IsNumeric => false;
+
+        /// <summary>
         /// The text of the cell for one asset. Numbers are sorted as numbers.
         /// </summary>
         /// <param name="asset">The asset of the row, always of <see cref="TargetType"/>.</param>

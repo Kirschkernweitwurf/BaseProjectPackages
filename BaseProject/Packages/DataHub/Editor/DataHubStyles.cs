@@ -90,6 +90,9 @@ namespace Base.DataHubPackage.Editor
         /// <summary>A number cell, right-aligned so digits line up.</summary>
         internal GUIStyle CellNumber { get; private set; }
 
+        /// <summary>A read-only number cell, dim like other details and right aligned like editable numbers.</summary>
+        internal GUIStyle DetailNumber { get; private set; }
+
         /// <summary>An enum cell: plain text at rest, a field under the mouse. The arrow is drawn by hand.</summary>
         internal GUIStyle CellPopup { get; private set; }
 
@@ -155,6 +158,10 @@ namespace Base.DataHubPackage.Editor
 
             CellText = BuildCellField(EditorStyles.textField, TextAnchor.MiddleLeft);
             CellNumber = BuildCellField(EditorStyles.textField, TextAnchor.MiddleRight);
+            DetailNumber = new GUIStyle(Detail)
+            {
+                alignment = TextAnchor.MiddleRight
+            };
             CellPopup = BuildCellField(EditorStyles.popup, TextAnchor.MiddleLeft);
             StepperNumber = BuildCellField(EditorStyles.textField, TextAnchor.MiddleCenter);
 

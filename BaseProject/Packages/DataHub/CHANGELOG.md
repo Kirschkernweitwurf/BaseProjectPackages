@@ -6,6 +6,25 @@ All notable changes to this package are recorded here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- `IDataFieldText`: shows every field of a type as one read-only text column instead of one column per inner
+  field. A localized string, for example, can show its text instead of a table GUID and a key id. The column is
+  exported to sheets and skipped on import.
+- `IDataTable.IsFieldHidden` and `IDataTable.IsColumnHidden`: a table can leave out base class fields and
+  computed columns that mean nothing for its type. Both default to showing everything, so existing tables
+  need no change.
+- `IDataColumn.Tooltip` and `IDataColumn.IsNumeric`: a computed column can explain itself on its title, and a
+  numeric one lines up on the right in a narrow column like number fields.
+- `IDataTable.Description` and `IDataHubPage.Description`: what the data or page is, shown when hovering the
+  tree entry and the title.
+
+### Changed
+
+- The title subtitle shows only the asset count. The C# type moved into the title tooltip.
+- List cells say "3 entries" instead of "3 items", which read wrong on a list of items.
+- A tool or undo that changes the saved table selection now switches the table right away.
+
 ### Fixed
 
 - Column dividers inside a group no longer cut through the group title, like the middle of "Mood Scores".

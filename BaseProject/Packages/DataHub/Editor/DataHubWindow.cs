@@ -27,17 +27,17 @@ namespace Base.DataHubPackage.Editor
     {
         private const string ActionsLabel = "Actions  \u25BE";
         private const string ActionsMenuPrefix = "Actions/";
-        private const string ActionsTooltip = "Run a button on every selected asset at once.";
+        private const string ActionsTooltip = "Buttons the selected assets offer, run on all of them in one go.";
         private const string AddToCollectionItem = "Add to Collection";
         private const string AdjustAllFormat = "Adjust {0} for All {1} Shown Rows...";
         private const string AdjustOneRowFormat = "Adjust {0}...";
         private const string AdjustRowsFormat = "Adjust {0} for {1} Rows...";
         private const string AdjustSelectedFormat = "Adjust {0} for the {1} Selected Rows...";
         private const string AllFilterFormat = "All  {0}";
-        private const string AllFilterTooltip = "Show all assets.";
+        private const string AllFilterTooltip = "Show every asset in this table.";
         private const string AssetsFormat = "{0} assets";
         private const string ChecksPassedText = "All checks pass";
-        private const string ChecksPassedTooltip = "Nothing here has a problem.";
+        private const string ChecksPassedTooltip = "Every asset here passes its checks. Nice and tidy!";
         private const string ClipboardEmptyText = "The clipboard is empty. Copy the rows in your spreadsheet first.";
         private const string ClipboardSource = "From the clipboard";
         private const string CopiedFormat = "Copied {0} rows. Paste them into a spreadsheet.";
@@ -46,10 +46,11 @@ namespace Base.DataHubPackage.Editor
         private const string CsvExtension = "csv";
         private const string DeleteCommand = "Delete";
         private const string DeleteLabel = "Delete";
-        private const string DeleteTooltip = "Move the selected assets to the trash. Asks first. (Delete)";
+        private const string DeleteTooltip = "Move the selected assets to the trash and take them out of every list. "
+            + "You'll be asked first. (Delete)";
         private const string DuplicateCommand = "Duplicate";
         private const string DuplicateLabel = "Duplicate";
-        private const string DuplicateTooltipFormat = "Make a copy of each selected asset. ({0}+D)";
+        private const string DuplicateTooltipFormat = "Copy each selected asset, ready for you to tweak. ({0}+D)";
         private const string EmptyHintFormat = "Add a class that implements {0} to list a data type here, or {1} "
             + "for a custom page.";
         private const string EmptyTitle = "No data types registered";
@@ -67,45 +68,52 @@ namespace Base.DataHubPackage.Editor
         private const float MaxSearchWidth = 420f;
         private const string MenuPath = "Tools/Base Packages/Assets/Data Hub";
         private const string NewLabel = "New";
-        private const string NewTooltip = "Make a new asset. It lands in the right folder and list on its own.";
+        private const string NewTooltip = "Create a new asset. It gets the right name, folder and list on its own.";
         private const string NoCreatableTypeFormat = "{0} has no concrete type to create.";
         private const string NotAdjustableItem = "Only Number Columns Can Be Adjusted";
         private const string OneAssetText = "1 asset";
         private const string OtherActionKey = "Ctrl";
         private const string PageSubtitle = "Custom page";
-        private const string PageTooltip = "A page made for this project.";
+        private const string PageTooltip = "A custom page built for this project.";
         private const string PasteCommand = "Paste";
         private const string PasteItemFormat = "Paste into Table...  ({0}+V)";
         private const string PingItem = "Ping";
         private const string ProblemsFilterFormat = "Problems  {0}";
-        private const string ProblemsFilterTooltip = "Show only assets with problems.";
+        private const string ProblemsFilterTooltip = "Show only assets that need fixing.";
         private const string ProblemsFormat = "{0} with problems";
-        private const string ProblemsStatusTooltip = "Assets with at least one problem.";
-        private const string RefreshTooltip = "Load everything again. Rarely needed, the hub updates on its own.";
+        private const string ProblemsStatusTooltip = "Assets with at least one problem. Use the Problems filter above "
+            + "to list just those.";
+        private const string RefreshTooltip = "Read everything from disk again. Rarely needed, the hub keeps itself up "
+            + "to date.";
         private const string RenameLabel = "Rename";
-        private const string RenameTooltip = "Rename the selected asset. (F2)";
+        private const string RenameTooltip = "Rename the selected asset. Naming rules like the prefix are applied for "
+            + "you. (F2)";
         private const string ReplaceItem = "Replace Everywhere...";
         private const string SearchControlName = "DataHubSearch";
         private const string SearchPrompt = "Search names and values";
-        private const string SearchTooltip = "Find rows by name or by any value. ({0}+F)";
+        private const string SearchTooltip = "Search by name or by any value in the table, like a mood or a number. "
+            + "({0}+F)";
         private const string SelectAllCommand = "SelectAll";
         private const string SelectedFormat = "  ·  {0} selected";
         private const string SheetDirectoryKey = "Base.DataHubPackage.SheetDirectory";
         private const string SheetLabel = "Sheet  \u25BE";
-        private const string SheetTooltip = "Edit the rows in a spreadsheet and bring the changes back.";
+        private const string SheetTooltip = "Copy the table into a spreadsheet, edit it there and paste it back. You "
+            + "see every change before it is applied.";
         private const string ShowMenuPath = "Assets/Show in Data Hub";
         private const string ShownFormat = "{0} of {1} shown";
-        private const string ShownTooltip = "Rows left after search and filters, and how many are selected.";
+        private const string ShownTooltip = "Rows left after search and filters, and how many you selected.";
         private const string SoftDeleteCommand = "SoftDelete";
         private const string TablesFormat = "{0} tables";
-        private const string TablesTooltip = "Every kind of data in the hub.";
-        private const string TableSubtitleFormat = "{0}  ·  {1}";
+        private const string TablesTooltip = "Every kind of data the hub knows about. Pick one on the left to see it "
+            + "as a table.";
+        private const string TooltipSeparator = "\n\n";
         private const int TreeDivider = 0;
         private const string TreeWidthKey = "Base.DataHubPackage.TreeWidth";
+        private const string TypeTooltipFormat = "Lists assets of type {0}.";
         private const string WarningsFilterFormat = "Warnings  {0}";
-        private const string WarningsFilterTooltip = "Show only assets with warnings.";
+        private const string WarningsFilterTooltip = "Show only assets worth a second look.";
         private const string WarningsFormat = "{0} with warnings";
-        private const string WarningsStatusTooltip = "Assets worth a look, like ones nothing uses yet.";
+        private const string WarningsStatusTooltip = "Assets worth a second look, like ones nothing uses yet.";
         private const string WindowTitle = "Data Hub";
 
         [SerializeField] private EDataPanelTab panelTab;
@@ -330,6 +338,10 @@ namespace Base.DataHubPackage.Editor
 
         private void ApplyPendingWork()
         {
+            // The saved path can change from outside, through undo or a tool writing the window's fields.
+            if (selectedPath != _tree.Selected?.Path)
+                _needsViewSwap = true;
+
             if (_needsRebuild)
             {
                 _index.Rebuild();
@@ -598,7 +610,7 @@ namespace Base.DataHubPackage.Editor
         private void DrawPage(Rect area, Rect header)
         {
             DataHubGui.PaneTitle(header, DataHubIcons.Page, _tree.SelectedParentPath(), _tree.Selected.Label,
-                PageSubtitle, _styles, PageTooltip);
+                PageSubtitle, _styles, _tree.Selected.Page.Description ?? PageTooltip);
 
             float padding = DataHubStyles.PanelPadding;
 
@@ -664,12 +676,16 @@ namespace Base.DataHubPackage.Editor
                 ? OneAssetText
                 : string.Format(AssetsFormat, _view.RowCount);
 
-            string subtitle = string.Format(TableSubtitleFormat, count,
-                ObjectNames.NicifyVariableName(_view.Table.DataType.Name));
+            // The C# type means nothing to a designer, so it moves from the subtitle into the tooltip.
+            string type = string.Format(TypeTooltipFormat, _view.Table.DataType.Name);
+
+            string tooltip = string.IsNullOrEmpty(_view.Table.Description)
+                ? type
+                : _view.Table.Description + TooltipSeparator + type;
 
             DataHubGui.PaneTitle(new Rect(area.x, area.y, Mathf.Max(0f, right - area.x), area.height),
-                DataHubIcons.Of(_view.Table.DataType), _tree.SelectedParentPath(), _tree.Selected.Label, subtitle,
-                _styles);
+                DataHubIcons.Of(_view.Table.DataType), _tree.SelectedParentPath(), _tree.Selected.Label, count,
+                _styles, tooltip);
         }
 
         private void DrawFilterBar(Rect area)

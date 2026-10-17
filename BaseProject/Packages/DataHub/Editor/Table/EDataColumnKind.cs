@@ -15,6 +15,9 @@ namespace Base.DataHubPackage.Editor.Table
         Field = 2,
 
         /// <summary>A computed value from an <see cref="Extensions.IDataColumn"/>. Read only.</summary>
-        Computed = 3
+        Computed = 3,
+
+        /// <summary>One field, shown as text by an <see cref="Extensions.IDataFieldText"/>. Read only.</summary>
+        FieldText = 4
     }
 }

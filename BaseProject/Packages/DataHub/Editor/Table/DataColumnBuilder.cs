@@ -40,8 +40,11 @@ namespace Base.DataHubPackage.Editor.Table
         /// <summary>The columns of a table listing <paramref name="dataType"/>.</summary>
         /// <param name="dataType">The type the table lists.</param>
         /// <param name="computed">The computed columns that apply to the type, in their order.</param>
+        /// <param name="fieldTextFor">The extension that shows a field type as text, or null for none.</param>
+        /// <param name="isFieldHidden">True for a field path the table leaves out.</param>
         /// <returns>The name and check columns, the field columns, then the computed columns.</returns>
-        internal static List<DataColumn> Build(Type dataType, IReadOnlyList<IDataColumn> computed)
+        internal static List<DataColumn> Build(Type dataType, IReadOnlyList<IDataColumn> computed,
+            Func<Type, IDataFieldText> fieldTextFor, Func<string, bool> isFieldHidden)
         {
             List<DataColumn> columns = new()
             {
@@ -56,22 +59,30 @@ namespace Base.DataHubPackage.Editor.Table
                 }
             };
 
-            AddFields(dataType, null, null, 0, columns);
+            AddFields(dataType, null, null, 0, new DataFieldRules(fieldTextFor, isFieldHidden), columns);
 
             foreach (IDataColumn column in computed)
             {
+                float width = column.IsNumeric
+                    ? NumberWidth
+                    : ComputedWidth;
+
                 columns.Add(new DataColumn(EDataColumnKind.Computed, ComputedKeyPrefix + column.GetType().FullName,
-                    column.Header, null, ComputedWidth)
+                    column.Header, null, width)
                 {
                     Computed = column,
-                    Tooltip = DataColumnTooltip.Computed
+                    Alignment = column.IsNumeric
+                        ? TextAnchor.MiddleRight
+                        : TextAnchor.MiddleLeft,
+                    Tooltip = DataColumnTooltip.Computed(column.Tooltip)
                 });
             }
 
             return columns;
         }
 
-        private static void AddFields(Type type, string prefix, string group, int depth, List<DataColumn> columns)
+        private static void AddFields(Type type, string prefix, string group, int depth, DataFieldRules rules,
+            List<DataColumn> columns)
         {
             foreach (FieldInfo field in DataSerializedFields.Of(type))
             {
@@ -79,10 +90,31 @@ namespace Base.DataHubPackage.Editor.Table
                     ? field.Name
                     : prefix + PathSeparator + field.Name;
 
+                if (rules.IsHidden(path))
+                    continue;
+
                 string label = DataColumnLabel.Clean(field.Name);
                 Type fieldType = field.FieldType;
 
                 bool isReference = Attribute.IsDefined(field, typeof(SerializeReference));
+
+                // Checked before flattening: the inner fields of such a type are exactly what it hides.
+                IDataFieldText fieldText = isReference
+                    ? null
+                    : rules.FieldTextFor(fieldType);
+
+                if (fieldText != null)
+                {
+                    columns.Add(new DataColumn(EDataColumnKind.FieldText, path, label, group, StringWidth)
+                    {
+                        PropertyPath = path,
+                        FieldType = fieldType,
+                        FieldText = fieldText,
+                        Tooltip = DataColumnTooltip.Field(field, false)
+                    });
+
+                    continue;
+                }
 
                 if (!isReference
                     && depth < MaxNestingDepth
@@ -92,7 +124,7 @@ namespace Base.DataHubPackage.Editor.Table
                         ? label
                         : group + " " + label;
 
-                    AddFields(fieldType, path, innerGroup, depth + 1, columns);
+                    AddFields(fieldType, path, innerGroup, depth + 1, rules, columns);
                     continue;
                 }
 

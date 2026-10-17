@@ -18,10 +18,10 @@ namespace Base.DataHubPackage.Editor.Table
         private const string DropdownArrow = "▾";
         private const float DropdownArrowWidth = 12f;
         private const string FloatFormat = "0.###";
-        private const string ItemsFormat = "{0} items";
+        private const string ItemsFormat = "{0} entries";
         private const string NoItemsText = "Empty";
         private const string NoneText = "None";
-        private const string OneItemText = "1 item";
+        private const string OneItemText = "1 entry";
         private const float ToggleSize = 14f;
 
         /// <summary>The cell as text, for display, search and sorting.</summary>

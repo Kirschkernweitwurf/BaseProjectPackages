@@ -13,6 +13,11 @@ namespace Base.DataHubPackage.Editor.Extensions
         int Order { get; }
 
         /// <summary>
+        /// What the page is for, shown when hovering the tree entry and the title. Null shows a generic note.
+        /// </summary>
+        string Description => null;
+
+        /// <summary>
         /// Reads the data again. Called when the page is opened and whenever assets in the project change.
         /// </summary>
         void Refresh();

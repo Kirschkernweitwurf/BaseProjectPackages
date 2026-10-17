@@ -51,20 +51,22 @@ namespace Base.DataHubPackage.Editor.Table
             EDataColumnKind.Name => Asset.name,
             EDataColumnKind.Check => Problems.Count.ToString(),
             EDataColumnKind.Field => DataCell.Text(Serialized.FindProperty(column.PropertyPath)),
-            EDataColumnKind.Computed => ComputedText(column),
+            EDataColumnKind.Computed => SafeText(() => column.Computed.GetText(Asset)),
+            EDataColumnKind.FieldText => SafeText(() => column.FieldText.GetText(
+                Serialized.FindProperty(column.PropertyPath))),
             _ => string.Empty
         };
 
         /// <summary>Releases the serialized object.</summary>
         public void Dispose() => Serialized.Dispose();
 
-        // A computed column comes from project code, and one that throws must not break every repaint
-        // of the table. The message lands in the cell, where whoever wrote the column sees it.
-        private string ComputedText(DataColumn column)
+        // Computed and field text columns come from project code, and one that throws must not break every
+        // repaint of the table. The message lands in the cell, where whoever wrote the column sees it.
+        private static string SafeText(Func<string> read)
         {
             try
             {
-                return column.Computed.GetText(Asset);
+                return read();
             }
             catch (Exception exception)
             {

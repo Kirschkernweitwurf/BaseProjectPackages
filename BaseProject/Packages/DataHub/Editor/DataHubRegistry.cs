@@ -15,6 +15,7 @@ namespace Base.DataHubPackage.Editor
     {
         private readonly List<IDataColumn> _columns = new();
         private readonly List<IDataCreateRule> _createRules = new();
+        private readonly List<IDataFieldText> _fieldTexts = new();
         private readonly List<IDataHubPage> _pages = new();
         private readonly List<IDataSummary> _summaries = new();
         private readonly List<IDataTable> _tables = new();
@@ -35,6 +36,7 @@ namespace Base.DataHubPackage.Editor
         {
             Collect(_columns);
             Collect(_createRules);
+            Collect(_fieldTexts);
             Collect(_pages);
             Collect(_summaries);
             Collect(_tables);
@@ -55,6 +57,20 @@ namespace Base.DataHubPackage.Editor
                 if (IsTarget(column.TargetType, tableType))
                     columns.Add(column);
             }
+        }
+
+        /// <summary>The extension that shows fields of <paramref name="fieldType"/> as text, or null.</summary>
+        /// <param name="fieldType">The declared type of a serialized field.</param>
+        /// <returns>The first matching extension, or null.</returns>
+        internal IDataFieldText FieldTextFor(Type fieldType)
+        {
+            foreach (IDataFieldText fieldText in _fieldTexts)
+            {
+                if (IsTarget(fieldText.FieldType, fieldType))
+                    return fieldText;
+            }
+
+            return null;
         }
 
         /// <summary>Appends the summaries that describe assets of <paramref name="assetType"/>.</summary>

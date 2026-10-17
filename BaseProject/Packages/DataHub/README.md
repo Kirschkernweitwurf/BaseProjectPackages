@@ -38,8 +38,9 @@ All in `Base.DataHubPackage.Editor.Extensions`. Each implementation needs a para
 
 | Interface | Purpose |
 |---|---|
-| `IDataTable` | A data type listed as a table, at a path in the tree. An abstract type lists every derived type with the shared columns. |
-| `IDataColumn` | A computed, read-only column for a type and its derived types. |
+| `IDataTable` | A data type listed as a table, at a path in the tree. An abstract type lists every derived type with the shared columns. Override `IsFieldHidden` or `IsColumnHidden` to leave out columns that mean nothing for the type, and `Description` to tell a designer what the data is. |
+| `IDataColumn` | A computed, read-only column for a type and its derived types. Give it a `Tooltip` that says what it means, and `IsNumeric` for numbers. |
+| `IDataFieldText` | Shows every field of a type as one read-only text column instead of one column per inner field, for example a localized string as its text. Exported to sheets, never imported. |
 | `IDataValidator` | A project check. Problems show as a red badge. |
 | `IDataCreateRule` | Folder, start name and collection list for new assets of a type. The most specific rule wins. |
 | `IDataHubPage` | A whole custom page in the tree, drawn with GUILayout. |

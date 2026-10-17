@@ -19,8 +19,8 @@ namespace Base.DataHubPackage.Editor
 
         private const string CollapsedKeyFormat = "Base.DataHubPackage.Collapsed.{0}";
         private const float FoldoutWidth = 14f;
-        private const string GroupTooltip = "Click to fold or unfold.";
-        private const string PageTooltip = "A page made for this project.";
+        private const string GroupTooltip = "A group of tables. Click the arrow to fold or unfold it.";
+        private const string PageTooltip = "A custom page built for this project.";
         private const float RowGap = 1f;
         private const float TopPadding = 6f;
 
@@ -199,13 +199,13 @@ namespace Base.DataHubPackage.Editor
 
         private static string TooltipOf(DataHubTreeNode node)
         {
-            // A table needs no tooltip, its name and count say it all.
             if (node.Table != null)
-                return string.Empty;
+                return node.Table.Description ?? string.Empty;
 
-            return node.Page != null
-                ? PageTooltip
-                : GroupTooltip;
+            if (node.Page != null)
+                return node.Page.Description ?? PageTooltip;
+
+            return GroupTooltip;
         }
 
         private static Texture IconOf(DataHubTreeNode node)

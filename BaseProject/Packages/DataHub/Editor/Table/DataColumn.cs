@@ -56,6 +56,9 @@ namespace Base.DataHubPackage.Editor.Table
         /// <summary>The extension behind a computed column.</summary>
         internal IDataColumn Computed { get; set; }
 
+        /// <summary>The extension that turns the field of a field text column into text.</summary>
+        internal IDataFieldText FieldText { get; set; }
+
         /// <summary>True when the user dragged this column before, so its width is theirs and not measured.</summary>
         internal bool HasSavedWidth { get; set; }
 

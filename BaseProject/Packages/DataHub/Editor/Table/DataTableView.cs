@@ -17,13 +17,13 @@ namespace Base.DataHubPackage.Editor.Table
     /// </summary>
     internal sealed class DataTableView
     {
-        private const string AlsoWarningsFormat = "\n\nWorth a look:\n{0}";
+        private const string AlsoWarningsFormat = "\n\nAlso worth a second look:\n{0}";
         private const string ClearFilterLabel = "Clear filters";
         private const string CreateFirstFormat = "New {0}";
         private const string DragManyFormat = "{0} assets";
         private const string EditUndoFormat = "Edit {0}";
         private const float EmptyButtonGap = 12f;
-        private const string EmptyHint = "Create the first one to start filling the table.";
+        private const string EmptyHint = "Press New to create the first one and fill the table.";
         private const string EmptyMessage = "No assets of this type yet";
         private const float FrozenShadowAlpha = 0.18f;
         private const float FrozenShadowWidth = 4f;
@@ -31,9 +31,9 @@ namespace Base.DataHubPackage.Editor.Table
         private const string NoMatchMessage = "Nothing matches";
         private const int NoRow = -1;
         private const float OkIconAlpha = 0.55f;
-        private const string OkTooltip = "All good.";
-        private const string PingTooltip = "Show the asset in the Project window.";
-        private const string WarningsTooltipFormat = "Worth a look:\n{0}";
+        private const string OkTooltip = "All good, nothing to fix here.";
+        private const string PingTooltip = "Click to find this asset in the Project window.";
+        private const string WarningsTooltipFormat = "Worth a second look:\n{0}";
         private const float WheelStep = 20f;
 
         private readonly DataTableColumns _columns;
@@ -64,8 +64,10 @@ namespace Base.DataHubPackage.Editor.Table
 
             List<IDataColumn> computed = new();
             registry.CollectColumns(table.DataType, computed);
+            computed.RemoveAll(column => table.IsColumnHidden(column.GetType()));
 
-            _columns = new DataTableColumns(table.DataType.FullName, DataColumnBuilder.Build(table.DataType, computed));
+            _columns = new DataTableColumns(table.DataType.FullName,
+                DataColumnBuilder.Build(table.DataType, computed, registry.FieldTextFor, table.IsFieldHidden));
         }
 
         /// <summary>The table entry this view shows.</summary>
@@ -649,8 +651,14 @@ namespace Base.DataHubPackage.Editor.Table
                     break;
 
                 case EDataColumnKind.Computed:
+                case EDataColumnKind.FieldText:
                     string text = row.CellText(column);
-                    GUI.Label(cell, new GUIContent(text, text), styles.Detail);
+
+                    GUIStyle detail = column.Alignment == TextAnchor.MiddleRight
+                        ? styles.DetailNumber
+                        : styles.Detail;
+
+                    GUI.Label(cell, new GUIContent(text, text), detail);
 
                     break;
             }

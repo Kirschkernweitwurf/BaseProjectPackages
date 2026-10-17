@@ -28,6 +28,7 @@ What shows up in the window is declared by the project, one class per entry. The
 | --- | --- |
 | `IDataTable` | A type as a table in the tree |
 | `IDataColumn` | A computed column |
+| `IDataFieldText` | One readable text column for a field type, like a localized string |
 | `IDataValidator` | A check that turns the badge red |
 | `IDataUsageCheck` | An amber warning for assets nothing uses yet |
 | `IDataCreateRule` | Folder, start name and collection for new assets |

@@ -23,5 +23,24 @@ namespace Base.DataHubPackage.Editor.Extensions
 
         /// <summary>Position among its siblings in the tree. Lower comes first.</summary>
         int Order { get; }
+
+        /// <summary>
+        /// What this data is, for someone new to the project, shown when hovering the tree entry and the
+        /// title. Null shows nothing.
+        /// </summary>
+        string Description => null;
+
+        /// <summary>
+        /// True for a serialized field this table leaves out, like a base class field that means nothing for
+        /// the listed type. Shows every field by default.
+        /// </summary>
+        /// <param name="fieldPath">The property path of the field, for example "description".</param>
+        /// <returns>True to hide the column.</returns>
+        bool IsFieldHidden(string fieldPath) => false;
+
+        /// <summary>True for a computed column this table leaves out. Shows every column by default.</summary>
+        /// <param name="columnType">The type of the <see cref="IDataColumn"/>.</param>
+        /// <returns>True to hide the column.</returns>
+        bool IsColumnHidden(Type columnType) => false;
     }
 }
