@@ -120,7 +120,12 @@ namespace Base.DataHubPackage.Editor.Table
 
                 DataColumn column = _columns[i];
                 float left = ScreenLeft(i, scrollX);
-                EEditorDividerAction action = _dividers.Handle(i, left + column.Width, header, out float mouseX);
+                Rect area = IsInsideGroup(i)
+                    ? new Rect(header.x, header.y + EditorTableStyles.HeaderHeight, header.width,
+                        Mathf.Max(0f, header.height - EditorTableStyles.HeaderHeight))
+                    : header;
+
+                EEditorDividerAction action = _dividers.Handle(i, left + column.Width, area, out float mouseX);
 
                 if (action != EEditorDividerAction.None)
                     column.Width = Mathf.Max(MinColumnWidth, mouseX - left);
@@ -161,6 +166,11 @@ namespace Base.DataHubPackage.Editor.Table
         // A scrolled column whose edge slid under the frozen ones cannot be grabbed there.
         private bool IsDividerShown(int index, float scrollX) => IsFrozen(index)
             || ScreenLeft(index, scrollX) + _columns[index].Width > FrozenWidth;
+
+        // A divider between two columns of one struct stops below the group title, which it would cut in half.
+        private bool IsInsideGroup(int index) => index + 1 < _columns.Count
+            && _columns[index].Group != null
+            && _columns[index].Group == _columns[index + 1].Group;
 
         private string WidthKey(DataColumn column) => string.Format(WidthKeyFormat, _tableKey, column.Key);
     }

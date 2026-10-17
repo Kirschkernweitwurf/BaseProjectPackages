@@ -6,6 +6,10 @@ All notable changes to this package are recorded here. The format follows
 
 ## [Unreleased]
 
+### Fixed
+
+- Column dividers inside a group no longer cut through the group title, like the middle of "Mood Scores".
+
 ## [1.0.3] - 2026-10-16
 
 ### Changed
