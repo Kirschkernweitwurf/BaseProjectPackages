@@ -6,6 +6,11 @@ All notable changes to this package are recorded here. The format follows
 
 ## [Unreleased]
 
+### Changed
+
+- The Used In tab calls its sections "Already in" and "Could also go into". "Not in use" read as if the
+  selected asset was unused, while it listed the decks it could still join.
+
 ## [1.2.0] - 2026-10-17
 
 ### Added
