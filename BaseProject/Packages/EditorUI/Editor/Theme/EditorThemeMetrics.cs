@@ -15,6 +15,8 @@ namespace Base.EditorUIPackage.Editor
     [Serializable]
     public sealed class EditorThemeMetrics
     {
+        private const float HalfFactor = 0.5f;
+
         [SerializeField] [Min(0f)] private float badgeHeight;
         [SerializeField] [Min(0f)] private float badgePadding;
         [SerializeField] [Min(1)] private int descriptionFontSize;
@@ -66,8 +68,13 @@ namespace Base.EditorUIPackage.Editor
         /// <summary>Gap between two controls that belong together.</summary>
         public float ItemGap => itemGap;
 
-        /// <summary>Corner radius of a pill or a status badge.</summary>
-        public int PillCornerRadius => Mathf.Max(0, pillCornerRadius);
+        /// <summary>
+        /// Corner radius of a pill or a status badge, capped at half the lower of the two heights. A larger
+        /// radius makes the top and bottom of the nine-sliced background overlap, and a see-through badge
+        /// color then shows a brighter band through its middle.
+        /// </summary>
+        public int PillCornerRadius => Mathf.Clamp(pillCornerRadius, 0,
+            Mathf.FloorToInt(Mathf.Min(badgeHeight, pillHeight) * HalfFactor));
 
         /// <summary>Height of a pill.</summary>
         public float PillHeight => pillHeight;

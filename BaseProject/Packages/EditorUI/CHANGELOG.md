@@ -8,6 +8,12 @@ Changes made before 1.1.3 were not recorded.
 
 ## [Unreleased]
 
+### Fixed
+
+- A pill corner radius larger than half the badge or pill height no longer shows a brighter band through
+  the middle of a see-through badge. The radius is capped at half the lower height, which affected the
+  Amber preset with its radius of 9 on 16 pixel badges.
+
 ## [1.2.6] - 2026-10-15
 
 ### Changed
