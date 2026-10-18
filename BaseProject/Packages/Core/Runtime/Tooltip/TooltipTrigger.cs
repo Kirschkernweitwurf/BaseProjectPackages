@@ -13,12 +13,15 @@ namespace Base.CorePackage.Tooltip
     /// Shows a tooltip while the pointer hovers this GameObject: the text set in the inspector, followed by the
     /// panels of every <see cref="ITooltipProvider"/> on the same GameObject. Requests go through the
     /// <see cref="TooltipService"/>, so overlapping triggers resolve by priority. A pointer that drags something
-    /// across the object shows nothing, so tooltips never cover a drop target. Objects with hover rules of their own,
+    /// across the object shows nothing, so tooltips never cover a drop target. Selecting the object with a gamepad or
+    /// the keyboard shows the tooltip beside it, so menus explain themselves without a mouse. Objects with hover
+    /// rules of their own,
     /// like cards that ignore the pointer while another card is dragged, turn the pointer hover off and call
     /// <see cref="Show"/> and <see cref="Hide"/> themselves.
     /// </summary>
     [DisallowMultipleComponent]
-    public class TooltipTrigger : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+    public class TooltipTrigger : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, ISelectHandler,
+        IDeselectHandler
     {
         [Tooltip("Header above the text. Optional.")]
         [SerializeField] private string tooltipTitle;
@@ -37,13 +40,15 @@ namespace Base.CorePackage.Tooltip
             + "Empty uses this object.")]
         [SerializeField] private Transform anchor;
 
-        [Tooltip("Shows the tooltip while the pointer hovers this object. Off when a script calls Show and Hide.")]
+        [Tooltip("Shows the tooltip while the pointer hovers or a gamepad selects this object. Off when a script "
+            + "calls Show and Hide.")]
         [SerializeField] private bool showOnHover = true;
 
         private readonly List<TooltipEntry> _entries = new();
 
         private ITooltipProvider[] _providers;
         private TooltipService _service;
+        private bool _isSelected;
 
 #region Unity Callbacks
         private void Awake()
@@ -71,6 +76,27 @@ namespace Base.CorePackage.Tooltip
         /// <inheritdoc/>
         public void OnPointerExit(PointerEventData eventData)
         {
+            if (!showOnHover)
+                return;
+
+            HideTooltip();
+        }
+
+        /// <inheritdoc/>
+        public void OnSelect(BaseEventData eventData)
+        {
+            if (!showOnHover)
+                return;
+
+            _isSelected = true;
+            ShowTooltip();
+        }
+
+        /// <inheritdoc/>
+        public void OnDeselect(BaseEventData eventData)
+        {
+            _isSelected = false;
+
             if (!showOnHover)
                 return;
 
@@ -153,10 +179,11 @@ namespace Base.CorePackage.Tooltip
                 provider.CollectEntries(_entries);
         }
 
-        // Without a mouse, a gamepad for example, there is no cursor to go by, so the tooltip goes beside the object.
+        // A selected object, or one without a mouse around, has no cursor to go by, so the tooltip goes beside it.
         private Func<Rect> BuildAnchor()
         {
             if (placement == ETooltipPlacement.AtCursor
+                && !_isSelected
                 && Mouse.current != null)
                 return () => TooltipAnchor.AtPoint(Mouse.current.position.ReadValue());
 
