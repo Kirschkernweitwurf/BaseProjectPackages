@@ -24,6 +24,7 @@ On a GameObject in your UI, usually next to the text field it writes into.
 
 | Field | Required | What it does |
 | --- | --- | --- |
+| Is Shown | No  | On by default. Off hides the counter, also while playing, and stops measuring until it is on again. |
 | Show In Release Builds | No  | Off by default. Off means it hides itself in the finished game and only shows in the Editor and test builds. |
 | Fps Text | Yes | The text field it writes into. |
 
@@ -31,4 +32,5 @@ On a GameObject in your UI, usually next to the text field it writes into.
 
 - The text field must be **TextMeshPro**.
 - The number updates twice a second so it stays readable instead of flickering.
+- To hide the counter for a while, untick **Is Shown** instead of turning off the object. One click brings it back.
 - Leave **Show In Release Builds** off unless you have a reason. Nothing to clean up before shipping then.

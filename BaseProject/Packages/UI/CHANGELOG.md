@@ -8,6 +8,10 @@ Changes made before 1.4.2 were not recorded.
 
 ## [Unreleased]
 
+### Changed
+
+- Docs pages describe the FPS counter's Is Shown toggle and that closing a confirmation with Back cancels it.
+
 ### Added
 
 - `MenuTabButton` selects a tab of a `MenuGroupModule` and turns on an optional indicator while its tab is

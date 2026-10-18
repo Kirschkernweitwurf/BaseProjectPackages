@@ -30,3 +30,7 @@ On the root GameObject of your confirmation popup, in the same place you would p
 | Cancel Button Text | Yes | Text field inside the cancel button. |
 | Default Confirm Text | No  | Used when a button does not set its own label. Default: `Confirm`. |
 | Default Cancel Text | No  | Used when a button does not set its own label. Default: `Cancel`. |
+
+## Good to know
+
+- Closing the popup without a choice, for example with Back, counts as **Cancel**.
