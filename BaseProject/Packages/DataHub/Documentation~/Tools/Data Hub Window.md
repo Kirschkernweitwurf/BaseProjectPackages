@@ -87,8 +87,8 @@ On a Mac use Cmd instead of Ctrl.
   - Pick an asset in the last line, type how many and press **Add**.
   - You can also drag rows from the table onto a list.
   - Some kinds show a live summary at the top, like the balance of a deck.
-- **Used In:** select one or more rows. You see every deck and list that holds them, and below that every one
-  that could.
+- **Used In:** select one or more rows. **Already in** lists every deck and list that holds them, **Could also
+  go into** every one that could take them too.
   - **+** adds one of each selected asset, **-** removes one, a typed number sets the count.
   - A dash means the selected rows are in that list a different number of times.
 
@@ -106,7 +106,8 @@ Hover the number to read what is wrong. The common ones:
 
 - **A required field is empty**, for example a card without a name.
 - **Not in ...** means the asset is missing from the list it belongs in. Right click the row and pick
-  **Add to Collection**.
+  **Add to Collection**. A project can let some assets stay out, like a card that belongs to one deck and
+  must not show up in a random pool.
 - **Not used anywhere yet** is a warning: the asset is only in its list, no deck or scene uses it.
 - Projects add their own checks, for example a deck that holds a card too often.
 

@@ -6,6 +6,11 @@ All notable changes to this package are recorded here. The format follows
 
 ## [Unreleased]
 
+### Changed
+
+- Docs pages use the new Used In section names and explain that create rules can keep assets out of a
+  collection.
+
 ## [1.3.1] - 2026-10-17
 
 ### Changed

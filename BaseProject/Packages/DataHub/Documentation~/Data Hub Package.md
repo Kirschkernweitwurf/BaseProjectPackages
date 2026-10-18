@@ -31,7 +31,7 @@ What shows up in the window is declared by the project, one class per entry. The
 | `IDataFieldText` | One readable text column for a field type, like a localized string |
 | `IDataValidator` | A check that turns the badge red |
 | `IDataUsageCheck` | An amber warning for assets nothing uses yet |
-| `IDataCreateRule` | Folder, start name and collection for new assets |
+| `IDataCreateRule` | Folder, start name and collection for new assets, and which assets may stay out of it |
 | `IDataHubPage` | A whole custom page, like a balancing overview |
 | `IDataSummary` | A live summary at the top of the Contents tab, like the balance of a deck |
 
