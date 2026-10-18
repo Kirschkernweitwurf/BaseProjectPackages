@@ -4,7 +4,7 @@ namespace Base.CorePackage.Tooltip
 {
     /// <summary>
     /// Measures the screen rect a tooltip is placed beside: the rect of a UI element, or the projected bounds of a
-    /// 3D object's collider or renderer.
+    /// 3D object's renderers, children included, or of its collider.
     /// </summary>
     internal static class TooltipAnchor
     {
@@ -29,11 +29,11 @@ namespace Base.CorePackage.Tooltip
             if (target is RectTransform rectTransform)
                 return OfRectTransform(rectTransform);
 
+            if (TryGetRendererBounds(target, out Bounds bounds))
+                return OfBounds(bounds);
+
             if (target.TryGetComponent(out Collider collider))
                 return OfBounds(collider.bounds);
-
-            if (target.TryGetComponent(out Renderer renderer))
-                return OfBounds(renderer.bounds);
 
             return ScreenCenter();
         }
@@ -42,10 +42,7 @@ namespace Base.CorePackage.Tooltip
 
         private static Rect OfRectTransform(RectTransform target)
         {
-            Canvas canvas = target.GetComponentInParent<Canvas>();
-            Camera camera = canvas == null || canvas.rootCanvas.renderMode == RenderMode.ScreenSpaceOverlay
-                ? null
-                : canvas.rootCanvas.worldCamera;
+            Camera camera = CameraOf(target.GetComponentInParent<Canvas>());
 
             target.GetWorldCorners(RectCorners);
             Vector2 min = RectTransformUtility.WorldToScreenPoint(camera, RectCorners[0]);
@@ -59,6 +56,42 @@ namespace Base.CorePackage.Tooltip
             }
 
             return Rect.MinMaxRect(min.x, min.y, max.x, max.y);
+        }
+
+        // A world space canvas often has no camera of its own, then the main camera shows it.
+        private static Camera CameraOf(Canvas canvas)
+        {
+            if (canvas == null
+                || canvas.rootCanvas.renderMode == RenderMode.ScreenSpaceOverlay)
+                return null;
+
+            Camera camera = canvas.rootCanvas.worldCamera;
+
+            return camera == null
+                ? Camera.main
+                : camera;
+        }
+
+        // Every visible renderer counts, so a model built from several meshes is measured as a whole.
+        private static bool TryGetRendererBounds(Transform target, out Bounds bounds)
+        {
+            bounds = default;
+            bool hasBounds = false;
+
+            foreach (Renderer renderer in target.GetComponentsInChildren<Renderer>())
+            {
+                if (!renderer.enabled)
+                    continue;
+
+                if (!hasBounds)
+                    bounds = renderer.bounds;
+                else
+                    bounds.Encapsulate(renderer.bounds);
+
+                hasBounds = true;
+            }
+
+            return hasBounds;
         }
 
         private static Rect OfBounds(Bounds bounds)

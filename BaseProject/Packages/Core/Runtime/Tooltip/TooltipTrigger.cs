@@ -13,7 +13,9 @@ namespace Base.CorePackage.Tooltip
     /// Shows a tooltip while the pointer hovers this GameObject: the text set in the inspector, followed by the
     /// panels of every <see cref="ITooltipProvider"/> on the same GameObject. Requests go through the
     /// <see cref="TooltipService"/>, so overlapping triggers resolve by priority. A pointer that drags something
-    /// across the object shows nothing, so tooltips never cover a drop target.
+    /// across the object shows nothing, so tooltips never cover a drop target. Objects with hover rules of their own,
+    /// like cards that ignore the pointer while another card is dragged, turn the pointer hover off and call
+    /// <see cref="Show"/> and <see cref="Hide"/> themselves.
     /// </summary>
     [DisallowMultipleComponent]
     public class TooltipTrigger : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
@@ -30,6 +32,13 @@ namespace Base.CorePackage.Tooltip
 
         [Tooltip("Next to the cursor, or beside this object so the panels line up next to what they explain.")]
         [SerializeField] private ETooltipPlacement placement;
+
+        [Tooltip("What Beside Target places the tooltip next to, for example the visible part of a wide element. "
+            + "Empty uses this object.")]
+        [SerializeField] private Transform anchor;
+
+        [Tooltip("Shows the tooltip while the pointer hovers this object. Off when a script calls Show and Hide.")]
+        [SerializeField] private bool showOnHover = true;
 
         private readonly List<TooltipEntry> _entries = new();
 
@@ -52,15 +61,35 @@ namespace Base.CorePackage.Tooltip
         /// <inheritdoc/>
         public void OnPointerEnter(PointerEventData eventData)
         {
-            if (eventData != null
-                && eventData.dragging)
+            if (!showOnHover
+                || (eventData != null && eventData.dragging))
                 return;
 
             ShowTooltip();
         }
 
         /// <inheritdoc/>
-        public void OnPointerExit(PointerEventData eventData) => HideTooltip();
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            if (!showOnHover)
+                return;
+
+            HideTooltip();
+        }
+
+        /// <summary>
+        /// Shows the tooltip until <see cref="Hide"/> is called, for objects that decide about hover themselves.
+        /// </summary>
+        public void Show()
+        {
+            if (HasActiveTooltip())
+                return;
+
+            ShowTooltip();
+        }
+
+        /// <summary>Hides the tooltip shown by <see cref="Show"/> or by the pointer.</summary>
+        public void Hide() => HideTooltip();
 
         /// <summary>
         /// Replaces the tooltip text and refreshes the tooltip when it is currently visible.
@@ -131,7 +160,11 @@ namespace Base.CorePackage.Tooltip
                 && Mouse.current != null)
                 return () => TooltipAnchor.AtPoint(Mouse.current.position.ReadValue());
 
-            return () => TooltipAnchor.Of(transform);
+            Transform target = anchor == null
+                ? transform
+                : anchor;
+
+            return () => TooltipAnchor.Of(target);
         }
 
         /// <summary>
