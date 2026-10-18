@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Base.ServicesPackage;
 using Base.ServicesPackage.Tracking;
@@ -11,7 +12,8 @@ namespace Base.CorePackage.Tooltip
     /// <summary>
     /// Shows a tooltip while the pointer hovers this GameObject: the text set in the inspector, followed by the
     /// panels of every <see cref="ITooltipProvider"/> on the same GameObject. Requests go through the
-    /// <see cref="TooltipService"/>, so overlapping triggers resolve by priority.
+    /// <see cref="TooltipService"/>, so overlapping triggers resolve by priority. A pointer that drags something
+    /// across the object shows nothing, so tooltips never cover a drop target.
     /// </summary>
     [DisallowMultipleComponent]
     public class TooltipTrigger : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
@@ -25,6 +27,9 @@ namespace Base.CorePackage.Tooltip
 
         [Tooltip("Higher wins when several tooltips are requested at the same time.")]
         [SerializeField] private EPriority priority;
+
+        [Tooltip("Next to the cursor, or beside this object so the panels line up next to what they explain.")]
+        [SerializeField] private ETooltipPlacement placement;
 
         private readonly List<TooltipEntry> _entries = new();
 
@@ -45,7 +50,14 @@ namespace Base.CorePackage.Tooltip
 #endregion
 
         /// <inheritdoc/>
-        public void OnPointerEnter(PointerEventData eventData) => ShowTooltip();
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            if (eventData != null
+                && eventData.dragging)
+                return;
+
+            ShowTooltip();
+        }
 
         /// <inheritdoc/>
         public void OnPointerExit(PointerEventData eventData) => HideTooltip();
@@ -97,14 +109,7 @@ namespace Base.CorePackage.Tooltip
                 return;
             }
 
-            if (Mouse.current == null)
-            {
-                CustomLogger.LogWarning("Cannot show the tooltip, no mouse is available.", this);
-                return;
-            }
-
-            TooltipData data = new(_entries, getScreenPosition: () => Mouse.current.position.ReadValue());
-            _service.AddTooltip(data, (uint)priority, this);
+            _service.AddTooltip(new TooltipData(_entries, BuildAnchor()), (uint)priority, this);
         }
 
         // The inspector text comes first, so a provider can add details below a fixed description.
@@ -117,6 +122,16 @@ namespace Base.CorePackage.Tooltip
 
             foreach (ITooltipProvider provider in _providers)
                 provider.CollectEntries(_entries);
+        }
+
+        // Without a mouse, a gamepad for example, there is no cursor to follow, so the tooltip goes beside the object.
+        private Func<Rect> BuildAnchor()
+        {
+            if (placement == ETooltipPlacement.FollowCursor
+                && Mouse.current != null)
+                return () => TooltipAnchor.AtPoint(Mouse.current.position.ReadValue());
+
+            return () => TooltipAnchor.Of(transform);
         }
 
         /// <summary>

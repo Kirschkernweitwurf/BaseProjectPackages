@@ -30,6 +30,7 @@ Shows a tooltip while the pointer hovers this object and hides it when the point
 | **Tooltip Title** | Text |  | Header above the text. Optional. |
 | **Tooltip Text** | Text |  | The text to show. Several lines are fine. Optional when a provider adds the content. |
 | **Priority** | Priority |  | When several tooltips overlap, the highest priority wins. |
+| **Placement** | Tooltip Placement | Follow Cursor | Next to the cursor, or beside this object so the panels line up next to what they explain. |
 
 ## Good to know
 
@@ -38,6 +39,8 @@ Shows a tooltip while the pointer hovers this object and hides it when the point
 - Text may use TextMeshPro rich text, including `<sprite name="...">` icons when the panel's text has a sprite asset.
 - Code can call **Refresh** to rebuild a visible tooltip after its content changed, for example a countdown.
 - If the object is disabled while hovered, the tooltip hides itself.
+- Dragging something across the object shows no tooltip, so tooltips never cover a drop target.
+- Without a mouse, Follow Cursor falls back to Beside Target. Beside Target measures UI elements by their rect and 3D objects by their collider or renderer.
 
 ## Related
 

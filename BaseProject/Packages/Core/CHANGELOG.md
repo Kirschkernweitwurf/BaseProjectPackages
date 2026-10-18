@@ -18,11 +18,21 @@ Changes made before 2.1.4 were not recorded.
   and the new `TooltipPanel`. Texts grow up to a maximum width and wrap after that.
 - `ITooltipProvider` lets components add tooltip panels built at hover time, and `TooltipTrigger.Refresh`
   rebuilds a visible tooltip. `TooltipTrigger` has an optional title.
+- `TooltipTrigger.Placement` puts the tooltip beside the hovered object instead of the cursor, for UI elements
+  and 3D objects. Follow Cursor falls back to it without a mouse.
+- `TooltipView` waits a short delay and fades in, but shows the next tooltip at once when one just hid.
 
 ### Changed
 
 - BREAKING: `TooltipView` draws `TooltipPanel`s instead of one text. Replace its Text Element with a Panel
   Template, and read `TooltipData.Entries` instead of the removed `TooltipData.Message`.
+- BREAKING: `TooltipData.GetScreenPosition` is now `TooltipData.GetScreenAnchor`, a screen rect. The
+  constructors that take a position still work.
+
+### Fixed
+
+- A tooltip never takes the pointer, so it can no longer flicker by covering the object it explains.
+- Dragging something across a `TooltipTrigger` no longer shows its tooltip.
 
 ## [4.0.12] - 2026-10-17
 
