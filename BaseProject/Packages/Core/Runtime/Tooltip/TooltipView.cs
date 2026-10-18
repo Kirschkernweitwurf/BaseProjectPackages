@@ -11,10 +11,12 @@ namespace Base.CorePackage.Tooltip
 {
     /// <summary>
     /// Draws the tooltip beside its anchor, the cursor or the hovered object, without ever letting it leave the
-    /// screen. Every <see cref="TooltipEntry"/> gets its own <see cref="TooltipPanel"/>, copied from the first one,
-    /// so the content's layout group decides whether they stack or line up side by side. A tooltip fades in after a
-    /// short delay, so sweeping the pointer across the screen stays calm, but moving straight on to the next
-    /// tooltip shows it at once. The tooltip never takes the pointer, so it cannot flicker by covering its anchor.
+    /// screen. The spot is picked while the tooltip waits to appear and then kept, so a tooltip never wanders when
+    /// its anchor moves on screen, for example a 3D object under a camera that follows the pointer. Every
+    /// <see cref="TooltipEntry"/> gets its own <see cref="TooltipPanel"/>, copied from the first one, so the
+    /// content's layout group decides whether they stack or line up side by side. A tooltip fades in after a short
+    /// delay, so sweeping the pointer across the screen stays calm, but moving straight on to the next tooltip
+    /// shows it at once. The tooltip never takes the pointer, so it cannot flicker by covering its anchor.
     /// Registers itself with the <see cref="TooltipService"/> on start.
     /// </summary>
     [DisallowMultipleComponent]
@@ -92,8 +94,8 @@ namespace Base.CorePackage.Tooltip
 #endregion
 
         /// <summary>
-        /// Shows the tooltip beside the anchor supplied by the data and keeps following it. Waits for the show delay
-        /// first, unless a tooltip is visible or just hid.
+        /// Shows the tooltip beside the anchor supplied by the data and keeps it at that spot. Waits for the show
+        /// delay first, unless a tooltip is visible or just hid.
         /// </summary>
         /// <param name="data">Panels and screen anchor to show.</param>
         public void Show(TooltipData data)
@@ -121,11 +123,11 @@ namespace Base.CorePackage.Tooltip
             LayoutRebuilder.ForceRebuildLayoutImmediate(tooltipRect);
 
             StopShowing();
-            _showRoutine = StartCoroutine(ShowAndFollow(isWarm));
+            _showRoutine = StartCoroutine(Appear(isWarm));
         }
 
         /// <summary>
-        /// Hides the tooltip and stops following its anchor.
+        /// Hides the tooltip.
         /// </summary>
         public void Hide()
         {
@@ -192,41 +194,40 @@ namespace Base.CorePackage.Tooltip
         }
 
         /// <summary>
-        /// Waits and fades in unless <paramref name="isWarm"/>, then repositions the tooltip every frame for as
-        /// long as it stays visible. It is placed from the first frame on, so it never pops in at an old spot.
+        /// Places the tooltip and shows it, after the delay and fade unless <paramref name="isWarm"/>. The spot is
+        /// picked once and kept while visible, so the tooltip only moves when it is shown again.
         /// </summary>
-        private IEnumerator ShowAndFollow(bool isWarm)
+        private IEnumerator Appear(bool isWarm)
         {
             if (!isWarm)
                 yield return WaitAndFadeIn();
+            else
+                PlaceTooltip();
 
             _contentGroup.alpha = Opaque;
             _isVisible = true;
-
-            while (_getScreenAnchor != null)
-            {
-                PlaceTooltip();
-                yield return null;
-            }
+            _showRoutine = null;
         }
 
+        // Placed every frame while still invisible, so the tooltip appears where its anchor has settled, for
+        // example after a hover pop, and then stays put while it fades in.
         private IEnumerator WaitAndFadeIn()
         {
             _contentGroup.alpha = Transparent;
             float fadeStart = Time.unscaledTime + showDelay;
 
-            while (Time.unscaledTime < fadeStart)
+            do
             {
                 PlaceTooltip();
                 yield return null;
             }
+            while (Time.unscaledTime < fadeStart);
 
             float elapsed = Time.unscaledTime - fadeStart;
 
             while (elapsed < fadeDuration)
             {
                 _contentGroup.alpha = elapsed / fadeDuration;
-                PlaceTooltip();
                 yield return null;
 
                 elapsed = Time.unscaledTime - fadeStart;

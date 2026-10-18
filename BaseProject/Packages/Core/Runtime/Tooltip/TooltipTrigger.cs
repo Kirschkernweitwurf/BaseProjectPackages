@@ -153,10 +153,10 @@ namespace Base.CorePackage.Tooltip
                 provider.CollectEntries(_entries);
         }
 
-        // Without a mouse, a gamepad for example, there is no cursor to follow, so the tooltip goes beside the object.
+        // Without a mouse, a gamepad for example, there is no cursor to go by, so the tooltip goes beside the object.
         private Func<Rect> BuildAnchor()
         {
-            if (placement == ETooltipPlacement.FollowCursor
+            if (placement == ETooltipPlacement.AtCursor
                 && Mouse.current != null)
                 return () => TooltipAnchor.AtPoint(Mouse.current.position.ReadValue());
 

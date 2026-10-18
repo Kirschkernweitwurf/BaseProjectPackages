@@ -19,9 +19,10 @@ Changes made before 2.1.4 were not recorded.
 - `ITooltipProvider` lets components add tooltip panels built at hover time, and `TooltipTrigger.Refresh`
   rebuilds a visible tooltip. `TooltipTrigger` has an optional title.
 - `TooltipTrigger.Placement` puts the tooltip beside the hovered object instead of the cursor, for UI elements
-  and 3D objects. Follow Cursor falls back to it without a mouse. `TooltipTrigger.Anchor` picks another object to
+  and 3D objects. At Cursor falls back to it without a mouse. `TooltipTrigger.Anchor` picks another object to
   place it beside, and `Show On Hover` off with `Show` and `Hide` lets scripts with their own hover rules drive it.
-- `TooltipView` waits a short delay and fades in, but shows the next tooltip at once when one just hid.
+- `TooltipView` waits a short delay and fades in, but shows the next tooltip at once when one just hid. It
+  picks its spot while appearing and keeps it, so it no longer wanders when its anchor moves on screen.
 
 ### Changed
 
