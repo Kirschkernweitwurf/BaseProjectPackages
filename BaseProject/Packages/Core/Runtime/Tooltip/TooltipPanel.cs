@@ -13,6 +13,8 @@ namespace Base.CorePackage.Tooltip
     [DisallowMultipleComponent]
     public class TooltipPanel : MonoBehaviour
     {
+        private const float UnsetWidth = -1f;
+
         [Title("Settings")]
         [Min(0f)]
         [Tooltip("Widest a text gets before it wraps, in canvas units.")]
@@ -46,7 +48,8 @@ namespace Base.CorePackage.Tooltip
 
         /// <summary>
         /// Caps the width the layout gives <paramref name="text"/>. Without a cap a long text would grow into
-        /// one endless line, since a fitted layout asks every text for its unwrapped width.
+        /// one endless line, since a fitted layout asks every text for its unwrapped width. A text that fits keeps
+        /// the width the layout measures itself, because copying the measured value can wrap its last letter.
         /// </summary>
         private static void LimitWidth(TMP_Text text, float maxWidth)
         {
@@ -54,7 +57,9 @@ namespace Base.CorePackage.Tooltip
                 layout = text.gameObject.AddComponent<LayoutElement>();
 
             float preferred = text.GetPreferredValues(text.text, float.PositiveInfinity, float.PositiveInfinity).x;
-            layout.preferredWidth = Mathf.Min(preferred, maxWidth);
+            layout.preferredWidth = preferred > maxWidth
+                ? maxWidth
+                : UnsetWidth;
         }
 
         private bool ShowText(TMP_Text text, string content)
