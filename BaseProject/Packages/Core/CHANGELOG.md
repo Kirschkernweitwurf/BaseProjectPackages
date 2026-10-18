@@ -8,6 +8,8 @@ Changes made before 2.1.4 were not recorded.
 
 ## [Unreleased]
 
+## [5.0.0] - 2026-10-18
+
 ### Added
 
 - `MenuGroupModule` shows several menus inside its menu as tabs, one at a time. Opening a tab closes the
