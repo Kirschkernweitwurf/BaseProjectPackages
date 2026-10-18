@@ -1,16 +1,18 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Base.AttributesPackage;
 using Base.ServicesPackage;
 using Base.UtilityPackage.Logging;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Base.CorePackage.Tooltip
 {
     /// <summary>
-    /// Draws the tooltip and keeps it next to the cursor without ever letting it leave the screen.
+    /// Draws the tooltip and keeps it next to the cursor without ever letting it leave the screen. Every
+    /// <see cref="TooltipEntry"/> gets its own <see cref="TooltipPanel"/>, copied from the first one, so the
+    /// content's layout group decides whether they stack or line up side by side.
     /// Registers itself with the <see cref="TooltipService"/> on start.
     /// </summary>
     [DisallowMultipleComponent]
@@ -33,8 +35,8 @@ namespace Base.CorePackage.Tooltip
         [Tooltip("Content GameObject that holds the tooltip visuals.")]
         [Required] [SerializeField] private GameObject content;
 
-        [Tooltip("Text element that shows the message.")]
-        [Required] [SerializeField] private TextMeshProUGUI textElement;
+        [Tooltip("First panel inside the content. Further entries get copies of it, next to it.")]
+        [Required] [SerializeField] private TooltipPanel panelTemplate;
 
         [Tooltip("RectTransform used for positioning, the rect of the content object.")]
         [Required] [SerializeField] private RectTransform tooltipRect;
@@ -43,6 +45,7 @@ namespace Base.CorePackage.Tooltip
         [GetComponentInParent] [SerializeField] private Canvas canvas;
 
         private readonly Vector3[] _corners = new Vector3[CornerCount];
+        private readonly List<TooltipPanel> _panels = new();
 
         private Coroutine _followRoutine;
         private Func<Vector2> _getScreenPosition;
@@ -50,6 +53,8 @@ namespace Base.CorePackage.Tooltip
 #region Unity Callbacks
         private void Start()
         {
+            _panels.Add(panelTemplate);
+
             if (ServiceLocator.TryGet(out TooltipService service))
                 service.SetView(this);
 
@@ -60,7 +65,7 @@ namespace Base.CorePackage.Tooltip
         /// <summary>
         /// Shows the tooltip and starts following the position supplied by the data.
         /// </summary>
-        /// <param name="data">Message and screen position to show.</param>
+        /// <param name="data">Panels and screen position to show.</param>
         public void Show(TooltipData data)
         {
             if (data.GetScreenPosition == null)
@@ -69,9 +74,16 @@ namespace Base.CorePackage.Tooltip
                 return;
             }
 
+            if (data.Entries == null
+                || data.Entries.Count == 0)
+            {
+                CustomLogger.LogError($"{nameof(Show)} was called without entries.", this);
+                return;
+            }
+
             _getScreenPosition = data.GetScreenPosition;
-            textElement.text = data.Message;
             content.SetActive(true);
+            ShowEntries(data.Entries);
 
             // Apply the size fitter now, so the very first placement already uses the final size.
             LayoutRebuilder.ForceRebuildLayoutImmediate(tooltipRect);
@@ -95,6 +107,34 @@ namespace Base.CorePackage.Tooltip
 
             content.SetActive(false);
             _getScreenPosition = null;
+        }
+
+        /// <summary>
+        /// Fills one panel per entry and hides the panels left over from a bigger tooltip before.
+        /// </summary>
+        private void ShowEntries(IReadOnlyList<TooltipEntry> entries)
+        {
+            for (int i = 0; i < entries.Count; i++)
+            {
+                TooltipPanel panel = PanelAt(i);
+                panel.gameObject.SetActive(true);
+                panel.Show(entries[i]);
+            }
+
+            for (int i = entries.Count; i < _panels.Count; i++)
+                _panels[i].gameObject.SetActive(false);
+        }
+
+        /// <summary>
+        /// The panel for the entry at <paramref name="index"/>, copied from the template the first time it is
+        /// needed and reused after that.
+        /// </summary>
+        private TooltipPanel PanelAt(int index)
+        {
+            while (_panels.Count <= index)
+                _panels.Add(Instantiate(panelTemplate, panelTemplate.transform.parent));
+
+            return _panels[index];
         }
 
         /// <summary>

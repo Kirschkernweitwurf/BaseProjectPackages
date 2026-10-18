@@ -21,7 +21,7 @@ Small helpers that solve one problem each, plus the services in Core that most o
 | --- | --- |
 | Show something after a few seconds | [🔖 Activate After Time](Activate%20After%20Time.md) |
 | Hide a one-frame layout glitch | [🔖 Activate After Frames](Activate%20After%20Frames.md) |
-| A tooltip on hover | [🔖 Tooltip Trigger](Tooltip%20Trigger.md), plus one [🔖 Tooltip View](Tooltip%20View.md) in the UI |
+| A tooltip on hover | [🔖 Tooltip Trigger](Tooltip%20Trigger.md), plus one [🔖 Tooltip View](Tooltip%20View.md) with a [🔖 Tooltip Panel](Tooltip%20Panel.md) in the UI |
 
 ## Services on the manager prefabs
 

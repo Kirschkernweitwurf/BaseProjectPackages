@@ -14,6 +14,15 @@ Changes made before 2.1.4 were not recorded.
   others, the old tab finishes closing before the new one opens, and Back can return to a default tab first.
   Groups can be nested, and only the innermost open group reacts to the optional next and previous tab actions.
 - `Menu.IsTransitioning` is public, and the new `Menu.IsClosing` tells a closing menu from an opening one.
+- Tooltips show several panels at once, each with an optional icon, title and text, through `TooltipEntry`
+  and the new `TooltipPanel`. Texts grow up to a maximum width and wrap after that.
+- `ITooltipProvider` lets components add tooltip panels built at hover time, and `TooltipTrigger.Refresh`
+  rebuilds a visible tooltip. `TooltipTrigger` has an optional title.
+
+### Changed
+
+- BREAKING: `TooltipView` draws `TooltipPanel`s instead of one text. Replace its Text Element with a Panel
+  Template, and read `TooltipData.Entries` instead of the removed `TooltipData.Message`.
 
 ## [4.0.12] - 2026-10-17
 

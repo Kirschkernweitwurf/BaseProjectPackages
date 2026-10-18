@@ -75,7 +75,7 @@ A finite state machine over an arbitrary context object. The machine does not ti
 
 ### Tooltip
 
-`TooltipService` shows the highest-priority requested tooltip, `TooltipTrigger` requests one while its GameObject is hovered, and `TooltipView` keeps it next to the cursor without letting it leave the screen.
+`TooltipService` shows the highest-priority requested tooltip, `TooltipTrigger` requests one while its GameObject is hovered, and `TooltipView` keeps it next to the cursor without letting it leave the screen. A tooltip is a row of `TooltipPanel`s, each with an optional icon, title and text, and `ITooltipProvider` components add panels built at hover time.
 
 ### Camera and raycasting
 

@@ -1,4 +1,4 @@
-using Base.AttributesPackage;
+using System.Collections.Generic;
 using Base.ServicesPackage;
 using Base.ServicesPackage.Tracking;
 using Base.UtilityPackage.Logging;
@@ -9,24 +9,33 @@ using UnityEngine.InputSystem;
 namespace Base.CorePackage.Tooltip
 {
     /// <summary>
-    /// Shows a tooltip while the pointer hovers this GameObject.
-    /// Requests go through the <see cref="TooltipService"/>, so overlapping triggers resolve by priority.
+    /// Shows a tooltip while the pointer hovers this GameObject: the text set in the inspector, followed by the
+    /// panels of every <see cref="ITooltipProvider"/> on the same GameObject. Requests go through the
+    /// <see cref="TooltipService"/>, so overlapping triggers resolve by priority.
     /// </summary>
     [DisallowMultipleComponent]
     public class TooltipTrigger : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
-        [Tooltip("Text shown while this GameObject is hovered.")]
-        [NotNullOrEmpty] [TextArea]
+        [Tooltip("Header above the text. Optional.")]
+        [SerializeField] private string tooltipTitle;
+
+        [Tooltip("Text shown while this GameObject is hovered. Optional when a provider on it adds the content.")]
+        [TextArea]
         [SerializeField] private string tooltipText;
 
         [Tooltip("Higher wins when several tooltips are requested at the same time.")]
         [SerializeField] private EPriority priority;
 
+        private readonly List<TooltipEntry> _entries = new();
+
+        private ITooltipProvider[] _providers;
         private TooltipService _service;
 
 #region Unity Callbacks
         private void Awake()
         {
+            _providers = GetComponents<ITooltipProvider>();
+
             // TryGet logs on its own. Disabling keeps a missing service from repeating that error on every hover.
             if (!ServiceLocator.TryGet(out _service))
                 enabled = false;
@@ -54,7 +63,15 @@ namespace Base.CorePackage.Tooltip
             }
 
             tooltipText = newText;
+            Refresh();
+        }
 
+        /// <summary>
+        /// Builds the visible tooltip again, for providers whose content changed while it is hovered. Does nothing
+        /// while the tooltip is hidden, since it is built fresh on the next hover anyway.
+        /// </summary>
+        public void Refresh()
+        {
             if (!HasActiveTooltip())
                 return;
 
@@ -70,9 +87,12 @@ namespace Base.CorePackage.Tooltip
             if (_service == null)
                 return;
 
-            if (string.IsNullOrEmpty(tooltipText))
+            CollectEntries();
+
+            if (_entries.Count == 0)
             {
-                CustomLogger.LogWarning($"{nameof(TooltipTrigger)} on '{gameObject.name}' has no tooltip text.", this);
+                CustomLogger.LogWarning($"{nameof(TooltipTrigger)} on '{gameObject.name}' has no tooltip content.",
+                    this);
 
                 return;
             }
@@ -83,8 +103,20 @@ namespace Base.CorePackage.Tooltip
                 return;
             }
 
-            TooltipData data = new(tooltipText, getScreenPosition: () => Mouse.current.position.ReadValue());
+            TooltipData data = new(_entries, getScreenPosition: () => Mouse.current.position.ReadValue());
             _service.AddTooltip(data, (uint)priority, this);
+        }
+
+        // The inspector text comes first, so a provider can add details below a fixed description.
+        private void CollectEntries()
+        {
+            _entries.Clear();
+
+            if (!string.IsNullOrEmpty(tooltipText))
+                _entries.Add(new TooltipEntry(tooltipTitle, tooltipText));
+
+            foreach (ITooltipProvider provider in _providers)
+                provider.CollectEntries(_entries);
         }
 
         /// <summary>

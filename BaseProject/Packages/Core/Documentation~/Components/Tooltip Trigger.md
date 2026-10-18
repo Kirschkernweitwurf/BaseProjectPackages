@@ -13,31 +13,35 @@ summary: Shows a tooltip while the pointer hovers this object.
 
 **Tags:** #designer #ui
 
-Shows a tooltip while the pointer hovers this object and hides it when the pointer leaves.
+Shows a tooltip while the pointer hovers this object and hides it when the pointer leaves. The tooltip shows the text written here first, then the panels of every tooltip provider on the same GameObject. Providers are scripts that build their text at hover time, for live values or translated text.
 
 **Add it:** Inspector › **Add Component** › search `Tooltip Trigger`. Only one per GameObject.
 
 ## How to use it
 
 1. Add it to the UI element or object that should explain itself.
-2. Write the **Tooltip Text**.
+2. Write the **Tooltip Text**, or add a component that provides the content.
 3. Make sure the UI has one **Tooltip View**.
 
 ## Fields
 
 | Field | Type | Default | What it does |
 | --- | --- | --- | --- |
-| **Tooltip Text** | Text |  | **Required.** The text to show. Several lines are fine. |
+| **Tooltip Title** | Text |  | Header above the text. Optional. |
+| **Tooltip Text** | Text |  | The text to show. Several lines are fine. Optional when a provider adds the content. |
 | **Priority** | Priority |  | When several tooltips overlap, the highest priority wins. |
 
 ## Good to know
 
 - Needs a Graphic with **Raycast Target** on and an Event System in the scene.
-- An empty text logs a warning and shows nothing.
+- A trigger without text and without provider content logs a warning and shows nothing.
+- Text may use TextMeshPro rich text, including `<sprite name="...">` icons when the panel's text has a sprite asset.
+- Code can call **Refresh** to rebuild a visible tooltip after its content changed, for example a countdown.
 - If the object is disabled while hovered, the tooltip hides itself.
 
 ## Related
 
 - [🔖 Tooltip View](Tooltip%20View.md)
+- [🔖 Tooltip Panel](Tooltip%20Panel.md)
 - [🗞️ Tooltip Service](Tooltip%20Service.md)
 - [📖 Core utility guide](Utility.md)

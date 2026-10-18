@@ -51,8 +51,9 @@ Every component has its own page with all fields. Generated from the code; do no
 | --- | --- | --- |
 | [🔖 Activate After Time](Components/Activate%20After%20Time.md) | Turns a GameObject on after a delay in seconds. | Everyone |
 | [🔖 Activate After Frames](Components/Activate%20After%20Frames.md) | Turns a GameObject on after a number of frames. | Everyone |
+| [🔖 Tooltip Panel](Components/Tooltip%20Panel.md) | Draws one tooltip panel: icon, title and text. | Everyone |
 | [🔖 Tooltip Trigger](Components/Tooltip%20Trigger.md) | Shows a tooltip while the pointer hovers this object. | Everyone |
-| [🔖 Tooltip View](Components/Tooltip%20View.md) | Draws the tooltip next to the cursor and keeps it on screen. | Everyone |
+| [🔖 Tooltip View](Components/Tooltip%20View.md) | Draws the tooltip panels next to the cursor and keeps them on screen. | Everyone |
 
 ### Services and managers
 
