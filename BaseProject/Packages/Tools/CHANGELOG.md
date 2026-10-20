@@ -8,6 +8,8 @@ Changes made before 2.0.10 were not recorded.
 
 ## [Unreleased]
 
+## [3.3.0] - 2026-10-20
+
 ### Added
 
 - `LightingProfileApplier` keeps its profile in sync with its scene: every save and bake of the active scene
