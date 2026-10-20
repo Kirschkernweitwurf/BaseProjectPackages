@@ -4,6 +4,7 @@ using System.Reflection;
 using Base.ToolsPackage.LightingProfileApplier;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.Rendering;
 using Object = UnityEngine.Object;
 
 namespace Base.ToolsPackage.Editor.Tests.LightingProfileApplier
@@ -23,10 +24,12 @@ namespace Base.ToolsPackage.Editor.Tests.LightingProfileApplier
     public sealed class LightingProfileTests
     {
         private const int CubemapSize = 16;
+        private const int EnvironmentFieldCount = 3;
         private const string FallbackShader = "Sprites/Default";
         private const int FirstBounces = 1;
         private const float FirstNumber = 0.25f;
         private const int FirstResolution = 128;
+        private const float ProbeColor = 0.5f;
         private const int SecondBounces = 2;
         private const float SecondNumber = 0.75f;
         private const int SecondResolution = 256;
@@ -41,19 +44,34 @@ namespace Base.ToolsPackage.Editor.Tests.LightingProfileApplier
             "flareStrength", "flareFadeSpeed"
         };
 
+        /// <summary>
+        /// The two settings a captured environment replaces on apply, so they are checked by their own tests
+        /// instead of the plain round trip.
+        /// </summary>
+        private static readonly string[] EnvironmentSettingNames =
+        {
+            nameof(RenderSettings.defaultReflectionMode), nameof(RenderSettings.customReflectionTexture)
+        };
+
         private readonly List<Object> _created = new();
 
         private Dictionary<string, object> _original;
+        private SphericalHarmonicsL2 _originalProbe;
 
         /// <summary>Remembers the scene's own lighting before anything is written over it.</summary>
         [SetUp]
-        public void Prepare() => _original = Snapshot();
+        public void Prepare()
+        {
+            _original = Snapshot();
+            _originalProbe = RenderSettings.ambientProbe;
+        }
 
         /// <summary>Puts the scene's lighting back and destroys anything the test made.</summary>
         [TearDown]
         public void Cleanup()
         {
             Restore(_original);
+            RenderSettings.ambientProbe = _originalProbe;
             _original = null;
 
             foreach (Object made in _created)
@@ -82,7 +100,56 @@ namespace Base.ToolsPackage.Editor.Tests.LightingProfileApplier
             Write(second: true);
             profile.Apply();
 
-            Assert.That(Differences(expected), Is.Empty);
+            Assert.That(Differences(expected), Is.SubsetOf(EnvironmentSettingNames));
+        }
+
+        /// <summary>
+        /// The baked ambient light comes back exactly, since it lives in the lighting data of the captured
+        /// scene and would otherwise be taken from whichever scene is active.
+        /// </summary>
+        [Test]
+        public void TheAmbientProbeSurvivesARoundTrip()
+        {
+            LightingProfile profile = CreateProfile();
+            SphericalHarmonicsL2 captured = new();
+            captured.AddAmbientLight(new Color(ProbeColor, FirstNumber, SecondNumber));
+
+            RenderSettings.ambientProbe = captured;
+            profile.Capture();
+
+            RenderSettings.ambientProbe = new SphericalHarmonicsL2();
+            profile.Apply();
+
+            Assert.That(RenderSettings.ambientProbe, Is.EqualTo(captured));
+        }
+
+        /// <summary>
+        /// The default reflection the scene showed is applied as a custom one, so the active scene's own baked
+        /// reflection cannot show through.
+        /// </summary>
+        [Test]
+        public void TheCapturedReflectionIsApplied()
+        {
+            LightingProfile profile = CreateProfile();
+            profile.Capture();
+
+            Write(second: true);
+            profile.Apply();
+
+            Assert.That(RenderSettings.defaultReflectionMode, Is.EqualTo(DefaultReflectionMode.Custom));
+            Assert.That(RenderSettings.customReflectionTexture, Is.EqualTo(profile.EnvironmentReflection));
+        }
+
+        /// <summary>
+        /// A profile captured before the environment was stored keeps the reflection source it was saved with.
+        /// </summary>
+        [Test]
+        public void AProfileWithoutEnvironmentKeepsItsReflectionMode()
+        {
+            Write(second: true);
+            CreateProfile().Apply();
+
+            Assert.That(RenderSettings.defaultReflectionMode, Is.EqualTo(DefaultReflectionMode.Skybox));
         }
 
         /// <summary>
@@ -108,7 +175,10 @@ namespace Base.ToolsPackage.Editor.Tests.LightingProfileApplier
         public void AFreshProfileAppliesWithoutComplaint()
             => Assert.That(() => CreateProfile().Apply(), Throws.Nothing);
 
-        /// <summary>The number of settings listed here has to match what the profile stores.</summary>
+        /// <summary>
+        /// The number of settings listed here, plus the captured reflection, ambient probe and owning scene,
+        /// has to match what the profile stores.
+        /// </summary>
         [Test]
         public void TheProfileStoresExactlyTheSettingsListedHere()
         {
@@ -116,7 +186,7 @@ namespace Base.ToolsPackage.Editor.Tests.LightingProfileApplier
                 | BindingFlags.NonPublic
                 | BindingFlags.DeclaredOnly);
 
-            Assert.That(fields, Has.Length.EqualTo(SettingNames.Length));
+            Assert.That(fields, Has.Length.EqualTo(SettingNames.Length + EnvironmentFieldCount));
         }
 
         /// <summary>The names whose current value differs from the given one.</summary>

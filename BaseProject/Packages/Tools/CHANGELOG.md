@@ -8,6 +8,20 @@ Changes made before 2.0.10 were not recorded.
 
 ## [Unreleased]
 
+### Added
+
+- `LightingProfileApplier` keeps its profile in sync with its scene: every save and bake of the active scene
+  captures into it, and a missing profile is created next to the scene's lighting data. A scene copied with its
+  applier gets its own profile instead of overwriting the original's. `Sync With Scene` turns it off.
+- `LightingProfileSync.SyncScene` for project tools that add appliers on their own.
+
+### Changed
+
+- `LightingProfile` also captures the baked ambient light and default reflection, and applies them exactly. A
+  scene loaded additively now looks like it did on its own instead of taking those from the active scene.
+- `LightingProfileApplier` refreshes the light probes after loading, so probes of additive scenes are used.
+- The profile Inspector shows the scene a profile was captured from and warns when reflections are not baked.
+
 ## [3.2.0] - 2026-10-17
 
 ### Changed

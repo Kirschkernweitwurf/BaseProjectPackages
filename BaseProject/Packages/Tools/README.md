@@ -97,7 +97,7 @@ A data driven replacement for hardcoded `MenuItem` and `CreateAssetMenu` paths. 
 
 - **Component Clipboard** lists the components of the active GameObject with checkbox multi selection and offers copy, paste, delete and reorder. It fills the gap left by Unity's single entry component clipboard.
 - **Play Mode Saver** carries changes made during play mode back out of it. Mark what matters while playing; in edit mode the window lists what was captured and applies or discards each entry. Nothing runs automatically, every apply is triggered by hand, and the captured list is cleared when the next play session starts.
-- **Lighting Profile** stores the render settings of a scene so they can be applied without making that scene active. A `LightingProfileApplier` component applies a profile as soon as its scene loads.
+- **Lighting Profile** stores the render settings and baked environment of a scene so they can be applied without making that scene active. A `LightingProfileApplier` component applies a profile as soon as its scene loads and keeps it in sync with its scene on every save and bake.
 - **Hierarchy Sorter** sorts the children of a GameObject or a whole scene alphabetically and recursively.
 - **Auto Start Scene** forces a chosen scene to load when entering Play mode and restores the previous scene on exit. It defaults to the first enabled scene in Build Settings.
 
