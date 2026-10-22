@@ -31,6 +31,10 @@ Drag Locale assets in from your project. They live under **Assets > Localization
 
 The **position in your list**, not the language itself. Reordering the list after release changes what saved values point at. Add new languages to the end.
 
+## Language changed elsewhere
+
+If the language is switched outside the menu, for example with the Game view language menu in the editor, the setting follows it and the menu shows the new language. Languages that are not in your list, like the pseudo locale, leave the saved choice alone.
+
 ## Order matters
 
 Put this **near the top** of the Hierarchy, above anything that reads translated text while starting up. Otherwise the first frame of your menu can appear in the wrong language.
