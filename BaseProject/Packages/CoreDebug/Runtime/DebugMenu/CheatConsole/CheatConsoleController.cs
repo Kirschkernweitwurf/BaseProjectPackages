@@ -73,6 +73,7 @@ namespace Base.CoreDebugPackage.DebugMenu.CheatConsole
         {
             _model = new CheatConsoleModel(CheatCommandProvider.DiscoverAllCommands());
             BuiltinCheatCommands.Register(_model, view);
+            CheatMacroRunner.Register(_model);
         }
 
         private void OnExecuteCommand(InputAction.CallbackContext _)

@@ -6,6 +6,13 @@ All notable changes to this package are recorded here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- Cheat macros: a `CheatMacro` asset in any `Resources/CheatMacros` folder becomes a cheat console command with
+  any name, for example a team member's own, that runs a list of console lines in order. Set up in the editor
+  through `Create > Scriptable Objects > Base > Debug > New Cheat Macro`, no code needed. The lines it runs stay
+  out of the console history, and a macro that calls itself is skipped instead of looping.
+
 ## [1.1.6] - 2026-10-15
 
 ### Changed

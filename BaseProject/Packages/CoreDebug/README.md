@@ -28,6 +28,9 @@ The debug menu, cheat console and log console prefabs ship in `Base.ContentPacka
   which one was open last.
 - The cheat console discovers `[CheatCommand]` methods through `CheatCommandRegistry`, from
   assemblies and from scene objects. `BuiltinCheatCommands` ships a default set.
+- `CheatMacro` assets in any `Resources/CheatMacros` folder become console commands with a name
+  picked in the editor. Each runs its console lines in order through the model, without adding
+  them to the history, and a macro that calls itself is skipped.
 - `LogConsoleView` mirrors Unity's log stream, `CustomLogger` output included. Capturing starts
   before the first scene loads, so every log is buffered even while the menu is closed.
 

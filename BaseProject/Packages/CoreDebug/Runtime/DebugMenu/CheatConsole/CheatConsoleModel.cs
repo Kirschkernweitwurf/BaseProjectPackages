@@ -61,7 +61,21 @@ namespace Base.CoreDebugPackage.DebugMenu.CheatConsole
             string trimmed = input.Trim();
             AddToHistory(trimmed);
 
-            string[] tokens = SplitArguments(trimmed);
+            return Run(trimmed);
+        }
+
+        /// <summary>
+        /// Runs a command line without adding it to the history, so a macro's lines don't push the typed
+        /// commands out of reach of the arrow keys.
+        /// </summary>
+        /// <param name="input">The command line, with its arguments.</param>
+        /// <returns>The result of executing the command.</returns>
+        internal CheatConsoleResult Run(string input)
+        {
+            if (string.IsNullOrWhiteSpace(input))
+                return new CheatConsoleResult(NoCommandMessage, ECheatConsoleMessageType.Warning);
+
+            string[] tokens = SplitArguments(input.Trim());
             if (tokens.Length == 0)
                 return new CheatConsoleResult(NoCommandMessage, ECheatConsoleMessageType.Warning);
 

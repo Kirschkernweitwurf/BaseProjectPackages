@@ -13,8 +13,13 @@ In Obsidian you can also click any tag, or open the Tags pane, to list every pag
 
 ## By role
 
+### Designers
+
+- [💌 Cheat Macro](Scriptable%20Objects/Cheat%20Macro.md)
+
 ### Programmers
 
+- [💌 Cheat Macro](Scriptable%20Objects/Cheat%20Macro.md)
 - [🗞️ Cheat Console Controller](Components/Cheat%20Console%20Controller.md)
 - [🗞️ Cheat Console View](Components/Cheat%20Console%20View.md)
 - [🗞️ Debug Menu Controller](Components/Debug%20Menu%20Controller.md)
@@ -24,6 +29,7 @@ In Obsidian you can also click any tag, or open the Tags pane, to list every pag
 
 ### debugging
 
+- [💌 Cheat Macro](Scriptable%20Objects/Cheat%20Macro.md)
 - [🗞️ Cheat Console Controller](Components/Cheat%20Console%20Controller.md)
 - [🗞️ Cheat Console View](Components/Cheat%20Console%20View.md)
 - [🗳️ Components](Core%20Debug%20Components.md)

@@ -19,7 +19,7 @@ Press **F1** in play mode (the default binding) to open the debug menu. It remem
 
 | Part | What it does |
 | --- | --- |
-| **Cheat console** | Type a command and press Enter. `help` lists every command the game has. Programmers add commands with `[CheatCommand]`. |
+| **Cheat console** | Type a command and press Enter. `help` lists every command the game has. Programmers add commands with `[CheatCommand]`; anyone can bundle several into their own command with a [💌 Cheat Macro](Scriptable%20Objects/Cheat%20Macro.md). |
 | **Log console** | Shows the same log as Unity's Console, in the running game. It starts recording before the first scene, so nothing is missed while the menu is closed. |
 
 The prefabs for the menu and both consoles are in the Content package.
@@ -48,6 +48,12 @@ Every component has its own page. [🗳️ Components](Core%20Debug%20Components
 | [🗞️ Cheat Console View](Components/Cheat%20Console%20View.md) | The cheat console window: input field, log and suggestions. | Programmers |
 | [🗞️ Cheat Console Controller](Components/Cheat%20Console%20Controller.md) | Runs cheat commands: Enter runs, Tab completes, arrow keys walk the history. | Programmers |
 | [🗞️ Log Console View](Components/Log%20Console%20View.md) | Shows the Unity console inside the game, also in builds. | Programmers |
+
+## Scriptable Objects
+
+| Page | What it is | Prefix |
+| --- | --- | --- |
+| [💌 Cheat Macro](Scriptable%20Objects/Cheat%20Macro.md) | Your own cheat command that runs several cheats in a row | `CM_` |
 
 ## Reading these docs
 
