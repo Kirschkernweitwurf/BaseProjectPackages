@@ -6,6 +6,8 @@ All notable changes to this package are recorded here. The format follows
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-10-22
+
 ### Added
 
 - Cheat macros: a `CheatMacro` asset in any `Resources/CheatMacros` folder becomes a cheat console command with
