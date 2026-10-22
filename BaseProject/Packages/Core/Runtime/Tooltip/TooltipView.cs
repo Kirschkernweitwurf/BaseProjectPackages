@@ -24,6 +24,7 @@ namespace Base.CorePackage.Tooltip
     {
         private const int BottomLeftCorner = 0;
         private const int CornerCount = 4;
+        private const float NoDelay = 0f;
         private const float Opaque = 1f;
         private const int TopRightCorner = 2;
         private const float Transparent = 0f;
@@ -73,6 +74,16 @@ namespace Base.CorePackage.Tooltip
         private Func<Rect> _getScreenAnchor;
         private float _hiddenAt = float.NegativeInfinity;
         private bool _isVisible;
+
+        /// <summary>
+        /// Seconds the pointer rests before a tooltip shows. Settable at runtime, so a settings menu can let the
+        /// player pick it. Never below zero.
+        /// </summary>
+        public float ShowDelay
+        {
+            get => showDelay;
+            set => showDelay = Mathf.Max(NoDelay, value);
+        }
 
 #region Unity Callbacks
         private void Start()

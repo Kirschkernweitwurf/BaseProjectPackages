@@ -56,6 +56,7 @@ Draws the tooltip beside the cursor or the hovered object, never letting it leav
 - The content starts hidden and only shows while a trigger is hovered.
 - Copied panels are kept and reused, so a big tooltip only creates them once.
 - Sweeping the pointer across the screen stays calm thanks to the show delay, while moving from one tooltip straight to the next shows it at once.
+- Code can change the show delay at runtime through `ShowDelay`, for example for a tooltip speed setting.
 - The content gets a Canvas Group that never takes the pointer, so a tooltip covering its own object cannot make it flicker.
 
 ## Related

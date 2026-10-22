@@ -8,6 +8,10 @@ Changes made before 2.1.4 were not recorded.
 
 ## [Unreleased]
 
+### Added
+
+- `TooltipView.ShowDelay` reads and sets the show delay at runtime, for example from a settings menu.
+
 ## [5.0.0] - 2026-10-18
 
 ### Added
