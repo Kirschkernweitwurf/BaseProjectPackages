@@ -30,7 +30,7 @@ Resets the menu's contents when it closes, so it opens fresh next time instead o
 
 ## Good to know
 
-- The menu's own Content Root is skipped, because the menu plays that animation itself.
+- The Content Roots of this menu and of every menu nested in it, like tabs, are skipped, because each menu plays that animation itself. Resetting a tab's Content Root while the tab closes would stop its close, and the tab would stay open.
 - Good for menus with tabs, sub-panels or expanded sections.
 
 ## Related

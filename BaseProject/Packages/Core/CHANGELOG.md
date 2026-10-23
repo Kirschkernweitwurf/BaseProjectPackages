@@ -8,6 +8,11 @@ Changes made before 2.1.4 were not recorded.
 
 ## [Unreleased]
 
+### Fixed
+
+- `MenuResetModule` no longer resets the content roots of nested menus. A tab closing together with its parent
+  menu stayed open and transitioning, and took every back press.
+
 ## [5.1.0] - 2026-10-23
 
 ### Added
