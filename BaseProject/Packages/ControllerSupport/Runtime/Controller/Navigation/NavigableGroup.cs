@@ -28,9 +28,15 @@ namespace Base.ControllerSupportPackage.Controller.Navigation
         /// <summary>Serialized name of the priority field, for editor tooling.</summary>
         public const string PriorityFieldName = nameof(priority);
 
+        private const float NeverMissed = -1f;
+
+        // Elements are often briefly out of reach while a menu fades in or a lock screen hides them. Only a gap that
+        // lasts longer than this is worth a warning.
+        private const float NoTargetWarnDelay = 1f;
+
         [Title("Focus")]
-        [Tooltip("Element selected when this group gains focus and no element is remembered.")]
-        [Required]
+        [Tooltip("Optional. Element selected when this group gains focus and no element is remembered. When empty "
+            + "or not navigable right now, the first navigable element below the group gets focus.")]
         [SerializeField] private NavigableElement defaultElement;
 
         [Tooltip("Higher priority groups win focus restoration when several are active at once.")]
@@ -46,6 +52,10 @@ namespace Base.ControllerSupportPackage.Controller.Navigation
         [Tooltip("If true, navigation loops around the edges of the group.")]
         [SerializeField] private bool wrap;
 
+        [Tooltip("If true, the navigation is rewired each time the group activates, for groups whose elements are "
+            + "spawned at runtime, like a row of cards.")]
+        [SerializeField] private bool rebuildOnActivate;
+
         /// <summary>Focus priority used by the watchdog to choose between active groups.</summary>
         public EPriority Priority => priority;
 
@@ -55,6 +65,7 @@ namespace Base.ControllerSupportPackage.Controller.Navigation
         private readonly List<NavigableElement> _elements = new();
 
         private bool _hasWarnedNoTarget;
+        private float _noTargetSince = NeverMissed;
         private bool _isActive;
         private FocusWatchdog _focusWatchdog;
         private GameObject _lastSeenSelection;
@@ -95,6 +106,14 @@ namespace Base.ControllerSupportPackage.Controller.Navigation
 
             _isActive = true;
             _hasWarnedNoTarget = false;
+            _noTargetSince = NeverMissed;
+
+            // Spawned elements only have their final place once the layout ran, so it runs first.
+            if (rebuildOnActivate)
+            {
+                Canvas.ForceUpdateCanvases();
+                Rebuild();
+            }
 
             // Looked up on activation, not once in Awake. The watchdog is a scene service: it does not exist yet
             // when a persistent group wakes, and every scene load replaces it. It is also optional. Without it
@@ -130,17 +149,12 @@ namespace Base.ControllerSupportPackage.Controller.Navigation
             Selectable target = ResolveFocusTarget();
             if (target == null)
             {
-                // The watchdog retries every frame, so warn only once per activation instead of spamming.
-                if (_hasWarnedNoTarget)
-                    return;
-
-                _hasWarnedNoTarget = true;
-                CustomLogger.LogWarning($"Navigable group \"{name}\" has no valid element to focus.", this);
-
+                WarnIfStillNoTarget();
                 return;
             }
 
             _hasWarnedNoTarget = false;
+            _noTargetSince = NeverMissed;
             EventSystem.current.SetSelectedGameObject(target.gameObject);
             _lastSelected = target.gameObject;
         }
@@ -165,9 +179,42 @@ namespace Base.ControllerSupportPackage.Controller.Navigation
             if (TryResolveRememberedTarget(out Selectable remembered))
                 return remembered;
 
-            return defaultElement.IsNavigable()
-                ? defaultElement.Selectable
-                : null;
+            // A default that cannot take focus right now, like a button behind a lock screen, hands over to the
+            // first element that can.
+            if (defaultElement != null
+                && defaultElement.IsNavigable())
+                return defaultElement.Selectable;
+
+            return FindFirstNavigable();
+        }
+
+        // The watchdog retries every frame, so the warning waits out short gaps and then comes once per activation.
+        private void WarnIfStillNoTarget()
+        {
+            if (_noTargetSince < 0f)
+                _noTargetSince = Time.unscaledTime;
+
+            if (_hasWarnedNoTarget
+                || Time.unscaledTime - _noTargetSince < NoTargetWarnDelay)
+                return;
+
+            _hasWarnedNoTarget = true;
+            CustomLogger.LogWarning($"Navigable group \"{name}\" has no valid element to focus.", this);
+        }
+
+        private Selectable FindFirstNavigable()
+        {
+            if (_elements.Count == 0)
+                GetComponentsInChildren(true, _elements);
+
+            foreach (NavigableElement element in _elements)
+            {
+                if (element != null
+                    && element.IsNavigable())
+                    return element.Selectable;
+            }
+
+            return null;
         }
 
         private bool TryResolveRememberedTarget(out Selectable remembered)

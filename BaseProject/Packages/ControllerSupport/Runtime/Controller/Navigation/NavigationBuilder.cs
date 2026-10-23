@@ -22,9 +22,11 @@ namespace Base.ControllerSupportPackage.Controller.Navigation
         /// <summary>
         /// Wires explicit up, down, left and right navigation across the navigable elements in the list.
         /// Non-navigable elements are skipped. When <paramref name="wrap"/> is true, edges loop to the
-        /// opposite side of the set.
+        /// opposite side of the set. When <paramref name="reachOffAxis"/> is true, a direction with nothing
+        /// lined up takes the nearest element on that side instead of staying unwired, for loose layouts like
+        /// a hand of cards below a few items.
         /// </summary>
-        public static void Wire(IReadOnlyList<NavigableElement> elements, bool wrap)
+        public static void Wire(IReadOnlyList<NavigableElement> elements, bool wrap, bool reachOffAxis = false)
         {
             if (elements == null)
             {
@@ -42,10 +44,10 @@ namespace Base.ControllerSupportPackage.Controller.Navigation
                 element.Selectable.navigation = new UINavigation
                 {
                     mode = UINavigation.Mode.Explicit,
-                    selectOnUp = FindNeighbour(element, active, Vector2.up, wrap),
-                    selectOnDown = FindNeighbour(element, active, Vector2.down, wrap),
-                    selectOnLeft = FindNeighbour(element, active, Vector2.left, wrap),
-                    selectOnRight = FindNeighbour(element, active, Vector2.right, wrap)
+                    selectOnUp = FindNeighbour(element, active, Vector2.up, wrap, reachOffAxis),
+                    selectOnDown = FindNeighbour(element, active, Vector2.down, wrap, reachOffAxis),
+                    selectOnLeft = FindNeighbour(element, active, Vector2.left, wrap, reachOffAxis),
+                    selectOnRight = FindNeighbour(element, active, Vector2.right, wrap, reachOffAxis)
                 };
             }
         }
@@ -64,7 +66,7 @@ namespace Base.ControllerSupportPackage.Controller.Navigation
         }
 
         private static Selectable FindNeighbour(NavigableElement source, List<NavigableElement> candidates,
-            Vector2 direction, bool wrap)
+            Vector2 direction, bool wrap, bool reachOffAxis)
         {
             Vector2 origin = GetCenter(source.Selectable);
 
@@ -73,6 +75,9 @@ namespace Base.ControllerSupportPackage.Controller.Navigation
 
             Selectable wrapBest = null;
             float wrapScore = float.NegativeInfinity;
+
+            Selectable sideBest = null;
+            float sideSqrDistance = float.PositiveInfinity;
 
             foreach (NavigableElement candidate in candidates)
             {
@@ -102,6 +107,15 @@ namespace Base.ControllerSupportPackage.Controller.Navigation
                     continue;
                 }
 
+                // Anything on that side of the source, nearest first, as the fallback for loose layouts.
+                if (reachOffAxis
+                    && forward > 0f
+                    && sqrDistance < sideSqrDistance)
+                {
+                    sideSqrDistance = sqrDistance;
+                    sideBest = candidate.Selectable;
+                }
+
                 if (!wrap)
                     continue;
 
@@ -120,6 +134,9 @@ namespace Base.ControllerSupportPackage.Controller.Navigation
 
             if (best != null)
                 return best;
+
+            if (sideBest != null)
+                return sideBest;
 
             return wrap
                 ? wrapBest

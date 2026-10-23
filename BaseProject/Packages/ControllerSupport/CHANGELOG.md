@@ -17,6 +17,16 @@ Changes made before 1.6.5 were not recorded.
   another gamepad raises `OnDeviceChanged` too.
 - `InputGlyphSet.GamepadFamily`, so each kind of gamepad can have its own glyphs. `InputGlyphProvider` takes the
   gamepad's own set first, then the `Generic` set.
+- `NavigableGroup` Rebuild On Activate rewires a group each time it activates, for elements spawned at runtime.
+- `NavigationBuilder.Wire` takes `reachOffAxis`: a direction with nothing lined up takes the nearest element on that
+  side, for loose layouts like a hand of cards below a few items.
+
+### Changed
+
+- `NavigableGroup` Default Element is optional. Without it, or while it cannot take focus, the first navigable
+  element below the group gets focus.
+- `NavigableGroup` only warns about having nothing to focus once the gap lasts longer than a second, so menus that
+  fade in or sit behind a lock screen stay quiet.
 
 ### Fixed
 

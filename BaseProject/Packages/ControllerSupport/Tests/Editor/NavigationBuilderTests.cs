@@ -244,6 +244,23 @@ namespace Base.ControllerSupportPackage.Tests
             Assert.That(origin.Selectable.navigation.selectOnRight, Is.Null);
         }
 
+        /// <summary>
+        /// With reach off axis on, a direction with nothing lined up takes the nearest element on that side, so
+        /// a loose layout still connects. Without it the same element stays out of reach.
+        /// </summary>
+        [Test]
+        public void ReachOffAxisConnectsLooseLayouts()
+        {
+            NavigableElement origin = Element(Vector3.zero);
+            NavigableElement upperRight = Element(new Vector3(3f, 2f, 0f));
+
+            NavigationBuilder.Wire(new[] { origin, upperRight }, wrap: false);
+            Assert.That(origin.Selectable.navigation.selectOnUp, Is.Null);
+
+            NavigationBuilder.Wire(new[] { origin, upperRight }, wrap: false, reachOffAxis: true);
+            Assert.That(origin.Selectable.navigation.selectOnUp, Is.SameAs(upperRight.Selectable));
+        }
+
         private NavigableElement Element(Vector3 position)
         {
             GameObject created = Create(position);

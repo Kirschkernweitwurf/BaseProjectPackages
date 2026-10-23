@@ -30,7 +30,7 @@ The group knows nothing about menus or the game. It is pure UI navigation.
 
 | Field | Description |
 | --- | --- |
-| Default Element | Selected when the group gains focus and nothing is remembered. Required. |
+| Default Element | Selected when the group gains focus and nothing is remembered. Optional: when empty or not navigable right now (for example behind a lock screen), the first navigable element below the group gets focus. |
 | Priority | Higher priority wins focus restoration when several groups are active. |
 | Auto Activate | Group activates itself in `OnEnable`. Turn this **off** when a menu drives it. |
 | Remember Last Selected | Focus returns to the element used last instead of the default. |
@@ -40,6 +40,7 @@ The group knows nothing about menus or the game. It is pure UI navigation.
 | Field | Description |
 | --- | --- |
 | Wrap | Navigation loops around the edges of the group. So navigating down on the lowest selectable moves the user to the highest selectable. |
+| Rebuild On Activate | Rewires the navigation each time the group activates, after the layout ran. For groups whose elements are spawned at runtime, like a row of cards. |
 
 ## How wiring works
 
@@ -49,7 +50,7 @@ The group knows nothing about menus or the game. It is pure UI navigation.
 - Elements outside that cone are ignored, so off-axis buttons never get wired by accident.
 - With **Wrap** on, an element at the edge links to the element furthest in the opposite direction.
 
-Rebuilds only run when you ask for them, so wiring never changes silently. In the editor, a rebuild also adds a missing `NavigableElement` to any selectable underneath, then wires it in the same pass.
+Rebuilds only run when you ask for them or turn on **Rebuild On Activate**, so wiring never changes silently. In the editor, a rebuild also adds a missing `NavigableElement` to any selectable underneath, then wires it in the same pass.
 
 ## Focus behavior
 
