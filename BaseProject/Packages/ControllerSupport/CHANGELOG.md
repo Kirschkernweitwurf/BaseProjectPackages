@@ -8,6 +8,16 @@ Changes made before 1.6.5 were not recorded.
 
 ## [Unreleased]
 
+### Added
+
+- `InputPromptView` shows the button icon of one action on an Image and follows device switches. Shown On picks the
+  devices it shows on: always, gamepad only, or mouse and keyboard only.
+- `InputDeviceTracker.CurrentGamepadFamily` tells the kind of gamepad pressed last (Xbox, PlayStation, Switch,
+  Steam Deck, Steam Controller or generic), detected from its names by the new `GamepadFamilyDetector`. Picking up
+  another gamepad raises `OnDeviceChanged` too.
+- `InputGlyphSet.GamepadFamily`, so each kind of gamepad can have its own glyphs. `InputGlyphProvider` takes the
+  gamepad's own set first, then the `Generic` set.
+
 ### Fixed
 
 - `NavigationBuilder` measures elements on a world space canvas or on a 3D object on screen, through their camera,

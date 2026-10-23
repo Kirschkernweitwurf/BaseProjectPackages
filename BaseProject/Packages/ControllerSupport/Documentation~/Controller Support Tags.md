@@ -16,6 +16,7 @@ In Obsidian you can also click any tag, or open the Tags pane, to list every pag
 ### Designers
 
 - [🔖 Gamepad Scroll Rect](Components/Gamepad%20Scroll%20Rect.md)
+- [🔖 Input Prompt View](Components/Input%20Prompt%20View.md)
 - [🔖 Menu Navigation Module](Components/Menu%20Navigation%20Module.md)
 - [🔖 Navigable Element](Components/Navigable%20Element.md)
 - [🔖 Navigable Group](Components/Navigable%20Group.md)
@@ -41,6 +42,7 @@ In Obsidian you can also click any tag, or open the Tags pane, to list every pag
 - [🔖 Gamepad Scroll Rect](Components/Gamepad%20Scroll%20Rect.md)
 - [🗞️ Input Device Tracker](Components/Input%20Device%20Tracker.md)
 - [🗞️ Input Glyph Provider](Components/Input%20Glyph%20Provider.md)
+- [🔖 Input Prompt View](Components/Input%20Prompt%20View.md)
 - [🔖 Menu Navigation Module](Components/Menu%20Navigation%20Module.md)
 - [🔖 Navigable Element](Components/Navigable%20Element.md)
 - [🔖 Navigable Group](Components/Navigable%20Group.md)
@@ -55,6 +57,7 @@ In Obsidian you can also click any tag, or open the Tags pane, to list every pag
 
 - [🗞️ Input Device Tracker](Components/Input%20Device%20Tracker.md)
 - [🗞️ Input Glyph Provider](Components/Input%20Glyph%20Provider.md)
+- [🔖 Input Prompt View](Components/Input%20Prompt%20View.md)
 
 ### settings
 
@@ -68,6 +71,7 @@ In Obsidian you can also click any tag, or open the Tags pane, to list every pag
 - [🗞️ Focus Watchdog](Components/Focus%20Watchdog.md)
 - [🔖 Gamepad Scroll Rect](Components/Gamepad%20Scroll%20Rect.md)
 - [🗞️ Input Glyph Provider](Components/Input%20Glyph%20Provider.md)
+- [🔖 Input Prompt View](Components/Input%20Prompt%20View.md)
 - [🔖 Menu Navigation Module](Components/Menu%20Navigation%20Module.md)
 - [🔖 Navigable Element](Components/Navigable%20Element.md)
 - [🔖 Navigable Group](Components/Navigable%20Group.md)

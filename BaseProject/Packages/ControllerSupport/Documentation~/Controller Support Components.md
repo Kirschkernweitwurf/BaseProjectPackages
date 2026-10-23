@@ -48,9 +48,15 @@ Fixes what uGUI does not handle for gamepads.
 | [🔖 ScrollIntoView](Components/Scroll%20Into%20View.md) | Keeps the selected element visible inside a ScrollRect |
 | [🔖 GamepadScrollRect](Components/Gamepad%20Scroll%20Rect.md) | Scrolls a ScrollRect directly with a stick |
 
-## Not covered here
+## Input prompts
 
-Input prompt components (`InputDeviceTracker`, `InputGlyphSet`, `InputGlyphProvider`) will be documented in the future, when developed further.
+Show the right button icons for the device and the kind of gamepad in use.
+
+| Component | What it does |
+| --- | --- |
+| [🔖 InputPromptView](Components/Input%20Prompt%20View.md) | Shows the button icon of one action |
+| [🗞️ InputGlyphProvider](Components/Input%20Glyph%20Provider.md) | Picks the glyph set for the device and gamepad kind |
+| [🗞️ InputDeviceTracker](Components/Input%20Device%20Tracker.md) | Knows the device and the kind of gamepad in use |
 
 ## Helpers behind the scenes
 
@@ -59,6 +65,7 @@ These are static classes, not components, so they have no page of their own:
 - `NavigationBuilder` computes the explicit up/down/left/right wiring. See [NavigableGroup](Components/Navigable%20Group.md).
 - `NavigationValidator` adds missing `NavigableElement`s during an editor rebuild.
 - `NavigationRebuildService` shared rebuild entry points for the inspector and the window.
+- `GamepadFamilyDetector` tells the kind of gamepad from the names its driver reports. See [Input Device Tracker](Components/Input%20Device%20Tracker.md).
 
 <!-- all-components:start -->
 ## All components
@@ -79,6 +86,12 @@ Every component has its own page with all fields. Generated from the code; do no
 | --- | --- | --- |
 | [🔖 Gamepad Scroll Rect](Components/Gamepad%20Scroll%20Rect.md) | Lets a stick scroll a ScrollRect directly, usually the right stick. | Everyone |
 | [🔖 Scroll Into View](Components/Scroll%20Into%20View.md) | Keeps the selected element inside the visible part of a ScrollRect. | Everyone |
+
+### Input prompts
+
+| Component | What it does | For |
+| --- | --- | --- |
+| [🔖 Input Prompt View](Components/Input%20Prompt%20View.md) | Shows the button icon of one action for the device in use, and follows the player when they switch. | Everyone |
 
 ### Rumble settings
 

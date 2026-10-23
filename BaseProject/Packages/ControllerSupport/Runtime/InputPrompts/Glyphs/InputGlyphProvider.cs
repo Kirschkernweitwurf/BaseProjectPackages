@@ -79,6 +79,10 @@ namespace Base.ControllerSupportPackage.InputPrompts.Glyphs
 
         private static string CreateTmpSpriteTag(string spriteName) => $"<sprite name=\"{spriteName}\">";
 
+        private static bool IsGamepadSet(InputGlyphSet set, EGamepadFamily family)
+            => set.DeviceType == EInputDeviceType.Gamepad
+                && set.GamepadFamily == family;
+
         // Empty slots are an authoring mistake, so they are reported once here instead of per lookup.
         private void ValidateGlyphSets()
         {
@@ -104,21 +108,41 @@ namespace Base.ControllerSupportPackage.InputPrompts.Glyphs
                 return false;
 
             EInputDeviceType device = _deviceTracker.CurrentDevice;
+            inputGlyphSet = device == EInputDeviceType.Gamepad
+                ? FindGamepadSet(_deviceTracker.CurrentGamepadFamily)
+                : FindSet(set => set.DeviceType == device);
 
-            foreach (InputGlyphSet set in glyphSets)
-            {
-                if (set == null)
-                    continue;
-
-                if (set.DeviceType != device)
-                    continue;
-
-                inputGlyphSet = set;
+            if (inputGlyphSet != null)
                 return true;
-            }
 
             CustomLogger.LogWarning($"No {nameof(InputGlyphSet)} is assigned for device {device}.", this);
             return false;
+        }
+
+        // The gamepad's own family first, then the generic gamepad set, then any gamepad set at all.
+        private InputGlyphSet FindGamepadSet(EGamepadFamily family)
+        {
+            InputGlyphSet own = FindSet(set => IsGamepadSet(set, family));
+            if (own != null)
+                return own;
+
+            InputGlyphSet generic = FindSet(set => IsGamepadSet(set, EGamepadFamily.Generic));
+            if (generic != null)
+                return generic;
+
+            return FindSet(set => set.DeviceType == EInputDeviceType.Gamepad);
+        }
+
+        private InputGlyphSet FindSet(Func<InputGlyphSet, bool> matches)
+        {
+            foreach (InputGlyphSet set in glyphSets)
+            {
+                if (set != null
+                    && matches(set))
+                    return set;
+            }
+
+            return null;
         }
 
         private void HandleDeviceChanged(EInputDeviceType deviceType) => OnActiveDeviceChanged?.Invoke();

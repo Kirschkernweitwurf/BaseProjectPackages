@@ -4,7 +4,7 @@ package: Controller Support
 tags:
   - gamepad
   - ui
-summary: Input prompt components (InputDeviceTracker, InputGlyphSet, InputGlyphProvider) are not covered here yet.
+summary: Gamepad navigation, focus, scrolling, rumble and input prompts that match the gamepad in use.
 ---
 # Controller Support Package
 
@@ -51,6 +51,7 @@ Every component has its own page. [🗳️ Components](Controller%20Support%20Co
 | [🗞️ Focus Watchdog](Components/Focus%20Watchdog.md) | Global safety net that keeps a valid selection while a gamepad is in use. | Programmers |
 | [🗞️ Input Device Tracker](Components/Input%20Device%20Tracker.md) | Knows whether the player is using mouse and keyboard or a gamepad right now. | Programmers |
 | [🗞️ Input Glyph Provider](Components/Input%20Glyph%20Provider.md) | Picks the right button icon (keyboard, Xbox, PlayStation, ...) for an action. | Programmers |
+| [🔖 Input Prompt View](Components/Input%20Prompt%20View.md) | Shows the button icon of one action for the device in use, and follows the player when they switch. | Everyone |
 | [🗞️ Rumble Service](Components/Rumble%20Service.md) | Plays gamepad rumble patterns, with priorities so important rumble wins. | Programmers |
 
 ## Typical setup

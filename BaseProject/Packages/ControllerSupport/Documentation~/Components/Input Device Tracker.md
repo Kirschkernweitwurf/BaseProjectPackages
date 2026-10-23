@@ -14,7 +14,7 @@ summary: Knows whether the player is using mouse and keyboard or a gamepad right
 
 **Tags:** #programmer #gamepad #input
 
-Knows which device the player is using right now: mouse and keyboard, or a gamepad. It switches on real button presses and stick movement, not on noise like a slightly drifting stick.
+Knows which device the player is using right now: mouse and keyboard, or a gamepad. It switches on real button presses and stick movement, not on noise like a slightly drifting stick. For a gamepad it also knows the kind (Xbox, PlayStation, Switch, Steam Deck, Steam Controller or generic), taken from the names the gamepad that was actually pressed reports. So the first button press, like on a "Press any key" screen, already picks the right icons, and picking up another kind of gamepad switches them.
 
 **Add it:** Inspector › **Add Component** › search `Input Device Tracker`.
 

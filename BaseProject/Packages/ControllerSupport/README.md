@@ -23,7 +23,7 @@ Full gamepad support for uGUI menus: navigation wiring built from on-screen posi
 3. Add `NavigableElement` to your selectables, or just hit Rebuild and let the validator add them.
 4. Bridge menus with `MenuNavigationModule`.
 5. For long lists, add `ScrollIntoView` and optionally `GamepadScrollRect` to the ScrollRect.
-6. Author one `InputGlyphSet` per device family and assign both to the `InputGlyphProvider`.
+6. Author one `InputGlyphSet` per device family, plus one per kind of gamepad (set its `GamepadFamily`, keep one `Generic`), and assign them to the `InputGlyphProvider`. Show icons with an `InputPromptView`.
 7. Create one `RumbleConfig`, assign it to the `RumbleService`, and author a `RumblePattern` per haptic.
 
 ## Navigation
@@ -65,7 +65,7 @@ The single seam between the menu layer and this package. Attach it to a menu and
 
 `InputDeviceTracker` is the single source of truth for the active device family (`MouseKeyboard` or `Gamepad`), flipping only on real actuation so a resting stick does not count. It raises `OnDeviceChanged`.
 
-`InputGlyphSet` maps input actions to glyphs for one device family; author one asset per device. `InputGlyphProvider` resolves the right glyph for the active device through `TryGetSprite` for images or `TryGetTmpSpriteTag` for inline TextMeshPro tags, and raises `OnActiveDeviceChanged` so labels can refresh themselves.
+`InputGlyphSet` maps input actions to glyphs for one device family; author one asset per device. `InputGlyphProvider` resolves the right glyph for the active device through `TryGetSprite` for images or `TryGetTmpSpriteTag` for inline TextMeshPro tags, and raises `OnActiveDeviceChanged` so labels can refresh themselves. For a gamepad it prefers the set of the gamepad's kind (`InputDeviceTracker.CurrentGamepadFamily`: Xbox, PlayStation, Switch, Steam Deck, Steam Controller), then the `Generic` set. `InputPromptView` shows one action's icon on an Image.
 
 ## Haptics
 

@@ -11,7 +11,8 @@ namespace Base.ControllerSupportPackage.InputPrompts.Glyphs
 {
     /// <summary>
     /// A set of action-to-glyph mappings for one device family. Author one asset per device type
-    /// (mouse/keyboard, gamepad) and assign them to the <see cref="InputGlyphProvider"/>.
+    /// (mouse/keyboard, gamepad) and one per gamepad family (Xbox, PlayStation, ...) that should show its own
+    /// buttons, and assign them to the <see cref="InputGlyphProvider"/>.
     /// </summary>
     [DynamicCreateAssetMenu("Scriptable Objects/Base/Input/New Glyph Set", "IGS_GlyphSet")]
     public sealed class InputGlyphSet : ScriptableObject
@@ -19,6 +20,10 @@ namespace Base.ControllerSupportPackage.InputPrompts.Glyphs
         [field: Tooltip("The device family these glyphs represent.")]
         [field: EnumToggleButtons]
         [field: SerializeField] public EInputDeviceType DeviceType { get; private set; }
+
+        [field: Tooltip("The kind of gamepad these glyphs show. Only read for gamepad sets. The Generic set stands in "
+            + "for every gamepad without a set of its own.")]
+        [field: SerializeField] public EGamepadFamily GamepadFamily { get; private set; }
 
         [Tooltip("Action to glyph mappings for this device.")]
         [NotNullOrEmpty]
