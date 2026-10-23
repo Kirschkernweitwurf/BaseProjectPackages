@@ -19,6 +19,10 @@ namespace Base.ControllerSupportPackage.Tests
     /// </summary>
     public sealed class NavigationBuilderTests
     {
+        private const float CameraDistance = -10f;
+
+        // Rolling the camera a quarter turn clockwise puts world right at the top of the screen.
+        private const float RightShowsUpRoll = -90f;
 
         private readonly List<GameObject> _created = new();
 
@@ -215,6 +219,31 @@ namespace Base.ControllerSupportPackage.Tests
 
         // The selectable goes on first, so the required component is already there and the element
         // does not bring a second one of its own along.
+        /// <summary>
+        /// Elements on a world space canvas are wired by where they show on screen, not by their world axes. A
+        /// camera rolled a quarter turn shows world right as screen up, so the stick has to follow the screen.
+        /// </summary>
+        [Test]
+        public void WorldElementsFollowTheScreen()
+        {
+            Camera camera = Create(new Vector3(0f, 0f, CameraDistance)).AddComponent<Camera>();
+            camera.transform.rotation = Quaternion.Euler(0f, 0f, RightShowsUpRoll);
+
+            Canvas canvas = Create(Vector3.zero).AddComponent<Canvas>();
+            canvas.renderMode = RenderMode.WorldSpace;
+            canvas.worldCamera = camera;
+
+            NavigableElement origin = Element(Vector3.zero);
+            NavigableElement worldRight = Element(Vector3.right);
+            origin.transform.SetParent(canvas.transform, worldPositionStays: true);
+            worldRight.transform.SetParent(canvas.transform, worldPositionStays: true);
+
+            NavigationBuilder.Wire(new[] { origin, worldRight }, wrap: false);
+
+            Assert.That(origin.Selectable.navigation.selectOnUp, Is.SameAs(worldRight.Selectable));
+            Assert.That(origin.Selectable.navigation.selectOnRight, Is.Null);
+        }
+
         private NavigableElement Element(Vector3 position)
         {
             GameObject created = Create(position);

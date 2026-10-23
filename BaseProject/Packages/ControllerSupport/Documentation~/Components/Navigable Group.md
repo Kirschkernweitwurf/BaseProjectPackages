@@ -43,7 +43,7 @@ The group knows nothing about menus or the game. It is pure UI navigation.
 
 ## How wiring works
 
-`Rebuild()` writes explicit navigation onto each selectable, based on their on-screen positions:
+`Rebuild()` writes explicit navigation onto each selectable, based on their on-screen positions (elements on a world space canvas or on a 3D object are projected through their camera first):
 
 - For each direction, the nearest neighbor inside a 45-degree cone is picked.
 - Elements outside that cone are ignored, so off-axis buttons never get wired by accident.

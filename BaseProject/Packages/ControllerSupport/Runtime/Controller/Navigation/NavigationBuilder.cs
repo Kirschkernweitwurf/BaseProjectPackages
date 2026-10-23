@@ -9,7 +9,8 @@ namespace Base.ControllerSupportPackage.Controller.Navigation
     /// <summary>
     /// Computes and writes explicit four-way navigation across a set of <see cref="NavigableElement"/>s
     /// from their on-screen position. For each element it picks the nearest aligned neighbour in every
-    /// direction, mirroring uGUI's built-in directional scoring.
+    /// direction, mirroring uGUI's built-in directional scoring. Elements on a world space canvas or on a
+    /// plain 3D object are projected through their camera first, so up on the stick is up on the screen.
     /// </summary>
     public static class NavigationBuilder
     {
@@ -131,10 +132,31 @@ namespace Base.ControllerSupportPackage.Controller.Navigation
 
         private static Vector2 GetCenter(Selectable selectable)
         {
-            if (selectable.transform is RectTransform rectTransform)
-                return rectTransform.TransformPoint(rectTransform.rect.center);
+            Vector3 world = selectable.transform is RectTransform rectTransform
+                ? rectTransform.TransformPoint(rectTransform.rect.center)
+                : selectable.transform.position;
 
-            return selectable.transform.position;
+            // An overlay canvas already lays out in screen pixels.
+            Canvas canvas = selectable.GetComponentInParent<Canvas>();
+            if (canvas != null
+                && canvas.rootCanvas.renderMode == RenderMode.ScreenSpaceOverlay)
+                return world;
+
+            Camera camera = GetCamera(canvas);
+
+            // Without a camera there is no screen to project onto, so the world plane stands in for it.
+            return camera == null
+                ? world
+                : camera.WorldToScreenPoint(world);
+        }
+
+        private static Camera GetCamera(Canvas canvas)
+        {
+            if (canvas != null
+                && canvas.rootCanvas.worldCamera != null)
+                return canvas.rootCanvas.worldCamera;
+
+            return Camera.main;
         }
     }
 }

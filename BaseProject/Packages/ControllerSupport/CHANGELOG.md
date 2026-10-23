@@ -8,6 +8,11 @@ Changes made before 1.6.5 were not recorded.
 
 ## [Unreleased]
 
+### Fixed
+
+- `NavigationBuilder` measures elements on a world space canvas or on a 3D object on screen, through their camera,
+  so up on the stick is up on the screen.
+
 ## [1.7.14] - 2026-10-17
 
 ### Changed
