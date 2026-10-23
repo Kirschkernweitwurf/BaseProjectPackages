@@ -8,6 +8,8 @@ Changes made before 1.6.5 were not recorded.
 
 ## [Unreleased]
 
+## [1.8.0] - 2026-10-23
+
 ### Added
 
 - `InputPromptView` shows the button icon of one action on an Image and follows device switches. Shown On picks the

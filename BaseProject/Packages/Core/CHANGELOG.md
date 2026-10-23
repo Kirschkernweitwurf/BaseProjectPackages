@@ -8,6 +8,8 @@ Changes made before 2.1.4 were not recorded.
 
 ## [Unreleased]
 
+## [5.2.0] - 2026-10-23
+
 ### Added
 
 - `MenuManager.ClaimBack` and `ReleaseBack` let something use the Back press for a step of its own, like putting down
