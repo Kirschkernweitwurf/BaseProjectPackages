@@ -31,6 +31,7 @@ The service that keeps track of every menu, opens and closes them by identifier 
 ## Good to know
 
 - Every Menu registers with it on start. Without it, menus cannot open.
+- Something that uses Back for a step of its own, like putting down a card held with a gamepad, calls `ClaimBack(owner)`. While any claim is open, Back neither closes a menu nor opens the default back menu. `ReleaseBack(owner)` hands it back.
 
 ## Related
 

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using Base.AttributesPackage;
 using Base.CorePackage.Input;
@@ -27,6 +28,7 @@ namespace Base.CorePackage.MenuManaging
 
         private readonly PriorityTracker<Menu> _menuPriorityTracker = new();
         private readonly Tracker<MenuIdentifier, Menu> _menuTracker = new();
+        private readonly HashSet<object> _backClaims = new();
 
         /// <summary>
         /// The menu with the highest priority that is currently open and should receive back input.
@@ -225,6 +227,31 @@ namespace Base.CorePackage.MenuManaging
         }
 
         /// <summary>
+        /// Keeps the back action from closing menus or opening the default back menu while
+        /// <paramref name="owner"/> uses it for a step of its own, like putting down a held card. Give it back with
+        /// <see cref="ReleaseBack"/>. Several owners may claim it at once.
+        /// </summary>
+        /// <param name="owner">Who claims the back action, used to release it again.</param>
+        public void ClaimBack(object owner)
+        {
+            if (owner == null)
+            {
+                CustomLogger.LogWarning("Tried to claim the back action without an owner.", this);
+                return;
+            }
+
+            _backClaims.Add(owner);
+        }
+
+        /// <summary>Gives the back action back to the menus. Does nothing for an owner without a claim.</summary>
+        /// <param name="owner">The owner that claimed it with <see cref="ClaimBack"/>.</param>
+        public void ReleaseBack(object owner)
+        {
+            if (owner != null)
+                _backClaims.Remove(owner);
+        }
+
+        /// <summary>
         /// Closes all currently open menus.
         /// </summary>
         private void CloseAll()
@@ -276,6 +303,10 @@ namespace Base.CorePackage.MenuManaging
         /// </summary>
         private void OnBackActionPerformed(InputAction.CallbackContext context)
         {
+            // Something on screen uses back for its own step, like putting down a held card.
+            if (_backClaims.Count > 0)
+                return;
+
             if (_highestPriorityBackMenu != null)
             {
                 _highestPriorityBackMenu.Back();
