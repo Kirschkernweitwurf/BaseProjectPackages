@@ -40,6 +40,7 @@ Shows a tooltip while the pointer hovers this object and hides it when the point
 - A trigger without text and without provider content logs a warning and shows nothing.
 - Text may use TextMeshPro rich text, including `<sprite name="...">` icons when the panel's text has a sprite asset.
 - Code can call **Refresh** to rebuild a visible tooltip after its content changed, for example a countdown.
+- Code can read **Screen Rect** to know where the object sits on screen, for example to point a gamepad cursor at it.
 - If the object is disabled while hovered, the tooltip hides itself.
 - Dragging something across the object shows no tooltip, so tooltips never cover a drop target.
 - Selecting the object with a gamepad or the keyboard, for example a menu button, shows the tooltip beside it.

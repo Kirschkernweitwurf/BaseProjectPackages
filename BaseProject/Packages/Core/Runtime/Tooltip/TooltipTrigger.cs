@@ -50,6 +50,17 @@ namespace Base.CorePackage.Tooltip
         private TooltipService _service;
         private bool _isSelected;
 
+        /// <summary>
+        /// Where the object sits on screen, measured the way Beside Target placement measures it: the anchor, or this
+        /// object, by its rect, its renderers or its collider. For tools that point at the object, like a gamepad
+        /// cursor that walks from tooltip to tooltip.
+        /// </summary>
+        public Rect ScreenRect => TooltipAnchor.Of(AnchorTarget);
+
+        private Transform AnchorTarget => anchor == null
+            ? transform
+            : anchor;
+
 #region Unity Callbacks
         private void Awake()
         {
@@ -187,9 +198,7 @@ namespace Base.CorePackage.Tooltip
                 && Mouse.current != null)
                 return () => TooltipAnchor.AtPoint(Mouse.current.position.ReadValue());
 
-            Transform target = anchor == null
-                ? transform
-                : anchor;
+            Transform target = AnchorTarget;
 
             return () => TooltipAnchor.Of(target);
         }
