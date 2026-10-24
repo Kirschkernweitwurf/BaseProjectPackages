@@ -12,6 +12,8 @@ Changes made before 1.6.5 were not recorded.
 
 - `InputPromptView.IsAvailable` hides a prompt while its action does nothing, so a prompt bar can follow the
   game's state, like showing Put back instead of Pause while a card is held.
+- `InputDeviceTracker` remembers the last device across sessions. A gamepad player who starts the game again sees
+  gamepad prompts from the first frame, as long as a gamepad is plugged in.
 
 ### Fixed
 

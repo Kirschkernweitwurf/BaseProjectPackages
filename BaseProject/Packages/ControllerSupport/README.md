@@ -63,7 +63,7 @@ The single seam between the menu layer and this package. Attach it to a menu and
 
 ## Input prompts
 
-`InputDeviceTracker` is the single source of truth for the active device family (`MouseKeyboard` or `Gamepad`), flipping only on real actuation so a resting stick does not count. It raises `OnDeviceChanged`.
+`InputDeviceTracker` is the single source of truth for the active device family (`MouseKeyboard` or `Gamepad`), flipping only on real actuation so a resting stick does not count. It raises `OnDeviceChanged` and remembers the last device across sessions (PlayerPrefs), so a gamepad player starts with gamepad prompts.
 
 `InputGlyphSet` maps input actions to glyphs for one device family; author one asset per device. `InputGlyphProvider` resolves the right glyph for the active device through `TryGetSprite` for images or `TryGetTmpSpriteTag` for inline TextMeshPro tags, and raises `OnActiveDeviceChanged` so labels can refresh themselves. For a gamepad it prefers the set of the gamepad's kind (`InputDeviceTracker.CurrentGamepadFamily`: Xbox, PlayStation, Switch, Steam Deck, Steam Controller), then the `Generic` set. `InputPromptView` shows one action's icon on an Image.
 
