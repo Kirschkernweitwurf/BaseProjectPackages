@@ -8,6 +8,8 @@ Changes made before 1.6.5 were not recorded.
 
 ## [Unreleased]
 
+## [1.9.0] - 2026-10-24
+
 ### Added
 
 - `InputPromptView.IsAvailable` hides a prompt while its action does nothing, so a prompt bar can follow the
