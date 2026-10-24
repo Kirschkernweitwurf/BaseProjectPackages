@@ -8,6 +8,8 @@ Changes made before 2.1.4 were not recorded.
 
 ## [Unreleased]
 
+## [5.3.0] - 2026-10-24
+
 ### Added
 
 - `TooltipTrigger.ScreenRect` tells where the object sits on screen, measured like Beside Target placement, so
