@@ -8,6 +8,11 @@ Changes made before 1.6.5 were not recorded.
 
 ## [Unreleased]
 
+### Added
+
+- `InputPromptView.IsAvailable` hides a prompt while its action does nothing, so a prompt bar can follow the
+  game's state, like showing Put back instead of Pause while a card is held.
+
 ### Fixed
 
 - `InputGlyphProvider` no longer warns about a missing glyph set for device `Unknown` before the first input.

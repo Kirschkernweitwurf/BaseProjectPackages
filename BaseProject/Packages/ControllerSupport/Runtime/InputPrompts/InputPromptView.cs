@@ -11,7 +11,8 @@ namespace Base.ControllerSupportPackage.InputPrompts
     /// <summary>
     /// Shows the button icon of one action for the device in use, like the A button on a gamepad or Enter on a
     /// keyboard, and follows the player when they switch devices. A prompt for an input only one device has, like
-    /// a shoulder button or the Tab key, shows only while that device is in use.
+    /// a shoulder button or the Tab key, shows only while that device is in use. Whoever knows the game's state can
+    /// hide it while its action does nothing through <see cref="IsAvailable"/>.
     /// </summary>
     [DisallowMultipleComponent]
     public sealed class InputPromptView : MonoBehaviour
@@ -31,6 +32,27 @@ namespace Base.ControllerSupportPackage.InputPrompts
 
         private InputGlyphProvider _glyphs;
         private InputDeviceTracker _devices;
+        private bool _isAvailable = true;
+
+        /// <summary>
+        /// Whether the action does something right now. A prompt whose action would do nothing hides on every device,
+        /// so the player is never promised a button that does not work, like Pause while back puts down a held card.
+        /// </summary>
+        public bool IsAvailable
+        {
+            get => _isAvailable;
+            set
+            {
+                if (value == _isAvailable)
+                    return;
+
+                _isAvailable = value;
+
+                // Before Start the services are not there yet, and Start shows the right state anyway.
+                if (_devices != null)
+                    Refresh();
+            }
+        }
 
 #region Unity Callbacks
         private void Start()
@@ -64,7 +86,8 @@ namespace Base.ControllerSupportPackage.InputPrompts
                 _ => true
             };
 
-            if (!isWanted
+            if (!_isAvailable
+                || !isWanted
                 || !_glyphs.TryGetSprite(action, out Sprite sprite))
             {
                 SetVisible(false);

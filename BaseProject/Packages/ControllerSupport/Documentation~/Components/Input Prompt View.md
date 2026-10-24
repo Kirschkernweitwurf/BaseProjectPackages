@@ -16,7 +16,7 @@ summary: Shows the button icon of one action for the device in use, and follows 
 
 **Tags:** #designer #artist #gamepad #input #ui
 
-Shows the button icon of one action for the device in use: the cross on a PlayStation pad, B on a Switch (the bottom button there), A on an Xbox pad, Enter on a keyboard. It follows the player when they switch devices or pick up another kind of gamepad. A prompt for an input only one device has, like a shoulder button or the Tab key, shows only while that device is in use, so the player always sees every input that works right now and nothing else.
+Shows the button icon of one action for the device in use: the cross on a PlayStation pad, B on a Switch (the bottom button there), A on an Xbox pad, Enter on a keyboard. It follows the player when they switch devices or pick up another kind of gamepad. A prompt for an input only one device has, like a shoulder button or the Tab key, shows only while that device is in use, so the player always sees every input that works right now and nothing else. Game code can also hide it while its action does nothing, through **Is Available**: Pause while back puts down a held card, say.
 
 **Add it:** Inspector › **Add Component** › search `Input Prompt View`. Needs an **Image** on the same GameObject. Only one per GameObject.
 
@@ -26,7 +26,8 @@ Shows the button icon of one action for the device in use: the cross on a PlaySt
 2. Pick the **Action**, for example `UI/Submit`.
 3. Optional: set **Group** to the object holding icon and label, so both hide together.
 4. Set **Shown On** to **Gamepad Only** or **Mouse Keyboard Only** for inputs the other device does not have, like LB or Shift.
-5. The icons come from the [Input Glyph Provider](Input%20Glyph%20Provider.md). Tint the Image as you like; the glyphs are white.
+5. Need it hidden while its action does nothing? Set `IsAvailable` from code. It hides on every device and comes back when set again.
+6. The icons come from the [Input Glyph Provider](Input%20Glyph%20Provider.md). Tint the Image as you like; the glyphs are white.
 
 ## Fields
 
