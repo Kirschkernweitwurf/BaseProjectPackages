@@ -8,6 +8,8 @@ Changes made before 2.1.4 were not recorded.
 
 ## [Unreleased]
 
+## [5.3.1] - 2026-10-24
+
 ### Fixed
 
 - A `PauseMenu` destroyed while open, like when its scene unloads behind it, now ends the pause. Before,
