@@ -8,7 +8,8 @@ using UnityEditor;
 namespace Base.CorePackage.MenuManaging.Menus
 {
     /// <summary>
-    /// Represents the pause menu in the game.
+    /// Represents the pause menu in the game. A pause menu that goes away while open, like with a scene that unloads
+    /// behind it, still ends the pause, so <see cref="IsPaused"/> never stays set with no pause menu left.
     /// </summary>
     public class PauseMenu : Menu
     {
@@ -31,10 +32,27 @@ namespace Base.CorePackage.MenuManaging.Menus
             OnPauseStateChanged?.Invoke(true);
         }
 
+        /// <inheritdoc/>
+        public override void Shutdown()
+        {
+            bool wasPausing = IsOpen
+                && !HasShutDown;
+
+            base.Shutdown();
+
+            // A destroyed menu never closes, so without this the game would count as paused for good.
+            if (wasPausing)
+                Unpause();
+        }
+
         protected override void OnClosed()
         {
             base.OnClosed();
+            Unpause();
+        }
 
+        private static void Unpause()
+        {
             IsPaused = false;
             OnPauseStateChanged?.Invoke(false);
         }

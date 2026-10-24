@@ -8,6 +8,11 @@ Changes made before 2.1.4 were not recorded.
 
 ## [Unreleased]
 
+### Fixed
+
+- A `PauseMenu` destroyed while open, like when its scene unloads behind it, now ends the pause. Before,
+  `PauseMenu.IsPaused` stayed `true` for the rest of the session.
+
 ## [5.3.0] - 2026-10-24
 
 ### Added

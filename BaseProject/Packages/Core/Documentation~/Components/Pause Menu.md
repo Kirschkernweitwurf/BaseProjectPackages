@@ -14,7 +14,7 @@ summary: A Menu that also tracks whether the game is paused.
 
 **Tags:** #designer #menus #ui
 
-A **Menu** that also tracks whether the game is paused, so other systems (and the Pause Menu Button icon) can react. It has the same fields as Menu.
+A **Menu** that also tracks whether the game is paused, so other systems (and the Pause Menu Button icon) can react. It has the same fields as Menu. If it goes away while open, for example because its scene unloads, it still ends the pause.
 
 **Add it:** Inspector › **Add Component** › search `Pause Menu`.
 
