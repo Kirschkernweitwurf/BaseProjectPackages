@@ -15,7 +15,7 @@ summary: Picks the right button icon (keyboard, Xbox, PlayStation, ...) for an a
 
 **Tags:** #programmer #gamepad #input #ui
 
-Picks the right button icon for an action, based on the device in use: a keyboard key, an Xbox button, a PlayStation button. Prompts can show it as an image or inline in a TextMeshPro text, and they refresh when the device changes. For a gamepad it takes the set of the gamepad's kind first, then the **Generic** gamepad set, then any gamepad set.
+Picks the right button icon for an action, based on the device in use: a keyboard key, an Xbox button, a PlayStation button. Prompts can show it as an image or inline in a TextMeshPro text, and they refresh when the device changes. For a gamepad it takes the set of the gamepad's kind first, then the **Generic** gamepad set, then any gamepad set. Before the first input no device is known yet, so prompts stay empty until the player presses something.
 
 **Add it:** Inspector › **Add Component** › search `Input Glyph Provider`.
 

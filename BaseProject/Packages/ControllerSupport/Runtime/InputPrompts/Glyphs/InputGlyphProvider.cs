@@ -107,7 +107,11 @@ namespace Base.ControllerSupportPackage.InputPrompts.Glyphs
             if (_deviceTracker == null)
                 return false;
 
+            // No input has happened yet, so there is no device to show glyphs for. Not an authoring mistake.
             EInputDeviceType device = _deviceTracker.CurrentDevice;
+            if (device == EInputDeviceType.Unknown)
+                return false;
+
             inputGlyphSet = device == EInputDeviceType.Gamepad
                 ? FindGamepadSet(_deviceTracker.CurrentGamepadFamily)
                 : FindSet(set => set.DeviceType == device);

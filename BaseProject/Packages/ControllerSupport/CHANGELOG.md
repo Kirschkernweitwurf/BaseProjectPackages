@@ -8,6 +8,10 @@ Changes made before 1.6.5 were not recorded.
 
 ## [Unreleased]
 
+### Fixed
+
+- `InputGlyphProvider` no longer warns about a missing glyph set for device `Unknown` before the first input.
+
 ## [1.8.0] - 2026-10-23
 
 ### Added
