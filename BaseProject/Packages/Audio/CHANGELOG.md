@@ -6,6 +6,12 @@ All notable changes to this package are recorded here. The format follows
 
 ## [Unreleased]
 
+### Fixed
+
+- The PlayAudioOn components no longer throw when their element gets an event in the frame it turns on, like
+  the first row of a page that is selected right away. They look the audio manager up on the first sound through
+  the new shared base `PlayAudioOnEvent`.
+
 ## [1.1.11] - 2026-10-17
 
 ### Changed

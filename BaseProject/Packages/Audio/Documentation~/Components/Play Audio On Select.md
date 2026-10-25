@@ -33,6 +33,7 @@ Plays an Audio Container when the object becomes the selected UI element (keyboa
 
 ## Good to know
 
+- The Audio Manager is looked up on the first sound, so an element that gets its event in the frame it turns on, like the first row of a page that is selected right away, plays without an error.
 - Needs an Event System in the scene and a Graphic with **Raycast Target** on.
 - An empty sound field logs a warning and stays silent.
 - Usual button setup: **On Hover** + **On Select** for the highlight, **On Submit** for the confirm.
