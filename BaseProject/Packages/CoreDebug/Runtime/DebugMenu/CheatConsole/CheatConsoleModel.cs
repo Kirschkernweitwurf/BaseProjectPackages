@@ -169,10 +169,11 @@ namespace Base.CoreDebugPackage.DebugMenu.CheatConsole
         /// <summary>
         /// Completes <paramref name="currentInput"/> like a shell: up to the end of the next dot-separated word that
         /// every matching command shares, so "date.a" becomes "date.affection" when all its matches go on with
-        /// "affection". A single match is completed whole.
+        /// "affection". Where the matches part ways right after the input, like "date.", the first match's next word
+        /// is filled in. A single match is completed whole.
         /// </summary>
         /// <param name="currentInput">The text currently typed into the console.</param>
-        /// <returns>The completed text, or the input itself when the matches part ways right after it.</returns>
+        /// <returns>The completed text, or the input itself when no command starts with it.</returns>
         public string Complete(string currentInput)
         {
             List<string> matches = GetSuggestions(currentInput);
@@ -187,7 +188,7 @@ namespace Base.CoreDebugPackage.DebugMenu.CheatConsole
 
             return shared.Length > typedLength
                 ? shared
-                : currentInput;
+                : NextWord(matches[0], typedLength);
         }
 
         /// <summary>

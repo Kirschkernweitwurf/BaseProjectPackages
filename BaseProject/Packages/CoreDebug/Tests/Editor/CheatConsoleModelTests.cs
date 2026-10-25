@@ -240,10 +240,10 @@ namespace Base.CoreDebugPackage.Tests
             Assert.That(model.Complete("date.affection"), Is.EqualTo("date.affection."));
         }
 
-        /// <summary>Where the matches part ways right after the typed text, nothing is guessed.</summary>
+        /// <summary>Where the matches part ways right after the input, the first match goes on.</summary>
         [Test]
-        public void CompletionKeepsTheInputWhereMatchesPartWays()
-            => Assert.That(DottedModel().Complete("date."), Is.EqualTo("date."));
+        public void CompletionTakesTheFirstMatchWhereMatchesPartWays()
+            => Assert.That(DottedModel().Complete("date."), Is.EqualTo("date.affection"));
 
         /// <summary>A single match is completed whole, in its own casing.</summary>
         [Test]

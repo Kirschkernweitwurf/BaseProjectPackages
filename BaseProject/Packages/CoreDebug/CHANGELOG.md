@@ -17,7 +17,8 @@ All notable changes to this package are recorded here. The format follows
   open console, a rounded input with a prompt and a hint, suggestions with each command's description that hide
   while empty, and calmer message colors. The "commands reloaded" line on every scene load is gone.
 - Tab in the cheat console completes like a shell: up to the next dot-separated word all matching commands
-  share, so `date.a` becomes `date.affection` instead of the first whole command.
+  share, so `date.a` becomes `date.affection` instead of the first whole command. Where the matches part ways,
+  like after `date.`, it fills in the first match's next word.
 
 ## [1.3.1] - 2026-10-25
 
