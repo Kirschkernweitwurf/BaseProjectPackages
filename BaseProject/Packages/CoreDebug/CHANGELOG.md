@@ -6,6 +6,8 @@ All notable changes to this package are recorded here. The format follows
 
 ## [Unreleased]
 
+## [1.3.1] - 2026-10-25
+
 ### Fixed
 
 - Ctrl+U in the cheat console still opened Undo History in the editor: the shortcut context of 1.3.0 does not
