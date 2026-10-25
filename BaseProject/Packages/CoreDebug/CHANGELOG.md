@@ -6,6 +6,8 @@ All notable changes to this package are recorded here. The format follows
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-10-25
+
 ### Added
 
 - Cheat console: Ctrl+W deletes the word before the caret and Ctrl+U everything before it, like in a shell.
