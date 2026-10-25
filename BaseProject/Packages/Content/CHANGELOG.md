@@ -8,6 +8,16 @@ Changes made before 1.0.5 were not recorded.
 
 ## [Unreleased]
 
+### Added
+
+- `S_RoundedRect`: a white 128 px rounded rectangle sprite with 48 px slice borders, sharp at any corner radius
+  through the Image's pixels per unit multiplier.
+
+### Changed
+
+- The debug menu prefabs are restyled to match CoreDebug 1.4: a see-through dark card, segmented tabs, a rounded
+  input with a prompt, a suggestion box that hides while empty and a smaller Clear button. Needs CoreDebug 1.4.0.
+
 ## [1.0.12] - 2026-10-15
 
 ### Changed

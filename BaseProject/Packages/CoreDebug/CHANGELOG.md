@@ -6,8 +6,16 @@ All notable changes to this package are recorded here. The format follows
 
 ## [Unreleased]
 
+### Removed
+
+- `DebugMenuController` no longer has the `Cheat Console Tween Group` and `Log Console Tween Group` fields; the new
+  tab colors mark the open console.
+
 ### Changed
 
+- The debug menu is restyled: a see-through dark card with crisp rounded corners, segmented tabs that show the
+  open console, a rounded input with a prompt and a hint, suggestions with each command's description that hide
+  while empty, and calmer message colors. The "commands reloaded" line on every scene load is gone.
 - Tab in the cheat console completes like a shell: up to the next dot-separated word all matching commands
   share, so `date.a` becomes `date.affection` instead of the first whole command.
 

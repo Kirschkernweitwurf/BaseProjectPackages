@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Base.AttributesPackage;
 using Base.CorePackage.Input;
 using Base.ServicesPackage;
@@ -22,7 +23,7 @@ namespace Base.CoreDebugPackage.DebugMenu.CheatConsole
         private const string DeleteWordKeyPath = "<Keyboard>/w";
         private const string ModifierComposite = "OneModifier";
         private const string ModifierPart = "Modifier";
-        private const string ReloadedFormat = "[Scene] Cheat commands reloaded ({0} found).";
+        private const string DescriptionFormat = "{0}  <color=#8E8E93>{1}</color>";
 
         // Text editing keys belong to the console alone, so they live here instead of in the shared input asset.
         private readonly InputAction _deleteWord = CreateShortcut(DeleteWordKeyPath);
@@ -93,12 +94,7 @@ namespace Base.CoreDebugPackage.DebugMenu.CheatConsole
         }
 
         // A new scene brings new MonoBehaviours, so instance commands have to be discovered again.
-        private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-        {
-            RebuildCommands();
-
-            view.AppendLog(string.Format(ReloadedFormat, _model.Commands.Count), ECheatConsoleMessageType.Info);
-        }
+        private void OnSceneLoaded(Scene scene, LoadSceneMode mode) => RebuildCommands();
 
         private void RebuildCommands()
         {
@@ -128,7 +124,7 @@ namespace Base.CoreDebugPackage.DebugMenu.CheatConsole
 
             view.SetInputText(completed);
             view.FocusInput();
-            view.ShowSuggestions(_model.GetSuggestions(completed));
+            ShowSuggestions(completed);
         }
 
         private void OnPreviousCommand(InputAction.CallbackContext _)
@@ -151,7 +147,24 @@ namespace Base.CoreDebugPackage.DebugMenu.CheatConsole
             view.FocusInput();
         }
 
-        private void OnInputChanged(string newText) => view.ShowSuggestions(_model.GetSuggestions(newText));
+        private void OnInputChanged(string newText) => ShowSuggestions(newText);
+
+        // Each suggestion carries its description in grey, so the list also tells what a command does.
+        private void ShowSuggestions(string input)
+        {
+            List<string> lines = new();
+
+            foreach (string command in _model.GetSuggestions(input))
+            {
+                string description = _model.Commands[command].Attribute.Description;
+
+                lines.Add(string.IsNullOrEmpty(description)
+                    ? command
+                    : string.Format(DescriptionFormat, command, description));
+            }
+
+            view.ShowSuggestions(lines);
+        }
 
         // The actions run while the console is closed too, so they only edit a focused input.
         private void OnDeleteWord(InputAction.CallbackContext _)

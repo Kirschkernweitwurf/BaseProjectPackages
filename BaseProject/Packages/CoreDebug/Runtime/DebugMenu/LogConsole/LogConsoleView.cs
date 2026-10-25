@@ -19,11 +19,12 @@ namespace Base.CoreDebugPackage.DebugMenu.LogConsole
     public sealed class LogConsoleView : Menu
     {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-        private const string DefaultColor = "#FFFFFF";
-        private const string ErrorColor = "#FF4040";
+        private const string DefaultColor = "#E5E5EA";
+        private const string ErrorColor = "#FF453A";
         private const int MaxLines = 200;
         private const string TimestampFormat = "HH:mm:ss";
-        private const string WarningColor = "#FF9933";
+        private const string TimestampColor = "#8E8E93";
+        private const string WarningColor = "#FF9F0A";
 
         private static readonly Queue<string> BufferedLines = new();
 
@@ -74,7 +75,7 @@ namespace Base.CoreDebugPackage.DebugMenu.LogConsole
             {
                 LogType.Warning => WarningColor,
                 LogType.Error or LogType.Exception or LogType.Assert => ErrorColor,
-                _ => DefaultColor
+                _ => TimestampColor
             };
 
             string timestamp = DateTime.Now.ToString(TimestampFormat, CultureInfo.InvariantCulture);

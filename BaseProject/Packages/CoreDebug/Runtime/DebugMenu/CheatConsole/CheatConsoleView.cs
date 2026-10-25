@@ -16,7 +16,7 @@ namespace Base.CoreDebugPackage.DebugMenu.CheatConsole
     public sealed class CheatConsoleView : Menu
     {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-        private const string CommandPrefix = "> ";
+        private const string CommandPrefix = "\u203A ";
         private const string ErrorPrefix = "[Error] ";
         private const string WarningPrefix = "[Warning] ";
 
@@ -36,10 +36,10 @@ namespace Base.CoreDebugPackage.DebugMenu.CheatConsole
         [Min(1)] [SerializeField] private int maxSuggestions = 5;
 
         [Title("Colors")]
-        [SerializeField] private Color infoColor = Color.white;
-        [SerializeField] private Color warningColor = new(1f, 0.6f, 0.2f);
-        [SerializeField] private Color errorColor = Color.red;
-        [SerializeField] private Color commandColor = new(0.5f, 1f, 0.5f);
+        [SerializeField] private Color infoColor = new(0.898f, 0.898f, 0.918f);
+        [SerializeField] private Color warningColor = new(1f, 0.624f, 0.04f);
+        [SerializeField] private Color errorColor = new(1f, 0.271f, 0.227f);
+        [SerializeField] private Color commandColor = new(0.188f, 0.82f, 0.345f);
 
         private HashSetObjectPool<TMP_Text> _suggestionPool;
 
@@ -133,7 +133,12 @@ namespace Base.CoreDebugPackage.DebugMenu.CheatConsole
 
             _activeSuggestions.Clear();
 
-            if (suggestions == null || suggestions.Count == 0)
+            // An empty box would sit above the input as a bare bar.
+            bool hasSuggestions = suggestions != null
+                && suggestions.Count > 0;
+            suggestionParent.gameObject.SetActive(hasSuggestions);
+
+            if (!hasSuggestions)
                 return;
 
             int count = Mathf.Min(maxSuggestions, suggestions.Count);
