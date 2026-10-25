@@ -167,6 +167,30 @@ namespace Base.CoreDebugPackage.DebugMenu.CheatConsole
         }
 
         /// <summary>
+        /// Completes <paramref name="currentInput"/> like a shell: up to the end of the next dot-separated word that
+        /// every matching command shares, so "date.a" becomes "date.affection" when all its matches go on with
+        /// "affection". A single match is completed whole.
+        /// </summary>
+        /// <param name="currentInput">The text currently typed into the console.</param>
+        /// <returns>The completed text, or the input itself when the matches part ways right after it.</returns>
+        public string Complete(string currentInput)
+        {
+            List<string> matches = GetSuggestions(currentInput);
+            if (matches.Count == 0)
+                return currentInput;
+
+            int typedLength = currentInput.Trim().Length;
+            string shared = NextWord(matches[0], typedLength);
+
+            foreach (string match in matches)
+                shared = SharedStart(shared, NextWord(match, typedLength));
+
+            return shared.Length > typedLength
+                ? shared
+                : currentInput;
+        }
+
+        /// <summary>
         /// Registers a built-in command with the specified name and action.
         /// </summary>
         /// <param name="name">The name of the command.</param>
@@ -223,6 +247,28 @@ namespace Base.CoreDebugPackage.DebugMenu.CheatConsole
             return result == null
                 ? string.Format(ExecutedFormat, commandInfo.Attribute.Command)
                 : result.ToString();
+        }
+
+        // A dot right at the start belongs to the word after it, so "date" goes on to "date.affection".
+        private static string NextWord(string command, int start)
+        {
+            int dot = command.IndexOf('.', start + 1);
+
+            return dot < 0
+                ? command
+                : command[..dot];
+        }
+
+        private static string SharedStart(string first, string second)
+        {
+            int length = 0;
+            int maxLength = Math.Min(first.Length, second.Length);
+
+            while (length < maxLength
+                && char.ToLowerInvariant(first[length]) == char.ToLowerInvariant(second[length]))
+                length++;
+
+            return first[..length];
         }
 
         private static object ConvertArgument(string argument, Type targetType)

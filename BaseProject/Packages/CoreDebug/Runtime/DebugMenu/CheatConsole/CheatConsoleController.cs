@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using Base.AttributesPackage;
 using Base.CorePackage.Input;
 using Base.ServicesPackage;
@@ -126,16 +124,7 @@ namespace Base.CoreDebugPackage.DebugMenu.CheatConsole
 
         private void OnAutoComplete(InputAction.CallbackContext _)
         {
-            string current = view.GetInputText();
-
-            List<string> suggestions = view.GetCurrentSuggestions();
-            if (suggestions.Count == 0)
-                suggestions = _model.GetSuggestions(current);
-
-            string completed = current;
-            if (suggestions.Count > 0
-                && !string.Equals(current, suggestions[0], StringComparison.OrdinalIgnoreCase))
-                completed = suggestions[0];
+            string completed = _model.Complete(view.GetInputText());
 
             view.SetInputText(completed);
             view.FocusInput();

@@ -230,6 +230,31 @@ namespace Base.CoreDebugPackage.Tests
             Assert.That(_model.GetSuggestions("   "), Is.Empty);
         }
 
+        /// <summary>Tab fills in the next word all matches share, not the first whole command.</summary>
+        [Test]
+        public void CompletionStopsAtTheNextSharedWord()
+        {
+            CheatConsoleModel model = DottedModel();
+
+            Assert.That(model.Complete("date.a"), Is.EqualTo("date.affection"));
+            Assert.That(model.Complete("date.affection"), Is.EqualTo("date.affection."));
+        }
+
+        /// <summary>Where the matches part ways right after the typed text, nothing is guessed.</summary>
+        [Test]
+        public void CompletionKeepsTheInputWhereMatchesPartWays()
+            => Assert.That(DottedModel().Complete("date."), Is.EqualTo("date."));
+
+        /// <summary>A single match is completed whole, in its own casing.</summary>
+        [Test]
+        public void CompletionFillsASingleMatchWhole()
+            => Assert.That(DottedModel().Complete("DATE.W"), Is.EqualTo("date.win"));
+
+        /// <summary>Text no command starts with stays as it is.</summary>
+        [Test]
+        public void CompletionKeepsTextWithoutMatches()
+            => Assert.That(DottedModel().Complete("zzz"), Is.EqualTo("zzz"));
+
         /// <summary>A built in command is registered and runs like any other.</summary>
         [Test]
         public void ABuiltinCommandIsRegisteredAndRuns()
@@ -301,6 +326,14 @@ namespace Base.CoreDebugPackage.Tests
 
             Assert.That(duplicated.Commands.Count, Is.EqualTo(1));
         }
+
+        private CheatConsoleModel DottedModel() => new(new List<CheatCommandInfo>
+        {
+            Command("date.affection.add", nameof(CheatCommandProbe.Ping)),
+            Command("date.affection.fill", nameof(CheatCommandProbe.Ping)),
+            Command("date.card.draw", nameof(CheatCommandProbe.Ping)),
+            Command("date.win", nameof(CheatCommandProbe.Ping))
+        });
 
         private CheatCommandInfo Command(string command, string methodName)
         {
