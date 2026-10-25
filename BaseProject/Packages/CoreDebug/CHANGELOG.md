@@ -19,6 +19,8 @@ All notable changes to this package are recorded here. The format follows
 - Tab in the cheat console completes like a shell: up to the next dot-separated word all matching commands
   share, so `date.a` becomes `date.affection` instead of the first whole command. Where the matches part ways,
   like after `date.`, it fills in the first match's next word.
+- Ctrl+W treats a dot as a word of its own, so `date.affection.add` goes back one step at a time:
+  `date.affection.`, `date.affection`, `date.`.
 
 ## [1.3.1] - 2026-10-25
 

@@ -19,6 +19,7 @@ namespace Base.CoreDebugPackage.DebugMenu.CheatConsole
         private const string CommandPrefix = "\u203A ";
         private const string ErrorPrefix = "[Error] ";
         private const string WarningPrefix = "[Warning] ";
+        private const char WordSeparator = '.';
 
         private readonly List<TMP_Text> _activeSuggestions = new();
 
@@ -112,7 +113,8 @@ namespace Base.CoreDebugPackage.DebugMenu.CheatConsole
         }
 
         /// <summary>
-        /// Deletes the word before the caret and the spaces after it, like Ctrl+W in a shell.
+        /// Deletes the word before the caret and the spaces after it, like Ctrl+W in a shell. A dot counts as a word of
+        /// its own, so "date.affection.add" goes back one step at a time: "date.affection.", "date.affection", "date.".
         /// </summary>
         public void DeleteWordBeforeCaret() => DeleteBeforeCaret(FindWordStart(InputField.text,
             InputField.stringPosition));
@@ -192,7 +194,8 @@ namespace Base.CoreDebugPackage.DebugMenu.CheatConsole
                 && (keyboard.wKey.isPressed || keyboard.uKey.isPressed);
         }
 
-        // Like a shell: first the spaces right before the caret, then the word in front of them.
+        // Like a shell: first the spaces right before the caret, then the word in front of them, where a dot is a word
+        // of its own.
         private static int FindWordStart(string text, int caret)
         {
             int start = caret;
@@ -201,8 +204,13 @@ namespace Base.CoreDebugPackage.DebugMenu.CheatConsole
                 && char.IsWhiteSpace(text[start - 1]))
                 start--;
 
+            if (start > 0
+                && text[start - 1] == WordSeparator)
+                return start - 1;
+
             while (start > 0
-                && !char.IsWhiteSpace(text[start - 1]))
+                && !char.IsWhiteSpace(text[start - 1])
+                && text[start - 1] != WordSeparator)
                 start--;
 
             return start;
