@@ -6,6 +6,12 @@ All notable changes to this package are recorded here. The format follows
 
 ## [Unreleased]
 
+### Fixed
+
+- Ctrl+U in the cheat console still opened Undo History in the editor: the shortcut context of 1.3.0 does not
+  catch main menu shortcuts. While the console input has focus in play mode, the Game view's own option to ignore
+  main menu shortcuts is now switched on, and the user's choice comes back afterwards.
+
 ## [1.3.0] - 2026-10-25
 
 ### Added
