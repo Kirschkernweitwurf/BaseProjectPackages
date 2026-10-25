@@ -6,6 +6,8 @@ All notable changes to this package are recorded here. The format follows
 
 ## [Unreleased]
 
+## [1.4.0] - 2026-10-25
+
 ### Removed
 
 - `DebugMenuController` no longer has the `Cheat Console Tween Group` and `Log Console Tween Group` fields; the new

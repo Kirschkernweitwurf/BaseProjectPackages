@@ -8,6 +8,8 @@ Changes made before 1.0.5 were not recorded.
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-10-25
+
 ### Added
 
 - `S_RoundedRect`: a white 128 px rounded rectangle sprite with 48 px slice borders, sharp at any corner radius
