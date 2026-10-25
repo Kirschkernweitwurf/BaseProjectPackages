@@ -1,0 +1,18 @@
+{
+  "name": "Base.CoreDebugPackage.Editor",
+  "rootNamespace": "Base.CoreDebugPackage.Editor",
+  "references": [
+    "GUID:af8faaf5130f448c85d671dfbe632aad",
+    "GUID:b83899730c1042cb9ceebcf1de24f93b",
+    "GUID:6055be8ebefd69e48b49212b09b47b2f"
+  ],
+  "includePlatforms": ["Editor"],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

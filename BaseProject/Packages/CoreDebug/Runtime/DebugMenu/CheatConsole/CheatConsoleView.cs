@@ -5,6 +5,7 @@ using Base.CorePackage.MenuManaging;
 using Base.UtilityPackage.Pooling;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 namespace Base.CoreDebugPackage.DebugMenu.CheatConsole
@@ -48,6 +49,7 @@ namespace Base.CoreDebugPackage.DebugMenu.CheatConsole
             base.Awake();
 
             _suggestionPool = new HashSetObjectPool<TMP_Text>(suggestionPrefab, suggestionParent, ResetSuggestion);
+            InputField.onValidateInput = SkipShortcutLetter;
         }
 #endregion
 
@@ -110,6 +112,17 @@ namespace Base.CoreDebugPackage.DebugMenu.CheatConsole
         }
 
         /// <summary>
+        /// Deletes the word before the caret and the spaces after it, like Ctrl+W in a shell.
+        /// </summary>
+        public void DeleteWordBeforeCaret() => DeleteBeforeCaret(FindWordStart(InputField.text,
+            InputField.stringPosition));
+
+        /// <summary>
+        /// Deletes everything before the caret, like Ctrl+U in a shell.
+        /// </summary>
+        public void DeleteLineBeforeCaret() => DeleteBeforeCaret(0);
+
+        /// <summary>
         /// Shows a list of suggestion texts below the input field.
         /// </summary>
         /// <param name="suggestions">The suggestions to show, capped by the configured maximum.</param>
@@ -157,6 +170,49 @@ namespace Base.CoreDebugPackage.DebugMenu.CheatConsole
             ECheatConsoleMessageType.Command => CommandPrefix,
             _ => string.Empty
         };
+
+        // Some platforms send the letter of Ctrl+W or Ctrl+U along, which the field would type. Only those two keys
+        // count, so Ctrl+V still pastes and AltGr, which is Ctrl+Alt on Windows, still types characters like @.
+        private static char SkipShortcutLetter(string text, int index, char addedChar) => IsShortcutHeld()
+            ? '\0'
+            : addedChar;
+
+        private static bool IsShortcutHeld()
+        {
+            Keyboard keyboard = Keyboard.current;
+
+            return keyboard != null
+                && keyboard.ctrlKey.isPressed
+                && !keyboard.altKey.isPressed
+                && (keyboard.wKey.isPressed || keyboard.uKey.isPressed);
+        }
+
+        // Like a shell: first the spaces right before the caret, then the word in front of them.
+        private static int FindWordStart(string text, int caret)
+        {
+            int start = caret;
+
+            while (start > 0
+                && char.IsWhiteSpace(text[start - 1]))
+                start--;
+
+            while (start > 0
+                && !char.IsWhiteSpace(text[start - 1]))
+                start--;
+
+            return start;
+        }
+
+        private void DeleteBeforeCaret(int start)
+        {
+            int caret = InputField.stringPosition;
+
+            if (start >= caret)
+                return;
+
+            InputField.text = InputField.text.Remove(start, caret - start);
+            InputField.stringPosition = start;
+        }
 
         private void ResetSuggestion(TMP_Text text)
         {

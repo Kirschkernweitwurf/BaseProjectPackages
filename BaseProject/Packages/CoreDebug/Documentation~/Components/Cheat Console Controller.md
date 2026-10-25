@@ -5,7 +5,7 @@ audience: Programmers
 tags:
   - programmer
   - debugging
-summary: "Runs cheat commands: Enter runs, Tab completes, arrow keys walk the history."
+summary: "Runs cheat commands: Enter runs, Tab completes, arrow keys walk the history, Ctrl+W and Ctrl+U delete."
 requires:
   - Cheat Console View
 ---
@@ -15,7 +15,7 @@ requires:
 
 **Tags:** #programmer #debugging
 
-Runs the cheat console. **Enter** runs the typed command, **Tab** completes it, **Up** and **Down** walk through earlier commands.
+Runs the cheat console. **Enter** runs the typed command, **Tab** completes it, **Up** and **Down** walk through earlier commands. Like in a shell, **Ctrl+W** deletes the word before the cursor and **Ctrl+U** everything before it. In the editor these keys go to the console while it has focus, so Ctrl+U does not open Undo History.
 
 **Add it:** Inspector › **Add Component** › search `Cheat Console Controller`. Needs **Cheat Console View** on the same GameObject.
 

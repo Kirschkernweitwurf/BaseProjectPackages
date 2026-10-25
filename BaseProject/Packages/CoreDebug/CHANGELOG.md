@@ -6,6 +6,12 @@ All notable changes to this package are recorded here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- Cheat console: Ctrl+W deletes the word before the caret and Ctrl+U everything before it, like in a shell.
+  While the console input has focus in play mode, the editor leaves these keys alone, so Ctrl+U no longer opens
+  Undo History over the game.
+
 ## [1.2.0] - 2026-10-22
 
 ### Added
