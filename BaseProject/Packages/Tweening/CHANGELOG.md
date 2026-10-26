@@ -6,7 +6,7 @@ All notable changes to this package are recorded here. The format follows
 
 Changes made before 1.0.11 were not recorded.
 
-## [Unreleased]
+## [1.1.0] - 2026-10-26
 
 ### Added
 
