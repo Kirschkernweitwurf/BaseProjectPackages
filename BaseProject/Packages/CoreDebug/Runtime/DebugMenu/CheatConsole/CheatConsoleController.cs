@@ -25,17 +25,21 @@ namespace Base.CoreDebugPackage.DebugMenu.CheatConsole
         private const string ModifierPart = "Modifier";
         private const string DescriptionFormat = "{0}  <color=#8E8E93>{1}</color>";
 
-        // Text editing keys belong to the console alone, so they live here instead of in the shared input asset.
-        private readonly InputAction _deleteWord = CreateShortcut(DeleteWordKeyPath);
-        private readonly InputAction _deleteLine = CreateShortcut(DeleteLineKeyPath);
-
         [GetComponent] [SerializeField] private CheatConsoleView view;
 
         private CheatConsoleModel _model;
 
+        // Text editing keys belong to the console alone, so they live here instead of in the shared input asset.
+        private InputAction _deleteWord;
+        private InputAction _deleteLine;
+
 #region Unity Callbacks
+        // The shortcuts are built here, not in field initializers: those run in the constructor, where the Input
+        // System is not ready and throws.
         private void Awake()
         {
+            _deleteWord = CreateShortcut(DeleteWordKeyPath);
+            _deleteLine = CreateShortcut(DeleteLineKeyPath);
             RebuildCommands();
 
             SceneManager.sceneLoaded += OnSceneLoaded;

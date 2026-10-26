@@ -6,6 +6,11 @@ All notable changes to this package are recorded here. The format follows
 
 ## [Unreleased]
 
+### Fixed
+
+- `CheatConsoleController` no longer throws a NullReferenceException at every play start: its Ctrl+W and Ctrl+U
+  shortcuts are now built in `Awake` instead of in field initializers, where the Input System is not ready.
+
 ## [1.4.0] - 2026-10-25
 
 ### Removed
