@@ -80,6 +80,10 @@ namespace Base.AudioPackage
                 return null;
             }
 
+            // A placeholder without clips is hooked up ahead of its sound, so silence is expected here.
+            if (container.IsWaitingForClips)
+                return null;
+
             AudioClip clip = container.GetRandomClip();
             if (clip == null)
             {

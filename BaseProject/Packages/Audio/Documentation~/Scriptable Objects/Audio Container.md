@@ -29,7 +29,8 @@ If you put several clips in one container, a random one is picked each time it p
 | Field | What it does |
 | --- | --- |
 | **Audio Type** | Which mixer group and pool the sound uses: `Sfx2D`, `Sfx3D`, `Music`, or `UI` |
-| **Clips** | The clips to choose from. One is picked at random per play. Must not be empty. |
+| **Clips** | The clips to choose from. One is picked at random per play. Must not be empty, unless the container is a placeholder. |
+| **Is Placeholder** | Marks a sound that is hooked up before its clips exist. While it has no clips it plays nothing and logs nothing. Turn it off once the clips are in. |
 | **Delay** | Seconds to wait before the sound starts. `0` plays immediately. |
 | **Ignore Pause** | Keep playing while the game is paused. Turn this on for UI sounds. |
 | **Loop** | Repeat the clip until it is stopped |
@@ -45,6 +46,7 @@ If you put several clips in one container, a random one is picked each time it p
 
 ## Tips
 
+- Hooking the game up before the sounds are made? Create the containers empty with **Is Placeholder** on. The game stays silent where they play, and the sound designer fills them in later.
 - **Max Clips Playing** is your friend for sounds that can spam, like card plays or hit sounds. A value of `3` or `4` keeps things from turning into noise.
 - Turn on **Ignore Pause** for anything the player clicks in a pause menu, otherwise it will be silent.
 - Containers stored under `Assets/ScriptableObjects/AudioContainer` are checked by the Unused Audio Clips tool. Keeping them there prevents clips from being reported as unused by mistake.

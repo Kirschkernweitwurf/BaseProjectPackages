@@ -6,6 +6,12 @@ All notable changes to this package are recorded here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- `AudioContainer` has an **Is Placeholder** toggle for sounds that are hooked up before their clips exist. An
+  empty placeholder plays nothing and logs nothing, and the Clips field no longer reports it as empty. The
+  inspector warns when a placeholder already has clips.
+
 ### Fixed
 
 - The PlayAudioOn components no longer throw when their element gets an event in the frame it turns on, like

@@ -76,6 +76,14 @@ namespace Base.AudioPackage.Tests
             => SetBool(container, nameof(AudioContainer.IgnorePause), ignorePause);
 
         /// <summary>
+        /// Sets whether the container is a placeholder waiting for its clips.
+        /// </summary>
+        /// <param name="container">The container to edit.</param>
+        /// <param name="isPlaceholder">The value to write.</param>
+        internal static void SetPlaceholder(AudioContainer container, bool isPlaceholder)
+            => SetBool(container, nameof(AudioContainer.IsPlaceholder), isPlaceholder);
+
+        /// <summary>
         /// Sets whether the container loops.
         /// </summary>
         /// <param name="container">The container to edit.</param>

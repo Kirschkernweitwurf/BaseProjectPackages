@@ -150,6 +150,35 @@ namespace Base.AudioPackage.Tests
         }
 
         /// <summary>
+        /// A placeholder without clips is hooked up ahead of its sound, so the manager plays it silently
+        /// instead of reporting a wiring mistake.
+        /// </summary>
+        [Test]
+        public void AnEmptyPlaceholderIsWaitingForClips()
+        {
+            AudioTestObjects.SetClips(_container);
+            AudioTestObjects.SetPlaceholder(_container, isPlaceholder: true);
+
+            Assert.That(_container.IsWaitingForClips, Is.True);
+        }
+
+        /// <summary>
+        /// Once the clips are in, a forgotten placeholder flag must not silence them, and an empty container
+        /// that is no placeholder stays a wiring mistake.
+        /// </summary>
+        [Test]
+        public void OnlyAnEmptyPlaceholderIsWaitingForClips()
+        {
+            AudioTestObjects.SetClips(_container, CreateClip(FirstClipName));
+            AudioTestObjects.SetPlaceholder(_container, isPlaceholder: true);
+            Assert.That(_container.IsWaitingForClips, Is.False);
+
+            AudioTestObjects.SetClips(_container);
+            AudioTestObjects.SetPlaceholder(_container, isPlaceholder: false);
+            Assert.That(_container.IsWaitingForClips, Is.False);
+        }
+
+        /// <summary>
         /// Every playback setting is an auto property behind a serialized backing field. If a rename ever
         /// split the two apart, the inspector would write to a field nothing reads.
         /// </summary>

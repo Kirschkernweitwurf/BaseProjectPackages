@@ -21,8 +21,13 @@ namespace Base.AudioPackage
 
         [field: Tooltip("Clips this container can play. One is picked at random on every play, so adding several"
             + " variations keeps repeated sounds from sounding identical.")]
-        [field: NotNullOrEmpty]
+        [field: ValidateInput(nameof(ValidateClips))]
         [field: SerializeField] public AudioClip[] Clips { get; private set; } = System.Array.Empty<AudioClip>();
+
+        [field: Tooltip("Whether the container is a placeholder waiting for its clips. While it has none, playing it"
+            + " stays silent and reports nothing, so the game can be hooked up before the sounds exist. Turn it off"
+            + " once the clips are in.")]
+        [field: SerializeField] public bool IsPlaceholder { get; private set; }
 
         [field: Tooltip("Seconds to wait before playback starts. Leave at 0 to play immediately.")]
         [field: Min(0f)]
@@ -56,10 +61,32 @@ namespace Base.AudioPackage
         public bool HasUnlimitedClips => MaxClipsPlaying < 0;
 
         /// <summary>
+        /// Whether the container is a placeholder that has no clips yet, so playing it stays silent on purpose.
+        /// </summary>
+        public bool IsWaitingForClips => IsPlaceholder
+            && (Clips == null
+                || Clips.Length == 0);
+
+        /// <summary>
         /// Picks one of the assigned clips at random. An empty slot in the array is reported by the caller
         /// instead of being skipped here, so the wrong data gets fixed instead of hidden.
         /// </summary>
         /// <returns>A clip to play, or null if the container has none assigned.</returns>
         public AudioClip GetRandomClip() => Clips.GetRandomElement();
+
+        private ValidationResult ValidateClips(AudioClip[] clips)
+        {
+            bool isEmpty = clips == null
+                || clips.Length == 0;
+
+            if (isEmpty)
+                return IsPlaceholder
+                    ? ValidationResult.Valid
+                    : ValidationResult.Error("Add at least one clip, or mark the container as a placeholder.");
+
+            return IsPlaceholder
+                ? ValidationResult.Warning("Has clips but is still marked as a placeholder. Turn the placeholder off.")
+                : ValidationResult.Valid;
+        }
     }
 }
