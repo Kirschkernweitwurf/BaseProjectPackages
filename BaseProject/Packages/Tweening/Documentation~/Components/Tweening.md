@@ -90,3 +90,4 @@ The needed component and its reference are filled in for you when you add the tw
 ## Also in this package
 
 - [🗞️ Tween Runner](Tween%20Runner.md): the service that moves every tween. It sits on the manager prefab.
+- [📖 Tweening in Code](Tweening%20in%20Code.md): tweens, timelines and effects from code, as a replacement for DOTween.

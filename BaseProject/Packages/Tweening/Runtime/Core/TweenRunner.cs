@@ -42,6 +42,7 @@ namespace Base.TweeningPackage.Core
         private readonly HashSet<ITween> _pendingRemovalSet = new();
         private readonly List<ITween> _pendingAdditions = new();
         private readonly HashSet<ITween> _pendingAdditionSet = new();
+        private readonly List<TweenBase> _matches = new();
 
         private bool _skipNextUpdate;
         private bool _isUpdating;
@@ -52,7 +53,7 @@ namespace Base.TweeningPackage.Core
             if (_skipNextUpdate)
             {
                 _skipNextUpdate = false;
-                ProcessTweens(0f);
+                ProcessTweens(0f, 0f);
                 return;
             }
 
@@ -61,7 +62,10 @@ namespace Base.TweeningPackage.Core
             if (maxUnscaledDeltaTime > 0f && dt > maxUnscaledDeltaTime)
                 dt = maxUnscaledDeltaTime;
 
-            ProcessTweens(dt);
+            // Scaled time follows the same cap, so a hitch cannot fast-forward a scaled tween either.
+            float scaledDt = Mathf.Min(Time.deltaTime, dt * Time.timeScale);
+
+            ProcessTweens(dt, scaledDt);
         }
 
         private void OnApplicationPause(bool isPaused)
@@ -129,6 +133,43 @@ namespace Base.TweeningPackage.Core
         }
 
         /// <summary>
+        /// Stops every running tween whose <see cref="TweenBase.Target"/> is <paramref name="target"/>. Tweens inside a
+        /// <see cref="TweenTimeline"/> belong to it and are stopped with it.
+        /// </summary>
+        /// <param name="target">The target the tweens were made for, or set with
+        /// <see cref="TweenOptions.SetTarget{T}"/>.</param>
+        /// <param name="complete">True to snap each tween to its end first.</param>
+        /// <returns>How many tweens were stopped.</returns>
+        public int Kill(object target, bool complete = false)
+        {
+            if (target == null)
+                return 0;
+
+            _matches.Clear();
+
+            foreach (ITween tween in _tweens)
+            {
+                if (tween is TweenBase tweenBase
+                    && Equals(tweenBase.Target, target))
+                    _matches.Add(tweenBase);
+            }
+
+            foreach (ITween tween in _pendingAdditions)
+            {
+                if (tween is TweenBase tweenBase
+                    && Equals(tweenBase.Target, target))
+                    _matches.Add(tweenBase);
+            }
+
+            foreach (TweenBase tween in _matches)
+                tween.Stop(complete);
+
+            int count = _matches.Count;
+            _matches.Clear();
+            return count;
+        }
+
+        /// <summary>
         /// With domain reload disabled, subscribers registered in a previous play mode session survive
         /// into the next one and would be invoked a second time. Drop them before anything runs.
         /// </summary>
@@ -140,15 +181,29 @@ namespace Base.TweeningPackage.Core
             OnTweenDeregistered = null;
         }
 
-        private void ProcessTweens(float deltaTime)
+        private void ProcessTweens(float unscaledDeltaTime, float scaledDeltaTime)
         {
             _isUpdating = true;
 
             for (int i = 0; i < _tweens.Count; i++)
             {
                 ITween tween = _tweens[i];
+                TweenBase tweenBase = tween as TweenBase;
 
-                tween.Tick(deltaTime);
+                // A tween linked to a destroyed GameObject ends quietly; that is what the link is for.
+                if (tweenBase != null
+                    && tweenBase.IsLinkLost)
+                {
+                    tweenBase.Stop();
+                    continue;
+                }
+
+                bool isScaled = tweenBase != null
+                    && !tweenBase.IsUnscaled;
+
+                tween.Tick(isScaled
+                    ? scaledDeltaTime
+                    : unscaledDeltaTime);
                 OnTweenUpdated?.Invoke(tween);
 
                 if (tween.IsCompleted && _pendingRemovalSet.Add(tween))

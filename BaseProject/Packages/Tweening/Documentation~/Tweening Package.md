@@ -11,7 +11,7 @@ summary: Animations without code.
 
 **Tags:** #animation
 
-Animations without code. Put a tween component on an object, set the values, and let a Tween Group play it.
+Animations without code. Put a tween component on an object, set the values, and let a Tween Group play it. Programmers can also tween straight from code, with timelines, loops and effects like punch and jump.
 
 ## Components
 
@@ -89,6 +89,7 @@ Use a profile when the same animation repeats across objects. Use a settings ass
 | --- | --- |
 | Animate something | The [📖 Tweening guide](Components/Tweening.md). A tween does nothing until a [Tween Group](Components/Tween%20Group.md) plays it. |
 | Add hover or click feedback | [UI Event Trigger](Components/UI%20Event%20Trigger.md) |
+| Animate from code, or replace DOTween | The [📖 Tweening in Code](Components/Tweening%20in%20Code.md) guide |
 | Reuse an animation across objects | A [tween profile](Scriptable%20Objects/Float%20Tween%20Profile.md) or a shared [settings asset](Scriptable%20Objects/Tween%20Settings.md) |
 
 ## Reading these docs

@@ -8,6 +8,23 @@ Changes made before 1.0.11 were not recorded.
 
 ## [Unreleased]
 
+### Added
+
+- Tweening from code, as a replacement for DOTween: shortcuts like `transform.TweenScale`, `rect.TweenAnchorPos`,
+  `group.TweenFade` and `graphic.TweenColor`, plus punch, jump and path effects. `Tweens.To` and `Tweens.Value` tween
+  any value, `Tweens.Delay` calls something later, and `Tweens.Kill` stops every tween of a target.
+- `TweenTimeline` (`Tweens.Timeline()`): places tweens and callbacks with Append, Join, Insert and Prepend, and loops,
+  plays back and forth, stops or completes them as one.
+- Fluent options for every tween: `SetEase` (with an overshoot for the back easings), `SetDelay`, `SetLoops`,
+  `SetUnscaledTime`, `SetLink`, `SetTarget`, `WhenComplete` and `WhenKilled`.
+- Easings: InCubic, OutCubic, InSine, OutSine, InOutSine, InQuart, OutQuart, InOutQuart, InBack and InOutBack.
+- The guide page Tweening in Code, with a table for moving from DOTween.
+
+### Changed
+
+- A tween can run on scaled time; unscaled stays the default.
+- A tween made without a Unity object no longer stops at once with a warning, so plain values can be tweened.
+
 ## [1.0.22] - 2026-10-17
 
 ### Changed

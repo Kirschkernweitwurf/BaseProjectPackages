@@ -32,8 +32,12 @@ The service that advances every running tween each frame and announces when twee
 ## Good to know
 
 - Without a Tween Runner in the scene, no tween moves at all.
+- Tweens run on unscaled time unless set to scaled with `SetUnscaledTime(false)`. Both are capped by **Max Unscaled Delta Time**, so a hitch cannot fast-forward them.
+- A tween linked to a GameObject with `SetLink` stops quietly once that GameObject is destroyed.
+- `Tweens.Kill(target)` asks the runner to stop every tween of a target. See [Tweening in Code](Tweening%20in%20Code.md).
 
 ## Related
 
 - [🔖 Tween Group](Tween%20Group.md)
 - [📖 Tweening guide](Tweening.md)
+- [📖 Tweening in Code](Tweening%20in%20Code.md)

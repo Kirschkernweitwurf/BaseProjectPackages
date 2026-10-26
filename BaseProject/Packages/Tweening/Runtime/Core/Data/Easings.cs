@@ -35,6 +35,11 @@ namespace Base.TweeningPackage.Core.Data
         private const float ElasticPeriod = 2f * Mathf.PI / 3f;
 
         /// <summary>
+        /// Scales the overshoot of the in-out back easing, taken from the reference curves on easings.net.
+        /// </summary>
+        private const float InOutBackScale = 1.525f;
+
+        /// <summary>
         /// Gets the easing function corresponding to the specified <see cref="EEasingType"/>.
         /// </summary>
         /// <param name="type">The type of easing function to retrieve.</param>
@@ -55,7 +60,32 @@ namespace Base.TweeningPackage.Core.Data
             EEasingType.EaseInOutExpo => EaseInOutExpo,
             EEasingType.EaseInElastic => EaseInElastic,
             EEasingType.EaseOutElastic => EaseOutElastic,
+            EEasingType.EaseInCubic => EaseInCubic,
+            EEasingType.EaseOutCubic => EaseOutCubic,
+            EEasingType.EaseInSine => EaseInSine,
+            EEasingType.EaseOutSine => EaseOutSine,
+            EEasingType.EaseInOutSine => EaseInOutSine,
+            EEasingType.EaseInQuart => EaseInQuart,
+            EEasingType.EaseOutQuart => EaseOutQuart,
+            EEasingType.EaseInOutQuart => EaseInOutQuart,
+            EEasingType.EaseInBack => EaseInBack,
+            EEasingType.EaseInOutBack => EaseInOutBack,
             _ => Linear
+        };
+
+        /// <summary>
+        /// Gets the easing function for <paramref name="type"/>, with <paramref name="overshoot"/> as the strength of
+        /// the back easings. Other easings ignore it.
+        /// </summary>
+        /// <param name="type">The type of easing function to retrieve.</param>
+        /// <param name="overshoot">How far the back easings shoot past the end. 1.70158 is the standard curve.</param>
+        /// <returns>A delegate representing the easing function.</returns>
+        public static Func<float, float> Get(EEasingType type, float overshoot) => type switch
+        {
+            EEasingType.EaseOutBack => t => OutBack(t, overshoot),
+            EEasingType.EaseInBack => t => InBack(t, overshoot),
+            EEasingType.EaseInOutBack => t => InOutBack(t, overshoot),
+            _ => Get(type)
         };
 
         /// <summary>
@@ -129,6 +159,81 @@ namespace Base.TweeningPackage.Core.Data
             => 1f + BackReturnFactor * Mathf.Pow(t - 1f, 3f) + BackOvershoot * Mathf.Pow(t - 1f, 2f);
 
         /// <summary>
+        /// Acceleration that first pulls back below the start value.
+        /// </summary>
+        private static float EaseInBack(float t) => InBack(t, BackOvershoot);
+
+        /// <summary>
+        /// Pulls back below the start, then overshoots the end before settling onto it.
+        /// </summary>
+        private static float EaseInOutBack(float t) => InOutBack(t, BackOvershoot);
+
+        /// <summary>
+        /// Cubic acceleration from a standstill.
+        /// </summary>
+        private static float EaseInCubic(float t) => t * t * t;
+
+        /// <summary>
+        /// Cubic deceleration into the end value.
+        /// </summary>
+        private static float EaseOutCubic(float t) => 1f - Mathf.Pow(1f - t, 3f);
+
+        /// <summary>
+        /// Gentle sine-shaped acceleration from a standstill.
+        /// </summary>
+        private static float EaseInSine(float t) => 1f - Mathf.Cos(t * Mathf.PI / 2f);
+
+        /// <summary>
+        /// Gentle sine-shaped deceleration into the end value.
+        /// </summary>
+        private static float EaseOutSine(float t) => Mathf.Sin(t * Mathf.PI / 2f);
+
+        /// <summary>
+        /// Gentle sine-shaped acceleration and deceleration, the softest in-out curve. Suits breathing loops.
+        /// </summary>
+        private static float EaseInOutSine(float t) => -(Mathf.Cos(Mathf.PI * t) - 1f) / 2f;
+
+        /// <summary>
+        /// Quartic acceleration from a standstill.
+        /// </summary>
+        private static float EaseInQuart(float t) => t * t * t * t;
+
+        /// <summary>
+        /// Quartic deceleration into the end value.
+        /// </summary>
+        private static float EaseOutQuart(float t) => 1f - Mathf.Pow(1f - t, 4f);
+
+        /// <summary>
+        /// Quartic acceleration followed by quartic deceleration.
+        /// </summary>
+        private static float EaseInOutQuart(float t) => t < 0.5f
+            ? 8f * t * t * t * t
+            : 1f - Mathf.Pow(-2f * t + 2f, 4f) / 2f;
+
+        /// <summary>
+        /// Out-back with a chosen overshoot. Ends exactly on 1 whatever the overshoot.
+        /// </summary>
+        private static float OutBack(float t, float overshoot)
+            => 1f + (overshoot + 1f) * Mathf.Pow(t - 1f, 3f) + overshoot * Mathf.Pow(t - 1f, 2f);
+
+        /// <summary>
+        /// In-back with a chosen overshoot.
+        /// </summary>
+        private static float InBack(float t, float overshoot) => (overshoot + 1f) * t * t * t - overshoot * t * t;
+
+        /// <summary>
+        /// In-out-back with a chosen overshoot, scaled so each half overshoots as much as the plain curves.
+        /// </summary>
+        private static float InOutBack(float t, float overshoot)
+        {
+            float c2 = overshoot * InOutBackScale;
+
+            return t < 0.5f
+                ? Mathf.Pow(2f * t, 2f) * ((c2 + 1f) * 2f * t - c2) / 2f
+                : (Mathf.Pow(2f * t - 2f, 2f) * ((c2 + 1f) * (t * 2f - 2f) + c2) + 2f) / 2f;
+        }
+
+        /// <summary>
         /// Acceleration with a rubber-band wind-up before the motion starts.
         /// </summary>
         private static float EaseInElastic(float t)
@@ -186,4 +291,4 @@ namespace Base.TweeningPackage.Core.Data
 
         private static bool IsOne(float t) => Mathf.Approximately(t, 1f);
     }
-}
+}
