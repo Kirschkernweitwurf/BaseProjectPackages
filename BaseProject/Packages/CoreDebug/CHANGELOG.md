@@ -6,6 +6,8 @@ All notable changes to this package are recorded here. The format follows
 
 ## [Unreleased]
 
+## [1.4.1] - 2026-10-26
+
 ### Fixed
 
 - `CheatConsoleController` no longer throws a NullReferenceException at every play start: its Ctrl+W and Ctrl+U
