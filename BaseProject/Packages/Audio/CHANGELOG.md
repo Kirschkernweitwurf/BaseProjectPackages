@@ -6,6 +6,8 @@ All notable changes to this package are recorded here. The format follows
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-10-26
+
 ### Added
 
 - `AudioContainer` has an **Is Placeholder** toggle for sounds that are hooked up before their clips exist. An
