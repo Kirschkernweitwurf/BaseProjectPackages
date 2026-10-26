@@ -11,6 +11,8 @@ All notable changes to this package are recorded here. The format follows
 - The PlayAudioOn components no longer throw when their element gets an event in the frame it turns on, like
   the first row of a page that is selected right away. They look the audio manager up on the first sound through
   the new shared base `PlayAudioOnEvent`.
+- A new `AudioContainer` starts with an empty clip array instead of none, so an empty container reports
+  itself as empty instead of null.
 
 ## [1.1.11] - 2026-10-17
 

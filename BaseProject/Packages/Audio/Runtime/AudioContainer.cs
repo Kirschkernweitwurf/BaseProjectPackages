@@ -22,7 +22,7 @@ namespace Base.AudioPackage
         [field: Tooltip("Clips this container can play. One is picked at random on every play, so adding several"
             + " variations keeps repeated sounds from sounding identical.")]
         [field: NotNullOrEmpty]
-        [field: SerializeField] public AudioClip[] Clips { get; private set; }
+        [field: SerializeField] public AudioClip[] Clips { get; private set; } = System.Array.Empty<AudioClip>();
 
         [field: Tooltip("Seconds to wait before playback starts. Leave at 0 to play immediately.")]
         [field: Min(0f)]
