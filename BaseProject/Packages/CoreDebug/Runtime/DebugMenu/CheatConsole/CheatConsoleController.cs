@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Base.AttributesPackage;
 using Base.CorePackage.Input;
@@ -13,6 +14,10 @@ namespace Base.CoreDebugPackage.DebugMenu.CheatConsole
     /// model and view, and handles command execution and navigation. Ctrl+W and Ctrl+U edit the input like in a
     /// shell: they delete the word or everything before the caret.
     /// </summary>
+    /// <remarks>
+    /// Commands on scene objects are discovered when the console opens, and on a scene load only while it is open.
+    /// Discovering on every scene load stalled each load, although the console is closed nearly all the time.
+    /// </remarks>
     [RequireComponent(typeof(CheatConsoleView))]
     public sealed class CheatConsoleController : MonoBehaviour
     {
@@ -40,7 +45,7 @@ namespace Base.CoreDebugPackage.DebugMenu.CheatConsole
         {
             _deleteWord = CreateShortcut(DeleteWordKeyPath);
             _deleteLine = CreateShortcut(DeleteLineKeyPath);
-            RebuildCommands();
+            CreateModel();
 
             SceneManager.sceneLoaded += OnSceneLoaded;
             view.InputField.onValueChanged.AddListener(OnInputChanged);
@@ -48,6 +53,7 @@ namespace Base.CoreDebugPackage.DebugMenu.CheatConsole
 
         private void OnEnable()
         {
+            view.Opened += OnOpened;
             _deleteWord.started += OnDeleteWord;
             _deleteLine.started += OnDeleteLine;
             _deleteWord.Enable();
@@ -64,6 +70,7 @@ namespace Base.CoreDebugPackage.DebugMenu.CheatConsole
 
         private void OnDisable()
         {
+            view.Opened -= OnOpened;
             _deleteWord.started -= OnDeleteWord;
             _deleteLine.started -= OnDeleteLine;
             _deleteWord.Disable();
@@ -97,15 +104,26 @@ namespace Base.CoreDebugPackage.DebugMenu.CheatConsole
             return action;
         }
 
-        // A new scene brings new MonoBehaviours, so instance commands have to be discovered again.
-        private void OnSceneLoaded(Scene scene, LoadSceneMode mode) => RebuildCommands();
-
-        private void RebuildCommands()
+        // The model lives as long as the console, so the history survives scene loads.
+        private void CreateModel()
         {
-            _model = new CheatConsoleModel(CheatCommandProvider.DiscoverAllCommands());
+            _model = new CheatConsoleModel(Array.Empty<CheatCommandInfo>());
             BuiltinCheatCommands.Register(_model, view);
             CheatMacroRunner.Register(_model);
         }
+
+        private void OnOpened() => DiscoverCommands();
+
+        // A new scene brings new MonoBehaviours, so an open console has to discover its commands again.
+        private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        {
+            if (!view.IsOpen)
+                return;
+
+            DiscoverCommands();
+        }
+
+        private void DiscoverCommands() => _model.ReplaceDiscoveredCommands(CheatCommandProvider.DiscoverAllCommands());
 
         private void OnExecuteCommand(InputAction.CallbackContext _)
         {

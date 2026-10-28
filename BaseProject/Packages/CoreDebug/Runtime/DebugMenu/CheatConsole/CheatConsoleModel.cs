@@ -24,6 +24,7 @@ namespace Base.CoreDebugPackage.DebugMenu.CheatConsole
         public IReadOnlyDictionary<string, CheatCommandInfo> Commands => _commands;
 
         private readonly Dictionary<string, CheatCommandInfo> _commands;
+        private readonly List<string> _discoveredNames;
         private readonly List<string> _history;
 
         private int _historyIndex;
@@ -35,6 +36,7 @@ namespace Base.CoreDebugPackage.DebugMenu.CheatConsole
         public CheatConsoleModel(IEnumerable<CheatCommandInfo> commands)
         {
             _commands = new Dictionary<string, CheatCommandInfo>(StringComparer.OrdinalIgnoreCase);
+            _discoveredNames = new List<string>();
             _history = new List<string>();
             _historyIndex = -1;
 
@@ -192,6 +194,28 @@ namespace Base.CoreDebugPackage.DebugMenu.CheatConsole
         }
 
         /// <summary>
+        /// Swaps the commands given so far, in the constructor or here, for <paramref name="commands"/>. Built-in
+        /// commands and the history stay, so the console can discover again whenever the objects change.
+        /// </summary>
+        /// <param name="commands">The cheat commands that can be executed now.</param>
+        public void ReplaceDiscoveredCommands(IEnumerable<CheatCommandInfo> commands)
+        {
+            if (commands == null)
+            {
+                CustomLogger.LogError("Cheat command collection is null. The commands were left as they are.", null);
+                return;
+            }
+
+            foreach (string name in _discoveredNames)
+                _commands.Remove(name);
+
+            _discoveredNames.Clear();
+
+            foreach (CheatCommandInfo command in commands)
+                RegisterCommand(command);
+        }
+
+        /// <summary>
         /// Registers a built-in command with the specified name and action.
         /// </summary>
         /// <param name="name">The name of the command.</param>
@@ -343,7 +367,12 @@ namespace Base.CoreDebugPackage.DebugMenu.CheatConsole
             }
 
             if (!_commands.TryAdd(command, commandInfo))
+            {
                 CustomLogger.LogWarning($"Cheat command '{command}' is already registered.", null);
+                return;
+            }
+
+            _discoveredNames.Add(command);
         }
 
         private void AddToHistory(string input)

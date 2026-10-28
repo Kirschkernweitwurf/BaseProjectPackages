@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Base.UtilityPackage;
 using Base.UtilityPackage.Logging;
+using UnityEngine;
 
 namespace Base.CoreDebugPackage.DebugMenu.CheatConsole
 {
@@ -17,6 +18,9 @@ namespace Base.CoreDebugPackage.DebugMenu.CheatConsole
 
         private const BindingFlags StaticFlags =
             BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
+
+        // Reading a type's methods and attributes is the expensive part, so each type is read once.
+        private static readonly Dictionary<Type, MethodInfo[]> CommandMethodsByType = new();
 
         /// <summary>
         /// Creates cheat command infos for all instance methods on the provided targets
@@ -39,7 +43,7 @@ namespace Base.CoreDebugPackage.DebugMenu.CheatConsole
                 if (!UnityObjectUtility.IsAlive(target))
                     continue;
 
-                AddCommands(target.GetType().GetMethods(InstanceFlags), target, result);
+                AddCommands(GetCommandMethods(target.GetType()), target, result);
             }
 
             return result;
@@ -73,15 +77,37 @@ namespace Base.CoreDebugPackage.DebugMenu.CheatConsole
             return result;
         }
 
+        /// <summary>
+        /// Whether <paramref name="method"/> is marked with <see cref="CheatCommandAttribute"/>. Checks without
+        /// creating the attribute, which is far cheaper than reading it.
+        /// </summary>
+        /// <param name="method">The method to check.</param>
+        /// <returns>True when the method is a cheat command.</returns>
+        internal static bool IsCommand(MethodInfo method) => method.IsDefined(typeof(CheatCommandAttribute), false);
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ResetStatics() => CommandMethodsByType.Clear();
+
+        private static MethodInfo[] GetCommandMethods(Type type)
+        {
+            if (CommandMethodsByType.TryGetValue(type, out MethodInfo[] methods))
+                return methods;
+
+            methods = Array.FindAll(type.GetMethods(InstanceFlags), IsCommand);
+            CommandMethodsByType.Add(type, methods);
+
+            return methods;
+        }
+
         private static void AddCommands(MethodInfo[] methods, object target, List<CheatCommandInfo> result)
         {
             foreach (MethodInfo method in methods)
             {
-                CheatCommandAttribute attribute = method.GetCustomAttribute<CheatCommandAttribute>(false);
-                if (attribute == null)
+                if (!IsCommand(method))
                     continue;
 
-                result.Add(new CheatCommandInfo(attribute, method, target));
+                result.Add(new CheatCommandInfo(method.GetCustomAttribute<CheatCommandAttribute>(false), method,
+                    target));
             }
         }
     }

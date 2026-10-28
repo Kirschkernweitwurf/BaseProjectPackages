@@ -17,6 +17,8 @@ requires:
 
 Runs the cheat console. **Enter** runs the typed command, **Tab** completes it word by word, like a shell (`date.a` becomes `date.affection`), **Up** and **Down** walk through earlier commands. Like in a shell, **Ctrl+W** deletes the word before the cursor (a dot counts as a word of its own) and **Ctrl+U** everything before it. In the editor the Game view ignores main menu shortcuts while the console has focus, so Ctrl+U does not open Undo History.
 
+Commands on scene objects are found when the console opens, so scene loads stay fast while it is closed. A scene that loads while the console is open is picked up at once. The history stays for the whole play session.
+
 **Add it:** Inspector › **Add Component** › search `Cheat Console Controller`. Needs **Cheat Console View** on the same GameObject.
 
 ## How to use it

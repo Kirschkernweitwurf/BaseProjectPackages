@@ -6,6 +6,19 @@ All notable changes to this package are recorded here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- `CheatConsoleModel.ReplaceDiscoveredCommands` swaps the discovered commands and keeps the built-in commands and
+  the history.
+
+### Fixed
+
+- Scene loads no longer stall for up to 1.5 seconds per scene: `CheatConsoleController` discovered its commands on
+  every scene load by reading the methods of every live MonoBehaviour. It now discovers when the console opens
+  (and on a scene load only while it is open), and only asks the scene for the types that have commands, found
+  once through `TypeCache` in the editor. `CheatCommandRegistry.CreateFromTargets` reads each type once.
+- The cheat console history now survives scene loads.
+
 ## [1.4.1] - 2026-10-26
 
 ### Fixed

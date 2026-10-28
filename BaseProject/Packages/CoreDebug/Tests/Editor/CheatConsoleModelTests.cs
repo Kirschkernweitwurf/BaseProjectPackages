@@ -18,6 +18,7 @@ namespace Base.CoreDebugPackage.Tests
     {
         private const string ActionlessCommand = "empty";
         private const string AddCommand = "add";
+        private const string BuiltinCommand = "builtin";
         private const string EchoCommand = "echo";
         private const string FailCommand = "fail";
         private const string ModeCommand = "mode";
@@ -197,6 +198,33 @@ namespace Base.CoreDebugPackage.Tests
 
             Assert.That(_model.GetNextHistory(), Is.EqualTo(ToggleCommand));
             Assert.That(_model.GetNextHistory(), Is.Empty);
+        }
+
+        /// <summary>A new discovery replaces the commands of the last one.</summary>
+        [Test]
+        public void ReplacingTheDiscoveredCommandsDropsTheOldOnes()
+        {
+            _model.ReplaceDiscoveredCommands(new List<CheatCommandInfo>
+            {
+                Command(EchoCommand, nameof(CheatCommandProbe.Echo))
+            });
+
+            Assert.That(_model.Commands.Count, Is.EqualTo(1));
+            Assert.That(_model.Commands.ContainsKey(EchoCommand), Is.True);
+        }
+
+        /// <summary>A new discovery keeps the built-in commands and what was typed before.</summary>
+        [Test]
+        public void ReplacingTheDiscoveredCommandsKeepsBuiltinsAndHistory()
+        {
+            _model.RegisterBuiltinCommand(BuiltinCommand, string.Empty, action: () => BuiltinCommand);
+            _model.Execute(PingCommand);
+
+            _model.ReplaceDiscoveredCommands(Array.Empty<CheatCommandInfo>());
+
+            Assert.That(_model.Commands.ContainsKey(BuiltinCommand), Is.True);
+            Assert.That(_model.Commands.ContainsKey(PingCommand), Is.False);
+            Assert.That(_model.GetPreviousHistory(), Is.EqualTo(PingCommand));
         }
 
         /// <summary>An empty history has nothing to hand back.</summary>
