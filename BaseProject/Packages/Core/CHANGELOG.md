@@ -8,6 +8,11 @@ Changes made before 2.1.4 were not recorded.
 
 ## [Unreleased]
 
+### Changed
+
+- `SceneLoadingManager.LoadSceneAsync` raises `SceneLoadEvents.OnSceneLoadStarted` before it unloads the old
+  scenes instead of after, so a loading screen also hides the old scenes disappearing one by one.
+
 ## [5.3.1] - 2026-10-24
 
 ### Fixed

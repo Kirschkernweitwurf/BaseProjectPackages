@@ -73,6 +73,9 @@ namespace Base.CorePackage.SceneManagement
 
             _isLoading = true;
 
+            // Raised before the old scenes go, so a loading screen also hides them disappearing one by one.
+            SceneLoadEvents.InvokeSceneLoadStarted(sceneName);
+
             try
             {
                 await UnloadAllScenesAsync();
@@ -85,7 +88,8 @@ namespace Base.CorePackage.SceneManagement
         }
 
         /// <summary>
-        /// Runs the actual load and reports progress through <see cref="SceneLoadEvents"/>.
+        /// Runs the actual load and reports progress and the end through <see cref="SceneLoadEvents"/>. The caller
+        /// raises the start, since a scene change starts with the unload.
         /// </summary>
         /// <param name="sceneName">The name of the scene to load.</param>
         /// <param name="mode">The load scene mode (Single or Additive).</param>
@@ -93,8 +97,6 @@ namespace Base.CorePackage.SceneManagement
         private static async Awaitable LoadSceneInternalAsync(string sceneName, LoadSceneMode mode,
             CancellationToken token)
         {
-            SceneLoadEvents.InvokeSceneLoadStarted(sceneName);
-
             AsyncOperation operation = SceneManager.LoadSceneAsync(sceneName, mode);
             if (operation == null)
             {
@@ -131,7 +133,10 @@ namespace Base.CorePackage.SceneManagement
                 return;
 
             if (!SceneManager.GetSceneByName(persistentSceneName).isLoaded)
+            {
+                SceneLoadEvents.InvokeSceneLoadStarted(persistentSceneName);
                 await LoadSceneInternalAsync(persistentSceneName, LoadSceneMode.Additive, destroyCancellationToken);
+            }
 
             _persistentLoaded = true;
         }

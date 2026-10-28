@@ -13,7 +13,7 @@ summary: Loads and unloads scenes and keeps the persistent scene loaded.
 
 **Tags:** #programmer #scenes
 
-Manages scene loading and unloading operations, including a persistent scene that remains loaded. Provides asynchronous methods to load scenes with progress reporting via `SceneLoadEvents`. Uses Unity's Awaitable for play-mode-safe, allocation-free async operations.
+Manages scene loading and unloading operations, including a persistent scene that remains loaded. Provides asynchronous methods to load scenes with progress reporting via `SceneLoadEvents`. Uses Unity's Awaitable for play-mode-safe, allocation-free async operations. The start of a load is announced before the old scenes unload, so a loading screen covers the whole change.
 
 **Add it:** Inspector › **Add Component** › search `Scene Loading Manager`.
 
