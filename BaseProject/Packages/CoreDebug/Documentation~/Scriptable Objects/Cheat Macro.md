@@ -48,9 +48,10 @@ No code needed. It shows up in `help` and in Tab completion like any other comma
 
 ## Run it automatically
 
-Type `autorun.add` and your command, for example `autorun.add Jonny`. From then on it runs on its own as soon as the console finds every cheat its lines need, so you no longer type it at the start of every date. It runs again for each new date, but not twice for the same one.
+Type `autorun.add` and your command, for example `autorun.add Jonny`. From then on it runs on its own as soon as the console finds every cheat its lines need, so you no longer type it at the start of every date. It runs once per play session, so a cheat that toggles something stays on.
 
 - The list is yours alone: it lives in this computer's settings, not in version control, so teammates keep their own.
 - `autorun.list` shows your list, `autorun.remove Jonny` takes a command off it.
-- Any command without arguments works, not only macros.
+- Any command without arguments works, not only macros, for example `ann`.
+- Removing a command and adding it again in the same session does not run it a second time.
 - The Unity console shows a line each time something ran automatically.

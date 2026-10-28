@@ -8,10 +8,10 @@ All notable changes to this package are recorded here. The format follows
 
 ### Added
 
-- `autorun.add`, `autorun.remove` and `autorun.list` cheat commands: a command on this list runs on its own as soon as
-  the console finds it, for example a personal `CheatMacro` once the scene with its cheats loads. The list is per
-  machine (PlayerPrefs), so it stays out of version control. While it has entries, the console also discovers
-  commands on scene loads.
+- `autorun.add`, `autorun.remove` and `autorun.list` cheat commands: a command on this list runs on its own, once per
+  play session, as soon as the console finds it, for example a personal `CheatMacro` once the scene with its cheats
+  loads. Once per session keeps a toggle cheat on. The list is per machine (PlayerPrefs), so it stays out of version
+  control. Until each entry ran, the console also discovers commands on scene loads.
 
 ## [1.5.0] - 2026-10-28
 

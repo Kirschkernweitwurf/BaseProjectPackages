@@ -7,14 +7,15 @@ namespace Base.CoreDebugPackage.DebugMenu.CheatConsole
 {
     /// <summary>
     /// Runs the commands each person picked for themselves as soon as the console finds them, for example a "Jonny"
-    /// <see cref="CheatMacro"/> whenever a scene with its cheats loads. The list lives in this machine's PlayerPrefs,
+    /// <see cref="CheatMacro"/> once the scene with its cheats loads. Each runs once per play session, so a toggle
+    /// stays on instead of flipping back on the next scene load. The list lives in this machine's PlayerPrefs,
     /// outside version control, and is edited in the console with autorun.add, autorun.remove and autorun.list.
     /// </summary>
     internal sealed class CheatAutoRun
     {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         private const string AddCommand = "autorun.add";
-        private const string AddedFormat = "{0} now runs whenever the console finds it.";
+        private const string AddedFormat = "{0} now runs once per play session, as soon as the console finds it.";
         private const string AlreadyAddedFormat = "{0} already runs automatically.";
         private const string EmptyListMessage = "No commands run automatically. Add one with autorun.add <command>.";
         private const char EntrySeparator = '\n';
@@ -32,9 +33,8 @@ namespace Base.CoreDebugPackage.DebugMenu.CheatConsole
         private readonly Dictionary<string, CheatMacro> _macros = new(StringComparer.OrdinalIgnoreCase);
         private readonly List<string> _entries = new();
 
-        // The objects behind each entry's commands at its last run. A scene load brings new objects, so the entry
-        // runs again for them, but not for a second load that leaves them in place.
-        private readonly Dictionary<string, List<object>> _lastTargets = new(StringComparer.OrdinalIgnoreCase);
+        // Kept when an entry is removed, so adding it again in the same session can't flip a toggle back.
+        private readonly HashSet<string> _ran = new(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>Creates the auto-run list of <paramref name="model"/> and loads this machine's entries.</summary>
         /// <param name="model">The console model the entries run on.</param>
@@ -49,14 +49,16 @@ namespace Base.CoreDebugPackage.DebugMenu.CheatConsole
             Load();
         }
 
-        /// <summary>Whether anyone set up a command on this machine, so the console has to look for it.</summary>
-        internal bool HasEntries => _entries.Count > 0;
+        /// <summary>
+        /// Whether an entry still waits for its commands this session, so the console has to keep looking for them.
+        /// </summary>
+        internal bool HasPending => _entries.Exists(entry => !_ran.Contains(entry));
 
         /// <summary>Registers the commands that edit the list.</summary>
         internal void Register()
         {
-            _model.RegisterBuiltinCommand(AddCommand, "Runs a command whenever the console finds it, on this "
-                + "machine only.", AddCommand + " <command>", Add);
+            _model.RegisterBuiltinCommand(AddCommand, "Runs a command once per play session as soon as the console "
+                + "finds it, on this machine only.", AddCommand + " <command>", Add);
 
             _model.RegisterBuiltinCommand(RemoveCommand, "Stops running a command automatically.",
                 RemoveCommand + " <command>", Remove);
@@ -65,39 +67,19 @@ namespace Base.CoreDebugPackage.DebugMenu.CheatConsole
                 ListEntries);
         }
 
-        /// <summary>
-        /// Runs every entry whose commands the console knows now and whose objects changed since its last run.
-        /// </summary>
+        /// <summary>Runs every entry that has not run this session and whose commands the console knows now.</summary>
         internal void RunNewlyFound()
         {
             foreach (string entry in _entries)
             {
-                List<object> targets = new();
-                if (!TryCollectTargets(entry, targets, new HashSet<string>(StringComparer.OrdinalIgnoreCase)))
+                if (_ran.Contains(entry)
+                    || !IsFound(entry, new HashSet<string>(StringComparer.OrdinalIgnoreCase)))
                     continue;
 
-                if (_lastTargets.TryGetValue(entry, out List<object> last)
-                    && IsSameTargets(last, targets))
-                    continue;
-
-                _lastTargets[entry] = targets;
+                _ran.Add(entry);
                 CheatConsoleResult result = _model.Run(entry);
                 CustomLogger.Log(string.Format(RanFormat, entry, result.Message), null);
             }
-        }
-
-        private static bool IsSameTargets(List<object> first, List<object> second)
-        {
-            if (first.Count != second.Count)
-                return false;
-
-            for (int i = 0; i < first.Count; i++)
-            {
-                if (!ReferenceEquals(first[i], second[i]))
-                    return false;
-            }
-
-            return true;
         }
 
         private static string GetCommandName(string line)
@@ -139,13 +121,12 @@ namespace Base.CoreDebugPackage.DebugMenu.CheatConsole
                 return string.Format(NotAddedFormat, command);
 
             _entries.RemoveAt(index);
-            _lastTargets.Remove(command);
             Save();
 
             return string.Format(RemovedFormat, command);
         }
 
-        private string ListEntries() => HasEntries
+        private string ListEntries() => _entries.Count > 0
             ? ListHeader + string.Join(ListSeparator, _entries)
             : EmptyListMessage;
 
@@ -154,19 +135,14 @@ namespace Base.CoreDebugPackage.DebugMenu.CheatConsole
 
         // A macro counts as found once every command its lines call is found, so "Jonny" waits for the date scene
         // instead of failing on the home screen.
-        private bool TryCollectTargets(string command, List<object> targets, HashSet<string> visiting)
+        private bool IsFound(string command, HashSet<string> visiting)
         {
-            if (!_model.Commands.TryGetValue(command, out CheatCommandInfo info))
+            if (!_model.Commands.ContainsKey(command))
                 return false;
 
-            if (!_macros.TryGetValue(command, out CheatMacro macro))
-            {
-                targets.Add(info.Target);
-                return true;
-            }
-
             // The macro runner skips a macro that calls itself, so that line needs nothing.
-            if (!visiting.Add(command))
+            if (!_macros.TryGetValue(command, out CheatMacro macro)
+                || !visiting.Add(command))
                 return true;
 
             foreach (string line in macro.Lines)
@@ -174,7 +150,7 @@ namespace Base.CoreDebugPackage.DebugMenu.CheatConsole
                 if (string.IsNullOrWhiteSpace(line))
                     continue;
 
-                if (!TryCollectTargets(GetCommandName(line), targets, visiting))
+                if (!IsFound(GetCommandName(line), visiting))
                     return false;
             }
 

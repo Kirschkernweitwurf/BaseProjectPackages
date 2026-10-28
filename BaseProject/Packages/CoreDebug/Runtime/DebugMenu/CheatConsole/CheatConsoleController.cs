@@ -16,8 +16,8 @@ namespace Base.CoreDebugPackage.DebugMenu.CheatConsole
     /// </summary>
     /// <remarks>
     /// Commands on scene objects are discovered when the console opens, and on a scene load only while it is open
-    /// or while this machine has commands that run automatically (<see cref="CheatAutoRun"/>). Discovering on every
-    /// scene load stalled each load, although the console is closed nearly all the time.
+    /// or while a command this machine runs automatically still waits (<see cref="CheatAutoRun"/>). Discovering on
+    /// every scene load stalled each load, although the console is closed nearly all the time.
     /// </remarks>
     [RequireComponent(typeof(CheatConsoleView))]
     public sealed class CheatConsoleController : MonoBehaviour
@@ -73,7 +73,7 @@ namespace Base.CoreDebugPackage.DebugMenu.CheatConsole
         // The scenes of the first load were there before this console, so their commands are found here.
         private void Start()
         {
-            if (!_autoRun.HasEntries)
+            if (!_autoRun.HasPending)
                 return;
 
             FindCommands();
@@ -128,11 +128,11 @@ namespace Base.CoreDebugPackage.DebugMenu.CheatConsole
         private void OnOpened() => FindCommands();
 
         // A new scene brings new MonoBehaviours, so an open console has to discover its commands again, and so does
-        // a closed one whose commands run automatically.
+        // a closed one with a command still waiting to run automatically.
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
             if (!view.IsOpen
-                && !_autoRun.HasEntries)
+                && !_autoRun.HasPending)
                 return;
 
             FindCommands();
