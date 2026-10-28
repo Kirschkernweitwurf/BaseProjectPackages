@@ -8,6 +8,8 @@ Changes made before 2.1.4 were not recorded.
 
 ## [Unreleased]
 
+## [5.4.0] - 2026-10-28
+
 ### Changed
 
 - `SceneLoadingManager.LoadSceneAsync` raises `SceneLoadEvents.OnSceneLoadStarted` before it unloads the old

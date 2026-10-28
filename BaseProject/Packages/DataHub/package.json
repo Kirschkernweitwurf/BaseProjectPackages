@@ -2,7 +2,7 @@
   "name": "com.baseprojectpackages.datahub",
   "displayName": "Base Data Hub",
   "description": "One editor window for every data asset of a project: a type tree, a sortable and searchable table with one column per serialized field and inline editing through SerializedObject, the full inspector of the selected asset, and New, Duplicate, Rename and Delete that respect the naming conventions, add new assets to their collection and remove deleted ones from every list that held them. Validation badges show broken assets right in the table. Projects extend it with one class per column, check, create rule or whole page. Editor only.",
-  "version": "1.3.1",
+  "version": "1.3.2",
   "unity": "6000.3",
   "documentationUrl": "https://github.com/Kirschkernweitwurf/BaseProjectPackages/blob/main/BaseProject/Packages/DataHub/Documentation~/Data%20Hub%20Package.md",
   "changelogUrl": "https://github.com/Kirschkernweitwurf/BaseProjectPackages/blob/main/BaseProject/Packages/DataHub/CHANGELOG.md",

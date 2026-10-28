@@ -8,6 +8,8 @@ Changes made before 1.7.5 were not recorded.
 
 ## [Unreleased]
 
+## [1.9.1] - 2026-10-28
+
 ### Changed
 
 - The runtime reference validator works out once per field which validation rules apply, so fields without a

@@ -6,6 +6,8 @@ All notable changes to this package are recorded here. The format follows
 
 ## [Unreleased]
 
+## [1.5.0] - 2026-10-28
+
 ### Added
 
 - `CheatConsoleModel.ReplaceDiscoveredCommands` swaps the discovered commands and keeps the built-in commands and

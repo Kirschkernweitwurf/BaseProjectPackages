@@ -8,6 +8,8 @@ Changes made before 1.2.1 were not recorded.
 
 ## [Unreleased]
 
+## [1.3.11] - 2026-10-28
+
 ### Fixed
 
 - Language Setting follows a language picked outside the menu, so the menu no longer shows a stale language.

@@ -8,6 +8,8 @@ Changes made before 1.4.2 were not recorded.
 
 ## [Unreleased]
 
+## [1.7.0] - 2026-10-28
+
 ### Changed
 
 - Docs pages describe the FPS counter's Is Shown toggle and that closing a confirmation with Back cancels it.
