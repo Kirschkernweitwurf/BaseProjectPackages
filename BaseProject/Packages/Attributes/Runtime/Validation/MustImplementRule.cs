@@ -11,6 +11,9 @@ namespace Base.AttributesPackage
     internal sealed class MustImplementRule : IValidationRule
     {
         /// <inheritdoc/>
+        public Type AttributeType => typeof(MustImplementAttribute);
+
+        /// <inheritdoc/>
         public bool IsViolated(FieldInfo field, object instance, out string reason)
         {
             reason = null;

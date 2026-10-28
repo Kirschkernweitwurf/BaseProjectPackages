@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using NUnit.Framework;
@@ -243,6 +244,16 @@ namespace Base.AttributesPackage.Tests
             MustImplementRule rule = new();
 
             Assert.That(rule.IsViolated(Field(nameof(ValidationProbe.WrongType)), _probe, out string _), Is.False);
+        }
+
+        /// <summary>
+        /// Every rule names a real attribute, because the scanner hands a rule only the fields that carry it.
+        /// </summary>
+        [Test]
+        public void EveryRuleNamesTheAttributeItChecks()
+        {
+            foreach (IValidationRule rule in ValidationRules.All)
+                Assert.That(typeof(Attribute).IsAssignableFrom(rule.AttributeType), Is.True, rule.GetType().Name);
         }
 
         private static FieldInfo Field(string name) => typeof(ValidationProbe).GetField(name);

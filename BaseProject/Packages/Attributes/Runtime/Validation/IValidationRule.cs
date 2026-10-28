@@ -1,3 +1,4 @@
+using System;
 using System.Reflection;
 
 namespace Base.AttributesPackage
@@ -9,6 +10,12 @@ namespace Base.AttributesPackage
     /// </summary>
     internal interface IValidationRule
     {
+        /// <summary>
+        /// The attribute that marks a field for this rule. The scanner hands the rule only fields that carry it,
+        /// so the many fields without any validation attribute cost nothing.
+        /// </summary>
+        Type AttributeType { get; }
+
         /// <summary>
         /// Returns true and a short reason when the field carries this rule's attribute and its current
         /// value is invalid. Returns false when the rule does not apply or the value is valid.

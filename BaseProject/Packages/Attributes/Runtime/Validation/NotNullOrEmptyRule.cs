@@ -9,6 +9,9 @@ namespace Base.AttributesPackage
     internal sealed class NotNullOrEmptyRule : IValidationRule
     {
         /// <inheritdoc/>
+        public Type AttributeType => typeof(NotNullOrEmptyAttribute);
+
+        /// <inheritdoc/>
         public bool IsViolated(FieldInfo field, object instance, out string reason)
         {
             reason = null;

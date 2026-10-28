@@ -8,6 +8,12 @@ Changes made before 1.7.5 were not recorded.
 
 ## [Unreleased]
 
+### Changed
+
+- The runtime reference validator works out once per field which validation rules apply, so fields without a
+  validation attribute cost nothing on later scene loads. On a date scene with 1,600 behaviours a scan dropped from
+  about 35 ms to 3 ms. Each `IValidationRule` now names its attribute through `AttributeType`.
+
 ## [1.9.0] - 2026-10-17
 
 ### Changed

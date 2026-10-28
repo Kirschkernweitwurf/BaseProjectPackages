@@ -1,3 +1,4 @@
+using System;
 using System.Reflection;
 using Object = UnityEngine.Object;
 
@@ -9,6 +10,9 @@ namespace Base.AttributesPackage
     /// </summary>
     internal sealed class RequiredIfRule : IValidationRule
     {
+        /// <inheritdoc/>
+        public Type AttributeType => typeof(RequiredIfAttribute);
+
         /// <inheritdoc/>
         public bool IsViolated(FieldInfo field, object instance, out string reason)
         {

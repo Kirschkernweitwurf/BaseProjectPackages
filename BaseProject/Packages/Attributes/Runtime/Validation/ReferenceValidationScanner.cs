@@ -24,6 +24,10 @@ namespace Base.AttributesPackage
 
         private static readonly Dictionary<Type, FieldInfo[]> SerializedFields = new();
 
+        // Reading a field's attributes allocates, so which rules apply to a field is worked out once. Fields and
+        // rules cannot change without a domain reload, which clears both caches anyway.
+        private static readonly Dictionary<FieldInfo, IValidationRule[]> RulesByField = new();
+
         /// <summary>Appends every validation issue found on the given object to the results list.</summary>
         internal static void Collect(Object root, List<ReferenceIssue> results)
         {
@@ -43,7 +47,7 @@ namespace Base.AttributesPackage
             {
                 string path = Combine(prefix, field.Name);
 
-                foreach (IValidationRule rule in ValidationRules.All)
+                foreach (IValidationRule rule in GetRules(field))
                 {
                     if (rule.IsViolated(field, instance, out string reason))
                         results.Add(new ReferenceIssue(owner, path, reason));
@@ -97,6 +101,27 @@ namespace Base.AttributesPackage
 
             FieldInfo[] result = fields.ToArray();
             SerializedFields[type] = result;
+            return result;
+        }
+
+        private static IValidationRule[] GetRules(FieldInfo field)
+        {
+            if (RulesByField.TryGetValue(field, out IValidationRule[] cached))
+                return cached;
+
+            List<IValidationRule> rules = new();
+
+            foreach (IValidationRule rule in ValidationRules.All)
+            {
+                if (Attribute.IsDefined(field, rule.AttributeType, true))
+                    rules.Add(rule);
+            }
+
+            IValidationRule[] result = rules.Count == 0
+                ? Array.Empty<IValidationRule>()
+                : rules.ToArray();
+
+            RulesByField[field] = result;
             return result;
         }
 

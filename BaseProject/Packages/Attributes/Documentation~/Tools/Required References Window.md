@@ -61,4 +61,4 @@ You can leave the window docked next to the inspector while you work.
 
 ## Related
 
-Missing references are also logged as errors in the console when you enter play mode. Those log messages point back to this window.
+Missing references are also logged as errors in the console when you enter play mode, and for every scene that loads while playing. Those log messages point back to this window. Which rules apply to a field is worked out once, so the check adds only a few milliseconds to a scene load.
