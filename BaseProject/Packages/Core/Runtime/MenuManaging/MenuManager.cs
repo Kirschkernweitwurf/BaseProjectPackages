@@ -42,8 +42,6 @@ namespace Base.CorePackage.MenuManaging
 
             ShutdownManager.Register(this);
 
-            _menuPriorityTracker.OnCurrentActiveItemChanged += OnCurrentActiveItemChanged;
-
             if (ServiceLocator.TryGet(out InputManager inputManager))
                 inputManager.BaseInputActions.Permanent.Back.performed += OnBackActionPerformed;
         }
@@ -68,8 +66,6 @@ namespace Base.CorePackage.MenuManaging
             HasShutDown = true;
 
             ShutdownManager.Deregister(this);
-
-            _menuPriorityTracker.OnCurrentActiveItemChanged -= OnCurrentActiveItemChanged;
 
             // Optional on the way out. Shutting down runs on a scene unload, where the input service
             // may already be gone, and reporting that would turn every scene change into an error.
@@ -126,13 +122,20 @@ namespace Base.CorePackage.MenuManaging
         /// <param name="priority">The priority of the menu. Higher values indicate higher priority.</param>
         /// <param name="caller">The object registering the menu, used for tracking purposes.</param>
         public void RegisterOpenMenu(Menu item, uint priority, object caller)
-            => _menuPriorityTracker.Add(item, priority, caller);
+        {
+            _menuPriorityTracker.Add(item, priority, caller);
+            RefreshBackMenu();
+        }
 
         /// <summary>
         /// Deregisters a menu from being tracked for opening.
         /// </summary>
         /// <param name="caller">The object that registered the menu.</param>
-        public void DeregisterOpenMenu(object caller) => _menuPriorityTracker.Remove(caller);
+        public void DeregisterOpenMenu(object caller)
+        {
+            _menuPriorityTracker.Remove(caller);
+            RefreshBackMenu();
+        }
 
         /// <summary>
         /// Opens the menu associated with the given identifier.
@@ -269,17 +272,12 @@ namespace Base.CorePackage.MenuManaging
         }
 
         /// <summary>
-        /// Called when the current active menu changes in the priority tracker.
-        /// Updates the menu that receives the back action accordingly.
+        /// Picks the open menu that receives the back action. Runs on every open and close, not only when the top menu
+        /// changes: a menu below the top, like one closing while another opens at the same priority, would otherwise
+        /// stay the back target after it closed, and back would do nothing.
         /// </summary>
-        private void OnCurrentActiveItemChanged(TrackedItem<Menu> trackedItem)
+        private void RefreshBackMenu()
         {
-            if (trackedItem == null)
-            {
-                _highestPriorityBackMenu = null;
-                return;
-            }
-
             TrackedItem<Menu> best = null;
 
             foreach (TrackedItem<Menu> candidate in _menuPriorityTracker.TrackedItems)

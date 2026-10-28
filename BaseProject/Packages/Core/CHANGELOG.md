@@ -8,6 +8,12 @@ Changes made before 2.1.4 were not recorded.
 
 ## [Unreleased]
 
+### Fixed
+
+- `MenuManager` picks the menu that receives Back on every open and close, not only when the top menu changes.
+  A menu that closed below the top, like one closing while another opens at the same priority, stayed the back
+  target, so Back did nothing until the top changed.
+
 ## [5.4.0] - 2026-10-28
 
 ### Changed
