@@ -31,6 +31,9 @@ The debug menu, cheat console and log console prefabs ship in `Base.ContentPacka
 - `CheatMacro` assets in any `Resources/CheatMacros` folder become console commands with a name
   picked in the editor. Each runs its console lines in order through the model, without adding
   them to the history, and a macro that calls itself is skipped.
+- `autorun.add <command>` makes a command run on its own as soon as the console finds it, for
+  this machine only (PlayerPrefs, not version control). A macro waits until every command its
+  lines call is found, and runs again whenever a scene load brings new objects for them.
 - `LogConsoleView` mirrors Unity's log stream, `CustomLogger` output included. Capturing starts
   before the first scene loads, so every log is buffered even while the menu is closed.
 

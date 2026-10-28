@@ -221,33 +221,19 @@ namespace Base.CoreDebugPackage.DebugMenu.CheatConsole
         /// <param name="name">The name of the command.</param>
         /// <param name="description">The description of the command.</param>
         /// <param name="action">The action to execute for the command.</param>
-        public void RegisterBuiltinCommand(string name, string description, Func<string> action)
-        {
-            if (string.IsNullOrWhiteSpace(name))
-            {
-                CustomLogger.LogError("Cannot register a command without a name.", null);
-                return;
-            }
+        public void RegisterBuiltinCommand(string name, string description, Func<string> action) =>
+            AddBuiltinCommand(name, description, usage: null, action);
 
-            if (action == null)
-            {
-                CustomLogger.LogError($"Cannot register command '{name}' without an action.", null);
-                return;
-            }
-
-            if (_commands.ContainsKey(name))
-            {
-                CustomLogger.LogWarning($"Command '{name}' is already registered.", null);
-                return;
-            }
-
-            CheatCommandAttribute attribute = new(name)
-            {
-                Description = description
-            };
-
-            _commands.Add(name, new CheatCommandInfo(attribute, action.Method, action.Target));
-        }
+        /// <summary>
+        /// Registers a built-in command that takes one argument.
+        /// </summary>
+        /// <param name="name">The name of the command.</param>
+        /// <param name="description">The description of the command.</param>
+        /// <param name="usage">How to type it, shown in help.</param>
+        /// <param name="action">The action to execute for the command, given the argument.</param>
+        internal void RegisterBuiltinCommand(string name, string description, string usage,
+            Func<string, string> action) =>
+            AddBuiltinCommand(name, description, usage, action);
 
         private static string InvokeCommand(CheatCommandInfo commandInfo, string[] arguments)
         {
@@ -349,6 +335,35 @@ namespace Base.CoreDebugPackage.DebugMenu.CheatConsole
             return trimmed.Length >= 2 && trimmed[0] == '"' && trimmed[^1] == '"'
                 ? trimmed[1..^1]
                 : trimmed;
+        }
+
+        private void AddBuiltinCommand(string name, string description, string usage, Delegate action)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                CustomLogger.LogError("Cannot register a command without a name.", null);
+                return;
+            }
+
+            if (action == null)
+            {
+                CustomLogger.LogError($"Cannot register command '{name}' without an action.", null);
+                return;
+            }
+
+            if (_commands.ContainsKey(name))
+            {
+                CustomLogger.LogWarning($"Command '{name}' is already registered.", null);
+                return;
+            }
+
+            CheatCommandAttribute attribute = new(name)
+            {
+                Description = description,
+                Usage = usage
+            };
+
+            _commands.Add(name, new CheatCommandInfo(attribute, action.Method, action.Target));
         }
 
         private void RegisterCommand(CheatCommandInfo commandInfo)

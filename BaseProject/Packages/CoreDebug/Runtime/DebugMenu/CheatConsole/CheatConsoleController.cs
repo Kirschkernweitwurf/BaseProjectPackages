@@ -15,8 +15,9 @@ namespace Base.CoreDebugPackage.DebugMenu.CheatConsole
     /// shell: they delete the word or everything before the caret.
     /// </summary>
     /// <remarks>
-    /// Commands on scene objects are discovered when the console opens, and on a scene load only while it is open.
-    /// Discovering on every scene load stalled each load, although the console is closed nearly all the time.
+    /// Commands on scene objects are discovered when the console opens, and on a scene load only while it is open
+    /// or while this machine has commands that run automatically (<see cref="CheatAutoRun"/>). Discovering on every
+    /// scene load stalled each load, although the console is closed nearly all the time.
     /// </remarks>
     [RequireComponent(typeof(CheatConsoleView))]
     public sealed class CheatConsoleController : MonoBehaviour
@@ -33,6 +34,7 @@ namespace Base.CoreDebugPackage.DebugMenu.CheatConsole
         [GetComponent] [SerializeField] private CheatConsoleView view;
 
         private CheatConsoleModel _model;
+        private CheatAutoRun _autoRun;
 
         // Text editing keys belong to the console alone, so they live here instead of in the shared input asset.
         private InputAction _deleteWord;
@@ -66,6 +68,15 @@ namespace Base.CoreDebugPackage.DebugMenu.CheatConsole
             inputManager.BaseInputActions.Cheats.AutoComplete.started += OnAutoComplete;
             inputManager.BaseInputActions.Cheats.PreviousCommand.started += OnPreviousCommand;
             inputManager.BaseInputActions.Cheats.NextCommand.started += OnNextCommand;
+        }
+
+        // The scenes of the first load were there before this console, so their commands are found here.
+        private void Start()
+        {
+            if (!_autoRun.HasEntries)
+                return;
+
+            FindCommands();
         }
 
         private void OnDisable()
@@ -109,21 +120,29 @@ namespace Base.CoreDebugPackage.DebugMenu.CheatConsole
         {
             _model = new CheatConsoleModel(Array.Empty<CheatCommandInfo>());
             BuiltinCheatCommands.Register(_model, view);
-            CheatMacroRunner.Register(_model);
+            IReadOnlyList<CheatMacro> macros = CheatMacroRunner.Register(_model);
+            _autoRun = new CheatAutoRun(_model, macros);
+            _autoRun.Register();
         }
 
-        private void OnOpened() => DiscoverCommands();
+        private void OnOpened() => FindCommands();
 
-        // A new scene brings new MonoBehaviours, so an open console has to discover its commands again.
+        // A new scene brings new MonoBehaviours, so an open console has to discover its commands again, and so does
+        // a closed one whose commands run automatically.
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            if (!view.IsOpen)
+            if (!view.IsOpen
+                && !_autoRun.HasEntries)
                 return;
 
-            DiscoverCommands();
+            FindCommands();
         }
 
-        private void DiscoverCommands() => _model.ReplaceDiscoveredCommands(CheatCommandProvider.DiscoverAllCommands());
+        private void FindCommands()
+        {
+            _model.ReplaceDiscoveredCommands(CheatCommandProvider.DiscoverAllCommands());
+            _autoRun.RunNewlyFound();
+        }
 
         private void OnExecuteCommand(InputAction.CallbackContext _)
         {

@@ -19,10 +19,15 @@ namespace Base.CoreDebugPackage.DebugMenu.CheatConsole
         private static readonly HashSet<CheatMacro> Running = new();
 
         /// <summary>Registers every macro in the Resources folders on <paramref name="model"/>.</summary>
-        internal static void Register(CheatConsoleModel model)
+        /// <returns>The registered macros.</returns>
+        internal static IReadOnlyList<CheatMacro> Register(CheatConsoleModel model)
         {
-            foreach (CheatMacro macro in Resources.LoadAll<CheatMacro>(ResourcesFolder))
+            CheatMacro[] macros = Resources.LoadAll<CheatMacro>(ResourcesFolder);
+
+            foreach (CheatMacro macro in macros)
                 model.RegisterBuiltinCommand(macro.Command, macro.Description, action: () => Run(model, macro));
+
+            return macros;
         }
 
         private static string Run(CheatConsoleModel model, CheatMacro macro)
