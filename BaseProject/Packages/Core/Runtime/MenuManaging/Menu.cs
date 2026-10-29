@@ -197,6 +197,9 @@ namespace Base.CorePackage.MenuManaging
             IsTransitioning = true;
             IsClosing = true;
 
+            // Before Hide, so the hook runs ahead of OnClosed even when the close animation finishes at once.
+            OnClosing();
+
             contentRoot.OnFinished -= HandleCloseComplete;
             contentRoot.OnFinished += HandleCloseComplete;
             contentRoot.Hide();
@@ -232,6 +235,9 @@ namespace Base.CorePackage.MenuManaging
 
         /// <summary>Runs right after the menu opened, before <see cref="Opened"/> is raised.</summary>
         protected virtual void OnOpened() { }
+
+        /// <summary>Runs when the close animation starts. A started close always finishes.</summary>
+        protected virtual void OnClosing() { }
 
         /// <summary>Runs once the close animation finished, before <see cref="Closed"/> is raised.</summary>
         protected virtual void OnClosed() { }

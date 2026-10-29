@@ -8,6 +8,11 @@ Changes made before 2.1.4 were not recorded.
 
 ## [Unreleased]
 
+### Added
+
+- `Menu.OnClosing` runs when the close animation starts, and `PauseMenu.Unpausing` fires then, so a HUD can
+  start returning while the pause menu animates out instead of waiting for `OnPauseStateChanged`.
+
 ### Fixed
 
 - `MenuManager` picks the menu that receives Back on every open and close, not only when the top menu changes.
