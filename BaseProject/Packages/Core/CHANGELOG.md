@@ -12,6 +12,26 @@ Changes made before 2.1.4 were not recorded.
 
 - `Menu.OnClosing` runs when the close animation starts, and `PauseMenu.Unpausing` fires then, so a HUD can
   start returning while the pause menu animates out instead of waiting for `OnPauseStateChanged`.
+- `MenuManager.TopMenu`, `TopMenuChanged`, `IsOnTop(component)` and `IsScreenOnTop(menu)`: one answer to what is on
+  top, for Back, the focus and every input shortcut. A component belongs to the nearest menu above it, or to the
+  scene while no menu is open.
+- `MenuManager.CanShowOnTop(menu)` tells whether a menu would come on top if it opened now.
+- `Menu.Closing` event and `MenuModule.OnMenuClosing`, raised when the close animation starts.
+- `Menu.Open(parent, isEmbedded)`, `Menu.IsEmbedded` and `Menu.ParentMenu`: an embedded menu, like a tab, forms one
+  screen with its parent. `MenuGroupModule` opens its tabs embedded, also a tab opened from outside.
+
+### Changed
+
+- **Breaking:** `MenuManager.ClaimBack(owner, onBack)` takes a component and a callback, and `ReleaseBack` a
+  component. The menu manager now calls the claim instead of only staying quiet, and a claim acts only while its
+  owner's screen is on top, newest first. Claimants stop listening to the cancel action themselves.
+- Back goes to exactly one receiver: the newest claim on the top screen, else the innermost menu of the top screen
+  that listens to Back, else the default back menu. A top menu that does not listen keeps Back from the menus behind
+  it; before, Back skipped it and closed a menu the player could not see.
+- A menu stops counting as open for input when its close starts, not when it ends.
+- The default back menu no longer opens below a menu of higher priority, where it was hidden and only paused the
+  game.
+- `MenuGroupModule`'s next and previous tab actions only act while the group's screen is on top.
 
 ### Fixed
 

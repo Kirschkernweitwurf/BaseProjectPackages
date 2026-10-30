@@ -33,7 +33,7 @@ Every screen in the game (pause, settings, inventory, a popup) is a **Menu**. Th
 | --- | --- | --- | --- |
 | **Menu Identifier** | [Menu Identifier](../Scriptable%20Objects/Menu%20Identifier.md) |  | **Required.** The Menu Identifier asset that names this menu. Buttons and code open the menu through it. |
 | **Content Root** | [Tween Group](https://github.com/Kirschkernweitwurf/BaseProjectPackages/blob/main/BaseProject/Packages/Tweening/Documentation~/Components/Tween%20Group.md) |  | **Required.** The Tween Group that plays the open and close animation. |
-| **Priority** | Priority |  | `Low`, `Medium`, `High` or `Critical`. The open menu with the highest priority gets the Back press. |
+| **Priority** | Priority |  | `Low`, `Medium`, `High` or `Critical`. Decides which open menu is on top: the highest priority, then the one opened last. The top menu gets Back and the focus. |
 | **Open On Start** | Toggle | Off | Opens the menu, with animation, when the scene starts. |
 | **Listen To On Back Action** | Toggle | On | Lets the menu close itself when the player presses Back (Escape, gamepad B). |
 | **Blocking Menus** | List of [Menu Identifier](../Scriptable%20Objects/Menu%20Identifier.md) |  | While one of these menus is open, this menu cannot open. |
@@ -43,6 +43,9 @@ Every screen in the game (pause, settings, inventory, a popup) is a **Menu**. Th
 - Opening and closing are always animated. Without tweens in the Content Root the menu simply snaps.
 - A menu can open another menu as a child. Closing the parent closes its children.
 - Use `Critical` priority sparingly, for example for a quit confirmation.
+- A menu that does not listen to Back still keeps it from the menus behind it. Back then opens the [Menu Manager](Menu%20Manager.md)'s default back menu, or does nothing.
+- `Closing` fires when the close animation starts. From then on the menu no longer counts as open for input.
+- `Open(parent, isEmbedded: true)` shows a menu inside its parent as one screen, like a tab. `IsEmbedded` and `ParentMenu` tell how it was opened.
 - The menu needs a **Menu Manager** in the scene to register with.
 
 ## Related

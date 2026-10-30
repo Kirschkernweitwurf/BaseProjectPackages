@@ -6,6 +6,11 @@ All notable changes to this package are recorded here. The format follows
 
 ## [Unreleased]
 
+### Changed
+
+- The debug menu opens its consoles embedded, so it counts as one screen with them: Back closes the debug menu from
+  a console, and nothing behind it reacts to input.
+
 ### Added
 
 - `autorun.add`, `autorun.remove` and `autorun.list` cheat commands: a command on this list runs on its own, once per

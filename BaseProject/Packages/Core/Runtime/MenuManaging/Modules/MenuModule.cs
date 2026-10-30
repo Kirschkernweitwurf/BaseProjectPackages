@@ -21,18 +21,25 @@ namespace Base.CorePackage.MenuManaging.Modules
         protected virtual void OnEnable()
         {
             OwnerMenu.Opened += OnMenuOpened;
+            OwnerMenu.Closing += OnMenuClosing;
             OwnerMenu.Closed += OnMenuClosed;
         }
 
         protected virtual void OnDisable()
         {
             OwnerMenu.Opened -= OnMenuOpened;
+            OwnerMenu.Closing -= OnMenuClosing;
             OwnerMenu.Closed -= OnMenuClosed;
         }
 #endregion
 
         /// <summary>Called once the owning menu has opened.</summary>
         protected virtual void OnMenuOpened() { }
+
+        /// <summary>
+        /// Called when the owning menu starts to close. It no longer counts as open for input from here on.
+        /// </summary>
+        protected virtual void OnMenuClosing() { }
 
         /// <summary>Called once the owning menu has fully closed.</summary>
         protected virtual void OnMenuClosed() { }

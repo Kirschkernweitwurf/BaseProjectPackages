@@ -23,7 +23,7 @@ summary: "Connects a menu's lifecycle to a NavigableGroup:"
 Connects a menu's lifecycle to a `NavigableGroup`:
 
 - Menu opens, group activates.
-- Menu closes, group deactivates.
+- Menu starts to close, group deactivates. The focus moves on to the screen below while this one fades out, the same moment the [Menu Manager](https://github.com/Kirschkernweitwurf/BaseProjectPackages/blob/main/BaseProject/Packages/Core/Documentation~/Components/Menu%20Manager.md) stops counting the menu as on top.
 
 This is the single deliberate seam between the menu layer and the controller package. Everything else in the navigation code stays menu agnostic.
 
@@ -39,6 +39,8 @@ This is the single deliberate seam between the menu layer and the controller pac
 2. Assign the `NavigableGroup` (usually on the menu root or a child of it).
 3. Turn **Auto Activate** off on that group.
 4. Give the group the same **Priority** as the menu.
+
+Every menu that takes input needs one, also a debug console: a menu on top without a group leaves the focus to the group behind it.
 
 If Auto Activate is still on, a warning is logged in `Awake`. The Navigation Groups window flags the same problem and can fix it with one click.
 

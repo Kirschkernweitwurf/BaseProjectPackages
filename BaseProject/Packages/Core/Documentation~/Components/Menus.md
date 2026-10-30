@@ -42,7 +42,7 @@ Each module does one job. Put them on the **same GameObject** as the Menu; they 
 | [🔖 Menu Reset Module](Menu%20Reset%20Module.md) | (on close) resets the contents, so it opens fresh |
 | [🔖 Menu Group Module](Menu%20Group%20Module.md) | shows other menus inside it as tabs, one at a time |
 
-If several open menus want different things, the menu with the highest **Priority** wins.
+If several open menus want different things, the menu on top wins: the highest **Priority**, then the one opened last. The same menu gets Back, the focus and the input shortcuts.
 
 ### Which modules a screen needs
 
@@ -58,7 +58,7 @@ If several open menus want different things, the menu with the highest **Priorit
 | From | Use |
 | --- | --- |
 | A button | Open Menu Button, Close Menu Button, Pause Menu Button (UI package) |
-| The Back key | Turn on **Listen To On Back Action** on the Menu. The [🗞️ Menu Manager](Menu%20Manager.md) sends Back to the open menu with the highest priority. |
+| The Back key | Turn on **Listen To On Back Action** on the Menu. The [🗞️ Menu Manager](Menu%20Manager.md) sends Back to the menu on top, or to a step on it that claimed Back. |
 | Code | The Menu Manager, by identifier |
 
 ## Good to know

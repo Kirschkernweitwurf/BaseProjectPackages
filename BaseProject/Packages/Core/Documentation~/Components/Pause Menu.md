@@ -31,7 +31,7 @@ A **Menu** that also tracks whether the game is paused, so other systems (and th
 | --- | --- | --- | --- |
 | **Menu Identifier** | [Menu Identifier](../Scriptable%20Objects/Menu%20Identifier.md) |  | **Required.** The Menu Identifier asset that names this menu. Buttons and code open the menu through it. |
 | **Content Root** | [Tween Group](https://github.com/Kirschkernweitwurf/BaseProjectPackages/blob/main/BaseProject/Packages/Tweening/Documentation~/Components/Tween%20Group.md) |  | **Required.** The Tween Group that plays the open and close animation. |
-| **Priority** | Priority |  | `Low`, `Medium`, `High` or `Critical`. The open menu with the highest priority gets the Back press. |
+| **Priority** | Priority |  | `Low`, `Medium`, `High` or `Critical`. Decides which open menu is on top: the highest priority, then the one opened last. The top menu gets Back and the focus. |
 | **Open On Start** | Toggle | Off | Opens the menu, with animation, when the scene starts. |
 | **Listen To On Back Action** | Toggle | On | Lets the menu close itself when the player presses Back (Escape, gamepad B). |
 | **Blocking Menus** | List of [Menu Identifier](../Scriptable%20Objects/Menu%20Identifier.md) |  | While one of these menus is open, this menu cannot open. |

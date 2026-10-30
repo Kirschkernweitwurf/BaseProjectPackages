@@ -46,15 +46,18 @@ namespace Base.CorePackage.MenuManaging.Modules
             + "on the first tab goes to the last one.")]
         [SerializeField] private bool wrapAround = true;
 
-        [Tooltip("Optional. Selects the next tab, e.g. a shoulder button. Only the innermost open group reacts.")]
+        [Tooltip("Optional. Selects the next tab, e.g. a shoulder button. Only the innermost open group reacts, and "
+            + "only while its screen is on top.")]
         [SerializeField] private InputActionReference nextTabAction;
 
-        [Tooltip("Optional. Selects the previous tab. Only the innermost open group reacts.")]
+        [Tooltip("Optional. Selects the previous tab. Only the innermost open group reacts, and only while its "
+            + "screen is on top.")]
         [SerializeField] private InputActionReference previousTabAction;
 
         private Menu _activeTab;
         private Menu _defaultTabMenu;
         private Menu _deepLinkTab;
+        private MenuManager _menuManager;
         private bool _isInitialized;
         private bool _isSyncing;
 
@@ -156,14 +159,14 @@ namespace Base.CorePackage.MenuManaging.Modules
             if (_isInitialized)
                 return true;
 
-            if (!ServiceLocator.TryGet(out MenuManager menuManager))
+            if (!ServiceLocator.TryGet(out _menuManager))
             {
                 // Turning off also drops the menu subscriptions, so the missing manager is reported only once.
                 enabled = false;
                 return false;
             }
 
-            ResolveTabs(menuManager);
+            ResolveTabs(_menuManager);
             _defaultTabMenu = ResolveDefaultTab();
             SubscribeToTabs();
 
@@ -334,7 +337,7 @@ namespace Base.CorePackage.MenuManaging.Modules
 
             if (targetTab != null
                 && !targetTab.IsOpen)
-                targetTab.Open(OwnerMenu.MenuIdentifier);
+                targetTab.Open(OwnerMenu.MenuIdentifier, isEmbedded: true);
         }
 
         private void HandleTabOpened(Menu tabMenu)
@@ -345,6 +348,9 @@ namespace Base.CorePackage.MenuManaging.Modules
                 OpenOwnerOn(tabMenu);
                 return;
             }
+
+            // A tab opened from outside joins this menu's screen, like one the group opened itself.
+            tabMenu.EmbedIn(OwnerMenu);
 
             if (tabMenu == _activeTab)
                 return;
@@ -384,11 +390,13 @@ namespace Base.CorePackage.MenuManaging.Modules
 
         /// <summary>
         /// Steps through the tabs, unless the active tab holds an open group itself. Nested groups may share the
-        /// same actions this way, and the innermost one wins.
+        /// same actions this way, and the innermost one wins. A screen opened on top, like a dialog, keeps the tabs
+        /// behind it still.
         /// </summary>
         private void StepIfInnermost(int step)
         {
-            if (_tabMenus.Count == 0)
+            if (_tabMenus.Count == 0
+                || !_menuManager.IsScreenOnTop(OwnerMenu))
                 return;
 
             if (_activeTab != null

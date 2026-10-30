@@ -94,7 +94,7 @@ namespace Base.CoreDebugPackage.DebugMenu
             if (other.IsOpen)
                 other.Close();
 
-            target.Open(MenuIdentifier);
+            target.Open(MenuIdentifier, isEmbedded: true);
             MarkTab(cheatConsoleButton, isCheatConsole);
             MarkTab(logConsoleButton, !isCheatConsole);
         }

@@ -8,6 +8,15 @@ Changes made before 1.0.5 were not recorded.
 
 ## [Unreleased]
 
+### Changed
+
+- The debug menu, cheat console and log console have Critical priority, so they sit on top of every menu while open.
+
+### Fixed
+
+- The cheat console has a focus group for its input field, so keys typed into it no longer move the selection on the
+  screen behind it.
+
 ## [1.1.0] - 2026-10-25
 
 ### Added

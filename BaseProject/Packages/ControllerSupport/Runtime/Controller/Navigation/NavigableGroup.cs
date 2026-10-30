@@ -28,6 +28,9 @@ namespace Base.ControllerSupportPackage.Controller.Navigation
         /// <summary>Serialized name of the priority field, for editor tooling.</summary>
         public const string PriorityFieldName = nameof(priority);
 
+        // Spreads the elements' states over the signature, so two different sets rarely end on the same number.
+        private const int HashFactor = 31;
+
         private const float NeverMissed = -1f;
 
         // Elements are often briefly out of reach while a menu fades in or a lock screen hides them. Only a gap that
@@ -52,8 +55,14 @@ namespace Base.ControllerSupportPackage.Controller.Navigation
         [Tooltip("If true, navigation loops around the edges of the group.")]
         [SerializeField] private bool wrap;
 
-        [Tooltip("If true, the navigation is rewired each time the group activates, for groups whose elements are "
-            + "spawned at runtime, like a row of cards.")]
+        [Tooltip("If true, a direction with nothing lined up takes the nearest element on that side instead of staying "
+            + "unwired, for loose layouts like a row of cards above a single button, where the outer cards sit too "
+            + "far off to the side to line up with it.")]
+        [SerializeField] private bool reachOffAxis;
+
+        [Tooltip("If true, the navigation is rewired each time the group activates and whenever one of its elements "
+            + "starts or stops taking the focus, like a card that turns clickable once its intro landed. For groups "
+            + "whose elements are spawned or unlocked at runtime, like a row of cards.")]
         [SerializeField] private bool rebuildOnActivate;
 
         /// <summary>Focus priority used by the watchdog to choose between active groups.</summary>
@@ -62,11 +71,19 @@ namespace Base.ControllerSupportPackage.Controller.Navigation
         /// <summary>Whether the group activates itself in OnEnable instead of being driven externally.</summary>
         public bool AutoActivate => autoActivate;
 
+        /// <summary>
+        /// While <c>true</c>, the group keeps the focus empty instead of selecting an element, for a screen that waits
+        /// for the player's first input before it shows a focus. It still owns the focus while active, so a selection
+        /// on a screen behind it is cleared instead of kept.
+        /// </summary>
+        public bool IsFocusHeld { get; set; }
+
         private readonly List<NavigableElement> _elements = new();
 
         private bool _hasWarnedNoTarget;
         private float _noTargetSince = NeverMissed;
         private bool _isActive;
+        private int _wiredSignature;
         private FocusWatchdog _focusWatchdog;
         private GameObject _lastSeenSelection;
         private GameObject _lastSelected;
@@ -80,8 +97,12 @@ namespace Base.ControllerSupportPackage.Controller.Navigation
 
         private void LateUpdate()
         {
-            if (!_isActive
-                || !rememberLastSelected
+            if (!_isActive)
+                return;
+
+            RewireIfNavigabilityChanged();
+
+            if (!rememberLastSelected
                 || EventSystem.current == null)
                 return;
 
@@ -139,12 +160,21 @@ namespace Base.ControllerSupportPackage.Controller.Navigation
             _focusWatchdog.DeregisterGroup(this);
         }
 
-        /// <summary>Selects the remembered element if it is still valid, otherwise the default.</summary>
+        /// <summary>
+        /// Selects the remembered element if it is still valid, otherwise the default. While the focus is held, it only
+        /// clears a selection outside the group.
+        /// </summary>
         public void RestoreFocus()
         {
             // A missing EventSystem is already reported by the watchdog, so stay quiet here.
             if (EventSystem.current == null)
                 return;
+
+            if (IsFocusHeld)
+            {
+                ClearOutsideSelection();
+                return;
+            }
 
             Selectable target = ResolveFocusTarget();
             if (target == null)
@@ -163,15 +193,55 @@ namespace Base.ControllerSupportPackage.Controller.Navigation
         public bool Contains(GameObject candidate) => candidate != null && candidate.transform.IsChildOf(transform);
 
         /// <summary>
-        /// Recollects the child elements and rewires explicit navigation between them. Triggered from the
-        /// editor tooling, never automatically, so wiring never changes silently.
+        /// Recollects the child elements and rewires explicit navigation between them. Triggered from the editor
+        /// tooling. At runtime only groups with Rebuild On Activate rewire themselves, so authored wiring never
+        /// changes silently.
         /// </summary>
         public void Rebuild()
         {
             _elements.Clear();
             GetComponentsInChildren(true, _elements);
 
-            NavigationBuilder.Wire(_elements, wrap);
+            NavigationBuilder.Wire(_elements, wrap, reachOffAxis);
+            _wiredSignature = GetNavigabilitySignature();
+        }
+
+        // The wiring only links elements that take the focus when it runs. One that turns navigable later, like a card
+        // that can't be clicked before its intro landed, would stay unreachable, so the group wires again.
+        private void RewireIfNavigabilityChanged()
+        {
+            if (!rebuildOnActivate
+                || GetNavigabilitySignature() == _wiredSignature)
+                return;
+
+            Rebuild();
+        }
+
+        // Folds in which elements take the focus right now, so any element that starts or stops doing so changes it.
+        private int GetNavigabilitySignature()
+        {
+            int signature = _elements.Count;
+
+            for (int index = 0; index < _elements.Count; index++)
+            {
+                NavigableElement element = _elements[index];
+                bool isNavigable = element != null
+                    && element.IsNavigable();
+
+                signature = signature * HashFactor + (isNavigable
+                    ? index + 1
+                    : 0);
+            }
+
+            return signature;
+        }
+
+        private void ClearOutsideSelection()
+        {
+            GameObject current = EventSystem.current.currentSelectedGameObject;
+            if (current != null
+                && !Contains(current))
+                EventSystem.current.SetSelectedGameObject(null);
         }
 
         private Selectable ResolveFocusTarget()

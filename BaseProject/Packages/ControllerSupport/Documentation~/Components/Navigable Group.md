@@ -40,7 +40,8 @@ The group knows nothing about menus or the game. It is pure UI navigation.
 | Field | Description |
 | --- | --- |
 | Wrap | Navigation loops around the edges of the group. So navigating down on the lowest selectable moves the user to the highest selectable. |
-| Rebuild On Activate | Rewires the navigation each time the group activates, after the layout ran. For groups whose elements are spawned at runtime, like a row of cards. |
+| Reach Off Axis | A direction with nothing lined up (within 45 degrees) takes the nearest element on that side instead of staying unwired. For loose layouts like a row of cards above a single button, where Down on an outer card would otherwise lead nowhere. |
+| Rebuild On Activate | Rewires the navigation each time the group activates, after the layout ran, and whenever one of its elements starts or stops taking the focus, like a card that turns clickable once its intro landed. For groups whose elements are spawned or unlocked at runtime, like a row of cards. |
 
 ## How wiring works
 
@@ -50,13 +51,14 @@ The group knows nothing about menus or the game. It is pure UI navigation.
 - Elements outside that cone are ignored, so off-axis buttons never get wired by accident.
 - With **Wrap** on, an element at the edge links to the element furthest in the opposite direction.
 
-Rebuilds only run when you ask for them or turn on **Rebuild On Activate**, so wiring never changes silently. In the editor, a rebuild also adds a missing `NavigableElement` to any selectable underneath, then wires it in the same pass.
+Rebuilds only run when you ask for them or turn on **Rebuild On Activate**, so authored wiring never changes silently. The wiring only links elements that take the focus at that moment, which is why a runtime group also rewires when one of them turns navigable later. In the editor, a rebuild also adds a missing `NavigableElement` to any selectable underneath, then wires it in the same pass.
 
 ## Focus behavior
 
 - `Activate()` registers the group with the `FocusWatchdog`.
 - `Deactivate()` removes it. Called automatically in `OnDisable`.
 - `RestoreFocus()` selects the remembered element if it is still valid and interactable, otherwise the default element. If neither works, a warning is logged once per activation.
+- `IsFocusHeld` keeps the focus empty while the group stays the focus owner, for a screen that waits for the player's first input. A selection outside the group is cleared meanwhile.
 
 ## API
 
@@ -66,7 +68,8 @@ Rebuilds only run when you ask for them or turn on **Rebuild On Activate**, so w
 | `AutoActivate` | Whether the group activates itself. |
 | `Activate()` | Register with the watchdog. |
 | `Deactivate()` | Remove from the watchdog. |
-| `RestoreFocus()` | Select the remembered or default element. |
+| `RestoreFocus()` | Select the remembered or default element. Only clears a selection outside the group while the focus is held. |
+| `IsFocusHeld` | Keeps the focus empty without giving it to a group behind. |
 | `Contains(GameObject)` | True when the object lives inside this group. |
 | `Rebuild()` | Recollect elements and rewire navigation. Also on the context menu as "Rebuild Navigation". |
 
@@ -82,3 +85,4 @@ Rebuilds only run when you ask for them or turn on **Rebuild On Activate**, so w
 - Leaving **Auto Activate** on while a `MenuNavigationModule` drives the group. Both would fight over activation. The Navigation Groups window flags this and can fix it.
 - A priority that differs from the owning menu's priority. Also flagged in the window.
 - Forgetting to rebuild after changing the layout. Navigation stays wired to the old positions.
+- Calling `Deactivate()` then `Activate()` to rewire. It makes the group the newest one, so it can take the focus from a screen opened after it. A group with **Rebuild On Activate** rewires on its own; otherwise call `Rebuild()`.

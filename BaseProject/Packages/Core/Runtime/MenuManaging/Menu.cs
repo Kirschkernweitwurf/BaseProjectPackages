@@ -25,6 +25,12 @@ namespace Base.CorePackage.MenuManaging
         /// <summary>Raised after the menu has fully closed and its close animation has finished.</summary>
         public event Action Closed;
 
+        /// <summary>
+        /// Raised when the close animation starts. From here on the menu no longer counts as open for input, so Back
+        /// and the focus move on to the menu below while this one animates out.
+        /// </summary>
+        public event Action Closing;
+
         /// <summary>Raised when the menu closes in response to a back request.</summary>
         public event Action BackRequested;
 
@@ -69,10 +75,20 @@ namespace Base.CorePackage.MenuManaging
         /// </summary>
         public bool IsClosing { get; private set; }
 
+        /// <summary>
+        /// <c>true</c> while the menu is shown inside its parent as part of the same screen, like a tab inside a
+        /// <see cref="MenuGroupModule"/>. Input treats the two as one screen, see <see cref="MenuManager.IsOnTop"/>.
+        /// </summary>
+        public bool IsEmbedded { get; private set; }
+
+        /// <summary>The menu this one was opened from, or <c>null</c>.</summary>
+        public Menu ParentMenu => _parentMenu;
+
         private readonly List<MenuIdentifier> _childMenuIdentifiers = new();
 
         private MenuManager _menuManager;
         private Menu _parentMenu;
+        private bool _isTrackedOpen;
 
 #region Unity Callbacks
         protected virtual void Awake()
@@ -122,6 +138,7 @@ namespace Base.CorePackage.MenuManaging
 
             Opened = null;
             Closed = null;
+            Closing = null;
             BackRequested = null;
         }
 
@@ -131,7 +148,10 @@ namespace Base.CorePackage.MenuManaging
         /// <param name="parentMenuIdentifier">
         /// The menu this one is opened from, if any. The parent closes this menu when it closes itself.
         /// </param>
-        public void Open(MenuIdentifier parentMenuIdentifier = null)
+        /// <param name="isEmbedded">
+        /// If <c>true</c>, the menu shows inside its parent as part of the same screen, like a tab. Needs a parent.
+        /// </param>
+        public void Open(MenuIdentifier parentMenuIdentifier = null, bool isEmbedded = false)
         {
             if (IsOpen)
             {
@@ -160,9 +180,14 @@ namespace Base.CorePackage.MenuManaging
             contentRoot.Show();
 
             RegisterParentMenu(parentMenuIdentifier);
+            IsEmbedded = isEmbedded
+                && _parentMenu != null;
 
             if (TryGetMenuManager(out MenuManager menuManager))
+            {
                 menuManager.RegisterOpenMenu(this, (uint)Priority, this);
+                _isTrackedOpen = true;
+            }
 
             OnOpened();
             Opened?.Invoke();
@@ -197,8 +222,10 @@ namespace Base.CorePackage.MenuManaging
             IsTransitioning = true;
             IsClosing = true;
 
-            // Before Hide, so the hook runs ahead of OnClosed even when the close animation finishes at once.
+            // Before Hide, so the hooks run ahead of OnClosed even when the close animation finishes at once.
             OnClosing();
+            StopTrackingOpen();
+            Closing?.Invoke();
 
             contentRoot.OnFinished -= HandleCloseComplete;
             contentRoot.OnFinished += HandleCloseComplete;
@@ -246,6 +273,29 @@ namespace Base.CorePackage.MenuManaging
         /// Runs after a back request closed the menu, before <see cref="BackRequested"/> is raised.
         /// </summary>
         protected virtual void OnBack() { }
+
+        /// <summary>
+        /// Makes this open menu part of <paramref name="parent"/>'s screen, for a tab that was opened on its own and
+        /// then taken in by its group.
+        /// </summary>
+        internal void EmbedIn(Menu parent)
+        {
+            if (!IsOpen
+                || parent == null
+                || !parent.IsOpen)
+                return;
+
+            if (_parentMenu != parent)
+            {
+                if (_parentMenu != null)
+                    _parentMenu._childMenuIdentifiers.Remove(MenuIdentifier);
+
+                _parentMenu = parent;
+                parent.RegisterChildMenu(MenuIdentifier);
+            }
+
+            IsEmbedded = true;
+        }
 
         /// <summary>
         /// Resolves the menu manager once and keeps it, so the six places that need it stop going
@@ -331,8 +381,20 @@ namespace Base.CorePackage.MenuManaging
                 _parentMenu._childMenuIdentifiers.Remove(MenuIdentifier);
 
             _parentMenu = null;
+            IsEmbedded = false;
 
-            if (hasMenuManager)
+            StopTrackingOpen();
+        }
+
+        // Runs at the start of a close and again on cleanup, for a menu destroyed while open; only the first counts.
+        private void StopTrackingOpen()
+        {
+            if (!_isTrackedOpen)
+                return;
+
+            _isTrackedOpen = false;
+
+            if (TryGetMenuManager(out MenuManager menuManager))
                 menuManager.DeregisterOpenMenu(this);
         }
 

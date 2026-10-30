@@ -8,6 +8,31 @@ Changes made before 1.6.5 were not recorded.
 
 ## [Unreleased]
 
+### Added
+
+- `ISteeringSource`: a game can tell the `FocusWatchdog` that the player steers with the keyboard, so keyboard
+  players keep a focus like gamepad players do.
+- `NavigableGroup` Reach Off Axis: a direction with nothing lined up takes the nearest element on that side, for a
+  row of cards above a single button.
+- `NavigableGroup.IsFocusHeld` keeps a group's focus empty while it stays the focus owner, for a screen that waits for
+  the first input.
+
+### Changed
+
+- `FocusWatchdog` keeps the selection off covered screens: a selection inside a group behind the top group moves to
+  the top group while steering and is cleared while pointing. A group that deactivates with the selection inside
+  hands it on at once.
+- `MenuNavigationModule` deactivates its group when the menu starts to close, so the focus moves on while the menu
+  fades out.
+
+### Fixed
+
+- A group with Rebuild On Activate rewires itself whenever one of its elements starts or stops taking the focus.
+  The wiring only links elements that take the focus when it runs, so a card that turns clickable once its intro
+  landed, or a menu that ignores presses while it fades in, stayed unreachable for the gamepad and the keyboard.
+- A menu opened with the mouse no longer leaves the keyboard selection on the button behind it, where Enter or the
+  arrows acted on the covered screen.
+
 ## [1.9.0] - 2026-10-24
 
 ### Added

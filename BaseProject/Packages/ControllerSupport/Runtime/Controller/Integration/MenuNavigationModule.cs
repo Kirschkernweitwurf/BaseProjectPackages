@@ -8,11 +8,12 @@ using UnityEngine;
 namespace Base.ControllerSupportPackage.Controller.Integration
 {
     /// <summary>
-    /// Bridges a <see cref="Menu"/>'s lifecycle to a <see cref="NavigableGroup"/>. Activates the group
-    /// when the menu opens and deactivates it when the menu closes. This is the single deliberate seam
-    /// between the menu layer and the controller package, so navigation stays menu agnostic everywhere
-    /// else. It depends on both layers, so it belongs in the assembly that already references the menu
-    /// package rather than in the core navigation package.
+    /// Bridges a <see cref="Menu"/>'s lifecycle to a <see cref="NavigableGroup"/>. Activates the group when the menu
+    /// opens and deactivates it as soon as the menu starts to close, so the focus moves on to the screen below while
+    /// this one fades out, like the menu manager's top menu and Back do. This is the single deliberate seam between the
+    /// menu layer and the controller package, so navigation stays menu agnostic everywhere else. It depends on both
+    /// layers, so it belongs in the assembly that already references the menu package rather than in the core
+    /// navigation package.
     /// </summary>
     public sealed class MenuNavigationModule : MenuModule
     {
@@ -38,6 +39,6 @@ namespace Base.ControllerSupportPackage.Controller.Integration
 
         protected override void OnMenuOpened() => navigableGroup.Activate();
 
-        protected override void OnMenuClosed() => navigableGroup.Deactivate();
+        protected override void OnMenuClosing() => navigableGroup.Deactivate();
     }
 }

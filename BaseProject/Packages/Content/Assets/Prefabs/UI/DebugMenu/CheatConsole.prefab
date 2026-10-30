@@ -682,6 +682,8 @@ GameObject:
   - component: {fileID: 6616562350191608776}
   - component: {fileID: 6426796371714755357}
   - component: {fileID: 1248249170534112211}
+  - component: {fileID: 7888688400676157376}
+  - component: {fileID: 3419148698482108016}
   m_Layer: 0
   m_Name: CheatConsole
   m_TagString: Untagged
@@ -723,7 +725,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Systems.CheatConsole.CheatConsoleView
   <MenuIdentifier>k__BackingField: {fileID: 11400000, guid: e5ce9f8bb7b86df45a5bd5e1c62a4565, type: 2}
   contentRoot: {fileID: 7373085267952663516}
-  <Priority>k__BackingField: 0
+  <Priority>k__BackingField: 3
   openOnStart: 0
   <ListenToOnBackAction>k__BackingField: 0
   blockingMenus: []
@@ -750,6 +752,38 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Systems.CheatConsole.CheatConsoleController
   view: {fileID: 6426796371714755357}
+--- !u!114 &7888688400676157376
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3212132897598572884}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ccb07d19af26e64bb27f94575ba0011, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Base.ControllerSupportPackage::Base.ControllerSupportPackage.Controller.Navigation.NavigableGroup
+  defaultElement: {fileID: 577781256054698954}
+  priority: 3
+  autoActivate: 0
+  rememberLastSelected: 1
+  wrap: 0
+  rebuildOnActivate: 0
+--- !u!114 &3419148698482108016
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3212132897598572884}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71394ed1e59c830488be5ae4c8962774, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Base.ControllerSupportPackage::Base.ControllerSupportPackage.Controller.Integration.MenuNavigationModule
+  ownerMenu: {fileID: 6426796371714755357}
+  navigableGroup: {fileID: 7888688400676157376}
 --- !u!1 &5296705676567229368
 GameObject:
   m_ObjectHideFlags: 0
@@ -1163,6 +1197,7 @@ GameObject:
   - component: {fileID: 5468972418344958213}
   - component: {fileID: 1259385404008776576}
   - component: {fileID: 4624266734233128123}
+  - component: {fileID: 577781256054698954}
   m_Layer: 0
   m_Name: InputField (TMP)
   m_TagString: Untagged
@@ -1319,6 +1354,19 @@ MonoBehaviour:
   m_FlexibleWidth: 1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &577781256054698954
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7418283415552533171}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d42d87bab82970f4d87b2eb5659e7933, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Base.ControllerSupportPackage::Base.ControllerSupportPackage.Controller.Navigation.NavigableElement
+  selectable: {fileID: 1259385404008776576}
 --- !u!1 &8657725520298058420
 GameObject:
   m_ObjectHideFlags: 0

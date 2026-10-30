@@ -59,7 +59,7 @@ Pause Menu - Phone   Menu + Menu Group Module
 
 - Closing the phone closes Settings, and Settings closes its open tab.
 - Back always reaches the deepest open tab first.
-- Both groups may use the same next and previous actions. Only the innermost open group reacts.
+- Both groups may use the same next and previous actions. Only the innermost open group reacts, and only while its screen is on top, so a dialog over the tabs keeps them still.
 
 ## Good to know
 
@@ -68,6 +68,7 @@ Pause Menu - Phone   Menu + Menu Group Module
 - Opening a tab from anywhere (a Menu Tab Button, an Open Menu Button, code) also opens the container when it is closed.
 - A Close Menu Button on a tab acts like Back.
 - A tab with a lower Priority than the container never gets Back. The console warns about it.
+- The container opens its tabs *embedded*, also a tab opened from outside, so the container and its open tab count as one screen for the [Menu Manager](Menu%20Manager.md). Shortcuts and prompt bars on the container keep working while a tab is open.
 
 ## Related
 

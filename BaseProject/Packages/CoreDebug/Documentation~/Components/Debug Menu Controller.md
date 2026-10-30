@@ -13,7 +13,7 @@ summary: The debug menu that holds the cheat console and the log console. Toggle
 
 **Tags:** #programmer #debugging
 
-The debug menu. **F1** opens and closes it. It holds the cheat console and the log console and switches between them with two tabs that work like a segmented control: the open console's tab is filled and bold. The console used last opens again next time.
+The debug menu. **F1** opens and closes it. It holds the cheat console and the log console and switches between them with two tabs that work like a segmented control: the open console's tab is filled and bold. The console used last opens again next time. The consoles open embedded in the debug menu, so the menu manager treats them as one screen: Back closes the whole debug menu, and nothing behind it reacts to input while it is open. Give the debug menu and its consoles **Critical** priority, so they sit on top of every menu.
 
 **Add it:** Inspector › **Add Component** › search `Debug Menu Controller`.
 
