@@ -95,6 +95,7 @@ A data driven replacement for hardcoded `MenuItem` and `CreateAssetMenu` paths. 
 
 ## Scene and workflow helpers
 
+- **Canvas Render Order** lists every canvas of the open scenes and, on demand, of all prefabs in the order Unity draws it, flags canvases that share a layer and order, and edits sorting layer and order in place.
 - **Component Clipboard** lists the components of the active GameObject with checkbox multi selection and offers copy, paste, delete and reorder. It fills the gap left by Unity's single entry component clipboard.
 - **Play Mode Saver** carries changes made during play mode back out of it. Mark what matters while playing; in edit mode the window lists what was captured and applies or discards each entry. Nothing runs automatically, every apply is triggered by hand, and the captured list is cleared when the next play session starts.
 - **Lighting Profile** stores the render settings and baked environment of a scene so they can be applied without making that scene active. A `LightingProfileApplier` component applies a profile as soon as its scene loads and keeps it in sync with its scene on every save and bake.

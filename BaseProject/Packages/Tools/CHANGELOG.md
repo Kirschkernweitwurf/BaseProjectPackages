@@ -8,6 +8,11 @@ Changes made before 2.0.10 were not recorded.
 
 ## [Unreleased]
 
+### Added
+
+- Canvas Render Order window (`Tools > Base Packages > Editor`): lists every canvas of the open scenes and
+  prefabs in the order Unity draws it, flags ties and edits sorting layer and order in place.
+
 ## [3.3.0] - 2026-10-20
 
 ### Added
