@@ -52,6 +52,7 @@ Type `autorun.add` and your command, for example `autorun.add Jonny`. From then 
 
 - The list is yours alone: it lives in this computer's settings, not in version control, so teammates keep their own.
 - `autorun.list` shows your list, `autorun.remove Jonny` takes a command off it.
+- `autorun.disable Jonny` pauses a command but keeps it on your list, marked as disabled. `autorun.enable Jonny` turns it back on and runs it right away if it has not run yet this session.
 - Any command without arguments works, not only macros, for example `ann`.
 - Removing a command and adding it again in the same session does not run it a second time.
 - The Unity console shows a line each time something ran automatically.

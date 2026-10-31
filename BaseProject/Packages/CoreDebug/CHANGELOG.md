@@ -17,6 +17,7 @@ All notable changes to this package are recorded here. The format follows
   play session, as soon as the console finds it, for example a personal `CheatMacro` once the scene with its cheats
   loads. Once per session keeps a toggle cheat on. The list is per machine (PlayerPrefs), so it stays out of version
   control. Until each entry ran, the console also discovers commands on scene loads.
+- `autorun.disable` and `autorun.enable` cheat commands switch an auto-run entry off and on without removing it.
 
 ## [1.5.0] - 2026-10-28
 
