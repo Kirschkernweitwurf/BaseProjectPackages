@@ -21,6 +21,7 @@ namespace Base.CoreDebugPackage.Tests
         private const string BuiltinCommand = "builtin";
         private const string EchoCommand = "echo";
         private const string FailCommand = "fail";
+        private const int HistoryOverflow = 60;
         private const string ModeCommand = "mode";
         private const string PingCommand = "ping";
         private const string ToggleCommand = "toggle";
@@ -198,6 +199,51 @@ namespace Base.CoreDebugPackage.Tests
 
             Assert.That(_model.GetNextHistory(), Is.EqualTo(ToggleCommand));
             Assert.That(_model.GetNextHistory(), Is.Empty);
+        }
+
+        /// <summary>Typing the same command twice in a row keeps one entry, so older ones stay close.</summary>
+        [Test]
+        public void HistorySkipsARepeatedCommand()
+        {
+            _model.Execute(PingCommand);
+            _model.Execute(PingCommand);
+
+            Assert.That(_model.History, Is.EqualTo(new[] { PingCommand }));
+        }
+
+        /// <summary>The history keeps only the newest commands, so a saved history can't grow forever.</summary>
+        [Test]
+        public void HistoryDropsTheOldestCommandsPastItsLimit()
+        {
+            List<string> entries = new();
+            for (int i = 0; i < HistoryOverflow; i++)
+                entries.Add(PingCommand + i);
+
+            _model.LoadHistory(entries);
+
+            Assert.That(_model.History.Count, Is.LessThan(HistoryOverflow));
+            Assert.That(_model.History[^1], Is.EqualTo(entries[^1]));
+        }
+
+        /// <summary>A loaded history sits before the commands typed in this session.</summary>
+        [Test]
+        public void LoadedHistoryComesBeforeTypedCommands()
+        {
+            _model.Execute(ToggleCommand);
+            _model.LoadHistory(new[] { PingCommand });
+
+            Assert.That(_model.History, Is.EqualTo(new[] { PingCommand, ToggleCommand }));
+            Assert.That(_model.GetPreviousHistory(), Is.EqualTo(ToggleCommand));
+        }
+
+        /// <summary>Clearing the history leaves nothing for the arrow keys.</summary>
+        [Test]
+        public void ClearedHistoryHasNoPreviousCommand()
+        {
+            _model.Execute(PingCommand);
+            _model.ClearHistory();
+
+            Assert.That(_model.GetPreviousHistory(), Is.Null);
         }
 
         /// <summary>A new discovery replaces the commands of the last one.</summary>

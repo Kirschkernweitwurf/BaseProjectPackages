@@ -35,6 +35,7 @@ namespace Base.CoreDebugPackage.DebugMenu.CheatConsole
 
         private CheatConsoleModel _model;
         private CheatAutoRun _autoRun;
+        private CheatHistoryStore _historyStore;
 
         // Text editing keys belong to the console alone, so they live here instead of in the shared input asset.
         private InputAction _deleteWord;
@@ -115,11 +116,14 @@ namespace Base.CoreDebugPackage.DebugMenu.CheatConsole
             return action;
         }
 
-        // The model lives as long as the console, so the history survives scene loads.
+        // The model lives as long as the console, so the history survives scene loads. The store keeps it beyond
+        // the play session.
         private void CreateModel()
         {
             _model = new CheatConsoleModel(Array.Empty<CheatCommandInfo>());
             BuiltinCheatCommands.Register(_model, view);
+            _historyStore = new CheatHistoryStore(_model);
+            _historyStore.Register();
             IReadOnlyList<CheatMacro> macros = CheatMacroRunner.Register(_model);
             _autoRun = new CheatAutoRun(_model, macros);
             _autoRun.Register();
@@ -153,6 +157,7 @@ namespace Base.CoreDebugPackage.DebugMenu.CheatConsole
             view.AppendLog(input, ECheatConsoleMessageType.Command);
 
             CheatConsoleResult result = _model.Execute(input);
+            _historyStore.Save();
             view.AppendLog(result.Message, result.MessageType);
 
             view.SetInputText(string.Empty);

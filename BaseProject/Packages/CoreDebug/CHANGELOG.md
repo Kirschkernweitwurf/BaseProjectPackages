@@ -18,6 +18,8 @@ All notable changes to this package are recorded here. The format follows
   loads. Once per session keeps a toggle cheat on. The list is per machine (PlayerPrefs), so it stays out of version
   control. Until each entry ran, the console also discovers commands on scene loads.
 - `autorun.disable` and `autorun.enable` cheat commands switch an auto-run entry off and on without removing it.
+- The cheat console keeps its typed command history per machine (PlayerPrefs) across play sessions and editor
+  restarts, capped at the last 50 commands. A command typed twice in a row is kept once. `history.clear` forgets it.
 
 ## [1.5.0] - 2026-10-28
 

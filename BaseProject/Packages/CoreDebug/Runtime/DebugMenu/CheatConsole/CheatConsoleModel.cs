@@ -14,6 +14,7 @@ namespace Base.CoreDebugPackage.DebugMenu.CheatConsole
     public sealed class CheatConsoleModel
     {
         private const string ExecutedFormat = "Executed '{0}'.";
+        private const int MaxHistory = 50;
         private const string NoCommandMessage = "No command entered.";
         private const string UnknownCommandFormat = "Unknown command: {0}";
         private const string UsageFormat = "Usage: {0}({1})";
@@ -22,6 +23,11 @@ namespace Base.CoreDebugPackage.DebugMenu.CheatConsole
         /// Gets a read-only view of the registered commands.
         /// </summary>
         public IReadOnlyDictionary<string, CheatCommandInfo> Commands => _commands;
+
+        /// <summary>
+        /// Gets the typed commands, oldest first, so they can be kept beyond this console.
+        /// </summary>
+        public IReadOnlyList<string> History => _history;
 
         private readonly Dictionary<string, CheatCommandInfo> _commands;
         private readonly List<string> _discoveredNames;
@@ -142,6 +148,37 @@ namespace Base.CoreDebugPackage.DebugMenu.CheatConsole
 
             _historyIndex = _history.Count;
             return string.Empty;
+        }
+
+        /// <summary>
+        /// Puts commands typed earlier, for example in a previous play session, in front of the history.
+        /// </summary>
+        /// <param name="entries">The earlier commands, oldest first.</param>
+        public void LoadHistory(IEnumerable<string> entries)
+        {
+            if (entries == null)
+            {
+                CustomLogger.LogWarning("History entries are null. The history was left as it is.", null);
+                return;
+            }
+
+            List<string> typed = new(_history);
+            _history.Clear();
+
+            foreach (string entry in entries)
+                AddToHistory(entry);
+
+            foreach (string entry in typed)
+                AddToHistory(entry);
+        }
+
+        /// <summary>
+        /// Forgets every typed command.
+        /// </summary>
+        public void ClearHistory()
+        {
+            _history.Clear();
+            _historyIndex = -1;
         }
 
         /// <summary>
@@ -390,9 +427,20 @@ namespace Base.CoreDebugPackage.DebugMenu.CheatConsole
             _discoveredNames.Add(command);
         }
 
+        // Repeating the last command adds nothing, so the arrow keys reach older commands sooner.
         private void AddToHistory(string input)
         {
-            _history.Add(input);
+            if (string.IsNullOrWhiteSpace(input))
+                return;
+
+            string trimmed = input.Trim();
+            if (_history.Count == 0
+                || !string.Equals(_history[^1], trimmed, StringComparison.Ordinal))
+                _history.Add(trimmed);
+
+            if (_history.Count > MaxHistory)
+                _history.RemoveRange(0, _history.Count - MaxHistory);
+
             _historyIndex = _history.Count;
         }
     }

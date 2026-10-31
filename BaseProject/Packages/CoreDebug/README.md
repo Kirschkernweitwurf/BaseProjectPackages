@@ -35,6 +35,8 @@ The debug menu, cheat console and log console prefabs ship in `Base.ContentPacka
   this machine only (PlayerPrefs, not version control). A macro waits until every command its
   lines call is found, and runs once per play session, so a toggle stays on.
   `autorun.disable <command>` switches an entry off without removing it, `autorun.enable` back on.
+- The typed command history is kept per machine in PlayerPrefs across play sessions and editor
+  restarts (last 50 commands). `history.clear` forgets it.
 - `LogConsoleView` mirrors Unity's log stream, `CustomLogger` output included. Capturing starts
   before the first scene loads, so every log is buffered even while the menu is closed.
 
