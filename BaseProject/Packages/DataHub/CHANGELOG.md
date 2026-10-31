@@ -6,6 +6,8 @@ All notable changes to this package are recorded here. The format follows
 
 ## [Unreleased]
 
+## [1.4.0] - 2026-10-31
+
 ### Added
 
 - Overview page the hub opens on: one tile per table with its problems and warnings, and one list of every asset
