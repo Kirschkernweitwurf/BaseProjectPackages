@@ -22,13 +22,10 @@ namespace Base.DataHubPackage.Editor
         private const string GroupTooltip = "A group of tables. Click the arrow to fold or unfold it.";
         private const string PageTooltip = "A custom page built for this project.";
         private const float RowGap = 1f;
-        private const float TopPadding = 6f;
 
         private readonly HashSet<string> _collapsed = new();
         private readonly List<DataHubTreeNode> _nodes = new();
         private readonly List<DataHubTreeNode> _visible = new();
-
-        private Vector2 _scroll;
 
         /// <summary>The selected node, or null when the tree is empty.</summary>
         internal DataHubTreeNode Selected { get; private set; }
@@ -109,37 +106,44 @@ namespace Base.DataHubPackage.Editor
         internal string SelectedParentPath() => Selected?.ParentPath?.Replace(PathSeparator.ToString(),
             " " + PathSeparator + " ");
 
-        /// <summary>Draws the tree and handles clicks.</summary>
-        /// <param name="area">The area to fill.</param>
+        /// <summary>Every table in the order the tree shows them, folded groups included.</summary>
+        internal IEnumerable<IDataTable> Tables
+        {
+            get
+            {
+                foreach (DataHubTreeNode node in _nodes)
+                {
+                    if (node.Table != null)
+                        yield return node.Table;
+                }
+            }
+        }
+
+        /// <summary>The height of every visible line together.</summary>
+        internal float Height => _visible.Count * (EditorTableStyles.RowHeight + RowGap);
+
+        /// <summary>Forgets the selection, while the hub shows a page that is not in the tree.</summary>
+        internal void ClearSelection() => Selected = null;
+
+        /// <summary>Draws the visible lines from the top of <paramref name="area"/> and handles clicks.</summary>
+        /// <param name="area">Where the lines go, inside the sidebar's scroll view. Its height is ignored.</param>
         /// <param name="styles">The built window styles.</param>
         /// <returns>True when the selection changed.</returns>
         internal bool Draw(Rect area, DataHubStyles styles)
         {
             float rowHeight = EditorTableStyles.RowHeight;
-            float height = TopPadding + _visible.Count * (rowHeight + RowGap);
-            bool hasScrollbar = height > area.height;
-
-            float width = hasScrollbar
-                ? area.width - GUI.skin.verticalScrollbar.fixedWidth
-                : area.width;
-
-            Rect view = new(0f, 0f, width, height);
             bool isChanged = false;
-
-            _scroll = GUI.BeginScrollView(area, _scroll, view, false, false);
 
             // Copied, because a fold changes the visible lines while they are being drawn.
             DataHubTreeNode[] visible = _visible.ToArray();
 
             for (int i = 0; i < visible.Length; i++)
             {
-                Rect row = new(0f, TopPadding + i * (rowHeight + RowGap), width, rowHeight);
+                Rect row = new(area.x, area.y + i * (rowHeight + RowGap), area.width, rowHeight);
 
                 if (DrawNode(row, visible[i], styles))
                     isChanged = true;
             }
-
-            GUI.EndScrollView();
 
             return isChanged;
         }

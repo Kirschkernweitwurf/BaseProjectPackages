@@ -41,10 +41,11 @@ All in `Base.DataHubPackage.Editor.Extensions`. Each implementation needs a para
 | `IDataTable` | A data type listed as a table, at a path in the tree. An abstract type lists every derived type with the shared columns. Override `IsFieldHidden` or `IsColumnHidden` to leave out columns that mean nothing for the type, and `Description` to tell a designer what the data is. |
 | `IDataColumn` | A computed, read-only column for a type and its derived types. Give it a `Tooltip` that says what it means, and `IsNumeric` for numbers. |
 | `IDataFieldText` | Shows every field of a type as one read-only text column instead of one column per inner field, for example a localized string as its text. Exported to sheets, never imported. |
-| `IDataValidator` | A project check. Problems show as a red badge. |
+| `IDataValidator` | A project check. Problems show as a red badge; `CollectWarnings` adds amber warnings, like a missing translation. |
 | `IDataCreateRule` | Folder, start name and collection list for new assets of a type. The most specific rule wins. Override `NeedsCollection` for assets that may stay out of the collection. |
 | `IDataHubPage` | A whole custom page in the tree, drawn with GUILayout. |
 | `IDataSummary` | A live summary of an asset at the top of its Contents tab, drawn with GUILayout inside a card the hub provides. |
+| `IDataPreview` | A card in the Preview tab, drawn with GUILayout inside a card the hub provides, like a rendered card face. Types without one get Unity's asset preview. Implement `IDisposable` to release a preview scene; the hub disposes it when the window closes. |
 | `IDataUsageCheck` | Assets of a type that nothing uses yet get an amber warning. Collections do not count as use, other data assets and saved scenes do. |
 
 ```csharp

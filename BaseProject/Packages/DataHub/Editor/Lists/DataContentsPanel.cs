@@ -26,7 +26,6 @@ namespace Base.DataHubPackage.Editor.Lists
         private const string NoListsMessage = "Nothing to fill";
         private const string SelectOneHint = "Lists like the cards of a deck show up here.";
         private const string SelectOneMessage = "Select one asset";
-        private const string SummaryFailedFormat = "This summary failed: {0}";
 
         private readonly Dictionary<string, int> _addAmounts = new();
         private readonly Dictionary<string, Object> _addPicks = new();
@@ -84,34 +83,6 @@ namespace Base.DataHubPackage.Editor.Lists
             DataHubGui.Pill(pill, total, EditorTableStyles.NeutralBadgeColor, styles);
         }
 
-        // The project draws the inside; the title and the card around it come from here, so every summary
-        // looks like the lists under it. A summary that throws shows its message instead of breaking the tab.
-        private static void DrawSummary(IDataSummary summary, Object asset, DataHubStyles styles)
-        {
-            GUILayout.Label(summary.Title, styles.SectionHeader);
-
-            EditorGUILayout.BeginVertical(styles.Card);
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.Space(CardInset);
-            EditorGUILayout.BeginVertical();
-
-            try
-            {
-                summary.Draw(asset);
-            }
-            catch (Exception exception) when (!(exception is ExitGUIException))
-            {
-                GUILayout.Label(string.Format(SummaryFailedFormat, exception.Message), styles.Detail);
-            }
-
-            EditorGUILayout.EndVertical();
-            GUILayout.Space(CardInset);
-            EditorGUILayout.EndHorizontal();
-            EditorGUILayout.EndVertical();
-
-            GUILayout.Space(EditorMetrics.SectionGap);
-        }
-
         private static void DrawEmptyLine(DataHubStyles styles)
         {
             Rect line = GUILayoutUtility.GetRect(0f, DataListRowGui.Height, GUILayout.ExpandWidth(true));
@@ -148,7 +119,7 @@ namespace Base.DataHubPackage.Editor.Lists
             _scroll = EditorGUILayout.BeginScrollView(_scroll);
 
             foreach (IDataSummary summary in _summaries)
-                DrawSummary(summary, targets[0], styles);
+                DataHubGui.ExtensionCard(summary.Title, targets[0], summary.Draw, styles);
 
             foreach (DataListField field in fields)
             {

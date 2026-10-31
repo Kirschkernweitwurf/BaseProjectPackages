@@ -7,7 +7,7 @@ using UnityEditor;
 namespace Base.DataHubPackage.Editor
 {
     /// <summary>
-    /// Every table, column, check, create rule, summary and page the project declares, found through
+    /// Every table, column, check, create rule, summary, preview and page the project declares, found through
     /// <see cref="TypeCache"/> and created once per window. This is what makes a new feature a single
     /// new class: nothing has to be registered by hand.
     /// </summary>
@@ -17,6 +17,7 @@ namespace Base.DataHubPackage.Editor
         private readonly List<IDataCreateRule> _createRules = new();
         private readonly List<IDataFieldText> _fieldTexts = new();
         private readonly List<IDataHubPage> _pages = new();
+        private readonly List<IDataPreview> _previews = new();
         private readonly List<IDataSummary> _summaries = new();
         private readonly List<IDataTable> _tables = new();
         private readonly List<IDataUsageCheck> _usageChecks = new();
@@ -38,6 +39,7 @@ namespace Base.DataHubPackage.Editor
             Collect(_createRules);
             Collect(_fieldTexts);
             Collect(_pages);
+            Collect(_previews);
             Collect(_summaries);
             Collect(_tables);
             Collect(_usageChecks);
@@ -45,6 +47,18 @@ namespace Base.DataHubPackage.Editor
 
             _columns.Sort((first, second) => first.Order.CompareTo(second.Order));
             _summaries.Sort((first, second) => first.Order.CompareTo(second.Order));
+            _previews.Sort((first, second) => first.Order.CompareTo(second.Order));
+        }
+
+        /// <summary>
+        /// Disposes every extension that holds something to release, like the preview scene of a card preview.
+        /// Call when the window closes.
+        /// </summary>
+        internal void Dispose()
+        {
+            DisposeAll(_previews);
+            DisposeAll(_summaries);
+            DisposeAll(_pages);
         }
 
         /// <summary>Appends the computed columns that can read assets of <paramref name="tableType"/>.</summary>
@@ -82,6 +96,18 @@ namespace Base.DataHubPackage.Editor
             {
                 if (IsTarget(summary.TargetType, assetType))
                     summaries.Add(summary);
+            }
+        }
+
+        /// <summary>Appends the preview cards that show assets of <paramref name="assetType"/>.</summary>
+        /// <param name="assetType">The concrete type of the asset.</param>
+        /// <param name="previews">The list the matching previews are appended to, in their order.</param>
+        internal void CollectPreviews(Type assetType, List<IDataPreview> previews)
+        {
+            foreach (IDataPreview preview in _previews)
+            {
+                if (IsTarget(preview.TargetType, assetType))
+                    previews.Add(preview);
             }
         }
 
@@ -181,6 +207,25 @@ namespace Base.DataHubPackage.Editor
         private static bool IsTarget(Type targetType, Type candidate) => targetType != null
             && candidate != null
             && targetType.IsAssignableFrom(candidate);
+
+        // Project code, so one that throws must not keep the others from releasing theirs.
+        private static void DisposeAll<T>(List<T> extensions)
+        {
+            foreach (T extension in extensions)
+            {
+                if (!(extension is IDisposable disposable))
+                    continue;
+
+                try
+                {
+                    disposable.Dispose();
+                }
+                catch (Exception exception)
+                {
+                    CustomLogger.LogError($"Could not release {extension.GetType().Name}: {exception.Message}", null);
+                }
+            }
+        }
 
         private static void Collect<T>(List<T> target) where T : class
         {

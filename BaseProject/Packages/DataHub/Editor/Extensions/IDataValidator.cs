@@ -21,5 +21,15 @@ namespace Base.DataHubPackage.Editor.Extensions
         /// <param name="asset">The asset to check, always of <see cref="TargetType"/>.</param>
         /// <param name="problems">The list the problems are appended to.</param>
         void Validate(Object asset, List<string> problems);
+
+        /// <summary>
+        /// Appends one short line per thing worth a second look on <paramref name="asset"/>, like a missing
+        /// translation. A warning gets an amber badge and never counts as broken. Adds nothing by default.
+        /// </summary>
+        /// <param name="asset">The asset to check, always of <see cref="TargetType"/>.</param>
+        /// <param name="warnings">The list the warnings are appended to.</param>
+        void CollectWarnings(Object asset, List<string> warnings)
+        {
+        }
     }
 }

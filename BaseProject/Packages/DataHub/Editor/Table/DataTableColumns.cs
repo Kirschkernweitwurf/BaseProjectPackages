@@ -15,11 +15,13 @@ namespace Base.DataHubPackage.Editor.Table
         /// <summary>How many columns at the left stay put while the others scroll: the name and the check.</summary>
         internal const int FrozenCount = 2;
 
+        private const string HiddenKeyFormat = "Base.DataHubPackage.Hidden.{0}.{1}";
         private const float MinColumnWidth = 40f;
         private const string WidthKeyFormat = "Base.DataHubPackage.Columns.{0}.{1}";
 
-        private readonly List<DataColumn> _columns;
+        private readonly List<DataColumn> _columns = new();
         private readonly EditorColumnDividers _dividers = new();
+        private readonly List<DataColumn> _every;
         private readonly string _tableKey;
 
         /// <summary>Takes over the columns of a table and restores their saved widths.</summary>
@@ -28,7 +30,7 @@ namespace Base.DataHubPackage.Editor.Table
         internal DataTableColumns(string tableKey, List<DataColumn> columns)
         {
             _tableKey = tableKey;
-            _columns = columns;
+            _every = columns;
 
             foreach (DataColumn column in columns)
             {
@@ -38,10 +40,18 @@ namespace Base.DataHubPackage.Editor.Table
                 if (column.Group != null)
                     HasGroups = true;
             }
+
+            CollectShown();
         }
 
-        /// <summary>The columns, in display order.</summary>
+        /// <summary>The shown columns, in display order.</summary>
         internal IReadOnlyList<DataColumn> All => _columns;
+
+        /// <summary>Every column, shown or hidden, in display order, for the Columns menu.</summary>
+        internal IReadOnlyList<DataColumn> Every => _every;
+
+        /// <summary>True when the user hid at least one column of this table.</summary>
+        internal bool HasHidden => _columns.Count < _every.Count;
 
         /// <summary>True when a column sits inside a struct, so the header needs a second line for the group.</summary>
         internal bool HasGroups { get; }
@@ -146,7 +156,7 @@ namespace Base.DataHubPackage.Editor.Table
         /// <param name="padding">The space left and right of a title inside its cell.</param>
         internal void FitTitles(GUIStyle headerStyle, float padding)
         {
-            foreach (DataColumn column in _columns)
+            foreach (DataColumn column in _every)
             {
                 if (column.HasSavedWidth)
                     continue;
@@ -163,6 +173,41 @@ namespace Base.DataHubPackage.Editor.Table
         /// <summary>Drops a resize in progress, for a mouse released outside the window.</summary>
         internal void Cancel() => _dividers.Cancel();
 
+        /// <summary>True when <paramref name="column"/> can be hidden. The name and the check always stay.</summary>
+        /// <param name="column">A column of the table.</param>
+        /// <returns>False for the frozen columns.</returns>
+        internal bool CanHide(DataColumn column) => _every.IndexOf(column) >= FrozenCount;
+
+        /// <summary>True when the user hid <paramref name="column"/>.</summary>
+        /// <param name="column">A column of the table.</param>
+        /// <returns>True for a hidden column.</returns>
+        internal bool IsHidden(DataColumn column) => EditorPrefs.GetBool(HiddenKey(column));
+
+        /// <summary>Hides or shows a column, remembered per table between sessions.</summary>
+        /// <param name="column">A column that <see cref="CanHide"/>.</param>
+        /// <param name="isHidden">True to hide it.</param>
+        internal void SetHidden(DataColumn column, bool isHidden)
+        {
+            if (!CanHide(column))
+                return;
+
+            if (isHidden)
+                EditorPrefs.SetBool(HiddenKey(column), true);
+            else
+                EditorPrefs.DeleteKey(HiddenKey(column));
+
+            CollectShown();
+        }
+
+        /// <summary>Shows every column again.</summary>
+        internal void ShowAll()
+        {
+            foreach (DataColumn column in _every)
+                EditorPrefs.DeleteKey(HiddenKey(column));
+
+            CollectShown();
+        }
+
         // A scrolled column whose edge slid under the frozen ones cannot be grabbed there.
         private bool IsDividerShown(int index, float scrollX) => IsFrozen(index)
             || ScreenLeft(index, scrollX) + _columns[index].Width > FrozenWidth;
@@ -173,5 +218,19 @@ namespace Base.DataHubPackage.Editor.Table
             && _columns[index].Group == _columns[index + 1].Group;
 
         private string WidthKey(DataColumn column) => string.Format(WidthKeyFormat, _tableKey, column.Key);
+
+        private string HiddenKey(DataColumn column) => string.Format(HiddenKeyFormat, _tableKey, column.Key);
+
+        private void CollectShown()
+        {
+            _columns.Clear();
+
+            foreach (DataColumn column in _every)
+            {
+                if (!CanHide(column)
+                    || !IsHidden(column))
+                    _columns.Add(column);
+            }
+        }
     }
 }

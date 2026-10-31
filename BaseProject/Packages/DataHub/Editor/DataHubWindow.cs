@@ -4,8 +4,11 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 using Base.DataHubPackage.Editor.AssetActions;
+using Base.DataHubPackage.Editor.Bookmarks;
 using Base.DataHubPackage.Editor.BulkEdit;
+using Base.DataHubPackage.Editor.Compare;
 using Base.DataHubPackage.Editor.Extensions;
+using Base.DataHubPackage.Editor.Overview;
 using Base.DataHubPackage.Editor.Sheets;
 using Base.DataHubPackage.Editor.Table;
 using Base.DataHubPackage.Editor.Validation;
@@ -25,6 +28,9 @@ namespace Base.DataHubPackage.Editor
     /// </summary>
     internal sealed class DataHubWindow : EditorWindow
     {
+        /// <summary>The name of the window, also shown in its brand mark.</summary>
+        internal const string WindowTitle = "Data Hub";
+
         private const string ActionsLabel = "Actions  \u25BE";
         private const string ActionsMenuPrefix = "Actions/";
         private const string ActionsTooltip = "Buttons the selected assets offer, run on all of them in one go.";
@@ -38,8 +44,15 @@ namespace Base.DataHubPackage.Editor
         private const string AssetsFormat = "{0} assets";
         private const string ChecksPassedText = "All checks pass";
         private const string ChecksPassedTooltip = "Every asset here passes its checks. Nice and tidy!";
+        private const string ChipFormat = "{0} is {1}  \u00D7";
+        private const string ChipTooltip = "Only rows with this value are shown. Click to drop the filter.";
         private const string ClipboardEmptyText = "The clipboard is empty. Copy the rows in your spreadsheet first.";
         private const string ClipboardSource = "From the clipboard";
+        private const string ColumnsLabel = "Columns  \u25BE";
+        private const string ColumnsTooltip = "Show or hide columns of this table. Remembered for this table.";
+        private const string CompareItemFormat = "Compare {0} Rows";
+        private const string CompareLabel = "Compare";
+        private const string CompareTooltip = "Put the selected rows side by side, with the fields that differ lit.";
         private const string CopiedFormat = "Copied {0} rows. Paste them into a spreadsheet.";
         private const string CopyCommand = "Copy";
         private const string CopyItemFormat = "Copy Rows  ({0}+C)";
@@ -54,12 +67,16 @@ namespace Base.DataHubPackage.Editor
         private const string EmptyHintFormat = "Add a class that implements {0} to list a data type here, or {1} "
             + "for a custom page.";
         private const string EmptyTitle = "No data types registered";
+        private const string EmptyValue = "(empty)";
         private const string ExportedFormat = "Saved {0} rows to {1}.";
         private const string ExportItem = "Export CSV...";
         private const string ExportTitleFormat = "Export {0}";
+        private const string EyebrowFormat = "{0}  \u00B7  {1}";
         private const string FileSourceFormat = "From {0}";
+        private const string FilterByItemFormat = "Only Rows Where {0} Is \"{1}\"";
         private const float FilterWidth = 300f;
         private const string FindCommand = "Find";
+        private const string HideColumnItemFormat = "Hide {0}";
         private const string ImportItem = "Import CSV...";
         private const string ImportTitleFormat = "Import into {0}";
         private const int InspectorDivider = 1;
@@ -73,11 +90,14 @@ namespace Base.DataHubPackage.Editor
         private const string NotAdjustableItem = "Only Number Columns Can Be Adjusted";
         private const string OneAssetText = "1 asset";
         private const string OtherActionKey = "Ctrl";
-        private const string PageSubtitle = "Custom page";
+        private const string OverviewEyebrow = "Data Hub";
+        private const string OverviewPath = "::Overview";
+        private const string OverviewTitle = "Overview";
         private const string PageTooltip = "A custom page built for this project.";
         private const string PasteCommand = "Paste";
         private const string PasteItemFormat = "Paste into Table...  ({0}+V)";
         private const string PingItem = "Ping";
+        private const string PinItem = "Pin to Sidebar";
         private const string ProblemsFilterFormat = "Problems  {0}";
         private const string ProblemsFilterTooltip = "Show only assets that need fixing.";
         private const string ProblemsFormat = "{0} with problems";
@@ -99,10 +119,12 @@ namespace Base.DataHubPackage.Editor
         private const string SheetLabel = "Sheet  \u25BE";
         private const string SheetTooltip = "Copy the table into a spreadsheet, edit it there and paste it back. You "
             + "see every change before it is applied.";
+        private const string ShowAllColumnsItem = "Show All Columns";
         private const string ShowMenuPath = "Assets/Show in Data Hub";
         private const string ShownFormat = "{0} of {1} shown";
         private const string ShownTooltip = "Rows left after search and filters, and how many you selected.";
         private const string SoftDeleteCommand = "SoftDelete";
+        private const string TableEyebrow = "Table";
         private const string TablesFormat = "{0} tables";
         private const string TablesTooltip = "Every kind of data the hub knows about. Pick one on the left to see it "
             + "as a table.";
@@ -110,11 +132,11 @@ namespace Base.DataHubPackage.Editor
         private const int TreeDivider = 0;
         private const string TreeWidthKey = "Base.DataHubPackage.TreeWidth";
         private const string TypeTooltipFormat = "Lists assets of type {0}.";
+        private const string UnpinItem = "Unpin from Sidebar";
         private const string WarningsFilterFormat = "Warnings  {0}";
         private const string WarningsFilterTooltip = "Show only assets worth a second look.";
         private const string WarningsFormat = "{0} with warnings";
         private const string WarningsStatusTooltip = "Assets worth a second look, like ones nothing uses yet.";
-        private const string WindowTitle = "Data Hub";
 
         [SerializeField] private EDataPanelTab panelTab;
 
@@ -125,6 +147,11 @@ namespace Base.DataHubPackage.Editor
         // None of these survive a domain reload, so EnsureInitialized creates them from the GUI pass too.
         private readonly List<MethodInfo> _actions = new();
         private IDataHubPage _activePage;
+        private bool _isOverviewShown;
+        private DataOverviewPage _overview;
+        private DataPins _pins;
+        private DataRecentEdits _recent;
+        private DataHubSidebar _sidebar;
         private Rect _bulkAnchor;
         private DataColumn _bulkColumn;
         private Object[] _bulkTargets;
@@ -170,6 +197,7 @@ namespace Base.DataHubPackage.Editor
             Undo.undoRedoPerformed += OnUndoRedo;
 
             EnsureInitialized();
+            _recent.Start();
         }
 
         private void OnFocus()
@@ -225,11 +253,13 @@ namespace Base.DataHubPackage.Editor
         {
             EditorApplication.projectChanged -= OnProjectChanged;
             Undo.undoRedoPerformed -= OnUndoRedo;
+            _recent?.Stop();
 
             // Plain C# objects, so a window torn down before it ever drew has real nulls here.
             _view?.Dispose();
             _sidePanel?.Dispose();
             _styles?.Dispose();
+            _registry?.Dispose();
         }
 #endregion
 
@@ -265,6 +295,9 @@ namespace Base.DataHubPackage.Editor
 
             return _menuRegistry.FindTable(selected.GetType()) != null;
         }
+
+        // A slash in a menu item makes a submenu, so a value like "A/B" is shown with a lookalike instead.
+        private static string EscapeMenuText(string text) => text.Replace('/', '\u2215');
 
         private static float ClampPane(float width, float available)
             => Mathf.Clamp(width, DataHubStyles.MinPaneWidth, Mathf.Max(DataHubStyles.MinPaneWidth, available));
@@ -312,6 +345,10 @@ namespace Base.DataHubPackage.Editor
             _usage = new DataUsageIndex(_index, _registry);
             _validation = new DataValidation(_registry, _collections, _usage);
             _tree = new DataHubTree();
+            _sidebar = new DataHubSidebar();
+            _overview = new DataOverviewPage();
+            _pins = new DataPins();
+            _recent = new DataRecentEdits(type => _registry.FindTable(type) != null, Repaint);
             _sidePanel = new DataSidePanel(_registry);
             _styles = new DataHubStyles();
             _dividers = new EditorColumnDividers();
@@ -331,6 +368,10 @@ namespace Base.DataHubPackage.Editor
 
             search ??= string.Empty;
 
+            // A first start opens on the Overview, so the designer sees the whole project before a table.
+            if (string.IsNullOrEmpty(selectedPath))
+                selectedPath = OverviewPath;
+
             _tree.Build(_registry);
             _needsRebuild = true;
             _needsViewSwap = true;
@@ -339,7 +380,11 @@ namespace Base.DataHubPackage.Editor
         private void ApplyPendingWork()
         {
             // The saved path can change from outside, through undo or a tool writing the window's fields.
-            if (selectedPath != _tree.Selected?.Path)
+            string shownPath = _isOverviewShown
+                ? OverviewPath
+                : _tree.Selected?.Path;
+
+            if (selectedPath != shownPath)
                 _needsViewSwap = true;
 
             if (_needsRebuild)
@@ -348,6 +393,8 @@ namespace Base.DataHubPackage.Editor
                 _collections.Clear();
                 _usage.ClearAll();
                 _sidePanel.Invalidate();
+                _pins.Invalidate();
+                _recent.Invalidate();
                 _tree.RefreshCounts(_index);
             }
 
@@ -371,8 +418,9 @@ namespace Base.DataHubPackage.Editor
             // repaint as in the layout before it. A click that changes the selection mid pass only
             // reaches them on the next layout.
             _activePage = _view == null
-                ? _tree.Selected?.Page
-                : null;
+                && !_isOverviewShown
+                    ? _tree.Selected?.Page
+                    : null;
 
             _inspected = _view?.SelectedAssets ?? Array.Empty<Object>();
             _shownTab = panelTab;
@@ -383,11 +431,18 @@ namespace Base.DataHubPackage.Editor
 
         private void SwapView()
         {
-            _tree.Select(selectedPath);
-            selectedPath = _tree.Selected?.Path;
-
             _view?.Dispose();
             _view = null;
+            _isOverviewShown = selectedPath == OverviewPath;
+
+            if (_isOverviewShown)
+            {
+                _tree.ClearSelection();
+                return;
+            }
+
+            _tree.Select(selectedPath);
+            selectedPath = _tree.Selected?.Path;
 
             IDataTable table = _tree.Selected?.Table;
 
@@ -401,6 +456,9 @@ namespace Base.DataHubPackage.Editor
         private void RefreshContent()
         {
             _tree.Selected?.Page?.Refresh();
+
+            if (_isOverviewShown)
+                _overview.Rebuild(_registry, _tree.Tables, _index, _validation);
 
             if (_view == null)
                 return;
@@ -459,6 +517,9 @@ namespace Base.DataHubPackage.Editor
             _collections.Clear();
             _usage.Clear();
             _view?.Revalidate(_validation);
+
+            if (_isOverviewShown)
+                _overview.Rebuild(_registry, _tree.Tables, _index, _validation);
         }
 
         private void DrawEmptyHub()
@@ -545,11 +606,13 @@ namespace Base.DataHubPackage.Editor
             Rect content = new(sidebar.xMax, area.y, area.width - treeWidth - sideWidth, area.height);
             Rect side = new(content.xMax, area.y, sideWidth, area.height);
 
+            DataHubGui.Fill(area, DataHubStyles.ContentColor);
             DrawSidebar(sidebar);
             DrawContent(content);
 
             if (hasSidePanel
-                && _sidePanel.Draw(side, _inspected, _shownTab, ref panelTab, _index, _styles))
+                && _sidePanel.Draw(side, _inspected, _shownTab, ref panelTab, _index, InspectedRow(), _pins,
+                    _styles))
                 _needsRevalidate = true;
 
             DrawHeaderLine(area);
@@ -562,27 +625,31 @@ namespace Base.DataHubPackage.Editor
 
         private void DrawSidebar(Rect area)
         {
-            DataHubGui.Fill(area, DataHubStyles.SidebarColor);
-
-            Rect header = new(area.x, area.y, area.width, DataHubStyles.PaneHeaderHeight);
-            float right = header.xMax - DataHubStyles.PanelPadding;
-            float y = header.y + (header.height - DataHubStyles.ButtonHeight) * 0.5f;
+            float right = area.xMax - DataHubStyles.PanelPadding;
+            float y = area.y + (DataHubStyles.PaneHeaderHeight - DataHubStyles.ButtonHeight) * 0.5f;
 
             if (HeaderIconButton(ref right, y, DataHubIcons.Refresh, RefreshTooltip, _styles))
                 _needsRebuild = true;
 
-            DataHubGui.PaneTitle(new Rect(header.x, header.y, right - header.x, header.height), null, null,
-                WindowTitle, string.Format(TablesFormat, _registry.Tables.Count), _styles, TablesTooltip);
-
-            Rect tree = new(area.x, header.yMax, area.width, Mathf.Max(0f, area.height - header.height));
-
-            if (_tree.Draw(tree, _styles))
+            if (_sidebar.Draw(area, _tree, _isOverviewShown, _pins, _recent, _styles, right))
                 OnTreeSelectionChanged();
+
+            if (_sidebar.IsOverviewClicked)
+                OpenPath(OverviewPath);
+
+            if (_sidebar.Revealed != null)
+                Reveal(_sidebar.Revealed);
         }
 
         private void DrawContent(Rect area)
         {
             Rect header = new(area.x, area.y, area.width, DataHubStyles.PaneHeaderHeight);
+
+            if (_isOverviewShown)
+            {
+                DrawOverview(area, header);
+                return;
+            }
 
             if (_activePage != null)
             {
@@ -599,18 +666,78 @@ namespace Base.DataHubPackage.Editor
             DrawFilterBar(filter);
 
             float top = filter.yMax;
-            float tableHeight = Mathf.Max(0f, area.yMax - top - DataHubStyles.StatusBarHeight);
 
-            if (_view.Draw(new Rect(area.x, top, area.width, tableHeight), _styles, _validation, _hooks))
+            if (_view.ValueFilters.Count > 0)
+            {
+                DrawChips(new Rect(area.x, top, area.width, DataHubStyles.ChipBarHeight));
+                top += DataHubStyles.ChipBarHeight;
+            }
+
+            // The table sits on a rounded card, like the cards of the side panel, inset from the pane's edges.
+            float padding = DataHubStyles.PanelPadding;
+            Rect card = new(area.x + padding, top, Mathf.Max(0f, area.width - padding * 2f),
+                Mathf.Max(0f, area.yMax - top - padding));
+
+            DataHubGui.Background(card, _styles.TableCard);
+
+            float tableHeight = Mathf.Max(0f, card.height - DataHubStyles.StatusBarHeight);
+
+            if (_view.Draw(new Rect(card.x, card.y, card.width, tableHeight), _styles, _validation, _hooks))
                 Repaint();
 
-            DrawStatusBar(new Rect(area.x, top + tableHeight, area.width, DataHubStyles.StatusBarHeight));
+            DrawStatusBar(new Rect(card.x, card.y + tableHeight, card.width, DataHubStyles.StatusBarHeight));
+        }
+
+        private void DrawOverview(Rect area, Rect header)
+        {
+            DataHubGui.PaneTitle(header, OverviewEyebrow, OverviewTitle, _overview.Subtitle, _styles);
+
+            float padding = DataHubStyles.PanelPadding;
+
+            Rect page = new(area.x + padding, header.yMax + padding, Mathf.Max(0f, area.width - padding * 2f),
+                Mathf.Max(0f, area.height - header.height - padding * 2f));
+
+            _overview.Draw(page, _styles);
+
+            if (_overview.OpenedTable != null)
+                OpenPath(_overview.OpenedTable.Path);
+
+            if (_overview.Revealed != null)
+                Reveal(_overview.Revealed);
+        }
+
+        // One chip per value filter, laid out from the left. A click on a chip drops that filter.
+        private void DrawChips(Rect area)
+        {
+            IReadOnlyList<(DataColumn Column, string Text)> filters = _view.ValueFilters;
+            float x = area.x + DataHubStyles.PanelPadding;
+            float y = area.y + (area.height - EditorMetrics.PillHeight) * 0.5f;
+
+            for (int i = 0; i < filters.Count; i++)
+            {
+                string value = filters[i].Text.Length == 0
+                    ? EmptyValue
+                    : filters[i].Text;
+
+                GUIContent chip = new(string.Format(ChipFormat, filters[i].Column.FullTitle, value), ChipTooltip);
+                float width = _styles.Chip.CalcSize(chip).x;
+
+                if (GUI.Button(new Rect(x, y, width, EditorMetrics.PillHeight), chip, _styles.Chip))
+                {
+                    _view.RemoveValueFilter(i);
+                    Repaint();
+
+                    return;
+                }
+
+                x += width + EditorMetrics.TightGap;
+            }
         }
 
         private void DrawPage(Rect area, Rect header)
         {
-            DataHubGui.PaneTitle(header, DataHubIcons.Page, _tree.SelectedParentPath(), _tree.Selected.Label,
-                PageSubtitle, _styles, _tree.Selected.Page.Description ?? PageTooltip);
+            DataHubGui.PaneTitle(header, _tree.SelectedParentPath() ?? OverviewEyebrow, _tree.Selected.Label,
+                _tree.Selected.Page.Description ?? PageTooltip, _styles, _tree.Selected.Page.Description);
 
             float padding = DataHubStyles.PanelPadding;
 
@@ -640,6 +767,15 @@ namespace Base.DataHubPackage.Editor
 
             if (HeaderButton(ref right, y, new GUIContent(SheetLabel, SheetTooltip), _styles.HeaderButton))
                 ShowSheetMenu();
+
+            if (HeaderButton(ref right, y, new GUIContent(ColumnsLabel, ColumnsTooltip), _styles.HeaderButton))
+                ShowColumnsMenu();
+
+            using (new EditorGUI.DisabledScope(selected.Length < 2))
+            {
+                if (HeaderButton(ref right, y, new GUIContent(CompareLabel, CompareTooltip), _styles.HeaderButton))
+                    CompareSelection();
+            }
 
             right -= EditorMetrics.ItemGap;
 
@@ -683,9 +819,10 @@ namespace Base.DataHubPackage.Editor
                 ? type
                 : _view.Table.Description + TooltipSeparator + type;
 
-            DataHubGui.PaneTitle(new Rect(area.x, area.y, Mathf.Max(0f, right - area.x), area.height),
-                DataHubIcons.Of(_view.Table.DataType), _tree.SelectedParentPath(), _tree.Selected.Label, count,
-                _styles, tooltip);
+            string eyebrow = string.Format(EyebrowFormat, _tree.SelectedParentPath() ?? TableEyebrow, count);
+
+            DataHubGui.PaneTitle(new Rect(area.x, area.y, Mathf.Max(0f, right - area.x), area.height), eyebrow,
+                _tree.Selected.Label, _view.Table.Description ?? type, _styles, tooltip);
         }
 
         private void DrawFilterBar(Rect area)
@@ -802,6 +939,7 @@ namespace Base.DataHubPackage.Editor
             GUIUtility.keyboardControl = 0;
 
             _view?.SetFilter(search, rowFilter);
+            _view?.ClearValueFilters();
             Repaint();
         }
 
@@ -933,8 +1071,39 @@ namespace Base.DataHubPackage.Editor
                 menu.AddSeparator(string.Empty);
             }
 
+            DataRow contextRow = _view.ContextRow;
+
+            if (column != null
+                && column.Kind != EDataColumnKind.Check
+                && column.Kind != EDataColumnKind.Name
+                && contextRow != null)
+            {
+                string value = contextRow.CellText(column);
+                string shown = value.Length == 0
+                    ? EmptyValue
+                    : value;
+
+                menu.AddItem(new GUIContent(string.Format(FilterByItemFormat, column.FullTitle,
+                    EscapeMenuText(shown))), false, func: () => AddValueFilter(column, value));
+                menu.AddSeparator(string.Empty);
+            }
+
             if (selected.Length == 1)
+            {
                 menu.AddItem(new GUIContent(PingItem), false, func: () => EditorGUIUtility.PingObject(selected[0]));
+
+                string pinLabel = _pins.IsPinned(selected[0])
+                    ? UnpinItem
+                    : PinItem;
+
+                menu.AddItem(new GUIContent(pinLabel), false, func: () => _pins.Toggle(selected[0]));
+            }
+
+            if (selected.Length > 1)
+            {
+                menu.AddItem(new GUIContent(string.Format(CompareItemFormat, selected.Length)), false,
+                    func: CompareSelection);
+            }
 
             if (HasMissingCollection(selected))
                 menu.AddItem(new GUIContent(AddToCollectionItem), false, func: () => AddToCollections(selected));
@@ -956,6 +1125,13 @@ namespace Base.DataHubPackage.Editor
         private void ShowColumnMenu(DataColumn column, Rect anchor)
         {
             GenericMenu menu = new();
+
+            if (_view.CanHide(column))
+            {
+                menu.AddItem(new GUIContent(string.Format(HideColumnItemFormat, EscapeMenuText(column.FullTitle))),
+                    false, func: () => SetColumnHidden(column, true));
+                menu.AddSeparator(string.Empty);
+            }
 
             if (!column.IsNumber)
             {
@@ -1033,6 +1209,71 @@ namespace Base.DataHubPackage.Editor
                 Repaint();
             }));
         }
+
+        // One line per column that can be hidden, ticked while shown, so the menu reads like a checklist.
+        private void ShowColumnsMenu()
+        {
+            GenericMenu menu = new();
+
+            foreach (DataColumn column in _view.EveryColumn)
+            {
+                if (!_view.CanHide(column))
+                    continue;
+
+                bool isShown = !_view.IsHidden(column);
+                menu.AddItem(new GUIContent(EscapeMenuText(column.FullTitle)), isShown,
+                    func: () => SetColumnHidden(column, isShown));
+            }
+
+            menu.AddSeparator(string.Empty);
+
+            if (_view.HasHiddenColumns)
+                menu.AddItem(new GUIContent(ShowAllColumnsItem), false, func: ShowAllColumns);
+            else
+                menu.AddDisabledItem(new GUIContent(ShowAllColumnsItem));
+
+            menu.ShowAsContext();
+        }
+
+        private void SetColumnHidden(DataColumn column, bool isHidden)
+        {
+            _view.SetHidden(column, isHidden);
+            Repaint();
+        }
+
+        private void ShowAllColumns()
+        {
+            _view.ShowAllColumns();
+            Repaint();
+        }
+
+        private void AddValueFilter(DataColumn column, string value)
+        {
+            _view.AddValueFilter(column, value);
+            Repaint();
+        }
+
+        private void CompareSelection()
+        {
+            if (_view == null
+                || _view.SelectedAssets.Length < 2)
+                return;
+
+            DataCompareWindow.Show(_tree.Selected.Label, _view.SelectedAssets, _view.Columns);
+        }
+
+        private void OpenPath(string path)
+        {
+            selectedPath = path;
+            _needsViewSwap = true;
+
+            Repaint();
+        }
+
+        private DataRow InspectedRow() => _view == null
+            || _inspected.Length == 0
+                ? null
+                : _view.RowOf(_inspected[0]);
 
         private void ShowSheetMenu()
         {

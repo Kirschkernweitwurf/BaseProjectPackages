@@ -1,6 +1,8 @@
+using System;
 using Base.EditorUIPackage.Editor;
 using UnityEditor;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Base.DataHubPackage.Editor
 {
@@ -10,13 +12,15 @@ namespace Base.DataHubPackage.Editor
     /// </summary>
     internal static class DataHubGui
     {
+        private const string CardFailedFormat = "This card failed: {0}";
+        private const float CardInset = 8f;
+        private const float EyebrowHeight = 14f;
         private const string MinusTooltip = "Take one copy of each selected asset out.";
-        private const string ParentSeparator = " / ";
         private const string PlusTooltip = "Add one copy of each selected asset.";
         private const float SegmentInset = 2f;
         private const float SubtitleHeight = 16f;
-        private const float TitleHeight = 22f;
-        private const float TitleTop = 7f;
+        private const float TitleHeight = 24f;
+        private const float TitleTop = 8f;
 
         /// <summary>Fills a rectangle on the repaint pass only.</summary>
         /// <param name="area">The area to fill.</param>
@@ -76,52 +80,98 @@ namespace Base.DataHubPackage.Editor
         }
 
         /// <summary>
-        /// Draws the two lines at the top of a pane: an icon, a title with an optional dimmed parent path
-        /// before it, and a dimmed line under it.
+        /// Draws the header of a pane: a small accent eyebrow that says where the page sits, a bold title, and a
+        /// dimmed line under it, like the page headers of a modern app.
         /// </summary>
         /// <param name="area">The header area. Its height is <see cref="DataHubStyles.PaneHeaderHeight"/>.</param>
-        /// <param name="icon">The icon before the title, or null.</param>
-        /// <param name="parent">The dimmed path before the title, or null.</param>
+        /// <param name="eyebrow">The small line over the title, shown in capitals, or null.</param>
         /// <param name="title">The title.</param>
         /// <param name="subtitle">The dimmed line under the title, or null.</param>
         /// <param name="styles">The built window styles.</param>
-        /// <param name="tooltip">What the title stands for, shown over both lines, or null.</param>
-        internal static void PaneTitle(Rect area, Texture icon, string parent, string title, string subtitle,
+        /// <param name="tooltip">What the title stands for, shown over the whole header, or null.</param>
+        internal static void PaneTitle(Rect area, string eyebrow, string title, string subtitle,
             DataHubStyles styles, string tooltip = null)
         {
             if (!string.IsNullOrEmpty(tooltip))
                 GUI.Label(area, new GUIContent(string.Empty, tooltip));
 
-            Rect line = new(area.x + DataHubStyles.PanelPadding, area.y + TitleTop,
-                Mathf.Max(0f, area.width - DataHubStyles.PanelPadding * 2f), TitleHeight);
+            float x = area.x + DataHubStyles.PanelPadding;
+            float width = Mathf.Max(0f, area.width - DataHubStyles.PanelPadding * 2f);
 
-            if (icon != null)
-            {
-                Icon(new Rect(line.x, line.y + (line.height - EditorTableStyles.IconSize) * 0.5f,
-                    EditorTableStyles.IconSize, EditorTableStyles.IconSize), icon);
+            Rect eyebrowLine = new(x, area.y + TitleTop, width, EyebrowHeight);
+            Rect titleLine = new(x, eyebrowLine.yMax, width, TitleHeight);
+            Rect subtitleLine = new(x, titleLine.yMax, width, SubtitleHeight);
 
-                float shift = EditorTableStyles.IconSize + EditorTableStyles.IconGap;
-                line.x += shift;
-                line.width = Mathf.Max(0f, line.width - shift);
-            }
+            if (!string.IsNullOrEmpty(eyebrow))
+                GUI.Label(eyebrowLine, eyebrow.ToUpperInvariant(), styles.Eyebrow);
 
-            Rect subtitleLine = new(line.x, line.yMax, line.width, SubtitleHeight);
-
-            if (!string.IsNullOrEmpty(parent))
-            {
-                GUIContent prefix = new(parent + ParentSeparator);
-                float width = Mathf.Min(line.width, styles.TitleDim.CalcSize(prefix).x);
-
-                GUI.Label(new Rect(line.x, line.y, width, line.height), prefix, styles.TitleDim);
-
-                line.x += width;
-                line.width = Mathf.Max(0f, line.width - width);
-            }
-
-            GUI.Label(line, title, styles.Title);
+            GUI.Label(titleLine, title, styles.PageTitle);
 
             if (!string.IsNullOrEmpty(subtitle))
-                GUI.Label(subtitleLine, subtitle, styles.Summary);
+                GUI.Label(subtitleLine, subtitle, styles.Subtitle);
+        }
+
+        /// <summary>
+        /// Draws the brand mark at the top of the sidebar: a rounded accent tile with the tool's initial, its name,
+        /// and the project it belongs to.
+        /// </summary>
+        /// <param name="area">The header area.</param>
+        /// <param name="name">The name of the tool.</param>
+        /// <param name="project">The name of the project, under the tool's name.</param>
+        /// <param name="styles">The built window styles.</param>
+        /// <param name="tooltip">What the tool is, shown over the whole mark.</param>
+        internal static void Brand(Rect area, string name, string project, DataHubStyles styles, string tooltip)
+        {
+            GUI.Label(area, new GUIContent(string.Empty, tooltip));
+
+            float size = DataHubStyles.BrandTileSize;
+            Rect tile = new(area.x + DataHubStyles.PanelPadding, area.y + (area.height - size) * 0.5f, size, size);
+
+            Background(tile, styles.BrandTile);
+            GUI.Label(tile, name.Substring(0, 1), styles.BrandLetter);
+
+            float x = tile.xMax + EditorMetrics.ItemGap;
+            float width = Mathf.Max(0f, area.xMax - x);
+            float top = tile.y + (size - TitleHeight - SubtitleHeight) * 0.5f;
+
+            GUI.Label(new Rect(x, top, width, TitleHeight), name, styles.Title);
+            GUI.Label(new Rect(x, top + TitleHeight, width, SubtitleHeight), project, styles.Summary);
+        }
+
+        /// <summary>
+        /// Draws a titled card with GUILayout around what a project extension draws, so every summary and preview
+        /// looks like the hub's own cards. An extension that throws shows its message instead of breaking the tab.
+        /// </summary>
+        /// <param name="title">The title over the card.</param>
+        /// <param name="asset">The asset the extension describes.</param>
+        /// <param name="draw">Draws the inside of the card.</param>
+        /// <param name="styles">The built window styles.</param>
+        internal static void ExtensionCard(string title, Object asset, Action<Object> draw, DataHubStyles styles)
+        {
+            GUILayout.Label(title, styles.SectionHeader);
+
+            EditorGUILayout.BeginVertical(styles.Card);
+            EditorGUILayout.BeginHorizontal();
+            GUILayout.Space(CardInset);
+            EditorGUILayout.BeginVertical();
+            GUILayout.Space(CardInset);
+
+            try
+            {
+                draw(asset);
+            }
+            catch (Exception exception) when (!(exception is ExitGUIException))
+            {
+                GUILayout.Label(string.Format(CardFailedFormat, exception.Message), styles.Detail);
+            }
+
+            GUILayout.Space(CardInset);
+            EditorGUILayout.EndVertical();
+            GUILayout.Space(CardInset);
+            EditorGUILayout.EndHorizontal();
+            EditorGUILayout.EndVertical();
+
+            GUILayout.Space(EditorMetrics.SectionGap);
         }
 
         /// <summary>Draws a square button that only shows an icon.</summary>

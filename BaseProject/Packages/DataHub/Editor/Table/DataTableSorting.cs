@@ -38,6 +38,13 @@ namespace Base.DataHubPackage.Editor.Table
             };
         }
 
+        /// <summary>Goes back to the order by name.</summary>
+        internal void Reset()
+        {
+            ColumnIndex = NoColumn;
+            Order = ESortOrder.Default;
+        }
+
         /// <summary>Orders two rows against each other.</summary>
         /// <param name="first">The first row.</param>
         /// <param name="second">The second row.</param>

@@ -6,6 +6,23 @@ All notable changes to this package are recorded here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- Overview page the hub opens on: one tile per table with its problems and warnings, and one list of every asset
+  that needs a look.
+- Preview tab in the side panel, with the new `IDataPreview` extension for project cards like a rendered card
+  face. Types without one show Unity's asset preview. The row's checks are listed under it.
+- Pinned assets (per person and project) and recent edits in the sidebar.
+- Columns menu to show or hide columns per table, and Hide on the column title menu.
+- Value filters: right click a cell to keep only rows with that value, shown as removable chips.
+- Compare window that puts the selected rows side by side and lights the fields that differ.
+- `IDataValidator.CollectWarnings` for project warnings.
+
+### Changed
+
+- New look: brand mark in the sidebar, page headers with an accent eyebrow, bold title and description, the
+  table on a rounded card, and section labels in the sidebar. Colors still come from the Editor UI Theme.
+
 ## [1.3.2] - 2026-10-28
 
 ### Changed

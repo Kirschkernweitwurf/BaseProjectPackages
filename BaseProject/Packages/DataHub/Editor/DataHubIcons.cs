@@ -16,8 +16,11 @@ namespace Base.DataHubPackage.Editor
         private const string FolderName = "Folder Icon";
         private const string MinusName = "Toolbar Minus";
         private const string NewName = "Toolbar Plus";
+        private const string OverviewName = "UnityEditor.SceneHierarchyWindow";
         private const string PageName = "CustomTool";
         private const string PingName = "Project";
+        private const string PinName = "Favorite";
+        private const string PinnedName = "Favorite Icon";
         private const string RefreshName = "Refresh";
 
         /// <summary>Deletes the selection.</summary>
@@ -32,8 +35,17 @@ namespace Base.DataHubPackage.Editor
         /// <summary>Creates an asset or adds one.</summary>
         internal static Texture New => EditorIcons.Named(NewName);
 
+        /// <summary>The Overview line in the sidebar.</summary>
+        internal static Texture Overview => EditorIcons.Named(OverviewName);
+
         /// <summary>A custom page in the type tree.</summary>
         internal static Texture Page => EditorIcons.Named(PageName);
+
+        /// <summary>Pins the selected asset to the sidebar.</summary>
+        internal static Texture Pin => EditorIcons.Named(PinName);
+
+        /// <summary>Unpins an asset that is pinned.</summary>
+        internal static Texture Pinned => EditorIcons.Named(PinnedName);
 
         /// <summary>Shows an asset in the Project window.</summary>
         internal static Texture Ping => EditorIcons.Named(PingName);

@@ -10,6 +10,9 @@ namespace Base.DataHubPackage.Editor
         Contents = 1,
 
         /// <summary>Every list in the project that can hold the selection.</summary>
-        UsedIn = 2
+        UsedIn = 2,
+
+        /// <summary>How the selected asset looks, its project previews and its checks.</summary>
+        Preview = 3
     }
 }

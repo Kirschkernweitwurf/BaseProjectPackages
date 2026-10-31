@@ -24,17 +24,22 @@ Tables of every data asset with inline editing, checks and actions that keep nam
 
 | Part | Where | What it is for |
 | --- | --- | --- |
-| Tree | Left | Every kind of data, like cards or decks. The number is how many assets it has. |
-| Table | Middle | One row per asset, one column per value. Edit right in the cells. |
-| Toolbar | Above the table | New, Duplicate, Rename, Delete, Actions, Sheet and the search. |
-| Side panel | Right | Inspector, Contents and Used In tabs for the selected rows. |
-| Status line | Under the title | How many rows are shown and selected, and how many have problems. |
+| Sidebar | Left | Overview, your pinned assets, every kind of data (the number is how many assets it has) and your recent edits. |
+| Overview | Middle, when picked | Every table as a tile with its problems, and one list of everything that needs a look. |
+| Table | Middle | One row per asset, one column per value, on a rounded card. Edit right in the cells. |
+| Toolbar | Above the table | New, Duplicate, Rename, Delete, Compare, Columns, Sheet, Actions and the search. |
+| Side panel | Right | Preview, Inspector, Contents and Used In tabs for the selected rows. |
+| Status line | Under the table | How many rows are shown and selected, and how many have problems. |
+
+Colors come from the project's Editor UI Theme (`Project Settings > Editor UI Theme`), so each project can tint
+the hub with its own accent.
 
 Not sure what something does? Hover it. Tooltips are kept to one short line.
 
 ## How to use it
 
-1. Pick a kind of data in the tree. Click the arrow next to a group to fold it.
+1. The hub opens on the **Overview**. Click a tile or a line in **Needs a look** to jump there, or pick a kind
+   of data in the sidebar. Click the arrow next to a group to fold it.
 2. Click a cell to edit it. Numbers, text, yes or no and dropdowns all work right in the table.
 3. To change many rows at once, select them with Ctrl or Shift and edit one of their cells. Every selected row
    gets the new value.
@@ -51,6 +56,10 @@ Not sure what something does? Hover it. Tooltips are kept to one short line.
 - Drag the edge of a column title to make it wider or narrower.
 - The name and check columns stay in place when you scroll sideways.
 - Hover a column title to see what it holds. Some titles sit under a shared label, like the four mood scores.
+- **Filter by a value:** right click a cell and pick **Only Rows Where ... Is ...**. The filter shows as a chip
+  over the table; click the chip to drop it. Chips stack, and Clear filters drops them all.
+- **Columns** shows or hides columns of this table, remembered per table. Right click a column title to hide
+  that one. Name and check always stay.
 
 ## Shortcuts
 
@@ -78,8 +87,23 @@ On a Mac use Cmd instead of Ctrl.
   Scenes and prefabs are not changed.
 - Creating an asset can't be undone with Ctrl+Z. Delete it instead. Every edit can be undone.
 
+## Pinned and recent
+
+- Pin an asset with the star in the side panel header, or right click its row and pick **Pin to Sidebar**. Pins
+  sit at the top of the sidebar and are kept per person and project, never checked in.
+- **Recent edits** lists the last assets you changed, wherever you changed them. It starts empty with every
+  editor start.
+
+## Comparing rows
+
+Select two or more rows and press **Compare** (or right click, **Compare Rows**). A window puts them side by
+side, one column per asset, and lights the fields that differ. **Only differences** hides the rest. It stays
+live while you edit.
+
 ## The side panel
 
+- **Preview:** how the selected asset looks. Projects add their own cards here, like a card face or playtest
+  numbers; other kinds show Unity's own preview. The checks of the row are listed under it.
 - **Inspector:** the normal Unity inspector of the selected rows, for things the table can't edit and for
   the buttons of the asset. With several rows selected, a change goes to all of them.
 - **Contents:** select one deck or list. Every list inside it shows each asset once with its count.
@@ -109,6 +133,7 @@ Hover the number to read what is wrong. The common ones:
   **Add to Collection**. A project can let some assets stay out, like a card that belongs to one deck and
   must not show up in a random pool.
 - **Not used anywhere yet** is a warning: the asset is only in its list, no deck or scene uses it.
+- Projects can add warnings too, like a missing translation.
 - Projects add their own checks, for example a deck that holds a card too often.
 
 ## Changing many rows at once

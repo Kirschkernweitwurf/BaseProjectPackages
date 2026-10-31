@@ -41,6 +41,7 @@ namespace Base.DataHubPackage.Editor.Table
         private readonly List<DataRow> _rows = new();
         private readonly HashSet<DataRow> _selection = new();
         private readonly DataTableSorting _sorting = new();
+        private readonly List<(DataColumn Column, string Text)> _valueFilters = new();
 
         private int _anchorIndex = NoRow;
         private Rect _body;
@@ -103,11 +104,23 @@ namespace Base.DataHubPackage.Editor.Table
         /// <summary>The column of the cell the last right click hit, or null for none.</summary>
         internal DataColumn ContextColumn { get; private set; }
 
+        /// <summary>The row the last right click hit, or null for none.</summary>
+        internal DataRow ContextRow { get; private set; }
+
         /// <summary>The cell the last right click hit, in screen coordinates, for a box to open at.</summary>
         internal Rect ContextRect { get; private set; }
 
         /// <summary>The assets of every row the search and the filter leave, in table order.</summary>
         internal Object[] FilteredAssets => _filtered.ConvertAll(row => row.Asset).ToArray();
+
+        /// <summary>Every column, shown or hidden, for the Columns menu.</summary>
+        internal IReadOnlyList<DataColumn> EveryColumn => _columns.Every;
+
+        /// <summary>True when the user hid at least one column.</summary>
+        internal bool HasHiddenColumns => _columns.HasHidden;
+
+        /// <summary>The "column is value" filters on top of the search, in the order they were added.</summary>
+        internal IReadOnlyList<(DataColumn Column, string Text)> ValueFilters => _valueFilters;
 
         /// <summary>The asset of the first row, for a fallback folder, or null for an empty table.</summary>
         internal Object FirstAsset => _rows.Count > 0
@@ -169,6 +182,63 @@ namespace Base.DataHubPackage.Editor.Table
             _needsFilter = true;
         }
 
+        /// <summary>Keeps only the rows whose cell in <paramref name="column"/> is <paramref name="text"/>.</summary>
+        /// <param name="column">The column to compare.</param>
+        /// <param name="text">The exact cell text to keep.</param>
+        internal void AddValueFilter(DataColumn column, string text)
+        {
+            if (_valueFilters.Contains((column, text)))
+                return;
+
+            _valueFilters.Add((column, text));
+            _needsFilter = true;
+        }
+
+        /// <summary>Drops one value filter.</summary>
+        /// <param name="index">Its position in <see cref="ValueFilters"/>.</param>
+        internal void RemoveValueFilter(int index)
+        {
+            if (index < 0
+                || index >= _valueFilters.Count)
+                return;
+
+            _valueFilters.RemoveAt(index);
+            _needsFilter = true;
+        }
+
+        /// <summary>Drops every value filter.</summary>
+        internal void ClearValueFilters()
+        {
+            _valueFilters.Clear();
+            _needsFilter = true;
+        }
+
+        /// <summary>True when the column can be hidden. The name and the check always stay.</summary>
+        /// <param name="column">A column of the table.</param>
+        /// <returns>False for the frozen columns.</returns>
+        internal bool CanHide(DataColumn column) => _columns.CanHide(column);
+
+        /// <summary>True when the user hid the column.</summary>
+        /// <param name="column">A column of the table.</param>
+        /// <returns>True for a hidden column.</returns>
+        internal bool IsHidden(DataColumn column) => _columns.IsHidden(column);
+
+        /// <summary>Hides or shows a column. Its value filters go with it, since nobody could see them.</summary>
+        /// <param name="column">A column the user can hide.</param>
+        /// <param name="isHidden">True to hide it.</param>
+        internal void SetHidden(DataColumn column, bool isHidden)
+        {
+            _columns.SetHidden(column, isHidden);
+            OnColumnsChanged();
+        }
+
+        /// <summary>Shows every column again.</summary>
+        internal void ShowAllColumns()
+        {
+            _columns.ShowAll();
+            OnColumnsChanged();
+        }
+
         /// <summary>
         /// Applies a pending sort or filter. Call on the layout event only, because it changes which
         /// rows the next pass draws.
@@ -196,6 +266,11 @@ namespace Base.DataHubPackage.Editor.Table
 
             return true;
         }
+
+        /// <summary>The row of <paramref name="asset"/>, shown or filtered out, or null.</summary>
+        /// <param name="asset">The asset to look for.</param>
+        /// <returns>The row, or null when the table does not list the asset.</returns>
+        internal DataRow RowOf(Object asset) => _rows.Find(row => row.Asset == asset);
 
         /// <summary>True when the table lists <paramref name="asset"/>, shown or filtered out.</summary>
         /// <param name="asset">The asset to look for.</param>
@@ -433,6 +508,12 @@ namespace Base.DataHubPackage.Editor.Table
 
         private bool Matches(DataRow row)
         {
+            foreach ((DataColumn column, string text) in _valueFilters)
+            {
+                if (row.CellText(column) != text)
+                    return false;
+            }
+
             if (_search.Length == 0)
                 return true;
 
@@ -442,6 +523,25 @@ namespace Base.DataHubPackage.Editor.Table
                     continue;
 
                 if (row.CellText(column).IndexOf(_search, StringComparison.OrdinalIgnoreCase) >= 0)
+                    return true;
+            }
+
+            return false;
+        }
+
+        // The sort points at a column by position, which moves when one is hidden or shown.
+        private void OnColumnsChanged()
+        {
+            _valueFilters.RemoveAll(filter => !IsShown(filter.Column));
+            _sorting.Reset();
+            _needsFilter = true;
+        }
+
+        private bool IsShown(DataColumn column)
+        {
+            foreach (DataColumn shown in _columns.All)
+            {
+                if (shown == column)
                     return true;
             }
 
@@ -543,7 +643,8 @@ namespace Base.DataHubPackage.Editor.Table
             DrawGrid(true, 0f, gridHeight);
             GUI.EndClip();
 
-            DrawFrozenEdge(frozenArea);
+            // Like the grid, the edge stops under the last row instead of running down the empty table.
+            DrawFrozenEdge(new Rect(frozenArea.x, frozenArea.y, frozenArea.width, gridHeight));
 
             return isChanged;
         }
@@ -759,6 +860,7 @@ namespace Base.DataHubPackage.Editor.Table
                 if (!_selection.Contains(row))
                     SelectSingle(index);
 
+                ContextRow = row;
                 ContextColumn = ColumnAt(current.mousePosition.x, isFrozenPart, rect, out Rect cell);
                 ContextRect = GUIUtility.GUIToScreenRect(cell);
 

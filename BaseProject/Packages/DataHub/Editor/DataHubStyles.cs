@@ -12,11 +12,17 @@ namespace Base.DataHubPackage.Editor
     /// </summary>
     internal sealed class DataHubStyles : EditorWindowStyles
     {
+        /// <summary>Side of the rounded accent tile with the initial in the sidebar's brand mark.</summary>
+        internal const float BrandTileSize = 30f;
+
         /// <summary>Height of a button in a pane header.</summary>
         internal const float ButtonHeight = 22f;
 
         /// <summary>Space between a cell's edge and the control or text in it.</summary>
         internal const float CellPadding = 4f;
+
+        /// <summary>Height of the bar with the value filter chips, shown while there are any.</summary>
+        internal const float ChipBarHeight = 28f;
 
         /// <summary>Width the inspector panel starts at before the user drags it.</summary>
         internal const float DefaultInspectorWidth = 360f;
@@ -28,7 +34,7 @@ namespace Base.DataHubPackage.Editor
         internal const float FilterBarHeight = 34f;
 
         /// <summary>Height of the header at the top of every pane, so their lines meet across the window.</summary>
-        internal const float PaneHeaderHeight = 52f;
+        internal const float PaneHeaderHeight = 64f;
 
         /// <summary>Width of a square icon button.</summary>
         internal const float IconButtonWidth = 26f;
@@ -57,13 +63,19 @@ namespace Base.DataHubPackage.Editor
         /// <summary>Width of a count stepper: minus, the number and plus.</summary>
         internal const float StepperWidth = 92f;
 
+        private const int BrandCornerRadius = 8;
+        private const int BrandFontSize = 15;
         private const string CellStyleName = "DataHubCell.";
+        private const float ChipAlpha = 0.22f;
+        private const int ChipPadding = 10;
         private const float DarkSidebarAlpha = 0.16f;
         private const float DropHighlightAlpha = 0.16f;
+        private const int EyebrowFontSize = 9;
         private const float GridAlpha = 0.45f;
         private const int HeaderButtonPadding = 8;
         private const int IconButtonPadding = 4;
         private const float LightSidebarAlpha = 0.04f;
+        private const int PageTitleFontSize = 17;
         private const int SegmentCornerRadius = 5;
         private const float TreeSelectionAlpha = 0.28f;
 
@@ -71,12 +83,39 @@ namespace Base.DataHubPackage.Editor
         internal static Color SidebarColor => EditorPalette.Pick(new Color(0f, 0f, 0f, DarkSidebarAlpha),
             new Color(0f, 0f, 0f, LightSidebarAlpha));
 
+        /// <summary>The fill behind the table and the pages, a shade darker than the cards on it.</summary>
+        internal static Color ContentColor => EditorPalette.Background;
+
         /// <summary>The faint vertical line between two table columns.</summary>
         internal static Color GridColor => EditorPalette.WithAlpha(EditorPalette.Separator,
             EditorPalette.Separator.a * GridAlpha);
 
         /// <summary>Fill of the selected line in the type tree.</summary>
         internal static Color TreeSelectionColor => EditorPalette.WithAlpha(EditorPalette.Accent, TreeSelectionAlpha);
+
+        /// <summary>The initial on the brand tile, in the color that reads on the accent.</summary>
+        internal GUIStyle BrandLetter { get; private set; }
+
+        /// <summary>The rounded accent tile of the brand mark.</summary>
+        internal GUIStyle BrandTile { get; private set; }
+
+        /// <summary>One line of a check result, with its icon, wrapped when long.</summary>
+        internal GUIStyle CheckLine { get; private set; }
+
+        /// <summary>A value filter chip: a rounded pill in a light accent tint, with its text.</summary>
+        internal GUIStyle Chip { get; private set; }
+
+        /// <summary>The small accent line in capitals over a page title, which says where the page sits.</summary>
+        internal GUIStyle Eyebrow { get; private set; }
+
+        /// <summary>The bold title of a page.</summary>
+        internal GUIStyle PageTitle { get; private set; }
+
+        /// <summary>The dimmed line under a page title, cut with an ellipsis when it runs long.</summary>
+        internal GUIStyle Subtitle { get; private set; }
+
+        /// <summary>The rounded card the table sits on.</summary>
+        internal GUIStyle TableCard { get; private set; }
 
         /// <summary>The asset count next to a table in the tree: small, dimmed and right-aligned.</summary>
         internal GUIStyle Count { get; private set; }
@@ -216,6 +255,57 @@ namespace Base.DataHubPackage.Editor
             {
                 fontStyle = FontStyle.Normal
             }, EditorPalette.DimText);
+
+            BrandTile = BuildFill(EditorPalette.Accent, BrandCornerRadius);
+
+            BrandLetter = EditorStyleUtility.PinTextColor(new GUIStyle(EditorStyles.boldLabel)
+            {
+                alignment = TextAnchor.MiddleCenter,
+                fontSize = BrandFontSize
+            }, EditorPalette.AccentText);
+
+            CheckLine = EditorStyleUtility.PinTextColor(new GUIStyle(EditorStyles.label)
+            {
+                wordWrap = true,
+                imagePosition = ImagePosition.ImageLeft
+            }, EditorPalette.Text);
+
+            Chip = EditorStyleUtility.PinTextColor(new GUIStyle(EditorStyles.miniLabel)
+            {
+                alignment = TextAnchor.MiddleCenter,
+                padding = new RectOffset(ChipPadding, ChipPadding, 0, 0),
+                border = EditorStyleUtility.UniformPadding(EditorMetrics.PillCornerRadius),
+                normal =
+                {
+                    background = Textures.Rounded(EditorPalette.WithAlpha(EditorPalette.Accent, ChipAlpha),
+                        EditorMetrics.PillCornerRadius)
+                },
+                hover =
+                {
+                    background = Textures.Rounded(EditorPalette.WithAlpha(EditorPalette.Accent, ChipAlpha * 2f),
+                        EditorMetrics.PillCornerRadius)
+                }
+            }, EditorPalette.Text);
+
+            Chip.hover.textColor = EditorPalette.Text;
+
+            Eyebrow = EditorStyleUtility.PinTextColor(new GUIStyle(EditorStyles.miniBoldLabel)
+            {
+                fontSize = EyebrowFontSize
+            }, EditorPalette.Accent);
+
+            PageTitle = EditorStyleUtility.PinTextColor(new GUIStyle(EditorStyles.boldLabel)
+            {
+                fontSize = PageTitleFontSize,
+                clipping = TextClipping.Ellipsis
+            }, EditorPalette.Text);
+
+            TableCard = BuildFill(EditorPalette.Card, EditorMetrics.CardCornerRadius);
+
+            Subtitle = new GUIStyle(Summary)
+            {
+                clipping = TextClipping.Ellipsis
+            };
         }
 
         private static GUIStyle BuildHeaderButton(GUIStyle source) => new(source)

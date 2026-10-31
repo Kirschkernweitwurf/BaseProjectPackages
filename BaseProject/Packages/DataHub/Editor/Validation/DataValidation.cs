@@ -74,6 +74,7 @@ namespace Base.DataHubPackage.Editor.Validation
             try
             {
                 validator.Validate(row.Asset, row.Problems);
+                validator.CollectWarnings(row.Asset, row.Warnings);
             }
             catch (Exception exception)
             {
