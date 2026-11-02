@@ -34,6 +34,9 @@ namespace Base.ControllerSupportPackage.InputPrompts
         private InputDeviceTracker _devices;
         private bool _isAvailable = true;
 
+        /// <summary>The action whose button this prompt shows, for a game that also presses it from the prompt.</summary>
+        public InputActionReference Action => action;
+
         /// <summary>
         /// Whether the action does something right now. A prompt whose action would do nothing hides on every device,
         /// so the player is never promised a button that does not work, like Pause while back puts down a held card.

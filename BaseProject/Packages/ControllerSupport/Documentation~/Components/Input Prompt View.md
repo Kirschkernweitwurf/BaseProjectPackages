@@ -27,6 +27,7 @@ Shows the button icon of one action for the device in use: the cross on a PlaySt
 3. Optional: set **Group** to the object holding icon and label, so both hide together.
 4. Set **Shown On** to **Gamepad Only** or **Mouse Keyboard Only** for inputs the other device does not have, like LB or Shift.
 5. Need it hidden while its action does nothing? Set `IsAvailable` from code. It hides on every device and comes back when set again.
+6. Need to press the shown action from the prompt, like on a click? `Action` gives its reference.
 6. The icons come from the [Input Glyph Provider](Input%20Glyph%20Provider.md). Tint the Image as you like; the glyphs are white.
 
 ## Fields

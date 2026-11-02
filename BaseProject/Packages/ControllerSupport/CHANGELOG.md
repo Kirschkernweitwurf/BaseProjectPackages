@@ -10,6 +10,7 @@ Changes made before 1.6.5 were not recorded.
 
 ### Added
 
+- `InputPromptView.Action`: the action a prompt shows, so a game can press it from the prompt, like a click.
 - `ISteeringSource`: a game can tell the `FocusWatchdog` that the player steers with the keyboard, so keyboard
   players keep a focus like gamepad players do.
 - `NavigableGroup` Reach Off Axis: a direction with nothing lined up takes the nearest element on that side, for a
