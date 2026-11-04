@@ -91,7 +91,7 @@ A data driven replacement for hardcoded `MenuItem` and `CreateAssetMenu` paths. 
 
 **Asset Reserializer** rewrites assets with the current serializer so that a `[FormerlySerializedAs]` rename actually lands on disk. Scope the run to a few folders, check the count first, then commit the diff it produces. The diff is larger than the field rename alone, so commit your work first.
 
-**Asset Zoo** builds a showcase scene laying out prefabs in a grid, line or circle with optional labels. Configure it through a Zoo Config asset and build or clear it from the Zoo Builder window.
+**Asset Zoo** stands your art in the Scene view at true size, sorted by folder: drop a folder, press Build, and the Scene view flies to it. Rows, groups and scale are measured on real instances, labels appear as you get closer, and a rebuild picks up new art by itself. See the [Asset Zoo Builder](Documentation~/Tools/Asset%20Zoo%20Builder.md).
 
 ## Scene and workflow helpers
 

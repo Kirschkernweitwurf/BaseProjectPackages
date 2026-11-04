@@ -12,6 +12,32 @@ Changes made before 2.0.10 were not recorded.
 
 - Canvas Render Order window (`Tools > Base Packages > Editor`): lists every canvas of the open scenes and
   prefabs in the order Unity draws it, flags ties and edits sorting layer and order in place.
+- Asset Zoo Builder: drop folders on the window, see groups as thumbnails, hide or move assets, fly the Scene view
+  to a group or an asset. Rebuilds pick up new art by themselves and mark it as new.
+- Asset Zoo Scene view labels: zones and group names like a map, asset names that appear as you get closer and never
+  overlap, size, triangles, materials and a wire box on hover, a ruler, and a yellow dot on assets with an empty
+  material slot, a broken shader, the default material or a root scale other than 1.
+- `ZooConfig`: several source folders, grouping by folder, a scale figure, a fitted floor and a scene to build into.
+- `ZooGroup` and `ZooItem` hold what the Scene view draws, so the labels survive closing the scene.
+
+### Changed
+
+- Asset Zoo Builder: the look of a standing zoo follows the settings while you change them. Rows take only the room
+  each asset needs, small assets stand in front of big ones and groups form blocks, so a library no longer runs for
+  kilometers. A new zoo starts next to what is in the scene, and a rebuild stays where the root was moved to.
+- Asset Zoo scans keep only art: prefabs with nothing to see and models that already have a prefab are left out and
+  reported. A scan only adds, so moved, reordered and hidden assets stay that way.
+- `ZooConfig` is edited in the builder window. Its Inspector links there, and double-clicking it opens it.
+
+### Fixed
+
+- Asset Zoo sizes are measured on a real instance, so prefab root rotation and scale, skinned meshes, switched off
+  children and levels of detail count correctly. Assets no longer sink into the floor.
+- Asset Zoo groups no longer turn into cyan groups called "Category" after a reload.
+
+### Removed
+
+- `ZooLabelBillboard` and the text objects in the zoo. An old zoo gets clean with a rebuild.
 
 ## [3.3.0] - 2026-10-20
 

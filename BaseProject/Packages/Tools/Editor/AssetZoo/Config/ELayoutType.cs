@@ -1,26 +1,22 @@
 namespace Base.ToolsPackage.Editor.AssetZoo.Config
 {
     /// <summary>
-    /// Layout type for the zoo. Grid is a standard grid layout.
-    /// Line lays out all items in a single horizontal line, wrapping to multiple lines if needed.
-    /// Circle lays out items in a circle around the center of the zoo.
+    /// How the assets of one group stand on the floor.
     /// </summary>
     internal enum ELayoutType : byte
     {
         /// <summary>
-        /// Standard grid layout, with configurable columns and spacing.
+        /// Rows of a set length, each asset taking only the room it needs.
         /// </summary>
-        Grid = 0,
+        Rows = 0,
 
         /// <summary>
-        /// All items are laid out in a single horizontal line, with configurable spacing.
-        /// If there are too many items to fit in one line, it wraps to multiple lines.
+        /// All assets in a single row.
         /// </summary>
         Line = 1,
 
         /// <summary>
-        /// Items are laid out in a circle around the center of the zoo.
-        /// The radius is configurable, and auto-grows if items don't fit.
+        /// A ring. The radius grows when the assets would not fit.
         /// </summary>
         Circle = 2
     }

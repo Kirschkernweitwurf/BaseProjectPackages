@@ -5,7 +5,7 @@ audience: Everyone
 tags:
   - artist
   - assets
-summary: Describes what the 🪛 Asset Zoo Builder should lay out and how it should look.
+summary: One saved zoo for the 🪛 Asset Zoo Builder, with its folders, groups and look.
 ---
 # Zoo Config
 
@@ -13,73 +13,78 @@ summary: Describes what the 🪛 Asset Zoo Builder should lay out and how it sho
 
 **Tags:** #artist #assets
 
-**Create:** `Assets > Create > Scriptable Objects > Base > Asset Zoo > New Zoo Config`
+**Create:** the **New…** button in the [🪛 Asset Zoo Builder](../Tools/Asset%20Zoo%20Builder.md), or `Assets > Create > Scriptable Objects > Base > Asset Zoo > New Zoo Config`
 
 **Default file name:** `ZC_ZooConfig`
 
-Describes what the [🪛 Asset Zoo Builder](../Tools/Asset%20Zoo%20Builder.md) should lay out and how it should look. Make one config per library or per review, for example one for props and one for characters.
+One saved zoo: what it shows, how that is sorted and how it looks. Make one per library or per review. It is edited in the [🪛 Asset Zoo Builder](../Tools/Asset%20Zoo%20Builder.md). Double-clicking it opens it there.
 
 ## Layout
 
-How prefabs are arranged in space.
+How the art stands. All of this updates a standing zoo while you change it.
 
 | Field | Meaning |
 | --- | --- |
-| **Type** | `Grid`, `Line` or `Circle`. Grid is a normal grid. Line puts everything in one row and wraps when it runs out of space. Circle places items in a ring. |
-| **Alignment** | `Ground` puts the lowest point of the prefab on the floor. `Pivot` uses the prefab's own pivot. `Center` centers the bounding box on the slot. |
-| **Category Direction** | Which way categories are stacked: Forward, Backward, Left or Right. |
-| **Spacing** | Gap between items inside a category. |
-| **Category Spacing** | Gap between categories. |
-| **Grid Columns** | Number of columns, for Grid layout. |
-| **Circle Radius** | Minimum radius, for Circle layout. It grows automatically if the items do not fit. |
+| **Type** | `Rows` are rows of a set length, each asset taking only the room it needs. `Line` is one long row. `Circle` is a ring. |
+| **Alignment** | `Floor` stands the bottom of what you see on the floor. `Pivot` uses the prefab's own pivot. `Center` puts the middle of what you see on its place. |
+| **Order** | `Small in Front` puts big things behind small ones, so nothing hides. `As Listed` follows the list. |
+| **Groups** | `Blocks` keeps the zoo roughly square, like a city map. `Row` and `Column` line the groups up. |
+| **Spacing** | Gap between two assets, in meters. |
+| **Category Spacing** | Gap between two groups, in meters. |
+| **Items Per Row** | How many assets stand in one row. |
+| **Circle Radius** | Smallest radius of a ring. It grows when the assets would not fit. |
 
-Alignment only affects how things are displayed. The prefab assets are never changed.
+The prefab assets are never changed.
 
-## Labels
+## Show
 
-Floating text above the prefabs.
+What stands around the art.
 
 | Field | Meaning |
 | --- | --- |
-| **Show Category Labels** | Show a label above each group. |
-| **Category Label Height** | How far above the items the category label sits. |
-| **Category Font Size** | Font size for category labels. |
-| **Show Item Labels** | Show a label above each prefab. |
-| **Item Label Height** | How far above the prefab the item label sits. |
-| **Item Font Size** | Font size for item labels. |
-| **Item Color** | Color of item labels. Category labels use the color set per category. |
+| **Has Group Names** | Draw group names and zones in the Scene view. |
+| **Has Item Names** | Draw asset names in the Scene view. |
+| **Has Sizes** | Add the size and triangle count to every name. Hovering a name always shows them. |
+| **Has Ruler** | Draw a ruler at the start of every group. |
+| **Scale Figure** | Stands at the start of every group. A person works best. |
+| **Has Floor** | Build a floor that fits the zoo, so the art has ground and shadows to stand on. |
+| **Floor Material** | The material of the floor and of the boards decals land on. Empty uses the render pipeline's default. |
 
 ## Generation
 
-Fills the categories automatically by scanning a folder.
+Where the art comes from.
 
 | Field | Meaning |
 | --- | --- |
-| **Search Folder** | The folder to scan. Defaults to `Assets`. |
-| **Prefixes** | Name prefixes to look for. Defaults to `P` and `SM`. |
-| **Separator** | The character between name parts. Default is `_`. |
-| **Search Depth** | How many subfolder levels to include. `0` is the folder itself, `-1` is unlimited. |
-| **Ignore Prefix Case** | Match prefixes regardless of upper or lower case. |
-| **Merge With Existing** | On: keep the categories you already have and only add new assets. Off: replace everything. |
-| **Colorize Categories** | Give every generated category its own label color, based on its name. |
-
-### Expected naming
-
-`Prefix_Group_Name`. For example `P_Garden_Rock_01` and `SM_Garden_Rock_01` both go into the group **Garden**.
+| **Sources** | The folders, prefabs and models the zoo shows. |
+| **Group By** | `Folder` makes one group per folder. A folder that only sorts by file type, like `Models Cafe`, counts as its parent. `Name` uses the first word of the name behind its prefix. |
+| **Has Models With Prefab** | Also show a model when a prefab already shows it. |
+| **Search Depth** | How many subfolder levels to include. `0` is the folder itself, `-1` is all of them. |
+| **Prefixes** | For `Name`: prefixes that are always stripped. |
+| **Can Detect Prefixes** | For `Name`: also recognize prefixes that are not listed. |
+| **Min Prefix Occurrences** | For `Name`: how many assets have to share a word before it counts as a prefix. |
+| **Max Prefix Length** | For `Name`: the longest a prefix can be. |
+| **Separator** | For `Name`: the character between name parts. Default is `_`. |
+| **Is Prefix Case Ignored** | For `Name`: match prefixes regardless of upper or lower case. |
 
 ## Content
 
-**Categories** is the actual list. Each category has:
+| Field | Meaning |
+| --- | --- |
+| **Zoo Scene** | The scene the zoo is built into. It opens by itself on build. Empty uses the open scene. |
+| **Categories** | The groups, in the order they stand in. |
+
+Each group has:
 
 | Field | Meaning |
 | --- | --- |
-| **Name** | Shown as the label above the group. |
-| **Label Color** | Color of that category label. |
+| **Name** | Shown on its zone in the Scene view. |
+| **Label Color** | Color of its zone and of the dot next to its name. |
 | **Entries** | The prefabs in this group. |
-
-You can build this list by hand, or press **Auto Generate Categories** in the builder window and then adjust.
+| **Is Hidden** | Leaves the whole group out of the zoo. |
+| **Hidden Entries** | Assets of this group left out of the zoo. |
 
 ## Notes
 
-- Changing the config does not rebuild the zoo. Press **Build Zoo** again.
-- Duplicate prefabs inside a category are ignored.
+- A scan only adds. What you moved, reordered or hid stays that way.
+- Only **Start Over…** in the builder forgets your changes.

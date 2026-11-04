@@ -16,7 +16,9 @@ Scripts you drop onto a GameObject in a scene.
 | Component | What it does |
 | --- | --- |
 | [🔖 LightingProfileApplier](Components/Lighting%20Profile%20Applier.md) | Applies a saved lighting setup when the scene loads. |
-| [🗞️ Zoo Root Marker](Components/Zoo%20Root%20Marker.md) | Internal marker used by the Asset Zoo Builder. You never add this yourself. |
+| [🗞️ Zoo Group](Components/Zoo%20Group.md) | One block of a built zoo. You never add this yourself. |
+| [🗞️ Zoo Item](Components/Zoo%20Item.md) | One place in a built zoo and what was measured there. You never add this yourself. |
+| [🗞️ Zoo Root Marker](Components/Zoo%20Root%20Marker.md) | Sits on the root of a built zoo. You never add this yourself. |
 
 <!-- all-components:start -->
 ## All components

@@ -73,7 +73,7 @@ Answer "who else uses this number?" questions.
 | --- | --- |
 | [🪛 Asset Naming Conventions](Tools/Asset%20Naming%20Conventions.md) | Checks asset file names against your own rules and renames them in place. |
 | [🪛 Audio Rules](Tools/Audio%20Rules.md) | Sets audio import settings from rules and finds problems in clips. |
-| [🪛 Asset Zoo Builder](Tools/Asset%20Zoo%20Builder.md) | Lay out prefabs in a scene so you can look at them all at once. |
+| [🪛 Asset Zoo Builder](Tools/Asset%20Zoo%20Builder.md) | Stand your art in the Scene view at true size, sorted by folder. |
 | [🔧 Generate Unique Ids](Tools/Generate%20Unique%20Ids.md) | Give scriptable objects a stable ID. |
 | [🔧 Unique ID Validation](Tools/Unique%20ID%20Validation.md) | Turn the automatic ID checks on or off. |
 | [🔧 Reserialize Assets](Tools/Reserialize%20Assets.md) | Rewrites prefabs and scenes that still store an inspector field under its old name after a rename. |

@@ -1,205 +1,297 @@
-using System;
+using System.Collections.Generic;
 using Base.ToolsPackage.Editor.AssetZoo.Alignment;
 using Base.ToolsPackage.Editor.AssetZoo.Config;
+using Base.ToolsPackage.Editor.AssetZoo.Generation;
 using Base.ToolsPackage.Editor.AssetZoo.Layout;
+using Base.ToolsPackage.Editor.AssetZoo.Overlay;
 using NUnit.Framework;
 using UnityEngine;
 
 namespace Base.ToolsPackage.Editor.Tests.AssetZoo
 {
     /// <summary>
-    /// Where the zoo puts things. Both halves are arithmetic over a count and a size, so neither needs
-    /// a prefab, a scene or an asset to answer.
+    /// Where the zoo puts things. All of it is arithmetic over footprints, so none of it needs a prefab, a scene or
+    /// an asset to answer.
     /// <para>
-    /// A wrong answer here is not an exception, it is a zoo that looks nearly right: a row that wraps
-    /// one item late, a ring whose items overlap, a prop sunk halfway into the floor. The settings are
-    /// the shipped defaults, so what is pinned is what a first build actually produces.
+    /// A wrong answer here is not an exception, it is a zoo that looks nearly right: a row that wraps one item late,
+    /// a mug lost in a cell made for a building, a prop sunk halfway into the floor. The settings are the shipped
+    /// defaults, so what is pinned is what a first build actually produces.
     /// </para>
     /// </summary>
     public sealed class ZooLayoutTests
     {
-        private const float DefaultRadius = 10f;
-        private const int GridColumns = 5;
-        private const float Step = 3f;
+        private const float Gap = 0.6f;
+        private const float GroupGap = 3f;
+        private const int PerRow = 6;
         private const float Tolerance = 0.0001f;
 
-        private static readonly Vector3 UnitCell = Vector3.one;
+        private static readonly Vector2 Cup = new(0.1f, 0.1f);
+        private static readonly Vector2 House = new(10f, 8f);
 
-        /// <summary>A row fills every column before the next one starts.</summary>
+        /// <summary>The whole point: a small asset next to a big one takes only its own room.</summary>
         [Test]
-        public void AGridWrapsAfterTheLastColumn()
+        public void ASmallAssetTakesOnlyItsOwnRoomNextToABigOne()
         {
-            LayoutResult result = Grid(12);
+            LayoutResult result = Rows(House, Cup);
 
-            Assert.That(result.Positions[GridColumns - 1].x, Is.EqualTo(Step * (GridColumns - 1)));
-            Assert.That(result.Positions[GridColumns], Is.EqualTo(new Vector3(0f, 0f, Step)));
+            Assert.That(result.Positions[1].x, Is.EqualTo(House.x + Gap + Cup.x * 0.5f).Within(Tolerance));
         }
 
-        /// <summary>Spacing sits between the cells, so the step is the cell plus the gap.</summary>
+        /// <summary>A row stops at its set length and the next one starts behind it.</summary>
         [Test]
-        public void AGridStepsByTheCellPlusTheSpacing()
+        public void ARowWrapsAfterItsLength()
         {
-            LayoutResult result = Grid(2);
+            LayoutResult result = Rows(Many(PerRow + 1, Vector2.one));
 
-            Assert.That(result.Positions[0], Is.EqualTo(Vector3.zero));
-            Assert.That(result.Positions[1], Is.EqualTo(new Vector3(Step, 0f, 0f)));
+            Assert.That(result.Positions[PerRow - 1].y, Is.EqualTo(0.5f).Within(Tolerance));
+            Assert.That(result.Positions[PerRow].x, Is.EqualTo(0.5f).Within(Tolerance));
+            Assert.That(result.Positions[PerRow].y, Is.EqualTo(1f + Gap + 0.5f).Within(Tolerance));
         }
 
-        /// <summary>
-        /// The reported depth grows a row at a time, which is what pushes the next category clear of
-        /// this one rather than through it.
-        /// </summary>
+        /// <summary>Everything in a row lines up on its front edge, so short depths do not float mid row.</summary>
         [Test]
-        public void AGridReportsOneRowOfDepthPerStartedRow()
+        public void ARowLinesUpOnItsFrontEdge()
         {
-            Assert.That(Grid(3).TotalSize.z, Is.EqualTo(Step));
-            Assert.That(Grid(12).TotalSize.z, Is.EqualTo(Step * 3f));
+            LayoutResult result = Rows(House, Cup);
+
+            float houseFront = result.Positions[0].y - House.y * 0.5f;
+            float cupFront = result.Positions[1].y - Cup.y * 0.5f;
+
+            Assert.That(cupFront, Is.EqualTo(houseFront).Within(Tolerance));
         }
 
-        /// <summary>
-        /// The width is the full grid, not the items in it. Three items in a five column grid still
-        /// reserve five columns, so a half empty category does not leave the next one overlapping it.
-        /// </summary>
+        /// <summary>The next row clears the deepest asset of the row before it.</summary>
         [Test]
-        public void AGridReservesEveryColumnEvenWhenItIsNotFull()
-            => Assert.That(Grid(3).TotalSize.x, Is.EqualTo(Step * GridColumns));
-
-        /// <summary>A line walks the X axis and stays on it.</summary>
-        [Test]
-        public void ALineStepsAlongOneAxis()
+        public void TheNextRowClearsTheDeepestAsset()
         {
-            LayoutResult result = Line(4);
+            List<Vector2> footprints = Many(PerRow - 1, Cup);
+            footprints.Add(House);
+            footprints.Add(Cup);
 
-            Assert.That(result.Positions[3], Is.EqualTo(new Vector3(Step * 3f, 0f, 0f)));
-            Assert.That(result.TotalSize.x, Is.EqualTo(Step * 4f));
+            LayoutResult result = Rows(footprints);
+
+            Assert.That(result.Positions[PerRow].y, Is.EqualTo(House.y + Gap + Cup.y * 0.5f).Within(Tolerance));
         }
 
-        /// <summary>A ring no smaller than asked for, when the items fit inside it.</summary>
+        /// <summary>The size has no gap after the last asset, or a zone would stick out on one side.</summary>
         [Test]
-        public void ACircleKeepsTheRadiusItWasGiven()
+        public void TheSizeEndsAtTheLastAsset()
         {
-            LayoutResult result = Circle(8);
+            LayoutResult result = Rows(Vector2.one, Vector2.one);
 
-            Assert.That(Radius(result), Is.EqualTo(DefaultRadius).Within(Tolerance));
+            Assert.That(result.Size.x, Is.EqualTo(2f + Gap).Within(Tolerance));
+            Assert.That(result.Size.y, Is.EqualTo(1f).Within(Tolerance));
         }
 
-        /// <summary>
-        /// The one rule worth having here. Enough items and the asked for radius would sit them on top
-        /// of each other, so the ring grows instead.
-        /// </summary>
+        /// <summary>An empty group takes no floor.</summary>
         [Test]
-        public void ACircleGrowsRatherThanOverlapItems()
-        {
-            LayoutResult result = Circle(25);
+        public void NothingTakesNoFloor() => Assert.That(Rows().Size, Is.EqualTo(Vector2.zero));
 
-            Assert.That(Radius(result), Is.GreaterThan(DefaultRadius));
+        /// <summary>A line ignores the row length.</summary>
+        [Test]
+        public void ALineNeverWraps()
+        {
+            LayoutResult result = new RowLayoutStrategy(true).Layout(Many(PerRow * 3, Vector2.one),
+                new LayoutSettings());
+
+            Assert.That(result.Positions[PerRow * 3 - 1].y, Is.EqualTo(0.5f).Within(Tolerance));
         }
 
-        /// <summary>Every item sits on the ring, whatever the radius turned out to be.</summary>
+        /// <summary>No position is ever negative, on a ring either, so the block after it cannot run into it.</summary>
         [Test]
-        public void EveryItemSitsOnTheRing()
+        public void ARingStaysInsideItsOwnSize()
         {
-            LayoutResult result = Circle(25);
-            float radius = Radius(result);
+            LayoutResult result = Circle(Many(8, Vector2.one));
 
-            foreach (Vector3 position in result.Positions)
-                Assert.That(new Vector2(position.x, position.z).magnitude, Is.EqualTo(radius).Within(Tolerance));
+            foreach (Vector2 position in result.Positions)
+            {
+                Assert.That(position.x, Is.InRange(0f, result.Size.x));
+                Assert.That(position.y, Is.InRange(0f, result.Size.y));
+            }
         }
 
-        /// <summary>An empty category lays out nothing rather than failing.</summary>
+        /// <summary>A ring no smaller than asked for, when the assets fit inside it.</summary>
         [Test]
-        public void AnEmptyCategoryPlacesNothing()
+        public void ARingKeepsTheRadiusItWasGiven()
+            => Assert.That(RingRadius(Circle(Many(4, Vector2.one))), Is.EqualTo(new LayoutSettings().CircleRadius)
+                .Within(Tolerance));
+
+        /// <summary>A ring grows when its assets would otherwise run into each other.</summary>
+        [Test]
+        public void ARingGrowsWhenItsAssetsWouldNotFit()
         {
-            Assert.That(Grid(0).Positions, Is.Empty);
-            Assert.That(Line(0).Positions, Is.Empty);
-            Assert.That(Circle(0).Positions, Is.Empty);
+            const int Count = 200;
+
+            float radius = RingRadius(Circle(Many(Count, Vector2.one)));
+            float needed = Count * (1f + Gap) / (2f * Mathf.PI);
+
+            Assert.That(radius, Is.EqualTo(needed).Within(Tolerance));
         }
 
-        /// <summary>Each layout name builds the arrangement it is named after.</summary>
-        /// <param name="type">
-        /// The layout the settings ask for, as its underlying byte. The enum is internal to the package
-        /// and a public test method cannot name it in its signature.
-        /// </param>
-        /// <param name="expected">The strategy that should answer.</param>
-        [TestCase((byte)ELayoutType.Circle, typeof(CircleLayoutStrategy))]
-        [TestCase((byte)ELayoutType.Grid, typeof(GridLayoutStrategy))]
-        [TestCase((byte)ELayoutType.Line, typeof(LineLayoutStrategy))]
-        public void EachLayoutNameBuildsItsOwnStrategy(byte type, Type expected)
-            => Assert.That(LayoutStrategyFactory.Create((ELayoutType)type), Is.TypeOf(expected));
-
-        /// <summary>The bottom of the box rests on the slot, so a prop stands on the floor.</summary>
+        /// <summary>A single asset has no ring to stand on and sits in the middle of its own room.</summary>
         [Test]
-        public void GroundAlignmentPutsTheBottomOnTheSlot()
+        public void ASingleAssetOnARingStandsInTheMiddle()
         {
-            Bounds bounds = new(new Vector3(0f, 2f, 0f), new Vector3(1f, 4f, 1f));
+            LayoutResult result = Circle(Many(1, Vector2.one));
+
+            Assert.That(result.Positions[0], Is.EqualTo(new Vector2(0.5f, 0.5f)));
+        }
+
+        /// <summary>The bug this rework started from: a library stretched into a strip kilometers long.</summary>
+        [Test]
+        public void BlocksStayRoughlySquare()
+        {
+            LayoutResult result = ZooGroupLayout.Arrange(Many(50, new Vector2(10f, 10f)),
+                EGroupArrangement.Blocks, GroupGap);
+
+            Assert.That(result.Size.x / result.Size.y, Is.InRange(0.5f, 2.5f));
+        }
+
+        /// <summary>A block wider than the whole zoo still gets a row of its own.</summary>
+        [Test]
+        public void AHugeBlockStillGetsARow()
+        {
+            List<Vector2> blocks = Many(3, Vector2.one);
+            blocks.Insert(1, new Vector2(1000f, 1f));
+
+            LayoutResult result = ZooGroupLayout.Arrange(blocks, EGroupArrangement.Blocks, GroupGap);
+
+            Assert.That(result.Positions[1].x, Is.EqualTo(0f));
+        }
+
+        /// <summary>Blocks in one row start clear of each other.</summary>
+        [Test]
+        public void BlocksInARowClearEachOther()
+        {
+            LayoutResult result = ZooGroupLayout.Arrange(Many(2, Vector2.one), EGroupArrangement.Row, GroupGap);
+
+            Assert.That(result.Positions[1], Is.EqualTo(new Vector2(1f + GroupGap, 0f)));
+        }
+
+        /// <summary>A column starts every block on a new row.</summary>
+        [Test]
+        public void BlocksInAColumnStandBehindEachOther()
+        {
+            LayoutResult result = ZooGroupLayout.Arrange(Many(2, Vector2.one), EGroupArrangement.Column, GroupGap);
+
+            Assert.That(result.Positions[1], Is.EqualTo(new Vector2(0f, 1f + GroupGap)));
+        }
+
+        /// <summary>Standing on the floor puts the lowest point at zero, wherever the pivot is.</summary>
+        [Test]
+        public void GroundAlignmentRestsTheLowestPointOnTheFloor()
+        {
+            Bounds bounds = new(new Vector3(1f, 2f, 3f), new Vector3(2f, 2f, 2f));
+
             Vector3 offset = new GroundAlignment().GetOffset(bounds);
 
-            Assert.That(offset.y, Is.EqualTo(-bounds.min.y));
-            Assert.That(bounds.min.y + offset.y, Is.EqualTo(0f));
+            Assert.That(bounds.min.y + offset.y, Is.EqualTo(0f).Within(Tolerance));
+            Assert.That(offset.x, Is.EqualTo(-1f).Within(Tolerance));
+            Assert.That(offset.z, Is.EqualTo(-3f).Within(Tolerance));
         }
 
-        /// <summary>Centre alignment puts the middle of the box on the slot instead.</summary>
+        /// <summary>The middle stands on the place, so floating things can be compared at their centers.</summary>
         [Test]
-        public void CenterAlignmentPutsTheMiddleOnTheSlot()
+        public void CenterAlignmentPutsTheMiddleOnThePlace()
         {
             Bounds bounds = new(new Vector3(1f, 2f, 3f), Vector3.one);
 
             Assert.That(new CenterAlignment().GetOffset(bounds), Is.EqualTo(-bounds.center));
         }
 
-        /// <summary>
-        /// Ground alignment centres the two flat axes as well, so only the height is treated
-        /// differently from centring.
-        /// </summary>
+        /// <summary>The pivot is left alone, because that is what this mode is for.</summary>
         [Test]
-        public void GroundAlignmentStillCentersTheFlatAxes()
-        {
-            Bounds bounds = new(new Vector3(1f, 2f, 3f), new Vector3(1f, 4f, 1f));
-            Vector3 offset = new GroundAlignment().GetOffset(bounds);
-
-            Assert.That(offset.x, Is.EqualTo(-bounds.center.x));
-            Assert.That(offset.z, Is.EqualTo(-bounds.center.z));
-        }
-
-        /// <summary>Pivot alignment moves nothing, which is what honouring the authored pivot means.</summary>
-        [Test]
-        public void PivotAlignmentMovesNothing()
+        public void PivotAlignmentLeavesThePivotAlone()
             => Assert.That(new PivotAlignment().GetOffset(new Bounds(Vector3.one, Vector3.one)),
                 Is.EqualTo(Vector3.zero));
 
-        /// <summary>Each alignment name builds the strategy it is named after.</summary>
-        /// <param name="mode">
-        /// The alignment the settings ask for, as its underlying byte, for the same reason.
-        /// </param>
-        /// <param name="expected">The strategy that should answer.</param>
-        [TestCase((byte)EAlignmentMode.Center, typeof(CenterAlignment))]
-        [TestCase((byte)EAlignmentMode.Ground, typeof(GroundAlignment))]
-        [TestCase((byte)EAlignmentMode.Pivot, typeof(PivotAlignment))]
-        public void EachAlignmentNameBuildsItsOwnStrategy(byte mode, Type expected)
-            => Assert.That(AlignmentStrategyFactory.Create((EAlignmentMode)mode), Is.TypeOf(expected));
+        /// <summary>A pivot off to one side needs room on both sides of it, or it reaches into its neighbor.</summary>
+        [Test]
+        public void AnOffCenterPivotReservesRoomOnBothSides()
+        {
+            Bounds bounds = new(new Vector3(2f, 0f, 0f), new Vector3(2f, 1f, 1f));
 
-        /// <summary>The radius the ring ended up with, read back from where an item was put.</summary>
-        /// <param name="result">A circle layout of at least one item.</param>
-        /// <returns>The distance from the origin to the first item.</returns>
-        private static float Radius(LayoutResult result)
-            => new Vector2(result.Positions[0].x, result.Positions[0].z).magnitude;
+            Assert.That(new PivotAlignment().GetFootprint(bounds).x, Is.EqualTo(6f).Within(Tolerance));
+        }
 
-        /// <summary>Lays out the given number of unit cells with the shipped settings.</summary>
-        /// <param name="itemCount">How many items to place.</param>
-        /// <returns>The result.</returns>
-        private static LayoutResult Grid(int itemCount)
-            => new GridLayoutStrategy().Layout(itemCount, UnitCell, new LayoutSettings());
+        /// <summary>Each layout type picks the strategy it is named for.</summary>
+        [Test]
+        public void TheLayoutFactoryMatchesTheEnum()
+        {
+            Assert.That(LayoutStrategyFactory.Create(ELayoutType.Rows), Is.TypeOf<RowLayoutStrategy>());
+            Assert.That(LayoutStrategyFactory.Create(ELayoutType.Line), Is.TypeOf<RowLayoutStrategy>());
+            Assert.That(LayoutStrategyFactory.Create(ELayoutType.Circle), Is.TypeOf<CircleLayoutStrategy>());
+        }
 
-        /// <summary>Lays out the given number of unit cells in a line.</summary>
-        /// <param name="itemCount">How many items to place.</param>
-        /// <returns>The result.</returns>
-        private static LayoutResult Line(int itemCount)
-            => new LineLayoutStrategy().Layout(itemCount, UnitCell, new LayoutSettings());
+        /// <summary>Each alignment mode picks the strategy it is named for.</summary>
+        [Test]
+        public void TheAlignmentFactoryMatchesTheEnum()
+        {
+            Assert.That(AlignmentStrategyFactory.Create(EAlignmentMode.Ground), Is.TypeOf<GroundAlignment>());
+            Assert.That(AlignmentStrategyFactory.Create(EAlignmentMode.Pivot), Is.TypeOf<PivotAlignment>());
+            Assert.That(AlignmentStrategyFactory.Create(EAlignmentMode.Center), Is.TypeOf<CenterAlignment>());
+        }
 
-        /// <summary>Lays out the given number of unit cells on a ring.</summary>
-        /// <param name="itemCount">How many items to place.</param>
-        /// <returns>The result.</returns>
-        private static LayoutResult Circle(int itemCount)
-            => new CircleLayoutStrategy().Layout(itemCount, UnitCell, new LayoutSettings());
+        /// <summary>The prefab and its model land in one group, the way an artist sorted them.</summary>
+        /// <param name="path">The asset's path.</param>
+        /// <param name="expected">The group it should land in.</param>
+        [TestCase("Assets/Art/Environment/Cafe/P_Cafe_Chair_01.prefab", "Cafe")]
+        [TestCase("Assets/Art/Environment/Cafe/Models Cafe/Cafe_Chair_01.fbx", "Cafe")]
+        [TestCase("Assets/Art/Characters/Prefabs/P_Date.prefab", "Characters")]
+        [TestCase("Assets/Art/Props/Meshes/FBX/Mug.fbx", "Props")]
+        [TestCase("Assets/P_Thing.prefab", "Assets")]
+        public void AFolderThatOnlySortsByFileTypeIsSkipped(string path, string expected)
+            => Assert.That(ZooFolderGrouping.GetGroupName(path), Is.EqualTo(expected));
+
+        /// <summary>Small things read in centimeters, big things in meters.</summary>
+        /// <param name="x">The width.</param>
+        /// <param name="y">The height.</param>
+        /// <param name="z">The depth.</param>
+        /// <param name="expected">How it should read.</param>
+        [TestCase(0.13f, 0.1f, 0.09f, "13 x 10 x 9 cm")]
+        [TestCase(0.87f, 0.86f, 0.52f, "87 x 86 x 52 cm")]
+        [TestCase(2.1f, 0.84f, 1.7f, "2.10 x 0.84 x 1.70 m")]
+        public void ASizeReadsInTheUnitThatFits(float x, float y, float z, string expected)
+            => Assert.That(ZooItemText.FormatSize(new Vector3(x, y, z)), Is.EqualTo(expected));
+
+        /// <summary>Triangles go short once they run into the thousands.</summary>
+        /// <param name="triangles">The number of triangles.</param>
+        /// <param name="expected">How it should read.</param>
+        [TestCase(592, "592 tris")]
+        [TestCase(2022, "2k tris")]
+        [TestCase(32392, "32.4k tris")]
+        public void TrianglesReadShort(int triangles, string expected)
+            => Assert.That(ZooItemText.FormatTriangles(triangles), Is.EqualTo(expected));
+
+        /// <summary>The color of a group never changes between scans, or the map would keep shifting.</summary>
+        [Test]
+        public void AGroupKeepsItsColor()
+            => Assert.That(ZooAutoGenerator.GetCategoryColor("Cafe"),
+                Is.EqualTo(ZooAutoGenerator.GetCategoryColor("cafe")));
+
+        private static LayoutResult Rows(params Vector2[] footprints) => Rows(new List<Vector2>(footprints));
+
+        private static LayoutResult Rows(List<Vector2> footprints)
+            => new RowLayoutStrategy(false).Layout(footprints, new LayoutSettings());
+
+        private static LayoutResult Circle(List<Vector2> footprints)
+            => new CircleLayoutStrategy().Layout(footprints, new LayoutSettings());
+
+        private static List<Vector2> Many(int count, Vector2 footprint)
+        {
+            List<Vector2> footprints = new();
+
+            for (int i = 0; i < count; i++)
+                footprints.Add(footprint);
+
+            return footprints;
+        }
+
+        private static float RingRadius(LayoutResult result)
+        {
+            Vector2 middle = result.Size * 0.5f;
+
+            return (result.Positions[0] - middle).magnitude;
+        }
     }
 }

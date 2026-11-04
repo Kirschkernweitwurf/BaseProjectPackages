@@ -5,7 +5,7 @@ audience: Everyone
 tags:
   - artist
   - assets
-summary: Lays out prefabs in the scene in neat rows so you can look at your whole art library at once.
+summary: Stands your art in the Scene view at true size, sorted by folder, so you can look at a whole library at once.
 menu: Tools > Base Packages > Assets > Asset Zoo Builder
 ---
 # Asset Zoo Builder
@@ -16,35 +16,59 @@ menu: Tools > Base Packages > Assets > Asset Zoo Builder
 
 **Menu:** `Tools > Base Packages > Assets > Asset Zoo Builder`
 
-Lays out prefabs in the scene in neat rows so you can look at your whole art library at once. Good for reviews, scale checks and screenshots.
+Stands your art in the Scene view at true size, sorted by folder, so you can look at a whole library at once. Good for checking a new model in engine, comparing scale, reviews and screenshots.
 
 ## How to use it
 
-1. Create a config: `Assets > Create > Scriptable Objects > Base > Asset Zoo > New Zoo Config`. See[💌 ZooConfig](../Scriptable%20Objects/Zoo%20Config.md).
-2. Open the window and drop the config into the **Config** field.
-3. Optional: drop a Transform into **Parent** to build the zoo under a specific object.
-4. Set the search folder under **Generation** in the config.
-5. Press **Auto Generate Categories** to fill the categories from asset names.
-6. Press **Build Zoo**.
+1. Open the window. It finds the project's saved zoo by itself. A project without one asks you to drop a folder of art on the window.
+2. Drop folders from the Project window on **What to Show**, or press **Add Folder…**.
+3. Press **Build Zoo**. The Scene view flies to your art.
 
-The whole config is editable right inside the window, so you can tweak spacing and rebuild without leaving it.
+Made a new model? Press **Rebuild Zoo**. It looks for new art in your folders, marks it **New** in the Scene view and flies to it.
 
-## Buttons
+## In the Scene view
 
-| Button | What it does |
+| What | What it does |
 | --- | --- |
-| Auto Generate Categories | Scans the search folder and groups matching assets into categories. |
-| Build Zoo | Spawns the prefabs in the scene. |
-| Clear Zoo | Removes the built zoo again. |
-| Select Zoo Root | Selects the root object of the built zoo. |
-| Select Zoo Parent | Selects the parent you assigned. |
+| Zones and group names | Show the blocks like a map. Click a name to fly there. |
+| Asset names | Appear as you get closer and never overlap. |
+| Hover a name | Shows a wire box, the real size, triangles and materials. |
+| Click a name | Selects the asset and finds it in the Project window. |
+| Double-click a name | Opens the prefab. |
+| Yellow dot | Something to look at: an empty material slot, a broken shader, the default material, or a root scale other than 1. |
+| Ruler | Stands at the start of every group, in meters. |
 
-## Naming convention for auto generate
+The labels live only in the Scene view, so Game view shots stay clean. The Gizmos button of the Scene view turns them off.
 
-Assets are expected to be named `Prefix_Group_Name`. For example `P_Garden_Rock_01` and `SM_Garden_Rock_01` both land in the group **Garden**. Prefixes and the separator are configurable.
+## The window
+
+| Section | What it does |
+| --- | --- |
+| Saved Zoo | Remembers the folders, groups and look. Double-click one in the Project window to open it here. |
+| What to Show | The folders. Removing one takes its assets out of the zoo. **Group By** sorts by folder or by the first word of the name. |
+| Groups | Your art as pictures. See below. |
+| Look | Updates the zoo while you drag. |
+| More | The scene to build into, how groups stand next to each other, the floor material, and the rules for grouping by name. **Rescan** looks for new art without building. **Start Over…** forgets all your changes. |
+
+## Groups
+
+- The eye leaves a group or asset out of the zoo at once. A rescan keeps it out, so this is the way to get rid of something.
+- The camera flies to a group. It looks from high enough that nothing tall is in the way.
+- Click a thumbnail to find it in the Project window, double-click to fly to it.
+- Drag thumbnails between groups, and prefabs in from the Project window.
+- Drag a row to change the order of the groups.
+- Plus adds an empty group of your own. A scan leaves it alone.
+
+## What is left out
+
+A scan only keeps art. It leaves out prefabs with nothing to see, like UI screens and managers, and models that already have a prefab, so everything shows up once. **Models With Prefab** under **More** brings those models back. The window says what it left out.
+
+Things that only exist as particles or lights are not shown either.
 
 ## Notes
 
-- The last used config is remembered, so the next session is just open and build.
-- The zoo root carries a [🗞️ ZooRootMarker](../Components/Zoo%20Root%20Marker.md) so the builder can find its own object again. Do not remove it by hand.
-- Nothing is written to the prefabs. The zoo is a throwaway scene object.
+- A new zoo starts next to what is already in the scene, so hand placed art stays where it is.
+- Drag the zoo root wherever you like, or under another object. A rebuild stays there.
+- A decal shows nothing without a surface, so each one brings a small board.
+- The footer warns when the open scene is part of the game, because saving it would ship the zoo. Setting **Zoo Scene** under **More** opens the right scene on every build.
+- Nothing is written to the prefabs.

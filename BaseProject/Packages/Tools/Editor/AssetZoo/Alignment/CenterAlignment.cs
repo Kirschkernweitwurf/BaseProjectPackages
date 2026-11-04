@@ -9,5 +9,8 @@ namespace Base.ToolsPackage.Editor.AssetZoo.Alignment
     {
         /// <inheritdoc/>
         public Vector3 GetOffset(Bounds prefabBounds) => -prefabBounds.center;
+
+        /// <inheritdoc/>
+        public Vector2 GetFootprint(Bounds prefabBounds) => new(prefabBounds.size.x, prefabBounds.size.z);
     }
 }

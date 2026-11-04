@@ -6,9 +6,8 @@ using UnityEngine;
 namespace Base.ToolsPackage.Editor.AssetZoo.UI
 {
     /// <summary>
-    /// Draws the outcome of the last auto generation run as a card: an icon for how it went, the one
-    /// line summary, and the report about prefixes and skipped assets under it. Shared by the window
-    /// and the config inspector so both say the same thing in the same shape.
+    /// Says what the last scan found and what it left out. Part of the card the scan was started from, so the answer
+    /// appears next to the question.
     /// </summary>
     internal static class ZooResultView
     {
@@ -17,7 +16,7 @@ namespace Base.ToolsPackage.Editor.AssetZoo.UI
         private const float IconSize = 16f;
 
         /// <summary>
-        /// Draws the result card.
+        /// Draws the result lines.
         /// </summary>
         /// <param name="styles">The built chrome styles.</param>
         /// <param name="result">The result of the last run.</param>
@@ -25,8 +24,6 @@ namespace Base.ToolsPackage.Editor.AssetZoo.UI
         {
             if (styles == null)
                 return;
-
-            EditorWindowChrome.BeginCard(styles);
 
             using (new EditorGUILayout.HorizontalScope())
             {
@@ -45,8 +42,6 @@ namespace Base.ToolsPackage.Editor.AssetZoo.UI
                         GUILayout.Label(result.Details, styles.Description);
                 }
             }
-
-            EditorWindowChrome.EndCard();
         }
 
         private static Texture Icon(ZooGenerationResult result) => result.Success

@@ -1,41 +1,41 @@
+using System.Collections.Generic;
 using Base.ToolsPackage.Editor.AssetZoo.Config;
 using UnityEngine;
 
 namespace Base.ToolsPackage.Editor.AssetZoo.Layout
 {
     /// <summary>
-    /// Layout strategy that arranges items in a circle around the origin, with a radius defined in the settings.
+    /// Stands assets on a ring, for looking at them from the middle.
     /// </summary>
-    internal class CircleLayoutStrategy : ILayoutStrategy
+    internal sealed class CircleLayoutStrategy : ILayoutStrategy
     {
-        /// <summary>
-        /// Lays out items in a circle around the origin.
-        /// The radius of the circle is determined by the settings,
-        /// but is automatically increased if necessary to prevent items
-        /// from overlapping based on their size and the spacing defined in the settings.
-        /// </summary>
-        /// <param name="itemCount"></param>
-        /// <param name="cellSize"></param>
-        /// <param name="settings"></param>
-        /// <returns></returns>
-        public LayoutResult Layout(int itemCount, Vector3 cellSize, LayoutSettings settings)
+        /// <inheritdoc/>
+        public LayoutResult Layout(IReadOnlyList<Vector2> footprints, LayoutSettings settings)
         {
-            // Make sure the ring is big enough that items don't overlap.
-            float minRadius = itemCount > 1
-                ? itemCount * (cellSize.x + settings.Spacing) / (2f * Mathf.PI)
+            int count = footprints.Count;
+            float longest = 0f;
+
+            foreach (Vector2 footprint in footprints)
+                longest = Mathf.Max(longest, footprint.x, footprint.y);
+
+            // A ring has to be big enough that its assets do not run into each other, and a single asset
+            // has no ring to stand on at all.
+            float neededRadius = count * (longest + settings.Spacing) / (2f * Mathf.PI);
+
+            float radius = count > 1
+                ? Mathf.Max(settings.CircleRadius, neededRadius)
                 : 0f;
 
-            float radius = Mathf.Max(settings.CircleRadius, minRadius);
+            float middle = radius + longest * 0.5f;
+            Vector2[] positions = new Vector2[count];
 
-            Vector3[] positions = new Vector3[itemCount];
-            for (int i = 0; i < itemCount; i++)
+            for (int i = 0; i < count; i++)
             {
-                float angle = i / Mathf.Max(1f, itemCount) * Mathf.PI * 2f;
-                positions[i] = new Vector3(Mathf.Cos(angle) * radius, 0f, Mathf.Sin(angle) * radius);
+                float angle = i / (float)count * Mathf.PI * 2f;
+                positions[i] = new Vector2(middle + Mathf.Cos(angle) * radius, middle + Mathf.Sin(angle) * radius);
             }
 
-            float diameter = radius * 2f + cellSize.x;
-            return new LayoutResult(positions, new Vector3(diameter, cellSize.y, diameter));
+            return new LayoutResult(positions, new Vector2(middle * 2f, middle * 2f));
         }
     }
 }

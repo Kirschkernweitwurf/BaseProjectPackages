@@ -16,7 +16,7 @@ Asset files you create through `Assets > Create > Scriptable Objects > Base`.
 | Asset | What it is for |
 | --- | --- |
 | [💌 LightingProfile](Scriptable%20Objects/Lighting%20Profile.md) | Stores a scene's lighting settings so you can reuse them anywhere. |
-| [💌 ZooConfig](Scriptable%20Objects/Zoo%20Config.md) | Describes what the Asset Zoo Builder should lay out, and how. |
+| [💌 ZooConfig](Scriptable%20Objects/Zoo%20Config.md) | One saved zoo for the Asset Zoo Builder, with its folders, groups and look. |
 | Audio Rule Set (`ARS_`) | The rules for [Audio Rules](Tools/Audio%20Rules.md). |
 | Asset Naming Rule Set (`ANRS_`) | The rules for [Asset Naming Conventions](Tools/Asset%20Naming%20Conventions.md). |
 | Folder Convention Config (`FCC_`) | The rules for [Folder Conventions](Tools/Folder%20Conventions.md). |

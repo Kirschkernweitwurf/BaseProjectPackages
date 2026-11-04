@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Base.ToolsPackage.Editor.AssetZoo.Builder;
 using Base.ToolsPackage.Editor.AssetZoo.Config;
 using Base.UtilityPackage.Logging;
 using UnityEditor;
@@ -10,90 +11,131 @@ using UnityEngine;
 namespace Base.ToolsPackage.Editor.AssetZoo.Generation
 {
     /// <summary>
-    /// Scans a project folder and fills a <see cref="ZooConfig"/> with categories, derived from asset
-    /// names like "SM_Kitchen_Table_01". Naming prefixes are recognized and stripped, so the first word
-    /// behind the prefix becomes the group and "P_Garden_Rock_01" and "SM_Garden_Rock_01" both end up
-    /// in "Garden". Names without a prefix are grouped by their first word instead of being dropped.
+    /// Finds the art in the config's folders and sorts it into groups. A scan only ever adds: what an artist moved
+    /// to another group, reordered or hid stays that way, and only assets deleted from the project disappear.
     /// </summary>
     internal static class ZooAutoGenerator
     {
         private const string AssetFilter = "t:Prefab t:Model";
-        private const string AssetsRoot = "Assets";
         private const int HashFactor = 31;
         private const int HashSeed = 17;
         private const int HueSteps = 360;
         private const float LabelSaturation = 0.5f;
         private const float LabelValue = 1f;
         private const int MaxReportedTokens = 6;
-        private const int MinNameParts = 2;
-        private const string NoConfigMessage = "No config provided.";
-        private const string NoPrefixesMessage = "No prefixes defined and prefix detection is off.";
+        private const string NoConfigMessage = "No saved zoo selected.";
+        private const string NoSourcesMessage = "Add a folder of art first.";
         private const int PartOffset = 1;
+        private const string PrefabExtension = ".prefab";
         private const string ReportEllipsis = "...";
         private const string ReportSeparator = ", ";
-        private const string UndoLabel = "Auto Generate Zoo";
+        private const string UndoLabel = "Find Zoo Assets";
 
         /// <summary>
-        /// Scans the folder in <see cref="ZooConfig.Generation"/> and writes the resulting
-        /// categories into the config. Undoable and saves the asset.
+        /// Scans the config's sources and adds what it finds. Undoable and saves the asset.
         /// </summary>
-        public static ZooGenerationResult Generate(ZooConfig config)
+        /// <param name="config">The saved zoo.</param>
+        /// <param name="isStartingOver">True to forget all groups and hidden assets first.</param>
+        /// <returns>What the scan did, in words for the artist.</returns>
+        public static ZooGenerationResult Generate(ZooConfig config, bool isStartingOver = false)
         {
             if (config == null)
                 return FailWithError(NoConfigMessage, null);
 
             AutoGenerateSettings settings = config.Generation;
 
-            string folder = NormalizeFolder(settings.SearchFolder);
-            if (!AssetDatabase.IsValidFolder(folder))
-                return FailWithError($"Search folder \"{folder}\" does not exist.", config);
+            if (settings.Sources == null
+                || settings.Sources.Count == 0)
+                return ZooGenerationResult.Failed(NoSourcesMessage);
 
-            List<string> knownPrefixes = settings.Prefixes == null
-                ? new List<string>()
-                : settings.Prefixes.Where(prefix => !string.IsNullOrWhiteSpace(prefix)).ToList();
+            List<string> paths = CollectPaths(settings, out List<string> missingSources);
 
-            if (knownPrefixes.Count == 0
-                && !settings.AutoDetectPrefixes)
-                return FailWithError(NoPrefixesMessage, config);
+            if (missingSources.Count > 0)
+                return FailWithWarning($"Not found: {Describe(missingSources)}. Remove it or restore it.", config);
 
-            string separator = string.IsNullOrEmpty(settings.Separator)
-                ? AutoGenerateSettings.DefaultSeparator
-                : settings.Separator;
-
-            StringComparer comparer = settings.IgnorePrefixCase
-                ? StringComparer.OrdinalIgnoreCase
-                : StringComparer.Ordinal;
-
-            string emptyMessage = $"No matching assets found in \"{folder}\".";
-
-            List<ScannedName> names = CollectNames(folder, separator, settings.SearchDepth, out int skipped);
-            if (names.Count == 0)
-                return FailWithWarning(emptyMessage, config);
-
-            List<string> firstTokens = names.Select(name => name.Parts[0]).ToList();
-            PrefixSet prefixes = PrefixDetector.Build(knownPrefixes, firstTokens, settings.AutoDetectPrefixes,
-                settings.MinPrefixOccurrences, settings.MaxPrefixLength, comparer);
-
-            Dictionary<string, List<ScannedAsset>> groups = BuildGroups(names, separator, prefixes,
-                out int unloadable);
-
-            if (groups.Count == 0)
-                return FailWithWarning(emptyMessage, config);
+            List<FoundAsset> found = FindArt(paths, settings, out int nothingToSee, out int shownByPrefab,
+                out PrefixSet prefixes);
 
             Undo.RecordObject(config, UndoLabel);
 
-            if (!settings.MergeWithExisting)
+            if (isStartingOver)
                 config.Categories.Clear();
 
-            int added = Apply(config, groups, settings.ColorizeCategories);
+            RemoveMissing(config);
+
+            List<GameObject> added = AddNewAssets(config, found);
 
             EditorUtility.SetDirty(config);
             AssetDatabase.SaveAssetIfDirty(config);
 
-            string message = $"{groups.Count} groups found, {added} entries added.";
-            string details = BuildDetails(prefixes, skipped, unloadable);
+            int assetCount = config.Categories.Sum(category => category.Entries.Count);
 
-            return new ZooGenerationResult(true, config.Categories.Count, added, message, details);
+            if (assetCount == 0)
+                return FailWithWarning($"Nothing to show in {Describe(settings.Sources)}.", config);
+
+            string message = $"{assetCount} assets in {config.Categories.Count} groups.";
+            string details = BuildDetails(prefixes, nothingToSee, shownByPrefab);
+
+            return new ZooGenerationResult(true, message, details, added);
+        }
+
+        /// <summary>
+        /// Adds a folder, prefab or model to what the zoo shows. Does not scan yet.
+        /// </summary>
+        /// <param name="config">The saved zoo.</param>
+        /// <param name="path">The project path to add.</param>
+        /// <returns>True when it was not listed yet.</returns>
+        public static bool TryAddSource(ZooConfig config, string path)
+        {
+            if (config.Generation.Sources.Contains(path))
+                return false;
+
+            Undo.RecordObject(config, UndoLabel);
+            config.Generation.Sources.Add(path);
+            EditorUtility.SetDirty(config);
+
+            return true;
+        }
+
+        /// <summary>
+        /// Stops showing a folder, prefab or model, along with the assets only it brought in.
+        /// </summary>
+        /// <param name="config">The saved zoo.</param>
+        /// <param name="path">The project path to remove.</param>
+        public static void RemoveSource(ZooConfig config, string path)
+        {
+            Undo.RecordObject(config, UndoLabel);
+            config.Generation.Sources.Remove(path);
+
+            foreach (ZooCategory category in config.Categories)
+            {
+                category.Entries.RemoveAll(entry => IsOnlyFrom(entry, path, config.Generation.Sources));
+                category.HiddenEntries?.RemoveAll(entry => IsOnlyFrom(entry, path, config.Generation.Sources));
+            }
+
+            config.Categories.RemoveAll(category => category.Entries.Count == 0);
+
+            EditorUtility.SetDirty(config);
+            AssetDatabase.SaveAssetIfDirty(config);
+        }
+
+        /// <summary>
+        /// The color of a group, derived from its name so it stays the same across scans and sessions.
+        /// </summary>
+        /// <param name="group">The group's name.</param>
+        /// <returns>A soft color that reads on a dark label.</returns>
+        public static Color GetCategoryColor(string group)
+        {
+            // Own hash instead of string.GetHashCode, so colors stay stable across sessions.
+            int hash = HashSeed;
+            unchecked
+            {
+                foreach (char character in group)
+                    hash = hash * HashFactor + char.ToLowerInvariant(character);
+            }
+
+            float hue = Mathf.Abs(hash % HueSteps) / (float)HueSteps;
+            return Color.HSVToRGB(hue, LabelSaturation, LabelValue);
         }
 
         private static ZooGenerationResult FailWithError(string message, ZooConfig config)
@@ -108,55 +150,62 @@ namespace Base.ToolsPackage.Editor.AssetZoo.Generation
             return ZooGenerationResult.Failed(message);
         }
 
-        private static string NormalizeFolder(string folder)
+        private static bool IsOnlyFrom(GameObject entry, string removedSource, List<string> remainingSources)
         {
-            if (string.IsNullOrWhiteSpace(folder))
-                return AssetsRoot;
+            if (entry == null)
+                return true;
 
-            string path = folder.Replace('\\', '/').TrimEnd('/');
-            string dataPath = Application.dataPath;
+            string path = AssetDatabase.GetAssetPath(entry);
 
-            // The FolderPath attribute can store absolute paths, map those back into the project.
-            if (path.StartsWith(dataPath, StringComparison.OrdinalIgnoreCase))
-                path = AssetsRoot + path[dataPath.Length..];
-
-            return path.Length == 0
-                ? AssetsRoot
-                : path;
+            return IsUnder(path, removedSource)
+                && !remainingSources.Any(source => IsUnder(path, source));
         }
 
-        private static List<ScannedName> CollectNames(string folder, string separator, int maxDepth,
-            out int skipped)
+        private static bool IsUnder(string path, string source)
+            => path == source || path.StartsWith(source + "/", StringComparison.Ordinal);
+
+        private static List<string> CollectPaths(AutoGenerateSettings settings, out List<string> missingSources)
         {
-            skipped = 0;
-            List<ScannedName> names = new();
+            HashSet<string> paths = new();
+            missingSources = new List<string>();
 
-            string[] guids = AssetDatabase.FindAssets(AssetFilter, new[]
+            foreach (string source in settings.Sources)
             {
-                folder
-            });
-
-            foreach (string guid in guids)
-            {
-                string path = AssetDatabase.GUIDToAssetPath(guid);
-                if (string.IsNullOrEmpty(path) || !IsWithinDepth(path, folder, maxDepth))
-                    continue;
-
-                string assetName = Path.GetFileNameWithoutExtension(path);
-                string[] parts = assetName.Split(separator, StringSplitOptions.RemoveEmptyEntries);
-
-                // A single word carries no group, there is nothing sensible to sort it under.
-                if (parts.Length < MinNameParts)
+                if (AssetDatabase.IsValidFolder(source))
                 {
-                    skipped++;
-
+                    AddFolder(paths, source, settings.SearchDepth);
                     continue;
                 }
 
-                names.Add(new ScannedName(path, parts));
+                string guid = AssetDatabase.AssetPathToGUID(source, AssetPathToGUIDOptions.OnlyExistingAssets);
+
+                if (string.IsNullOrEmpty(guid))
+                {
+                    missingSources.Add(source);
+                    continue;
+                }
+
+                paths.Add(source);
             }
 
-            return names;
+            return paths.OrderBy(path => path, StringComparer.OrdinalIgnoreCase).ToList();
+        }
+
+        private static void AddFolder(HashSet<string> paths, string folder, int maxDepth)
+        {
+            string[] folders =
+            {
+                folder
+            };
+
+            foreach (string guid in AssetDatabase.FindAssets(AssetFilter, folders))
+            {
+                string path = AssetDatabase.GUIDToAssetPath(guid);
+
+                if (!string.IsNullOrEmpty(path)
+                    && IsWithinDepth(path, folder, maxDepth))
+                    paths.Add(path);
+            }
         }
 
         private static bool IsWithinDepth(string assetPath, string rootFolder, int maxDepth)
@@ -178,35 +227,140 @@ namespace Base.ToolsPackage.Editor.AssetZoo.Generation
             return depth <= maxDepth;
         }
 
-        private static Dictionary<string, List<ScannedAsset>> BuildGroups(IReadOnlyList<ScannedName> names,
-            string separator, PrefixSet prefixes, out int unloadable)
+        private static List<FoundAsset> FindArt(List<string> paths, AutoGenerateSettings settings,
+            out int nothingToSee, out int shownByPrefab, out PrefixSet prefixes)
         {
-            unloadable = 0;
-            Dictionary<string, List<ScannedAsset>> groups = new(StringComparer.OrdinalIgnoreCase);
+            nothingToSee = 0;
+            shownByPrefab = 0;
 
-            foreach (ScannedName name in names)
+            HashSet<string> modelsWithPrefab = settings.HasModelsWithPrefab
+                ? new HashSet<string>()
+                : FindModelsWithPrefab(paths);
+
+            List<ScannedAsset> scanned = new();
+
+            foreach (string path in paths)
             {
-                GameObject asset = AssetDatabase.LoadAssetAtPath<GameObject>(name.Path);
-                if (asset == null)
+                if (modelsWithPrefab.Contains(path))
                 {
-                    unloadable++;
-
+                    shownByPrefab++;
                     continue;
                 }
 
-                ParseName(name.Parts, separator, prefixes, out string group, out string sortKey,
-                    out int prefixOrder);
+                GameObject asset = AssetDatabase.LoadAssetAtPath<GameObject>(path);
 
-                if (!groups.TryGetValue(group, out List<ScannedAsset> entries))
+                if (asset == null
+                    || !ZooVisuals.HasVisuals(asset))
                 {
-                    entries = new List<ScannedAsset>();
-                    groups.Add(group, entries);
+                    nothingToSee++;
+                    continue;
                 }
 
-                entries.Add(new ScannedAsset(asset, sortKey, prefixOrder));
+                scanned.Add(new ScannedAsset(asset, path));
             }
 
-            return groups;
+            prefixes = settings.GroupBy == EGroupBy.Name
+                ? BuildPrefixes(scanned, settings)
+                : null;
+
+            return SortIntoGroups(scanned, settings, prefixes);
+        }
+
+        // A prefab made from a model shows that model, so listing both would put every piece of art in the zoo
+        // twice, once with its materials and once on the import defaults.
+        private static HashSet<string> FindModelsWithPrefab(List<string> paths)
+        {
+            HashSet<string> scannedModels = new(paths.Where(path => !IsPrefab(path)));
+            HashSet<string> models = new();
+
+            foreach (string path in paths)
+            {
+                if (!IsPrefab(path))
+                    continue;
+
+                foreach (string dependency in AssetDatabase.GetDependencies(path, true))
+                {
+                    if (scannedModels.Contains(dependency))
+                        models.Add(dependency);
+                }
+            }
+
+            return models;
+        }
+
+        private static bool IsPrefab(string path)
+            => path.EndsWith(PrefabExtension, StringComparison.OrdinalIgnoreCase);
+
+        private static PrefixSet BuildPrefixes(List<ScannedAsset> scanned, AutoGenerateSettings settings)
+        {
+            List<string> known = settings.Prefixes == null
+                ? new List<string>()
+                : settings.Prefixes.Where(prefix => !string.IsNullOrWhiteSpace(prefix)).ToList();
+
+            StringComparer comparer = settings.IsPrefixCaseIgnored
+                ? StringComparer.OrdinalIgnoreCase
+                : StringComparer.Ordinal;
+
+            string separator = GetSeparator(settings);
+
+            List<string> firstTokens = scanned
+                .Select(asset => SplitName(asset.Path, separator)[0])
+                .ToList();
+
+            return PrefixDetector.Build(known, firstTokens, settings.CanDetectPrefixes,
+                settings.MinPrefixOccurrences, settings.MaxPrefixLength, comparer);
+        }
+
+        private static string GetSeparator(AutoGenerateSettings settings) => string.IsNullOrEmpty(settings.Separator)
+            ? AutoGenerateSettings.DefaultSeparator
+            : settings.Separator;
+
+        private static string[] SplitName(string path, string separator)
+        {
+            string assetName = Path.GetFileNameWithoutExtension(path);
+            string[] parts = assetName.Split(separator, StringSplitOptions.RemoveEmptyEntries);
+
+            return parts.Length > 0
+                ? parts
+                : new[]
+                {
+                    assetName
+                };
+        }
+
+        private static List<FoundAsset> SortIntoGroups(List<ScannedAsset> scanned, AutoGenerateSettings settings,
+            PrefixSet prefixes)
+        {
+            List<FoundAsset> found = new();
+            string separator = GetSeparator(settings);
+
+            foreach (ScannedAsset asset in scanned)
+            {
+                string name = Path.GetFileNameWithoutExtension(asset.Path);
+
+                if (prefixes == null)
+                {
+                    found.Add(new FoundAsset(asset.Asset, ZooFolderGrouping.GetGroupName(asset.Path), name, 0));
+                    continue;
+                }
+
+                ParseName(SplitName(asset.Path, separator), separator, prefixes, out string group,
+                    out string sortKey, out int prefixOrder);
+
+                found.Add(new FoundAsset(asset.Asset, group, sortKey, prefixOrder));
+            }
+
+            // Variants of the same asset (P_Garden_Rock_01, SM_Garden_Rock_01) end up next to each other.
+            found.Sort((first, second) =>
+            {
+                int byName = StringComparer.OrdinalIgnoreCase.Compare(first.SortKey, second.SortKey);
+
+                return byName != 0
+                    ? byName
+                    : first.PrefixOrder.CompareTo(second.PrefixOrder);
+            });
+
+            return found;
         }
 
         private static void ParseName(string[] parts, string separator, PrefixSet prefixes, out string group,
@@ -216,7 +370,8 @@ namespace Base.ToolsPackage.Editor.AssetZoo.Generation
             if (!hasPrefix)
                 prefixOrder = prefixes.NoPrefixOrder;
 
-            int groupIndex = hasPrefix
+            // A name that is only a prefix has no word behind it, so the prefix has to serve as its group.
+            int groupIndex = hasPrefix && parts.Length > PartOffset
                 ? PartOffset
                 : 0;
 
@@ -228,65 +383,85 @@ namespace Base.ToolsPackage.Editor.AssetZoo.Generation
                 : string.Empty;
         }
 
-        private static int Apply(ZooConfig config, Dictionary<string, List<ScannedAsset>> groups, bool colorize)
+        private static void RemoveMissing(ZooConfig config)
         {
-            int added = 0;
+            // Only a group that just lost its last asset goes. One a person added by hand and has not filled
+            // yet is still waiting for its first prefab.
+            List<ZooCategory> emptied = new();
 
-            foreach (string group in groups.Keys.OrderBy(keySelector: name => name, StringComparer.OrdinalIgnoreCase))
+            foreach (ZooCategory category in config.Categories)
             {
-                // Sort by the name behind the group first, so variants of the same asset
-                // (P_Garden_Rock_01, SM_Garden_Rock_01) end up next to each other.
-                List<GameObject> sorted = groups[group]
-                    .OrderBy(keySelector: asset => asset.SortKey, StringComparer.OrdinalIgnoreCase)
-                    .ThenBy(asset => asset.PrefixOrder)
-                    .Select(asset => asset.Asset)
-                    .ToList();
-
-                ZooCategory existing = config.Categories.FirstOrDefault(category => category != null
-                    && string.Equals(category.Name, group, StringComparison.OrdinalIgnoreCase));
-
-                if (existing == null)
-                {
-                    Color color = colorize
-                        ? GetCategoryColor(group)
-                        : Color.cyan;
-
-                    config.Categories.Add(new ZooCategory(group, color, sorted));
-                    added += sorted.Count;
-
-                    continue;
-                }
-
-                if (colorize)
-                    existing.SetLabelColor(GetCategoryColor(group));
-
-                foreach (GameObject asset in sorted)
-                {
-                    if (existing.TryAddEntry(asset))
-                        added++;
-                }
+                if (category.TryRemoveMissing()
+                    && category.Entries.Count == 0)
+                    emptied.Add(category);
             }
+
+            foreach (ZooCategory category in emptied)
+                config.Categories.Remove(category);
+        }
+
+        private static List<GameObject> AddNewAssets(ZooConfig config, List<FoundAsset> found)
+        {
+            HashSet<GameObject> known = new();
+
+            foreach (ZooCategory category in config.Categories)
+                known.UnionWith(category.Entries);
+
+            List<GameObject> added = new();
+            List<ZooCategory> newGroups = new();
+
+            foreach (FoundAsset asset in found)
+            {
+                if (known.Contains(asset.Asset))
+                    continue;
+
+                ZooCategory category = FindCategory(config.Categories, asset.Group)
+                    ?? FindCategory(newGroups, asset.Group);
+
+                if (category == null)
+                {
+                    category = new ZooCategory(asset.Group, GetCategoryColor(asset.Group), Array.Empty<GameObject>());
+                    newGroups.Add(category);
+                }
+
+                category.TryAddEntry(asset.Asset);
+                added.Add(asset.Asset);
+            }
+
+            config.Categories.AddRange(newGroups.OrderBy(group => group.Name, StringComparer.OrdinalIgnoreCase));
 
             return added;
         }
 
-        private static Color GetCategoryColor(string group)
+        private static ZooCategory FindCategory(List<ZooCategory> categories, string group)
         {
-            // Own hash instead of string.GetHashCode, so colors stay stable across sessions.
-            int hash = HashSeed;
-            unchecked
+            foreach (ZooCategory category in categories)
             {
-                foreach (char character in group)
-                    hash = hash * HashFactor + char.ToLowerInvariant(character);
+                if (category != null
+                    && string.Equals(category.Name, group, StringComparison.OrdinalIgnoreCase))
+                    return category;
             }
 
-            float hue = Mathf.Abs(hash % HueSteps) / (float)HueSteps;
-            return Color.HSVToRGB(hue, LabelSaturation, LabelValue);
+            return null;
         }
 
-        private static string BuildDetails(PrefixSet prefixes, int skipped, int unloadable)
+        private static string BuildDetails(PrefixSet prefixes, int nothingToSee, int shownByPrefab)
         {
+            List<string> leftOut = new();
+
+            if (shownByPrefab > 0)
+                leftOut.Add($"{shownByPrefab} models that already have a prefab");
+
+            if (nothingToSee > 0)
+                leftOut.Add($"{nothingToSee} with nothing to see, like UI and managers");
+
             List<string> lines = new();
+
+            if (leftOut.Count > 0)
+                lines.Add($"Left out: {string.Join(ReportSeparator, leftOut)}.");
+
+            if (prefixes == null)
+                return string.Join(Environment.NewLine, lines);
 
             if (prefixes.Detected.Count > 0)
                 lines.Add($"Detected prefixes: {Describe(prefixes.Detected)}.");
@@ -294,12 +469,6 @@ namespace Base.ToolsPackage.Editor.AssetZoo.Generation
             if (prefixes.Suspects.Count > 0)
                 lines.Add("Look like prefixes but were used as group names, add them to Prefixes if that "
                     + $"is wrong: {Describe(prefixes.Suspects)}.");
-
-            if (skipped > 0)
-                lines.Add($"{skipped} assets skipped, their name has no part behind the first word.");
-
-            if (unloadable > 0)
-                lines.Add($"{unloadable} assets could not be loaded.");
 
             return string.Join(Environment.NewLine, lines);
         }
@@ -314,45 +483,47 @@ namespace Base.ToolsPackage.Editor.AssetZoo.Generation
 
         private readonly struct ScannedAsset
         {
-            /// <summary>The prefab the zoo places.</summary>
+            /// <summary>The loaded prefab or model.</summary>
             public GameObject Asset { get; }
 
-            /// <summary>The name the assets are ordered by within one prefix group.</summary>
-            public string SortKey { get; }
+            /// <summary>Where it is in the project.</summary>
+            public string Path { get; }
 
-            /// <summary>
-            /// Which naming prefix the asset carries, so the groups come out in the order the
-            /// convention lists them rather than alphabetically.
-            /// </summary>
-            public int PrefixOrder { get; }
-
-            /// <summary>Records one asset the scan found.</summary>
-            /// <param name="asset">The prefab the zoo places.</param>
-            /// <param name="sortKey">The name it is ordered by within its group.</param>
-            /// <param name="prefixOrder">Which naming prefix group it belongs to.</param>
-            public ScannedAsset(GameObject asset, string sortKey, int prefixOrder)
+            /// <summary>Records one asset the scan kept.</summary>
+            /// <param name="asset">The loaded prefab or model.</param>
+            /// <param name="path">Where it is in the project.</param>
+            public ScannedAsset(GameObject asset, string path)
             {
                 Asset = asset;
-                SortKey = sortKey;
-                PrefixOrder = prefixOrder;
+                Path = path;
             }
         }
 
-        private readonly struct ScannedName
+        private readonly struct FoundAsset
         {
-            /// <summary>Asset path the name was taken from.</summary>
-            public string Path { get; }
+            /// <summary>The prefab the zoo places.</summary>
+            public GameObject Asset { get; }
 
-            /// <summary>The name split by the separator, at least <see cref="MinNameParts"/> long.</summary>
-            public string[] Parts { get; }
+            /// <summary>The group it belongs in.</summary>
+            public string Group { get; }
 
-            /// <summary>Records one asset name before it is known what its prefix is.</summary>
-            /// <param name="path">Asset path the name was taken from.</param>
-            /// <param name="parts">The name split by the separator.</param>
-            public ScannedName(string path, string[] parts)
+            /// <summary>The name the assets of a group are ordered by.</summary>
+            public string SortKey { get; }
+
+            /// <summary>Which naming prefix it carries, so variants come in the order the convention lists.</summary>
+            public int PrefixOrder { get; }
+
+            /// <summary>Records where one asset belongs.</summary>
+            /// <param name="asset">The prefab the zoo places.</param>
+            /// <param name="group">The group it belongs in.</param>
+            /// <param name="sortKey">The name it is ordered by.</param>
+            /// <param name="prefixOrder">Which naming prefix it carries.</param>
+            public FoundAsset(GameObject asset, string group, string sortKey, int prefixOrder)
             {
-                Path = path;
-                Parts = parts;
+                Asset = asset;
+                Group = group;
+                SortKey = sortKey;
+                PrefixOrder = prefixOrder;
             }
         }
     }
