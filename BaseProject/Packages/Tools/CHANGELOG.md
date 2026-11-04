@@ -6,7 +6,7 @@ All notable changes to this package are recorded here. The format follows
 
 Changes made before 2.0.10 were not recorded.
 
-## [Unreleased]
+## [3.4.0] - 2026-11-04
 
 ### Added
 
