@@ -77,6 +77,32 @@ namespace Base.ControllerSupportPackage.InputPrompts.Glyphs
             return true;
         }
 
+        /// <summary>
+        /// Tries to resolve the glyph of one control for a device of choice, not the one in use, like a list of a
+        /// gamepad's buttons the player reads while steering with the keyboard. A gamepad shows its last used family.
+        /// </summary>
+        /// <param name="controlPath">Path of the control, like &lt;Gamepad&gt;/leftTrigger.</param>
+        /// <param name="device">The device whose glyphs to use.</param>
+        /// <param name="sprite">The sprite, or null if the device's set has none for the control.</param>
+        /// <returns><c>true</c> if the device's set has a sprite for the control.</returns>
+        public bool TryGetControlSprite(string controlPath, EInputDeviceType device, out Sprite sprite)
+        {
+            sprite = null;
+
+            if (_deviceTracker == null)
+                return false;
+
+            InputGlyphSet inputGlyphSet = device == EInputDeviceType.Gamepad
+                ? FindGamepadSet(_deviceTracker.CurrentGamepadFamily)
+                : FindSet(set => set.DeviceType == device);
+
+            return inputGlyphSet != null
+                && inputGlyphSet.TryGetControlSprite(controlPath, out sprite);
+        }
+
+        /// <summary>Makes the prompts read their glyphs again, after the player rebound an action.</summary>
+        public void NotifyBindingsChanged() => OnActiveDeviceChanged?.Invoke();
+
         private static string CreateTmpSpriteTag(string spriteName) => $"<sprite name=\"{spriteName}\">";
 
         private static bool IsGamepadSet(InputGlyphSet set, EGamepadFamily family)

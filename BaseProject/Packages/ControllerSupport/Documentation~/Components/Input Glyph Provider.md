@@ -24,6 +24,9 @@ Picks the right button icon for an action, based on the device in use: a keyboar
 1. Put it on the persistent manager prefab, once.
 2. Assign one **Input Glyph Set** asset per device family, and one per kind of gamepad that should show its own buttons (set **Gamepad Family** on the set). Make one gamepad set **Generic** as the fallback.
 3. Show the icons with an [Input Prompt View](Input%20Prompt%20View.md).
+4. A game that lets players rebind fills each set's **Control Glyphs** too: one sprite per key or button path, like
+   `<Keyboard>/g`. A prompt whose action was rebound then shows its new key. Call `NotifyBindingsChanged` after a
+   rebind so every prompt reads its glyph again, and `TryGetControlSprite` to show a key in a rebinding list.
 
 ## Fields
 

@@ -10,6 +10,9 @@ Changes made before 1.6.5 were not recorded.
 
 ### Added
 
+- `InputGlyphSet` control glyphs: sprites by control path, so a prompt whose action the player has rebound shows the
+  new key or button. `InputGlyphSet.TryGetControlSprite` and `InputGlyphProvider.TryGetControlSprite` look one up.
+- `InputGlyphProvider.NotifyBindingsChanged` makes every prompt read its glyph again after a rebind.
 - `InputPromptView.Action`: the action a prompt shows, so a game can press it from the prompt, like a click.
 - `ISteeringSource`: a game can tell the `FocusWatchdog` that the player steers with the keyboard, so keyboard
   players keep a focus like gamepad players do.
