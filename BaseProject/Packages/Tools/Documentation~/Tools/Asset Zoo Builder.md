@@ -67,7 +67,8 @@ Things that only exist as particles or lights are not shown either.
 
 ## Notes
 
-- A new zoo starts next to what is already in the scene, so hand placed art stays where it is.
+- A new zoo starts next to what is already in the scene, floors included, so hand placed art stays where it is and two floors never flicker.
+- The floor lies at exactly the height of the zoo root, which is 0 in a new zoo.
 - Drag the zoo root wherever you like, or under another object. A rebuild stays there.
 - A decal shows nothing without a surface, so each one brings a small board.
 - The footer warns when the open scene is part of the game, because saving it would ship the zoo. Setting **Zoo Scene** under **More** opens the right scene on every build.

@@ -5,13 +5,13 @@ namespace Base.ToolsPackage.Editor.AssetZoo.Builder
 {
     /// <summary>
     /// Finds where a new zoo can stand without running into what is already in the scene, so a scene that holds
-    /// hand placed art keeps it, with the zoo next to it.
+    /// hand placed art keeps it, with the zoo next to it. A floor that is there already counts as well: the floor of
+    /// the zoo lies at the same height, and two floors in one place flicker.
     /// </summary>
     internal static class ZooPlacement
     {
-        private const float FlatHeight = 0.1f;
-        private const float FloorMinWidth = 5f;
-        private const float Margin = 4f;
+        // Wider than the margin of the zoo's floor, or that floor would reach back into what stands there already.
+        private const float Margin = ZooBuilder.FloorMargin + 1f;
 
         /// <summary>
         /// Finds the corner the zoo starts at. It grows away from there, so it ends up beside the existing art.
@@ -37,9 +37,6 @@ namespace Base.ToolsPackage.Editor.AssetZoo.Builder
 
                     Bounds bounds = renderer.bounds;
 
-                    if (IsFloor(bounds))
-                        continue;
-
                     if (hasBounds)
                     {
                         occupied.Encapsulate(bounds);
@@ -55,9 +52,5 @@ namespace Base.ToolsPackage.Editor.AssetZoo.Builder
                 ? new Vector3(occupied.min.x - Margin, 0f, occupied.max.z)
                 : Vector3.zero;
         }
-
-        // A floor is meant to be stood on, not stood next to.
-        private static bool IsFloor(Bounds bounds) => bounds.size.y < FlatHeight
-            && Mathf.Max(bounds.size.x, bounds.size.z) > FloorMinWidth;
     }
 }

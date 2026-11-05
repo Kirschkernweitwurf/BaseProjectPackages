@@ -19,14 +19,15 @@ namespace Base.ToolsPackage.Editor.AssetZoo.Builder
     /// </summary>
     internal sealed class ZooBuilder
     {
+        /// <summary>How far the floor reaches past the zoo on every side.</summary>
+        internal const float FloorMargin = 6f;
+
         private const float BoardDepth = 0.02f;
         private const string BoardName = "Decal Board";
         private const float BoardPadding = 1.2f;
         private const string BuildUndoLabel = "Build Asset Zoo";
         private const string ClearUndoLabel = "Clear Asset Zoo";
         private const float DecalTurn = 180f;
-        private const float FloorDrop = 0.002f;
-        private const float FloorMargin = 6f;
         private const string FloorName = "Floor";
         private const float FloorUnitsPerScale = 10f;
         private const int ProgressBarFrom = 30;
@@ -324,7 +325,7 @@ namespace Base.ToolsPackage.Editor.AssetZoo.Builder
 
             Vector2 floorSize = size + Vector2.one * (FloorMargin * 2f);
 
-            floor.localPosition = new Vector3(-size.x * 0.5f, -FloorDrop, -size.y * 0.5f);
+            floor.localPosition = new Vector3(-size.x * 0.5f, 0f, -size.y * 0.5f);
             floor.localScale = new Vector3(floorSize.x / FloorUnitsPerScale, 1f, floorSize.y / FloorUnitsPerScale);
         }
 

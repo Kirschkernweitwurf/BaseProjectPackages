@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Base.ToolsPackage.Editor.AssetZoo.Alignment;
+using Base.ToolsPackage.Editor.AssetZoo.Builder;
 using Base.ToolsPackage.Editor.AssetZoo.Config;
 using Base.ToolsPackage.Editor.AssetZoo.Generation;
 using Base.ToolsPackage.Editor.AssetZoo.Layout;
@@ -178,6 +179,26 @@ namespace Base.ToolsPackage.Editor.Tests.AssetZoo
         }
 
         /// <summary>Standing on the floor puts the lowest point at zero, wherever the pivot is.</summary>
+        [Test]
+        public void ANewZooStandsClearOfAFloorThatIsThereAlready()
+        {
+            GameObject floor = GameObject.CreatePrimitive(PrimitiveType.Plane);
+            floor.transform.localScale = new Vector3(5f, 5f, 5f);
+
+            try
+            {
+                Vector3 corner = ZooPlacement.FindFreeCorner(floor.scene, null);
+                float floorEdge = floor.GetComponent<Renderer>().bounds.min.x;
+
+                Assert.That(corner.y, Is.EqualTo(0f));
+                Assert.That(corner.x + ZooBuilder.FloorMargin, Is.LessThan(floorEdge));
+            }
+            finally
+            {
+                Object.DestroyImmediate(floor);
+            }
+        }
+
         [Test]
         public void GroundAlignmentRestsTheLowestPointOnTheFloor()
         {

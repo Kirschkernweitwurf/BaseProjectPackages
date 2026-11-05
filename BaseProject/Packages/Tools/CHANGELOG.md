@@ -6,6 +6,14 @@ All notable changes to this package are recorded here. The format follows
 
 Changes made before 2.0.10 were not recorded.
 
+## [Unreleased]
+
+### Fixed
+
+- Asset Zoo: the floor lies at exactly the height of the zoo root, 0 in a new zoo, instead of just below it. A new zoo
+  now also starts next to a floor that is already in the scene, so the two do not flicker. A zoo built earlier stays
+  where it is: press Clear and Build once to move it.
+
 ## [3.4.0] - 2026-11-04
 
 ### Added
