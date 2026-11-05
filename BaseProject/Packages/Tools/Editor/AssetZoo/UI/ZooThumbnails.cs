@@ -8,6 +8,8 @@ namespace Base.ToolsPackage.Editor.AssetZoo.UI
     /// <summary>
     /// Gets the picture of an asset for the group list. Unity renders previews in the background, so a thumbnail
     /// can come back empty at first and the window has to keep repainting until <see cref="IsLoading"/> is false.
+    /// Unity lights its previews dimly, so what is drawn is a brighter copy. A tint can't do it: the GUI clamps a
+    /// color above 1.
     /// </summary>
     internal static class ZooThumbnails
     {
@@ -17,6 +19,9 @@ namespace Base.ToolsPackage.Editor.AssetZoo.UI
         /// </summary>
         private const int PreviewCacheSize = 512;
 
+        private const float PreviewBrightness = 1.3f;
+
+        private static readonly Dictionary<Texture2D, BrightPreview> BrightPreviews = new();
         private static readonly Dictionary<GameObject, DecalPicture> DecalPictures = new();
 
         private static bool _hasRaisedCache;
@@ -39,16 +44,77 @@ namespace Base.ToolsPackage.Editor.AssetZoo.UI
                 return;
             }
 
-            Texture preview = AssetPreview.GetAssetPreview(asset);
+            Texture2D preview = AssetPreview.GetAssetPreview(asset);
 
-            if (preview == null)
-                preview = AssetPreview.GetMiniThumbnail(asset);
+            // An icon has its own colors and no dim lighting to make up for.
+            Texture picture = preview != null
+                ? GetBrightPreview(preview)
+                : AssetPreview.GetMiniThumbnail(asset);
 
-            if (preview != null)
+            if (picture != null)
             {
-                GUI.DrawTexture(rect, preview, ScaleMode.ScaleToFit, true, 0f, new Color(1f, 1f, 1f, alpha), 0f,
+                GUI.DrawTexture(rect, picture, ScaleMode.ScaleToFit, true, 0f, new Color(1f, 1f, 1f, alpha), 0f,
                     radius);
             }
+        }
+
+        // Unity's own texture stays as it is, because every other window showing this asset shares it. The update
+        // count is what notices that Unity rendered a new preview into the same texture.
+        private static Texture GetBrightPreview(Texture2D preview)
+        {
+            if (!preview.isReadable)
+                return preview;
+
+            if (BrightPreviews.TryGetValue(preview, out BrightPreview known)
+                && known.Texture != null
+                && known.UpdateCount == preview.updateCount)
+                return known.Texture;
+
+            if (known.Texture != null)
+                Object.DestroyImmediate(known.Texture);
+
+            if (BrightPreviews.Count >= PreviewCacheSize)
+                ClearBrightPreviews();
+
+            Texture2D bright = CreateBrightCopy(preview);
+            BrightPreviews[preview] = new BrightPreview(bright, preview.updateCount);
+
+            return bright;
+        }
+
+        private static Texture2D CreateBrightCopy(Texture2D preview)
+        {
+            Color32[] pixels = preview.GetPixels32();
+
+            for (int i = 0; i < pixels.Length; i++)
+            {
+                Color32 pixel = pixels[i];
+                pixels[i] = new Color32(Brighten(pixel.r), Brighten(pixel.g), Brighten(pixel.b), pixel.a);
+            }
+
+            // Not kept through a domain reload: nothing could find the copy again after one.
+            Texture2D bright = new(preview.width, preview.height, TextureFormat.RGBA32, false)
+            {
+                hideFlags = HideFlags.DontSaveInEditor | HideFlags.DontSaveInBuild
+            };
+
+            bright.SetPixels32(pixels);
+            bright.Apply(false, true);
+
+            return bright;
+        }
+
+        private static byte Brighten(byte value) => (byte)Mathf.Min(value * PreviewBrightness, byte.MaxValue);
+
+        private static void ClearBrightPreviews()
+        {
+            foreach (BrightPreview preview in BrightPreviews.Values)
+            {
+                if (preview.Texture != null)
+                    Object.DestroyImmediate(preview.Texture);
+            }
+
+            BrightPreviews.Clear();
         }
 
         // Cut to the shape the decal has in its atlas, so a poster looks tall and a sticker looks small.
@@ -91,6 +157,24 @@ namespace Base.ToolsPackage.Editor.AssetZoo.UI
             DecalPictures[asset] = picture;
 
             return picture.Texture != null;
+        }
+
+        private readonly struct BrightPreview
+        {
+            /// <summary>The brighter copy.</summary>
+            public Texture2D Texture { get; }
+
+            /// <summary>The update count of Unity's preview when it was copied.</summary>
+            public uint UpdateCount { get; }
+
+            /// <summary>Records one copy.</summary>
+            /// <param name="texture">The brighter copy.</param>
+            /// <param name="updateCount">The update count of Unity's preview.</param>
+            public BrightPreview(Texture2D texture, uint updateCount)
+            {
+                Texture = texture;
+                UpdateCount = updateCount;
+            }
         }
 
         private readonly struct DecalPicture

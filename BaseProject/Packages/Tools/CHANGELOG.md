@@ -8,6 +8,10 @@ Changes made before 2.0.10 were not recorded.
 
 ## [Unreleased]
 
+### Changed
+
+- Asset Zoo Builder: thumbnails of models are drawn brighter.
+
 ### Fixed
 
 - Asset Zoo: the floor lies at exactly the height of the zoo root, 0 in a new zoo, instead of just below it. A new zoo
