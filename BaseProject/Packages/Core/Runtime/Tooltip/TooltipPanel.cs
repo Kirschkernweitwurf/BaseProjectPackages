@@ -34,16 +34,34 @@ namespace Base.CorePackage.Tooltip
         [Tooltip("Row that holds icon and title, hidden when the entry has neither. Optional.")]
         [SerializeField] private GameObject header;
 
+        [Tooltip("Shows the entry's eyebrow, a small line above the title. Optional.")]
+        [SerializeField] private TMP_Text eyebrow;
+
+        [Tooltip("Frame around the icon, like a tinted tile, shown and hidden with the icon. Optional.")]
+        [SerializeField] private GameObject iconFrame;
+
+        [Tooltip("Hairline above the panel, for panels that share one card. Optional.")]
+        [SerializeField] private GameObject separator;
+
         /// <summary>Fills the panel with <paramref name="entry"/> and hides the parts it leaves empty.</summary>
         /// <param name="entry">The content to show.</param>
         public void Show(TooltipEntry entry)
         {
             bool hasTitle = ShowText(title, entry.Title);
+            bool hasEyebrow = ShowText(eyebrow, entry.Eyebrow);
             bool hasIcon = ShowIcon(entry);
             ShowText(body, entry.Body);
 
             if (header != null)
-                header.SetActive(hasTitle || hasIcon);
+                header.SetActive(hasTitle || hasEyebrow || hasIcon);
+        }
+
+        /// <summary>Shows or hides the hairline above the panel, which parts it from what comes before it.</summary>
+        /// <param name="isSeparated">Whether the hairline shows.</param>
+        public void SetSeparated(bool isSeparated)
+        {
+            if (separator != null)
+                separator.SetActive(isSeparated);
         }
 
         /// <summary>
@@ -86,6 +104,9 @@ namespace Base.CorePackage.Tooltip
 
             bool hasIcon = entry.Icon != null;
             icon.gameObject.SetActive(hasIcon);
+
+            if (iconFrame != null)
+                iconFrame.SetActive(hasIcon);
 
             if (!hasIcon)
                 return false;

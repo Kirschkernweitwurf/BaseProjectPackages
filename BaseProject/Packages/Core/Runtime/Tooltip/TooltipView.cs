@@ -58,6 +58,11 @@ namespace Base.CorePackage.Tooltip
         [Tooltip("First panel inside the content. Further entries get copies of it, next to it.")]
         [Required] [SerializeField] private TooltipPanel panelTemplate;
 
+        [Tooltip("Header of the card, filled from the tooltip's source: what the panels explain. A tooltip with one "
+            + "titled entry and no source shows that title here and only its text below. Optional: without it every "
+            + "entry is a panel of its own.")]
+        [SerializeField] private TooltipPanel sourcePanel;
+
         [Tooltip("RectTransform used for positioning, the rect of the content object.")]
         [Required] [SerializeField] private RectTransform tooltipRect;
 
@@ -66,6 +71,7 @@ namespace Base.CorePackage.Tooltip
 
         private readonly Vector3[] _corners = new Vector3[CornerCount];
         private readonly List<TooltipPanel> _panels = new();
+        private readonly List<TooltipEntry> _shownEntries = new();
 
         private TooltipService _service;
         private Camera _canvasCamera;
@@ -129,7 +135,7 @@ namespace Base.CorePackage.Tooltip
 
             _getScreenAnchor = data.GetScreenAnchor;
             content.SetActive(true);
-            ShowEntries(data.Entries);
+            ShowEntries(data);
 
             // Apply the size fitter now, so the very first placement already uses the final size.
             LayoutRebuilder.ForceRebuildLayoutImmediate(tooltipRect);
@@ -178,19 +184,56 @@ namespace Base.CorePackage.Tooltip
         }
 
         /// <summary>
-        /// Fills one panel per entry and hides the panels left over from a bigger tooltip before.
+        /// Fills the header from the source, one panel per entry, and hides the panels left over from a bigger tooltip
+        /// before. A hairline parts every titled panel from what comes before it in the card.
         /// </summary>
-        private void ShowEntries(IReadOnlyList<TooltipEntry> entries)
+        private void ShowEntries(TooltipData data)
         {
-            for (int i = 0; i < entries.Count; i++)
+            TooltipEntry? source = CollectShownEntries(data);
+            bool hasSource = sourcePanel != null
+                && source.HasValue;
+
+            if (sourcePanel != null)
+                sourcePanel.gameObject.SetActive(hasSource);
+
+            if (hasSource)
+                sourcePanel.Show(source.Value);
+
+            for (int i = 0; i < _shownEntries.Count; i++)
             {
+                TooltipEntry entry = _shownEntries[i];
                 TooltipPanel panel = PanelAt(i);
                 panel.gameObject.SetActive(true);
-                panel.Show(entries[i]);
+                panel.Show(entry);
+                panel.SetSeparated((hasSource || i > 0)
+                    && !string.IsNullOrEmpty(entry.Title));
             }
 
-            for (int i = entries.Count; i < _panels.Count; i++)
+            for (int i = _shownEntries.Count; i < _panels.Count; i++)
                 _panels[i].gameObject.SetActive(false);
+        }
+
+        /// <summary>
+        /// Lists the entries to show as panels and returns the header. With a header, a lone titled entry names
+        /// itself: its title, icon and eyebrow go into the header and only its text stays below.
+        /// </summary>
+        private TooltipEntry? CollectShownEntries(TooltipData data)
+        {
+            _shownEntries.Clear();
+
+            if (sourcePanel == null
+                || data.Source.HasValue
+                || data.Entries.Count != 1
+                || string.IsNullOrEmpty(data.Entries[0].Title))
+            {
+                _shownEntries.AddRange(data.Entries);
+                return data.Source;
+            }
+
+            TooltipEntry lone = data.Entries[0];
+            _shownEntries.Add(new TooltipEntry(lone.Body));
+
+            return new TooltipEntry(lone.Title, null, lone.Icon, lone.IconColor, lone.Eyebrow);
         }
 
         /// <summary>

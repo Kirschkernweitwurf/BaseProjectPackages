@@ -11,7 +11,8 @@ namespace Base.CorePackage.Tooltip
 {
     /// <summary>
     /// Shows a tooltip while the pointer hovers this GameObject: the text set in the inspector, followed by the
-    /// panels of every <see cref="ITooltipProvider"/> on the same GameObject. Requests go through the
+    /// panels of every <see cref="ITooltipProvider"/> on the same GameObject, under a header named by an
+    /// <see cref="ITooltipSourceProvider"/> there, if any. Requests go through the
     /// <see cref="TooltipService"/>, so overlapping triggers resolve by priority. A pointer that drags something
     /// across the object shows nothing, so tooltips never cover a drop target. Selecting the object with a gamepad or
     /// the keyboard shows the tooltip beside it, so menus explain themselves without a mouse. Objects with hover
@@ -47,6 +48,7 @@ namespace Base.CorePackage.Tooltip
         private readonly List<TooltipEntry> _entries = new();
 
         private ITooltipProvider[] _providers;
+        private ITooltipSourceProvider[] _sourceProviders;
         private TooltipService _service;
         private bool _isSelected;
 
@@ -65,6 +67,7 @@ namespace Base.CorePackage.Tooltip
         private void Awake()
         {
             _providers = GetComponents<ITooltipProvider>();
+            _sourceProviders = GetComponents<ITooltipSourceProvider>();
 
             // TryGet logs on its own. Disabling keeps a missing service from repeating that error on every hover.
             if (!ServiceLocator.TryGet(out _service))
@@ -175,7 +178,7 @@ namespace Base.CorePackage.Tooltip
                 return;
             }
 
-            _service.AddTooltip(new TooltipData(_entries, BuildAnchor()), (uint)priority, this);
+            _service.AddTooltip(new TooltipData(_entries, BuildAnchor(), FindSource()), (uint)priority, this);
         }
 
         // The inspector text comes first, so a provider can add details below a fixed description.
@@ -188,6 +191,18 @@ namespace Base.CorePackage.Tooltip
 
             foreach (ITooltipProvider provider in _providers)
                 provider.CollectEntries(_entries);
+        }
+
+        // The first source provider that names something wins.
+        private TooltipEntry? FindSource()
+        {
+            foreach (ITooltipSourceProvider provider in _sourceProviders)
+            {
+                if (provider.TryGetSource(out TooltipEntry source))
+                    return source;
+            }
+
+            return null;
         }
 
         // A selected object, or one without a mouse around, has no cursor to go by, so the tooltip goes beside it.

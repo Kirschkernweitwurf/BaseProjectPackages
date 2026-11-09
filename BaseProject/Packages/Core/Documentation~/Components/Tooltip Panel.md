@@ -42,6 +42,9 @@ Draws one panel of a tooltip: an optional header with icon and title, and the te
 | **Title** | Text (TMP) |  | Shows the entry's title. Optional. |
 | **Icon** | Image |  | Shows the entry's icon in front of the title. Optional. |
 | **Header** | GameObject |  | Row that holds icon and title, hidden when the entry has neither. Optional. |
+| **Eyebrow** | TMP_Text |  | Shows the entry's eyebrow, a small line above the title. Optional. |
+| **Icon Frame** | GameObject |  | Frame around the icon, like a tinted tile, shown and hidden with the icon. Optional. |
+| **Separator** | GameObject |  | Hairline above the panel, for panels that share one card. Optional. |
 
 ## Good to know
 

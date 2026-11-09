@@ -48,10 +48,13 @@ Draws the tooltip beside the cursor or the hovered object, never letting it leav
 | --- | --- | --- | --- |
 | **Content** | GameObject |  | **Required.** Content GameObject that holds the tooltip visuals. |
 | **Panel Template** | Tooltip Panel |  | **Required.** First panel inside the content. Further entries get copies of it, next to it. |
+| **Source Panel** | Tooltip Panel |  | Header of the card, filled from the tooltip's source: what the panels explain. A tooltip with one titled entry and no source shows that title here and only its text below. Optional: without it every entry is a panel of its own. |
 | **Tooltip Rect** | Rect Transform |  | **Required.** RectTransform used for positioning, the rect of the content object. |
 | **Canvas** | Canvas |  | Filled in automatically. Canvas the tooltip lives under. Auto-assigned from the parents when empty. |
 
 ## Good to know
+
+- **One card:** put the panel template and a **Source Panel** inside one shared background, and the tooltip reads as a card: the header names what it explains (from an `ITooltipSourceProvider` next to the trigger's providers), every titled panel after it gets its **Separator**.
 
 - The content starts hidden and only shows while a trigger is hovered.
 - Copied panels are kept and reused, so a big tooltip only creates them once.

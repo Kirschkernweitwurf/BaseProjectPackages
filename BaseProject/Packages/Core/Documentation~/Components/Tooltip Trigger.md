@@ -36,6 +36,8 @@ Shows a tooltip while the pointer hovers this object and hides it when the point
 
 ## Good to know
 
+- A component with `ITooltipSourceProvider` next to it names what the panels explain, like the card a set of keyword panels belongs to; a view with a **Source Panel** shows it as the card's header.
+
 - Needs a Graphic with **Raycast Target** on and an Event System in the scene.
 - A trigger without text and without provider content logs a warning and shows nothing.
 - Text may use TextMeshPro rich text, including `<sprite name="...">` icons when the panel's text has a sprite asset.

@@ -21,6 +21,9 @@ namespace Base.CorePackage.Tooltip
         /// <summary>Tint of the icon, so one white icon can serve several categories.</summary>
         public Color IconColor { get; }
 
+        /// <summary>Small line above the title that names the kind of thing, like "Card". Empty hides it.</summary>
+        public string Eyebrow { get; }
+
         /// <summary>Creates a panel with just a text.</summary>
         /// <param name="body">Text to show.</param>
         public TooltipEntry(string body) : this(null, body)
@@ -32,12 +35,15 @@ namespace Base.CorePackage.Tooltip
         /// <param name="body">Text to show. Null or empty for none.</param>
         /// <param name="icon">Icon in front of the title. Null for none.</param>
         /// <param name="iconColor">Tint of the icon. White when omitted.</param>
-        public TooltipEntry(string title, string body, Sprite icon = null, Color? iconColor = null)
+        /// <param name="eyebrow">Small line above the title. Null or empty for none.</param>
+        public TooltipEntry(string title, string body, Sprite icon = null, Color? iconColor = null,
+            string eyebrow = null)
         {
             Title = title;
             Body = body;
             Icon = icon;
             IconColor = iconColor ?? Color.white;
+            Eyebrow = eyebrow;
         }
     }
 }

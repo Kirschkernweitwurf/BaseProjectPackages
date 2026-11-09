@@ -24,6 +24,9 @@ Changes made before 2.1.4 were not recorded.
   covering it.
 - `TooltipService.Dock(owner, area)` and `ReleaseDock(owner)`: every tooltip opens in one fixed area, top right
   corner first, instead of beside its target, so it stops covering what sits around the target.
+- Tooltips as one card: `TooltipView.sourcePanel` shows a header from `TooltipData.Source`, which an
+  `ITooltipSourceProvider` next to the trigger supplies, or from a lone titled entry. `TooltipPanel` gets an optional
+  eyebrow, icon frame and separator (`SetSeparated`), and `TooltipEntry` an optional `Eyebrow`.
 
 ### Changed
 

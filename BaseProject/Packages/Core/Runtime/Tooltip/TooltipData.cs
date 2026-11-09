@@ -5,7 +5,8 @@ using UnityEngine;
 namespace Base.CorePackage.Tooltip
 {
     /// <summary>
-    /// Immutable payload of a single tooltip request: the panels to show and the screen rect to show them beside.
+    /// Immutable payload of a single tooltip request: the panels to show, what they explain and the screen rect to show
+    /// them beside.
     /// </summary>
     public readonly struct TooltipData
     {
@@ -17,6 +18,12 @@ namespace Base.CorePackage.Tooltip
         /// point, like the cursor.
         /// </summary>
         public Func<Rect> GetScreenAnchor { get; }
+
+        /// <summary>
+        /// What the panels explain, for a view with a header: its title, icon and eyebrow, like the card a set of
+        /// keyword panels belongs to. Null when the panels speak for themselves.
+        /// </summary>
+        public TooltipEntry? Source { get; }
 
         /// <summary>Creates a tooltip payload with a single text panel next to a point.</summary>
         /// <param name="message">Text to show.</param>
@@ -37,13 +44,15 @@ namespace Base.CorePackage.Tooltip
         /// <summary>Creates a tooltip payload with several panels beside a screen rect.</summary>
         /// <param name="entries">Panels to show. Copied, so the caller may reuse its list.</param>
         /// <param name="getScreenAnchor">Supplies the screen rect to place the tooltip beside.</param>
-        public TooltipData(IEnumerable<TooltipEntry> entries, Func<Rect> getScreenAnchor)
+        /// <param name="source">What the panels explain, shown in the view's header. Null for none.</param>
+        public TooltipData(IEnumerable<TooltipEntry> entries, Func<Rect> getScreenAnchor, TooltipEntry? source = null)
         {
             Entries = entries == null
                 ? Array.Empty<TooltipEntry>()
                 : new List<TooltipEntry>(entries);
 
             GetScreenAnchor = getScreenAnchor;
+            Source = source;
         }
 
         private static Func<Rect> AnchorAt(Func<Vector2> getScreenPosition) => getScreenPosition == null
