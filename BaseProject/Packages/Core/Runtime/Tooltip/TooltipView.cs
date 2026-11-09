@@ -67,6 +67,7 @@ namespace Base.CorePackage.Tooltip
         private readonly Vector3[] _corners = new Vector3[CornerCount];
         private readonly List<TooltipPanel> _panels = new();
 
+        private TooltipService _service;
         private Camera _canvasCamera;
         private RectTransform _canvasRect;
         private CanvasGroup _contentGroup;
@@ -97,8 +98,8 @@ namespace Base.CorePackage.Tooltip
             _contentGroup = PrepareContentGroup();
             tooltipRect.pivot = TopLeftPivot;
 
-            if (ServiceLocator.TryGet(out TooltipService service))
-                service.SetView(this);
+            if (ServiceLocator.TryGet(out _service))
+                _service.SetView(this);
 
             Hide();
         }
@@ -251,7 +252,13 @@ namespace Base.CorePackage.Tooltip
         private void PlaceTooltip()
         {
             Vector2 size = GetTooltipSize();
-            Vector2 pivotScreen = ResolvePivotPosition(_getScreenAnchor.Invoke(), size);
+            Rect anchor = _getScreenAnchor.Invoke();
+
+            // A view shown without the service has no kept-clear areas.
+            if (_service != null)
+                anchor = _service.WidenOverClearAreas(anchor);
+
+            Vector2 pivotScreen = ResolvePivotPosition(anchor, size);
 
             RectTransformUtility.ScreenPointToLocalPointInRectangle(_canvasRect, pivotScreen, _canvasCamera,
                 out Vector2 localPoint);

@@ -28,6 +28,7 @@ None. Add it and it works.
 ## Good to know
 
 - Needs a Tooltip View in the UI to draw anything.
+- `KeepClear(owner, area)` keeps a tooltip that opens beside its target clear of an area running alongside the target, like a gamepad pin pointing at it from the side: the tooltip opens past the area. `ReleaseClear(owner)` ends it.
 
 ## Related
 

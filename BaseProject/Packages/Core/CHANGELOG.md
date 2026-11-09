@@ -19,6 +19,9 @@ Changes made before 2.1.4 were not recorded.
 - `Menu.Closing` event and `MenuModule.OnMenuClosing`, raised when the close animation starts.
 - `Menu.Open(parent, isEmbedded)`, `Menu.IsEmbedded` and `Menu.ParentMenu`: an embedded menu, like a tab, forms one
   screen with its parent. `MenuGroupModule` opens its tabs embedded, also a tab opened from outside.
+- `TooltipService.KeepClear(owner, area)` and `ReleaseClear(owner)`: a tooltip that opens beside its target
+  opens past an area running alongside the target, like a marker pointing at it from the side, instead of
+  covering it.
 
 ### Changed
 
