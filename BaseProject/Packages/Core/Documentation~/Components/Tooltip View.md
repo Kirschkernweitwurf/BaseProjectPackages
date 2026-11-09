@@ -51,6 +51,7 @@ Draws the tooltip beside the cursor or the hovered object, never letting it leav
 | **Content** | GameObject |  | **Required.** Content GameObject that holds the tooltip visuals. |
 | **Panel Template** | Tooltip Panel |  | **Required.** First panel inside the content. Further entries get copies of it, next to it. |
 | **Source Panel** | Tooltip Panel |  | Header of the card, filled from the tooltip's source: what the panels explain. A tooltip with one titled entry and no source shows that title here and only its text below. Optional: without it every entry is a panel of its own. |
+| **Aside Card** | Transform |  | Second card beside the main one for entries marked Is Aside, like the terms a pinned tooltip mentions; shown only while it holds some. Its panels are copies of the panel template. Optional: without it those entries join the main card. |
 | **Tooltip Rect** | Rect Transform |  | **Required.** RectTransform used for positioning, the rect of the content object. |
 | **Tail** | Rect Transform |  | Small pointer on the tooltip's edge toward its target while it opens beside it, like on a popover. Authored on the left edge pointing left, pivot on its right; flipped when the tooltip opens left of the target, hidden in the dock and at the cursor. Optional. |
 | **Tail Margin** | Number | 22 | Distance the tail keeps from the tooltip's top and bottom edge, in canvas units, so it never sits on a rounded corner. |

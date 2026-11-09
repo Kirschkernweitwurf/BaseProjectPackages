@@ -76,6 +76,11 @@ namespace Base.CorePackage.Tooltip
             + "entry is a panel of its own.")]
         [SerializeField] private TooltipPanel sourcePanel;
 
+        [Tooltip("Second card beside the main one for entries marked Is Aside, like the terms a pinned tooltip "
+            + "mentions; shown only while it holds some. Its panels are copies of the panel template. Optional: "
+            + "without it those entries join the main card.")]
+        [SerializeField] private Transform asideCard;
+
         [Tooltip("RectTransform used for positioning, the rect of the content object.")]
         [Required] [SerializeField] private RectTransform tooltipRect;
 
@@ -94,6 +99,8 @@ namespace Base.CorePackage.Tooltip
 
         private readonly Vector3[] _corners = new Vector3[CornerCount];
         private readonly List<TooltipPanel> _panels = new();
+        private readonly List<TooltipPanel> _asidePanels = new();
+        private readonly List<TooltipEntry> _asideEntries = new();
         private readonly List<TooltipEntry> _shownEntries = new();
 
         private TooltipService _service;
@@ -235,8 +242,8 @@ namespace Base.CorePackage.Tooltip
         }
 
         /// <summary>
-        /// Fills the header from the source, one panel per entry, and hides the panels left over from a bigger tooltip
-        /// before. A hairline parts every titled panel from what comes before it in the card.
+        /// Fills the header from the source, one panel per entry in the main card and one per aside entry in the
+        /// second card, and hides the panels left over from a bigger tooltip before.
         /// </summary>
         private void ShowEntries(TooltipData data)
         {
@@ -250,18 +257,33 @@ namespace Base.CorePackage.Tooltip
             if (hasSource)
                 sourcePanel.Show(source.Value);
 
-            for (int i = 0; i < _shownEntries.Count; i++)
+            ShowPanels(_shownEntries, _panels, panelTemplate.transform.parent, hasSource);
+
+            if (asideCard == null)
+                return;
+
+            asideCard.gameObject.SetActive(_asideEntries.Count > 0);
+            ShowPanels(_asideEntries, _asidePanels, asideCard, false);
+        }
+
+        /// <summary>
+        /// Shows one panel of <paramref name="pool"/> per entry and hides the rest. A hairline parts every titled panel
+        /// from what comes before it in its card.
+        /// </summary>
+        private void ShowPanels(List<TooltipEntry> entries, List<TooltipPanel> pool, Transform card, bool hasHeader)
+        {
+            for (int i = 0; i < entries.Count; i++)
             {
-                TooltipEntry entry = _shownEntries[i];
-                TooltipPanel panel = PanelAt(i);
+                TooltipEntry entry = entries[i];
+                TooltipPanel panel = PanelAt(pool, card, i);
                 panel.gameObject.SetActive(true);
                 panel.Show(entry);
-                panel.SetSeparated((hasSource || i > 0)
+                panel.SetSeparated((hasHeader || i > 0)
                     && !string.IsNullOrEmpty(entry.Title));
             }
 
-            for (int i = _shownEntries.Count; i < _panels.Count; i++)
-                _panels[i].gameObject.SetActive(false);
+            for (int i = entries.Count; i < pool.Count; i++)
+                pool[i].gameObject.SetActive(false);
         }
 
         /// <summary>
@@ -271,32 +293,39 @@ namespace Base.CorePackage.Tooltip
         private TooltipEntry? CollectShownEntries(TooltipData data)
         {
             _shownEntries.Clear();
+            _asideEntries.Clear();
+
+            foreach (TooltipEntry entry in data.Entries)
+            {
+                if (entry.IsAside
+                    && asideCard != null)
+                    _asideEntries.Add(entry);
+                else
+                    _shownEntries.Add(entry);
+            }
 
             if (sourcePanel == null
                 || data.Source.HasValue
-                || data.Entries.Count != 1
-                || string.IsNullOrEmpty(data.Entries[0].Title))
-            {
-                _shownEntries.AddRange(data.Entries);
+                || _shownEntries.Count != 1
+                || string.IsNullOrEmpty(_shownEntries[0].Title))
                 return data.Source;
-            }
 
-            TooltipEntry lone = data.Entries[0];
-            _shownEntries.Add(new TooltipEntry(lone.Body));
+            TooltipEntry lone = _shownEntries[0];
+            _shownEntries[0] = new TooltipEntry(lone.Body);
 
             return new TooltipEntry(lone.Title, null, lone.Icon, lone.IconColor, lone.Eyebrow);
         }
 
         /// <summary>
-        /// The panel for the entry at <paramref name="index"/>, copied from the template the first time it is
-        /// needed and reused after that.
+        /// The panel of <paramref name="pool"/> for the entry at <paramref name="index"/>, copied from the template
+        /// into <paramref name="card"/> the first time it is needed and reused after that.
         /// </summary>
-        private TooltipPanel PanelAt(int index)
+        private TooltipPanel PanelAt(List<TooltipPanel> pool, Transform card, int index)
         {
-            while (_panels.Count <= index)
-                _panels.Add(Instantiate(panelTemplate, panelTemplate.transform.parent));
+            while (pool.Count <= index)
+                pool.Add(Instantiate(panelTemplate, card));
 
-            return _panels[index];
+            return pool[index];
         }
 
         /// <summary>

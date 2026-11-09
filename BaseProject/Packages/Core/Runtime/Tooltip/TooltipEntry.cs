@@ -24,6 +24,12 @@ namespace Base.CorePackage.Tooltip
         /// <summary>Small line above the title that names the kind of thing, like "Card". Empty hides it.</summary>
         public string Eyebrow { get; }
 
+        /// <summary>
+        /// Whether the panel goes into a second card beside the main one, like a term the shown text mentions, where
+        /// the view has one.
+        /// </summary>
+        public bool IsAside { get; }
+
         /// <summary>Creates a panel with just a text.</summary>
         /// <param name="body">Text to show.</param>
         public TooltipEntry(string body) : this(null, body)
@@ -36,14 +42,16 @@ namespace Base.CorePackage.Tooltip
         /// <param name="icon">Icon in front of the title. Null for none.</param>
         /// <param name="iconColor">Tint of the icon. White when omitted.</param>
         /// <param name="eyebrow">Small line above the title. Null or empty for none.</param>
+        /// <param name="isAside">Whether the panel goes into a second card beside the main one.</param>
         public TooltipEntry(string title, string body, Sprite icon = null, Color? iconColor = null,
-            string eyebrow = null)
+            string eyebrow = null, bool isAside = false)
         {
             Title = title;
             Body = body;
             Icon = icon;
             IconColor = iconColor ?? Color.white;
             Eyebrow = eyebrow;
+            IsAside = isAside;
         }
     }
 }
