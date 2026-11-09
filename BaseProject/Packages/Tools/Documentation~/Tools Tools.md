@@ -63,6 +63,7 @@ Answer "who else uses this number?" questions.
 | [🪛 Command Palette](Tools/Command%20Palette.md) | Search and run any menu item, Create entry or settings page. `Ctrl + Shift + K`. |
 | [🪛 Canvas Render Order](Tools/Canvas%20Render%20Order.md) | Every canvas in the order it is drawn, with its sorting layer and order editable in place. |
 | [🪛 Component Clipboard](Tools/Component%20Clipboard.md) | Copy and paste several components at once. |
+| [🪛 Open Screenshot Folder](Tools/Open%20Screenshot%20Folder.md) | Open the folder your system saves screenshots to. |
 | [🪛 Play Mode Saver](Tools/Play%20Mode%20Saver.md) | Keep changes you made during Play mode. |
 | [🪛 Hierarchy Sorter](Tools/Hierarchy%20Sorter.md) | Sort the hierarchy alphabetically. |
 | [🪛 Auto Start Scene](Tools/Auto%20Start%20Scene.md) | Always start Play mode from the same scene. |

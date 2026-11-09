@@ -6,6 +6,13 @@ All notable changes to this package are recorded here. The format follows
 
 Changes made before 2.0.10 were not recorded.
 
+## [Unreleased]
+
+### Added
+
+- Open Screenshot Folder (`Tools > Base Packages > Editor`): opens the folder the system saves screenshots to
+  in the file explorer, on Windows, macOS and Linux.
+
 ## [3.5.0] - 2026-11-05
 
 ### Changed
