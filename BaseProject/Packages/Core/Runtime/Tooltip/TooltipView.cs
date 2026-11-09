@@ -105,6 +105,7 @@ namespace Base.CorePackage.Tooltip
         private float _hiddenAt = float.NegativeInfinity;
         private bool _isVisible;
         private bool _isDocked;
+        private string _shownName;
         private Vector3 _restPosition;
 
         /// <summary>
@@ -163,6 +164,11 @@ namespace Base.CorePackage.Tooltip
             }
 
             bool isWarm = _isVisible || Time.unscaledTime - _hiddenAt <= warmDuration;
+            string tooltipName = GetName(data);
+            bool isSame = isWarm
+                && !string.IsNullOrEmpty(tooltipName)
+                && tooltipName == _shownName;
+            _shownName = tooltipName;
 
             _getScreenAnchor = data.GetScreenAnchor;
             content.SetActive(true);
@@ -172,7 +178,7 @@ namespace Base.CorePackage.Tooltip
             LayoutRebuilder.ForceRebuildLayoutImmediate(tooltipRect);
 
             StopShowing();
-            _showRoutine = StartCoroutine(Appear(isWarm));
+            _showRoutine = StartCoroutine(Appear(isWarm, isSame));
         }
 
         /// <summary>
@@ -188,6 +194,18 @@ namespace Base.CorePackage.Tooltip
             _isVisible = false;
             content.SetActive(false);
             _getScreenAnchor = null;
+        }
+
+        // What a tooltip is about: its header, or the title of its first panel. Two requests with the same name are the
+        // same tooltip again, like one its trigger rebuilt.
+        private static string GetName(TooltipData data)
+        {
+            if (data.Source.HasValue)
+                return data.Source.Value.Title;
+
+            return data.Entries.Count > 0
+                ? data.Entries[0].Title
+                : null;
         }
 
         private static float EaseOut(float progress) => Opaque - (Opaque - progress) * (Opaque - progress);
@@ -282,13 +300,16 @@ namespace Base.CorePackage.Tooltip
         }
 
         /// <summary>
-        /// Places the tooltip and shows it, after the delay and fade unless <paramref name="isWarm"/>. The spot is
-        /// picked once and kept while visible, so the tooltip only moves when it is shown again.
+        /// Places the tooltip and shows it, after the delay and fade unless <paramref name="isWarm"/>. Moving on to
+        /// another tooltip fades the new one in; the same tooltip again, like one rebuilt or pinned, just changes. The
+        /// spot is picked once and kept while visible, so the tooltip only moves when it is shown again.
         /// </summary>
-        private IEnumerator Appear(bool isWarm)
+        private IEnumerator Appear(bool isWarm, bool isSame)
         {
             if (!isWarm)
                 yield return WaitAndFadeIn();
+            else if (isSame)
+                PlaceTooltip();
             else
                 yield return SwapIn();
 

@@ -31,7 +31,7 @@ Changes made before 2.1.4 were not recorded.
   while other requests come and go; its own trigger may still rebuild it.
 - `TooltipView` motion and tail: a docked tooltip slides in (`slideDistance`), moving on to the next thing fades the
   new content in (`swapDuration`), `IsMotionReduced` drops the slide, and an optional `tail` points at the target
-  while the tooltip opens beside it.
+  while the tooltip opens beside it. The same tooltip again (same header or first title) skips the fade.
 
 ### Changed
 
