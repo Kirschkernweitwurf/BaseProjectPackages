@@ -27,6 +27,11 @@ Changes made before 2.1.4 were not recorded.
 - Tooltips as one card: `TooltipView.sourcePanel` shows a header from `TooltipData.Source`, which an
   `ITooltipSourceProvider` next to the trigger supplies, or from a lone titled entry. `TooltipPanel` gets an optional
   eyebrow, icon frame and separator (`SetSeparated`), and `TooltipEntry` an optional `Eyebrow`.
+- `TooltipService.Pin()`, `Unpin()`, `IsPinned`, `IsPinnedBy(caller)` and `PinnedChanged`: the shown tooltip stays
+  while other requests come and go; its own trigger may still rebuild it.
+- `TooltipView` motion and tail: a docked tooltip slides in (`slideDistance`), moving on to the next thing fades the
+  new content in (`swapDuration`), `IsMotionReduced` drops the slide, and an optional `tail` points at the target
+  while the tooltip opens beside it.
 
 ### Changed
 

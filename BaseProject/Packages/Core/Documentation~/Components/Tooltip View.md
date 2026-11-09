@@ -41,6 +41,8 @@ Draws the tooltip beside the cursor or the hovered object, never letting it leav
 | **Show Delay** | Number | 0.3 | Seconds the pointer rests before a tooltip shows. Unscaled, so it also works while paused. |
 | **Fade Duration** | Number | 0.1 | Seconds a tooltip takes to fade in. |
 | **Warm Duration** | Number | 0.4 | Seconds after a tooltip hid in which the next one shows at once, without delay or fade. |
+| **Slide Distance** | Number | 8 | How far a tooltip in the dock slides in from the right while it fades in, in canvas units. 0 only fades. |
+| **Swap Duration** | Number | 0.12 | Seconds a tooltip that moves straight on to the next thing takes to bring its new content in. |
 
 ### References
 
@@ -50,9 +52,13 @@ Draws the tooltip beside the cursor or the hovered object, never letting it leav
 | **Panel Template** | Tooltip Panel |  | **Required.** First panel inside the content. Further entries get copies of it, next to it. |
 | **Source Panel** | Tooltip Panel |  | Header of the card, filled from the tooltip's source: what the panels explain. A tooltip with one titled entry and no source shows that title here and only its text below. Optional: without it every entry is a panel of its own. |
 | **Tooltip Rect** | Rect Transform |  | **Required.** RectTransform used for positioning, the rect of the content object. |
+| **Tail** | Rect Transform |  | Small pointer on the tooltip's edge toward its target while it opens beside it, like on a popover. Authored on the left edge pointing left, pivot on its right; flipped when the tooltip opens left of the target, hidden in the dock and at the cursor. Optional. |
+| **Tail Margin** | Number | 22 | Distance the tail keeps from the tooltip's top and bottom edge, in canvas units, so it never sits on a rounded corner. |
 | **Canvas** | Canvas |  | Filled in automatically. Canvas the tooltip lives under. Auto-assigned from the parents when empty. |
 
 ## Good to know
+
+- **Motion:** a tooltip in the dock slides in while it fades; moving straight on to the next thing only fades the new content in. Set `IsMotionReduced` from a Reduce Motion setting to drop the slide.
 
 - **One card:** put the panel template and a **Source Panel** inside one shared background, and the tooltip reads as a card: the header names what it explains (from an `ITooltipSourceProvider` next to the trigger's providers), every titled panel after it gets its **Separator**.
 

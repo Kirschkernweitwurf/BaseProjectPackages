@@ -11,13 +11,15 @@ namespace Base.CorePackage.Tooltip
 {
     /// <summary>
     /// Draws the tooltip beside its anchor, the cursor or the hovered object, or in the dock area while the
-    /// <see cref="TooltipService"/> holds one, without ever letting it leave the screen. The spot is picked while the tooltip waits to appear and then kept, so a tooltip never wanders when
-    /// its anchor moves on screen, for example a 3D object under a camera that follows the pointer. Every
-    /// <see cref="TooltipEntry"/> gets its own <see cref="TooltipPanel"/>, copied from the first one, so the
-    /// content's layout group decides whether they stack or line up side by side. A tooltip fades in after a short
-    /// delay, so sweeping the pointer across the screen stays calm, but moving straight on to the next tooltip
-    /// shows it at once. The tooltip never takes the pointer, so it cannot flicker by covering its anchor.
-    /// Registers itself with the <see cref="TooltipService"/> on start.
+    /// <see cref="TooltipService"/> holds one, without ever letting it leave the screen. The spot is picked while the
+    /// tooltip waits to appear and then kept, so a tooltip never wanders when its anchor moves on screen, for example a
+    /// 3D object under a camera that follows the pointer. Every <see cref="TooltipEntry"/> gets its own
+    /// <see cref="TooltipPanel"/>, copied from the first one, so the content's layout group decides whether they stack
+    /// or line up side by side. A tooltip in the dock slides in from the right as it fades in, and one beside its
+    /// target shows a small tail pointing at it, like a popover. A tooltip fades in after a short delay, so sweeping
+    /// the pointer across the screen stays calm, but moving straight on to the next tooltip shows it at once. The
+    /// tooltip never takes the pointer, so it cannot flicker by covering its anchor. Registers itself with the
+    /// <see cref="TooltipService"/> on start.
     /// </summary>
     [DisallowMultipleComponent]
     public class TooltipView : MonoBehaviour
@@ -25,7 +27,9 @@ namespace Base.CorePackage.Tooltip
         private const int BottomLeftCorner = 0;
         private const int CornerCount = 4;
         private const float NoDelay = 0f;
+        private const float Half = 0.5f;
         private const float Opaque = 1f;
+        private const float SwapStartAlpha = 0.35f;
         private const int TopRightCorner = 2;
         private const float Transparent = 0f;
 
@@ -51,6 +55,15 @@ namespace Base.CorePackage.Tooltip
         [Tooltip("Seconds after a tooltip hid in which the next one shows at once, without delay or fade.")]
         [SerializeField] private float warmDuration = 0.4f;
 
+        [Min(0f)]
+        [Tooltip("How far a tooltip in the dock slides in from the right while it fades in, in canvas units. 0 only "
+            + "fades.")]
+        [SerializeField] private float slideDistance = 8f;
+
+        [Min(0f)]
+        [Tooltip("Seconds a tooltip that moves straight on to the next thing takes to bring its new content in.")]
+        [SerializeField] private float swapDuration = 0.12f;
+
         [Title("References")]
         [Tooltip("Content GameObject that holds the tooltip visuals.")]
         [Required] [SerializeField] private GameObject content;
@@ -65,6 +78,16 @@ namespace Base.CorePackage.Tooltip
 
         [Tooltip("RectTransform used for positioning, the rect of the content object.")]
         [Required] [SerializeField] private RectTransform tooltipRect;
+
+        [Tooltip("Small pointer on the tooltip's edge toward its target while it opens beside it, like on a popover. "
+            + "Authored on the left edge pointing left, pivot on its right; flipped when the tooltip opens left of "
+            + "the target, hidden in the dock and at the cursor. Optional.")]
+        [SerializeField] private RectTransform tail;
+
+        [Min(0f)]
+        [Tooltip("Distance the tail keeps from the tooltip's top and bottom edge, in canvas units, so it never sits on "
+            + "a rounded corner.")]
+        [SerializeField] private float tailMargin = 22f;
 
         [Tooltip("Canvas the tooltip lives under. Auto-assigned from the parents when empty.")]
         [GetComponentInParent] [SerializeField] private Canvas canvas;
@@ -81,6 +104,8 @@ namespace Base.CorePackage.Tooltip
         private Func<Rect> _getScreenAnchor;
         private float _hiddenAt = float.NegativeInfinity;
         private bool _isVisible;
+        private bool _isDocked;
+        private Vector3 _restPosition;
 
         /// <summary>
         /// Seconds the pointer rests before a tooltip shows. Settable at runtime, so a settings menu can let the
@@ -91,6 +116,12 @@ namespace Base.CorePackage.Tooltip
             get => showDelay;
             set => showDelay = Mathf.Max(NoDelay, value);
         }
+
+        /// <summary>
+        /// Whether motion is reduced: a tooltip then only fades in, without sliding. Settable at runtime from an
+        /// accessibility setting.
+        /// </summary>
+        public bool IsMotionReduced { get; set; }
 
 #region Unity Callbacks
         private void Start()
@@ -158,6 +189,8 @@ namespace Base.CorePackage.Tooltip
             content.SetActive(false);
             _getScreenAnchor = null;
         }
+
+        private static float EaseOut(float progress) => Opaque - (Opaque - progress) * (Opaque - progress);
 
         /// <summary>
         /// Gives the content a canvas group that never takes the pointer, so the tooltip cannot cover its own anchor
@@ -257,7 +290,7 @@ namespace Base.CorePackage.Tooltip
             if (!isWarm)
                 yield return WaitAndFadeIn();
             else
-                PlaceTooltip();
+                yield return SwapIn();
 
             _contentGroup.alpha = Opaque;
             _isVisible = true;
@@ -278,15 +311,38 @@ namespace Base.CorePackage.Tooltip
             }
             while (Time.unscaledTime < fadeStart);
 
-            float elapsed = Time.unscaledTime - fadeStart;
+            float slide = _isDocked
+                && !IsMotionReduced
+                    ? slideDistance
+                    : 0f;
 
-            while (elapsed < fadeDuration)
+            yield return FadeIn(fadeDuration, Transparent, slide);
+        }
+
+        // Moving straight on keeps the spot and only brings the new content in, so sweeping across a hand stays calm.
+        private IEnumerator SwapIn()
+        {
+            PlaceTooltip();
+            yield return FadeIn(swapDuration, SwapStartAlpha, 0f);
+        }
+
+        // Fades from fromAlpha to opaque, sliding in from slide units to the right of the rest spot.
+        private IEnumerator FadeIn(float duration, float fromAlpha, float slide)
+        {
+            float start = Time.unscaledTime;
+            float elapsed = 0f;
+
+            while (elapsed < duration)
             {
-                _contentGroup.alpha = elapsed / fadeDuration;
+                float progress = elapsed / duration;
+                _contentGroup.alpha = Mathf.Lerp(fromAlpha, Opaque, progress);
+                tooltipRect.localPosition = _restPosition + Vector3.right * (slide * (Opaque - EaseOut(progress)));
                 yield return null;
 
-                elapsed = Time.unscaledTime - fadeStart;
+                elapsed = Time.unscaledTime - start;
             }
+
+            tooltipRect.localPosition = _restPosition;
         }
 
         /// <summary>
@@ -296,19 +352,70 @@ namespace Base.CorePackage.Tooltip
         {
             Vector2 size = GetTooltipSize();
             Vector2 pivotScreen;
+            Rect anchor = Rect.zero;
+            _isDocked = false;
 
             // A view shown without the service has no dock and no kept-clear areas.
             if (_service == null)
-                pivotScreen = ResolvePivotPosition(_getScreenAnchor.Invoke(), size);
+            {
+                anchor = _getScreenAnchor.Invoke();
+                pivotScreen = ResolvePivotPosition(anchor, size);
+            }
             else if (_service.TryGetDock(out Rect dock))
+            {
+                _isDocked = true;
                 pivotScreen = ResolveDockedPosition(dock, size);
+            }
             else
-                pivotScreen = ResolvePivotPosition(_service.WidenOverClearAreas(_getScreenAnchor.Invoke()), size);
+            {
+                anchor = _service.WidenOverClearAreas(_getScreenAnchor.Invoke());
+                pivotScreen = ResolvePivotPosition(anchor, size);
+            }
 
             RectTransformUtility.ScreenPointToLocalPointInRectangle(_canvasRect, pivotScreen, _canvasCamera,
                 out Vector2 localPoint);
 
+            _restPosition = localPoint;
             tooltipRect.localPosition = localPoint;
+            PlaceTail(anchor, pivotScreen, size);
+        }
+
+        /// <summary>
+        /// Points the tail at the target from the side the tooltip opened on, at the height of the target's middle as
+        /// far as the straight edge allows. Hidden in the dock, at a cursor and when the tooltip had to cover the
+        /// target.
+        /// </summary>
+        private void PlaceTail(Rect anchor, Vector2 topLeft, Vector2 size)
+        {
+            if (tail == null)
+                return;
+
+            bool isRightOfTarget = topLeft.x >= anchor.xMax;
+            bool isLeftOfTarget = topLeft.x + size.x <= anchor.xMin;
+            bool isShown = !_isDocked
+                && anchor.width > 0f
+                && (isRightOfTarget || isLeftOfTarget);
+            tail.gameObject.SetActive(isShown);
+
+            if (!isShown)
+                return;
+
+            float scale = canvas.rootCanvas.scaleFactor;
+            float height = size.y / scale;
+            float margin = tail.rect.height * Half + tailMargin;
+            float fromTop = Mathf.Clamp((topLeft.y - anchor.center.y) / scale, margin,
+                Mathf.Max(margin, height - margin));
+            float edge = isRightOfTarget
+                ? 0f
+                : Opaque;
+            float direction = isRightOfTarget
+                ? Opaque
+                : -Opaque;
+
+            tail.anchorMin = new Vector2(edge, Opaque);
+            tail.anchorMax = tail.anchorMin;
+            tail.anchoredPosition = new Vector2(0f, -fromTop);
+            tail.localScale = new Vector3(direction, Opaque, Opaque);
         }
 
         /// <summary>

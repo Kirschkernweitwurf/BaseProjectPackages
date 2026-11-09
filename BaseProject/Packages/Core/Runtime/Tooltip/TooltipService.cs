@@ -11,16 +11,27 @@ namespace Base.CorePackage.Tooltip
     /// Shows the highest priority tooltip that is currently requested.
     /// Backed by a <see cref="PriorityTracker{T}"/>, so overlapping requests resolve by priority. Areas kept clear,
     /// like a marker that points at the target from the side, push a tooltip beside its target past them. A dock
-    /// gathers every tooltip in one fixed area instead, like an inspector panel.
+    /// gathers every tooltip in one fixed area instead, like an inspector panel. A pinned tooltip stays while other
+    /// requests come and go, so the player can read it at leisure.
     /// </summary>
     public class TooltipService : GameServiceBehaviour
     {
         private readonly PriorityTracker<TooltipData> _tracker = new();
         private readonly Dictionary<object, Func<Rect>> _clearAreas = new();
+        private readonly Dictionary<object, TooltipData> _dataByCaller = new();
 
         private TooltipView _view;
         private object _dockOwner;
         private Func<Rect> _dockArea;
+        private object _pinnedCaller;
+
+        /// <summary>
+        /// Raised with <c>true</c> when the shown tooltip gets pinned and with <c>false</c> when it is let go.
+        /// </summary>
+        public event Action<bool> PinnedChanged;
+
+        /// <summary>Whether the shown tooltip is pinned, see <see cref="Pin"/>.</summary>
+        public bool IsPinned => _pinnedCaller != null;
 
 #region Unity Callbacks
         protected override void Awake()
@@ -59,13 +70,25 @@ namespace Base.CorePackage.Tooltip
         /// <param name="data">The tooltip to display.</param>
         /// <param name="priority">Higher values win over lower ones.</param>
         /// <param name="caller">The object requesting the tooltip, used for tracking and removal.</param>
-        public void AddTooltip(TooltipData data, uint priority, object caller) => _tracker.Add(data, priority, caller);
+        public void AddTooltip(TooltipData data, uint priority, object caller)
+        {
+            if (caller != null)
+                _dataByCaller[caller] = data;
+
+            _tracker.Add(data, priority, caller);
+        }
 
         /// <summary>
         /// Removes the request of the given caller.
         /// </summary>
         /// <param name="caller">The object that requested the tooltip.</param>
-        public void RemoveTooltip(object caller) => _tracker.Remove(caller);
+        public void RemoveTooltip(object caller)
+        {
+            _tracker.Remove(caller);
+
+            if (caller != null)
+                _dataByCaller.Remove(caller);
+        }
 
         /// <summary>
         /// Checks whether a caller currently holds a tooltip request.
@@ -73,6 +96,43 @@ namespace Base.CorePackage.Tooltip
         /// <param name="caller">The object to check.</param>
         /// <returns><c>true</c> when a request from that caller exists; otherwise <c>false</c>.</returns>
         public bool HasTooltipFromCaller(object caller) => _tracker.HasCaller(caller);
+
+        /// <summary>
+        /// Pins the tooltip shown now: it stays, also when its trigger lets go or another one asks, until
+        /// <see cref="Unpin"/>. Its own trigger may still rebuild it, for example with more detail while pinned. Does
+        /// nothing while no tooltip shows.
+        /// </summary>
+        public void Pin()
+        {
+            if (IsPinned)
+                return;
+
+            object caller = FindCaller(_tracker.CurrentTrackedItem);
+            if (caller == null)
+                return;
+
+            _pinnedCaller = caller;
+            PinnedChanged?.Invoke(true);
+        }
+
+        /// <summary>
+        /// Lets the pinned tooltip go: the view shows whatever is asked for now, or nothing. Silent when nothing is
+        /// pinned, so a double release does not spam.
+        /// </summary>
+        public void Unpin()
+        {
+            if (!IsPinned)
+                return;
+
+            _pinnedCaller = null;
+            PinnedChanged?.Invoke(false);
+            OnTooltipChanged(_tracker.CurrentTrackedItem);
+        }
+
+        /// <summary>Whether <paramref name="caller"/>'s tooltip is the pinned one.</summary>
+        /// <param name="caller">The object that requested a tooltip, like a <see cref="TooltipTrigger"/>.</param>
+        public bool IsPinnedBy(object caller) => caller != null
+            && caller == _pinnedCaller;
 
         /// <summary>
         /// Keeps a tooltip that opens beside its target clear of an area running alongside the target, like a
@@ -178,6 +238,21 @@ namespace Base.CorePackage.Tooltip
             return anchor;
         }
 
+        // The tracker does not say who asked, so the request is found by its panel list, which every request owns.
+        private object FindCaller(TrackedItem<TooltipData> item)
+        {
+            if (item == null)
+                return null;
+
+            foreach (KeyValuePair<object, TooltipData> pair in _dataByCaller)
+            {
+                if (ReferenceEquals(pair.Value.Entries, item.Item.Entries))
+                    return pair.Key;
+            }
+
+            return null;
+        }
+
         /// <summary>
         /// Pushes the new top request into the view. Stays silent while no view is registered,
         /// which is the normal state before the tooltip canvas loads and after it is unloaded.
@@ -185,6 +260,11 @@ namespace Base.CorePackage.Tooltip
         private void OnTooltipChanged(TrackedItem<TooltipData> item)
         {
             if (_view == null)
+                return;
+
+            // A pinned tooltip only changes when its own trigger rebuilds it.
+            if (IsPinned
+                && FindCaller(item) != _pinnedCaller)
                 return;
 
             if (item == null)
