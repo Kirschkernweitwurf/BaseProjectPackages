@@ -14,7 +14,7 @@ summary: Draws the tooltip panels beside the cursor or the hovered object and ke
 
 **Tags:** #designer #artist #ui
 
-Draws the tooltip beside the cursor or the hovered object, never letting it leave the screen. It prefers the right side with the tops lined up and flips to the left or upward when there is no room. The spot is picked while the tooltip waits to appear and then kept, so it never wanders when the object moves on screen, for example under a camera that follows the pointer. A tooltip can have several panels, for example a description plus one panel per keyword it mentions. Each panel is a copy of the first one. One per UI is enough; every Tooltip Trigger uses it.
+Draws the tooltip beside the cursor or the hovered object, never letting it leave the screen. It prefers the right side with the tops lined up and flips to the left or upward when there is no room. The spot is picked while the tooltip waits to appear and then kept, so it never wanders when the object moves on screen, for example under a camera that follows the pointer. While the Tooltip Service holds a dock, every tooltip opens in the dock area instead, its top right corner in the area's top right. A tooltip can have several panels, for example a description plus one panel per keyword it mentions. Each panel is a copy of the first one. One per UI is enough; every Tooltip Trigger uses it.
 
 **Add it:** Inspector › **Add Component** › search `Tooltip View`. Only one per GameObject.
 

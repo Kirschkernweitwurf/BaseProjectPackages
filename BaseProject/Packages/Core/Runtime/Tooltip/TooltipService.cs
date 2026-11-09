@@ -10,7 +10,8 @@ namespace Base.CorePackage.Tooltip
     /// <summary>
     /// Shows the highest priority tooltip that is currently requested.
     /// Backed by a <see cref="PriorityTracker{T}"/>, so overlapping requests resolve by priority. Areas kept clear,
-    /// like a marker that points at the target from the side, push a tooltip beside its target past them.
+    /// like a marker that points at the target from the side, push a tooltip beside its target past them. A dock
+    /// gathers every tooltip in one fixed area instead, like an inspector panel.
     /// </summary>
     public class TooltipService : GameServiceBehaviour
     {
@@ -18,6 +19,8 @@ namespace Base.CorePackage.Tooltip
         private readonly Dictionary<object, Func<Rect>> _clearAreas = new();
 
         private TooltipView _view;
+        private object _dockOwner;
+        private Func<Rect> _dockArea;
 
 #region Unity Callbacks
         protected override void Awake()
@@ -102,6 +105,57 @@ namespace Base.CorePackage.Tooltip
                 return;
 
             _clearAreas.Remove(owner);
+        }
+
+        /// <summary>
+        /// Opens every tooltip in a fixed area instead of beside its target, with its top right corner in the area's
+        /// top right, so it grows down and to the left. Use it where tooltips beside their targets would cover what the
+        /// player compares, like the cards in a hand. The area is read each time a tooltip is placed, so it may move.
+        /// One dock at a time; a second call replaces the first.
+        /// </summary>
+        /// <param name="owner">The object that docks the tooltips, used for release.</param>
+        /// <param name="area">Returns the area in screen pixels.</param>
+        public void Dock(object owner, Func<Rect> area)
+        {
+            if (owner == null
+                || area == null)
+            {
+                CustomLogger.LogError($"{nameof(Dock)} was called without an owner or an area.", this);
+                return;
+            }
+
+            _dockOwner = owner;
+            _dockArea = area;
+        }
+
+        /// <summary>
+        /// Lets tooltips open beside their targets again. Silent when the owner does not hold the dock, so a double
+        /// release, or one after another owner took over, does not spam.
+        /// </summary>
+        /// <param name="owner">The object that called <see cref="Dock"/>.</param>
+        public void ReleaseDock(object owner)
+        {
+            if (owner == null
+                || owner != _dockOwner)
+                return;
+
+            _dockOwner = null;
+            _dockArea = null;
+        }
+
+        /// <summary>
+        /// Gets the area every tooltip opens in, while a dock is set.
+        /// </summary>
+        internal bool TryGetDock(out Rect area)
+        {
+            if (_dockArea == null)
+            {
+                area = default;
+                return false;
+            }
+
+            area = _dockArea();
+            return true;
         }
 
         /// <summary>

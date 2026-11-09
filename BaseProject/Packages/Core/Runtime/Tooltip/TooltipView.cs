@@ -10,8 +10,8 @@ using UnityEngine.UI;
 namespace Base.CorePackage.Tooltip
 {
     /// <summary>
-    /// Draws the tooltip beside its anchor, the cursor or the hovered object, without ever letting it leave the
-    /// screen. The spot is picked while the tooltip waits to appear and then kept, so a tooltip never wanders when
+    /// Draws the tooltip beside its anchor, the cursor or the hovered object, or in the dock area while the
+    /// <see cref="TooltipService"/> holds one, without ever letting it leave the screen. The spot is picked while the tooltip waits to appear and then kept, so a tooltip never wanders when
     /// its anchor moves on screen, for example a 3D object under a camera that follows the pointer. Every
     /// <see cref="TooltipEntry"/> gets its own <see cref="TooltipPanel"/>, copied from the first one, so the
     /// content's layout group decides whether they stack or line up side by side. A tooltip fades in after a short
@@ -252,13 +252,15 @@ namespace Base.CorePackage.Tooltip
         private void PlaceTooltip()
         {
             Vector2 size = GetTooltipSize();
-            Rect anchor = _getScreenAnchor.Invoke();
+            Vector2 pivotScreen;
 
-            // A view shown without the service has no kept-clear areas.
-            if (_service != null)
-                anchor = _service.WidenOverClearAreas(anchor);
-
-            Vector2 pivotScreen = ResolvePivotPosition(anchor, size);
+            // A view shown without the service has no dock and no kept-clear areas.
+            if (_service == null)
+                pivotScreen = ResolvePivotPosition(_getScreenAnchor.Invoke(), size);
+            else if (_service.TryGetDock(out Rect dock))
+                pivotScreen = ResolveDockedPosition(dock, size);
+            else
+                pivotScreen = ResolvePivotPosition(_service.WidenOverClearAreas(_getScreenAnchor.Invoke()), size);
 
             RectTransformUtility.ScreenPointToLocalPointInRectangle(_canvasRect, pivotScreen, _canvasCamera,
                 out Vector2 localPoint);
@@ -292,16 +294,33 @@ namespace Base.CorePackage.Tooltip
             if (left + size.x > Screen.width - edgeMargin)
                 left = anchor.xMin - offsetX - size.x;
 
-            float maxLeft = Mathf.Max(edgeMargin, Screen.width - edgeMargin - size.x);
-            left = Mathf.Clamp(left, edgeMargin, maxLeft);
-
             float top = anchor.yMax - offsetY;
             if (top - size.y < edgeMargin)
                 top = anchor.yMin + offsetY + size.y;
 
+            return ClampToScreen(new Vector2(left, top), size);
+        }
+
+        /// <summary>
+        /// Resolves the top left corner in screen space for a docked tooltip: its top right corner in the dock's top
+        /// right, so more panels make it grow down and wider text makes it grow to the left. Clamped like any other
+        /// spot, so it stays on screen.
+        /// </summary>
+        private Vector2 ResolveDockedPosition(Rect dock, Vector2 size)
+            => ClampToScreen(new Vector2(dock.xMax - size.x, dock.yMax), size);
+
+        /// <summary>
+        /// Moves a top left corner in screen space as little as needed to keep a tooltip of <paramref name="size"/>
+        /// inside the edge margin.
+        /// </summary>
+        private Vector2 ClampToScreen(Vector2 topLeft, Vector2 size)
+        {
+            float maxLeft = Mathf.Max(edgeMargin, Screen.width - edgeMargin - size.x);
+            float left = Mathf.Clamp(topLeft.x, edgeMargin, maxLeft);
+
             float minTop = edgeMargin + size.y;
             float maxTop = Mathf.Max(minTop, Screen.height - edgeMargin);
-            top = Mathf.Clamp(top, minTop, maxTop);
+            float top = Mathf.Clamp(topLeft.y, minTop, maxTop);
 
             return new Vector2(left, top);
         }

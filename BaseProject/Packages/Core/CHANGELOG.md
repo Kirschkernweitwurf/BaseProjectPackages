@@ -22,6 +22,8 @@ Changes made before 2.1.4 were not recorded.
 - `TooltipService.KeepClear(owner, area)` and `ReleaseClear(owner)`: a tooltip that opens beside its target
   opens past an area running alongside the target, like a marker pointing at it from the side, instead of
   covering it.
+- `TooltipService.Dock(owner, area)` and `ReleaseDock(owner)`: every tooltip opens in one fixed area, top right
+  corner first, instead of beside its target, so it stops covering what sits around the target.
 
 ### Changed
 
