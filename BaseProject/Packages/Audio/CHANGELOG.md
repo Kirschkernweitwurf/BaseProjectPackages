@@ -6,6 +6,11 @@ All notable changes to this package are recorded here. The format follows
 
 ## [Unreleased]
 
+### Fixed
+
+- `PlayAudioOnSelect` skips selections made by the mouse. A UI that selects the element under the pointer,
+  and the selection a click makes, played the select sound on top of the hover or click sound.
+
 ## [1.2.0] - 2026-10-26
 
 ### Added

@@ -15,7 +15,7 @@ summary: Plays an Audio Container when the object becomes the selected UI elemen
 
 **Tags:** #sound #designer #audio #ui
 
-Plays an Audio Container when the object becomes the selected UI element (keyboard and gamepad navigation). This is the gamepad and keyboard version of hover.
+Plays an Audio Container when the object becomes the selected UI element by keyboard or gamepad navigation. This is the gamepad and keyboard version of hover.
 
 **Add it:** Inspector › **Add Component** › search `Play Audio On Select`.
 
@@ -36,6 +36,7 @@ Plays an Audio Container when the object becomes the selected UI element (keyboa
 - The Audio Manager is looked up on the first sound, so an element that gets its event in the frame it turns on, like the first row of a page that is selected right away, plays without an error.
 - Needs an Event System in the scene and a Graphic with **Raycast Target** on.
 - An empty sound field logs a warning and stays silent.
+- A selection by the mouse plays nothing. A click selects the element, and some UIs select whatever the pointer enters, so playing then would double the hover or click sound. A selection from code still plays.
 - Usual button setup: **On Hover** + **On Select** for the highlight, **On Submit** for the confirm.
 
 ## Related
