@@ -43,7 +43,7 @@ Draws one panel of a tooltip: an optional header with icon and title, and the te
 | **Icon** | Image |  | Shows the entry's icon in front of the title. Optional. |
 | **Header** | GameObject |  | Row that holds icon and title, hidden when the entry has neither. Optional. |
 | **Eyebrow** | TMP_Text |  | Shows the entry's eyebrow, a small line above the title. Optional. |
-| **Icon Frame** | GameObject |  | Frame around the icon, like a tinted tile, shown and hidden with the icon. Optional. |
+| **Icon Frame** | GameObject |  | Frame around the icon, like a tinted tile, shown only for entries that ask for it. Optional. |
 | **Separator** | GameObject |  | Hairline above the panel, for panels that share one card. Optional. |
 
 ## Good to know
@@ -51,6 +51,7 @@ Draws one panel of a tooltip: an optional header with icon and title, and the te
 - The layout groups need **Control Child Size** on and **Child Force Expand** off, so the panel shrinks to its texts.
 - The panel adds a Layout Element to its texts to cap their width.
 - The icon is tinted per entry, so one white icon can serve several categories.
+- The **Icon Frame** only shows for entries that ask for it (`isIconFramed`), like a tinted white glyph that needs a plate. Full color icons like emojis stand on their own.
 
 ## Related
 

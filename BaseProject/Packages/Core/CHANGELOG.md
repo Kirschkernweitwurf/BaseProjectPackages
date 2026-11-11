@@ -47,6 +47,9 @@ Changes made before 2.1.4 were not recorded.
 - The default back menu no longer opens below a menu of higher priority, where it was hidden and only paused the
   game.
 - `MenuGroupModule`'s next and previous tab actions only act while the group's screen is on top.
+- `TooltipPanel`'s icon frame only shows for entries made with `isIconFramed: true`
+  (`TooltipEntry.IsIconFramed`), so a full color icon like an emoji no longer sits on a tile meant for tinted
+  glyphs. Pass it where the frame should stay.
 
 ### Fixed
 

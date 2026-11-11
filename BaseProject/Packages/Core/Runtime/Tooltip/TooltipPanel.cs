@@ -37,7 +37,7 @@ namespace Base.CorePackage.Tooltip
         [Tooltip("Shows the entry's eyebrow, a small line above the title. Optional.")]
         [SerializeField] private TMP_Text eyebrow;
 
-        [Tooltip("Frame around the icon, like a tinted tile, shown and hidden with the icon. Optional.")]
+        [Tooltip("Frame around the icon, like a tinted tile, shown only for entries that ask for it. Optional.")]
         [SerializeField] private GameObject iconFrame;
 
         [Tooltip("Hairline above the panel, for panels that share one card. Optional.")]
@@ -106,7 +106,8 @@ namespace Base.CorePackage.Tooltip
             icon.gameObject.SetActive(hasIcon);
 
             if (iconFrame != null)
-                iconFrame.SetActive(hasIcon);
+                iconFrame.SetActive(hasIcon
+                    && entry.IsIconFramed);
 
             if (!hasIcon)
                 return false;

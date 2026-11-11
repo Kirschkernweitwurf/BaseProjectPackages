@@ -30,6 +30,12 @@ namespace Base.CorePackage.Tooltip
         /// </summary>
         public bool IsAside { get; }
 
+        /// <summary>
+        /// Whether the icon sits on the panel's frame, a tinted tile, where the panel has one. For a tinted white
+        /// glyph that needs a plate; a full color picture like an emoji stands on its own.
+        /// </summary>
+        public bool IsIconFramed { get; }
+
         /// <summary>Creates a panel with just a text.</summary>
         /// <param name="body">Text to show.</param>
         public TooltipEntry(string body) : this(null, body)
@@ -43,8 +49,9 @@ namespace Base.CorePackage.Tooltip
         /// <param name="iconColor">Tint of the icon. White when omitted.</param>
         /// <param name="eyebrow">Small line above the title. Null or empty for none.</param>
         /// <param name="isAside">Whether the panel goes into a second card beside the main one.</param>
+        /// <param name="isIconFramed">Whether the icon sits on the panel's frame.</param>
         public TooltipEntry(string title, string body, Sprite icon = null, Color? iconColor = null,
-            string eyebrow = null, bool isAside = false)
+            string eyebrow = null, bool isAside = false, bool isIconFramed = false)
         {
             Title = title;
             Body = body;
@@ -52,6 +59,7 @@ namespace Base.CorePackage.Tooltip
             IconColor = iconColor ?? Color.white;
             Eyebrow = eyebrow;
             IsAside = isAside;
+            IsIconFramed = isIconFramed;
         }
     }
 }

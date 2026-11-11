@@ -313,7 +313,8 @@ namespace Base.CorePackage.Tooltip
             TooltipEntry lone = _shownEntries[0];
             _shownEntries[0] = new TooltipEntry(lone.Body);
 
-            return new TooltipEntry(lone.Title, null, lone.Icon, lone.IconColor, lone.Eyebrow);
+            return new TooltipEntry(lone.Title, null, lone.Icon, lone.IconColor, lone.Eyebrow,
+                isIconFramed: lone.IsIconFramed);
         }
 
         /// <summary>
