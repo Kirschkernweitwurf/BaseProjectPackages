@@ -39,6 +39,7 @@ Plays a Tween Group in response to a UI event. The quickest way to add hover and
 
 - Needs an Event System in the scene and a Graphic with **Raycast Target** on to receive pointer events.
 - Click and submit only ever play Show. Use a group whose show tweens return to the start, for example a Yoyo scale punch.
+- A disabled button does not light up: when the **Selectable** on the same GameObject is not interactable, also through a parent **Canvas Group**, Show is skipped. Hide still plays, so a button that gets disabled while hovered lets go.
 
 ## What each event does
 

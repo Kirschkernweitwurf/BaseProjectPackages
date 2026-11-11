@@ -6,6 +6,14 @@ All notable changes to this package are recorded here. The format follows
 
 Changes made before 1.0.11 were not recorded.
 
+## [Unreleased]
+
+### Fixed
+
+- `UIEventTrigger` does not show its group on a disabled button. The event system still sends pointer and select
+  events to a `Selectable` that is not interactable, so a disabled button lit up on hover and click. Hide still
+  plays, so a button that gets disabled while hovered lets go.
+
 ## [1.1.0] - 2026-10-26
 
 ### Added
