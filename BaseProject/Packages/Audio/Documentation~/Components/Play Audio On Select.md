@@ -36,6 +36,7 @@ Plays an Audio Container when the object becomes the selected UI element by keyb
 - The Audio Manager is looked up on the first sound, so an element that gets its event in the frame it turns on, like the first row of a page that is selected right away, plays without an error.
 - Needs an Event System in the scene and a Graphic with **Raycast Target** on.
 - An empty sound field logs a warning and stays silent.
+- A disabled button stays silent: when the **Selectable** on the same GameObject is not interactable, also through a parent **Canvas Group**, nothing plays. The event system still sends it pointer and select events, so without this it would sound like it does something.
 - A selection by the mouse plays nothing. A click selects the element, and some UIs select whatever the pointer enters, so playing then would double the hover or click sound. A selection from code still plays.
 - Usual button setup: **On Hover** + **On Select** for the highlight, **On Submit** for the confirm.
 

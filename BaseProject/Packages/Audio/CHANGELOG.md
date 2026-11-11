@@ -8,6 +8,8 @@ All notable changes to this package are recorded here. The format follows
 
 ### Fixed
 
+- `PlayAudioOn*` components stay silent on a disabled button. The event system still sends pointer, select and
+  submit events to a `Selectable` that is not interactable, so a disabled button played its hover and click sounds.
 - `PlayAudioOnSelect` skips selections made by the mouse. A UI that selects the element under the pointer,
   and the selection a click makes, played the select sound on top of the hover or click sound.
 
