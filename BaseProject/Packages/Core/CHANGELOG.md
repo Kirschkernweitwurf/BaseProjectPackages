@@ -49,7 +49,9 @@ Changes made before 2.1.4 were not recorded.
 - `MenuGroupModule`'s next and previous tab actions only act while the group's screen is on top.
 - `TooltipPanel`'s icon frame only shows for entries made with `isIconFramed: true`
   (`TooltipEntry.IsIconFramed`), so a full color icon like an emoji no longer sits on a tile meant for tinted
-  glyphs. Pass it where the frame should stay.
+  glyphs. A framed icon now shows in the new **Framed Icon** image on the frame, a plain one in **Icon**, so the
+  icon no longer has to be a child of the frame. Panels that keep a frame need a Framed Icon, and their entries
+  need `isIconFramed: true`.
 
 ### Fixed
 

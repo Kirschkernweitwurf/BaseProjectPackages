@@ -28,7 +28,7 @@ namespace Base.CorePackage.Tooltip
         [Tooltip("Shows the entry's title. Optional.")]
         [SerializeField] private TMP_Text title;
 
-        [Tooltip("Shows the entry's icon in front of the title. Optional.")]
+        [Tooltip("Shows the entry's icon in front of the title as it is, like an emoji. Optional.")]
         [SerializeField] private Image icon;
 
         [Tooltip("Row that holds icon and title, hidden when the entry has neither. Optional.")]
@@ -37,8 +37,13 @@ namespace Base.CorePackage.Tooltip
         [Tooltip("Shows the entry's eyebrow, a small line above the title. Optional.")]
         [SerializeField] private TMP_Text eyebrow;
 
-        [Tooltip("Frame around the icon, like a tinted tile, shown only for entries that ask for it. Optional.")]
+        [Tooltip("Frame behind the icon of entries that ask for one, like a tinted tile behind a white glyph. Shown "
+            + "with Framed Icon. Optional.")]
         [SerializeField] private GameObject iconFrame;
+
+        [Tooltip("Shows the icon of entries that ask for a frame, on Icon Frame, in place of Icon. Without it, those "
+            + "entries use Icon and no frame. Optional.")]
+        [SerializeField] private Image framedIcon;
 
         [Tooltip("Hairline above the panel, for panels that share one card. Optional.")]
         [SerializeField] private GameObject separator;
@@ -80,6 +85,21 @@ namespace Base.CorePackage.Tooltip
                 : UnsetWidth;
         }
 
+        private static bool ShowSprite(Image image, TooltipEntry entry, bool isShown)
+        {
+            if (image == null)
+                return false;
+
+            image.gameObject.SetActive(isShown);
+            if (!isShown)
+                return false;
+
+            image.sprite = entry.Icon;
+            image.color = entry.IconColor;
+
+            return true;
+        }
+
         private bool ShowText(TMP_Text text, string content)
         {
             if (text == null)
@@ -97,25 +117,21 @@ namespace Base.CorePackage.Tooltip
             return true;
         }
 
+        // A framed glyph and a plain icon need different layouts, so each has its own image and only one shows.
         private bool ShowIcon(TooltipEntry entry)
         {
-            if (icon == null)
-                return false;
-
             bool hasIcon = entry.Icon != null;
-            icon.gameObject.SetActive(hasIcon);
+            bool isFramed = hasIcon
+                && entry.IsIconFramed
+                && framedIcon != null;
 
             if (iconFrame != null)
-                iconFrame.SetActive(hasIcon
-                    && entry.IsIconFramed);
+                iconFrame.SetActive(isFramed);
 
-            if (!hasIcon)
-                return false;
+            bool isFramedShown = ShowSprite(framedIcon, entry, isFramed);
+            bool isPlainShown = ShowSprite(icon, entry, hasIcon && !isFramed);
 
-            icon.sprite = entry.Icon;
-            icon.color = entry.IconColor;
-
-            return true;
+            return isFramedShown || isPlainShown;
         }
     }
 }
