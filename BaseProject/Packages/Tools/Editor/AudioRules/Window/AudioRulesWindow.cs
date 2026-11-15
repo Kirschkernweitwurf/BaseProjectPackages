@@ -31,6 +31,8 @@ namespace Base.ToolsPackage.Editor.AudioRules.Window
 
         private const int AnalysisBatch = 3;
         private const long AnalysisInterval = 16L;
+        private const string ApplyAllTooltip = "Brings every clip in line with the rules on every target at once, "
+            + "whatever the target dropdown, filters and search show. Select rows to apply only those.";
         private const float DetailsHeight = 240f;
         private const string MenuPath = "Tools/Base Packages/Assets/Audio Rules";
         private const string MissingSheetMessage = "The audio rules style sheet was not found, so the "
@@ -65,6 +67,7 @@ namespace Base.ToolsPackage.Editor.AudioRules.Window
         private VisualElement _progress;
         private VisualElement _progressFill;
         private int _analysisTotal;
+        private int _changesOnAnyTarget;
         private string _platform = string.Empty;
         private string _search = string.Empty;
         private bool _hasScanned;
@@ -433,6 +436,7 @@ namespace Base.ToolsPackage.Editor.AudioRules.Window
             _matchCounts.Clear();
             _plans.Clear();
             _plans.AddRange(AudioScanService.Scan(ruleSet, _platform, _matchCounts));
+            _changesOnAnyTarget = AudioAllTargetsApplier.CountChanges(ruleSet);
             _hasScanned = true;
 
             _ruleList.SetMatchCounts(_matchCounts);
@@ -637,36 +641,43 @@ namespace Base.ToolsPackage.Editor.AudioRules.Window
                 return;
 
             int selected = _table.Selection.Count(plan => plan.HasChanges);
-            int all = Filtered().Count(plan => plan.HasChanges);
             int count = selected > 0
                 ? selected
-                : all;
+                : _changesOnAnyTarget;
 
             _applyButton.text = selected > 0
                 ? $"Apply Selected ({selected})"
-                : $"Apply All ({all})";
+                : $"Apply All ({_changesOnAnyTarget})";
+
+            _applyButton.tooltip = selected > 0
+                ? $"Applies the rules to the selected clips, for the {TargetName()} target."
+                : ApplyAllTooltip;
 
             _applyButton.SetEnabled(count > 0);
         }
 
+        // Apply All is the everyday button, so it runs without a dialog. A hand-picked selection
+        // only covers the shown target, which the dialog spells out.
         private void ApplyChanges()
         {
             List<AudioClipPlan> selected = _table.Selection.Where(plan => plan.HasChanges).ToList();
-            List<AudioClipPlan> targets = selected.Count > 0
-                ? selected
-                : Filtered().Where(plan => plan.HasChanges).ToList();
 
-            if (targets.Count == 0)
+            if (selected.Count == 0)
+            {
+                AudioAllTargetsApplier.Apply(ruleSet);
+                Rescan();
+
                 return;
+            }
 
             bool confirmed = EditorUtility.DisplayDialog(WindowTitle,
-                $"Reimport {targets.Count} {AudioRulesFormat.Plural(targets.Count, "clip", "clips")} with the "
+                $"Reimport {selected.Count} {AudioRulesFormat.Plural(selected.Count, "clip", "clips")} with the "
                 + $"settings the rules want, for the {TargetName()} target?", "Apply", "Cancel");
 
             if (!confirmed)
                 return;
 
-            int changed = AudioSettingsApplier.Apply(targets, _platform);
+            int changed = AudioSettingsApplier.Apply(selected, _platform);
 
             CustomLogger.Log($"Applied the audio rules to {changed} "
                 + $"{AudioRulesFormat.Plural(changed, "clip", "clips")}.", ruleSet);

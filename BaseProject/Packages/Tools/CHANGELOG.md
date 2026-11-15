@@ -6,6 +6,19 @@ All notable changes to this package are recorded here. The format follows
 
 Changes made before 2.0.10 were not recorded.
 
+## [Unreleased]
+
+### Added
+
+- Apply Audio Rules (`Tools > Base Packages > Assets`): brings every clip in line with the rules on every
+  target at once, without opening the Audio Rules window.
+
+### Changed
+
+- Audio Rules: **Apply All** applies every clip on every target in one click, without a dialog, whatever the
+  target dropdown, filters and search show. Its count is the clips that differ on any target. Applying only the
+  selected rows still asks first and covers the shown target.
+
 ## [3.6.0] - 2026-11-09
 
 ### Added

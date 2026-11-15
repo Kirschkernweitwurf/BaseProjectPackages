@@ -15,7 +15,8 @@ menu: Tools > Base Packages > Assets > Audio Rules
 
 **Tags:** #sound #audio #assets
 
-**Menu:** `Tools > Base Packages > Assets > Audio Rules`
+**Menu:** `Tools > Base Packages > Assets > Audio Rules`, and `Tools > Base Packages > Assets > Apply Audio Rules`
+to apply without the window
 
 **Create:** `Create > Scriptable Objects > Base > Audio Rules > New Rule Set` (default file name `ARS_AudioRuleSet`)
 
@@ -29,7 +30,13 @@ Sets the import settings of all audio files from rules, instead of clicking thro
 2. Add rules on the left. Each rule says which clips it applies to and which settings it wants.
 3. Scan. The table on the right shows, per clip, what would change. Nothing is changed yet.
 4. Select a row to see the details underneath, including which rule decided each setting.
-5. Press **Apply** to write the changes to the import settings.
+5. Press **Apply All** to write the changes to the import settings of every clip, on every target, in one click.
+
+To update everything without opening the window, use **Apply Audio Rules** in the menu. It does the same as
+**Apply All**.
+
+To apply only some clips, select their rows first. The button turns into **Apply Selected**, asks before it
+writes, and only covers the target shown in the dropdown.
 
 ## What rules can set
 
@@ -41,6 +48,10 @@ Besides settings, the scan points out problems in the audio itself, such as sile
 
 ## Good to know
 
-- A scan never changes anything. Only **Apply** does.
+- A scan never changes anything. Only **Apply All** or **Apply Selected** does.
+- **Apply All** ignores the target dropdown, the filters and the search. Its number counts the clips that differ on
+  at least one target.
+- A platform only gets its own import override where a rule for that platform wants something else than the
+  default settings. Every other platform keeps using the defaults.
 - Reading the audio data is the slow part, so the scan runs in the background and fills the table as it goes.
 - The panes can be resized by dragging their edges.
