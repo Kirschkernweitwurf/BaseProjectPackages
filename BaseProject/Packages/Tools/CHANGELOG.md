@@ -6,6 +6,15 @@ All notable changes to this package are recorded here. The format follows
 
 Changes made before 2.0.10 were not recorded.
 
+## [Unreleased]
+
+### Changed
+
+- Audio Rules: a new rule set starts with defaults that follow Unity's audio import docs and published import
+  recommendations. PCM under 1 s, Vorbis 70% decoded on load up to 10 s, kept compressed in memory up to 30 s and
+  streamed beyond. Music keeps 85%, voice over is mono and compressed in memory, and Android and iOS get 50%
+  (music 70%). ADPCM and the 22 kHz sample rate are no longer used by default. Existing rule sets keep their rules.
+
 ## [3.7.1] - 2026-11-15
 
 ### Removed

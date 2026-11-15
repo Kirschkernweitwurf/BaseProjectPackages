@@ -38,6 +38,30 @@ writes, and only covers the target shown in the dropdown.
 
 Load type, compression format, quality, sample rate, force to mono, load in background and preload audio data. Rules can differ per platform.
 
+## Default rules
+
+A new rule set starts with these rules. They follow Unity's audio import docs and published import
+recommendations, and every rule can be changed afterwards.
+
+| Rule | Settings | Why |
+| --- | --- | --- |
+| Everything | Keep the sample rate, load on the main thread, preload | A lower sample rate gets audible as soon as a sound is pitched down. |
+| Under 1 s | PCM, Decompress On Load | Tiny, and playing PCM costs almost no CPU. |
+| 1 s to 10 s | Vorbis 70%, Decompress On Load, load in background | Small on disk, decoded once, cheap to play. |
+| 10 s to 30 s | Vorbis 70%, Compressed In Memory, load in background | Decoding up front would take about ten times the memory. |
+| Over 30 s | Vorbis 70%, Streaming, no preload | Costs a buffer of about 200 KB instead of the whole clip. Keep to two streams at once. |
+| Music | Vorbis 85% | Music is listened to, so it keeps more detail. Uses the category of its Audio Container. |
+| Spatial sound effects | Force to mono | A stereo clip cannot be placed in the world. |
+| Voice over (path contains `/VO/`) | Mono, Vorbis 70%, Compressed In Memory | Voice is recorded mono, and a game has many lines. |
+| Compressed clips on Android / iOS | Vorbis 50% | Phones have less room, and their speakers hide the difference. |
+| Music on Android / iOS | Vorbis 70% | Music keeps a little more on phones too. |
+
+ADPCM is not used by default: it adds audible artifacts to clean, tonal sounds like UI chimes. It suits noisy
+sounds played often, like footsteps, so add a rule for those if the project needs it.
+
+The Music and Spatial rules read the category from the Audio Container that uses a clip. That is only known in the
+window, so a new clip gets these two rules when **Apply All** runs, not while it is imported.
+
 ## Findings
 
 Besides settings, the scan points out problems in the audio itself, such as silence at the start of a clip, clipping, fake stereo or a DC offset. The thresholds for these are set in the rule set.

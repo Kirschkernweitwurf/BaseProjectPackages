@@ -18,19 +18,20 @@ namespace Base.ToolsPackage.Editor.AudioRules.Data
     internal sealed class AudioRuleSet : ScriptableObject
     {
         private const string AssetFilter = "t:" + nameof(AudioRuleSet);
-        private const float BandLongSeconds = 20f;
-        private const float BandMediumSeconds = 5f;
-        private const float BandShortSeconds = 0.5f;
+        private const float BandLongSeconds = 30f;
+        private const float BandMediumSeconds = 10f;
+        private const float BandShortSeconds = 1f;
         private const string DefaultAssetName = "ARS_AudioRuleSet.asset";
         private const string DefaultFolder = "Assets/Editor/AudioRules";
         private const int DefaultsVersion = 1;
         private const string FolderSeparator = "/";
-        private const int MobileSampleRate = 22050;
-        private const float QualityHigh = 0.7f;
-        private const float QualityLow = 0.4f;
-        private const float QualityMedium = 0.6f;
+        private const string MusicCategory = "Music";
+        private const float QualityMobile = 0.5f;
+        private const float QualityMobileMusic = 0.7f;
+        private const float QualityMusic = 0.85f;
+        private const float QualityStandard = 0.7f;
         private const string SpatialCategory = "Sfx3D";
-        private const int VoiceSampleRate = 22050;
+        private const string VoicePathFragment = "/VO/";
 
         private static readonly string[] DefaultIgnoredFragments =
         {
@@ -45,6 +46,12 @@ namespace Base.ToolsPackage.Editor.AudioRules.Data
             "Android",
             "iOS",
             "WebGL"
+        };
+
+        private static readonly string[] MobilePlatforms =
+        {
+            "Android",
+            "iOS"
         };
 
         [Title("Rules")]
@@ -206,13 +213,31 @@ namespace Base.ToolsPackage.Editor.AudioRules.Data
         }
 
         // Length decides how a clip should live in memory, so the bands carry the codec and the load
-        // type. Everything after them is an exception that only touches what makes it special.
-        private static AudioRule[] CreateDefaultRules()
+        // type. Everything after them is an exception that only touches what makes it special. The
+        // values follow Unity's audio import docs and its published import recommendations.
+        private static List<AudioRule> CreateDefaultRules()
+        {
+            List<AudioRule> rules = new()
+            {
+                CreateBaseline()
+            };
+
+            rules.AddRange(CreateLengthBands());
+            rules.AddRange(CreateExceptions());
+
+            foreach (string platform in MobilePlatforms)
+                rules.AddRange(CreateMobileRules(platform));
+
+            return rules;
+        }
+
+        private static AudioRule CreateBaseline()
         {
             AudioRule everything = new("Everything")
             {
-                Notes = "The baseline every clip starts from. Keeps the source sample rate and loads on "
-                    + "the main thread, unless a later rule decides otherwise."
+                Notes = "The baseline every clip starts from. Keeps the source sample rate, because a lower "
+                    + "one gets audible as soon as a sound is pitched down, and loads on the main thread, "
+                    + "unless a later rule decides otherwise."
             };
 
             everything.Overrides.SetsSampleRate = true;
@@ -222,10 +247,16 @@ namespace Base.ToolsPackage.Editor.AudioRules.Data
             everything.Overrides.SetsPreloadAudioData = true;
             everything.Overrides.PreloadAudioData = true;
 
-            AudioRule tiny = new($"Under {BandShortSeconds:0.0} s")
+            return everything;
+        }
+
+        private static AudioRule[] CreateLengthBands()
+        {
+            AudioRule tiny = new($"Under {BandShortSeconds:0} s")
             {
-                Notes = "Very short one shots are cheapest uncompressed. Decoding them would cost more CPU "
-                    + "per play than the few kilobytes it would save."
+                Notes = "Short one shots stay raw PCM. A second of 48 kHz stereo is under 200 KB, and "
+                    + "playing PCM costs almost no CPU, about a tenth of a Vorbis voice. ADPCM is left out on "
+                    + "purpose: it adds audible artifacts to clean, tonal sounds like UI chimes."
             };
 
             tiny.Conditions.Add(new AudioRuleCondition(EConditionField.DurationSeconds,
@@ -236,10 +267,11 @@ namespace Base.ToolsPackage.Editor.AudioRules.Data
             tiny.Overrides.SetsCompressionFormat = true;
             tiny.Overrides.CompressionFormat = AudioCompressionFormat.PCM;
 
-            AudioRule shortClip = new($"{BandShortSeconds:0.0} s to {BandMediumSeconds:0} s")
+            AudioRule shortClip = new($"{BandShortSeconds:0} s to {BandMediumSeconds:0} s")
             {
-                Notes = "Short effects fire constantly, so they are decompressed once and stored as "
-                    + "ADPCM, which costs almost nothing to decode and is a third of the size of raw audio."
+                Notes = "Small on disk as Vorbis and decoded once while loading, so playing costs nothing "
+                    + "extra. Decoded audio takes about ten times the memory of Vorbis, which is fine for a "
+                    + "few seconds. At 70% most listeners cannot tell Vorbis from the original."
             };
 
             shortClip.Conditions.Add(new AudioRuleCondition(EConditionField.DurationSeconds,
@@ -250,13 +282,12 @@ namespace Base.ToolsPackage.Editor.AudioRules.Data
 
             shortClip.Overrides.SetsLoadType = true;
             shortClip.Overrides.LoadType = AudioClipLoadType.DecompressOnLoad;
-            shortClip.Overrides.SetsCompressionFormat = true;
-            shortClip.Overrides.CompressionFormat = AudioCompressionFormat.ADPCM;
+            SetVorbis(shortClip, QualityStandard);
 
             AudioRule mediumClip = new($"{BandMediumSeconds:0} s to {BandLongSeconds:0} s")
             {
-                Notes = "Long enough that raw audio hurts, short enough to keep in memory. Stored "
-                    + "compressed and decoded per play."
+                Notes = "Too long to decode up front, too short to be worth a stream. Stays compressed in "
+                    + "memory and is decoded while it plays, for a small CPU cost per voice."
             };
 
             mediumClip.Conditions.Add(new AudioRuleCondition(EConditionField.DurationSeconds,
@@ -267,15 +298,13 @@ namespace Base.ToolsPackage.Editor.AudioRules.Data
 
             mediumClip.Overrides.SetsLoadType = true;
             mediumClip.Overrides.LoadType = AudioClipLoadType.CompressedInMemory;
-            mediumClip.Overrides.SetsCompressionFormat = true;
-            mediumClip.Overrides.CompressionFormat = AudioCompressionFormat.Vorbis;
-            mediumClip.Overrides.SetsQuality = true;
-            mediumClip.Overrides.Quality = QualityHigh;
+            SetVorbis(mediumClip, QualityStandard);
 
             AudioRule longClip = new($"Over {BandLongSeconds:0} s")
             {
-                Notes = "Music and long ambience stream from disk, so they cost a small buffer instead "
-                    + "of their full size, and load off the main thread so the scene does not stall."
+                Notes = "Long music and ambience are read from disk in small chunks, so they cost a buffer "
+                    + "of about 200 KB instead of their full size. Every stream also costs disk and CPU time, "
+                    + "so plan on no more than two playing at once."
             };
 
             longClip.Conditions.Add(new AudioRuleCondition(EConditionField.DurationSeconds,
@@ -283,14 +312,32 @@ namespace Base.ToolsPackage.Editor.AudioRules.Data
 
             longClip.Overrides.SetsLoadType = true;
             longClip.Overrides.LoadType = AudioClipLoadType.Streaming;
-            longClip.Overrides.SetsCompressionFormat = true;
-            longClip.Overrides.CompressionFormat = AudioCompressionFormat.Vorbis;
-            longClip.Overrides.SetsQuality = true;
-            longClip.Overrides.Quality = QualityMedium;
-            longClip.Overrides.SetsLoadInBackground = true;
-            longClip.Overrides.LoadInBackground = true;
+            SetVorbis(longClip, QualityStandard);
             longClip.Overrides.SetsPreloadAudioData = true;
             longClip.Overrides.PreloadAudioData = false;
+
+            return new[]
+            {
+                tiny,
+                shortClip,
+                mediumClip,
+                longClip
+            };
+        }
+
+        private static AudioRule[] CreateExceptions()
+        {
+            AudioRule music = new("Music")
+            {
+                Notes = "Music is listened to rather than heard in passing, so it keeps more detail than "
+                    + "effects. Its length still decides whether it streams."
+            };
+
+            music.Conditions.Add(new AudioRuleCondition(EConditionField.Category,
+                EConditionOperator.Equals, MusicCategory));
+
+            music.Overrides.SetsQuality = true;
+            music.Overrides.Quality = QualityMusic;
 
             AudioRule spatial = new("Spatial sound effects")
             {
@@ -306,46 +353,70 @@ namespace Base.ToolsPackage.Editor.AudioRules.Data
 
             AudioRule voice = new("Voice over")
             {
-                Notes = "Speech carries no detail worth 44 kHz, and a voice line is never stereo, so both "
-                    + "halvings are free in quality terms."
+                Notes = "Voice lines are recorded in mono, so mono loses nothing. A game has many of them, "
+                    + "so they stay compressed in memory whatever their length."
             };
 
             voice.Conditions.Add(new AudioRuleCondition(EConditionField.Path,
-                EConditionOperator.Contains, "/VO/"));
+                EConditionOperator.Contains, VoicePathFragment));
 
             voice.Overrides.SetsForceToMono = true;
             voice.Overrides.ForceToMono = true;
-            voice.Overrides.SetsSampleRate = true;
-            voice.Overrides.SampleRateSetting = AudioSampleRateSetting.OverrideSampleRate;
-            voice.Overrides.SampleRateOverride = VoiceSampleRate;
-
-            AudioRule mobileLong = new("Long clips on mobile")
-            {
-                PlatformTarget = "Android",
-                Notes = "Mobile ships on a tighter budget and phone speakers hide most of what the lower "
-                    + "quality gives up."
-            };
-
-            mobileLong.Conditions.Add(new AudioRuleCondition(EConditionField.DurationSeconds,
-                EConditionOperator.GreaterOrEqual, BandLongSeconds));
-
-            mobileLong.Overrides.SetsQuality = true;
-            mobileLong.Overrides.Quality = QualityLow;
-            mobileLong.Overrides.SetsSampleRate = true;
-            mobileLong.Overrides.SampleRateSetting = AudioSampleRateSetting.OverrideSampleRate;
-            mobileLong.Overrides.SampleRateOverride = MobileSampleRate;
+            voice.Overrides.SetsLoadType = true;
+            voice.Overrides.LoadType = AudioClipLoadType.CompressedInMemory;
+            SetVorbis(voice, QualityStandard);
 
             return new[]
             {
-                everything,
-                tiny,
-                shortClip,
-                mediumClip,
-                longClip,
+                music,
                 spatial,
-                voice,
-                mobileLong
+                voice
             };
+        }
+
+        // Phones ship on a tighter budget and their speakers hide most of what a lower quality gives
+        // up. The sample rate stays, because a lowered one aliases and dulls pitched sounds.
+        private static AudioRule[] CreateMobileRules(string platform)
+        {
+            AudioRule effects = new($"Compressed clips on {platform}")
+            {
+                PlatformTarget = platform,
+                Notes = "Everything that is not raw PCM gets a lower Vorbis quality on phones."
+            };
+
+            effects.Conditions.Add(new AudioRuleCondition(EConditionField.DurationSeconds,
+                EConditionOperator.GreaterOrEqual, BandShortSeconds));
+
+            effects.Overrides.SetsQuality = true;
+            effects.Overrides.Quality = QualityMobile;
+
+            AudioRule music = new($"Music on {platform}")
+            {
+                PlatformTarget = platform,
+                Notes = "Music keeps a little more quality than effects on phones too."
+            };
+
+            music.Conditions.Add(new AudioRuleCondition(EConditionField.Category,
+                EConditionOperator.Equals, MusicCategory));
+
+            music.Overrides.SetsQuality = true;
+            music.Overrides.Quality = QualityMobileMusic;
+
+            return new[]
+            {
+                effects,
+                music
+            };
+        }
+
+        private static void SetVorbis(AudioRule rule, float quality)
+        {
+            rule.Overrides.SetsCompressionFormat = true;
+            rule.Overrides.CompressionFormat = AudioCompressionFormat.Vorbis;
+            rule.Overrides.SetsQuality = true;
+            rule.Overrides.Quality = quality;
+            rule.Overrides.SetsLoadInBackground = true;
+            rule.Overrides.LoadInBackground = true;
         }
     }
 }
