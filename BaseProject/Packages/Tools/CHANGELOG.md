@@ -6,6 +6,12 @@ All notable changes to this package are recorded here. The format follows
 
 Changes made before 2.0.10 were not recorded.
 
+## [Unreleased]
+
+### Removed
+
+- The Apply Audio Rules menu entry. **Apply All** in the Audio Rules window does the same.
+
 ## [3.7.0] - 2026-11-15
 
 ### Added

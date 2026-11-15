@@ -3,14 +3,12 @@ using Base.ToolsPackage.Editor.AudioRules.Data;
 using Base.ToolsPackage.Editor.AudioRules.Model;
 using Base.ToolsPackage.Editor.AudioRules.Scanning;
 using Base.UtilityPackage.Logging;
-using Base.UtilityPackage.Menus;
-using UnityEditor;
 
 namespace Base.ToolsPackage.Editor.AudioRules.Apply
 {
     /// <summary>
-    /// Brings every clip in line with the rules on every import target at once, so updating the
-    /// whole project is one click instead of an Apply per target in the window.
+    /// Brings every clip in line with the rules on every import target at once, so Apply All in the
+    /// window updates the whole project instead of one target at a time.
     /// <para>
     /// The default settings go first and are reimported before the platforms are scanned. A
     /// platform without its own override then reads the new defaults, so it only gets an override
@@ -19,24 +17,6 @@ namespace Base.ToolsPackage.Editor.AudioRules.Apply
     /// </summary>
     internal static class AudioAllTargetsApplier
     {
-        private const string MenuPath = "Tools/Base Packages/Assets/Apply Audio Rules";
-
-        /// <summary>Applies the rule set of the project to every clip on every target.</summary>
-        [DynamicMenuItem(MenuPath)]
-        public static void ApplyProjectRules()
-        {
-            AudioRuleSet ruleSet = AudioRuleSet.Load();
-
-            if (ruleSet == null)
-            {
-                CustomLogger.LogWarning($"There is no {nameof(AudioRuleSet)} yet. Open the Audio Rules window "
-                    + "to create one.", null);
-                return;
-            }
-
-            Apply(ruleSet);
-        }
-
         /// <summary>Applies the rules to every clip that differs on any target.</summary>
         /// <param name="ruleSet">The rules to apply.</param>
         /// <returns>How many clips were changed.</returns>
