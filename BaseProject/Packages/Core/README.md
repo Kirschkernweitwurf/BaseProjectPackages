@@ -32,6 +32,14 @@ A strongly typed in-process publish and subscribe bus.
 
 `EventBus` drops every handler on destroy, so no subscription survives a scene change by accident.
 
+### Game Actions
+
+Every discrete game event as an action others can react to, resolved one after another.
+
+- `GameAction` is one action. `IGameActionSystem.Perform` queues it; `SubscribePre`, `SubscribeOn` and `SubscribePost` react before, during and after it, by priority.
+- `GameActionResolver` holds the rules in plain C#, so a simulation runs them without a scene. `GameActionSystem` hosts it in the scene.
+- Follow-ups run depth first, right after the action that caused them. `GameActionReactor` reacts to an action picked in the Inspector and `CheatActionRunner` sends cheats through the same rules.
+
 ### State Machine
 
 A finite state machine over an arbitrary context object. The machine does not tick itself: drive it from wherever the owning object updates, so its rate and its time scale stay under the caller's control.

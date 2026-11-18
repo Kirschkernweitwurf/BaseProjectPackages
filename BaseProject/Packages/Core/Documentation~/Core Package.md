@@ -54,6 +54,7 @@ Every component has its own page. [🗳️ Components](Core%20Components.md) lis
 | [🗞️ Camera Provider](Components/Camera%20Provider.md) | Gives code fast access to the main and the current camera. | Programmers |
 | [🗞️ Cursor Manager](Components/Cursor%20Manager.md) | Decides how the mouse cursor looks, by priority. | Programmers |
 | [🗞️ Event Bus](Components/Event%20Bus.md) | Lets systems send each other events without knowing each other. | Programmers |
+| [🗞️ Game Action System](Components/Game%20Action%20System.md) | Runs game actions one by one and lets other systems react before and after each. | Programmers |
 | [🗞️ Input Manager](Components/Input%20Manager.md) | Decides which input action map is active, by priority. | Programmers |
 | [🗞️ Menu Manager](Components/Menu%20Manager.md) | Keeps track of every menu and routes the Back button. | Programmers |
 | [🗞️ Scene Loading Manager](Components/Scene%20Loading%20Manager.md) | Loads and unloads scenes and keeps the persistent scene loaded. | Programmers |

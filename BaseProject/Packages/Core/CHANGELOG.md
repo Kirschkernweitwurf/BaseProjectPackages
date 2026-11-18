@@ -10,6 +10,9 @@ Changes made before 2.1.4 were not recorded.
 
 ### Added
 
+- Game actions (`Base.CorePackage.GameActions`): `GameAction`, `IGameActionSystem`, the plain C# `GameActionResolver`
+  and its scene host `GameActionSystem`, `GameActionReactor` and `CheatActionRunner`. Every game event becomes an
+  action that rules and feedback can change, cancel or follow up, resolved depth first.
 - `Menu.OnClosing` runs when the close animation starts, and `PauseMenu.Unpausing` fires then, so a HUD can
   start returning while the pause menu animates out instead of waiting for `OnPauseStateChanged`.
 - `MenuManager.TopMenu`, `TopMenuChanged`, `IsOnTop(component)` and `IsScreenOnTop(menu)`: one answer to what is on
