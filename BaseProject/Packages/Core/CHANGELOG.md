@@ -44,6 +44,8 @@ Changes made before 2.1.4 were not recorded.
   the space, beside a target too, so the tail has room at every resolution.
 - `TooltipService.KeepVisible(owner, area)`, `ReleaseVisible(owner)` and the `TooltipKeepVisible` component: areas
   like HUD panels that a tooltip above its target must not cover.
+- `TooltipKeepClear` component: a tooltip beside a thing inside or alongside a panel, like a row of a list, opens past
+  the panel, through `TooltipService.KeepClear`.
 
 ### Changed
 
