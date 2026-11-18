@@ -58,6 +58,18 @@ Small helpers for world-space UI, debugging and builds.
 | [🗞️ FPS Counter](Components/FPS%20Counter.md) | Shows the current framerate |
 | [🗞️ Build Version](Components/Build%20Version.md) | Shows the version number |
 
+## Effects
+
+Particles and 3D tilts for screen-space UI, where Unity's own particles and rotations don't reach.
+
+| Component | What it does |
+| --- | --- |
+| [🔖 UI Sparkles](Components/UI%20Sparkles.md) | Twinkling stars over an area plus bursts on demand |
+| [🗞️ UI Particle Field](Components/UI%20Particle%20Field.md) | Hundreds of sprites in one mesh, like fire over the screen |
+| [🗞️ UI Perspective](Components/UI%20Perspective.md) | Tilts UI in 3D with real perspective |
+| [🗞️ UI Perspective Graphic](Components/UI%20Perspective%20Graphic.md) | Bends one graphic under a UI Perspective |
+| [🗞️ UI Perspective Text](Components/UI%20Perspective%20Text.md) | Bends one text under a UI Perspective |
+
 <!-- all-components:start -->
 ## All components
 
@@ -91,6 +103,16 @@ Every component has its own page with all fields. Generated from the code; do no
 | [🔖 World Canvas Wrapper](Components/World%20Canvas%20Wrapper.md) | Hooks a world-space canvas up to the main camera. | Everyone |
 | [🔖 Fps Counter](Components/FPS%20Counter.md) | Shows the current framerate on screen. | Everyone |
 | [🔖 Build Version](Components/Build%20Version.md) | Shows the version and build number, for example 1.2.3 [47]. | Everyone |
+
+### Effects
+
+| Component | What it does | For |
+| --- | --- | --- |
+| [🔖 UI Sparkles](Components/UI%20Sparkles.md) | Sparkles for rewarding screens: twinkling stars over an area plus bursts on demand. | Everyone |
+| [🗞️ UI Particle Field](Components/UI%20Particle%20Field.md) | Hundreds of small sprites in one mesh, for UI effects too big for UI Sparkles. | Programmers |
+| [🗞️ UI Perspective](Components/UI%20Perspective.md) | Tilts a piece of UI in 3D with real perspective. | Programmers |
+| [🗞️ UI Perspective Graphic](Components/UI%20Perspective%20Graphic.md) | Bends one graphic into the perspective of its UI Perspective. | Programmers |
+| [🗞️ UI Perspective Text](Components/UI%20Perspective%20Text.md) | Bends one text into the perspective of its UI Perspective. | Programmers |
 
 ### Services and managers
 

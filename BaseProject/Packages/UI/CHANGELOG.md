@@ -8,6 +8,11 @@ Changes made before 1.4.2 were not recorded.
 
 ## [Unreleased]
 
+### Added
+
+- UI effects from a game project: `UISparkles` and `UIParticleField` for particles on screen-space UI, and
+  `UIPerspective` with `UIPerspectiveGraphic` and `UIPerspectiveText` to tilt UI in 3D with real perspective.
+
 ## [1.7.0] - 2026-10-28
 
 ### Changed

@@ -61,4 +61,13 @@ bool confirmed = await confirmation.ShowConfirmationAsync(new ConfirmationReques
 | `FpsSampler` | Smooths the frame time and decides when the counter has a new number to show |
 | `BuildVersionProcessor` | Build step that writes the date-version and increments the build number into that file before every build |
 
+## Effects
+
+| Component | What it does |
+|---|---|
+| `UISparkles` | Twinkles stars over an area while enabled and sprays bursts on demand, pooled images on unscaled time |
+| `UIParticleField` | Hundreds of sprites in one mesh and one draw call, for effects like fire over the whole screen |
+| `UIPerspective` | Tilts UI in 3D with real perspective on an overlay canvas, with a back side and parallax layers |
+| `UIPerspectiveGraphic`, `UIPerspectiveText` | Bend one graphic or text into that perspective |
+
 `SceneLoader` sits behind `LoadSceneButton` and `ConfirmedLoadSceneButton` as the shared resolving, awaiting and error-logging path, so both behave identically.

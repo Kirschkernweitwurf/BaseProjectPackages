@@ -22,6 +22,7 @@ The goal is simple: common UI jobs should be a component you add and fill in, no
 | Buttons | Open and close menus, load scenes, open a website. They wire themselves up, so the `OnClick ()` list stays empty. | Open Menu, Close Menu, Menu Tab, Pause Menu, Load Scene, Open Link |
 | Confirmation | One shared popup that asks the player before something drastic happens, like quitting or leaving a scene. | Confirmation Menu, Confirmation Service, Confirmed Load Scene, Confirmed Quit |
 | Utility | Small helpers for world-space UI, debugging and builds. | Billboard, Editor Billboard, World Canvas Wrapper, FPS Counter, Build Version |
+| Effects | Particles and 3D tilts for screen-space UI. | UI Sparkles, UI Particle Field, UI Perspective, UI Perspective Graphic, UI Perspective Text |
 
 ## Included assets
 
