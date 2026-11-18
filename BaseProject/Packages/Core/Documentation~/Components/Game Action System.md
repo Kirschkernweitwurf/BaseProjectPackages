@@ -22,7 +22,7 @@ The rules live in the plain class `GameActionResolver`, which this component hos
 
 1. Put it once in the gameplay scene, on the managers.
 2. Derive each action from `GameAction` and perform it with `IGameActionSystem.Perform`.
-3. React with `SubscribePre`, `SubscribeOn` and `SubscribePost`, or derive a `GameActionReactor` for a component that reacts to an action picked in the Inspector.
+3. React with `SubscribePre`, `SubscribeOn` and `SubscribePost`, or derive a [Game Action Reactor](Game%20Action%20Reactor.md) for a component that reacts to an action picked in the Inspector.
 4. Cheats call `CheatActionRunner`, so rules and feedback react to them like to any other action.
 
 ## Fields

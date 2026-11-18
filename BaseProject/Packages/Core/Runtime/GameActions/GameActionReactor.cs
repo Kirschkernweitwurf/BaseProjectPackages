@@ -13,7 +13,10 @@ namespace Base.CorePackage.GameActions
     /// </summary>
     public abstract class GameActionReactor : MonoBehaviour
     {
+        [Tooltip("The game action this component reacts to.")]
         [SerializeField] private GameActionReference action;
+
+        [Tooltip("When it reacts: Pre before the action and its rules, On as it runs, Post once it is done.")]
         [SerializeField] private EReactionTiming timing = EReactionTiming.Post;
 
         private IGameActionSystem _system;
