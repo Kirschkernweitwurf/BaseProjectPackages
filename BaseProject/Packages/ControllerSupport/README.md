@@ -60,6 +60,16 @@ The single seam between the menu layer and this package. Attach it to a menu and
 
 - **GamepadScrollRect** drives a `ScrollRect` from a Vector2 action, typically the right stick. Unscaled time, so it keeps working while menus pause the game. Configurable speed, dead zone and vertical inversion.
 - **ScrollIntoView** keeps the selected child of a `ScrollRect` inside the viewport, with configurable edge padding. uGUI does not do this for gamepad navigation, so long lists scroll the selection out of sight without it.
+- **ScrollSoftEdges** fades a list's top and bottom edge while more rows lie beyond it and **ScrollbarFade** shows the scroll bar only while the list moves.
+
+## Focus and buttons
+
+- **FocusRequest** moves the focus to a target once it can take it, after a menu handed the focus to its default.
+- **FirstInputFocusGate** keeps a screen's focus empty until the player steers, so a press that revealed the screen presses nothing on it.
+- **MenuOpenClickGuard** ignores presses for a moment after a menu opens, against double clicks landing on the new screen.
+- **BackButton** presses its button on Back, so Back plays the same animation as a click.
+- **StepperButton** and **SideStepInput** turn left and right into steps of a value while the focus stays put.
+- **TextEntry** tells whether the player types into a text field, so shortcuts on letter keys stay quiet. **SubmitTarget** tells whether a target takes confirm right now.
 
 ## Input prompts
 

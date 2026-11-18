@@ -22,6 +22,9 @@ Decides what a stick can reach and how it moves between elements.
 | --- | --- |
 | [🔖 NavigableElement](Components/Navigable%20Element.md) | Marks one selectable as a real gamepad target |
 | [🔖 NavigableGroup](Components/Navigable%20Group.md) | Collects the elements below it, wires four-way navigation, owns a focus context |
+| [🗞️ BackButton](Components/Back%20Button.md) | Presses its button when the player goes back |
+| [🗞️ SideStepInput](Components/Side%20Step%20Input.md) | Turns left and right on the focused element into steps |
+| [🗞️ StepperButton](Components/Stepper%20Button.md) | Steps a value with left and right instead of moving the focus |
 
 ## Focus
 
@@ -30,6 +33,7 @@ Makes sure the gamepad always has something selected.
 | Component | What it does |
 | --- | --- |
 | 🔖[FocusWatchdog](Components/Focus%20Watchdog.md) | Global service that restores focus to the highest priority active group |
+| [🗞️ FirstInputFocusGate](Components/First%20Input%20Focus%20Gate.md) | Keeps the focus off a screen until the player steers it |
 
 ## Integration
 
@@ -38,6 +42,7 @@ The one deliberate seam between menus and navigation.
 | Component | What it does |
 | --- | --- |
 | [🔖 MenuNavigationModule](Components/Menu%20Navigation%20Module.md) | Activates a group while its menu is open |
+| [🗞️ MenuOpenClickGuard](Components/Menu%20Open%20Click%20Guard.md) | Ignores clicks and confirms for a moment after the menu opens |
 
 ## Scrolling
 
@@ -47,6 +52,8 @@ Fixes what uGUI does not handle for gamepads.
 | --- | --- |
 | [🔖 ScrollIntoView](Components/Scroll%20Into%20View.md) | Keeps the selected element visible inside a ScrollRect |
 | [🔖 GamepadScrollRect](Components/Gamepad%20Scroll%20Rect.md) | Scrolls a ScrollRect directly with a stick |
+| [🔖 ScrollSoftEdges](Components/Scroll%20Soft%20Edges.md) | Fades the list edges while more rows lie beyond them |
+| [🔖 ScrollbarFade](Components/Scrollbar%20Fade.md) | Shows a scroll bar only while its list moves |
 
 ## Input prompts
 

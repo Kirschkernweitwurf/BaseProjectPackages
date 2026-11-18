@@ -10,6 +10,9 @@ Changes made before 1.6.5 were not recorded.
 
 ### Added
 
+- Focus and button helpers from a game project: `FocusRequest`, `FirstInputFocusGate`, `MenuOpenClickGuard`,
+  `BackButton`, `StepperButton`, `SideStepInput`, `TextEntry` and `SubmitTarget`, plus the list helpers
+  `ScrollSoftEdges` and `ScrollbarFade`. `ScrollbarFade` fades on its own now instead of through DOTween.
 - `InputGlyphSet` control glyphs: sprites by control path, so a prompt whose action the player has rebound shows the
   new key or button. `InputGlyphSet.TryGetControlSprite` and `InputGlyphProvider.TryGetControlSprite` look one up.
 - `InputGlyphProvider.NotifyBindingsChanged` makes every prompt read its glyph again after a rebind.

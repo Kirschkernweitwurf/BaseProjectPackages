@@ -29,6 +29,11 @@ Every component has its own page. [🗳️ Components](Controller%20Support%20Co
 | [🔖 Navigable Element](Components/Navigable%20Element.md) | Marks a button, slider, toggle or any other Selectable as a real gamepad target. | Everyone |
 | [🔖 Navigable Group](Components/Navigable%20Group.md) | A self-contained navigation context. | Everyone |
 | [🔖 Menu Navigation Module](Components/Menu%20Navigation%20Module.md) | Connects a menu's lifecycle to a NavigableGroup: | Everyone |
+| [🗞️ Back Button](Components/Back%20Button.md) | Presses its button when the player goes back, so Back leaves a screen the way a click on that button does. | Programmers |
+| [🗞️ First Input Focus Gate](Components/First%20Input%20Focus%20Gate.md) | Keeps the focus off a screen until the player steers it. | Programmers |
+| [🗞️ Menu Open Click Guard](Components/Menu%20Open%20Click%20Guard.md) | Ignores clicks and confirms for a moment after the menu opens. | Programmers |
+| [🗞️ Side Step Input](Components/Side%20Step%20Input.md) | Turns left and right on the focused element into steps, like browsing a carousel. | Programmers |
+| [🗞️ Stepper Button](Components/Stepper%20Button.md) | A button that steps a value with left and right instead of moving the focus. | Programmers |
 
 ### Scrolling
 
@@ -36,6 +41,8 @@ Every component has its own page. [🗳️ Components](Controller%20Support%20Co
 | --- | --- | --- |
 | [🔖 Gamepad Scroll Rect](Components/Gamepad%20Scroll%20Rect.md) | Lets a stick scroll a ScrollRect directly, usually the right stick. | Everyone |
 | [🔖 Scroll Into View](Components/Scroll%20Into%20View.md) | Keeps the selected element inside the visible part of a ScrollRect. | Everyone |
+| [🔖 Scroll Soft Edges](Components/Scroll%20Soft%20Edges.md) | Fades the top and bottom edge of a scroll view while more rows lie beyond it. | Everyone |
+| [🔖 Scrollbar Fade](Components/Scrollbar%20Fade.md) | Shows a scroll bar only while its list moves. | Everyone |
 
 ### Rumble settings
 
