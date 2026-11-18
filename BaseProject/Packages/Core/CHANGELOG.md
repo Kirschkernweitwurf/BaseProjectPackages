@@ -67,6 +67,8 @@ Changes made before 2.1.4 were not recorded.
 
 ### Fixed
 
+- `TooltipView` beside a short target, like a row of a list, rises until its tail meets the target's middle, so the
+  tail keeps clear of the rounded corner instead of sitting on it.
 - `TooltipView` measures its real screen scale, so the tail points at the target's middle and every gap in canvas
   units lands right, also when a parent is scaled, like a text size zoom.
 - `MenuManager` picks the menu that receives Back on every open and close, not only when the top menu changes.

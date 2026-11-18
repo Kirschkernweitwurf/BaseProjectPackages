@@ -101,8 +101,9 @@ namespace Base.CorePackage.Tooltip
         [SerializeField] private RectTransform tail;
 
         [Min(0f)]
-        [Tooltip("Distance the tail keeps from the tooltip's top and bottom edge, in canvas units, so it never sits on "
-            + "a rounded corner.")]
+        [Tooltip("Distance the tail keeps from the tooltip's edges, in canvas units, so it never sits on a rounded "
+            + "corner: at least the card's corner radius. A short target gets the tooltip raised until the tail meets "
+            + "its middle.")]
         [SerializeField] private float tailMargin = 22f;
 
         [Tooltip("Canvas the tooltip lives under. Auto-assigned from the parents when empty.")]
@@ -543,6 +544,12 @@ namespace Base.CorePackage.Tooltip
         private Vector2 GetTooltipSize() => GetScreenRect(tooltipRect).size;
 
         /// <summary>
+        /// Screen pixels from the tooltip's edge to the middle of the tail at its closest to a corner: half the tail
+        /// plus the tail margin.
+        /// </summary>
+        private float GetTailClearance() => (tail.rect.height * Half + tailMargin) * GetPixelsPerUnit();
+
+        /// <summary>
         /// Screen pixels per canvas unit of the tooltip, scaled parents included, so distances in canvas units land
         /// where they are meant to on screen. The canvas scale factor alone misses a scaled parent, like a text size
         /// zoom.
@@ -589,7 +596,12 @@ namespace Base.CorePackage.Tooltip
             if (left + size.x > Screen.width - edgeMargin)
                 left = anchor.xMin - offsetX - size.x;
 
+            // A short target, like a row of a list, sits higher than the tail may go below the rounded corner, so the
+            // tooltip rises until its tail meets the target's middle.
             float top = anchor.yMax - offsetY;
+            if (tailGap > 0f)
+                top = Mathf.Max(top, anchor.center.y + GetTailClearance());
+
             if (top - size.y < edgeMargin)
                 top = anchor.yMin + offsetY + size.y;
 
@@ -619,7 +631,7 @@ namespace Base.CorePackage.Tooltip
 
             float tailClearance = tail == null
                 ? 0f
-                : (tail.rect.height * Half + tailMargin) * scale;
+                : GetTailClearance();
             float shownCardLeft = topLeft.x + cardFromLeft;
             bool canTailReach = anchor.center.x >= shownCardLeft + tailClearance
                 && anchor.center.x <= shownCardLeft + card.width - tailClearance;

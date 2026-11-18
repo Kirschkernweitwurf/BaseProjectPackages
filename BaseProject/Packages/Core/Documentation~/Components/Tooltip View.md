@@ -55,7 +55,7 @@ Draws the tooltip beside the cursor or the hovered object, never letting it leav
 | **Aside Card** | Transform |  | Second card beside the main one for entries marked Is Aside, like the terms a pinned tooltip mentions; shown only while it holds some. Its panels are copies of the panel template. Optional: without it those entries join the main card. |
 | **Tooltip Rect** | Rect Transform |  | **Required.** RectTransform used for positioning, the rect of the content object. |
 | **Tail** | Rect Transform |  | Small pointer on the tooltip's edge toward its target while it opens beside or above it, like on a popover. Authored on the left edge pointing left, pivot on its base; flipped when the tooltip opens left of the target, turned to point down from the card's bottom edge when it opens above, hidden in the dock and at the cursor. Optional. |
-| **Tail Margin** | Number | 22 | Distance the tail keeps from the tooltip's top and bottom edge, in canvas units, so it never sits on a rounded corner. |
+| **Tail Margin** | Number | 22 | Distance the tail keeps from the tooltip's edges, in canvas units, so it never sits on a rounded corner: at least the card's corner radius. A short target gets the tooltip raised until the tail meets its middle. |
 | **Canvas** | Canvas |  | Filled in automatically. Canvas the tooltip lives under. Auto-assigned from the parents when empty. |
 
 ## Good to know
