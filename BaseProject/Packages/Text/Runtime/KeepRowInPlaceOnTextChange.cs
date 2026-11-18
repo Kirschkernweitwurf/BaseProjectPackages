@@ -103,7 +103,10 @@ namespace Base.TextPackage
                 ? null
                 : EventSystem.current.currentSelectedGameObject;
 
-            return selected != null && selected.transform.IsChildOf(scrollRect.content)
+            // IsChildOf counts the content as its own child, but the content is no row.
+            return selected != null
+                && selected.transform != scrollRect.content
+                && selected.transform.IsChildOf(scrollRect.content)
                 ? RowOf(selected.transform)
                 : null;
         }

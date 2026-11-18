@@ -10,3 +10,8 @@ All notable changes to this package are recorded here. The format follows
 
 - The package, moved from a game project: localized text styles for TextMeshPro, line balancing, hyphenation,
   readable fonts, text size scaling and the Text Fit editor window.
+
+### Fixed
+
+- `KeepRowInPlaceOnTextChange` no longer throws when the scroll content itself is selected. It counted the
+  content as one of its own rows and climbed past the root.
