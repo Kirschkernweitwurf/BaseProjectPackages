@@ -30,8 +30,8 @@ Shows a tooltip while the pointer hovers this object and hides it when the point
 | **Tooltip Title** | Text |  | Header above the text. Optional. |
 | **Tooltip Text** | Text |  | The text to show. Several lines are fine. Optional when a provider adds the content. |
 | **Priority** | Priority |  | When several tooltips overlap, the highest priority wins. |
-| **Placement** | Tooltip Placement | At Cursor | Next to the cursor, or beside this object so the panels line up next to what they explain. |
-| **Anchor** | Transform |  | What Beside Target places the tooltip next to, for example the visible part of a wide element. Empty uses this object. |
+| **Placement** | Tooltip Placement | At Cursor | Next to the cursor, beside this object so the panels line up next to what they explain, or above it so what lies beside it stays readable, like the other cards in a hand. |
+| **Anchor** | Transform |  | What Beside Target and Above Target place the tooltip at, for example the visible part of a wide element. Empty uses this object. |
 | **Show On Hover** | Toggle | On | Shows the tooltip while the pointer hovers or a gamepad selects this object. Off when a script calls Show and Hide. |
 
 ## Good to know
@@ -46,6 +46,7 @@ Shows a tooltip while the pointer hovers this object and hides it when the point
 - If the object is disabled while hovered, the tooltip hides itself.
 - Dragging something across the object shows no tooltip, so tooltips never cover a drop target.
 - Selecting the object with a gamepad or the keyboard, for example a menu button, shows the tooltip beside it.
+- Above Target opens the tooltip above the object, growing away from the screen's middle, and falls back to beside it when there is no room above or it would cover a [🔖 Tooltip Keep Visible](Tooltip%20Keep%20Visible.md) area.
 - Without a mouse, At Cursor falls back to Beside Target. Beside Target measures UI elements by their rect, also on world space canvases, and 3D objects by all their renderers or their collider.
 - Objects with hover rules of their own, like cards, turn **Show On Hover** off and call **Show** and **Hide** from code.
 

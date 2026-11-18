@@ -29,6 +29,7 @@ None. Add it and it works.
 
 - Needs a Tooltip View in the UI to draw anything.
 - `KeepClear(owner, area)` keeps a tooltip that opens beside its target clear of an area running alongside the target, like a gamepad pin pointing at it from the side: the tooltip opens past the area. `ReleaseClear(owner)` ends it.
+- `KeepVisible(owner, area)` keeps an area visible, like a HUD panel the player reads while choosing: a tooltip that would cover it from above its target opens beside the target instead. `ReleaseVisible(owner)` ends it. [🔖 Tooltip Keep Visible](Tooltip%20Keep%20Visible.md) does this for a UI element without code.
 - `Dock(owner, area)` opens every tooltip in one fixed area instead of beside its target, with its top right corner in the area's top right, like an inspector panel. Use it where tooltips beside their targets would cover what the player compares, like the cards in a hand. `ReleaseDock(owner)` ends it.
 - `Pin()` keeps the shown tooltip while other requests come and go, for example while a key is held; `Unpin()` lets it go and the view catches up. Its own trigger may rebuild it while pinned (`IsPinnedBy(caller)`, `PinnedChanged`), for example to add more detail.
 

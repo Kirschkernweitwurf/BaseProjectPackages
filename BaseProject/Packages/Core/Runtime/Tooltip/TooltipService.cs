@@ -10,7 +10,8 @@ namespace Base.CorePackage.Tooltip
     /// <summary>
     /// Shows the highest priority tooltip that is currently requested.
     /// Backed by a <see cref="PriorityTracker{T}"/>, so overlapping requests resolve by priority. Areas kept clear,
-    /// like a marker that points at the target from the side, push a tooltip beside its target past them. A dock
+    /// like a marker that points at the target from the side, push a tooltip beside its target past them. Areas kept
+    /// visible, like HUD panels, send a tooltip that would cover them from above its target to beside it. A dock
     /// gathers every tooltip in one fixed area instead, like an inspector panel. A pinned tooltip stays while other
     /// requests come and go, so the player can read it at leisure.
     /// </summary>
@@ -18,6 +19,7 @@ namespace Base.CorePackage.Tooltip
     {
         private readonly PriorityTracker<TooltipData> _tracker = new();
         private readonly Dictionary<object, Func<Rect>> _clearAreas = new();
+        private readonly Dictionary<object, Func<Rect>> _visibleAreas = new();
         private readonly Dictionary<object, TooltipData> _dataByCaller = new();
 
         private TooltipView _view;
@@ -168,6 +170,38 @@ namespace Base.CorePackage.Tooltip
         }
 
         /// <summary>
+        /// Keeps an area visible, like a HUD panel the player reads while choosing: a tooltip that would cover it
+        /// from above its target opens beside the target instead. The area is read each time a tooltip is placed, so it
+        /// may move. One area per owner; a second call replaces the first.
+        /// </summary>
+        /// <param name="owner">The object that keeps the area visible, used for release.</param>
+        /// <param name="area">Returns the area in screen pixels.</param>
+        public void KeepVisible(object owner, Func<Rect> area)
+        {
+            if (owner == null
+                || area == null)
+            {
+                CustomLogger.LogError($"{nameof(KeepVisible)} was called without an owner or an area.", this);
+                return;
+            }
+
+            _visibleAreas[owner] = area;
+        }
+
+        /// <summary>
+        /// Stops keeping the area of the given owner visible. Silent when it kept none, so a double release does not
+        /// spam.
+        /// </summary>
+        /// <param name="owner">The object that called <see cref="KeepVisible"/>.</param>
+        public void ReleaseVisible(object owner)
+        {
+            if (owner == null)
+                return;
+
+            _visibleAreas.Remove(owner);
+        }
+
+        /// <summary>
         /// Opens every tooltip in a fixed area instead of beside its target, with its top right corner in the area's
         /// top right, so it grows down and to the left. Use it where tooltips beside their targets would cover what the
         /// player compares, like the cards in a hand. The area is read each time a tooltip is placed, so it may move.
@@ -236,6 +270,20 @@ namespace Base.CorePackage.Tooltip
             }
 
             return anchor;
+        }
+
+        /// <summary>
+        /// Whether a tooltip at <paramref name="rect"/>, in screen pixels, would cover an area kept visible.
+        /// </summary>
+        internal bool IsCoveringVisibleArea(Rect rect)
+        {
+            foreach (Func<Rect> getArea in _visibleAreas.Values)
+            {
+                if (rect.Overlaps(getArea()))
+                    return true;
+            }
+
+            return false;
         }
 
         // The tracker does not say who asked, so the request is found by its panel list, which every request owns.

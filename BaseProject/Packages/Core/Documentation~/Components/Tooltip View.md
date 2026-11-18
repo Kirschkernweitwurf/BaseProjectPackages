@@ -14,7 +14,7 @@ summary: Draws the tooltip panels beside the cursor or the hovered object and ke
 
 **Tags:** #designer #artist #ui
 
-Draws the tooltip beside the cursor or the hovered object, never letting it leave the screen. It prefers the right side with the tops lined up and flips to the left or upward when there is no room. The spot is picked while the tooltip waits to appear and then kept, so it never wanders when the object moves on screen, for example under a camera that follows the pointer. While the Tooltip Service holds a dock, every tooltip opens in the dock area instead, its top right corner in the area's top right. A tooltip can have several panels, for example a description plus one panel per keyword it mentions. Each panel is a copy of the first one. One per UI is enough; every Tooltip Trigger uses it.
+Draws the tooltip beside the cursor or the hovered object, never letting it leave the screen. It prefers the right side with the tops lined up and flips to the left or upward when there is no room. The spot is picked while the tooltip waits to appear and then kept, so it never wanders when the object moves on screen, for example under a camera that follows the pointer. A trigger set to Above Target gets its tooltip above the object instead: the card's bottom edge one gap above the object, its edge lined up with the object's edge on the side away from the screen's middle, and the tail pointing down. It opens beside the object when it would leave the screen, cover an area kept visible or move so far that the tail can't reach the object's middle. Unlike a tooltip beside its target, it follows the object, so the tail stays on it while the object pops up on hover or the camera sways. While the Tooltip Service holds a dock, every tooltip opens in the dock area instead, its top right corner in the area's top right. A tooltip can have several panels, for example a description plus one panel per keyword it mentions. Each panel is a copy of the first one. One per UI is enough; every Tooltip Trigger uses it.
 
 **Add it:** Inspector › **Add Component** › search `Tooltip View`. Only one per GameObject.
 
@@ -33,6 +33,7 @@ Draws the tooltip beside the cursor or the hovered object, never letting it leav
 | --- | --- | --- | --- |
 | **Screen Offset** | Vector2 | (15, 15) | Distance in pixels between the anchor and the tooltip. |
 | **Edge Margin** | Number | 8 | Distance in pixels the tooltip keeps away from the screen edge. |
+| **Above Gap** | Number | 30 | Space between the target's top edge and the card's bottom edge when the tooltip opens above its target, in canvas units. Leaves room for the tail. |
 
 ### Timing
 
@@ -53,7 +54,7 @@ Draws the tooltip beside the cursor or the hovered object, never letting it leav
 | **Source Panel** | Tooltip Panel |  | Header of the card, filled from the tooltip's source: what the panels explain. A tooltip with one titled entry and no source shows that title here and only its text below. Optional: without it every entry is a panel of its own. |
 | **Aside Card** | Transform |  | Second card beside the main one for entries marked Is Aside, like the terms a pinned tooltip mentions; shown only while it holds some. Its panels are copies of the panel template. Optional: without it those entries join the main card. |
 | **Tooltip Rect** | Rect Transform |  | **Required.** RectTransform used for positioning, the rect of the content object. |
-| **Tail** | Rect Transform |  | Small pointer on the tooltip's edge toward its target while it opens beside it, like on a popover. Authored on the left edge pointing left, pivot on its right; flipped when the tooltip opens left of the target, hidden in the dock and at the cursor. Optional. |
+| **Tail** | Rect Transform |  | Small pointer on the tooltip's edge toward its target while it opens beside or above it, like on a popover. Authored on the left edge pointing left, pivot on its base; flipped when the tooltip opens left of the target, turned to point down from the card's bottom edge when it opens above, hidden in the dock and at the cursor. Optional. |
 | **Tail Margin** | Number | 22 | Distance the tail keeps from the tooltip's top and bottom edge, in canvas units, so it never sits on a rounded corner. |
 | **Canvas** | Canvas |  | Filled in automatically. Canvas the tooltip lives under. Auto-assigned from the parents when empty. |
 

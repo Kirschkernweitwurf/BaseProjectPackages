@@ -34,11 +34,12 @@ namespace Base.CorePackage.Tooltip
         [Tooltip("Higher wins when several tooltips are requested at the same time.")]
         [SerializeField] private EPriority priority;
 
-        [Tooltip("Next to the cursor, or beside this object so the panels line up next to what they explain.")]
+        [Tooltip("Next to the cursor, beside this object so the panels line up next to what they explain, or above it "
+            + "so what lies beside it stays readable, like the other cards in a hand.")]
         [SerializeField] private ETooltipPlacement placement;
 
-        [Tooltip("What Beside Target places the tooltip next to, for example the visible part of a wide element. "
-            + "Empty uses this object.")]
+        [Tooltip("What Beside Target and Above Target place the tooltip at, for example the visible part of a wide "
+            + "element. Empty uses this object.")]
         [SerializeField] private Transform anchor;
 
         [Tooltip("Shows the tooltip while the pointer hovers or a gamepad selects this object. Off when a script "
@@ -178,7 +179,8 @@ namespace Base.CorePackage.Tooltip
                 return;
             }
 
-            _service.AddTooltip(new TooltipData(_entries, BuildAnchor(), FindSource()), (uint)priority, this);
+            _service.AddTooltip(new TooltipData(_entries, BuildAnchor(), FindSource(), placement), (uint)priority,
+                this);
         }
 
         // The inspector text comes first, so a provider can add details below a fixed description.

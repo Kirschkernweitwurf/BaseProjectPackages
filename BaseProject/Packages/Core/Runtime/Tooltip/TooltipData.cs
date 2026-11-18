@@ -25,6 +25,12 @@ namespace Base.CorePackage.Tooltip
         /// </summary>
         public TooltipEntry? Source { get; }
 
+        /// <summary>
+        /// Where the tooltip goes relative to its anchor: beside it, or above it while there is room. A point anchor,
+        /// like the cursor, always gets the tooltip beside it.
+        /// </summary>
+        public ETooltipPlacement Placement { get; }
+
         /// <summary>Creates a tooltip payload with a single text panel next to a point.</summary>
         /// <param name="message">Text to show.</param>
         /// <param name="getScreenPosition">Supplies the screen point to follow.</param>
@@ -45,7 +51,9 @@ namespace Base.CorePackage.Tooltip
         /// <param name="entries">Panels to show. Copied, so the caller may reuse its list.</param>
         /// <param name="getScreenAnchor">Supplies the screen rect to place the tooltip beside.</param>
         /// <param name="source">What the panels explain, shown in the view's header. Null for none.</param>
-        public TooltipData(IEnumerable<TooltipEntry> entries, Func<Rect> getScreenAnchor, TooltipEntry? source = null)
+        /// <param name="placement">Beside the anchor, or above it while there is room.</param>
+        public TooltipData(IEnumerable<TooltipEntry> entries, Func<Rect> getScreenAnchor, TooltipEntry? source = null,
+            ETooltipPlacement placement = ETooltipPlacement.BesideTarget)
         {
             Entries = entries == null
                 ? Array.Empty<TooltipEntry>()
@@ -53,6 +61,7 @@ namespace Base.CorePackage.Tooltip
 
             GetScreenAnchor = getScreenAnchor;
             Source = source;
+            Placement = placement;
         }
 
         private static Func<Rect> AnchorAt(Func<Vector2> getScreenPosition) => getScreenPosition == null

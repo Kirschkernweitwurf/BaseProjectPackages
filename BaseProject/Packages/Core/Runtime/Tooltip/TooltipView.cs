@@ -10,15 +10,17 @@ using UnityEngine.UI;
 namespace Base.CorePackage.Tooltip
 {
     /// <summary>
-    /// Draws the tooltip beside its anchor, the cursor or the hovered object, or in the dock area while the
+    /// Draws the tooltip beside its anchor, the cursor or the hovered object, above the hovered object when its data
+    /// asks for <see cref="ETooltipPlacement.AboveTarget"/> and there is room, or in the dock area while the
     /// <see cref="TooltipService"/> holds one, without ever letting it leave the screen. The spot is picked while the
     /// tooltip waits to appear and then kept, so a tooltip never wanders when its anchor moves on screen, for example a
-    /// 3D object under a camera that follows the pointer. Every <see cref="TooltipEntry"/> gets its own
+    /// 3D object under a camera that follows the pointer. Only a tooltip above its target follows it, so its tail stays
+    /// on the target while that pops up or sways. Every <see cref="TooltipEntry"/> gets its own
     /// <see cref="TooltipPanel"/>, copied from the first one, so the content's layout group decides whether they stack
-    /// or line up side by side. A tooltip in the dock slides in from the right as it fades in, and one beside its
-    /// target shows a small tail pointing at it, like a popover. A tooltip fades in after a short delay, so sweeping
-    /// the pointer across the screen stays calm, but moving straight on to the next tooltip shows it at once. The
-    /// tooltip never takes the pointer, so it cannot flicker by covering its anchor. Registers itself with the
+    /// or line up side by side. A tooltip in the dock slides in from the right as it fades in, and one beside or above
+    /// its target shows a small tail pointing at it, like a popover. A tooltip fades in after a short delay, so
+    /// sweeping the pointer across the screen stays calm, but moving straight on to the next tooltip shows it at once.
+    /// The tooltip never takes the pointer, so it cannot flicker by covering its anchor. Registers itself with the
     /// <see cref="TooltipService"/> on start.
     /// </summary>
     [DisallowMultipleComponent]
@@ -26,9 +28,10 @@ namespace Base.CorePackage.Tooltip
     {
         private const int BottomLeftCorner = 0;
         private const int CornerCount = 4;
-        private const float NoDelay = 0f;
         private const float Half = 0.5f;
+        private const float NoDelay = 0f;
         private const float Opaque = 1f;
+        private const float QuarterTurn = 90f;
         private const float SwapStartAlpha = 0.35f;
         private const int TopRightCorner = 2;
         private const float Transparent = 0f;
@@ -41,6 +44,11 @@ namespace Base.CorePackage.Tooltip
 
         [Tooltip("Distance in pixels the tooltip keeps away from the screen edge.")]
         [Min(0f)] [SerializeField] private float edgeMargin = 8f;
+
+        [Min(0f)]
+        [Tooltip("Space between the target's top edge and the card's bottom edge when the tooltip opens above its "
+            + "target, in canvas units. Leaves room for the tail.")]
+        [SerializeField] private float aboveGap = 30f;
 
         [Title("Timing")]
         [Min(0f)]
@@ -84,9 +92,10 @@ namespace Base.CorePackage.Tooltip
         [Tooltip("RectTransform used for positioning, the rect of the content object.")]
         [Required] [SerializeField] private RectTransform tooltipRect;
 
-        [Tooltip("Small pointer on the tooltip's edge toward its target while it opens beside it, like on a popover. "
-            + "Authored on the left edge pointing left, pivot on its right; flipped when the tooltip opens left of "
-            + "the target, hidden in the dock and at the cursor. Optional.")]
+        [Tooltip("Small pointer on the tooltip's edge toward its target while it opens beside or above it, like on a "
+            + "popover. Authored on the left edge pointing left, pivot on its base; flipped when the tooltip opens "
+            + "left of the target, turned to point down from the card's bottom edge when it opens above, hidden in "
+            + "the dock and at the cursor. Optional.")]
         [SerializeField] private RectTransform tail;
 
         [Min(0f)]
@@ -106,12 +115,15 @@ namespace Base.CorePackage.Tooltip
         private TooltipService _service;
         private Camera _canvasCamera;
         private RectTransform _canvasRect;
+        private RectTransform _card;
         private CanvasGroup _contentGroup;
         private Coroutine _showRoutine;
         private Func<Rect> _getScreenAnchor;
         private float _hiddenAt = float.NegativeInfinity;
         private bool _isVisible;
         private bool _isDocked;
+        private bool _isAbove;
+        private ETooltipPlacement _placement;
         private string _shownName;
         private Vector3 _restPosition;
 
@@ -135,6 +147,7 @@ namespace Base.CorePackage.Tooltip
         private void Start()
         {
             _panels.Add(panelTemplate);
+            _card = (RectTransform)panelTemplate.transform.parent;
             _canvasRect = (RectTransform)canvas.rootCanvas.transform;
             _canvasCamera = canvas.rootCanvas.renderMode == RenderMode.ScreenSpaceOverlay
                 ? null
@@ -147,6 +160,17 @@ namespace Base.CorePackage.Tooltip
                 _service.SetView(this);
 
             Hide();
+        }
+
+        // A tooltip above its target follows it, so the tail stays on the target while it pops up on hover or the
+        // camera sways. Moving straight on to the next target shows the tooltip at once, before that one has risen.
+        private void LateUpdate()
+        {
+            if (_getScreenAnchor == null
+                || _placement != ETooltipPlacement.AboveTarget)
+                return;
+
+            PlaceTooltip();
         }
 #endregion
 
@@ -178,6 +202,7 @@ namespace Base.CorePackage.Tooltip
             _shownName = tooltipName;
 
             _getScreenAnchor = data.GetScreenAnchor;
+            _placement = data.Placement;
             content.SetActive(true);
             ShowEntries(data);
 
@@ -405,8 +430,9 @@ namespace Base.CorePackage.Tooltip
             Vector2 pivotScreen;
             Rect anchor = Rect.zero;
             _isDocked = false;
+            _isAbove = false;
 
-            // A view shown without the service has no dock and no kept-clear areas.
+            // A view shown without the service has no dock and no kept-clear or kept-visible areas.
             if (_service == null)
             {
                 anchor = _getScreenAnchor.Invoke();
@@ -419,8 +445,19 @@ namespace Base.CorePackage.Tooltip
             }
             else
             {
-                anchor = _service.WidenOverClearAreas(_getScreenAnchor.Invoke());
-                pivotScreen = ResolvePivotPosition(anchor, size);
+                anchor = _getScreenAnchor.Invoke();
+
+                if (_placement == ETooltipPlacement.AboveTarget
+                    && TryResolveAbovePosition(anchor, size, out Vector2 abovePosition))
+                {
+                    _isAbove = true;
+                    pivotScreen = abovePosition;
+                }
+                else
+                {
+                    anchor = _service.WidenOverClearAreas(anchor);
+                    pivotScreen = ResolvePivotPosition(anchor, size);
+                }
             }
 
             RectTransformUtility.ScreenPointToLocalPointInRectangle(_canvasRect, pivotScreen, _canvasCamera,
@@ -433,13 +470,20 @@ namespace Base.CorePackage.Tooltip
 
         /// <summary>
         /// Points the tail at the target from the side the tooltip opened on, at the height of the target's middle as
-        /// far as the straight edge allows. Hidden in the dock, at a cursor and when the tooltip had to cover the
-        /// target.
+        /// far as the straight edge allows, or down from the card's bottom edge when it opened above. Hidden in the
+        /// dock, at a cursor and when the tooltip had to cover the target.
         /// </summary>
         private void PlaceTail(Rect anchor, Vector2 topLeft, Vector2 size)
         {
             if (tail == null)
                 return;
+
+            if (_isAbove)
+            {
+                tail.gameObject.SetActive(true);
+                PlaceTailBelow(anchor, topLeft);
+                return;
+            }
 
             bool isRightOfTarget = topLeft.x >= anchor.xMax;
             bool isLeftOfTarget = topLeft.x + size.x <= anchor.xMin;
@@ -467,7 +511,34 @@ namespace Base.CorePackage.Tooltip
             tail.anchorMax = tail.anchorMin;
             tail.anchoredPosition = new Vector2(0f, -fromTop);
             tail.localScale = new Vector3(direction, Opaque, Opaque);
+            tail.localRotation = Quaternion.identity;
         }
+
+        /// <summary>
+        /// Points the tail down at the target's middle from the card's bottom edge, as far as the straight edge allows,
+        /// so it never sits on a rounded corner.
+        /// </summary>
+        private void PlaceTailBelow(Rect anchor, Vector2 topLeft)
+        {
+            float scale = GetPixelsPerUnit();
+            Rect card = GetScreenRect(_card);
+            float margin = tail.rect.height * Half + tailMargin;
+            float cardFromLeft = (card.xMin - topLeft.x) / scale;
+            float cardRight = cardFromLeft + card.width / scale;
+            float fromLeft = Mathf.Clamp((anchor.center.x - topLeft.x) / scale, cardFromLeft + margin,
+                Mathf.Max(cardFromLeft + margin, cardRight - margin));
+
+            tail.anchorMin = TopLeftPivot;
+            tail.anchorMax = TopLeftPivot;
+            tail.anchoredPosition = new Vector2(fromLeft, -(topLeft.y - card.yMin) / scale);
+            tail.localScale = Vector3.one;
+            tail.localRotation = Quaternion.Euler(0f, 0f, QuarterTurn);
+        }
+
+        /// <summary>
+        /// Measures the tooltip in screen pixels, using the layout as it stands this frame.
+        /// </summary>
+        private Vector2 GetTooltipSize() => GetScreenRect(tooltipRect).size;
 
         /// <summary>
         /// Screen pixels per canvas unit of the tooltip, scaled parents included, so distances in canvas units land
@@ -479,20 +550,22 @@ namespace Base.CorePackage.Tooltip
             float width = tooltipRect.rect.width;
 
             return width > 0f
-                ? GetTooltipSize().x / width
+                ? GetScreenRect(tooltipRect).width / width
                 : canvas.rootCanvas.scaleFactor;
         }
 
         /// <summary>
-        /// Measures the tooltip in screen pixels, using the layout as it stands this frame.
+        /// The screen rect of <paramref name="target"/>, a part of the tooltip, using the layout as it stands this
+        /// frame.
         /// </summary>
-        private Vector2 GetTooltipSize()
+        private Rect GetScreenRect(RectTransform target)
         {
-            tooltipRect.GetWorldCorners(_corners);
+            target.GetWorldCorners(_corners);
             Vector2 bottomLeft = RectTransformUtility.WorldToScreenPoint(_canvasCamera, _corners[BottomLeftCorner]);
             Vector2 topRight = RectTransformUtility.WorldToScreenPoint(_canvasCamera, _corners[TopRightCorner]);
 
-            return new Vector2(Mathf.Abs(topRight.x - bottomLeft.x), Mathf.Abs(topRight.y - bottomLeft.y));
+            return Rect.MinMaxRect(Mathf.Min(bottomLeft.x, topRight.x), Mathf.Min(bottomLeft.y, topRight.y),
+                Mathf.Max(bottomLeft.x, topRight.x), Mathf.Max(bottomLeft.y, topRight.y));
         }
 
         /// <summary>
@@ -514,6 +587,39 @@ namespace Base.CorePackage.Tooltip
                 top = anchor.yMin + offsetY + size.y;
 
             return ClampToScreen(new Vector2(left, top), size);
+        }
+
+        /// <summary>
+        /// Resolves the top left corner in screen space for a tooltip above its anchor: the card's bottom edge one gap
+        /// above the anchor's top, and its edge lined up with the anchor's edge on the side away from the screen's
+        /// middle, so it grows outward and leaves what lies beside the anchor readable. Fails when the tooltip would
+        /// leave the top of the screen, cover an area kept visible or move so far that the tail no longer reaches the
+        /// anchor's middle.
+        /// </summary>
+        private bool TryResolveAbovePosition(Rect anchor, Vector2 size, out Vector2 topLeft)
+        {
+            float scale = GetPixelsPerUnit();
+            Rect tooltip = GetScreenRect(tooltipRect);
+            Rect card = GetScreenRect(_card);
+            float cardFromLeft = card.xMin - tooltip.xMin;
+            float cardBottomFromTop = tooltip.yMax - card.yMin;
+
+            float cardLeft = anchor.center.x >= Screen.width * Half
+                ? anchor.xMin
+                : anchor.xMax - card.width;
+            float top = anchor.yMax + aboveGap * scale + cardBottomFromTop;
+            topLeft = ClampToScreen(new Vector2(cardLeft - cardFromLeft, top), size);
+
+            float tailClearance = tail == null
+                ? 0f
+                : (tail.rect.height * Half + tailMargin) * scale;
+            float shownCardLeft = topLeft.x + cardFromLeft;
+            bool canTailReach = anchor.center.x >= shownCardLeft + tailClearance
+                && anchor.center.x <= shownCardLeft + card.width - tailClearance;
+
+            return top <= Screen.height - edgeMargin
+                && canTailReach
+                && !_service.IsCoveringVisibleArea(new Rect(topLeft.x, topLeft.y - size.y, size.x, size.y));
         }
 
         /// <summary>

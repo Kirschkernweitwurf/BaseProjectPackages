@@ -7,6 +7,13 @@ namespace Base.CorePackage.Tooltip
         AtCursor = 0,
 
         /// <summary>Beside the hovered object, so the panels line up next to what they explain.</summary>
-        BesideTarget = 1
+        BesideTarget = 1,
+
+        /// <summary>
+        /// Above the hovered object with the tail pointing down at it, growing away from the screen's middle, so
+        /// what lies beside the object stays readable, like the other cards in a hand. Beside it when there is no
+        /// room above or the tooltip would cover an area kept visible.
+        /// </summary>
+        AboveTarget = 2
     }
 }
