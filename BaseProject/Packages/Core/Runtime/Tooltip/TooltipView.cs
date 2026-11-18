@@ -34,6 +34,10 @@ namespace Base.CorePackage.Tooltip
         private const float Opaque = 1f;
         private const float QuarterTurn = 90f;
         private const float SwapStartAlpha = 0.35f;
+
+        // Share of the target's size the tail may land from its middle and still point into it, like a chip in a
+        // screen corner that the tail can't quite center on.
+        private const float TargetShare = 0.25f;
         private const int TopRightCorner = 2;
         private const float Transparent = 0f;
 
@@ -244,6 +248,15 @@ namespace Base.CorePackage.Tooltip
         }
 
         private static float EaseOut(float progress) => Opaque - (Opaque - progress) * (Opaque - progress);
+
+        // The tail goes as close to the target's middle as the straight edge between lowest and highest allows; it
+        // points into the target while that spot stays within a quarter of the target's size from its middle.
+        private static bool IsTailOnTarget(float middle, float targetSize, float lowest, float highest)
+        {
+            float spot = Mathf.Clamp(middle, lowest, Mathf.Max(lowest, highest));
+
+            return Mathf.Abs(spot - middle) <= targetSize * TargetShare;
+        }
 
         /// <summary>
         /// Gives the content a canvas group that never takes the pointer, so the tooltip cannot cover its own anchor
@@ -458,8 +471,19 @@ namespace Base.CorePackage.Tooltip
                 }
                 else
                 {
+                    Rect target = anchor;
                     anchor = _service.WidenOverClearAreas(anchor);
                     pivotScreen = ResolvePivotPosition(anchor, size);
+
+                    // Close to the screen's bottom or top the tail may not reach the target's middle from the side;
+                    // above the target it does.
+                    if (!CanTailReachBeside(anchor, pivotScreen, size)
+                        && TryResolveAbovePosition(target, size, out Vector2 fallback))
+                    {
+                        _isAbove = true;
+                        anchor = target;
+                        pivotScreen = fallback;
+                    }
                 }
             }
 
@@ -544,6 +568,23 @@ namespace Base.CorePackage.Tooltip
         private Vector2 GetTooltipSize() => GetScreenRect(tooltipRect).size;
 
         /// <summary>
+        /// Whether a tooltip beside <paramref name="anchor"/> at <paramref name="topLeft"/> lets its tail point into
+        /// the target without touching a rounded corner. Always true without a tail or at a cursor.
+        /// </summary>
+        private bool CanTailReachBeside(Rect anchor, Vector2 topLeft, Vector2 size)
+        {
+            if (tail == null
+                || anchor.width <= 0f)
+                return true;
+
+            float clearance = GetTailClearance();
+
+            return IsTailOnTarget(anchor.center.y, anchor.height, topLeft.y - size.y + clearance,
+                topLeft.y - clearance);
+        }
+
+
+        /// <summary>
         /// Screen pixels from the tooltip's edge to the middle of the tail at its closest to a corner: half the tail
         /// plus the tail margin.
         /// </summary>
@@ -602,8 +643,11 @@ namespace Base.CorePackage.Tooltip
             if (tailGap > 0f)
                 top = Mathf.Max(top, anchor.center.y + GetTailClearance());
 
+            // With no room below, the bottoms line up, but never so high that the tail misses the target's middle.
             if (top - size.y < edgeMargin)
-                top = anchor.yMin + offsetY + size.y;
+                top = tailGap > 0f
+                    ? Mathf.Min(anchor.yMin + offsetY + size.y, anchor.center.y - GetTailClearance() + size.y)
+                    : anchor.yMin + offsetY + size.y;
 
             return ClampToScreen(new Vector2(left, top), size);
         }
@@ -623,18 +667,22 @@ namespace Base.CorePackage.Tooltip
             float cardFromLeft = card.xMin - tooltip.xMin;
             float cardBottomFromTop = tooltip.yMax - card.yMin;
 
-            float cardLeft = anchor.center.x >= Screen.width * Half
-                ? anchor.xMin
-                : anchor.xMax - card.width;
-            float top = anchor.yMax + targetGap * scale + cardBottomFromTop;
-            topLeft = ClampToScreen(new Vector2(cardLeft - cardFromLeft, top), size);
-
             float tailClearance = tail == null
                 ? 0f
                 : GetTailClearance();
+            float cardLeft = anchor.center.x >= Screen.width * Half
+                ? anchor.xMin
+                : anchor.xMax - card.width;
+
+            // A narrow target would leave the tail no room next to the edge it lines up with: the card moves over.
+            cardLeft = Mathf.Clamp(cardLeft, anchor.center.x - card.width + tailClearance,
+                anchor.center.x - tailClearance);
+            float top = anchor.yMax + targetGap * scale + cardBottomFromTop;
+            topLeft = ClampToScreen(new Vector2(cardLeft - cardFromLeft, top), size);
+
             float shownCardLeft = topLeft.x + cardFromLeft;
-            bool canTailReach = anchor.center.x >= shownCardLeft + tailClearance
-                && anchor.center.x <= shownCardLeft + card.width - tailClearance;
+            bool canTailReach = IsTailOnTarget(anchor.center.x, anchor.width, shownCardLeft + tailClearance,
+                shownCardLeft + card.width - tailClearance);
 
             return top <= Screen.height - edgeMargin
                 && canTailReach

@@ -67,6 +67,9 @@ Changes made before 2.1.4 were not recorded.
 
 ### Fixed
 
+- `TooltipView` tail always points into its target: above a narrow target the card moves over until the tail reaches,
+  near the screen's bottom a tooltip beside its target sits low enough, and where the side can't make it, like a chip
+  in a screen corner, the tooltip opens above the target instead.
 - A tooltip anchor that is a rect outside every canvas, like a marker riding along with a 3D card, is measured with
   the main camera instead of as screen pixels.
 - `TooltipView` beside a short target, like a row of a list, rises until its tail meets the target's middle, so the
