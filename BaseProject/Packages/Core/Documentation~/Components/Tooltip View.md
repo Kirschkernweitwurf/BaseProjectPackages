@@ -33,7 +33,7 @@ Draws the tooltip beside the cursor or the hovered object, never letting it leav
 | --- | --- | --- | --- |
 | **Screen Offset** | Vector2 | (15, 15) | Distance in pixels between the anchor and the tooltip. |
 | **Edge Margin** | Number | 8 | Distance in pixels the tooltip keeps away from the screen edge. |
-| **Above Gap** | Number | 30 | Space between the target's top edge and the card's bottom edge when the tooltip opens above its target, in canvas units. Leaves room for the tail. |
+| **Target Gap** | Number | 30 | Space between the target and the card's edge while the tail points at it, beside or above, in canvas units. Leaves room for the tail. Beside a target, Screen Offset wins when it is larger. |
 
 ### Timing
 

@@ -40,8 +40,8 @@ Changes made before 2.1.4 were not recorded.
   terms a pinned tooltip mentions.
 - `ETooltipPlacement.AboveTarget`: the tooltip opens above its target with the tail pointing down, growing away
   from the screen's middle, and beside it when there is no room. It follows its target, so the tail stays on it while
-  the target pops up. `TooltipData.Placement` carries it from the trigger to the view, `TooltipView` **Above Gap** sets
-  the space.
+  the target pops up. `TooltipData.Placement` carries it from the trigger to the view, `TooltipView` **Target Gap** sets
+  the space, beside a target too, so the tail has room at every resolution.
 - `TooltipService.KeepVisible(owner, area)`, `ReleaseVisible(owner)` and the `TooltipKeepVisible` component: areas
   like HUD panels that a tooltip above its target must not cover.
 

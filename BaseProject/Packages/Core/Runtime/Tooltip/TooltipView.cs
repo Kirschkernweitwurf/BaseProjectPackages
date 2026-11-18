@@ -5,6 +5,7 @@ using Base.AttributesPackage;
 using Base.ServicesPackage;
 using Base.UtilityPackage.Logging;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace Base.CorePackage.Tooltip
@@ -46,9 +47,10 @@ namespace Base.CorePackage.Tooltip
         [Min(0f)] [SerializeField] private float edgeMargin = 8f;
 
         [Min(0f)]
-        [Tooltip("Space between the target's top edge and the card's bottom edge when the tooltip opens above its "
-            + "target, in canvas units. Leaves room for the tail.")]
-        [SerializeField] private float aboveGap = 30f;
+        [FormerlySerializedAs("aboveGap")]
+        [Tooltip("Space between the target and the card's edge while the tail points at it, beside or above, in "
+            + "canvas units. Leaves room for the tail. Beside a target, Screen Offset wins when it is larger.")]
+        [SerializeField] private float targetGap = 30f;
 
         [Title("Timing")]
         [Min(0f)]
@@ -575,7 +577,12 @@ namespace Base.CorePackage.Tooltip
         /// </summary>
         private Vector2 ResolvePivotPosition(Rect anchor, Vector2 size)
         {
-            float offsetX = Mathf.Abs(screenOffset.x);
+            // Beside a target the tail needs its room at every resolution; a cursor gets no tail.
+            float tailGap = tail != null
+                && anchor.width > 0f
+                    ? targetGap * GetPixelsPerUnit()
+                    : 0f;
+            float offsetX = Mathf.Max(Mathf.Abs(screenOffset.x), tailGap);
             float offsetY = Mathf.Abs(screenOffset.y);
 
             float left = anchor.xMax + offsetX;
@@ -607,7 +614,7 @@ namespace Base.CorePackage.Tooltip
             float cardLeft = anchor.center.x >= Screen.width * Half
                 ? anchor.xMin
                 : anchor.xMax - card.width;
-            float top = anchor.yMax + aboveGap * scale + cardBottomFromTop;
+            float top = anchor.yMax + targetGap * scale + cardBottomFromTop;
             topLeft = ClampToScreen(new Vector2(cardLeft - cardFromLeft, top), size);
 
             float tailClearance = tail == null
