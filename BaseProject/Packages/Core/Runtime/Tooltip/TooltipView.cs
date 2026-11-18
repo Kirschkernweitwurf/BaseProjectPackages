@@ -451,7 +451,7 @@ namespace Base.CorePackage.Tooltip
             if (!isShown)
                 return;
 
-            float scale = canvas.rootCanvas.scaleFactor;
+            float scale = GetPixelsPerUnit();
             float height = size.y / scale;
             float margin = tail.rect.height * Half + tailMargin;
             float fromTop = Mathf.Clamp((topLeft.y - anchor.center.y) / scale, margin,
@@ -467,6 +467,20 @@ namespace Base.CorePackage.Tooltip
             tail.anchorMax = tail.anchorMin;
             tail.anchoredPosition = new Vector2(0f, -fromTop);
             tail.localScale = new Vector3(direction, Opaque, Opaque);
+        }
+
+        /// <summary>
+        /// Screen pixels per canvas unit of the tooltip, scaled parents included, so distances in canvas units land
+        /// where they are meant to on screen. The canvas scale factor alone misses a scaled parent, like a text size
+        /// zoom.
+        /// </summary>
+        private float GetPixelsPerUnit()
+        {
+            float width = tooltipRect.rect.width;
+
+            return width > 0f
+                ? GetTooltipSize().x / width
+                : canvas.rootCanvas.scaleFactor;
         }
 
         /// <summary>

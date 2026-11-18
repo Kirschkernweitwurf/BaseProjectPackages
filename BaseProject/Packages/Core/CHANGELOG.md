@@ -59,6 +59,8 @@ Changes made before 2.1.4 were not recorded.
 
 ### Fixed
 
+- `TooltipView` measures its real screen scale, so the tail points at the target's middle and every gap in canvas
+  units lands right, also when a parent is scaled, like a text size zoom.
 - `MenuManager` picks the menu that receives Back on every open and close, not only when the top menu changes.
   A menu that closed below the top, like one closing while another opens at the same priority, stayed the back
   target, so Back did nothing until the top changed.
