@@ -2,7 +2,7 @@
 
 My personal collection of base Unity packages, the stack I use myself for every project. Built up over years of past projects (especially [Laskards](https://github.com/Kirschkernweitwurf/Laskards), source also on my GitHub) and continuously updated.
 
-Seventeen packages, Unity 6. Everything below is in here and in use.
+Eighteen packages, Unity 6. Everything below is in here and in use.
 
 ## What's inside
 
@@ -21,6 +21,7 @@ Seventeen packages, Unity 6. Everything below is in here and in use.
 | Save System | `SaveSystem` | Async, slot-based saving with backups and migrations | Services |
 | Services | `Services` | Service locator, bootstrapper, shutdown pipeline | Attributes |
 | Settings System | `Settings` | Typed persistable settings with ready-made UI | Core |
+| Text | `Text` | Localized TextMeshPro styles, hyphenation, readable fonts, text size scaling, the Text Fit check | Attributes, Editor UI, Utility |
 | Tools | `Tools` | Editor tooling: static analysis, project health, generators | Attributes |
 | Tweening | `Tweening` | Component-driven and code-driven tweening | Services |
 | UI | `UI` | Buttons, confirmation dialogs, small UI utilities | Core |
@@ -50,6 +51,7 @@ Seventeen packages, Unity 6. Everything below is in here and in use.
 - **Object pooling**, **timers**, **scene loading**, **raycast helpers**, **camera provider**, **tooltips**, **screenshots**
 - **Seeded randomization** and **layered noise**, both reproducible from a seed alone
 - **Audio** with pooled sources and container assets, in its own package so a silent project skips it
+- **Text styles** for TextMeshPro per kind of box and language, with balanced lines, hyphenation, readable fonts and text size scaling, plus a **Text Fit** window that finds every translation too long for its box
 - **Menu framework** with identifier assets and open, close and back handling
 - **In-game debug menu** with a cheat console and a log console, plus `DebugDraw` shapes that also render in a player, in its own package so a shipping build leaves it out
 
@@ -94,7 +96,7 @@ Every package has two kinds of docs:
 - `Documentation~/<Name> Package.md`, for example `Tweening Package.md`, for the whole team: how to use the
   components, assets and tools in the editor.
 
-In Unity, `Help > Base Packages Documentation` lists the docs of every installed package and opens them in your Markdown app. Start pages: [Attributes](BaseProject/Packages/Attributes/Documentation~/Attributes%20Package.md), [Audio](BaseProject/Packages/Audio/Documentation~/Audio%20Package.md), [Content](BaseProject/Packages/Content/Documentation~/Content%20Package.md), [ControllerSupport](BaseProject/Packages/ControllerSupport/Documentation~/Controller%20Support%20Package.md), [Core](BaseProject/Packages/Core/Documentation~/Core%20Package.md), [CoreDebug](BaseProject/Packages/CoreDebug/Documentation~/Core%20Debug%20Package.md), [EditorUI](BaseProject/Packages/EditorUI/Documentation~/Editor%20UI%20Package.md), [Localization](BaseProject/Packages/Localization/Documentation~/Localization%20Package.md), [MemoryProfiler](BaseProject/Packages/MemoryProfiler/Documentation~/Memory%20Profiler%20Package.md), [SaveSystem](BaseProject/Packages/SaveSystem/Documentation~/Save%20System%20Package.md), [Services](BaseProject/Packages/Services/Documentation~/Services%20Package.md), [Settings](BaseProject/Packages/Settings/Documentation~/Settings%20Package.md), [Tools](BaseProject/Packages/Tools/Documentation~/Tools%20Package.md), [Tweening](BaseProject/Packages/Tweening/Documentation~/Tweening%20Package.md), [UI](BaseProject/Packages/UI/Documentation~/UI%20Package.md), [Utility](BaseProject/Packages/Utility/Documentation~/Utility%20Package.md).
+In Unity, `Help > Base Packages Documentation` lists the docs of every installed package and opens them in your Markdown app. Start pages: [Attributes](BaseProject/Packages/Attributes/Documentation~/Attributes%20Package.md), [Audio](BaseProject/Packages/Audio/Documentation~/Audio%20Package.md), [Content](BaseProject/Packages/Content/Documentation~/Content%20Package.md), [ControllerSupport](BaseProject/Packages/ControllerSupport/Documentation~/Controller%20Support%20Package.md), [Core](BaseProject/Packages/Core/Documentation~/Core%20Package.md), [CoreDebug](BaseProject/Packages/CoreDebug/Documentation~/Core%20Debug%20Package.md), [EditorUI](BaseProject/Packages/EditorUI/Documentation~/Editor%20UI%20Package.md), [Localization](BaseProject/Packages/Localization/Documentation~/Localization%20Package.md), [MemoryProfiler](BaseProject/Packages/MemoryProfiler/Documentation~/Memory%20Profiler%20Package.md), [SaveSystem](BaseProject/Packages/SaveSystem/Documentation~/Save%20System%20Package.md), [Services](BaseProject/Packages/Services/Documentation~/Services%20Package.md), [Settings](BaseProject/Packages/Settings/Documentation~/Settings%20Package.md), [Text](BaseProject/Packages/Text/Documentation~/Text%20Package.md), [Tools](BaseProject/Packages/Tools/Documentation~/Tools%20Package.md), [Tweening](BaseProject/Packages/Tweening/Documentation~/Tweening%20Package.md), [UI](BaseProject/Packages/UI/Documentation~/UI%20Package.md), [Utility](BaseProject/Packages/Utility/Documentation~/Utility%20Package.md).
 
 ## Installation
 

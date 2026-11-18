@@ -1,0 +1,24 @@
+{
+  "name": "Base.TextPackage.Editor",
+  "rootNamespace": "Base.TextPackage.Editor",
+  "references": [
+    "GUID:7fb37add1c134261a45272abb702f241",
+    "GUID:922d81cfb9ff6984da4cb2213b66a375",
+    "GUID:8f82a2d294e14cc5930979a4e0d686ec",
+    "GUID:eec0964c48f6f4e40bc3ec2257ccf8c5",
+    "GUID:2e77701fe0ceda44fb763f03ee704c37",
+    "GUID:6055be8ebefd69e48b49212b09b47b2f",
+    "GUID:2bafac87e7f4b9b418d9448d219b01ab"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

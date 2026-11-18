@@ -1,0 +1,18 @@
+{
+  "name": "com.baseprojectpackages.text",
+  "displayName": "Base Text",
+  "description": "Localized text styles for TextMeshPro: one style per kind of text box and language, balanced line breaks, hyphenation, readable font and text size options for accessibility and a Text Fit editor window that renders every localized text in every language in its real box and lists what does not fit.",
+  "version": "1.0.0",
+  "unity": "6000.3",
+  "documentationUrl": "https://github.com/Kirschkernweitwurf/BaseProjectPackages/blob/main/BaseProject/Packages/Text/Documentation~/Text%20Package.md",
+  "changelogUrl": "https://github.com/Kirschkernweitwurf/BaseProjectPackages/blob/main/BaseProject/Packages/Text/CHANGELOG.md",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "licensesUrl": "https://polyformproject.org/licenses/shield/1.0.0",
+  "author": {
+    "name": "Jonathan Alber"
+  },
+  "dependencies": {
+    "com.unity.localization": "1.5.11",
+    "com.unity.ugui": "2.0.0"
+  }
+}

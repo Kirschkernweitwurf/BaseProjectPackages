@@ -1,0 +1,19 @@
+{
+  "name": "Base.TextPackage",
+  "rootNamespace": "Base.TextPackage",
+  "references": [
+    "GUID:c3837597513e91f44a47d8cd91c34f68",
+    "GUID:922d81cfb9ff6984da4cb2213b66a375",
+    "GUID:eec0964c48f6f4e40bc3ec2257ccf8c5",
+    "GUID:6055be8ebefd69e48b49212b09b47b2f"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}
