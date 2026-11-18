@@ -58,11 +58,14 @@ namespace Base.CorePackage.Tooltip
             return Rect.MinMaxRect(min.x, min.y, max.x, max.y);
         }
 
-        // A world space canvas often has no camera of its own, then the main camera shows it.
+        // A world space canvas often has no camera of its own, then the main camera shows it. A rect outside every
+        // canvas, like a marker that rides along with a 3D object, lives in the world too.
         private static Camera CameraOf(Canvas canvas)
         {
-            if (canvas == null
-                || canvas.rootCanvas.renderMode == RenderMode.ScreenSpaceOverlay)
+            if (canvas == null)
+                return Camera.main;
+
+            if (canvas.rootCanvas.renderMode == RenderMode.ScreenSpaceOverlay)
                 return null;
 
             Camera camera = canvas.rootCanvas.worldCamera;

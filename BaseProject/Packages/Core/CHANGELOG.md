@@ -67,6 +67,8 @@ Changes made before 2.1.4 were not recorded.
 
 ### Fixed
 
+- A tooltip anchor that is a rect outside every canvas, like a marker riding along with a 3D card, is measured with
+  the main camera instead of as screen pixels.
 - `TooltipView` beside a short target, like a row of a list, rises until its tail meets the target's middle, so the
   tail keeps clear of the rounded corner instead of sitting on it.
 - `TooltipView` measures its real screen scale, so the tail points at the target's middle and every gap in canvas
