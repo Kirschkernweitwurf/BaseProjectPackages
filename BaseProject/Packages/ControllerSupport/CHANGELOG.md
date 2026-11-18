@@ -20,6 +20,8 @@ Changes made before 1.6.5 were not recorded.
   row of cards above a single button.
 - `NavigableGroup.IsFocusHeld` keeps a group's focus empty while it stays the focus owner, for a screen that waits for
   the first input.
+- `NavigationBuilder.Link` and `Unlink` set or clear one selectable's paths by hand, for screens whose parts move or
+  fold and for dialogs that must not lead out of themselves.
 
 ### Changed
 

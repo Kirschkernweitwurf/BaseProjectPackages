@@ -62,7 +62,7 @@ Show the right button icons for the device and the kind of gamepad in use.
 
 These are static classes, not components, so they have no page of their own:
 
-- `NavigationBuilder` computes the explicit up/down/left/right wiring. See [NavigableGroup](Components/Navigable%20Group.md).
+- `NavigationBuilder` computes the explicit up/down/left/right wiring. See [NavigableGroup](Components/Navigable%20Group.md). Its `Link` and `Unlink` set or clear one selectable's paths by hand, for screens whose parts move or fold.
 - `NavigationValidator` adds missing `NavigableElement`s during an editor rebuild.
 - `NavigationRebuildService` shared rebuild entry points for the inspector and the window.
 - `GamepadFamilyDetector` tells the kind of gamepad from the names its driver reports. See [Input Device Tracker](Components/Input%20Device%20Tracker.md).

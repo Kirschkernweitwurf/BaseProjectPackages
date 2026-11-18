@@ -52,6 +52,43 @@ namespace Base.ControllerSupportPackage.Controller.Navigation
             }
         }
 
+        /// <summary>
+        /// Leads <paramref name="from"/> to the given neighbors, for a screen whose parts move, fold or slide, where
+        /// links found by distance would go stale, or a dialog that must not lead out of itself. A null neighbor
+        /// leads nowhere in that direction.
+        /// </summary>
+        public static void Link(Selectable from, Selectable up, Selectable down, Selectable left, Selectable right)
+        {
+            if (from == null)
+            {
+                CustomLogger.LogWarning("Tried to link a missing selectable.", null);
+                return;
+            }
+
+            from.navigation = new UINavigation
+            {
+                mode = UINavigation.Mode.Explicit,
+                selectOnUp = up,
+                selectOnDown = down,
+                selectOnLeft = left,
+                selectOnRight = right
+            };
+        }
+
+        /// <summary>
+        /// Takes <paramref name="from"/> out of arrow and stick navigation, for a control only the mouse reaches.
+        /// </summary>
+        public static void Unlink(Selectable from)
+        {
+            if (from == null)
+            {
+                CustomLogger.LogWarning("Tried to unlink a missing selectable.", null);
+                return;
+            }
+
+            from.navigation = new UINavigation { mode = UINavigation.Mode.None };
+        }
+
         private static List<NavigableElement> Collect(IReadOnlyList<NavigableElement> elements)
         {
             List<NavigableElement> active = new();
