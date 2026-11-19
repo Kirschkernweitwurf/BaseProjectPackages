@@ -472,7 +472,7 @@ namespace Base.CorePackage.Tooltip
                 else
                 {
                     Rect target = anchor;
-                    anchor = _service.WidenOverClearAreas(anchor);
+                    anchor = _service.WidenOverClearAreas(anchor, GetBesideGap(anchor));
                     pivotScreen = ResolvePivotPosition(anchor, size);
 
                     // Close to the screen's bottom or top the tail may not reach the target's middle from the side;
@@ -625,12 +625,8 @@ namespace Base.CorePackage.Tooltip
         /// </summary>
         private Vector2 ResolvePivotPosition(Rect anchor, Vector2 size)
         {
-            // Beside a target the tail needs its room at every resolution; a cursor gets no tail.
-            float tailGap = tail != null
-                && anchor.width > 0f
-                    ? targetGap * GetPixelsPerUnit()
-                    : 0f;
-            float offsetX = Mathf.Max(Mathf.Abs(screenOffset.x), tailGap);
+            float tailGap = GetTailGap(anchor);
+            float offsetX = GetBesideGap(anchor);
             float offsetY = Mathf.Abs(screenOffset.y);
 
             float left = anchor.xMax + offsetX;
@@ -651,6 +647,21 @@ namespace Base.CorePackage.Tooltip
 
             return ClampToScreen(new Vector2(left, top), size);
         }
+
+        /// <summary>
+        /// Screen pixels between <paramref name="anchor"/> and the side of a tooltip beside it: the screen offset, or
+        /// the room the tail needs when that is larger.
+        /// </summary>
+        private float GetBesideGap(Rect anchor) => Mathf.Max(Mathf.Abs(screenOffset.x), GetTailGap(anchor));
+
+        /// <summary>
+        /// Screen pixels the tail needs beside <paramref name="anchor"/>, at every resolution. Zero without a tail or
+        /// at a cursor, which gets none.
+        /// </summary>
+        private float GetTailGap(Rect anchor) => tail != null
+            && anchor.width > 0f
+                ? targetGap * GetPixelsPerUnit()
+                : 0f;
 
         /// <summary>
         /// Resolves the top left corner in screen space for a tooltip above its anchor: the card's bottom edge one gap

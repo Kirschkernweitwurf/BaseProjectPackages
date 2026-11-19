@@ -30,7 +30,8 @@ Keeps this UI element clear of the tooltips of the things inside it or alongside
 
 ## Good to know
 
-- It changes tooltips beside their targets whose height overlaps the area: their target counts as wide as the area, so the tooltip opens past it. The tail still points at the target's middle.
+- It changes tooltips beside their targets that lie in the area or right beside it, as close as the tooltip's gap to its target, and share its height: their target counts as wide as the area, so the tooltip opens past it. The tail still points at the target's middle.
+- A target further away, like a card in the middle of the screen next to a list at its edge, opens its tooltip beside it as usual.
 - Tooltips above their targets and in a dock ignore it. To keep a panel from being covered by those, use [🔖 Tooltip Keep Visible](Tooltip%20Keep%20Visible.md).
 - The area is measured each time a tooltip is placed, so a panel that moves, grows or folds is always measured as it is.
 - Code does the same with `TooltipService.KeepClear(owner, area)` and `ReleaseClear(owner)`.

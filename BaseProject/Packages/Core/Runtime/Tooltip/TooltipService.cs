@@ -253,16 +253,19 @@ namespace Base.CorePackage.Tooltip
         }
 
         /// <summary>
-        /// Widens the rect a tooltip opens beside over every kept-clear area that runs alongside it, so the tooltip
-        /// opens past those areas.
+        /// Widens the rect a tooltip opens beside over every kept-clear area the target lies in or right beside, so
+        /// the tooltip opens past those areas. An area further away than <paramref name="reach"/>, in screen pixels,
+        /// is left alone, like a HUD panel at the screen's edge next to a card in the middle: the tooltip opens beside
+        /// the target as usual.
         /// </summary>
-        internal Rect WidenOverClearAreas(Rect anchor)
+        internal Rect WidenOverClearAreas(Rect anchor, float reach)
         {
+            Rect target = anchor;
+
             foreach (Func<Rect> getArea in _clearAreas.Values)
             {
                 Rect area = getArea();
-                if (area.yMax <= anchor.yMin
-                    || area.yMin >= anchor.yMax)
+                if (!IsAlongside(area, target, reach))
                     continue;
 
                 anchor.xMin = Mathf.Min(anchor.xMin, area.xMin);
@@ -285,6 +288,14 @@ namespace Base.CorePackage.Tooltip
 
             return false;
         }
+
+        // Shares the target's height and reaches within reach of its sides, like a list around one of its rows or a
+        // pin pointing at it from the side, where the tooltip or its tail would land.
+        private static bool IsAlongside(Rect area, Rect target, float reach)
+            => area.yMax > target.yMin
+                && area.yMin < target.yMax
+                && area.xMax >= target.xMin - reach
+                && area.xMin <= target.xMax + reach;
 
         // The tracker does not say who asked, so the request is found by its panel list, which every request owns.
         private object FindCaller(TrackedItem<TooltipData> item)

@@ -67,6 +67,9 @@ Changes made before 2.1.4 were not recorded.
 
 ### Fixed
 
+- `TooltipKeepClear` and `TooltipService.KeepClear` only push away the tooltips of targets in the area or right beside
+  it. A card in the middle of the screen sent its tooltip past every kept-clear panel at its height, like a list on
+  the left and counters on the right, so it stuck to the screen's left edge.
 - `TooltipView` tail always points into its target: above a narrow target the card moves over until the tail reaches,
   near the screen's bottom a tooltip beside its target sits low enough, and where the side can't make it, like a chip
   in a screen corner, the tooltip opens above the target instead.
