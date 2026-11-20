@@ -12,6 +12,7 @@ This package is a leaf. Nothing in the Base set references it, so it can be inst
 - `Base.UtilityPackage` for `CustomLogger`, `PersistentKey` and the dynamic menu attributes
 - `Base.AttributesPackage` for the inspector attributes on its config assets
 - `Base.EditorUIPackage.Editor` for the shared look of its windows
+- `Base.CorePackage.Screenshot` for the folder Open Screenshot Folder opens
 - Assemblies: one per tool, with `Base.ToolsPackage.Editor` holding the small ones nothing
   depends on, plus `Base.ToolsPackage` for the runtime halves and
   `Base.ToolsPackage.Editor.Tests`. Run the Assembly Graph window for the current shape
@@ -99,7 +100,7 @@ A data driven replacement for hardcoded `MenuItem` and `CreateAssetMenu` paths. 
 - **Component Clipboard** lists the components of the active GameObject with checkbox multi selection and offers copy, paste, delete and reorder. It fills the gap left by Unity's single entry component clipboard.
 - **Play Mode Saver** carries changes made during play mode back out of it. Mark what matters while playing; in edit mode the window lists what was captured and applies or discards each entry. Nothing runs automatically, every apply is triggered by hand, and the captured list is cleared when the next play session starts.
 - **Lighting Profile** stores the render settings and baked environment of a scene so they can be applied without making that scene active. A `LightingProfileApplier` component applies a profile as soon as its scene loads and keeps it in sync with its scene on every save and bake.
-- **Open Screenshot Folder** opens the folder the system saves screenshots to (Windows, macOS and Linux) in the file explorer, and warns when it doesn't exist yet.
+- **Open Screenshot Folder** opens the folder the Core `ScreenshotManager` saves its screenshots to in the file explorer, and warns when it doesn't exist yet.
 - **Hierarchy Sorter** sorts the children of a GameObject or a whole scene alphabetically and recursively.
 - **Auto Start Scene** forces a chosen scene to load when entering Play mode and restores the previous scene on exit. It defaults to the first enabled scene in Build Settings.
 

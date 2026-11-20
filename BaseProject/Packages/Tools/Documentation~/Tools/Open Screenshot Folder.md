@@ -6,7 +6,7 @@ tags:
   - artist
   - designer
   - workflow
-summary: "Opens the folder your system saves screenshots to."
+summary: "Opens the folder the game saves its screenshots to."
 menu: Tools > Base Packages > Editor > Open Screenshot Folder
 ---
 # Open Screenshot Folder
@@ -17,19 +17,15 @@ menu: Tools > Base Packages > Editor > Open Screenshot Folder
 
 **Menu:** `Tools > Base Packages > Editor > Open Screenshot Folder`
 
-Opens the folder your system saves screenshots to in the file explorer, so a fresh screenshot is one click away.
+Opens the folder the [🗞️ Screenshot Manager](https://github.com/Kirschkernweitwurf/BaseProjectPackages/blob/main/BaseProject/Packages/Core/Documentation~/Components/Screenshot%20Manager.md) saves its screenshots to in the file explorer, so a fresh screenshot is one click away.
 
 ## How to use it
 
-Take a screenshot with your system's shortcut, then run **Open Screenshot Folder**.
+Take a screenshot with the Screenshot Manager's keys in Play Mode, then run **Open Screenshot Folder**.
 
-| System | Folder |
-| --- | --- |
-| Windows | `Pictures\Screenshots` |
-| macOS | The location set in the Screenshot app, the Desktop by default |
-| Linux | `Screenshots` in your Pictures folder (XDG user dirs), where GNOME and KDE save them |
+The folder is `Screenshots` in the game's save data folder (`Application.persistentDataPath`). The editor and a build of the same game share it.
 
 ## Notes
 
 - If the folder doesn't exist yet, a warning in the Console names the path instead.
-- Screenshots from Unity's own capture tools land elsewhere; this only covers the system's screenshots.
+- Screenshots taken with the system's own shortcut land elsewhere; this only covers the game's screenshots.

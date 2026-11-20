@@ -6,6 +6,13 @@ All notable changes to this package are recorded here. The format follows
 
 Changes made before 2.0.10 were not recorded.
 
+## [Unreleased]
+
+### Changed
+
+- Open Screenshot Folder opens the folder the Core `ScreenshotManager` saves to instead of the system's
+  screenshot folder. The Tools editor assembly now references `Base.CorePackage.Screenshot`.
+
 ## [3.8.0] - 2026-11-15
 
 ### Changed

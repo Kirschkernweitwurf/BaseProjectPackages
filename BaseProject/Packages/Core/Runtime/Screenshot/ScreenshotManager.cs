@@ -14,9 +14,13 @@ namespace Base.CorePackage.Screenshot
     /// </summary>
     public class ScreenshotManager : MonoBehaviour, IShutdownHandler
     {
+        private const string ScreenshotFolderName = "Screenshots";
         private const string ScreenshotNameFormat = "{GameTitle}_{Width}x{Height}_{Time}";
 
-        private static string ScreenshotDirectory => Path.Combine(Application.persistentDataPath, "Screenshots");
+        /// <summary>
+        /// The folder every screenshot is saved to, inside the game's save data folder.
+        /// </summary>
+        public static string ScreenshotDirectory => Path.Combine(Application.persistentDataPath, ScreenshotFolderName);
 
         /// <summary>
         /// True once <see cref="Shutdown"/> has run. Domain reload is disabled, so this is what keeps

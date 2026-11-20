@@ -29,6 +29,7 @@ None. Add it and it works.
 
 - The file name holds the game title, the resolution and the time.
 - The keys live in the Permanent input map, so they work in every menu.
+- **Tools > Base Packages > Editor > Open Screenshot Folder** opens the folder.
 
 ## Related
 

@@ -10,6 +10,7 @@ Changes made before 2.1.4 were not recorded.
 
 ### Added
 
+- `ScreenshotManager.ScreenshotDirectory`: the folder screenshots are saved to, so tools can open it.
 - Game actions (`Base.CorePackage.GameActions`): `GameAction`, `IGameActionSystem`, the plain C# `GameActionResolver`
   and its scene host `GameActionSystem`, `GameActionReactor` and `CheatActionRunner`. Every game event becomes an
   action that rules and feedback can change, cancel or follow up, resolved depth first.
