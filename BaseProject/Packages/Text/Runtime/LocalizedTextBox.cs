@@ -43,7 +43,8 @@ namespace Base.TextPackage
         [SerializeField] private bool canCutLongText;
 
         [Tooltip("How a text of several lines uses the box. Balance evens out the lines, for short texts like cards. "
-            + "Pretty keeps them full and only fixes a short last line, for paragraphs in a box of fixed width.")]
+            + "Pretty keeps them full and only fixes a short last line, for paragraphs in a box of fixed width. "
+            + "Fill leaves the lines as they break, each full before the next starts, for chat bubbles.")]
         [SerializeField] private ELineFit lineFit;
 
         [Tooltip("Lets long words break at the end of a line, with a hyphen, in languages that have patterns for it.")]
@@ -206,9 +207,10 @@ namespace Base.TextPackage
                 : TextOverflowModes.Overflow;
 
             // A single line has nothing to even out, so most labels skip the extra layout passes. A box that cuts its
-            // text wants every word it can fit and even lines would fit fewer.
+            // text wants every word it can fit and even lines would fit fewer. Fill wants the lines as they break.
             _isBalanced = textStyle.MaxLines > 1
-                && !canCutLongText;
+                && !canCutLongText
+                && lineFit != ELineFit.Fill;
             balancer.Invalidate();
             MarkGroupDirty();
         }

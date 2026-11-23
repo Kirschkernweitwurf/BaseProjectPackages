@@ -11,8 +11,9 @@ namespace Base.TextPackage
     /// spacing widen its text, so its lines keep about as many words as designed and a long word still fits. The width
     /// depends on the reading settings only, never on the text, so every box of the kind keeps one width and none jumps
     /// from one text to the next. A text that only wraps once it reaches a width, like a tooltip text, keeps its own
-    /// width below that and wraps at the grown one. It only tells the layout how wide the box wants to be, above a
-    /// Layout Element, which keeps the designed width for the editor.
+    /// width below that and wraps at the grown one. A chat bubble also ends at its longest line once it wraps. It only
+    /// tells the layout how wide the box wants to be, above a Layout Element, which keeps the designed width for the
+    /// editor.
     /// </summary>
     [DisallowMultipleComponent]
     [RequireComponent(typeof(RectTransform))]
@@ -42,6 +43,10 @@ namespace Base.TextPackage
         [Tooltip("Optional: a text that keeps its own width while it is shorter and wraps at the grown width, like a "
             + "tooltip text. Empty gives the box the grown width always.")]
         [SerializeField] private TMP_Text shortText;
+
+        [Tooltip("Ends the box at the short text's longest line once it wraps, like a chat bubble. Off keeps a wrapped "
+            + "text at the grown width, like a tooltip. Pair it with the Fill line fit, since even lines leave room.")]
+        [SerializeField] private bool isFitToLongestLine;
 
         private float _width;
 
@@ -90,7 +95,7 @@ namespace Base.TextPackage
                 _width = Mathf.Min(_width, maxWidth);
 
             if (shortText != null)
-                _width = Mathf.Min(_width, GetUnwrappedWidth());
+                _width = Mathf.Min(_width, GetShortTextWidth());
         }
 
         /// <inheritdoc/>
@@ -98,9 +103,16 @@ namespace Base.TextPackage
         {
         }
 
-        // The width the text takes on one line, like the tooltip panel measures it before it caps it.
-        private float GetUnwrappedWidth() => shortText.GetPreferredValues(shortText.text, float.PositiveInfinity,
-            float.PositiveInfinity).x + shortText.fontSize * ShortTextSlack;
+        // The width the text takes on one line, like the tooltip panel measures it before it caps it. Fit to its
+        // longest line, it wraps at the box's width first and TextMeshPro measures its widest line.
+        private float GetShortTextWidth()
+        {
+            float wrapWidth = isFitToLongestLine
+                ? _width
+                : float.PositiveInfinity;
+            return shortText.GetPreferredValues(shortText.text, wrapWidth, float.PositiveInfinity).x
+                + shortText.fontSize * ShortTextSlack;
+        }
 
         private void MarkDirty() => LayoutRebuilder.MarkLayoutForRebuild((RectTransform)transform);
     }

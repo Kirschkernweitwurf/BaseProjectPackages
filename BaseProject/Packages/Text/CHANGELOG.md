@@ -10,6 +10,9 @@ All notable changes to this package are recorded here. The format follows
 
 - The package, moved from a game project: localized text styles for TextMeshPro, line balancing, hyphenation,
   readable fonts, text size scaling and the Text Fit editor window.
+- `ELineFit.Fill` for chat bubbles: the lines stay as they break, each full before the next starts.
+- `WidenWithTextSize` **Is Fit To Longest Line**: a wrapped short text ends its box at its longest line, so a chat
+  bubble is only as wide as its words.
 
 ### Fixed
 

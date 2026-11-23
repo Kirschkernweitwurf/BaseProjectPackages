@@ -4,6 +4,7 @@ namespace Base.TextPackage
     public enum ELineFit : byte
     {
         Balance = 0,
-        Pretty = 1
+        Pretty = 1,
+        Fill = 2
     }
 }
