@@ -13,7 +13,7 @@ summary: Keeps a HUD panel readable while tooltips open above their targets.
 
 **Tags:** #designer #ui
 
-Keeps this UI element readable while tooltips open above their targets: a tooltip that would cover it opens beside its target instead. For HUD panels the player reads while choosing, like a score or a list of rules.
+Keeps this UI element readable while tooltips open above their targets where it can: a tooltip that would cover it grows the other way along its target when that clears it. It still covers the element rather than open beside its target over the target's neighbors, like the other cards of a hand. For HUD panels the player reads while choosing, like a score or a list of rules.
 
 **Add it:** Inspector › **Add Component** › search `Tooltip Keep Visible`. Only one per GameObject.
 
@@ -27,7 +27,7 @@ Keeps this UI element readable while tooltips open above their targets: a toolti
 
 | Field | Type | Default | What it does |
 | --- | --- | --- | --- |
-| **Area** | Rect Transform |  | The area tooltips above their targets must not cover, usually this panel's own rect. |
+| **Area** | Rect Transform |  | The area tooltips above their targets keep clear where they can, usually this panel's own rect. |
 
 ## Good to know
 

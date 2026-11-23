@@ -11,8 +11,9 @@ namespace Base.CorePackage.Tooltip
 
         /// <summary>
         /// Above the hovered object with the tail pointing down at it, growing away from the screen's middle, so
-        /// what lies beside the object stays readable, like the other cards in a hand. Beside it when there is no
-        /// room above or the tooltip would cover an area kept visible.
+        /// what lies beside the object stays readable, like the other cards in a hand. Beside it, as high as it can
+        /// go, only when there is no room above: an area kept visible gets covered rather than the object's
+        /// neighbors.
         /// </summary>
         AboveTarget = 2
     }

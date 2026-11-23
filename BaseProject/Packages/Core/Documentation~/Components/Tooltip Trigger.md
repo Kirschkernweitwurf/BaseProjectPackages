@@ -46,7 +46,7 @@ Shows a tooltip while the pointer hovers this object and hides it when the point
 - If the object is disabled while hovered, the tooltip hides itself.
 - Dragging something across the object shows no tooltip, so tooltips never cover a drop target.
 - Selecting the object with a gamepad or the keyboard, for example a menu button, shows the tooltip beside it.
-- Above Target opens the tooltip above the object, growing away from the screen's middle, and falls back to beside it when there is no room above or it would cover a [🔖 Tooltip Keep Visible](Tooltip%20Keep%20Visible.md) area.
+- Above Target opens the tooltip above the object, growing away from the screen's middle, or toward it when only that keeps a [🔖 Tooltip Keep Visible](Tooltip%20Keep%20Visible.md) area clear. It falls back to beside the object only when there is no room above.
 - Without a mouse, At Cursor falls back to Beside Target. Beside Target measures UI elements by their rect, also on world space canvases, and 3D objects by all their renderers or their collider.
 - Objects with hover rules of their own, like cards, turn **Show On Hover** off and call **Show** and **Hide** from code.
 

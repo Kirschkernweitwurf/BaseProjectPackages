@@ -475,6 +475,10 @@ namespace Base.CorePackage.Tooltip
                     anchor = _service.WidenOverClearAreas(anchor, GetBesideGap(anchor));
                     pivotScreen = ResolvePivotPosition(anchor, size);
 
+                    if (_placement == ETooltipPlacement.AboveTarget)
+                        pivotScreen = ClampToScreen(
+                            new Vector2(pivotScreen.x, RaiseBeside(target, pivotScreen.y, size)), size);
+
                     // Close to the screen's bottom or top the tail may not reach the target's middle from the side;
                     // above the target it does.
                     if (!CanTailReachBeside(anchor, pivotScreen, size)
@@ -664,13 +668,52 @@ namespace Base.CorePackage.Tooltip
                 : 0f;
 
         /// <summary>
+        /// Lifts the top of a tooltip that asked to open above its target but had to open beside it as high as the
+        /// screen and the tail allow, so it covers as little as it can of the row beside the target, like the other
+        /// cards of a hand. Never lowers it.
+        /// </summary>
+        private float RaiseBeside(Rect target, float top, Vector2 size)
+        {
+            float highest = Screen.height - edgeMargin;
+            if (GetTailGap(target) > 0f)
+                highest = Mathf.Min(highest, target.center.y - GetTailClearance() + size.y);
+
+            return Mathf.Max(top, highest);
+        }
+
+        /// <summary>
         /// Resolves the top left corner in screen space for a tooltip above its anchor: the card's bottom edge one gap
         /// above the anchor's top, and its edge lined up with the anchor's edge on the side away from the screen's
-        /// middle, so it grows outward and leaves what lies beside the anchor readable. Fails when the tooltip would
-        /// leave the top of the screen, cover an area kept visible or move so far that the tail no longer reaches the
-        /// anchor's middle.
+        /// middle, so it grows outward and leaves what lies beside the anchor readable. Grows toward the middle instead
+        /// when only that keeps an area kept visible clear. Fails when the tooltip would leave the top of the screen or
+        /// move so far that the tail no longer reaches the anchor's middle, never for an area kept visible: covering a
+        /// panel beats opening beside the anchor over what lies next to it.
         /// </summary>
         private bool TryResolveAbovePosition(Rect anchor, Vector2 size, out Vector2 topLeft)
+        {
+            bool isGrowingRight = anchor.center.x >= Screen.width * Half;
+            if (!TryPlaceAbove(anchor, size, isGrowingRight, out topLeft))
+                return false;
+
+            if (IsCoveringVisibleArea(topLeft, size)
+                && TryPlaceAbove(anchor, size, !isGrowingRight, out Vector2 inward)
+                && !IsCoveringVisibleArea(inward, size))
+                topLeft = inward;
+
+            return true;
+        }
+
+        // Whether a tooltip of size with its top left corner at topLeft, in screen pixels, covers an area kept visible.
+        private bool IsCoveringVisibleArea(Vector2 topLeft, Vector2 size)
+            => _service.IsCoveringVisibleArea(new Rect(topLeft.x, topLeft.y - size.y, size.x, size.y));
+
+        /// <summary>
+        /// Resolves the top left corner in screen space for a tooltip above <paramref name="anchor"/>, with the card's
+        /// left edge lined up with the anchor's left edge when <paramref name="isGrowingRight"/>, else its right edge
+        /// with the anchor's right edge. Fails when the tooltip would leave the top of the screen or move so far that
+        /// the tail no longer reaches the anchor's middle.
+        /// </summary>
+        private bool TryPlaceAbove(Rect anchor, Vector2 size, bool isGrowingRight, out Vector2 topLeft)
         {
             float scale = GetPixelsPerUnit();
             Rect tooltip = GetScreenRect(tooltipRect);
@@ -681,7 +724,7 @@ namespace Base.CorePackage.Tooltip
             float tailClearance = tail == null
                 ? 0f
                 : GetTailClearance();
-            float cardLeft = anchor.center.x >= Screen.width * Half
+            float cardLeft = isGrowingRight
                 ? anchor.xMin
                 : anchor.xMax - card.width;
 
@@ -696,8 +739,7 @@ namespace Base.CorePackage.Tooltip
                 shownCardLeft + card.width - tailClearance);
 
             return top <= Screen.height - edgeMargin
-                && canTailReach
-                && !_service.IsCoveringVisibleArea(new Rect(topLeft.x, topLeft.y - size.y, size.x, size.y));
+                && canTailReach;
         }
 
         /// <summary>

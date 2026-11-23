@@ -6,15 +6,17 @@ using UnityEngine;
 namespace Base.CorePackage.Tooltip
 {
     /// <summary>
-    /// Keeps this UI element readable while tooltips open above their targets: a tooltip that would cover it opens
-    /// beside its target instead. For HUD panels the player reads while choosing, like a score or a list of rules.
+    /// Keeps this UI element readable while tooltips open above their targets where it can: a tooltip that would
+    /// cover it grows the other way along its target when that clears it. It still covers the element rather than open
+    /// beside its target over the target's neighbors, like the other cards of a hand. For HUD panels the player reads
+    /// while choosing, like a score or a list of rules.
     /// Registers with the <see cref="TooltipService"/> while enabled.
     /// </summary>
     [DisallowMultipleComponent]
     public sealed class TooltipKeepVisible : MonoBehaviour
     {
         [Required] [GetComponent]
-        [Tooltip("The area tooltips above their targets must not cover, usually this panel's own rect.")]
+        [Tooltip("The area tooltips above their targets keep clear where they can, usually this panel's own rect.")]
         [SerializeField] private RectTransform area;
 
         private TooltipService _service;

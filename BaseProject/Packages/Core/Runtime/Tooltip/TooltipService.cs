@@ -11,7 +11,7 @@ namespace Base.CorePackage.Tooltip
     /// Shows the highest priority tooltip that is currently requested.
     /// Backed by a <see cref="PriorityTracker{T}"/>, so overlapping requests resolve by priority. Areas kept clear,
     /// like a marker that points at the target from the side, push a tooltip beside its target past them. Areas kept
-    /// visible, like HUD panels, send a tooltip that would cover them from above its target to beside it. A dock
+    /// visible, like HUD panels, make a tooltip above its target grow the other way when that clears them. A dock
     /// gathers every tooltip in one fixed area instead, like an inspector panel. A pinned tooltip stays while other
     /// requests come and go, so the player can read it at leisure.
     /// </summary>
@@ -170,9 +170,10 @@ namespace Base.CorePackage.Tooltip
         }
 
         /// <summary>
-        /// Keeps an area visible, like a HUD panel the player reads while choosing: a tooltip that would cover it
-        /// from above its target opens beside the target instead. The area is read each time a tooltip is placed, so it
-        /// may move. One area per owner; a second call replaces the first.
+        /// Keeps an area visible where it can, like a HUD panel the player reads while choosing: a tooltip above its
+        /// target that would cover it grows the other way along the target when that clears it, and covers it
+        /// otherwise, since opening beside the target would cover the target's neighbors. The area is read each time a
+        /// tooltip is placed, so it may move. One area per owner; a second call replaces the first.
         /// </summary>
         /// <param name="owner">The object that keeps the area visible, used for release.</param>
         /// <param name="area">Returns the area in screen pixels.</param>

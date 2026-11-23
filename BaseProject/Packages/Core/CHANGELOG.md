@@ -65,6 +65,10 @@ Changes made before 2.1.4 were not recorded.
   glyphs. A framed icon now shows in the new **Framed Icon** image on the frame, a plain one in **Icon**, so the
   icon no longer has to be a child of the frame. Panels that keep a frame need a Framed Icon, and their entries
   need `isIconFramed: true`.
+- `TooltipKeepVisible` and `TooltipService.KeepVisible` no longer send a tooltip above its target to beside it, where
+  it covered the target's neighbors, like the other cards of a hand. The tooltip grows the other way along its target
+  when that clears the area, and covers the area otherwise. An above tooltip with no room above opens beside its
+  target as high as it can go.
 
 ### Fixed
 
