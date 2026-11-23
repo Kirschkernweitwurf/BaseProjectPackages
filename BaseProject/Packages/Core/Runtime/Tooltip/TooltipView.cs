@@ -13,10 +13,12 @@ namespace Base.CorePackage.Tooltip
     /// <summary>
     /// Draws the tooltip beside its anchor, the cursor or the hovered object, above the hovered object when its data
     /// asks for <see cref="ETooltipPlacement.AboveTarget"/> and there is room, or in the dock area while the
-    /// <see cref="TooltipService"/> holds one, without ever letting it leave the screen. The spot is picked while the
-    /// tooltip waits to appear and then kept, so a tooltip never wanders when its anchor moves on screen, for example a
-    /// 3D object under a camera that follows the pointer. Only a tooltip above its target follows it, so its tail stays
-    /// on the target while that pops up or sways. Every <see cref="TooltipEntry"/> gets its own
+    /// <see cref="TooltipService"/> holds one, without ever letting it leave the screen. A tooltip waits until its
+    /// target has come to rest, like a card at the top of its hover pop, then picks its side and spot once and keeps
+    /// them, so it never jumps from one side to another while the target is still on its way. A tooltip beside its
+    /// target stays at that spot, so it never wanders when its anchor moves on screen, for example a 3D object under a
+    /// camera that follows the pointer. A tooltip above its target moves along with it on the side it picked, so its
+    /// tail stays on the target when that slides on or sways. Every <see cref="TooltipEntry"/> gets its own
     /// <see cref="TooltipPanel"/>, copied from the first one, so the content's layout group decides whether they stack
     /// or line up side by side. A tooltip in the dock slides in from the right as it fades in, and one beside or above
     /// its target shows a small tail pointing at it, like a popover. A tooltip fades in after a short delay, so
@@ -33,6 +35,10 @@ namespace Base.CorePackage.Tooltip
         private const float NoDelay = 0f;
         private const float Opaque = 1f;
         private const float QuarterTurn = 90f;
+
+        // Looks in a row the target must stay still for to count as resting. One is not enough: a target often starts
+        // to move only on the frame after the hover that asked for the tooltip, like a card whose pop eases in.
+        private const int RestLooks = 2;
         private const float SwapStartAlpha = 0.35f;
 
         // Share of the target's size the tail may land from its middle and still point into it, like a chip in a
@@ -77,6 +83,17 @@ namespace Base.CorePackage.Tooltip
         [Min(0f)]
         [Tooltip("Seconds a tooltip that moves straight on to the next thing takes to bring its new content in.")]
         [SerializeField] private float swapDuration = 0.12f;
+
+        [Min(0f)]
+        [Tooltip("Speed below which the target counts as resting, in canvas units per second. A tooltip waits for its "
+            + "target to rest before it picks its spot, so it never switches sides while the target still moves, like "
+            + "a card rising on hover.")]
+        [SerializeField] private float settleSpeed = 150f;
+
+        [Min(0f)]
+        [Tooltip("Longest a tooltip waits for its target to rest, in seconds, after the show delay. A target that "
+            + "never stops, like one under a swaying camera, still gets its tooltip.")]
+        [SerializeField] private float maxSettleWait = 0.5f;
 
         [Title("References")]
         [Tooltip("Content GameObject that holds the tooltip visuals.")]
@@ -128,8 +145,15 @@ namespace Base.CorePackage.Tooltip
         private Func<Rect> _getScreenAnchor;
         private float _hiddenAt = float.NegativeInfinity;
         private bool _isVisible;
+        private bool _isPlaced;
         private bool _isDocked;
         private bool _isAbove;
+        private bool _hasSideTail;
+        private bool _isRightOfTarget;
+        private bool _hasLastTarget;
+        private int _stillLooks;
+        private Rect _lastTarget;
+        private Vector2 _followOffset;
         private ETooltipPlacement _placement;
         private string _shownName;
         private Vector3 _restPosition;
@@ -169,15 +193,16 @@ namespace Base.CorePackage.Tooltip
             Hide();
         }
 
-        // A tooltip above its target follows it, so the tail stays on the target while it pops up on hover or the
-        // camera sways. Moving straight on to the next target shows the tooltip at once, before that one has risen.
+        // A tooltip above its target moves along with it once placed, so the tail stays on the target when it slides
+        // on, like a card moving to a new slot in the hand, or the camera sways.
         private void LateUpdate()
         {
-            if (_getScreenAnchor == null
+            if (!_isPlaced
+                || _isDocked
                 || _placement != ETooltipPlacement.AboveTarget)
                 return;
 
-            PlaceTooltip();
+            FollowTarget();
         }
 #endregion
 
@@ -210,6 +235,9 @@ namespace Base.CorePackage.Tooltip
 
             _getScreenAnchor = data.GetScreenAnchor;
             _placement = data.Placement;
+            _isPlaced = false;
+            _hasLastTarget = false;
+            _stillLooks = 0;
             content.SetActive(true);
             ShowEntries(data);
 
@@ -231,6 +259,7 @@ namespace Base.CorePackage.Tooltip
                 _hiddenAt = Time.unscaledTime;
 
             _isVisible = false;
+            _isPlaced = false;
             content.SetActive(false);
             _getScreenAnchor = null;
         }
@@ -373,49 +402,89 @@ namespace Base.CorePackage.Tooltip
         /// <summary>
         /// Places the tooltip and shows it, after the delay and fade unless <paramref name="isWarm"/>. Moving on to
         /// another tooltip fades the new one in; the same tooltip again, like one rebuilt or pinned, just changes. The
-        /// spot is picked once and kept while visible, so the tooltip only moves when it is shown again.
+        /// spot is picked once and kept while visible, so the tooltip only moves when it is shown again or follows its
+        /// target.
         /// </summary>
         private IEnumerator Appear(bool isWarm, bool isSame)
         {
-            if (!isWarm)
-                yield return WaitAndFadeIn();
-            else if (isSame)
+            if (isSame)
                 PlaceTooltip();
             else
-                yield return SwapIn();
+                yield return WaitAndFadeIn(isWarm);
 
             _contentGroup.alpha = Opaque;
             _isVisible = true;
             _showRoutine = null;
         }
 
-        // Placed every frame while still invisible, so the tooltip appears where its anchor has settled, for
-        // example after a hover pop, and then stays put while it fades in.
-        private IEnumerator WaitAndFadeIn()
+        // Invisible until the target rests, so the tooltip picks its spot once, where the target ends up, and keeps it
+        // while it fades in. Moving straight on from another tooltip skips the show delay and only brings the new
+        // content in, so sweeping across a hand stays calm.
+        private IEnumerator WaitAndFadeIn(bool isWarm)
         {
             _contentGroup.alpha = Transparent;
-            float fadeStart = Time.unscaledTime + showDelay;
+            float earliest = isWarm
+                ? Time.unscaledTime
+                : Time.unscaledTime + showDelay;
 
-            do
-            {
-                PlaceTooltip();
-                yield return null;
-            }
-            while (Time.unscaledTime < fadeStart);
+            yield return WaitForRest(earliest);
 
-            float slide = _isDocked
-                && !IsMotionReduced
-                    ? slideDistance
-                    : 0f;
+            PlaceTooltip();
 
-            yield return FadeIn(fadeDuration, Transparent, slide);
+            if (isWarm)
+                yield return FadeIn(swapDuration, SwapStartAlpha, 0f);
+            else
+                yield return FadeIn(fadeDuration, Transparent, GetSlide());
         }
 
-        // Moving straight on keeps the spot and only brings the new content in, so sweeping across a hand stays calm.
-        private IEnumerator SwapIn()
+        // Only a tooltip in the dock slides in, and only while motion is not reduced.
+        private float GetSlide() => _isDocked
+            && !IsMotionReduced
+                ? slideDistance
+                : 0f;
+
+        /// <summary>
+        /// Waits until <paramref name="earliest"/> and until the target has come to rest, so the tooltip picks its
+        /// side for where the target ends up, like a card at the top of its hover pop, and never has to switch while
+        /// the target is on its way. Gives up waiting for the rest after the max settle wait.
+        /// </summary>
+        private IEnumerator WaitForRest(float earliest)
         {
-            PlaceTooltip();
-            yield return FadeIn(swapDuration, SwapStartAlpha, 0f);
+            float latest = earliest + maxSettleWait;
+
+            while ((!IsTargetResting() && Time.unscaledTime < latest)
+                || Time.unscaledTime < earliest)
+                yield return null;
+        }
+
+        /// <summary>
+        /// Whether the target moved slower than the settle speed for the last few looks in a row. A dock and a cursor
+        /// always count as resting. The first look only takes the measure, since one frame shows no motion.
+        /// </summary>
+        private bool IsTargetResting()
+        {
+            if (_service != null
+                && _service.TryGetDock(out _))
+                return true;
+
+            Rect target = _getScreenAnchor.Invoke();
+            Rect last = _lastTarget;
+            bool hasLast = _hasLastTarget;
+            _lastTarget = target;
+            _hasLastTarget = true;
+
+            if (target.width <= 0f)
+                return true;
+
+            if (!hasLast)
+                return false;
+
+            float moved = Mathf.Max(Vector2.Distance(target.min, last.min), Vector2.Distance(target.max, last.max));
+            _stillLooks = moved <= settleSpeed * GetPixelsPerUnit() * Time.unscaledDeltaTime
+                ? _stillLooks + 1
+                : 0;
+
+            return _stillLooks >= RestLooks;
         }
 
         // Fades from fromAlpha to opaque, sliding in from slide units to the right of the rest spot.
@@ -438,12 +507,14 @@ namespace Base.CorePackage.Tooltip
         }
 
         /// <summary>
-        /// Moves the tooltip to the resolved position for this frame.
+        /// Picks the tooltip's side, spot and tail for where its target is now and moves it there. Runs once per show,
+        /// after the target came to rest; from then on <see cref="FollowTarget"/> only carries the spot along.
         /// </summary>
         private void PlaceTooltip()
         {
             Vector2 size = GetTooltipSize();
-            Vector2 pivotScreen;
+            Vector2 topLeft;
+            Rect target = Rect.zero;
             Rect anchor = Rect.zero;
             _isDocked = false;
             _isAbove = false;
@@ -451,52 +522,101 @@ namespace Base.CorePackage.Tooltip
             // A view shown without the service has no dock and no kept-clear or kept-visible areas.
             if (_service == null)
             {
-                anchor = _getScreenAnchor.Invoke();
-                pivotScreen = ResolvePivotPosition(anchor, size);
+                target = _getScreenAnchor.Invoke();
+                anchor = target;
+                topLeft = ResolvePivotPosition(anchor, size);
             }
             else if (_service.TryGetDock(out Rect dock))
             {
                 _isDocked = true;
-                pivotScreen = ResolveDockedPosition(dock, size);
+                topLeft = ResolveDockedPosition(dock, size);
             }
             else
             {
-                anchor = _getScreenAnchor.Invoke();
+                target = _getScreenAnchor.Invoke();
+                anchor = target;
 
                 if (_placement == ETooltipPlacement.AboveTarget
-                    && TryResolveAbovePosition(anchor, size, out Vector2 abovePosition))
+                    && TryResolveAbovePosition(target, size, out Vector2 abovePosition))
                 {
                     _isAbove = true;
-                    pivotScreen = abovePosition;
+                    topLeft = abovePosition;
                 }
                 else
                 {
-                    Rect target = anchor;
-                    anchor = _service.WidenOverClearAreas(anchor, GetBesideGap(anchor));
-                    pivotScreen = ResolvePivotPosition(anchor, size);
+                    anchor = _service.WidenOverClearAreas(target, GetBesideGap(target));
+                    topLeft = ResolvePivotPosition(anchor, size);
 
                     if (_placement == ETooltipPlacement.AboveTarget)
-                        pivotScreen = ClampToScreen(
-                            new Vector2(pivotScreen.x, RaiseBeside(target, pivotScreen.y, size)), size);
+                        topLeft = ClampToScreen(new Vector2(topLeft.x, RaiseBeside(target, topLeft.y, size)), size);
 
                     // Close to the screen's bottom or top the tail may not reach the target's middle from the side;
                     // above the target it does.
-                    if (!CanTailReachBeside(anchor, pivotScreen, size)
+                    if (!CanTailReachBeside(anchor, topLeft, size)
                         && TryResolveAbovePosition(target, size, out Vector2 fallback))
                     {
                         _isAbove = true;
                         anchor = target;
-                        pivotScreen = fallback;
+                        topLeft = fallback;
                     }
                 }
             }
 
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(_canvasRect, pivotScreen, _canvasCamera,
+            PickTailSide(anchor, topLeft, size);
+            _followOffset = topLeft - GetFollowPoint(target);
+            _isPlaced = true;
+            MoveTo(target, topLeft, size);
+        }
+
+        /// <summary>
+        /// Carries the tooltip along with its target on the side and at the spot it picked, as if pinned to it, so it
+        /// never switches sides while the target moves. Only clamps it back onto the screen.
+        /// </summary>
+        private void FollowTarget()
+        {
+            Rect target = _getScreenAnchor.Invoke();
+            Vector2 size = GetTooltipSize();
+
+            MoveTo(target, ClampToScreen(GetFollowPoint(target) + _followOffset, size), size);
+        }
+
+        // The middle of the target's edge that faces the tooltip, so a target that grows, like a card swelling on
+        // hover, keeps its gap to the tooltip instead of pushing into it. Its middle where no edge faces the tooltip.
+        private Vector2 GetFollowPoint(Rect target)
+        {
+            if (_isAbove)
+                return new Vector2(target.center.x, target.yMax);
+
+            if (!_hasSideTail)
+                return target.center;
+
+            return _isRightOfTarget
+                ? new Vector2(target.xMax, target.center.y)
+                : new Vector2(target.xMin, target.center.y);
+        }
+
+        // Moves the tooltip's top left corner to topLeft, in screen pixels, and points the tail at the target.
+        private void MoveTo(Rect target, Vector2 topLeft, Vector2 size)
+        {
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(_canvasRect, topLeft, _canvasCamera,
                 out Vector2 localPoint);
 
             _restPosition = localPoint;
             tooltipRect.localPosition = localPoint;
-            PlaceTail(anchor, pivotScreen, size);
+            PlaceTail(target, topLeft, size);
+        }
+
+        /// <summary>
+        /// Decides which edge the tail sits on for a tooltip beside <paramref name="anchor"/>: the one facing it. No
+        /// side tail above the target, in the dock, at a cursor or when the tooltip had to cover the target.
+        /// </summary>
+        private void PickTailSide(Rect anchor, Vector2 topLeft, Vector2 size)
+        {
+            _isRightOfTarget = topLeft.x >= anchor.xMax;
+            _hasSideTail = !_isAbove
+                && !_isDocked
+                && anchor.width > 0f
+                && (_isRightOfTarget || topLeft.x + size.x <= anchor.xMin);
         }
 
         /// <summary>
@@ -504,37 +624,31 @@ namespace Base.CorePackage.Tooltip
         /// far as the straight edge allows, or down from the card's bottom edge when it opened above. Hidden in the
         /// dock, at a cursor and when the tooltip had to cover the target.
         /// </summary>
-        private void PlaceTail(Rect anchor, Vector2 topLeft, Vector2 size)
+        private void PlaceTail(Rect target, Vector2 topLeft, Vector2 size)
         {
             if (tail == null)
                 return;
 
+            tail.gameObject.SetActive(_isAbove || _hasSideTail);
+
             if (_isAbove)
-            {
-                tail.gameObject.SetActive(true);
-                PlaceTailBelow(anchor, topLeft);
-                return;
-            }
+                PlaceTailBelow(target, topLeft);
+            else if (_hasSideTail)
+                PlaceTailBeside(target, topLeft, size);
+        }
 
-            bool isRightOfTarget = topLeft.x >= anchor.xMax;
-            bool isLeftOfTarget = topLeft.x + size.x <= anchor.xMin;
-            bool isShown = !_isDocked
-                && anchor.width > 0f
-                && (isRightOfTarget || isLeftOfTarget);
-            tail.gameObject.SetActive(isShown);
-
-            if (!isShown)
-                return;
-
+        // The tail on the edge facing the target, at the height of the target's middle as far as the corners allow.
+        private void PlaceTailBeside(Rect target, Vector2 topLeft, Vector2 size)
+        {
             float scale = GetPixelsPerUnit();
             float height = size.y / scale;
             float margin = tail.rect.height * Half + tailMargin;
-            float fromTop = Mathf.Clamp((topLeft.y - anchor.center.y) / scale, margin,
+            float fromTop = Mathf.Clamp((topLeft.y - target.center.y) / scale, margin,
                 Mathf.Max(margin, height - margin));
-            float edge = isRightOfTarget
+            float edge = _isRightOfTarget
                 ? 0f
                 : Opaque;
-            float direction = isRightOfTarget
+            float direction = _isRightOfTarget
                 ? Opaque
                 : -Opaque;
 

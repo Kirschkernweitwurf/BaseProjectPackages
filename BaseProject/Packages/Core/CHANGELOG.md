@@ -72,6 +72,11 @@ Changes made before 2.1.4 were not recorded.
 
 ### Fixed
 
+- `TooltipView` waits until its target rests before it picks a side and a spot, then keeps both: a tooltip above a
+  card that was still rising switched to beside it, or to its other side, halfway through. New **Settle Speed** and
+  **Max Settle Wait** fields set when a target counts as resting and how long a tooltip waits at most. A tooltip above
+  its target moves along with it on the side it picked.
+
 - `TooltipKeepClear` and `TooltipService.KeepClear` only push away the tooltips of targets in the area or right beside
   it. A card in the middle of the screen sent its tooltip past every kept-clear panel at its height, like a list on
   the left and counters on the right, so it stuck to the screen's left edge.
