@@ -76,10 +76,18 @@ namespace Base.TextPackage
             if (IsLooping())
                 return;
 
+            Vector4 margin = _text.margin;
+
             // Its own mesh updates raise the text changed event again.
             _isBalancing = true;
             Narrow(fit);
             _isBalancing = false;
+
+            // TMP keeps its measured size over a margin change. A box that showed a balanced text and then gets a
+            // shorter one was measured at the old, narrow width, so a title that fits on one line kept the height
+            // of two and left an empty line under it.
+            if (_text.margin != margin)
+                ForgetMeasuredSize();
 
             // A layout group sized the box before the text balanced. Not the text's own SetLayoutDirty: raised from
             // inside its mesh update, its dirty flag never clears again and the text then skips every culling
@@ -281,5 +289,9 @@ namespace Base.TextPackage
             _text.margin = new Vector4(_baseMargin.x + cut.x, _baseMargin.y, _baseMargin.z + cut.y, _baseMargin.w);
             _text.ForceMeshUpdate();
         }
+
+        // Asking TMP for its preferred values marks its cached ones stale, the only way to do that without
+        // SetLayoutDirty (see Balance), so the next layout pass measures the text at its new width.
+        private void ForgetMeasuredSize() => _text.GetPreferredValues();
     }
 }

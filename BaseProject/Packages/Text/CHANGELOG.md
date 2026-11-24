@@ -18,3 +18,5 @@ All notable changes to this package are recorded here. The format follows
 
 - `KeepRowInPlaceOnTextChange` no longer throws when the scroll content itself is selected. It counted the
   content as one of its own rows and climbed past the root.
+- A balanced text box that gets a shorter text, like a one line title after a two line one, no longer keeps
+  the height of the old lines. The layout measured it at the old, narrowed width and left an empty line under it.
