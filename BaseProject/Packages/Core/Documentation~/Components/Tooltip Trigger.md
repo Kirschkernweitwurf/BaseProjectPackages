@@ -37,9 +37,10 @@ Shows a tooltip while the pointer hovers this object and hides it when the point
 ## Good to know
 
 - A component with `ITooltipSourceProvider` next to it names what the panels explain, like the card a set of keyword panels belongs to; a view with a **Source Panel** shows it as the card's header.
+- A component with `ITooltipLinkProvider` next to it adds links: the things the text names, like the card a rule deals, each shown beside the tooltip as a picture with its own panels, in a view with a **Link Template**.
 
 - Needs a Graphic with **Raycast Target** on and an Event System in the scene.
-- A trigger without text and without provider content logs a warning and shows nothing.
+- A trigger without text, provider content and links logs a warning and shows nothing.
 - Text may use TextMeshPro rich text, including `<sprite name="...">` icons when the panel's text has a sprite asset.
 - Code can call **Refresh** to rebuild a visible tooltip after its content changed, for example a countdown.
 - Code can read **Screen Rect** to know where the object sits on screen, for example to point a gamepad cursor at it.

@@ -31,6 +31,12 @@ namespace Base.CorePackage.Tooltip
         /// </summary>
         public ETooltipPlacement Placement { get; }
 
+        /// <summary>
+        /// The things the panels name, each shown beside the tooltip as a picture with its own panels, like the card a
+        /// rule deals. Never null.
+        /// </summary>
+        public IReadOnlyList<TooltipLink> Links { get; }
+
         /// <summary>Creates a tooltip payload with a single text panel next to a point.</summary>
         /// <param name="message">Text to show.</param>
         /// <param name="getScreenPosition">Supplies the screen point to follow.</param>
@@ -52,8 +58,9 @@ namespace Base.CorePackage.Tooltip
         /// <param name="getScreenAnchor">Supplies the screen rect to place the tooltip beside.</param>
         /// <param name="source">What the panels explain, shown in the view's header. Null for none.</param>
         /// <param name="placement">Beside the anchor, or above it while there is room.</param>
+        /// <param name="links">Things the panels name, shown beside the tooltip. Copied. Null for none.</param>
         public TooltipData(IEnumerable<TooltipEntry> entries, Func<Rect> getScreenAnchor, TooltipEntry? source = null,
-            ETooltipPlacement placement = ETooltipPlacement.BesideTarget)
+            ETooltipPlacement placement = ETooltipPlacement.BesideTarget, IEnumerable<TooltipLink> links = null)
         {
             Entries = entries == null
                 ? Array.Empty<TooltipEntry>()
@@ -62,6 +69,9 @@ namespace Base.CorePackage.Tooltip
             GetScreenAnchor = getScreenAnchor;
             Source = source;
             Placement = placement;
+            Links = links == null
+                ? Array.Empty<TooltipLink>()
+                : new List<TooltipLink>(links);
         }
 
         private static Func<Rect> AnchorAt(Func<Vector2> getScreenPosition) => getScreenPosition == null

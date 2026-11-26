@@ -12,7 +12,8 @@ namespace Base.CorePackage.Tooltip
     /// <summary>
     /// Shows a tooltip while the pointer hovers this GameObject: the text set in the inspector, followed by the
     /// panels of every <see cref="ITooltipProvider"/> on the same GameObject, under a header named by an
-    /// <see cref="ITooltipSourceProvider"/> there, if any. Requests go through the
+    /// <see cref="ITooltipSourceProvider"/> there, if any, with the links of every <see cref="ITooltipLinkProvider"/>
+    /// there beside it, like the card a rule deals. Requests go through the
     /// <see cref="TooltipService"/>, so overlapping triggers resolve by priority. A pointer that drags something
     /// across the object shows nothing, so tooltips never cover a drop target. Selecting the object with a gamepad or
     /// the keyboard shows the tooltip beside it, so menus explain themselves without a mouse. Objects with hover
@@ -47,9 +48,11 @@ namespace Base.CorePackage.Tooltip
         [SerializeField] private bool showOnHover = true;
 
         private readonly List<TooltipEntry> _entries = new();
+        private readonly List<TooltipLink> _links = new();
 
         private ITooltipProvider[] _providers;
         private ITooltipSourceProvider[] _sourceProviders;
+        private ITooltipLinkProvider[] _linkProviders;
         private TooltipService _service;
         private bool _isSelected;
 
@@ -69,6 +72,7 @@ namespace Base.CorePackage.Tooltip
         {
             _providers = GetComponents<ITooltipProvider>();
             _sourceProviders = GetComponents<ITooltipSourceProvider>();
+            _linkProviders = GetComponents<ITooltipLinkProvider>();
 
             // TryGet logs on its own. Disabling keeps a missing service from repeating that error on every hover.
             if (!ServiceLocator.TryGet(out _service))
@@ -170,8 +174,10 @@ namespace Base.CorePackage.Tooltip
                 return;
 
             CollectEntries();
+            CollectLinks();
 
-            if (_entries.Count == 0)
+            if (_entries.Count == 0
+                && _links.Count == 0)
             {
                 CustomLogger.LogWarning($"{nameof(TooltipTrigger)} on '{gameObject.name}' has no tooltip content.",
                     this);
@@ -179,8 +185,8 @@ namespace Base.CorePackage.Tooltip
                 return;
             }
 
-            _service.AddTooltip(new TooltipData(_entries, BuildAnchor(), FindSource(), placement), (uint)priority,
-                this);
+            _service.AddTooltip(new TooltipData(_entries, BuildAnchor(), FindSource(), placement, _links),
+                (uint)priority, this);
         }
 
         // The inspector text comes first, so a provider can add details below a fixed description.
@@ -193,6 +199,14 @@ namespace Base.CorePackage.Tooltip
 
             foreach (ITooltipProvider provider in _providers)
                 provider.CollectEntries(_entries);
+        }
+
+        private void CollectLinks()
+        {
+            _links.Clear();
+
+            foreach (ITooltipLinkProvider provider in _linkProviders)
+                provider.CollectLinks(_links);
         }
 
         // The first source provider that names something wins.

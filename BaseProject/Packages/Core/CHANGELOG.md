@@ -47,6 +47,12 @@ Changes made before 2.1.4 were not recorded.
   like HUD panels that a tooltip above its target must not cover.
 - `TooltipKeepClear` component: a tooltip beside a thing inside or alongside a panel, like a row of a list, opens past
   the panel, through `TooltipService.KeepClear`.
+- Tooltip links: `TooltipLink`, `ITooltipLinkProvider`, `TooltipData.Links`, the `TooltipLinkGroup` component and the
+  `TooltipSubjectView` base class. Things a tooltip's text names, like the card a rule deals, show beside the tooltip
+  as a card of their own with a picture and their own panels, on the main card's far side from the target. A row of
+  links too wide for either side of the target stacks each link's panels below its picture. `TooltipView` gets
+  **Link Template** and **Row**; with a row, a tooltip above its target lines up the bottoms of its cards, so nothing
+  taller than the main card hangs down onto the target.
 
 ### Changed
 
@@ -69,6 +75,10 @@ Changes made before 2.1.4 were not recorded.
   it covered the target's neighbors, like the other cards of a hand. The tooltip grows the other way along its target
   when that clears the area, and covers the area otherwise. An above tooltip with no room above opens beside its
   target as high as it can go.
+- `TooltipView` places the tail beside a target on the main card, also when a link or the aside card is taller, and
+  a lone tooltip title without a text shows only as the header, without an empty panel below it. A tooltip above its
+  target that can't grow outward, like a wide one near the screen's edge, grows toward the middle before it gives up
+  and opens beside the target.
 
 ### Fixed
 

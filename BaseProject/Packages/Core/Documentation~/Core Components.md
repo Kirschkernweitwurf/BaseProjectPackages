@@ -53,6 +53,7 @@ Every component has its own page with all fields. Generated from the code; do no
 | [🔖 Activate After Frames](Components/Activate%20After%20Frames.md) | Turns a GameObject on after a number of frames. | Everyone |
 | [🔖 Tooltip Keep Clear](Components/Tooltip%20Keep%20Clear.md) | Makes tooltips beside the things in a panel open past the panel. | Everyone |
 | [🔖 Tooltip Keep Visible](Components/Tooltip%20Keep%20Visible.md) | Keeps a HUD panel readable while tooltips open above their targets. | Everyone |
+| [🔖 Tooltip Link Group](Components/Tooltip%20Link%20Group.md) | Shows something a tooltip names beside it: a picture and its own panels. | Everyone |
 | [🔖 Tooltip Panel](Components/Tooltip%20Panel.md) | Draws one tooltip panel: icon, title and text. | Everyone |
 | [🔖 Tooltip Trigger](Components/Tooltip%20Trigger.md) | Shows a tooltip while the pointer hovers this object. | Everyone |
 | [🔖 Tooltip View](Components/Tooltip%20View.md) | Draws the tooltip panels next to the cursor and keeps them on screen. | Everyone |

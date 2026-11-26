@@ -20,15 +20,19 @@ namespace Base.CorePackage.Tooltip
     /// camera that follows the pointer. A tooltip above its target moves along with it on the side it picked, so its
     /// tail stays on the target when that slides on or sways. Every <see cref="TooltipEntry"/> gets its own
     /// <see cref="TooltipPanel"/>, copied from the first one, so the content's layout group decides whether they stack
-    /// or line up side by side. A tooltip in the dock slides in from the right as it fades in, and one beside or above
-    /// its target shows a small tail pointing at it, like a popover. A tooltip fades in after a short delay, so
-    /// sweeping the pointer across the screen stays calm, but moving straight on to the next tooltip shows it at once.
+    /// or line up side by side. Things the text names, like the card a rule deals, come as <see cref="TooltipLink"/>s:
+    /// each shows as a picture with its own panels in a row beside the main card, on the side away from the target, or
+    /// the side the tooltip grows to above it. A tooltip in the dock slides in from the right as it fades in, and one
+    /// beside or above its target shows a small tail pointing at it, like a popover. A tooltip fades in after a short
+    /// delay, so sweeping the pointer across the screen stays calm, but moving straight on to the next tooltip shows it
+    /// at once.
     /// The tooltip never takes the pointer, so it cannot flicker by covering its anchor. Registers itself with the
     /// <see cref="TooltipService"/> on start.
     /// </summary>
     [DisallowMultipleComponent]
     public class TooltipView : MonoBehaviour
     {
+        private const int AnchorColumns = 3;
         private const int BottomLeftCorner = 0;
         private const int CornerCount = 4;
         private const float Half = 0.5f;
@@ -112,6 +116,16 @@ namespace Base.CorePackage.Tooltip
             + "without it those entries join the main card.")]
         [SerializeField] private Transform asideCard;
 
+        [Tooltip("First link group inside the content, next to the main card: a card of its own with the picture of "
+            + "something the text names, like the card a rule deals, and its panels. Further links get copies of it. "
+            + "Optional: without it links are left out.")]
+        [SerializeField] private TooltipLinkGroup linkTemplate;
+
+        [Tooltip("Layout group that lines up the main card, the aside card and the links. Optional: with it, a "
+            + "tooltip above its target lines up their bottoms, so a taller link never hangs down onto the target, "
+            + "and every other tooltip their tops.")]
+        [SerializeField] private HorizontalOrVerticalLayoutGroup row;
+
         [Tooltip("RectTransform used for positioning, the rect of the content object.")]
         [Required] [SerializeField] private RectTransform tooltipRect;
 
@@ -135,6 +149,7 @@ namespace Base.CorePackage.Tooltip
         private readonly List<TooltipPanel> _asidePanels = new();
         private readonly List<TooltipEntry> _asideEntries = new();
         private readonly List<TooltipEntry> _shownEntries = new();
+        private readonly List<TooltipLinkGroup> _linkGroups = new();
 
         private TooltipService _service;
         private Camera _canvasCamera;
@@ -152,6 +167,8 @@ namespace Base.CorePackage.Tooltip
         private bool _isRightOfTarget;
         private bool _hasLastTarget;
         private int _stillLooks;
+        private int _shownLinks;
+        private int _rowColumn;
         private Rect _lastTarget;
         private Vector2 _followOffset;
         private ETooltipPlacement _placement;
@@ -187,6 +204,12 @@ namespace Base.CorePackage.Tooltip
             _contentGroup = PrepareContentGroup();
             tooltipRect.pivot = TopLeftPivot;
 
+            if (linkTemplate != null)
+                _linkGroups.Add(linkTemplate);
+
+            if (row != null)
+                _rowColumn = (int)row.childAlignment % AnchorColumns;
+
             if (ServiceLocator.TryGet(out _service))
                 _service.SetView(this);
 
@@ -219,10 +242,10 @@ namespace Base.CorePackage.Tooltip
                 return;
             }
 
-            if (data.Entries == null
-                || data.Entries.Count == 0)
+            if (data.Entries.Count == 0
+                && data.Links.Count == 0)
             {
-                CustomLogger.LogError($"{nameof(Show)} was called without entries.", this);
+                CustomLogger.LogError($"{nameof(Show)} was called without entries or links.", this);
                 return;
             }
 
@@ -312,8 +335,8 @@ namespace Base.CorePackage.Tooltip
         }
 
         /// <summary>
-        /// Fills the header from the source, one panel per entry in the main card and one per aside entry in the
-        /// second card, and hides the panels left over from a bigger tooltip before.
+        /// Fills the header from the source, one panel per entry in the main card, one per aside entry in the second
+        /// card and one group per link, and hides the panels and groups left over from a bigger tooltip before.
         /// </summary>
         private void ShowEntries(TooltipData data)
         {
@@ -328,6 +351,7 @@ namespace Base.CorePackage.Tooltip
                 sourcePanel.Show(source.Value);
 
             ShowPanels(_shownEntries, _panels, panelTemplate.transform.parent, hasSource);
+            ShowLinks(data.Links);
 
             if (asideCard == null)
                 return;
@@ -380,8 +404,12 @@ namespace Base.CorePackage.Tooltip
                 || string.IsNullOrEmpty(_shownEntries[0].Title))
                 return data.Source;
 
+            // A lone title without a text, like the name of a card whose tooltip only shows links, is just the header.
             TooltipEntry lone = _shownEntries[0];
-            _shownEntries[0] = new TooltipEntry(lone.Body);
+            if (string.IsNullOrEmpty(lone.Body))
+                _shownEntries.Clear();
+            else
+                _shownEntries[0] = new TooltipEntry(lone.Body);
 
             return new TooltipEntry(lone.Title, null, lone.Icon, lone.IconColor, lone.Eyebrow,
                 isIconFramed: lone.IsIconFramed);
@@ -397,6 +425,39 @@ namespace Base.CorePackage.Tooltip
                 pool.Add(Instantiate(panelTemplate, card));
 
             return pool[index];
+        }
+
+        /// <summary>
+        /// Shows one link group per link that has something to show and hides the groups left over from a bigger
+        /// tooltip before. Without a link template the links are left out.
+        /// </summary>
+        private void ShowLinks(IReadOnlyList<TooltipLink> links)
+        {
+            _shownLinks = 0;
+            if (linkTemplate == null)
+                return;
+
+            foreach (TooltipLink link in links)
+            {
+                TooltipLinkGroup group = LinkGroupAt(_shownLinks);
+                group.gameObject.SetActive(true);
+
+                // A link with nothing to show leaves its group to the next one.
+                if (group.Show(link, panelTemplate))
+                    _shownLinks++;
+            }
+
+            for (int i = _shownLinks; i < _linkGroups.Count; i++)
+                _linkGroups[i].gameObject.SetActive(false);
+        }
+
+        // Copied from the template next to it the first time it is needed and reused after that.
+        private TooltipLinkGroup LinkGroupAt(int index)
+        {
+            while (_linkGroups.Count <= index)
+                _linkGroups.Add(Instantiate(linkTemplate, linkTemplate.transform.parent));
+
+            return _linkGroups[index];
         }
 
         /// <summary>
@@ -512,24 +573,20 @@ namespace Base.CorePackage.Tooltip
         /// </summary>
         private void PlaceTooltip()
         {
-            Vector2 size = GetTooltipSize();
             Vector2 topLeft;
             Rect target = Rect.zero;
             Rect anchor = Rect.zero;
             _isDocked = false;
             _isAbove = false;
 
-            // A view shown without the service has no dock and no kept-clear or kept-visible areas.
-            if (_service == null)
+            if (_service != null
+                && _service.TryGetDock(out Rect dock))
             {
-                target = _getScreenAnchor.Invoke();
-                anchor = target;
-                topLeft = ResolvePivotPosition(anchor, size);
-            }
-            else if (_service.TryGetDock(out Rect dock))
-            {
+                // The dock grows to the left, so the links go there.
                 _isDocked = true;
-                topLeft = ResolveDockedPosition(dock, size);
+                LayOutLinks(isAbove: false, isStacked: false);
+                ArrangeLinks(isRight: false);
+                topLeft = ResolveDockedPosition(dock, GetTooltipSize());
             }
             else
             {
@@ -537,35 +594,67 @@ namespace Base.CorePackage.Tooltip
                 anchor = target;
 
                 if (_placement == ETooltipPlacement.AboveTarget
-                    && TryResolveAbovePosition(target, size, out Vector2 abovePosition))
+                    && TryResolveAbovePosition(target, out Vector2 abovePosition))
                 {
                     _isAbove = true;
                     topLeft = abovePosition;
                 }
                 else
                 {
-                    anchor = _service.WidenOverClearAreas(target, GetBesideGap(target));
-                    topLeft = ResolvePivotPosition(anchor, size);
-
-                    if (_placement == ETooltipPlacement.AboveTarget)
-                        topLeft = ClampToScreen(new Vector2(topLeft.x, RaiseBeside(target, topLeft.y, size)), size);
+                    topLeft = ResolveBesidePosition(target, out anchor);
 
                     // Close to the screen's bottom or top the tail may not reach the target's middle from the side;
-                    // above the target it does.
-                    if (!CanTailReachBeside(anchor, topLeft, size)
-                        && TryResolveAbovePosition(target, size, out Vector2 fallback))
+                    // above the target it does. Without room above it stays beside, laid out for that.
+                    if (!CanTailReachBeside(anchor, topLeft))
                     {
-                        _isAbove = true;
-                        anchor = target;
-                        topLeft = fallback;
+                        if (TryResolveAbovePosition(target, out Vector2 fallback))
+                        {
+                            _isAbove = true;
+                            anchor = target;
+                            topLeft = fallback;
+                        }
+                        else
+                        {
+                            topLeft = ResolveBesidePosition(target, out anchor);
+                        }
                     }
                 }
             }
 
-            PickTailSide(anchor, topLeft, size);
+            PickTailSide(anchor, topLeft, GetTooltipSize());
             _followOffset = topLeft - GetFollowPoint(target);
             _isPlaced = true;
-            MoveTo(target, topLeft, size);
+            MoveTo(target, topLeft);
+        }
+
+        /// <summary>
+        /// Resolves the top left corner in screen space for a tooltip beside <paramref name="target"/>, widened over
+        /// the areas kept clear into <paramref name="anchor"/>, with the row lined up for it and the links on the side
+        /// away from the target. Links too wide for either side, which would push the tooltip over the target, stack
+        /// instead. A tooltip that asked to open above rises as high as it can. A view shown without the service has
+        /// no areas kept clear.
+        /// </summary>
+        private Vector2 ResolveBesidePosition(Rect target, out Rect anchor)
+        {
+            LayOutLinks(isAbove: false, isStacked: false);
+            anchor = _service == null
+                ? target
+                : _service.WidenOverClearAreas(target, GetBesideGap(target));
+            Vector2 size = GetTooltipSize();
+            Vector2 topLeft = ResolvePivotPosition(anchor, size);
+
+            if (IsCoveringTarget(anchor, topLeft, size)
+                && LayOutLinks(isAbove: false, isStacked: true))
+            {
+                size = GetTooltipSize();
+                topLeft = ResolvePivotPosition(anchor, size);
+            }
+
+            ArrangeLinks(isRight: topLeft.x >= anchor.xMax);
+
+            return _placement == ETooltipPlacement.AboveTarget
+                ? ClampToScreen(new Vector2(topLeft.x, RaiseBeside(target, topLeft.y)), size)
+                : topLeft;
         }
 
         /// <summary>
@@ -577,7 +666,7 @@ namespace Base.CorePackage.Tooltip
             Rect target = _getScreenAnchor.Invoke();
             Vector2 size = GetTooltipSize();
 
-            MoveTo(target, ClampToScreen(GetFollowPoint(target) + _followOffset, size), size);
+            MoveTo(target, ClampToScreen(GetFollowPoint(target) + _followOffset, size));
         }
 
         // The middle of the target's edge that faces the tooltip, so a target that grows, like a card swelling on
@@ -596,14 +685,85 @@ namespace Base.CorePackage.Tooltip
         }
 
         // Moves the tooltip's top left corner to topLeft, in screen pixels, and points the tail at the target.
-        private void MoveTo(Rect target, Vector2 topLeft, Vector2 size)
+        private void MoveTo(Rect target, Vector2 topLeft)
         {
             RectTransformUtility.ScreenPointToLocalPointInRectangle(_canvasRect, topLeft, _canvasCamera,
                 out Vector2 localPoint);
 
             _restPosition = localPoint;
             tooltipRect.localPosition = localPoint;
-            PlaceTail(target, topLeft, size);
+            PlaceTail(target, topLeft);
+        }
+
+        // Whether a tooltip of size at topLeft, in screen pixels, reaches over a target beside it. A cursor is never
+        // covered.
+        private static bool IsCoveringTarget(Rect anchor, Vector2 topLeft, Vector2 size) => anchor.width > 0f
+            && topLeft.x < anchor.xMax
+            && topLeft.x + size.x > anchor.xMin;
+
+        /// <summary>
+        /// Lines up the bottoms of the cards in the row for a tooltip above its target, so nothing taller than the main
+        /// card hangs down onto the target, and their tops for every other tooltip, keeping the row's authored
+        /// horizontal alignment. Stacks every link's card below its picture while <paramref name="isStacked"/>.
+        /// Rebuilds the layout when anything changed.
+        /// </summary>
+        /// <returns><c>true</c> when a link changed between stacked and side by side.</returns>
+        private bool LayOutLinks(bool isAbove, bool isStacked)
+        {
+            bool isChanged = false;
+            if (row != null)
+            {
+                int firstOfRow = isAbove
+                    ? (int)TextAnchor.LowerLeft
+                    : (int)TextAnchor.UpperLeft;
+                TextAnchor alignment = (TextAnchor)(firstOfRow + _rowColumn);
+                isChanged = row.childAlignment != alignment;
+                row.childAlignment = alignment;
+            }
+
+            bool isRestacked = false;
+            for (int i = 0; i < _shownLinks; i++)
+                isRestacked |= _linkGroups[i].SetStacked(isStacked);
+
+            if (isChanged || isRestacked)
+                LayoutRebuilder.ForceRebuildLayoutImmediate(tooltipRect);
+
+            return isRestacked;
+        }
+
+        /// <summary>
+        /// Puts the links beside the main card, right of it when <paramref name="isRight"/>, else left of it and of
+        /// the aside card, the first link closest. Rebuilds the layout, so the main card's spot inside the tooltip is
+        /// known before the tooltip is placed.
+        /// </summary>
+        private void ArrangeLinks(bool isRight)
+        {
+            if (_shownLinks == 0)
+                return;
+
+            for (int i = 0; i < _shownLinks; i++)
+                _linkGroups[i].transform.SetAsLastSibling();
+
+            if (!isRight)
+            {
+                int first = GetFirstCardIndex();
+                for (int i = 0; i < _shownLinks; i++)
+                    _linkGroups[i].transform.SetSiblingIndex(first);
+            }
+
+            LayoutRebuilder.ForceRebuildLayoutImmediate(tooltipRect);
+        }
+
+        // The main card's place among the content's children, or the aside card's when that comes first, so links on
+        // the left go past it and the terms it explains stay next to the main card.
+        private int GetFirstCardIndex()
+        {
+            int index = _card.GetSiblingIndex();
+
+            return asideCard != null
+                && asideCard.parent == _card.parent
+                    ? Mathf.Min(index, asideCard.GetSiblingIndex())
+                    : index;
         }
 
         /// <summary>
@@ -624,7 +784,7 @@ namespace Base.CorePackage.Tooltip
         /// far as the straight edge allows, or down from the card's bottom edge when it opened above. Hidden in the
         /// dock, at a cursor and when the tooltip had to cover the target.
         /// </summary>
-        private void PlaceTail(Rect target, Vector2 topLeft, Vector2 size)
+        private void PlaceTail(Rect target, Vector2 topLeft)
         {
             if (tail == null)
                 return;
@@ -634,17 +794,19 @@ namespace Base.CorePackage.Tooltip
             if (_isAbove)
                 PlaceTailBelow(target, topLeft);
             else if (_hasSideTail)
-                PlaceTailBeside(target, topLeft, size);
+                PlaceTailBeside(target, topLeft);
         }
 
-        // The tail on the edge facing the target, at the height of the target's middle as far as the corners allow.
-        private void PlaceTailBeside(Rect target, Vector2 topLeft, Vector2 size)
+        // The tail on the main card's edge facing the target, at the height of the target's middle as far as the
+        // corners allow. A taller link or aside card beside it never takes the tail off the card.
+        private void PlaceTailBeside(Rect target, Vector2 topLeft)
         {
             float scale = GetPixelsPerUnit();
-            float height = size.y / scale;
+            (float cardFromTop, float cardHeight) = GetCardSpan();
             float margin = tail.rect.height * Half + tailMargin;
-            float fromTop = Mathf.Clamp((topLeft.y - target.center.y) / scale, margin,
-                Mathf.Max(margin, height - margin));
+            float highest = cardFromTop / scale + margin;
+            float lowest = (cardFromTop + cardHeight) / scale - margin;
+            float fromTop = Mathf.Clamp((topLeft.y - target.center.y) / scale, highest, Mathf.Max(highest, lowest));
             float edge = _isRightOfTarget
                 ? 0f
                 : Opaque;
@@ -686,19 +848,35 @@ namespace Base.CorePackage.Tooltip
         private Vector2 GetTooltipSize() => GetScreenRect(tooltipRect).size;
 
         /// <summary>
-        /// Whether a tooltip beside <paramref name="anchor"/> at <paramref name="topLeft"/> lets its tail point into
-        /// the target without touching a rounded corner. Always true without a tail or at a cursor.
+        /// Screen pixels from the tooltip's top to the main card's top, and the card's height, using the layout as it
+        /// stands this frame. A link or aside card taller than the main card makes the tooltip taller than the card,
+        /// and the tail belongs on the card.
         /// </summary>
-        private bool CanTailReachBeside(Rect anchor, Vector2 topLeft, Vector2 size)
+        private (float FromTop, float Height) GetCardSpan()
+        {
+            Rect tooltip = GetScreenRect(tooltipRect);
+            Rect card = GetScreenRect(_card);
+
+            return (tooltip.yMax - card.yMax, card.height);
+        }
+
+        /// <summary>
+        /// Whether a tooltip beside <paramref name="anchor"/> at <paramref name="topLeft"/> lets its tail point into
+        /// the target from the main card without touching a rounded corner. Always true without a tail or at a
+        /// cursor.
+        /// </summary>
+        private bool CanTailReachBeside(Rect anchor, Vector2 topLeft)
         {
             if (tail == null
                 || anchor.width <= 0f)
                 return true;
 
             float clearance = GetTailClearance();
+            (float cardFromTop, float cardHeight) = GetCardSpan();
+            float cardTop = topLeft.y - cardFromTop;
 
-            return IsTailOnTarget(anchor.center.y, anchor.height, topLeft.y - size.y + clearance,
-                topLeft.y - clearance);
+            return IsTailOnTarget(anchor.center.y, anchor.height, cardTop - cardHeight + clearance,
+                cardTop - clearance);
         }
 
 
@@ -746,6 +924,7 @@ namespace Base.CorePackage.Tooltip
             float tailGap = GetTailGap(anchor);
             float offsetX = GetBesideGap(anchor);
             float offsetY = Mathf.Abs(screenOffset.y);
+            (float cardFromTop, float cardHeight) = GetCardSpan();
 
             float left = anchor.xMax + offsetX;
             if (left + size.x > Screen.width - edgeMargin)
@@ -755,12 +934,13 @@ namespace Base.CorePackage.Tooltip
             // tooltip rises until its tail meets the target's middle.
             float top = anchor.yMax - offsetY;
             if (tailGap > 0f)
-                top = Mathf.Max(top, anchor.center.y + GetTailClearance());
+                top = Mathf.Max(top, anchor.center.y + GetTailClearance() + cardFromTop);
 
             // With no room below, the bottoms line up, but never so high that the tail misses the target's middle.
             if (top - size.y < edgeMargin)
                 top = tailGap > 0f
-                    ? Mathf.Min(anchor.yMin + offsetY + size.y, anchor.center.y - GetTailClearance() + size.y)
+                    ? Mathf.Min(anchor.yMin + offsetY + size.y,
+                        anchor.center.y - GetTailClearance() + cardFromTop + cardHeight)
                     : anchor.yMin + offsetY + size.y;
 
             return ClampToScreen(new Vector2(left, top), size);
@@ -786,11 +966,14 @@ namespace Base.CorePackage.Tooltip
         /// screen and the tail allow, so it covers as little as it can of the row beside the target, like the other
         /// cards of a hand. Never lowers it.
         /// </summary>
-        private float RaiseBeside(Rect target, float top, Vector2 size)
+        private float RaiseBeside(Rect target, float top)
         {
             float highest = Screen.height - edgeMargin;
             if (GetTailGap(target) > 0f)
-                highest = Mathf.Min(highest, target.center.y - GetTailClearance() + size.y);
+            {
+                (float cardFromTop, float cardHeight) = GetCardSpan();
+                highest = Mathf.Min(highest, target.center.y - GetTailClearance() + cardFromTop + cardHeight);
+            }
 
             return Mathf.Max(top, highest);
         }
@@ -799,21 +982,32 @@ namespace Base.CorePackage.Tooltip
         /// Resolves the top left corner in screen space for a tooltip above its anchor: the card's bottom edge one gap
         /// above the anchor's top, and its edge lined up with the anchor's edge on the side away from the screen's
         /// middle, so it grows outward and leaves what lies beside the anchor readable. Grows toward the middle instead
-        /// when only that keeps an area kept visible clear. Fails when the tooltip would leave the top of the screen or
-        /// move so far that the tail no longer reaches the anchor's middle, never for an area kept visible: covering a
+        /// when only that keeps an area kept visible clear, or when a wide tooltip, like one with links, would have to
+        /// move so far from the screen's edge that the tail no longer reaches the anchor's middle. Fails when it would
+        /// leave the top of the screen or the tail can't reach either way, never for an area kept visible: covering a
         /// panel beats opening beside the anchor over what lies next to it.
         /// </summary>
-        private bool TryResolveAbovePosition(Rect anchor, Vector2 size, out Vector2 topLeft)
+        private bool TryResolveAbovePosition(Rect anchor, out Vector2 topLeft)
         {
+            LayOutLinks(isAbove: true, isStacked: false);
+            Vector2 size = GetTooltipSize();
+
             bool isGrowingRight = anchor.center.x >= Screen.width * Half;
             if (!TryPlaceAbove(anchor, size, isGrowingRight, out topLeft))
-                return false;
+                return TryPlaceAbove(anchor, size, !isGrowingRight, out topLeft);
 
-            if (IsCoveringVisibleArea(topLeft, size)
-                && TryPlaceAbove(anchor, size, !isGrowingRight, out Vector2 inward)
+            if (!IsCoveringVisibleArea(topLeft, size))
+                return true;
+
+            if (TryPlaceAbove(anchor, size, !isGrowingRight, out Vector2 inward)
                 && !IsCoveringVisibleArea(inward, size))
+            {
                 topLeft = inward;
+                return true;
+            }
 
+            // The inward try turned the links; they go back with the tooltip.
+            ArrangeLinks(isGrowingRight);
             return true;
         }
 
@@ -829,6 +1023,9 @@ namespace Base.CorePackage.Tooltip
         /// </summary>
         private bool TryPlaceAbove(Rect anchor, Vector2 size, bool isGrowingRight, out Vector2 topLeft)
         {
+            // The links go the way the tooltip grows, so the main card stays over the target.
+            ArrangeLinks(isGrowingRight);
+
             float scale = GetPixelsPerUnit();
             Rect tooltip = GetScreenRect(tooltipRect);
             Rect card = GetScreenRect(_card);
