@@ -382,7 +382,8 @@ namespace Base.CorePackage.Tooltip
 
         /// <summary>
         /// Lists the entries to show as panels and returns the header. With a header, a lone titled entry names
-        /// itself: its title, icon and eyebrow go into the header and only its text stays below.
+        /// itself: its title, icon and eyebrow go into the header and only its text stays below. Hints don't count,
+        /// so a description with a hint after it still names the tooltip.
         /// </summary>
         private TooltipEntry? CollectShownEntries(TooltipData data)
         {
@@ -398,21 +399,40 @@ namespace Base.CorePackage.Tooltip
                     _shownEntries.Add(entry);
             }
 
+            int loneIndex = FindLoneEntry();
             if (sourcePanel == null
                 || data.Source.HasValue
-                || _shownEntries.Count != 1
-                || string.IsNullOrEmpty(_shownEntries[0].Title))
+                || loneIndex < 0
+                || string.IsNullOrEmpty(_shownEntries[loneIndex].Title))
                 return data.Source;
 
             // A lone title without a text, like the name of a card whose tooltip only shows links, is just the header.
-            TooltipEntry lone = _shownEntries[0];
+            TooltipEntry lone = _shownEntries[loneIndex];
             if (string.IsNullOrEmpty(lone.Body))
-                _shownEntries.Clear();
+                _shownEntries.RemoveAt(loneIndex);
             else
-                _shownEntries[0] = new TooltipEntry(lone.Body);
+                _shownEntries[loneIndex] = new TooltipEntry(lone.Body);
 
             return new TooltipEntry(lone.Title, null, lone.Icon, lone.IconColor, lone.Eyebrow,
                 isIconFramed: lone.IsIconFramed);
+        }
+
+        // The index of the only shown entry that is not a hint, or -1 when there are none or several.
+        private int FindLoneEntry()
+        {
+            int loneIndex = -1;
+            for (int i = 0; i < _shownEntries.Count; i++)
+            {
+                if (_shownEntries[i].IsHint)
+                    continue;
+
+                if (loneIndex >= 0)
+                    return -1;
+
+                loneIndex = i;
+            }
+
+            return loneIndex;
         }
 
         /// <summary>

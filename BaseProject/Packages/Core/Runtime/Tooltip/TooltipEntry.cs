@@ -36,6 +36,13 @@ namespace Base.CorePackage.Tooltip
         /// </summary>
         public bool IsIconFramed { get; }
 
+        /// <summary>
+        /// Whether the panel is a hint: one quiet line of icon and text at the end of the tooltip, like a shortcut's
+        /// button and what it does. Its text is <see cref="Body"/>, shown in the panel's hint slot next to the icon
+        /// where it has one. A hint never names the tooltip and gets no hairline.
+        /// </summary>
+        public bool IsHint { get; }
+
         /// <summary>Creates a panel with just a text.</summary>
         /// <param name="body">Text to show.</param>
         public TooltipEntry(string body) : this(null, body)
@@ -50,8 +57,9 @@ namespace Base.CorePackage.Tooltip
         /// <param name="eyebrow">Small line above the title. Null or empty for none.</param>
         /// <param name="isAside">Whether the panel goes into a second card beside the main one.</param>
         /// <param name="isIconFramed">Whether the icon sits on the panel's frame.</param>
+        /// <param name="isHint">Whether the panel is one quiet line of icon and text, see <see cref="IsHint"/>.</param>
         public TooltipEntry(string title, string body, Sprite icon = null, Color? iconColor = null,
-            string eyebrow = null, bool isAside = false, bool isIconFramed = false)
+            string eyebrow = null, bool isAside = false, bool isIconFramed = false, bool isHint = false)
         {
             Title = title;
             Body = body;
@@ -60,6 +68,7 @@ namespace Base.CorePackage.Tooltip
             Eyebrow = eyebrow;
             IsAside = isAside;
             IsIconFramed = isIconFramed;
+            IsHint = isHint;
         }
     }
 }

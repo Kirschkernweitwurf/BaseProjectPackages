@@ -10,6 +10,9 @@ Changes made before 2.1.4 were not recorded.
 
 ### Added
 
+- Tooltip hints: `TooltipEntry` takes `isHint` for one quiet line of icon and text at the end of a tooltip, like a
+  shortcut's button and what it does. `TooltipPanel.hint` shows it next to the icon; a hint never names the tooltip
+  and gets no hairline.
 - `ScreenshotManager.ScreenshotDirectory`: the folder screenshots are saved to, so tools can open it.
 - Game actions (`Base.CorePackage.GameActions`): `GameAction`, `IGameActionSystem`, the plain C# `GameActionResolver`
   and its scene host `GameActionSystem`, `GameActionReactor` and `CheatActionRunner`. Every game event becomes an

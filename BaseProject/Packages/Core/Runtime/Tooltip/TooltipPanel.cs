@@ -28,6 +28,11 @@ namespace Base.CorePackage.Tooltip
         [Tooltip("Shows the entry's title. Optional.")]
         [SerializeField] private TMP_Text title;
 
+        [Tooltip("Shows the text of hint entries in the header next to the icon, in place of the title, like a "
+            + "shortcut's button and what it does. Style it quieter than the title. Optional: without it a hint shows "
+            + "its icon in the header and its text below.")]
+        [SerializeField] private TMP_Text hint;
+
         [Tooltip("Shows the entry's icon in front of the title as it is, like an emoji. Optional.")]
         [SerializeField] private Image icon;
 
@@ -52,13 +57,23 @@ namespace Base.CorePackage.Tooltip
         /// <param name="entry">The content to show.</param>
         public void Show(TooltipEntry entry)
         {
-            bool hasTitle = ShowText(title, entry.Title);
+            // A hint's text sits in the header next to its icon, so the panel reads as one quiet line.
+            bool isHintLine = entry.IsHint
+                && hint != null;
+            bool hasTitle = ShowText(title, isHintLine
+                ? null
+                : entry.Title);
+            bool hasHint = ShowText(hint, isHintLine
+                ? entry.Body
+                : null);
             bool hasEyebrow = ShowText(eyebrow, entry.Eyebrow);
             bool hasIcon = ShowIcon(entry);
-            ShowText(body, entry.Body);
+            ShowText(body, isHintLine
+                ? null
+                : entry.Body);
 
             if (header != null)
-                header.SetActive(hasTitle || hasEyebrow || hasIcon);
+                header.SetActive(hasTitle || hasHint || hasEyebrow || hasIcon);
         }
 
         /// <summary>Shows or hides the hairline above the panel, which parts it from what comes before it.</summary>

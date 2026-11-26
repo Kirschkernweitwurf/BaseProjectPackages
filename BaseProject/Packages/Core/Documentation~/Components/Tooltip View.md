@@ -66,7 +66,7 @@ Draws the tooltip beside the cursor or the hovered object, never letting it leav
 
 - **Motion:** a tooltip in the dock slides in while it fades; moving straight on to the next thing only fades the new content in, and the same tooltip again (rebuilt, pinned, or hovered again right away) just changes in place. Set `IsMotionReduced` from a Reduce Motion setting to drop the slide.
 
-- **One card:** put the panel template and a **Source Panel** inside one shared background, and the tooltip reads as a card: the header names what it explains (from an `ITooltipSourceProvider` next to the trigger's providers), every titled panel after it gets its **Separator**. A lone title without a text is just the header.
+- **One card:** put the panel template and a **Source Panel** inside one shared background, and the tooltip reads as a card: the header names what it explains (from an `ITooltipSourceProvider` next to the trigger's providers), every titled panel after it gets its **Separator**. A lone title without a text is just the header. Hint entries (`isHint`) don't count here: a lone titled entry with a hint after it still names the tooltip and the hint follows as a quiet line without a hairline.
 
 - **Links:** an `ITooltipLinkProvider` next to the trigger adds `TooltipLink`s, each a subject for the picture and its own panels. Put the **Link Template** in the content next to the main card and set **Row** to the content's layout group. The links go on the main card's far side from the object, the first one closest. A tooltip with only links and a header still shows, so the main card can just name the object.
 
