@@ -30,6 +30,14 @@ namespace Base.UIPackage.Effects
         }
 
         /// <summary>
+        /// The length from <paramref name="from"/> to <paramref name="to"/>, both in the source's local space, as a
+        /// share of the eye's distance. The longer a line is against that distance, the more the perspective bends
+        /// what lies along it.
+        /// </summary>
+        public float GetDistanceShare(Vector3 from, Vector3 to) =>
+            _toRoot.MultiplyVector(to - from).magnitude / _distance;
+
+        /// <summary>
         /// Returns where <paramref name="vertex"/>, in the source's local space, shows on the canvas.
         /// </summary>
         public Vector3 Project(Vector3 vertex)

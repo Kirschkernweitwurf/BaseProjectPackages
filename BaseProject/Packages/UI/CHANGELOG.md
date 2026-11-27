@@ -17,6 +17,9 @@ Changes made before 1.4.2 were not recorded.
 
 - `UIPerspectiveText` no longer throws when TMP reports more vertices than the text's mesh holds.
   The tilted text kept showing its old text after that, like a pooled cell showing the name of the entry before.
+- `UIPerspectiveGraphic` splits big triangles into smaller ones before it bends them, so the rounded corners and
+  outlines of tilted UI keep their shape. The GPU spreads a picture evenly between a triangle's corners, so a card
+  drawn as one quad showed its corners several pixels off and kinked along the quad's diagonal.
 
 ## [1.7.0] - 2026-10-28
 
