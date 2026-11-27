@@ -72,8 +72,10 @@ namespace Base.UIPackage.Effects
                     _flat[index] = new Vector3[vertices.Length];
 
                 // TMP clears the unused tail of a sub mesh (like the bold one of keywords) only after this event. It
-                // can still hold glyphs of a longer earlier layout, which a later refresh would draw again.
-                int used = info.meshInfo[index].vertexCount;
+                // can still hold glyphs of a longer earlier layout, which a later refresh would draw again. Its count
+                // can also be larger than the mesh, like after a pooled cell got a new name: copying that many threw
+                // and kept the old text's vertices, so a tilted text went on showing its earlier text.
+                int used = Mathf.Min(info.meshInfo[index].vertexCount, vertices.Length);
                 Array.Copy(vertices, _flat[index], used);
                 Array.Clear(_flat[index], used, vertices.Length - used);
                 Project(_flat[index], vertices);

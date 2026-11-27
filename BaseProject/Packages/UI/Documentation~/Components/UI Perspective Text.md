@@ -24,6 +24,10 @@ Bends a TextMesh Pro text into the tilt of the UIPerspective above it and hides 
 
 None. Add it and it works.
 
+## Good to know
+
+- A text that gets a new string while it is tilted, like the name on a pooled card, shows the new one: it copies only as many vertices as the text's mesh holds, even when TMP reports more.
+
 ## Related
 
 - [UI Perspective](UI%20Perspective.md)

@@ -13,6 +13,11 @@ Changes made before 1.4.2 were not recorded.
 - UI effects from a game project: `UISparkles` and `UIParticleField` for particles on screen-space UI, and
   `UIPerspective` with `UIPerspectiveGraphic` and `UIPerspectiveText` to tilt UI in 3D with real perspective.
 
+### Fixed
+
+- `UIPerspectiveText` no longer throws when TMP reports more vertices than the text's mesh holds.
+  The tilted text kept showing its old text after that, like a pooled cell showing the name of the entry before.
+
 ## [1.7.0] - 2026-10-28
 
 ### Changed
